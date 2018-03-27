@@ -47,7 +47,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PaymentVoucherController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -57,9 +59,6 @@ public class PaymentVoucherController {
 	
 	@Inject
 	private PaymentVoucherLoadService paymentVoucherLoadService;
-
-	@Inject
-	private PaymentModeService paymentModeService;
 
 
 	//Called on onSave event
@@ -122,11 +121,11 @@ public class PaymentVoucherController {
 			Company company = paymentVoucher.getCompany();
 			BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
 			try {
-				Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
+				Journal journal = Beans.get(PaymentModeService.class).getPaymentModeJournal(paymentMode, company, companyBankDetails);
 				if (journal.getExcessPaymentOk()) {
 					response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
 				}
-			} catch (AxelorException e) {
+			} catch (Exception e) {
 				TraceBackService.trace(response, e);
 			}
 		}

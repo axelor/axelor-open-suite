@@ -32,6 +32,8 @@ import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
+import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
@@ -45,6 +47,8 @@ import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.AdvancedExportService;
+import com.axelor.apps.base.service.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.BankService;
@@ -56,6 +60,8 @@ import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
+import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -84,12 +90,15 @@ import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.message.service.TemplateService;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.base.service.ical.ICalendarEventService;
+import com.axelor.base.service.ical.ICalendarEventServiceImpl;
 
 public class BaseModule extends AxelorModule {
 
     @Override
     protected void configure() {
         bind(AddressService.class).to(AddressServiceImpl.class);
+        bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
         bind(UserService.class).to(UserServiceImpl.class);
         bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
         bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
@@ -122,6 +131,9 @@ public class BaseModule extends AxelorModule {
         bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
         bind(TradingNameService.class).to(TradingNameServiceImpl.class);
         bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
+        bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
+        bind(ICalendarEventRepository.class).to(ICalendarEventManagementRepository.class);
+        bind(ProductMultipleQtyService.class).to(ProductMultipleQtyServiceImpl.class);
         IPartner.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
     }
 }

@@ -25,53 +25,73 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ProjectController {
 
 	@Inject
-	private ProjectService projectService;
-	
-	@Inject
 	private EmployeeService employeeService;
-	
-	
+
+
 	public void setStoredDuration(ActionRequest request, ActionResponse response){
-		String duration = request.getContext().get("visibleDuration").toString();
-		if(duration.isEmpty()) {
-			response.setValue("duration", employeeService.getUserDuration(new BigDecimal(0.00), AuthUtils.getUser(), true));
-		} else {
-			response.setValue("duration", employeeService.getUserDuration(new BigDecimal(duration), AuthUtils.getUser(), true));
+		try {
+			String duration = request.getContext().get("visibleDuration").toString();
+			if (duration.isEmpty()) {
+				response.setValue("duration", employeeService.getUserDuration(new BigDecimal(0.00), AuthUtils.getUser(), true));
+			} else {
+				response.setValue("duration", employeeService.getUserDuration(new BigDecimal(duration), AuthUtils.getUser(), true));
+			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-			
+
 	}
-	
+
 	public void setStoredTimeSpent(ActionRequest request, ActionResponse response){
-		response.setValue("timeSpent", employeeService.getUserDuration(new BigDecimal(request.getContext().get("visibleDuration").toString()), AuthUtils.getUser(), true));
+		try {
+			response.setValue("timeSpent", employeeService.getUserDuration(new BigDecimal(request.getContext().get("visibleDuration").toString()), AuthUtils.getUser(), true));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
-	
+
 	public void setStoredLeadDelay(ActionRequest request, ActionResponse response){
-		response.setValue("leadDelay", employeeService.getUserDuration(new BigDecimal(request.getContext().get("visibleDuration").toString()), AuthUtils.getUser(), true));
-	}	
-	
+		try {
+			response.setValue("leadDelay", employeeService.getUserDuration(new BigDecimal(request.getContext().get("visibleDuration").toString()), AuthUtils.getUser(), true));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
+
 	public void setVisibleDuration(ActionRequest request, ActionResponse response){
-		Project project = request.getContext().asType(Project.class);
-		project = Beans.get(ProjectRepository.class).find(project.getId());
+	    try {
+			Project project = request.getContext().asType(Project.class);
+			project = Beans.get(ProjectRepository.class).find(project.getId());
 
-		response.setValue("timesheetLineList", projectService.computeVisibleDuration(project));
+			response.setValue("timesheetLineList", Beans.get(ProjectService.class).computeVisibleDuration(project));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
-	
+
 	public void setProjectVisibleDuration(ActionRequest request, ActionResponse response){
-		Project project = request.getContext().asType(Project.class);
-		project = Beans.get(ProjectRepository.class).find(project.getId());
-		User user = AuthUtils.getUser();
+		try {
+			Project project = request.getContext().asType(Project.class);
+			project = Beans.get(ProjectRepository.class).find(project.getId());
+			User user = AuthUtils.getUser();
 
-		response.setValue("$visibleDuration", employeeService.getUserDuration(project.getDuration(), user, false));
-		response.setValue("$visibleTimeSpent", employeeService.getUserDuration(project.getTimeSpent(), user, false));
-		response.setValue("$visibleLeadDelay", employeeService.getUserDuration(project.getLeadDelay(), user, false));
+			response.setValue("$visibleDuration", employeeService.getUserDuration(project.getDuration(), user, false));
+			response.setValue("$visibleTimeSpent", employeeService.getUserDuration(project.getTimeSpent(), user, false));
+			response.setValue("$visibleLeadDelay", employeeService.getUserDuration(project.getLeadDelay(), user, false));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
-	
+
 }

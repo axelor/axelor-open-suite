@@ -6,7 +6,6 @@
 	<form name="printing-setting-form" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings" width="large">
 		<panel name="main" >
 			<field name="name"/>
-			<field name="languageSelect"/>
 			<field name="defaultMailBirtTemplate" form-view="birt-template-form" grid-view="birt-template-grid" />
 			<field name="logoPositionSelect" />
 			<field name="colorCode" />
@@ -14,14 +13,13 @@
 				<field name="pdfHeader" colSpan="12" widget="html" showTitle="false"/>
 			</panel>
 			<panel name="companyFooter" title="Company Footer" colSpan="12">
-	       		<field name="pdfFooter" colSpan="12" widget="html" showTitle="false"/>
-	       	</panel>
+				<field name="pdfFooter" colSpan="12" widget="html" showTitle="false"/>
+			</panel>
        	</panel>
     </form>
     
     <grid name="printing-setting-grid" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings">
     	<field name="name"/>
-    	<field name="languageSelect"/>
     </grid>
 
 </object-views>

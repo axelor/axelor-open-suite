@@ -45,7 +45,6 @@
 	<selection name='account.journal.status.select'>
 		<option value="0">Inactive</option>
 		<option value="1">Active</option>
-		<option value="2">Archived</option>
 	</selection>
 
 	<selection name='iaccount.payment.schedule.status.select'>
@@ -301,13 +300,13 @@
 	</selection>
 
 	<selection name="iaccount.payment.schedule.type.select">
-		<option value="0"></option>
 		<option value="1">Payment terms</option>
 		<option value="2">Monthly payments</option>
 	</selection>
 
 	<selection name="message.related.to.select" id="account.message.related.to.select">
 		<option value="com.axelor.apps.account.db.DebtRecoveryHistory">Debt Recovery History</option>
+		<option value="com.axelor.apps.account.db.Invoice">Invoice</option>
 	</selection>
 
 </object-views>

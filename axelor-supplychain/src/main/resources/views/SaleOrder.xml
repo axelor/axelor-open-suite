@@ -19,7 +19,7 @@
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 
-	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onNew="action-record-load-dummy-supplier-partner">
+	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onLoad="action-record-load-dummy-supplier-partner">
 		<panel name="main" >
 			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
 			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
@@ -65,28 +65,16 @@
 	</form>
 	
 	<action-group name="action-group-supplychain-saleorder-onnew">
-		<action name="action-sale-order-record-default"/>
+        <action name="action-group-sale-saleorder-onnew"/>
 		<action name="action-sale-order-record-payment-mode"/>
-		<action name="action-sale-order-record-company-configuration"/>
 		<action name="action-supplychain-sale-order-method-get-stock-location"/>
-		<action name="action-sale-order-record-currency"/>
-		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
-		<action name="action-sale-order-record-in-ati"/>
-		<action name="action-sale-order-attrs-in-ati"/>
-		<action name="action-sale-order-attrs-hidden-bank-details"/>
-		<action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-interco"/>
 		<action name="action-sale-order-record-interco"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">
-		<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
-		<action name="action-partner-attrs-hide-contact-partner" />
-		<action name="action-sale-order-attrs-in-ati"/>
-		<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
-		<action name="action-sale-order-attrs-hidden-bank-details"/>
+        <action name="action-group-sale-saleorder-onload"/>
 		<action name="action-sale-order-attrs-interco"/>
-		<action name="save"/>
 	</action-group>
 
     <action-method name="action-supplychain-saleorder-onsave">
@@ -132,7 +120,7 @@
 	</action-validate>
 
 	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(Long.valueOf(supplierPartnerId))"/>
+		<field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(supplierPartnerId)"/>
 	</action-record>
 
 	<action-record name="action-sale-order-record-payment-mode" model="com.axelor.apps.sale.db.SaleOrder">
@@ -185,5 +173,15 @@
     <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
 		<check error="A supplier partner must be selected" field="supplierPartnerSelect" if="supplierPartnerSelect == null"/>
 	</action-condition>
+	
+	<action-record name="action-sale-order-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
+		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
+	</action-record>
+	
+	<action-record name="action-sale-order-record-partner-supplychain" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
+    	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
+		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
+    </action-record>
 
 </object-views>

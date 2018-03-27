@@ -6,15 +6,28 @@
 	
 	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.app.isApp('production')"
 		icon="fa-cogs"  icon-background="#84429f"/>
+		
+	<menuitem name="manufacturing-root-products" parent="manufacturing-root" order="5"
+		title="Products" action="manufacturing.root.products" />
+
+	<action-view name="manufacturing.root.products" title="Products"
+		model="com.axelor.apps.base.db.Product" >
+		<view type="grid" name="product-grid" />
+		<view type="form" name="product-form" />
+		<view type="cards" name="product-cards" />
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = false and self.productTypeSelect = 'storable'</domain>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+	</action-view>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
-		title="Bills of materials" action="manufacturing.root.bill.of.material" order="1" />
+		title="Bills of materials" action="manufacturing.root.bill.of.material" order="10" />
 
 	<action-view name="manufacturing.root.bill.of.material" title="Bills of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
-		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false</domain>
+		<domain>self.defineSubBillOfMaterial = true AND self.personalized = false</domain>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"

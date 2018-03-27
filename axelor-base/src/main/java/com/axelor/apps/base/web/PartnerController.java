@@ -50,6 +50,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -65,13 +66,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Singleton
 public class PartnerController {
-
-	@Inject
-	private SequenceService sequenceService;
-
-	@Inject
-	private UserService userService;
 
 	@Inject
 	private PartnerService partnerService;
@@ -85,7 +81,7 @@ public class PartnerController {
 		Partner partner = request.getContext().asType(Partner.class);
 		partner = partnerRepo.find(partner.getId());
 		if(partner.getPartnerSeq() ==  null) {
-			String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
+			String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER);
 			if (seq == null)
 				throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
 			else
@@ -208,7 +204,7 @@ public class PartnerController {
 
 	public Set<Company> getActiveCompany(){
 		Set<Company> companySet = new HashSet<Company>();
-		Company company = userService.getUser().getActiveCompany();
+		Company company = Beans.get(UserService.class).getUser().getActiveCompany();
 		if(company == null){
 			List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
 			if(companyList.size() == 1){

@@ -37,6 +37,7 @@ public interface ITranslation {
 	
 	public static final String INVENTORY_TITLE = /*$$(*/ "Inventory.title"; /*)*/
 	public static final String INVENTORY_NAME = /*$$(*/ "Inventory.name"; /*)*/
+	public static final String INVENTORY_BARCODE = /*$$(*/ "Inventory.barcode"; /*)*/
 	public static final String INVENTORY_DATE = /*$$(*/ "Inventory.date"; /*)*/
 	public static final String INVENTORY_STOCK_LOCATION = /*$$(*/ "Inventory.stockLocation"; /*)*/
 	public static final String INVENTORY_CODE = /*$$(*/ "Inventory.code"; /*)*/
@@ -45,6 +46,7 @@ public interface ITranslation {
 	public static final String INVENTORY_DESCRIPTION = /*$$(*/ "Inventory.description"; /*)*/
 	public static final String INVENTORY_RACK = /*$$(*/ "Inventory.rack"; /*)*/
 	public static final String INVENTORY_TRACKING_NUMBER = /*$$(*/ "Inventory.trackingNumber"; /*)*/
+	public static final String INVENTORY_COMPANY= /*$$(*/ "Inventory.company"; /*)*/
 
 	public static final String STOCK_MOVE_INTERNAL_MOVE = /*$$(*/ "StockMove.internalMove"; /*)*/
 	public static final String STOCK_MOVE_DELIVERY_ORDER = /*$$(*/ "StockMove.deliveryOrder"; /*)*/
@@ -73,4 +75,5 @@ public interface ITranslation {
 	public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/
 	public static final String STOCK_MOVE_RACK_NUMBER = /*$$(*/ "StockMove.rackNbr"; /*)*/
 	public static final String STOCK_MOVE_COMMENTS = /*$$(*/ "StockMove.comments"; /*)*/
+	public static final String STOCK_MOVE_BARCODE = /*$$(*/ "StockMove.barcode"; /*)*/
 }

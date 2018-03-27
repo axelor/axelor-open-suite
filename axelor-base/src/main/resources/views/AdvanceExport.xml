@@ -4,27 +4,24 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
   
   	<grid model="com.axelor.apps.base.db.AdvancedExport" title="Advance Fields Export" name="advanced-export-grid">
+  		<field name="name"/>
   		<field name="metaModel"/>
   	</grid>
   
   	<form name="advanced-export-form" title="Advanced Export" model="com.axelor.apps.base.db.AdvancedExport" width="large" 
-  		onLoad="action-attr-view-data-button-change-title">
+  		onLoad="action-attr-view-data-button-change-title" onNew="action-advanced-export-record-on-new">
   		<panel>
-      		<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid" colSpan="4" onChange="action-attr-reset-advanced-export-line"/>
-    		<button name="selectAll" title="Select all fields" colSpan="2" onClick="save,action-method-get-model-all-fields" hideIf="!isViewData"/>
+  			<field name="name" colSpan="4" required="true"/>
+      		<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid" colSpan="4" onChange="action-attr-reset-advanced-export-line" onSelect="action-advanced-export-attr-change-domain-from-model"/>
+    		<button name="selectAll" title="Select all fields" colSpan="3" onClick="save,action-method-get-model-all-fields" hideIf="isViewData"/>
     		<field name="isViewData" hidden="true" colSpan="1"/>
     	</panel>
-     	<panel-related field="advancedExportLineList" title="Fields" hideIf="metaModel == null || !isViewData" editable="true" onNew="fill-default-current-domain" canMove="true" orderBy="sequence">
-     		<field name="metaField" title="Select target field" required="true" onChange="action-method-change-domain-on-relational-field" onSelect="action-attr-change-domain" colSpan="3"/>
-     		<field name="title" colSpan="3" required="true"/>
-     		<field name="targetField" colSpan="4"/>
-	        <field name="orderBy" colSpan="2"/>
-	        <field name="currentDomain" hidden="true"/>
-     	</panel-related>
-     	<panel-dashlet name="custom-panel-view-export-data" action="custom:custom-view-export-data" colSpan="12" hideIf="isViewData"/>
+     	<panel-related field="advancedExportLineList" title="Fields" hideIf="metaModel == null || isViewData" grid-view="advanced-export-line-grid" form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
+     	<panel-dashlet name="custom-panel-view-export-data" action="custom:custom-view-export-data" colSpan="12" hideIf="!isViewData"/>
      	<panel>
      		<button name="exportPDF" title="Export PDF" icon="fa-reply" colSpan="3" onClick="save,action-export-pdf-method,save"/>
     		<button name="exportExcel" title="Export Excel" icon="fa-reply" colSpan="3" onClick="save,action-export-excel-method,save"/>
+    		<button name="exportCSV" title="Export CSV" icon="fa-reply" colSpan="3" onClick="save,action-export-csv-method,save"/>
     		<field name="advancedExportFile" readonly="true" colSpan="3" widget="binary-link"/>
      		<button name="viewData" hidden="true" title="View Data" colSpan="3" onClick="action-record-show-field-data,save,action-attr-view-data-button-change-title"/>
      	</panel>
@@ -44,12 +41,13 @@
   		<field name="isViewData" expr="true" if="!isViewData"/>
   	</action-record>
   	
+  	<action-record name="action-advanced-export-record-on-new" model="com.axelor.apps.base.db.AdvancedExport">
+		<field name="metaModel" expr="eval: _contextModel" if="_contextModel"/>
+		<field name="isViewData" expr="false"/>
+	</action-record>
+  	
   	<action-method name="action-method-get-model-all-fields">
   		<call class="com.axelor.apps.base.web.AdvancedExportController" method="getModelAllFields"/>
-  	</action-method>
-  	
-  	<action-method name="action-method-change-domain-on-relational-field">
-  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="fillTargetField"/>
   	</action-method>
   	
   	<action-method name="action-export-pdf-method">
@@ -60,25 +58,25 @@
   		<call class="com.axelor.apps.base.web.AdvancedExportController" method="advancedExportExcel"/>
   	</action-method>
   	
+  	<action-method name="action-export-csv-method">
+  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="advancedExportCSV"/>
+  	</action-method>
+  	
   	<action-attrs name="action-attr-view-data-button-change-title">
-  		<attribute name="title" for="viewData" expr="Select Field" if="!isViewData"/>
-  		<attribute name="title" for="viewData" expr="View Data" if="isViewData"/>
-  		<attribute name="readonly" for="metaModel" expr="true" if="!isViewData"/>
-  		<attribute name="readonly" for="metaModel" expr="false" if="isViewData"/>
-  		<attribute name="readonly" for="isSelectAll" expr="true" if="!isViewData"/>
-  		<attribute name="readonly" for="isSelectAll" expr="false" if="isViewData"/>
+  		<attribute name="title" for="viewData" expr="Select Field" if="isViewData"/>
+  		<attribute name="title" for="viewData" expr="View Data" if="!isViewData"/>
+  		<attribute name="readonly" for="metaModel" expr="true" if="isViewData"/>
+  		<attribute name="readonly" for="metaModel" expr="false" if="!isViewData"/>
+  		<attribute name="readonly" for="isSelectAll" expr="true" if="isViewData"/>
+  		<attribute name="readonly" for="isSelectAll" expr="false" if="!isViewData"/>
   	</action-attrs>
-  	
-  	<action-attrs name="action-attr-change-domain">
-  		<attribute name="domain" expr="eval: &quot; self.metaModel.name = '${currentDomain}' &quot;" for="metaField"/>
-  	</action-attrs>
-  	
-  	<action-record name="fill-default-current-domain" model="com.axelor.apps.base.db.AdvancedExportLine">
-  		<field name="currentDomain" expr="eval: _parent?.metaModel.name" if="_parent?.metaModel" />
-  	</action-record>
   	
 	<action-attrs name="action-attr-reset-advanced-export-line">
 		<attribute name="value" for="advancedExportLineList" expr="eval: null"/>
 	</action-attrs>
-	  	
+	
+	<action-attrs name="action-advanced-export-attr-change-domain-from-model">
+		<attribute name="domain" for="metaModel" expr="eval: &quot; self.id = '${_contextModel.id}' &quot;" if="_contextModel"/>
+	</action-attrs>
+	
 </object-views>

@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.x]
 ## Features
+- New Inventory view
+- New StockMove view
 - New currency conversion API (ECB)
 - Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
 - Create sale order from partner and contact
@@ -17,6 +19,19 @@
 - Direct debit batches
 - Logistical forms
 - New subscription feature.
+- Add support to dynamically set the number of decimal digit of BOM quantities
+- If there is no template defined for the object, generate an empty draft message for MESSAGE : wizard
+- Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
+- Manage waste rate in bill of material and take it into account on cost sheet
+- Partial manuf order realization
+- Add a wizard to select a cancel reason and cancel a Stock move.
+- Add button to open tasks and task kanban view in project module
+- Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
+- New user option to allow notifications to be sent by email on desired entities.
+- Add validation date in Inventory
+- Remove teams app module.
+- Add the number of components on Bill of material form view.
+- Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -27,7 +42,21 @@
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
 - Add purchase order line and sale order line import processes to compute tax related fields.
+- Change the title "Delivery date" to "Estimated delivery date" in SaleOrder and PurchaseOrder
 - EndPeriod on currency conversion api
+- Allow to generate bank order file without using bic code in SEPA context.
+- Remove the field supplierPartner from Event Object
+- Upgrade functionality of advanced export feature
+- Change dependency to base instead of CRM,HR and Project of helpdesk module.
+- Update the SaleOrderLine form to look like InvoiceLine form.
+- Update CRM & ICalendar events UI
+- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'.
+- Allow to read the products from production, stock and crm modules
+- Improve manufacturing order workflow.
+- When we treat a component of a manuf order that is not loaded on MRP because there is no default BOM or because the component of manuf order is not a component of the bill of material, we add it with the level of manuf order product + 1.
+- Replaced selection field for language on Partner per a M2O to Language object to be able to add new partner language easily.
+- New select on product to choose if we want real or planned price for last product price or average price.
+- Improve filter for supplier partner in sale order lines.
 
 
 ## Bug Fixes
@@ -35,10 +64,36 @@
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
 - Fix purchase order status in demo data.
+- Fix different split methods in StockMove
 - Fix event hide when we create new from calendar and set domain for my calendar and team calendar
+- Fix default logo position
+- Fix create event from contact m2m of partner
+- Fix copy of manufacturing order
+- Fix multiple NPE in CRM events
+- Fix MRP calculation exception
+- Fix manufacturing order stock move generation in unusual case.
+- Fix default supplier in purchase order generation from sale order.
 
 
 ## [Unreleased 4.x]
+
+### Improvements
+- New assistant in expense form to select payment mode
+- Leave management reset batch now creates a new line with negative quantity
+  instead of clearing old lines
+
+### Bug Fixes
+- Permission change in most HR form
+- Find kilometric allowance rate per company
+- Remove filter on company for historic timesheet
+- More fixes in expense form
+- Show time unit for the right user in timesheet lines
+- Hide button in leave request instead of making it readonly
+- Fix count tags in hr menus
+- Remove the wrong process to create an useless move for excess payment on refund invoice ventilation
+
+
+## [4.1.2] - 2018-02-05
 ### Improvements
 - Close pay period automatically when all payroll preparation are exported
 - KilometricExpenseLineList are no more duplicated in ExpenseLineList. ExpenseLineList is renamed into GeneralExpenseLineList.
@@ -330,9 +385,9 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-
 [Unreleased 5.x]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...dev
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...dev
+[4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/axelor/axelor-business-suite/compare/v4.0.1...v4.0.2

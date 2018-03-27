@@ -45,7 +45,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PurchaseOrderController {
 
 	@Inject
@@ -53,12 +55,6 @@ public class PurchaseOrderController {
 
 	@Inject
 	protected AppSupplychainService appSupplychainService;
-	
-	@Inject
-	protected AppAccountService appAccountService;
-	
-	@Inject
-	protected PurchaseOrderRepository purchaseOrderRepo;
 	
 	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -106,6 +102,9 @@ public class PurchaseOrderController {
 	
 	public void generateBudgetDistribution(ActionRequest request, ActionResponse response){
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		
+		AppAccountService appAccountService = Beans.get(AppAccountService.class);
+		
 		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
 			purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 			purchaseOrderServiceSupplychain.generateBudgetDistribution(purchaseOrder);
@@ -275,8 +274,8 @@ public class PurchaseOrderController {
 						.context("_showRecord", String.valueOf(purchaseOrder.getId())).map());
 				response.setCanClose(true);
 			}
-		}catch(AxelorException ae){
-			response.setFlash(ae.getLocalizedMessage());
+		}catch(Exception e){
+			response.setFlash(e.getLocalizedMessage());
 		}
 	}
 
@@ -289,7 +288,7 @@ public class PurchaseOrderController {
 	public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+		purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 		purchaseOrderServiceSupplychain.applyToallBudgetDistribution(purchaseOrder);
 	}
 }

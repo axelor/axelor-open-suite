@@ -33,7 +33,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.team.db.Team;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ProjectController {
 
 	public void setDuration(ActionRequest request, ActionResponse response){
@@ -75,14 +78,11 @@ public class ProjectController {
 		}
 	}
 
-	public void selectTeam(ActionRequest request, ActionResponse response) {
-	    Project project = request.getContext().asType(Project.class);
-		project = Beans.get(ProjectRepository.class).find(project.getId());
-		try {
-			Beans.get(ProjectService.class).cascadeUpdateTeam(project, project.getTeam(), project.getSynchronisable());
-			response.setReload(true);
-		} catch (Exception e) {
-		    TraceBackService.trace(response, e);
+	public void importMembers(ActionRequest request, ActionResponse response) {
+		Project project = request.getContext().asType(Project.class);
+		if (project.getTeam() != null) {
+		    project.getTeam().getMembers().forEach(project::addMembersUserSetItem);
+			response.setValue("membersUserSet", project.getMembersUserSet());
 		}
 	}
 

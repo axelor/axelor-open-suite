@@ -26,7 +26,6 @@ import java.util.List;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
@@ -68,7 +67,7 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
 						+ "AND :subScriptionDate >= self.nextInvoicingDate "
 						+ "AND (self.contractEndDate IS NULL OR self.contractEndDate >= :subScriptionDate)")
 				.bind("saleOrderType", SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION)
-				.bind("saleOrderStatus", ISaleOrder.STATUS_ORDER_CONFIRMED)
+				.bind("saleOrderStatus", SaleOrderRepository.STATUS_CONFIRMED)
 				.bind("subScriptionDate", appBaseService.getTodayDate());
 				
 		if (limit != null) {

@@ -9,15 +9,15 @@
 		<field name="name"/>
 		<field name="bomLevel"/>
 		<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"/>
-		<field name="consumptionQty" aggregate="sum"/>
+		<field name="consumptionQty" aggregate="sum" x-scale="2"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
 		<field name="costPrice"/>
     </grid>
     
-	<form name="cost-sheet-line-form" title="Cost sheet line" model="com.axelor.apps.production.db.CostSheetLine" width="large">
+	<form name="cost-sheet-line-form" title="Cost sheet line" model="com.axelor.apps.production.db.CostSheetLine" width="large" onLoad="action-cost-sheet-line-attrs-price-and-qty-digits">
 	  	<panel name="main">
 	    	<field name="typeSelect"/>
-			<field name="product" canEdit="false" form-view="product-form" grid-view="product-grid" showIf="typeSelect == 1 || typeSelect == 2"/>
+			<field name="product" domain="self.productTypeSelect = 'storable'" canEdit="false" form-view="product-form" grid-view="product-grid" showIf="typeSelect == 1 || typeSelect == 2"/>
 			<field name="workCenter" form-view="work-center-form" grid-view="work-center-grid" showIf="typeSelect == 3"/>
 			<field name="bomLevel"/>
 			<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"/>
@@ -33,7 +33,7 @@
         <column name="name" type="string"/>
         <column name="bomLevel" type="integer"/>
         <column name="costSheetGroup" type="reference"/>
-        <column name="consumptionQty" type="decimal"/>
+        <column name="consumptionQty" type="decimal" x-scale="2"/>
         <column name="unit" type="reference"/>
         <column name="costPrice" type="decimal"/>
         <node model="com.axelor.apps.production.db.CostSheetLine" orderBy="bomLevel,code" domain="self.parentCostSheetLine is null AND self.costSheet.id = :_costSheetId" onClick="action-cost-sheet-line-view-form">
@@ -41,7 +41,7 @@
             <field name="code"/>
             <field name="name"/>
             <field name="bomLevel"/>
-            <field name="costSheetGroup"/>
+            <field name="costSheetGroup.name" as="costSheetGroup"/>
             <field name="consumptionQty"/>
             <field name="unit"/>
             <field name="costPrice"/>
@@ -51,7 +51,7 @@
             <field name="code"/>
             <field name="name"/>
             <field name="bomLevel"/>
-            <field name="costSheetGroup"/>
+            <field name="costSheetGroup.name" as="costSheetGroup"/>
             <field name="consumptionQty"/>
             <field name="unit"/>
             <field name="costPrice"/>
@@ -71,5 +71,10 @@
 	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
+	
+    <action-attrs name="action-cost-sheet-line-attrs-price-and-qty-digits">
+    	<attribute name="scale" for="consumptionQty" expr="eval: __config__.app.getNbDecimalDigitForBomQty()"/>
+        <attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    </action-attrs>
 	
 </object-views>

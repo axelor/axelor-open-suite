@@ -21,6 +21,8 @@
     
     <integer name="typeSelect" title="Type" selection="account.analytic.move.line.type.select" default="1"/>
 
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"
+        title="Currency"/>
     
     <extra-code><![CDATA[
 	

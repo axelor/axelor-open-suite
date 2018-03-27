@@ -9,7 +9,7 @@
 
 	<string name="name" title="Label"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
-  	<decimal name="qty" title="Qty"/>
+  	<decimal name="qty" title="Qty" precision="20" scale="10"/>
   	<integer name="priority" title="Priority"/>
     <boolean name="defineSubBillOfMaterial" title="Define sub bill of material"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -20,7 +20,9 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>
     <boolean name="personalized" title="Personalized"/>
-  	<one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheets"/>
+   	<decimal name="wasteRate" title="Waste rate (%)"/>
+    
+  	<one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheets" mappedBy="billOfMaterial"/>
 
 	<string name="fullName" namecolumn="true" title="Label"/>
 	<integer name="versionNumber" title="Version number" default="1"/>

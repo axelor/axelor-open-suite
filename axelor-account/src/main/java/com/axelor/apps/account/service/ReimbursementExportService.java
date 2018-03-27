@@ -17,7 +17,12 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
@@ -47,7 +52,6 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
@@ -64,7 +68,7 @@ public class ReimbursementExportService {
 	protected AccountConfigService accountConfigService;
 	protected PartnerService partnerService;
 	protected PartnerRepository partnerRepository;
-	protected LocalDate today;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public ReimbursementExportService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, ReconcileService reconcileService,
@@ -80,7 +84,7 @@ public class ReimbursementExportService {
 		this.accountConfigService = accountConfigService;
 		this.partnerService = partnerService;
 		this.partnerRepository = partnerRepository;
-		this.today = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 	}
 
 	/**
@@ -191,7 +195,7 @@ public class ReimbursementExportService {
 						first = false;
 					}
 					// Création d'une ligne au débit
-					MoveLine newDebitMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, true, today, seq, null);
+					MoveLine newDebitMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, true, appAccountService.getTodayDate(), seq, null);
 					newMove.getMoveLineList().add(newDebitMoveLine);
 					if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {
 						newDebitMoveLine.setDescription(reimbursement.getDescription());
@@ -205,7 +209,7 @@ public class ReimbursementExportService {
 				}
 			}
 			// Création de la ligne au crédit
-			MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, accountConfig.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, today, seq, null);
+			MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, accountConfig.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, appAccountService.getTodayDate(), seq, null);
 
 			newMove.getMoveLineList().add(newCreditMoveLine);
 			if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {
@@ -516,7 +520,7 @@ public class ReimbursementExportService {
 		Partner partner = invoice.getPartner();
 		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 		// récupération des trop-perçus du tiers
-		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<? extends MoveLine> moveLineList = moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' " +
 				"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStatusSelect = ?3 ",
 				MoveRepository.STATUS_VALIDATED , partner, MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
 

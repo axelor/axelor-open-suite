@@ -25,7 +25,6 @@ import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
-import com.axelor.apps.hr.db.repo.PayrollLeaveRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.exception.AxelorException;
@@ -33,7 +32,9 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PayrollPreparationController {
 
 	@Inject
@@ -41,9 +42,6 @@ public class PayrollPreparationController {
 	
 	@Inject
 	protected PayrollPreparationRepository payrollPreparationRepo;
-	
-	@Inject
-	protected PayrollLeaveRepository payrollLeaveRepo;
 	
 	public void generateFromEmploymentContract(ActionRequest request, ActionResponse response){
 

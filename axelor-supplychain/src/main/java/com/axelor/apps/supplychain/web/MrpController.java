@@ -23,7 +23,6 @@ import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.MrpService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -31,22 +30,27 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
+@Singleton
 public class MrpController {
 	
 	@Inject
-	protected MrpService mrpService;
+	protected Provider<MrpService> mrpServiceProvider;
 	
 	@Inject
-	protected MrpRepository mrpRepository;
+	protected Provider<MrpRepository> mrpRepositoryProvider;
 	
 	public void runCalculation(ActionRequest request, ActionResponse response)  {
 	
 		Mrp mrp = request.getContext().asType(Mrp.class);
-		
+		MrpService mrpService = mrpServiceProvider.get();
+		MrpRepository mrpRepository = mrpRepositoryProvider.get();
 		try {
+			
 			mrpService.runCalculation(mrpRepository.find(mrp.getId()));
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 			mrpService.reset(mrpRepository.find(mrp.getId()));
 		}
@@ -58,6 +62,8 @@ public class MrpController {
 	
 	public void generateAllProposals(ActionRequest request, ActionResponse response) throws AxelorException  {
 		Mrp mrp = request.getContext().asType(Mrp.class);
+		MrpService mrpService = mrpServiceProvider.get();
+		MrpRepository mrpRepository = mrpRepositoryProvider.get();
 		mrpService.generateProposals(mrpRepository.find(mrp.getId()));
 		response.setReload(true);
 	}
@@ -70,6 +76,8 @@ public class MrpController {
 	 */
 	public void printWeeks(ActionRequest request, ActionResponse response) {
 		Mrp mrp = request.getContext().asType(Mrp.class);
+		MrpService mrpService = mrpServiceProvider.get();
+		MrpRepository mrpRepository = mrpRepositoryProvider.get();
 		mrp = mrpRepository.find(mrp.getId());
 		String name = I18n.get("MRP") + "-" + mrp.getId();
 
@@ -86,7 +94,7 @@ public class MrpController {
 					.define(name)
 					.add("html", fileLink).map());
 
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
@@ -113,7 +121,7 @@ public class MrpController {
                     .define(name)
                     .add("html", fileLink).map());
 
-        } catch (AxelorException e) {
+        } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
     }

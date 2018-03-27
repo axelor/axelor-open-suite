@@ -18,15 +18,14 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.BankAddress;
-import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.service.BankAddressService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class BankAddressController {
-    @Inject
-    BankAddressRepository bankAddressRepository;
 
     @Inject
     BankAddressService bankAddressService;

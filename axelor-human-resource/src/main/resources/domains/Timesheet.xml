@@ -41,11 +41,11 @@
       
       <extra-code>
       	<![CDATA[
-	  		public static final Integer STATUS_DRAFT = 1;
-	  		public static final Integer STATUS_CONFIRMED = 2;
-	  		public static final Integer STATUS_VALIDATED = 3;
-	  		public static final Integer STATUS_REFUSED = 4;
-	  		public static final Integer STATUS_CANCELED = 5;
+	  		public static final int STATUS_DRAFT = 1;
+	  		public static final int STATUS_CONFIRMED = 2;
+	  		public static final int STATUS_VALIDATED = 3;
+	  		public static final int STATUS_REFUSED = 4;
+	  		public static final int STATUS_CANCELED = 5;
 	  ]]>
       </extra-code>
   </entity>

@@ -55,7 +55,7 @@
         <string name="chequeNumber" />
         <string name="chequeBank" />
         <string name="chequeOwner" />
-        <date name="chequeDate" />
+        <date name="chequeDate" title="Bank deposit date" />
         <many-to-one name="depositSlip" ref="com.axelor.apps.account.db.DepositSlip" />
         
         <unique-constraint columns="ref,company"/>

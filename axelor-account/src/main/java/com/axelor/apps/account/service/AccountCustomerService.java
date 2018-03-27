@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
-
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
@@ -51,6 +37,16 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.ZoneOffset;
+import java.util.Date;
+import java.util.List;
 
 public class AccountCustomerService {
 
@@ -58,14 +54,14 @@ public class AccountCustomerService {
 
 	protected AccountingSituationService  accountingSituationService;
 	protected AccountingSituationRepository accSituationRepo;
-	protected LocalDate today;
-	
+	protected AppBaseService appBaseService;
+
 	@Inject
 	public AccountCustomerService(AccountingSituationService  accountingSituationService, AccountingSituationRepository accSituationRepo, AppBaseService appBaseService) {
 
 		this.accountingSituationService =accountingSituationService;
 		this.accSituationRepo = accSituationRepo;
-		this.today = appBaseService.getTodayDate();
+		this.appBaseService = appBaseService;
 	}
 
 	public AccountingSituationService getAccountingSituationService()  {
@@ -151,7 +147,7 @@ public class AccountCustomerService {
 				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_debt_recovery_ok IN ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'" +
 				"AND move.status_select = ?4 AND ml.amount_remaining > 0 ")
-				.setParameter(1, Date.from(today.atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
+				.setParameter(1, Date.from(appBaseService.getTodayDate().atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
 				.setParameter(2, partner)
 				.setParameter(3, company)
 				.setParameter(4, MoveRepository.STATUS_VALIDATED);
@@ -205,7 +201,7 @@ public class AccountCustomerService {
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'" +
 				"AND move.status_select = ?5 AND ml.amount_remaining > 0 ")
 				.setParameter(1, mailTransitTime)
-				.setParameter(2, Date.from(today.atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
+				.setParameter(2, Date.from(appBaseService.getTodayDate().atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
 				.setParameter(3, partner)
 				.setParameter(4, company)
 				.setParameter(5, MoveRepository.STATUS_VALIDATED);

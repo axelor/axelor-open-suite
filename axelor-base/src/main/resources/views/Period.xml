@@ -27,8 +27,8 @@
     	<panel sidebar="true">
 			<field name="statusSelect" colSpan="6"/>
 			<field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
-			<button name="close" title="Close period" onClick="action-method-period-close" hideIf="statusSelect == 2" prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
-			<button name="adjust" title="Adjust period" onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" showIf="statusSelect == 2"/>
+			<button name="close" title="Close period" onClick="action-method-period-close" hideIf="statusSelect == 2 || $popup()" prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
+			<button name="adjust" title="Adjust period" onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
     	</panel>
     </form>
 
@@ -64,8 +64,8 @@
 		</panel>
 		<panel>
 			<panel colSpan="6">
-				<button name="close" title="Close period" colSpan="6" onClick="action-method-period-close,save" showIf="statusSelect == 1"/>
-				<button name="reopen" title="Reopen period" colSpan="6" onClick="action-period-record-status-open,save" showIf="statusSelect == 2"/>
+				<button name="close" title="Close period" colSpan="6" onClick="action-method-period-close,save" showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
+				<button name="reopen" title="Reopen period" colSpan="6" onClick="action-period-record-status-open,save" showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
 			</panel>
 			<field name="statusSelect"/>
 			<field name="closureDateTime" showIf="statusSelect == 2"/>
@@ -96,7 +96,7 @@
 	<action-attrs name="action-period-year-on-change-to-date">
 		<attribute for="toDate" name="value" expr="eval: null"/>
 	</action-attrs>
-    
+
      <action-record name="action-period-record-status-open" model="com.axelor.apps.base.db.Period">
     	<field name="statusSelect" expr="eval: __repo__(Period).STATUS_OPENED"/>
      </action-record>

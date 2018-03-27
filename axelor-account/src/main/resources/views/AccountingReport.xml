@@ -13,7 +13,7 @@
 		<field name="typeSelect" selection="accounting.report.type.select"/>
         <field name="dateFrom"/>
         <field name="dateTo"/>
-        <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"/>
+        <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
         <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
         <field name="totalDebit" aggregate="sum"/>
 		<field name="totalCredit" aggregate="sum"/>
@@ -42,7 +42,7 @@
 		<panel-tabs>
 			<panel name="filter" title="Filter">
 				<field name="year" hideIf="typeSelect != 12  &amp;&amp; typeSelect != 15" onSelect="action-accounting-report-attrs-year-domain" requiredIf="typeSelect == 12 || typeSelect == 15" grid-view="year-account-grid" form-view="year-account-form" />
-				<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" />
+				<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false" />
 				<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12 || typeSelect == 15" />
 				<field name="dateTo" requiredIf="typeSelect == 12 || typeSelect == 15" />
 				<field name="journal" hideIf="!typeSelect || [0,1,2,3,4,5,10,12,13,14,15].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
@@ -78,7 +78,7 @@
 		<field name="typeSelect" selection="accounting.report.type.select.export"/>
         <field name="dateFrom"/>
         <field name="dateTo"/>
-        <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" />
+        <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false" />
         <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
         <field name="totalDebit" aggregate="sum"/>
 		<field name="totalCredit" aggregate="sum"/>
@@ -95,7 +95,7 @@
 			<field name="typeSelect" onChange="action-group-account-accounting-report-typeselect-onchange" selection="accounting.report.type.select.export"/>
 			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-accounting-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
 			<field name="year" hideIf="!$contains([1000, 1010], typeSelect)" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="$contains([1000, 1010], typeSelect)" grid-view="year-account-grid" form-view="year-account-form" />
-			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid"/>
+			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false"/>
 			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="dateTo" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="journal" form-view="journal-form" grid-view="journal-grid" hideIf="$contains([1000, 1010], typeSelect)"/>

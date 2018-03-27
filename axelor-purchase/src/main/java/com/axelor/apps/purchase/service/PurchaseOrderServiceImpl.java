@@ -19,30 +19,29 @@ package com.axelor.apps.purchase.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import java.time.LocalDate;
-
-import com.axelor.apps.base.db.Blocking;
-import com.axelor.apps.base.db.StopReason;
-import com.axelor.apps.base.db.repo.BlockingRepository;
-import com.axelor.apps.base.service.BlockingService;
-import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.ShippingCoefService;
-import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.ShippingCoefService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -52,6 +51,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -199,7 +199,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setExternalReference(externalReference);
 		purchaseOrder.setOrderDate(orderDate);
 		purchaseOrder.setPriceList(priceList);
-		purchaseOrder.setPurchaseOrderLineList(new ArrayList<PurchaseOrderLine>());
+		purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
+
+		purchaseOrder.setPrintingSettings(Beans.get(TradingNameService.class)
+				.getDefaultPrintingSettings(null, company));
 
 		purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
@@ -229,6 +232,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 	@Override
 	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException  {
+		if (purchaseOrder.getPrintingSettings() == null) {
+			throw new AxelorException(IException.MISSING_FIELD, String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS), purchaseOrder.getPurchaseOrderSeq()));
+		}
 
 		String language= ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
 
@@ -363,7 +369,52 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			purchaseOrderRepo.save(purchaseOrder);
 		}
 	}
-	
+
+	public String printPurchaseOrder(PurchaseOrder purchaseOrder, List<Integer> lstSelectedMove) throws AxelorException {
+	    List<Long> selectedPurchaseOrderListId;
+	    if (lstSelectedMove != null && !lstSelectedMove.isEmpty()) {
+			selectedPurchaseOrderListId = lstSelectedMove.stream()
+					.map(integer -> Long.parseLong(integer.toString()))
+					.collect(Collectors.toList());
+			purchaseOrder = purchaseOrderRepo.find(selectedPurchaseOrderListId.get(0));
+		} else if (purchaseOrder != null && purchaseOrder.getId() != null) {
+	    	 selectedPurchaseOrderListId = new ArrayList<>();
+	    	 selectedPurchaseOrderListId.add(purchaseOrder.getId());
+		} else {
+			throw new AxelorException(PurchaseOrder.class, IException.INCONSISTENCY, I18n.get(IExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
+		}
+
+		List<PurchaseOrder> purchaseOrderList = purchaseOrderRepo.all()
+				.filter("self.id IN (" +
+						selectedPurchaseOrderListId.stream().map(Object::toString).collect(Collectors.joining(",")) +
+						") AND self.printingSettings IS NULL")
+				.fetch();
+		if (!purchaseOrderList.isEmpty()) {
+			String exceptionMessage = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDERS_MISSING_PRINTING_SETTINGS),
+					"<ul>" + purchaseOrderList.stream()
+							.map(PurchaseOrder::getPurchaseOrderSeq)
+							.collect(Collectors.joining("</li><li>", "<li>", "</li>"))
+							+ "<ul>");
+			throw new AxelorException(IException.MISSING_FIELD, exceptionMessage);
+		}
+
+		String purchaseOrderIds = selectedPurchaseOrderListId.stream()
+				.map(Object::toString)
+				.collect(Collectors.joining(","));
+
+		String title = I18n.get("Purchase order");
+		if (purchaseOrder.getPurchaseOrderSeq() != null) {
+			title = selectedPurchaseOrderListId.size() == 1 ? I18n.get("Purchase order") + " " + purchaseOrder.getPurchaseOrderSeq() : I18n.get("Purchase order");
+		}
+
+		return ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
+				.addParam("PurchaseOrderId", purchaseOrderIds)
+				.addParam("Locale", ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner()))
+				.generate()
+				.getFileLink();
+
+	}
+
 	@Override
 	@Transactional
 	public void draftPurchaseOrder(PurchaseOrder purchaseOrder){

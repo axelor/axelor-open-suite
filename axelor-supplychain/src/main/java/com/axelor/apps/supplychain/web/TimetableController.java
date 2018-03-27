@@ -18,8 +18,6 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -33,7 +31,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class TimetableController {
 	
 	@Inject
@@ -46,10 +46,10 @@ public class TimetableController {
 		Timetable timetable = request.getContext().asType(Timetable.class);
 		timetable = timeTableRepo.find(timetable.getId());
 
-		Context parentContext = request.getContext().getParentContext();
+		Context parentContext = request.getContext().getParent();
 		if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
 		    SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
-		    if (saleOrder.getStatusSelect() < ISaleOrder.STATUS_ORDER_CONFIRMED) {
+		    if (saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_CONFIRMED) {
 		        response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_SALE_ORDER_NOT_CONFIRMED));
 		        return;
 			}

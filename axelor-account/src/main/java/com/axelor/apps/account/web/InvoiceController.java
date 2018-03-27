@@ -57,6 +57,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +69,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Singleton
 public class InvoiceController {
 
 	@SuppressWarnings("unused")
@@ -186,6 +189,7 @@ public class InvoiceController {
 	public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
 		try {
+			if (invoice.getOperationTypeSelect() == null) { return ; }
 			PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
 			PaymentCondition paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 			response.setValue("paymentMode", paymentMode);
@@ -194,7 +198,6 @@ public class InvoiceController {
 			TraceBackService.trace(response, e);
 		}
 	}
-	
 
 	/**
 	 * Fonction appeler par le bouton générer un avoir.
@@ -314,7 +317,7 @@ public class InvoiceController {
 				}else{
 					try {
 						invoiceService.validate(invoice);
-					} catch (AxelorException e) {
+					} catch (Exception e) {
 						TraceBackService.trace(e);
 					} finally{
 						if (count%10 == 0){
@@ -343,7 +346,7 @@ public class InvoiceController {
 				}else{
 					try {
 						invoiceService.ventilate(invoice);
-					} catch (AxelorException e) {
+					} catch (Exception e) {
 						TraceBackService.trace(e);
 					} finally{
 						if (count%10 == 0){
@@ -532,8 +535,8 @@ public class InvoiceController {
 						.context("_showRecord", String.valueOf(invoice.getId())).map());
 				response.setCanClose(true);
 			}
-		}catch(AxelorException ae){
-			response.setFlash(ae.getLocalizedMessage());
+		}catch(Exception e){
+			response.setFlash(e.getLocalizedMessage());
 		}
 	}
 
@@ -579,7 +582,7 @@ public class InvoiceController {
 					.createAdvancePaymentInvoiceSetDomain(invoice);
 			response.setAttr("advancePaymentInvoiceSet","domain", domain);
 
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(e);
 			response.setError(e.getMessage());
 		}
@@ -596,12 +599,11 @@ public class InvoiceController {
 											 ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		Set<Invoice> invoices = null;
 		try {
-			invoices = invoiceService
+			Set<Invoice> invoices = invoiceService
                     .getDefaultAdvancePaymentInvoice(invoice);
 			response.setValue("advancePaymentInvoiceSet", invoices);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
@@ -628,23 +630,38 @@ public class InvoiceController {
 	}
 
 	/**
-	 * Called on load from invoice form view and on trading name change.
-	 * Set the default value and the domain for {@link Invoice#printingSettings}
+	 * Called on printing settings select.
+	 * Set the domain for {@link Invoice#printingSettings}
 	 * @param request
 	 * @param response
 	 */
 	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		PrintingSettings printingSettings = invoice.getPrintingSettings();
 
 		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(invoice.getTradingName(), invoice.getCompany());
-		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
-			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
-		}
 		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
 
-		response.setValue("printingSettings", printingSettings);
 		response.setAttr("printingSettings", "domain", domain);
+    }
+
+	/**
+	 * Called on trading name change.
+	 * Set the default value for {@link Invoice#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
+	    try {
+			Invoice invoice = request.getContext().asType(Invoice.class);
+			response.setValue("printingSettings",
+					Beans.get(TradingNameService.class).getDefaultPrintingSettings(
+							invoice.getTradingName(),
+							invoice.getCompany()
+					)
+			);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 	/**

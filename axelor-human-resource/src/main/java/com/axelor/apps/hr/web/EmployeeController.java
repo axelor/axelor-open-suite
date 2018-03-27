@@ -29,13 +29,14 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
+@Singleton
 public class EmployeeController {
-	
-	
+
 	public void showAnnualReport(ActionRequest request, ActionResponse response) throws JSONException, NumberFormatException, AxelorException{
 		
 		String employeeId = request.getContext().get("_id").toString();

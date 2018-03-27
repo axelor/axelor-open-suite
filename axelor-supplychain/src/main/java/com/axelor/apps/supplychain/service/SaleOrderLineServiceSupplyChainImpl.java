@@ -20,7 +20,10 @@ package com.axelor.apps.supplychain.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +32,15 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.exception.AxelorException;
@@ -67,7 +71,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 		BigDecimal price = this.computeDiscount(saleOrderLine);
 
 
-		BigDecimal amount = saleOrderLine.getQty().multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+		BigDecimal amount = saleOrderLine.getQty().multiply(price).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
 		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { saleOrderLine.getQty(), price, amount });
 
@@ -148,5 +152,19 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
         return saleOrderLine.getQty().subtract(deliveredQty);
     }
+
+    @Override
+	public List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine) {
+	    Product product = saleOrderLine.getProduct();
+	    if (product == null || product.getSupplierCatalogList() == null) {
+	    	return new ArrayList<>();
+		}
+		return product.getSupplierCatalogList()
+				.stream()
+				.map(SupplierCatalog::getSupplierPartner)
+				.filter(Objects::nonNull)
+				.map(Partner::getId)
+				.collect(Collectors.toList());
+	}
 
 }

@@ -31,7 +31,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PurchaseOrderSupplierLineController {
 
 	@Inject
@@ -44,8 +46,8 @@ public class PurchaseOrderSupplierLineController {
 		
 		PurchaseOrderSupplierLine purchaseOrderSupplierLine = purchaseOrderSupplierLineRepo.find( request.getContext().asType(PurchaseOrderSupplierLine.class).getId() );
 		
-		if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null && request.getContext().getParentContext() != null){
-			purchaseOrderSupplierLine.setPurchaseOrderLine( Beans.get(PurchaseOrderLineRepository.class).find(request.getContext().getParentContext().asType(PurchaseOrderLine.class).getId()) );
+		if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null && request.getContext().getParent() != null){
+			purchaseOrderSupplierLine.setPurchaseOrderLine( Beans.get(PurchaseOrderLineRepository.class).find(request.getContext().getParent().asType(PurchaseOrderLine.class).getId()) );
 		}
 		
 		try {

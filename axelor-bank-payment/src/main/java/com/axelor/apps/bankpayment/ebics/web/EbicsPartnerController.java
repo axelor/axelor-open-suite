@@ -23,13 +23,14 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class EbicsPartnerController {
 	
 	@Inject
@@ -57,7 +58,7 @@ public class EbicsPartnerController {
 		EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
 	    try {
 	    	ebicsPartnerService.checkBankDetailsMissingCurrency(ebicsPartner);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 	    	response.setFlash(e.getMessage());
 		}
 	}

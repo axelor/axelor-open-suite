@@ -34,7 +34,6 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
-import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
@@ -52,29 +51,20 @@ import com.google.inject.persist.Transactional;
 public class PaymentVoucherLoadService {
 
     protected CurrencyService currencyService;
-    protected PaymentVoucherSequenceService paymentVoucherSequenceService;
     protected PaymentVoucherToolService paymentVoucherToolService;
     protected PayVoucherDueElementRepository payVoucherDueElementRepo;
-    protected PayVoucherElementToPayService payVoucherElementToPayService;
     protected PaymentVoucherRepository paymentVoucherRepository;
-    protected PayVoucherElementToPayRepository payVoucherElementToPayRepository;
 
     @Inject
     public PaymentVoucherLoadService(CurrencyService currencyService,
-            PaymentVoucherSequenceService paymentVoucherSequenceService,
             PaymentVoucherToolService paymentVoucherToolService,
             PayVoucherDueElementRepository payVoucherDueElementRepo,
-            PayVoucherElementToPayService payVoucherElementToPayService,
-            PaymentVoucherRepository paymentVoucherRepository,
-            PayVoucherElementToPayRepository payVoucherElementToPayRepository) {
+            PaymentVoucherRepository paymentVoucherRepository) {
 
         this.currencyService = currencyService;
-        this.paymentVoucherSequenceService = paymentVoucherSequenceService;
         this.paymentVoucherToolService = paymentVoucherToolService;
         this.payVoucherDueElementRepo = payVoucherDueElementRepo;
-        this.payVoucherElementToPayService = payVoucherElementToPayService;
         this.paymentVoucherRepository = paymentVoucherRepository;
-        this.payVoucherElementToPayRepository = payVoucherElementToPayRepository;
 
     }
 
@@ -341,6 +331,7 @@ public class PaymentVoucherLoadService {
         paymentVoucher.setOperationTypeSelect(invoice.getOperationTypeSelect());
         paymentVoucher.setPartner(invoice.getPartner());
         paymentVoucher.setPaymentMode(invoice.getPaymentMode());
+        paymentVoucher.setCurrency(invoice.getCurrency());
         paymentVoucher.clearPayVoucherDueElementList();
         paymentVoucher.clearPayVoucherElementToPayList();
         BankDetails companyBankDetails;
@@ -382,11 +373,12 @@ public class PaymentVoucherLoadService {
                 .hasNext();) {
             PayVoucherDueElement payVoucherDueElement = it.next();
 
-            if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())) {
-                paymentVoucher.addPayVoucherElementToPayListItem(
-                        createPayVoucherElementToPay(payVoucherDueElement, ++sequence));
-                it.remove();
-            }
+			if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())
+					&& paymentVoucher.getCurrency().equals(payVoucherDueElement.getCurrency())) {
+				paymentVoucher.addPayVoucherElementToPayListItem(
+						createPayVoucherElementToPay(payVoucherDueElement, ++sequence));
+				it.remove();
+			}
         }
 
     }

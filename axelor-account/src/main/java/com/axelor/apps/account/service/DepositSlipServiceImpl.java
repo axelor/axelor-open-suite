@@ -31,12 +31,10 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConf
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.QueryBuilder;
-import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 
 public class DepositSlipServiceImpl implements DepositSlipService {
@@ -58,7 +56,6 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     @Override
     @Transactional(rollbackOn = { AxelorException.class, Exception.class })
     public String publish(DepositSlip depositSlip) throws AxelorException {
-        checkPayments(depositSlip);
         confirmPayments(depositSlip);
 
         ReportSettings settings = ReportFactory.createReport(getReportName(depositSlip), getFilename(depositSlip));
@@ -124,6 +121,11 @@ public class DepositSlipServiceImpl implements DepositSlipService {
             queryBuilder.bind("company", depositSlip.getCompany());
         }
 
+        if (depositSlip.getCurrency() != null) {
+        	queryBuilder.add("self.currency = :currency");
+        	queryBuilder.bind("currency", depositSlip.getCurrency());
+        }
+
         if (depositSlip.getCompanyBankDetails() != null
                 && Beans.get(AppBaseService.class).getAppBase().getManageMultiBanks()) {
             queryBuilder.add("self.companyBankDetails = :companyBankDetails");
@@ -150,32 +152,6 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         queryBuilder.bind("statusSelect", PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
 
         return queryBuilder.build().fetch();
-    }
-
-    private void checkPayments(DepositSlip depositSlip) throws AxelorException {
-        switch (depositSlip.getPaymentModeTypeSelect()) {
-        case PaymentModeRepository.TYPE_CHEQUE:
-            if (depositSlip.getPaymentVoucherList() != null) {
-                for (PaymentVoucher paymentVoucher : depositSlip.getPaymentVoucherList()) {
-                    if (Strings.isNullOrEmpty(paymentVoucher.getChequeBank())
-                            || Strings.isNullOrEmpty(paymentVoucher.getChequeNumber())
-                            || Strings.isNullOrEmpty(paymentVoucher.getChequeOwner())
-                            || paymentVoucher.getChequeDate() == null) {
-                        throw new AxelorException(paymentVoucher, IException.MISSING_FIELD,
-                                I18n.get(IExceptionMessage.DEPOSIT_SLIP_MISSING_CHEQUE_INFORMATION),
-                                paymentVoucher.getRef());
-                    }
-                }
-            }
-
-            break;
-        case PaymentModeRepository.TYPE_CASH:
-            // TODO
-            break;
-        default:
-            throw new AxelorException(depositSlip, IException.CONFIGURATION_ERROR,
-                    IExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
-        }
     }
 
     private void confirmPayments(DepositSlip depositSlip) throws AxelorException {

@@ -20,6 +20,9 @@ package com.axelor.apps.base.db.repo;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.persistence.PersistenceException;
+import javax.validation.ValidationException;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
@@ -30,9 +33,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-
-import javax.persistence.PersistenceException;
-
 
 public class ProductBaseRepository extends ProductRepository{
 	
@@ -49,10 +49,10 @@ public class ProductBaseRepository extends ProductRepository{
 		product.setFullName("["+product.getCode()+"]"+product.getName());
 		
 		product = super.save(product);
-		
-		if(product.getBarCode() == null && appBaseService.getAppBase().getActivateBarCodeGeneration()) {
+		if(product.getBarCode() == null && product.getSerialNumber()!=null  &&  appBaseService.getAppBase().getActivateBarCodeGeneration() && product.getBarcodeTypeConfig()!=null) {
 			try {
-				InputStream inStream = BarcodeGeneratorService.createBarCode(product.getId());
+				boolean addPadding=false;
+				InputStream inStream = BarcodeGeneratorService.createBarCode(product.getSerialNumber(), product.getBarcodeTypeConfig(), addPadding);
 				if (inStream != null) {
 			    	MetaFile barcodeFile =  metaFiles.upload(inStream, String.format("ProductBarCode%d.png", product.getId()));
 					product.setBarCode(barcodeFile);
@@ -60,7 +60,9 @@ public class ProductBaseRepository extends ProductRepository{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-	    	
+			catch (AxelorException  e) {
+				throw new ValidationException(e.getMessage());
+			}
 		}
 
 		try {

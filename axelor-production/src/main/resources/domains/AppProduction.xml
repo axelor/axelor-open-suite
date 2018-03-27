@@ -20,6 +20,10 @@
  		<boolean name="manageProdProcessVersion" title="Manage production process versions" />
 
 		<boolean name="enableConfigurator" title="Enable production configurator"/>
+		
+		<integer name="nbDecimalDigitForBomQty" title="Nb of digits for BOM quantities" max="10" default="2"/>
+		
+		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 	</entity>
 
 </domain-models>

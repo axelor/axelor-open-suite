@@ -18,7 +18,6 @@
 package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;

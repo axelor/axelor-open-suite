@@ -25,28 +25,26 @@ import java.util.Map;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class SaleOrderLineController {
 
 	@Inject
 	private SaleOrderLineService saleOrderLineService;
-
-	@Inject
-	private ProductRepository productRepo;
-
 
 	public void compute(ActionRequest request, ActionResponse response) {
 
@@ -232,7 +230,7 @@ public class SaleOrderLineController {
 		
 		if (product != null) {
 			
-			product = productRepo.find(product.getId());
+			product = Beans.get(ProductRepository.class).find(product.getId());
 			
 			if (product.getIsPack()) {
 				SaleOrder saleOrder = saleOrderLineService.getSaleOrder(request.getContext());
@@ -270,11 +268,20 @@ public class SaleOrderLineController {
 				if (!subLines.isEmpty()) {
 					response.setValue("subLineList", subLines);
 				}
-				response.setValue("typeSelect", 2);
+				response.setValue("typeSelect", SaleOrderLineRepository.TYPE_PACK);
 				response.setValue("qty", 0);
 			}
 
 		}
+		
+	}
+	
+	public void checkQty(ActionRequest request, ActionResponse response) {
+
+		Context context = request.getContext();
+		SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+		
+		saleOrderLineService.checkMultipleQty(saleOrderLine, response);
 		
 	}
 

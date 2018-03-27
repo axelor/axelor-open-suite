@@ -32,13 +32,16 @@ import com.axelor.apps.base.service.app.AppService;
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class AppController {
 	
 	@Inject
@@ -47,9 +50,6 @@ public class AppController {
 	@Inject
 	private AppRepository appRepo;
 
-	@Inject
-	private MetaViewRepository metaViewRepo;
-	
 	public void importDataDemo(ActionRequest request, ActionResponse response) {
 		
 		App app = request.getContext().asType(App.class);
@@ -78,7 +78,7 @@ public class AppController {
 		String appName = Inflector.getInstance().camelize(code);
 		String viewName = "app-" + code + "-config-form";
 		
-		if (metaViewRepo.findByName(viewName) == null) {
+		if (Beans.get(MetaViewRepository.class).findByName(viewName) == null) {
 			response.setFlash(I18n.get(IAppExceptionMessages.NO_CONFIG_REQUIRED));
 		}
 		else {

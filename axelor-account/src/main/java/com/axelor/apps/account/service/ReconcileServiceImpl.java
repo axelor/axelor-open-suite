@@ -26,7 +26,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -44,9 +43,6 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppService;
-import com.axelor.apps.base.service.app.AppServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -65,7 +61,6 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	protected ReconcileRepository reconcileRepository;
 	protected MoveAdjustementService moveAdjustementService;
 	protected ReconcileSequenceService reconcileSequenceService;
-	protected CurrencyService currencyService;
 	protected InvoicePaymentCreateService invoicePaymentCreateService;
 	protected InvoicePaymentCancelService invoicePaymentCancelService;
 
@@ -73,7 +68,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 	@Inject
 	public ReconcileServiceImpl(MoveToolService moveToolService, AccountCustomerService accountCustomerService, AccountConfigService accountConfigService,
 			ReconcileRepository reconcileRepository, MoveAdjustementService moveAdjustementService, ReconcileSequenceService reconcileSequenceService, 
-			CurrencyService currencyService, InvoicePaymentCancelService invoicePaymentCancelService, InvoicePaymentCreateService invoicePaymentCreateService)  {
+			InvoicePaymentCancelService invoicePaymentCancelService, InvoicePaymentCreateService invoicePaymentCreateService)  {
 		
 		this.moveToolService = moveToolService;
 		this.accountCustomerService = accountCustomerService;
@@ -81,7 +76,6 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		this.reconcileRepository = reconcileRepository;
 		this.moveAdjustementService = moveAdjustementService;
 		this.reconcileSequenceService = reconcileSequenceService;
-		this.currencyService = currencyService;
 		this.invoicePaymentCancelService = invoicePaymentCancelService;
 		this.invoicePaymentCreateService = invoicePaymentCreateService;
 		

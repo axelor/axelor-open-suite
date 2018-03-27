@@ -17,31 +17,21 @@
  */
 package com.axelor.apps.sale.db.repo;
 
-import com.axelor.apps.base.service.app.AppBaseService;
+import java.util.List;
+
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.SaleOrderLineService;
-import com.axelor.apps.sale.service.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-
-import javax.persistence.PersistenceException;
-import java.util.List;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
-
-	@Inject
-	protected AppBaseService appBaseService;
-
-	@Inject
-	private SaleOrderService saleOrderService;
-
-	@Inject
-	private SaleOrderLineService saleOrderLineService;
 
 	@Override
 	public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -50,11 +40,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 		List<SaleOrderLine> saleOrderLines = copy.getSaleOrderLineList();
 
-		copy.setStatusSelect(ISaleOrder.STATUS_DRAFT);
+		copy.setStatusSelect(SaleOrderRepository.STATUS_DRAFT);
 		copy.setSaleOrderSeq(null);
 		copy.clearBatchSet();
 		copy.setImportId(null);
-		copy.setCreationDate(appBaseService.getTodayDate());
+		copy.setCreationDate(Beans.get(AppBaseService.class).getTodayDate());
 		copy.setConfirmationDate(null);
 		copy.setConfirmedByUser(null);
 		copy.setOrderDate(null);
@@ -78,11 +68,12 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	@Override
 	public SaleOrder save(SaleOrder saleOrder) {
 		try {
+		    saleOrder = super.save(saleOrder);
 			computeSeq(saleOrder);
 			computeFullName(saleOrder);
 			computeSubMargin(saleOrder);
-			saleOrderService.computeMarginSaleOrder(saleOrder);
-			return super.save(saleOrder);
+			Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+			return saleOrder;
 		} catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
@@ -90,12 +81,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	
 	public void computeSeq(SaleOrder saleOrder){
 		try{
-			
-			if((saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) && !saleOrder.getTemplate()){
-				if ( saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT ){
-				    saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
-				}
-			}
+            if (Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()) && !saleOrder.getTemplate()) {
+                if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT) {
+                    saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
+                }
+            }
 				
 		}
 		catch (Exception e) {
@@ -119,7 +109,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 		if (saleOrder.getSaleOrderLineList() != null) {
 			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				saleOrderLineService.computeSubMargin(saleOrderLine);
+				Beans.get(SaleOrderLineService.class).computeSubMargin(saleOrderLine);
 			}
 		}
 	}

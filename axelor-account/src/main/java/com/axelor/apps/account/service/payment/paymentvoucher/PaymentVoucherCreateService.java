@@ -19,10 +19,10 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +52,7 @@ public class PaymentVoucherCreateService {
 	protected PaymentVoucherConfirmService paymentVoucherConfirmService;
 	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
 	protected PaymentVoucherRepository paymentVoucherRepository;
-	protected ZonedDateTime todayTime;
-	protected LocalDate today;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public PaymentVoucherCreateService(AppAccountService appAccountService, MoveToolService moveToolService, PayVoucherElementToPayService payVoucherElementToPayService, 
@@ -65,8 +64,7 @@ public class PaymentVoucherCreateService {
 		this.paymentVoucherConfirmService = paymentVoucherConfirmService;
 		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
 		this.paymentVoucherRepository = paymentVoucherRepository;
-		this.todayTime = appAccountService.getTodayDateTime();
-		this.today = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 
 	}
 
@@ -129,7 +127,7 @@ public class PaymentVoucherCreateService {
 		log.debug("\n\n createPaymentVoucher ....");
 		LocalDate date2 = date;
 		if(date2 == null)  {
-			date2 = this.today;
+			date2 = appAccountService.getTodayDate();
 		}
 
 		BigDecimal amount2 = amount;

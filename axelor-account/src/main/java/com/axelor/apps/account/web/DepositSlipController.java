@@ -20,13 +20,14 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
 import com.axelor.apps.account.service.DepositSlipService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
+@Singleton
 public class DepositSlipController {
 
     public void loadPayments(ActionRequest request, ActionResponse response) {
@@ -37,7 +38,7 @@ public class DepositSlipController {
         try {
             depositSlipService.loadPayments(depositSlip);
             response.setReload(true);
-        } catch (AxelorException e) {
+        } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
     }
@@ -52,7 +53,7 @@ public class DepositSlipController {
             response.setReload(true);
             response.setView(
                     ActionView.define(depositSlipService.getFilename(depositSlip)).add("html", fileLink).map());
-        } catch (AxelorException e) {
+        } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
     }

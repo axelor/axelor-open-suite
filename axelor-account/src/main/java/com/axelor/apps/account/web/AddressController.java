@@ -39,19 +39,22 @@ import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class AddressController {
+
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	protected AppAccountService appAccountService;
-
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	@Inject
 	private AddressRepository addressRepo;
@@ -63,61 +66,67 @@ public class AddressController {
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public void viewSalesMap(ActionRequest request, ActionResponse response)  {
-		// Only allowed for google maps to prevent overloading OSM
-		if (appAccountService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
-			PartnerList partnerList = request.getContext().asType(PartnerList.class);
+	    try {
+	        // Only allowed for google maps to prevent overloading OSM
+	        if (appAccountService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
+	            PartnerList partnerList = request.getContext().asType(PartnerList.class);
 
-//			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
-			//file.write("latitude,longitude,fullName,turnover\n");
+//	          File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
+	            //file.write("latitude,longitude,fullName,turnover\n");
 
-			Iterator<Partner> it = partnerList.getPartnerSet().iterator();
+	            Iterator<Partner> it = partnerList.getPartnerSet().iterator();
 
-			while(it.hasNext()) {
+	            while(it.hasNext()) {
 
-				Partner partner = it.next();
-				Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
-				if (address != null) {
-				    address = addressRepo.find(address.getId());
-					if (!(address.getLatit() != null && address.getLongit() != null)) {
-						String qString = address.getAddressL4()+" ,"+address.getAddressL6();
-						LOG.debug("qString = {}", qString);
+	                Partner partner = it.next();
+	                Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
+	                if (address != null) {
+	                    address = addressRepo.find(address.getId());
+	                    if (!(address.getLatit() != null && address.getLongit() != null)) {
+	                        String qString = address.getAddressL4()+" ,"+address.getAddressL6();
+	                        LOG.debug("qString = {}", qString);
 
-						Map<String,Object> googleResponse = Beans.get(MapService.class).geocodeGoogle(qString);
-						address.setLatit((BigDecimal) googleResponse.get("lat"));
-						address.setLongit((BigDecimal) googleResponse.get("lng"));
-						addressRepo.save(address);
-					}
-					if (address.getLatit() != null && address.getLongit() != null) {
-						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.statusSelect = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
-						List<Invoice> listInvoice = invoiceRepo.all().filter("self.partner.id = ?", partner.getId()).fetch();
-						BigDecimal turnover = BigDecimal.ZERO;
-						for(Invoice invoice: listInvoice) {
-							turnover.add(invoice.getInTaxTotal());
-						}
-						/*
-						file.withWriterAppend('UTF-8') {
-							it.write("${address.latit},${address?.longit},${partner.fullName},${turnover?:0.0}\n")
-						}
-						 */
-					}
-				}
-			}
-			//response.values = [partnerList : partnerList]
-			String url = "";
-			if (partnerList.getIsCluster())
-				url = "http://localhost/HTML/cluster_gmaps_xhr.html?file=latlng_"+partnerList.getId()+".csv";
-			else
-				url = "http://localhost/HTML/gmaps_xhr.html?file=latlng_"+partnerList.getId()+".csv";
+	                        Map<String,Object> googleResponse = Beans.get(MapService.class).geocodeGoogle(qString);
+	                        address.setLatit((BigDecimal) googleResponse.get("lat"));
+	                        address.setLongit((BigDecimal) googleResponse.get("lng"));
+	                        addressRepo.save(address);
+	                    }
+	                    if (address.getLatit() != null && address.getLongit() != null) {
+	                        //def turnover = Invoice.all().filter("self.partner.id = ? AND self.statusSelect = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
+	                        List<Invoice> listInvoice = invoiceRepo.all().filter("self.partner.id = ?", partner.getId()).fetch();
+	                        BigDecimal turnover = BigDecimal.ZERO;
+	                        for(Invoice invoice: listInvoice) {
+	                            turnover.add(invoice.getInTaxTotal());
+	                        }
+	                        /*
+	                        file.withWriterAppend('UTF-8') {
+	                            it.write("${address.latit},${address?.longit},${partner.fullName},${turnover?:0.0}\n")
+	                        }
+	                         */
+	                    }
+	                }
+	            }
+	            //response.values = [partnerList : partnerList]
+	            String url = "";
+	            if (partnerList.getIsCluster())
+	                url = "http://localhost/HTML/cluster_gmaps_xhr.html?file=latlng_"+partnerList.getId()+".csv";
+	            else
+	                url = "http://localhost/HTML/gmaps_xhr.html?file=latlng_"+partnerList.getId()+".csv";
 
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", I18n.get(IExceptionMessage.ADDRESS_1));
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-			//response.reload = true
+	            Map<String,Object> mapView = new HashMap<String,Object>();
+	            mapView.put("title", I18n.get(IExceptionMessage.ADDRESS_1));
+	            mapView.put("resource", url);
+	            mapView.put("viewType", "html");
+	            response.setView(mapView);
+	            //response.reload = true
 
-		} else {
-			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_2));
-		}
+	        } else {
+	            response.setFlash(I18n.get(IExceptionMessage.ADDRESS_2));
+            }
+
+	    } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
 	}
+
 }

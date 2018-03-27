@@ -18,12 +18,9 @@
 package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IProductVariant;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
@@ -31,6 +28,7 @@ import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
+import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -43,20 +41,21 @@ import com.google.inject.persist.Transactional;
 
 public class ProductServiceImpl implements ProductService  {
 
-	@Inject
-	private ProductVariantService productVariantService;
-	
-	@Inject
-	private ProductVariantRepository productVariantRepo;
-
-	@Inject
-	private SequenceService sequenceService;
-
-	@Inject
+	protected ProductVariantService productVariantService;
+	protected ProductVariantRepository productVariantRepo;
+	protected SequenceService sequenceService;
 	protected AppBaseService appBaseService;
+	protected ProductRepository productRepo;
 	
 	@Inject
-	private ProductRepository productRepo;
+	public ProductServiceImpl(ProductVariantService productVariantService, ProductVariantRepository productVariantRepo,
+			SequenceService sequenceService, AppBaseService appBaseService, ProductRepository productRepo) {
+		this.productVariantService = productVariantService;
+		this.productVariantRepo = productVariantRepo;
+		this.sequenceService = sequenceService;
+		this.appBaseService = appBaseService;
+		this.productRepo = productRepo;
+	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -103,7 +102,7 @@ public class ProductServiceImpl implements ProductService  {
 
 			if(product.getProductVariant() != null)  {
 
-				product.setCostPrice(product.getCostPrice().add(this.getProductExtraPrice(product.getProductVariant(), IProductVariant.APPLICATION_COST_PRICE)));
+				product.setCostPrice(product.getCostPrice().add(this.getProductExtraPrice(product.getProductVariant(), ProductVariantValueRepository.APPLICATION_COST_PRICE)));
 
 			}
 
@@ -115,7 +114,7 @@ public class ProductServiceImpl implements ProductService  {
 
 			if(product.getProductVariant() != null)  {
 
-				product.setSalePrice(product.getSalePrice().add(this.getProductExtraPrice(product.getProductVariant(), IProductVariant.APPLICATION_SALE_PRICE)));
+				product.setSalePrice(product.getSalePrice().add(this.getProductExtraPrice(product.getProductVariant(), ProductVariantValueRepository.APPLICATION_SALE_PRICE)));
 
 			}
 		}

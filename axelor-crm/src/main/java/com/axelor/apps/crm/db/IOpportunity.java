@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.db;
 
+@Deprecated
 public interface IOpportunity {
 	
 	/**

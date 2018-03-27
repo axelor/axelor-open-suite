@@ -17,12 +17,9 @@
  */
 package com.axelor.apps.base.web;
 
-import java.math.BigDecimal;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
-import com.axelor.apps.base.db.ShippingCoef;
-import com.axelor.apps.report.engine.ReportSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +31,7 @@ import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -43,13 +41,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ProductController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	private AppBaseService appBaseService;
 	
 	@Inject
 	private ProductService productService;
@@ -87,7 +84,7 @@ public class ProductController {
 
 		User user =  Beans.get(UserService.class).getUser();
 
-		int currentYear = appBaseService.getTodayDateTime().getYear();
+		int currentYear = Beans.get(AppBaseService.class).getTodayDateTime().getYear();
 		String productIds = "";
 
 		List<Integer> lstSelectedProduct = (List<Integer>) request.getContext().get("_ids");
@@ -122,14 +119,12 @@ public class ProductController {
 		Product product = request.getContext().asType(Product.class);
 		User user =  Beans.get(UserService.class).getUser();
 
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-
 		String name = I18n.get("Product") + " " + product.getCode();
 		
 		String fileLink = ReportFactory.createReport(IReport.PRODUCT_SHEET, name+"-${date}")
 				.addParam("ProductId", product.getId())
 				.addParam("CompanyId", user.getActiveCompany().getId())
-				.addParam("Locale", language)
+				.addParam("Locale", ReportSettings.getPrintingLocale(null))
 				.generate()
 				.getFileLink();
 

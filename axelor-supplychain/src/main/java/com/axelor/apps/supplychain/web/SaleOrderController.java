@@ -43,13 +43,13 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -62,42 +62,44 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class SaleOrderController{
-	
+
+	private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
+
 	@Inject
 	private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychain;
 
 	@Inject
 	private SaleOrderRepository saleOrderRepo;
 
-	@Inject
-	protected AppSupplychainService appSupplychainService;
-
-	@Inject
-	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-	
-	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void createStockMove(ActionRequest request, ActionResponse response) {
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		if(saleOrder.getId() != null) {
+		try {
+			if (saleOrder.getId() != null) {
 
-			SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
-			StockMove stockMove = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+				SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
+				StockMove stockMove = saleOrderStockService
+						.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
-			if(stockMove != null)  {
-				response.setView(ActionView
-					.define(I18n.get("Stock move"))
-					.model(StockMove.class.getName())
-					.add("grid", "stock-move-grid")
-					.add("form", "stock-move-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(stockMove.getId())).map());
+				if (stockMove != null) {
+					response.setView(ActionView
+							.define(I18n.get("Stock move"))
+							.model(StockMove.class.getName())
+							.add("grid", "stock-move-grid")
+							.add("form", "stock-move-form")
+							.param("forceEdit", "true")
+							.context("_showRecord", String.valueOf(stockMove.getId())).map());
+				} else {
+					response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+				}
 			}
-			else  {
-				response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
-			}
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
 	}
 
@@ -105,7 +107,7 @@ public class SaleOrderController{
 
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		if(saleOrder != null) {
+		if(saleOrder != null && saleOrder.getCompany() != null) {
 
 			StockLocation stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany());
 
@@ -173,7 +175,7 @@ public class SaleOrderController{
 								.param("popup-save", "false")
 								.param("forceEdit", "true")
 								.context("_showRecord", String.valueOf(saleOrder.getId()))
-								.context("supplierPartnerId", ((supplierPartner != null) ? String.valueOf(supplierPartner.getId()) : "NULL"))
+								.context("supplierPartnerId", ((supplierPartner != null) ? supplierPartner.getId() : 0L))
 								.context("saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
 								.map());
 					}
@@ -209,9 +211,9 @@ public class SaleOrderController{
 			saleOrderLineListContext = (List<Map<String,Object>>)
 					request.getRawContext().get("saleOrderLineList");
 			for (Map<String, Object> map : saleOrderLineListContext ) {
-				if (map.get("amountToInvoice") != null) {
+				if (map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
 					BigDecimal qtyToInvoiceItem = new BigDecimal(
-							map.get("amountToInvoice").toString()
+							map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString()
 					);
 					if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
 						Long SOlineId = new Long((Integer) map.get("id"));
@@ -221,6 +223,8 @@ public class SaleOrderController{
 			}
 
 			saleOrder = saleOrderRepo.find(saleOrder.getId());
+			
+			SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl = Beans.get(SaleOrderInvoiceServiceImpl.class);
 
 			Invoice invoice = saleOrderInvoiceServiceImpl.generateInvoice(
 							saleOrder, operationSelect, amountToInvoice, isPercent,
@@ -260,6 +264,8 @@ public class SaleOrderController{
 			}
 			 	
 			Invoice invoice = null;
+			
+			SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl = Beans.get(SaleOrderInvoiceServiceImpl.class);
 
 			if (!saleOrderLineIdSelected.isEmpty()){
 				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
@@ -452,7 +458,8 @@ public class SaleOrderController{
 		}
 
 		try{
-			SaleOrder saleOrder = saleOrderServiceSupplychain.mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonLocation, commonContactPartner, commonPriceList, commonTeam);
+			SaleOrder saleOrder = Beans.get(SaleOrderCreateServiceSupplychainImpl.class)
+					.mergeSaleOrders(saleOrderList, commonCurrency, commonClientPartner, commonCompany, commonLocation, commonContactPartner, commonPriceList, commonTeam);
 			if (saleOrder != null){
 				//Open the generated sale order in a new tab
 				response.setView(ActionView
@@ -464,8 +471,8 @@ public class SaleOrderController{
 						.context("_showRecord", String.valueOf(saleOrder.getId())).map());
 				response.setCanClose(true);
 			}
-		}catch(AxelorException ae){
-			response.setFlash(ae.getLocalizedMessage());
+		}catch(Exception e){
+			response.setFlash(e.getLocalizedMessage());
 		}
 	}
 

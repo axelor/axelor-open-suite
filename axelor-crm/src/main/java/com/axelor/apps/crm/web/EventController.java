@@ -20,16 +20,14 @@ package com.axelor.apps.crm.web;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.ParseException;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
-
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,24 +45,25 @@ import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
-import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
 import net.fortuna.ical4j.model.ValidationException;
 
+@Singleton
 public class EventController {
 
 	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -75,14 +74,6 @@ public class EventController {
 	@Inject
 	private EventService eventService;
 	
-	@Inject
-	private LeadRepository leadRepo;
-	
-	@Inject
-	private LeadService leadService;
-	
-	@Inject
-	protected CalendarService calendarService;
 
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 
@@ -148,7 +139,6 @@ public class EventController {
 	}
 
 
-	//TODO : replace by XML action
 	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Event event = request.getContext().asType(Event.class);
@@ -158,7 +148,6 @@ public class EventController {
 
 	}
 
-	//TODO : replace by XML action
 	public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Event event = request.getContext().asType(Event.class);
@@ -186,27 +175,12 @@ public class EventController {
 	}
 
 
-	public void addLeadAttendee(ActionRequest request, ActionResponse response)  {
-		Lead lead = request.getContext().asType(Lead.class);
-
-		if(lead != null)  {
-
-			Event event = request.getContext().getParentContext().asType(Event.class);
-
-			if(event != null)  {
-
-				Beans.get(EventService.class).addLeadAttendee(event, lead, null);
-				response.setReload(true);
-
-			}
-
-		}
-
-	}
-
 	@SuppressWarnings("rawtypes")
 	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 
+		LeadService leadService = Beans.get(LeadService.class);
+		LeadRepository leadRepo = Beans.get(LeadRepository.class);
+		
 		if(request.getContext().get("id") != null){
 			Lead lead = leadRepo.find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
@@ -241,156 +215,36 @@ public class EventController {
 			}
 		}
 		response.setReload(true);
-
 	}
 
-
-
-	public void checkModifications(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException, MessagingException  {
-
-		Event event = request.getContext().asType(Event.class);
-		Long idEvent = event.getId();
-		Template deletedGuestsTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestDeletedTemplate();
-		Template addedGuestsTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingGuestAddedTemplate();
-		Template changedDateTemplate = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingDateChangeTemplate();
-
-		if(deletedGuestsTemplate == null && addedGuestsTemplate == null && changedDateTemplate == null){
-			response.setFlash(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES_NONE),event.getUser().getActiveCompany().getName()));
-		} else if (deletedGuestsTemplate == null || addedGuestsTemplate == null || changedDateTemplate == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CRM_CONFIG_TEMPLATES), event.getUser().getActiveCompany().getName());
-		} else {
-			if (idEvent != null && idEvent > 0) {
-				Event previousEvent = eventRepo.find(event.getId());
-				event = eventService.checkModifications(event, previousEvent);
-			} else {
-				eventService.sendMails(event);
-			}
-		}
-		
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void addEmailGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
-		Event event = request.getContext().asType(Event.class);
-		if(request.getContext().containsKey("guestEmail")){
-			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).find(new Long(((Map<String, Object>) request.getContext().get("guestEmail")).get("id").toString()));
-			if(emailAddress != null){
-				event = eventRepo.find(event.getId());
-				eventService.addEmailGuest(emailAddress, event);
-			}
-		}
-		response.setReload(true);
+	public void manageFollowers(ActionRequest request, ActionResponse response) throws AxelorException {
+		try {
+			Event event = request.getContext().asType(Event.class);
+			event = eventRepo.find(event.getId());
+			eventService.manageFollowers(event);
+		} catch(Exception e) { TraceBackService.trace(response, e); }
 	}
 	
 	@Transactional
 	public void generateRecurrentEvents(ActionRequest request, ActionResponse response) throws AxelorException{
-		Long eventId = new Long(request.getContext().get("_idEvent").toString());
-		Event event = eventRepo.find(eventId);
-		RecurrenceConfiguration conf = request.getContext().asType(RecurrenceConfiguration.class);
-		RecurrenceConfigurationRepository confRepo = Beans.get(RecurrenceConfigurationRepository.class);
-		conf = confRepo.save(conf);
-		event.setRecurrenceConfiguration(conf);
-		event = eventRepo.save(event);
-		if(request.getContext().get("recurrenceType") == null){
-			throw new AxelorException(IException.CONFIGURATION_ERROR, IExceptionMessage.RECURRENCE_RECURRENCE_TYPE);
-		}
-		
-		int recurrenceType = new Integer(request.getContext().get("recurrenceType").toString());
-		
-		if(request.getContext().get("periodicity") == null){
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
-		}
-		
-		int periodicity = new Integer(request.getContext().get("periodicity").toString());
-		
-		if(periodicity < 1){
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
-		}
-		
-		boolean monday = (boolean)request.getContext().get("monday");
-		boolean tuesday = (boolean)request.getContext().get("tuesday");
-		boolean wednesday = (boolean)request.getContext().get("wednesday");
-		boolean thursday = (boolean)request.getContext().get("thursday");
-		boolean friday = (boolean)request.getContext().get("friday");
-		boolean saturday = (boolean)request.getContext().get("saturday");
-		boolean sunday = (boolean)request.getContext().get("sunday");
-		Map<Integer,Boolean> daysMap = new HashMap<Integer,Boolean>();
-		Map<Integer,Boolean> daysCheckedMap = new HashMap<Integer,Boolean>();
-		if(recurrenceType == 2){
-			daysMap.put(DayOfWeek.MONDAY.getValue(), monday);
-			daysMap.put(DayOfWeek.TUESDAY.getValue(), tuesday);
-			daysMap.put(DayOfWeek.WEDNESDAY.getValue(), wednesday);
-			daysMap.put(DayOfWeek.THURSDAY.getValue(), thursday);
-			daysMap.put(DayOfWeek.FRIDAY.getValue(), friday);
-			daysMap.put(DayOfWeek.SATURDAY.getValue(), saturday);
-			daysMap.put(DayOfWeek.SUNDAY.getValue(), sunday);
-			
-			for (Integer day : daysMap.keySet()) {
-				if(daysMap.get(day)){
-					daysCheckedMap.put(day, daysMap.get(day));
-				}
-			}
-			if(daysMap.isEmpty()){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_DAYS_CHECKED));
-			}
-		}
-		
-		int monthRepeatType = new Integer(request.getContext().get("monthRepeatType").toString());
-		
-		int endType = new Integer(request.getContext().get("endType").toString());
-		
-		int repetitionsNumber = 0;
-		
-		if(endType == 1 ){
-			if(request.getContext().get("repetitionsNumber") == null){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
-			}
-			
-			repetitionsNumber = new Integer(request.getContext().get("repetitionsNumber").toString());
-			
-			if(repetitionsNumber < 1){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
-			}
-		}
-		LocalDate endDate = LocalDate.now();
-		if(endType == 2){
-			if(request.getContext().get("endDate") == null){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
-			}
-			
-			endDate = LocalDate.parse(request.getContext().get("endDate").toString(), DateTimeFormatter.ISO_DATE);
-			
-			if(endDate.isBefore(event.getStartDateTime().toLocalDate()) && endDate.isEqual(event.getStartDateTime().toLocalDate())){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
-			}
-		}
-		switch (recurrenceType) {
-		case 1:
-			eventService.addRecurrentEventsByDays(event, periodicity, endType, repetitionsNumber, endDate);
-			break;
-		
-		case 2:
-			eventService.addRecurrentEventsByWeeks(event, periodicity, endType, repetitionsNumber, endDate, daysCheckedMap);
-			break;
-		
-		case 3:
-			eventService.addRecurrentEventsByMonths(event, periodicity, endType, repetitionsNumber, endDate, monthRepeatType);
-			break;
-		
-		case 4:
-			eventService.addRecurrentEventsByYears(event, periodicity, endType, repetitionsNumber, endDate);
-			break;
+		try{
+			Long eventId = (Long) request.getContext().get("id");
+			if(eventId == null)
+				throw new AxelorException(Event.class, IException.INCONSISTENCY, I18n.get(IExceptionMessage.EVENT_SAVED));
+			Event event = eventRepo.find(eventId);
 
-		default:
-			break;
-		}
-		
-		response.setCanClose(true);
-		response.setReload(true);
+			RecurrenceConfigurationRepository confRepo = Beans.get(RecurrenceConfigurationRepository.class);
+			RecurrenceConfiguration conf = event.getRecurrenceConfiguration();
+			if(conf != null) {
+				conf = confRepo.save(conf);
+				eventService.generateRecurrentEvents(event, conf);
+			}
+		} catch(Exception e) { TraceBackService.trace(response, e); }
 	}
+
 	@Transactional
 	public void deleteThis(ActionRequest request, ActionResponse response) throws AxelorException{
-		Long eventId = new Long(request.getContext().get("_idEvent").toString());
+		Long eventId = new Long(request.getContext().getParent().get("id").toString());
 		Event event = eventRepo.find(eventId);
 		Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
 		if(child != null){
@@ -402,7 +256,7 @@ public class EventController {
 	}
 	@Transactional
 	public void deleteNext(ActionRequest request, ActionResponse response) throws AxelorException{
-		Long eventId = new Long(request.getContext().get("_idEvent").toString());
+		Long eventId = new Long(request.getContext().getParent().get("id").toString());
 		Event event = eventRepo.find(eventId);
 		Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
 		while(child != null){
@@ -416,7 +270,7 @@ public class EventController {
 	}
 	@Transactional
 	public void deleteAll(ActionRequest request, ActionResponse response) throws AxelorException{
-		Long eventId = new Long(request.getContext().get("_idEvent").toString());
+		Long eventId = new Long(request.getContext().getParent().get("id").toString());
 		Event event = eventRepo.find(eventId);
 		Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
 		Event parent = event.getParentEvent();
@@ -437,7 +291,7 @@ public class EventController {
 	
 	@Transactional
 	public void changeAll(ActionRequest request, ActionResponse response) throws AxelorException{
-		Long eventId = new Long(request.getContext().get("_idEvent").toString());
+		Long eventId = new Long(request.getContext().getParent().get("id").toString());
 		Event event = eventRepo.find(eventId);
 		
 		Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
@@ -579,7 +433,7 @@ public class EventController {
 	
 	public void setCalendarDomain(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
-		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
 		if(calendarIdlist.isEmpty()){
 			response.setAttr("calendar", "domain", "self.id is null");
 		}
@@ -591,7 +445,7 @@ public class EventController {
 	public void checkRights(ActionRequest request, ActionResponse response){
 		Event event = request.getContext().asType(Event.class);
 		User user = AuthUtils.getUser();
-		List<Long> calendarIdlist = calendarService.showSharedCalendars(user);
+		List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
 		if(calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendar().getId())){
 			response.setAttr("calendarConfig", "readonly", "true");
 			response.setAttr("meetingGeneral", "readonly", "true");
@@ -603,6 +457,6 @@ public class EventController {
 	
 	public void changeCreator(ActionRequest request, ActionResponse response){
 		User user = AuthUtils.getUser();
-		response.setValue("organizer", calendarService.findOrCreateUser(user));
+		response.setValue("organizer", Beans.get(CalendarService.class).findOrCreateUser(user));
 	}
 }

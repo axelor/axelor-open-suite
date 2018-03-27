@@ -40,7 +40,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
+@Singleton
 public class LunchVoucherAdvanceController {
 	
 	@Inject
@@ -90,7 +92,7 @@ public class LunchVoucherAdvanceController {
 					.generate()
 					.getFileLink();
 	    	response.setView(ActionView.define(name).add("html", fileLink).map());
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 	    	TraceBackService.trace(response, e);
 		}
 	}

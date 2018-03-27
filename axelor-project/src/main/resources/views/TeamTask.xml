@@ -80,19 +80,16 @@
         </panel>
 
         <panel name="financialData" title="Financial Data" colSpan="12" sidebar="true" collapseIf="true">
-            <field name="product" form-view="product-form" grid-view="product-grid" colSpan="6"/>
+            <field name="product" form-view="product-form" grid-view="product-grid" colSpan="6" onChange="action-team-task-record-product-selected" domain="self.unit.unitTypeSelect=3"/>
             <field name="salePrice" colSpan="6"/>
             <field name="quantity" colSpan="6"/>
-            <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6"/>
+            <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="6" domain="self.unitTypeSelect=3"/>
 			<field name="currency" colSpan="6"/>
         </panel>
 
-		<panel title="Dependencies" canCollapse="true" sidebar="true">
-			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
-		</panel>
+		<panel-related field="finishToStartSet" canCollapse="true" sidebar="true">
+			<field name="name"/>
+		</panel-related>
 
 		<panel-mail>
 			<mail-messages/>
@@ -137,18 +134,61 @@
 
 		<node model="com.axelor.team.db.TeamTask" domain="self.id = :_id" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
-			<field name="assignedTo" as="assignedTo"/>
+			<field name="assignedTo.fullName" as="assignedTo"/>
 			<field name="progressSelect" as="progress" />
 		</node>    	
 		
 		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
-			<field name="assignedTo" as="assignedTo"/>
+			<field name="assignedTo.fullName" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 		</node>
 
 
 	</tree>
+	
+	<kanban name="team-task-kanban" columnBy="status" title="Tasks" limit="30" sequenceBy="sequence" onNew="action-task-defaults" model="com.axelor.team.db.TeamTask">
+		<field name="name"/>
+		<field name="status"/>
+		<field name="assignedTo"/>
+		<field name="taskDate"/>
+		<field name="taskDeadline"/>
+		<field name="priority"/>
+		<field name="progressSelect"/>
+		<hilite color="success" if="(taskDeadline == null || $moment(taskDeadline).diff(todayDate,'days') &gt;= 0) &amp;&amp; status != 'closed'"/>
+		<hilite color="danger" if="$moment(taskDeadline).diff(todayDate,'days') &lt; 0 &amp;&amp; status != 'closed'"/>
+		<hilite color="info" if="status == 'closed'"/>
+		<template>
+		<![CDATA[
+			<h4>{{name}}</h4>
+			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
+			<div class="card-body">
+				<div>
+					<i class="fa fa-calendar" aria-hidden="true"></i>
+					<span ng-if="!taskDeadline"> <span x-translate>Not specified</span> </span>
+					<span ng-if="$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day')"> <span x-translate>Deadline Yesterday</span> </span>
+					<span ng-if="$moment(taskDeadline).isSame($moment(), 'day')"> <span x-translate>Deadline Today</span> </span>
+					<span ng-if="$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day')"> <span x-translate>Deadline Tomorrow</span> </span>
+					<span ng-if="$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment().to($moment(taskDeadline), false) }}</span>
+					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
+					
+					<span class="label label-success pull-right" ng-if="priority == 'low'" x-translate>Low</span>
+					<span class="label label-info pull-right" ng-if="priority == 'normal'" x-translate>Normal</span>
+					<span class="label label-warning pull-right" ng-if="priority == 'high'" x-translate>High</span>
+					<span class="label label-important pull-right" ng-if="priority == 'urgent'" x-translate>Urgent</span>
+					
+				</div>
+				<div class="progress kanban-progress">
+					<span ng-if="progressSelect == 0">{{ progressSelect }}%</span>
+				  <div class="bar" style="width: {{ progressSelect }}%;">{{ progressSelect }}%</div>
+				</div>
+			</div>
+			<div class="card-footer">
+				<i class='fa fa-clock-o'></i> <span ng-if="taskDate">{{taskDate | date:'dd/MM/yyyy'}}</span><span ng-if="!taskDate" x-translate>Not specified</span>
+			</div>
+		]]>
+		</template>
+	</kanban>
 
 	<action-view name="action-team-task-view-task" title="Tasks" model="com.axelor.team.db.TeamTask">
     	<view type="form" name="team-task-form"/>
@@ -172,7 +212,6 @@
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
 	
-	
 	<action-record name="action-task-record-project-configurations" model="com.axelor.team.db.TeamTask">
 		<field name="projectCategory" expr="eval: null"/>
 		<field name="assignedTo" expr="eval: project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
@@ -183,6 +222,7 @@
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">
+		<field name="name" expr="eval: _value" if="_value"/>
 		<field name="assignedTo" expr="eval:__user__" />
 		<field name="priority" expr="normal" />
     	<field name="status" expr="new" />
@@ -240,6 +280,12 @@
 
 	<action-record name="action-team-task-record-status-canceled" model="com.axelor.team.db.TeamTask">
 		<field name="status" expr="canceled"/>
+	</action-record>
+
+	<action-record name="action-team-task-record-product-selected" model="com.axelor.team.db.TeamTask">
+		<field name="salePrice" expr="eval: product?.salePrice"/>
+		<field name="unit" expr="eval: product?.salesUnit ?: product?.unit"/>
+		<field name="currency" expr="eval: product?.saleCurrency"/>
 	</action-record>
 
 </object-views>

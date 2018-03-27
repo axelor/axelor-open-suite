@@ -71,3 +71,4 @@
 "Uninstall",,,
 "User field","Champ utilisateur",,
 "Write","Écriture",,
+"{{$fmt('name')}}",,,

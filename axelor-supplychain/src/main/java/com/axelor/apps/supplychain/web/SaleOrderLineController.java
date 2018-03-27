@@ -17,10 +17,14 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.StopReason;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
@@ -31,6 +35,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -43,9 +48,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import java.math.BigDecimal;
-
+@Singleton
 public class SaleOrderLineController {
 	
 	@Inject
@@ -102,7 +107,7 @@ public class SaleOrderLineController {
 					saleOrderLine.getProduct(),
 					qty
 			);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			response.setAlert(e.getLocalizedMessage());
 		}
 	}
@@ -130,7 +135,7 @@ public class SaleOrderLineController {
 			if (stockMoveLine != null) {
 				Beans.get(StockMoveLineSupplychainServiceImpl.class).updateReservedQty(stockMoveLine, newReservedQty);
 			}
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
@@ -144,6 +149,21 @@ public class SaleOrderLineController {
 	public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
         SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
         String domain = "self.isContact = false AND self.isSupplier = true";
+        Product product = saleOrderLine.getProduct();
+        if (product != null) {
+            List<Long> authorizedPartnerIdsList =
+					Beans.get(SaleOrderLineServiceSupplyChain.class)
+							.getSupplierPartnerList(saleOrderLine);
+            if (authorizedPartnerIdsList.isEmpty()) {
+				response.setAttr("supplierPartner", "domain", "self.id IN (0)");
+				return;
+			} else {
+            	domain += String.format(" AND self.id IN (%s)",
+						authorizedPartnerIdsList.stream()
+								.map(Object::toString)
+                                .collect(Collectors.joining(",")));
+			}
+		}
         SaleOrder saleOrder = saleOrderLine.getSaleOrder();
         if (saleOrder == null) {
         	Context parentContext = request.getContext().getParent();

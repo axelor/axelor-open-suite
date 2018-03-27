@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.talent.db;
 
+@Deprecated
 public class ITalent {
 	
 	/**

@@ -74,14 +74,11 @@ public class MoveLineService {
 	protected AccountManagementAccountService accountManagementService;
 	protected TaxAccountService taxAccountService;
 	protected FiscalPositionServiceAccountImpl fiscalPositionService;
-	protected LocalDate today;
 	protected AnalyticMoveLineService analyticMoveLineService;
 	protected AppAccountService appAccountService;
 	protected CurrencyService currencyService;
 	protected CompanyConfigService companyConfigService;
 
-
-	
 	@Inject
 	public MoveLineService(AccountManagementAccountService accountManagementService, TaxAccountService taxAccountService,
 			FiscalPositionServiceAccountImpl fiscalPositionService, AppAccountService appAccountService,
@@ -94,8 +91,6 @@ public class MoveLineService {
 		this.appAccountService = appAccountService;
 		this.currencyService = currencyService;
 		this.companyConfigService = companyConfigService;
-		
-		today = appAccountService.getTodayDate();
 	}
 	
 	
@@ -264,6 +259,8 @@ public class MoveLineService {
 				isDebitCustomer, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId(), null);
 		moveLines.add(moveLine1);
 		
+		AnalyticMoveLineRepository analyticMoveLineRepository = Beans.get(AnalyticMoveLineRepository.class);
+		
 		// Traitement des lignes de facture
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()){
 			
@@ -297,7 +294,7 @@ public class MoveLineService {
 					
 					if(invoiceLine.getAnalyticMoveLineList() != null)  {
 						for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
-							AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(invoiceAnalyticMoveLine, false);
+							AnalyticMoveLine analyticMoveLine = analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
 							analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 							analyticMoveLine.setInvoiceLine(null);
 							analyticMoveLine.setAccount(moveLine.getAccount());

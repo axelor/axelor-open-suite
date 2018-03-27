@@ -32,11 +32,10 @@ import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
-import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -103,7 +102,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 
                 if (saleOrder.getDeliveryState() == SaleOrderRepository.STATE_DELIVERED
                         && appSupplychain.getTerminateSaleOrderOnDelivery()) {
-                    Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
+                    Beans.get(SaleOrderWorkflowServiceImpl.class).finishSaleOrder(saleOrder);
                 }
             }
 
@@ -154,8 +153,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 			}
 		}
 
-		if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED  && Beans.get(AppSupplychainService.class).getAppSupplychain().getTerminateSaleOrderOnDelivery()){
-			so.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
+		if (so.getStatusSelect() == SaleOrderRepository.STATUS_FINISHED  && Beans.get(AppSupplychainService.class).getAppSupplychain().getTerminateSaleOrderOnDelivery()){
+			so.setStatusSelect(SaleOrderRepository.STATUS_CONFIRMED);
 		}
 		updateSaleOrderLines(stockMove, false);
 	}

@@ -49,7 +49,7 @@ public class MoveCreateService {
 	protected MoveRepository moveRepository;
 	protected CompanyConfigService companyConfigService;
 	
-	protected LocalDate today;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public MoveCreateService(AppAccountService appAccountService, PeriodService periodService, MoveRepository moveRepository, CompanyConfigService companyConfigService)  {
@@ -57,8 +57,8 @@ public class MoveCreateService {
 		this.periodService = periodService;
 		this.moveRepository = moveRepository;
 		this.companyConfigService = companyConfigService;
-		
-		today = appAccountService.getTodayDate();
+
+		this.appAccountService = appAccountService;
 
 	}
 
@@ -77,7 +77,7 @@ public class MoveCreateService {
 	 * @throws AxelorException
 	 */
 	public Move createMove(Journal journal, Company company, Currency currency, Partner partner, PaymentMode paymentMode, int technicalOriginSelect) throws AxelorException{
-		return this.createMove(journal, company, currency, partner, today, paymentMode, technicalOriginSelect);
+		return this.createMove(journal, company, currency, partner, appAccountService.getTodayDate(), paymentMode, technicalOriginSelect);
 	}
 
 

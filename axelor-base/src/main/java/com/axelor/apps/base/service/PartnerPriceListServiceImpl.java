@@ -40,11 +40,11 @@ import java.util.stream.Collectors;
 
 public class PartnerPriceListServiceImpl implements PartnerPriceListService {
 
-    protected LocalDate today;
+    protected AppBaseService appBaseService;
 
     @Inject
     public PartnerPriceListServiceImpl(AppBaseService appBaseService) {
-        this.today = appBaseService.getTodayDate();
+        this.appBaseService = appBaseService;
     }
 
     @Override
@@ -94,8 +94,8 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
             return null;
         }
         List<PriceList> priceLists = priceListSet.stream().filter(priceList ->
-                (priceList.getApplicationBeginDate() == null || priceList.getApplicationBeginDate().compareTo(today) <= 0)
-                        && (priceList.getApplicationEndDate() == null || priceList.getApplicationEndDate().compareTo(today) >= 0)
+                (priceList.getApplicationBeginDate() == null || priceList.getApplicationBeginDate().compareTo(appBaseService.getTodayDate()) <= 0)
+                        && (priceList.getApplicationEndDate() == null || priceList.getApplicationEndDate().compareTo(appBaseService.getTodayDate()) >= 0)
         ).collect(Collectors.toList());
         if (priceLists.size() == 1) {
             return priceLists.get(0);
@@ -123,8 +123,8 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
         List<PriceList> priceLists = partnerPriceLists.stream()
                 .flatMap(partnerPriceList1 -> partnerPriceList1.getPriceListSet().stream())
                 .filter(priceList -> priceList.getIsActive()
-                        && (priceList.getApplicationBeginDate() == null || priceList.getApplicationBeginDate().compareTo(today) <= 0)
-                        && (priceList.getApplicationEndDate() == null || priceList.getApplicationEndDate().compareTo(today) >= 0))
+                        && (priceList.getApplicationBeginDate() == null || priceList.getApplicationBeginDate().compareTo(appBaseService.getTodayDate()) <= 0)
+                        && (priceList.getApplicationEndDate() == null || priceList.getApplicationEndDate().compareTo(appBaseService.getTodayDate()) >= 0))
                 .collect(Collectors.toList());
         return "self.id IN (" + StringTool.getIdListString(priceLists) + ")";
     }

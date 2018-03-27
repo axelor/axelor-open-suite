@@ -38,10 +38,11 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class StockLocationServiceImpl implements StockLocationService {
 	
 	protected StockLocationRepository stockLocationRepo;
@@ -50,7 +51,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 	
 	protected ProductRepository productRepo;
 	
-	Set<Long> locationIdSet= new HashSet<>();
+	protected Set<Long> locationIdSet= new HashSet<>();
 
 	@Inject
 	public StockLocationServiceImpl(StockLocationRepository stockLocationRepo, StockLocationLineService stockLocationLineService, ProductRepository productRepo) {
@@ -64,7 +65,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 			StockConfigService stockConfigService = Beans.get(StockConfigService.class);
 			StockConfig stockConfig = stockConfigService.getStockConfig(company);
 			return stockConfig.getDefaultStockLocation();
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -81,7 +82,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 				if (!stockLocations.isEmpty()) {
 					BigDecimal qty = BigDecimal.ZERO;
 					for (StockLocation stockLocation : stockLocations) {
-						StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
+						StockLocationLine stockLocationLine = stockLocationLineService.getOrCreateStockLocationLine(stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 						
 						if (stockLocationLine != null) {
 							qty = qty.add(qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty());
@@ -90,7 +91,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 					return qty;
 				}
 			} else {
-				StockLocationLine stockLocationLine = stockLocationLineService.getStockLocationLine(stockLocationRepo.find(locationId), productRepo.find(productId));
+				StockLocationLine stockLocationLine = stockLocationLineService.getOrCreateStockLocationLine(stockLocationRepo.find(locationId), productRepo.find(productId));
 				
 				if (stockLocationLine != null) {
 					return qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty();
@@ -151,8 +152,10 @@ public class StockLocationServiceImpl implements StockLocationService {
 
 		List<Long> idList = new ArrayList<>();
 
+		StockRulesRepository stockRulesRepository = Beans.get(StockRulesRepository.class);
+		
 		for (StockLocationLine stockLocationLine : stockLocationLineList) {
-			StockRules stockRules = Beans.get(StockRulesRepository.class).all()
+			StockRules stockRules = stockRulesRepository.all()
 					.filter("self.stockLocation = ?1 AND self.product = ?2", stockLocationLine.getStockLocation(), stockLocationLine.getProduct()).fetchOne();
 			if (stockRules != null
 					&& stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
@@ -169,7 +172,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 	
 	private void findLocationIds(List<StockLocation> childStockLocations) {
 		
-		Long id = null;
+		Long id;
 		
 		childStockLocations = Beans.get(StockLocationRepository.class).all().filter("self.parentStockLocation IN ?", childStockLocations).fetch();
 			
@@ -199,7 +202,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 			locationIdSet.add(stockLocation.getId());
 			findLocationIds(stockLocations);
 		} else {
-			locationIdSet.add(0l);
+			locationIdSet.add(0L);
 		}
 		
 		return locationIdSet;

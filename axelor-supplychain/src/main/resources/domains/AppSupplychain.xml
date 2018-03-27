@@ -17,9 +17,12 @@
 		<boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery" default="false"/>
 		<boolean name="terminatePurchaseOrderOnReceipt" title="Terminate purchase order on Receipt" default="false"/>
 		
+        <boolean name="allowFinishManuallySaleOrder" title="Allow finish manually sale order"/>
+
 		<boolean name="purchaseOrderGenerationAuto" title="Generate purchase orders automatically" default="false"/>
 		
 		<boolean name="generateInvoiceFromSaleOrder" title="Generate invoice from sale order" default="false"/>
+		<boolean name="generateInvoiceFromPurchaseOrder" title="Generate invoice from purchase order" default="false"/>
 		<boolean name="allowTimetableInvoicing" title="Allow timetable invoicing" default="false"/>
 
 		<boolean name="intercoFromPurchase" title="Interco from purchase" default="false"/>
@@ -27,10 +30,10 @@
 		<boolean name="intercoFromInvoice" title="Interco from invoice" default="false"/>
 
 		<integer name="intercoPurchaseCreatingStatusSelect"
-				 title="Create sale counterpart on this status"
-				 selection="purchase.purchase.order.status.select"/>
-		<integer name="intercoSaleCreatingStatusSelect"
 				 title="Create purchase counterpart on this status"
+				 selection="purchase.purchase.order.status.select"/> 
+		<integer name="intercoSaleCreatingStatusSelect"
+				 title="Create sale counterpart on this status"
 				 selection="sale.order.status.select"/>
 		<boolean name="manageStockReservation" title="Manage stock reservation"/>
 		<many-to-one name="cancelReasonOnChangingSaleOrder" ref="com.axelor.apps.base.db.CancelReason"/>

@@ -18,24 +18,18 @@
 package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
-import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 
 public class BudgetService {
-	
-	@Inject
-	protected BudgetRepository budgetRepository;
 	
 	public BigDecimal compute(Budget budget){
 		BigDecimal total = BigDecimal.ZERO;

@@ -24,9 +24,15 @@ public abstract class BankOrderFile008Service extends BankOrderFileService {
 
     public static final String SEPA_TYPE_CORE = "CORE";
     public static final String SEPA_TYPE_SBB = "SBB";
+	protected static final String BIC_NOT_PROVIDED = "NOTPROVIDED"; 
+	protected static final String CURRENCY_CODE = "EUR";
+
 
     public BankOrderFile008Service(BankOrder bankOrder) {
         super(bankOrder);
+        
+		fileExtension = FILE_EXTENSION_XML;
+
     }
 
 }

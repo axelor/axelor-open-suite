@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="events-planning-line-grid" title="Events planning lines" editable="true" groupBy="year" orderBy="-date" model="com.axelor.apps.base.db.EventsPlanningLine">
+		<field name="year" hidden="true"/>
+		<field name="date" onChange="action-events-planning-line-record-year"/>
+		<field name="description"/>
+	</grid>
+	
+	<form name="events-planning-line-form" title="Events planning line" model="com.axelor.apps.base.db.EventsPlanningLine">
+		<panel name="main">
+			<field name="year" readonly="true"/>
+			<field name="date"/>
+			<field name="description"/>
+		</panel>
+	</form>
+	
+	<action-record name="action-events-planning-line-record-year" model="com.axelor.apps.base.db.EventsPlanningLine">
+		<field name="year" expr="eval: date.getYear()"/>
+	</action-record>
+	
+</object-views>

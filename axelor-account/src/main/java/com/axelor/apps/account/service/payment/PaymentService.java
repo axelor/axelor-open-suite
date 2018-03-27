@@ -53,14 +53,14 @@ public class PaymentService {
 	protected ReconcileService reconcileService;
 	protected MoveLineService moveLineService;
 
-	protected LocalDate today;
+	protected AppAccountService appAccountService;
 
 	@Inject
 	public PaymentService(AppAccountService appAccountService, ReconcileService reconcileService, MoveLineService moveLineService)  {
 		
 		this.reconcileService = reconcileService;
 		this.moveLineService = moveLineService;
-		today = appAccountService.getTodayDate();
+		this.appAccountService = appAccountService;
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class PaymentService {
 	public void useExcessPaymentOnMoveLinesDontThrow(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
 		try {
 			useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			TraceBackService.trace(e);
 			log.debug(e.getMessage());
 		}
@@ -109,9 +109,6 @@ public class PaymentService {
 
 			log.debug("Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
 				new Object[]{debitMoveLines.size(), creditMoveLines.size()});
-
-			BigDecimal amount;
-			Reconcile reconcile;
 
 			BigDecimal debitTotalRemaining = BigDecimal.ZERO;
 			BigDecimal creditTotalRemaining = BigDecimal.ZERO;
@@ -138,7 +135,7 @@ public class PaymentService {
 						if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
 							try {
 								createReconcile(debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
-							} catch(AxelorException e) {
+							} catch(Exception e) {
 								if(dontThrow) {
 									TraceBackService.trace(e);
 									log.debug(e.getMessage());
@@ -242,7 +239,7 @@ public class PaymentService {
 					debitMoveLine.getAccount(),
 					amountToPay,
 					false,
-					this.today,
+					appAccountService.getTodayDate(),
 					moveLineNo2,
 					invoiceName);
 			move.getMoveLineList().add(creditMoveLine);
@@ -285,7 +282,7 @@ public class PaymentService {
 					account,
 					remainingPaidAmount2,
 					false,
-					this.today,
+					appAccountService.getTodayDate(),
 					moveLineNo2,
 					null);
 

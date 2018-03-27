@@ -55,6 +55,7 @@
 	    <option value="2" icon="img/32px/consumeProduct.png">Consumed product</option>
 	    <option value="3" icon="img/32px/workCenter.png">Work center</option>
 	    <option value="4" icon="img/32px/indirectCost.png">Indirect cost</option>
+  	    <option value="5" icon="img/32px/consumeProductWaste.png">Consumed product waste</option>
 	</selection>
 	
 	<selection name="production.cost.sheet.group.cost.type.select">
@@ -71,5 +72,9 @@
 	<selection name="mrp.line.proposal.ref.select" id="production.mrp.line.proposal.ref.select">
 		<option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
 	</selection>
-	
+
+	<selection name="production.product.price.method.select">
+		<option value="1">Forecast</option>
+		<option value="2">Real</option>
+	</selection>
 </object-views>

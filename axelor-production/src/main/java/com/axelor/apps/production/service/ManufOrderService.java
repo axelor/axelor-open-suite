@@ -19,12 +19,15 @@ package com.axelor.apps.production.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -68,7 +71,22 @@ public interface ManufOrderService {
 	 */
 	public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException;
 
-	public ManufOrder updateQty(ManufOrder manufOrder);
+	/**
+	 * Update planned qty in {@link ManufOrder#toConsumeProdProductList}
+	 * and {@link ManufOrder#toProduceProdProductList}
+	 * @param manufOrder
+	 * @return
+	 */
+	void updatePlannedQty(ManufOrder manufOrder);
+
+	/**
+	 * Update real qty in {@link ManufOrder#consumedStockMoveLineList}
+	 * and {@link ManufOrder#producedStockMoveLineList}
+	 * @param manufOrder
+	 * @param qtyToUpdate
+	 * @return
+	 */
+	void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException;
 
 	/**
 	 * Updates the diff prod product list.
@@ -77,4 +95,50 @@ public interface ManufOrderService {
 	 * @throws AxelorException
 	 */
     ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException;
+
+	/**
+	 * Compute the difference between the two lists for the given manuf
+	 * order.
+	 * @param manufOrder
+	 * @param prodProductList
+	 * @param stockMoveLineList
+	 * @return a list of ProdProduct
+	 * @throws AxelorException
+	 */
+	List<ProdProduct> createDiffProdProductList(ManufOrder manufOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException;
+
+	/**
+	 * Compute the difference between the two lists.
+	 * @param prodProductList
+	 * @param stockMoveLineList
+	 * @return a list of ProdProduct
+	 * @throws AxelorException
+	 */
+	List<ProdProduct> createDiffProdProductList(List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException;
+
+	/**
+	 * On changing {@link ManufOrder#consumedStockMoveLineList},
+	 * we also update the stock move.
+	 *
+	 * @param manufOrder
+	 */
+	void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+	/**
+	 * On changing {@link ManufOrder#producedStockMoveLineList},
+	 * we also update the stock move.
+	 *
+	 * @param manufOrder
+	 */
+	void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder);
+
+	/**
+     * Compute {@link ManufOrder#diffConsumeProdProductList},
+	 * then add and remove lines to the stock move to match the stock move line list.
+	 * The list can be from manuf order or operation order.
+	 *
+	 * @param stockMoveLineList
+	 * @param stockMove
+	 */
+	void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove);
 }

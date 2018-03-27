@@ -17,14 +17,18 @@
 		</panel>
 		<panel>
 			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
+		</panel>
+		<panel title="Sale order">
 			<field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
 			<field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
+			<field name="allowSusbcriptionSaleOrder" widget="boolean-switch" colSpan="4"/>
+			<field name="allowTimetableInvoicing" widget="boolean-switch" colSpan="4"/>
+			<field name="checkSaleStocks" widget="boolean-switch" colSpan="4"/>
+			<field name="manageInvoicedAmountByLine" widget="boolean-switch" colSpan="4"/>
+            <field name="allowFinishManuallySaleOrder" widget="boolean-switch" colSpan="4"/>
 		</panel>
-		<panel>
-			<field name="allowSusbcriptionSaleOrder" widget="boolean-switch"/>
-			<field name="allowTimetableInvoicing" widget="boolean-switch"/>
-			<field name="checkSaleStocks" widget="boolean-switch"/>
-			<field name="manageInvoicedAmountByLine" widget="boolean-switch" />
+		<panel title="Purchase order">
+			<field name="generateInvoiceFromPurchaseOrder" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel title="Interco">
 			<field name="intercoFromPurchase" widget="boolean-switch"/>

@@ -18,13 +18,12 @@
 package com.axelor.apps.production.service.app;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
-import com.axelor.apps.sale.service.ConfiguratorService;
-import com.axelor.apps.sale.service.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;

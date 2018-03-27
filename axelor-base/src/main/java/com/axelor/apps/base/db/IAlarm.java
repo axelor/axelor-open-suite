@@ -20,6 +20,7 @@ package com.axelor.apps.base.db;
 /**
  * Interface of Alarm package. Enum all static variable of packages.
  */
+@Deprecated
 public interface IAlarm {
 
 	/**

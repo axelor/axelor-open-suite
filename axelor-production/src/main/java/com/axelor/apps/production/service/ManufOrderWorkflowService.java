@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.axelor.app.production.db.IManufOrder;
-import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
@@ -35,10 +28,19 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ManufOrderWorkflowService {
 	protected OperationOrderWorkflowService operationOrderWorkflowService;
@@ -46,23 +48,36 @@ public class ManufOrderWorkflowService {
 	protected ManufOrderStockMoveService manufOrderStockMoveService;
 	protected ManufOrderRepository manufOrderRepo;
 
-	protected LocalDateTime now;
 
 	@Inject
 	public ManufOrderWorkflowService(OperationOrderWorkflowService operationOrderWorkflowService, OperationOrderRepository operationOrderRepo,
-									 ManufOrderStockMoveService manufOrderStockMoveService, ManufOrderRepository manufOrderRepo,
-									 AppProductionService appProductionService) {
+									 ManufOrderStockMoveService manufOrderStockMoveService, ManufOrderRepository manufOrderRepo) {
 		this.operationOrderWorkflowService = operationOrderWorkflowService;
 		this.operationOrderRepo = operationOrderRepo;
 		this.manufOrderStockMoveService = manufOrderStockMoveService;
 		this.manufOrderRepo = manufOrderRepo;
 
-		now = appProductionService.getTodayDateTime().toLocalDateTime();
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
+		ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
+
+		if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
+			manufOrderService.preFillOperations(manufOrder);
+		}
+		if(!manufOrder.getIsConsProOnOperation() && CollectionUtils.isEmpty(manufOrder.getToConsumeProdProductList()))  {
+			manufOrderService.createToConsumeProdProductList(manufOrder);
+		}
+
+		if (CollectionUtils.isEmpty(manufOrder.getToProduceProdProductList())) {
+			manufOrderService.createToProduceProdProductList(manufOrder);
+		}
+
+		if (manufOrder.getPlannedStartDateT() == null) {
+			manufOrder.setPlannedStartDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+		}
 		if (manufOrder.getOperationOrderList() != null) {
 			for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
 				operationOrderWorkflowService.plan(operationOrder);
@@ -76,7 +91,7 @@ public class ManufOrderWorkflowService {
 		}
 
 		manufOrderStockMoveService.createToProduceStockMove(manufOrder);
-		manufOrder.setStatusSelect(IManufOrder.STATUS_PLANNED);
+		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
 		manufOrder.setManufOrderSeq(Beans.get(ManufOrderService.class).getManufOrderSeq());
 
 		return manufOrderRepo.save(manufOrder);
@@ -92,23 +107,46 @@ public class ManufOrderWorkflowService {
 				.getProductionConfig(manufOrder.getCompany())
 				.getStockMoveRealizeOrderSelect();
 		if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-			manufOrderStockMoveService.finishStockMove(manufOrder.getInStockMove());
+			manufOrder.addInStockMoveListItem(
+					realizeStockMovesAndCreateOneEmpty(manufOrder, manufOrder.getInStockMoveList())
+			);
+			manufOrder.addOutStockMoveListItem(
+					realizeStockMovesAndCreateOneEmpty(manufOrder, manufOrder.getOutStockMoveList())
+			);
 		}
-		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
+		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
 		manufOrderRepo.save(manufOrder);
+	}
+
+	/**
+     * Finish unfinished stock move, and create an empty one.
+	 * @param manufOrder
+	 * @param stockMoveList
+	 * @return  the created empty stock move.
+	 */
+	protected StockMove realizeStockMovesAndCreateOneEmpty(ManufOrder manufOrder, List<StockMove> stockMoveList) throws AxelorException {
+		for (StockMove stockMove : stockMoveList) {
+			manufOrderStockMoveService.finishStockMove(stockMove);
+		}
+
+		StockMove newStockMove = Beans.get(ManufOrderStockMoveService.class)
+				._createToConsumeStockMove(manufOrder, manufOrder.getCompany());
+		newStockMove.setStockMoveLineList(new ArrayList<>());
+		Beans.get(StockMoveService.class).plan(newStockMove);
+		return newStockMove;
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void pause(ManufOrder manufOrder) {
 		if (manufOrder.getOperationOrderList() != null) {
 			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-				if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_IN_PROGRESS) {
+				if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
 					operationOrderWorkflowService.pause(operationOrder);
 				}
 			}
 		}
 
-		manufOrder.setStatusSelect(IManufOrder.STATUS_STANDBY);
+		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_STANDBY);
 		manufOrderRepo.save(manufOrder);
 	}
 
@@ -116,13 +154,13 @@ public class ManufOrderWorkflowService {
 	public void resume(ManufOrder manufOrder) {
 		if (manufOrder.getOperationOrderList() != null) {
 			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-				if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_STANDBY) {
+				if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY) {
 					operationOrderWorkflowService.resume(operationOrder);
 				}
 			}
 		}
 
-		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
+		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
 		manufOrderRepo.save(manufOrder);
 	}
 
@@ -130,8 +168,8 @@ public class ManufOrderWorkflowService {
 	public void finish(ManufOrder manufOrder) throws AxelorException {
 		if (manufOrder.getOperationOrderList() != null) {
 			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-				if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_FINISHED) {
-					if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_IN_PROGRESS && operationOrder.getStatusSelect() != IOperationOrder.STATUS_STANDBY) {
+				if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
+					if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS && operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
 						operationOrderWorkflowService.start(operationOrder);
 					}
 
@@ -140,13 +178,20 @@ public class ManufOrderWorkflowService {
 			}
 		}
 
-		manufOrderStockMoveService.finish(manufOrder);
 		//create cost sheet
 		CostSheet costSheet = Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
 
 		//update price in product
         Product product = manufOrder.getProduct();
-		product.setLastProductionPrice(costSheet.getCostPrice());
+		if (product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_FORECAST) {
+		    product.setLastProductionPrice(manufOrder.getBillOfMaterial().getCostPrice());
+        } else if (product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_REAL) {
+			product.setLastProductionPrice(costSheet.getCostPrice());
+		} else {
+			//default value is forecast
+			product.setRealOrEstimatedPriceSelect(ProductRepository.PRICE_METHOD_FORECAST);
+			product.setLastProductionPrice(manufOrder.getBillOfMaterial().getCostPrice());
+		}
 
 		//update costprice in product
 		if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE){
@@ -156,23 +201,52 @@ public class ManufOrderWorkflowService {
 			}
 		}
 
+		manufOrderStockMoveService.finish(manufOrder);
 		manufOrder.setRealEndDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
-		manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
+		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
 		manufOrderRepo.save(manufOrder);
 	}
+
+	/**
+	 * Allows to finish partially a manufacturing order, by realizing current
+	 * stock move and planning the difference with the planned prodproducts.
+	 * @param manufOrder
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void partialFinish(ManufOrder manufOrder) throws AxelorException {
+		if (manufOrder.getIsConsProOnOperation()) {
+			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+				if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
+					operationOrderWorkflowService.start(operationOrder);
+				}
+			}
+		}
+		Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+        Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+    }
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(ManufOrder manufOrder) throws AxelorException {
 		if (manufOrder.getOperationOrderList() != null) {
 			for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-				if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_CANCELED) {
+				if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_CANCELED) {
 					operationOrderWorkflowService.cancel(operationOrder);
 				}
 			}
 		}
 
+
 		manufOrderStockMoveService.cancel(manufOrder);
-		manufOrder.setStatusSelect(IManufOrder.STATUS_CANCELED);
+
+		if (manufOrder.getConsumedStockMoveLineList() != null) {
+			manufOrder.getConsumedStockMoveLineList().forEach(stockMoveLine -> stockMoveLine.setConsumedManufOrder(null));
+		}
+		if (manufOrder.getProducedStockMoveLineList() != null) {
+			manufOrder.getProducedStockMoveLineList().forEach(stockMoveLine -> stockMoveLine.setProducedManufOrder(null));
+		}
+
+		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_CANCELED);
 		manufOrderRepo.save(manufOrder);
 	}
 	
@@ -196,7 +270,7 @@ public class ManufOrderWorkflowService {
 		int count = 0;
 		List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
 		for (OperationOrder operationOrderIt : operationOrderList) {
-			if(operationOrderIt.getStatusSelect() == IOperationOrder.STATUS_FINISHED){
+			if(operationOrderIt.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED){
 				count++;
 			}
 		}

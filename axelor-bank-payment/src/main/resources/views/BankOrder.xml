@@ -212,11 +212,11 @@
     		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
 			<button name="correct" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
-  		<panel sidebar="true" showIf="confirmationDateTime" itemSpan="12" readonly="true">
+  		<panel sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
   			<field name="fileGenerationDateTime" showIf="fileGenerationDateTime"/>
-  			<field name="validationDateTime" showIf="validationDateTime"/>
-  			<field name="sendingDateTime" showIf="sendingDateTime"/>
+  			<field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
+  			<field name="sendingDateTime" showIf="statusSelect == 4"/>
   		</panel>
 		<panel-mail>
 			<mail-messages limit="4"/>
@@ -275,10 +275,10 @@
     		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
 			<button name="correct" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
-  		<panel sidebar="true" showIf="confirmationDateTime" itemSpan="12" readonly="true">
+  		<panel sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
-  			<field name="validationDateTime" showIf="validationDateTime"/>
-  			<field name="sendingDateTime" showIf="sendingDateTime"/>
+  			<field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
+  			<field name="sendingDateTime" showIf="statusSelect == 4"/>
   		</panel>
     </form>
 	

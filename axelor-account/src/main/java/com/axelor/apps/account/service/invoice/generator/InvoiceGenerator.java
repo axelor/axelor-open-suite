@@ -23,8 +23,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.PartnerPriceListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +51,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -66,7 +65,6 @@ public abstract class InvoiceGenerator  {
 
 	protected JournalService journalService;
 
-	protected boolean months30days;
 	protected int operationType;
 	protected Company company;
 	protected PaymentCondition paymentCondition;
@@ -222,6 +220,9 @@ public abstract class InvoiceGenerator  {
 		invoice.setInternalReference(internalReference);
 
 		invoice.setExternalReference(externalReference);
+
+		invoice.setPrintingSettings(Beans.get(TradingNameService.class)
+				.getDefaultPrintingSettings(null, company));
 
 		// Set ATI mode on invoice
 		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);

@@ -19,14 +19,14 @@ package com.axelor.apps.base.exceptions;
 
 /**
  * Interface of Exceptions.
- * 
+ *
  * @author dubaux
- * 
+ *
  */
 public interface IExceptionMessage {
 
-	static final public String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
-	
+	static final String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
+
 	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correctly configured (%s)" /*)*/;
 
 	static final String RECORD_UNSAVED = /*$$(*/ "Unsaved record" /*)*/;
@@ -34,7 +34,7 @@ public interface IExceptionMessage {
 	/**
 	 * Currency service and controller
 	 */
-	
+
 	static final String CURRENCY_1 = /*$$(*/ "No currency conversion found from '%s' to '%s' for date %s" /*)*/ ;
 	static final String CURRENCY_2 = /*$$(*/ "The currency exchange rate from '%s' to '%s' for date %s must be different from zero." /*)*/ ;
 	static final String CURRENCY_3 = /*$$(*/ "WARNING : please close the current conversion period to create a new one." /*)*/ ;
@@ -48,27 +48,27 @@ public interface IExceptionMessage {
 	/**
 	 * Unit conversion service
 	 */
-	
+
 	static final String UNIT_CONVERSION_1 = /*$$(*/ "Please configure unit conversion from '%s' to '%s'." /*)*/ ;
 	static final String UNIT_CONVERSION_2 = /*$$(*/ "Please configure units." /*)*/ ;
-	
+
 	static final String CURRENCY_CONVERSION_1 = /*$$(*/ "WARNING : Please close the current conversion period before creating new one" /*)*/ ;
 	static final String CURRENCY_CONVERSION_2 = /*$$(*/ "WARNING : To Date must be after or equals to From Date" /*)*/ ;
-	
-	
+
+
 	/**
 	 * Account management service
 	 */
-	
+
 	static final public  String ACCOUNT_MANAGEMENT_1 = /*$$(*/ "Tax configuration is missing for Product: %s (company: %s)" /*)*/ ;
 	static final public  String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "No tax found for product %s" /*)*/ ;
 	static final public  String ACCOUNT_MANAGEMENT_3 = /*$$(*/ "Tax is missing for Product: %s (company: %s)" /*)*/ ;
 
-	
+
 	/**
 	 * Period service
 	 */
-	
+
 	static final public String PERIOD_1 = /*$$(*/ "No period found or it has been closed for the company %s" /*)*/ ;
 	static final public String PERIOD_2 = /*$$(*/ "Period closed" /*)*/ ;
 	static final String PAY_PERIOD_CLOSED = /*$$(*/ "Warning : the pay period %s is closed." /*)*/;
@@ -76,6 +76,7 @@ public interface IExceptionMessage {
 	 * Abstract batch
 	 */
 	String ABSTRACT_BATCH_1 =  /*$$(*/ "This batch is not runnable!" /*)*/;
+	String ABSTRACT_BATCH_2 =  /*$$(*/ "Nested batch execution!" /*)*/;
 	String ABSTRACT_BATCH_REPORT = /*$$(*/ "Batch report:" /*)*/;
 	String ABSTRACT_BATCH_DONE_SINGULAR = /*$$(*/ "%d record processed successfully," /*)*/;
 	String ABSTRACT_BATCH_DONE_PLURAL = /*$$(*/ "%d records processed successfully," /*)*/;
@@ -89,13 +90,13 @@ public interface IExceptionMessage {
 	static final public String INDICATOR_GENERATOR_GROUPING_3 = /*$$(*/ "Error while creating the file" /*)*/;
 	static final public String INDICATOR_GENERATOR_GROUPING_4 = /*$$(*/ "Result exported" /*)*/;
 	/**
-	 * Indicator generator service 
+	 * Indicator generator service
 	 */
 	static final public String INDICATOR_GENERATOR_1 = /*$$(*/ "Error : a request has to be set for the indicatior generator %s" /*)*/;
 	static final public String INDICATOR_GENERATOR_2 = /*$$(*/ "Error : incorrect request for the indicatior generator %s" /*)*/;
 	static final public String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
-	
-	
+
+
 	/**
 	 * Alarm engine batch service
 	 */
@@ -124,7 +125,7 @@ public interface IExceptionMessage {
 	static final public String IMPORTER_3 = /*$$(*/ "Error : Mapping file is not found." /*)*/;
 
 	/**
-	 * Importer Listener 
+	 * Importer Listener
 	 */
 	static final public String IMPORTER_LISTERNER_1 = /*$$(*/ "Total :" /*)*/;
 	static final public String IMPORTER_LISTERNER_2 = /*$$(*/ "- Succeeded :" /*)*/;
@@ -138,7 +139,7 @@ public interface IExceptionMessage {
 	static final public String TEMPLATE_MESSAGE_BASE_1 = /*$$(*/ "%s : Path to Birt template is incorrect" /*)*/;
 	static final public String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/ "Unable to generate Birt report file" /*)*/;
 
-	
+
 	/**
 	 * Querie Service and controller
 	 */
@@ -151,7 +152,7 @@ public interface IExceptionMessage {
 	 */
 	static final public String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 	static final public String TAX_2 = /*$$(*/ "Tax is missing" /*)*/;
-	
+
 	/**
 	 * Template rule service
 	 */
@@ -172,13 +173,13 @@ public interface IExceptionMessage {
 	static final public String ADDRESS_5 = /*$$(*/ "<B>%s</B> not found" /*)*/;
 	static final public String ADDRESS_6 = /*$$(*/ "Feature currently not available with Open Street Maps." /*)*/;
 	static final public String ADDRESS_7 = /*$$(*/ "Current user's partner delivery address not set" /*)*/;
-	
+
 	/**
 	 * Bank details controller
 	 */
 	static final public String BANK_DETAILS_1 = /*$$(*/ "The entered IBAN code is not valid . <br> Either the code doesn't respect the norm, or the format you have entered is not correct. It has to be without any blank space, as the following : <br> FR0000000000000000000000000" /*)*/;
 	static final public String BANK_DETAILS_2 = /*$$(*/ "At least one iban code you have entered for this partner is not valid. Here is the list of invalid codes : %s" /*)*/;
-	
+
 	/**
 	 * General controller
 	 */
@@ -189,20 +190,20 @@ public interface IExceptionMessage {
 	static final public String GENERAL_5 = /*$$(*/ "Export Object" /*)*/;
 	static final public String GENERAL_6 = /*$$(*/ "Connection successful" /*)*/;
 	static final public String GENERAL_7 = /*$$(*/ "Error in Connection" /*)*/;
-	
+
 	/**
-	 * Messsage controller 
+	 * Messsage controller
 	 */
 	static final public String MESSAGE_1 = /*$$(*/ "Error in print. Please check report configuration and print setting." /*)*/;
 	static final public String MESSAGE_2 = /*$$(*/ "Please select the Message(s) to print." /*)*/;
-	
+
 	/**
 	 * Partner controller
 	 */
 	static final public String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
 	static final public String PARTNER_2 = /*$$(*/ "%s SIRET Number required. Please configure SIRET Number for partner %s" /*)*/;
 	static final public String PARTNER_3 = /*$$(*/ "Can’t convert into an individual partner from scratch." /*)*/;
-	
+
 	/**
 	 * Product controller
 	 */
@@ -221,4 +222,26 @@ public interface IExceptionMessage {
 	 */
 	String PRICE_LIST_DATE_WRONG_ORDER = /*$$(*/ "The end date is before the begin date." /*)*/;
 	String PARTNER_PRICE_LIST_DATE_INCONSISTENT = /*$$(*/ "The price list %s will still be active when the price list %s will become active." /*)*/;
+
+	/**
+	 * Advanced export
+	 */
+	static final String ADVANCED_EXPORT_1 = /*$$(*/ "Please select fields for export." /*)*/;
+	static final String ADVANCED_EXPORT_2 = /*$$(*/ "There is no records to export." /*)*/;
+	
+		
+	/**
+	 * Barcode Generator Service
+	 */
+		
+	static final public String BARCODE_GENERATOR_1 =  /*$$(*/ "Invalid serial number '%s' for '%s' barcode type.It must be of %d digits only." /*)*/;
+	static final public String BARCODE_GENERATOR_2 =  /*$$(*/ "Invalid serial number '%s' for '%s' barcode type.It must be digits only with even number length." /*)*/;
+	static final public String BARCODE_GENERATOR_3 =  /*$$(*/ "Invalid serial number '%s' for '%s' barcode type.It must be digits only" /*)*/;
+	static final public String BARCODE_GENERATOR_4 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Alphabets must be in uppercase only" /*)*/;
+	static final public String BARCODE_GENERATOR_5 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Its length limit must be greater than %d and less than %d" /*)*/;
+	static final public String BARCODE_GENERATOR_6 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.It must be alphanumeric" /*)*/;
+
+    public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
+    public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/ "Google Maps API key is missing in configuration." /*)*/;;
+
 }

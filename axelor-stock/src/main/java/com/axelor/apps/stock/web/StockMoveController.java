@@ -19,6 +19,7 @@ package com.axelor.apps.stock.web;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,13 +29,14 @@ import java.util.Map;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -43,7 +45,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class StockMoveController {
 
 	@Inject
@@ -51,10 +55,6 @@ public class StockMoveController {
 	
 	@Inject
 	private StockMoveRepository stockMoveRepo;
-
-	@Inject
-	protected AppBaseService appBaseService;
-
 
 	public void plan(ActionRequest request, ActionResponse response) {
 
@@ -178,22 +178,41 @@ public class StockMoveController {
 		response.setCanClose(true);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
-		List<HashMap> stockMoveLines = (List<HashMap>) request.getContext().get("stockMoveLineList");
-		if(stockMoveLines == null){
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
-			return;
-		}
-		Integer splitQty = (Integer)request.getContext().get("splitQty");
-		if(splitQty != null && splitQty < 1){
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
-			return ;}
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public void splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
+    	try {
+	    	List<HashMap> selectedStockMoveLineMapList = (List<HashMap>) request.getContext().get("stockMoveLineList");
+	    	Map stockMoveMap = (Map<String, Object>) request.getContext().get("stockMove");
+			if(selectedStockMoveLineMapList == null){
+				response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
+				return;
+			}
 
-		Boolean selected = stockMoveService.splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
-		if(!selected){
-			response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
-		}
-		response.setCanClose(true);
+			List<StockMoveLine> stockMoveLineList = new ArrayList<>();
+			StockMoveLineRepository stockMoveLineRepo = Beans.get(StockMoveLineRepository.class);
+			for(HashMap map : selectedStockMoveLineMapList) {
+				StockMoveLine stockMoveLine =(StockMoveLine) Mapper.toBean(StockMoveLine.class, map);
+				stockMoveLineList.add(stockMoveLineRepo.find(stockMoveLine.getId()));
+			}
+
+			if(stockMoveLineList.isEmpty()){
+				response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
+				return;
+			}
+
+			BigDecimal splitQty = new BigDecimal(request.getContext().get("splitQty").toString());
+			if(splitQty == null || splitQty.compareTo(BigDecimal.ZERO) < 1){
+				response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
+				return;
+			}
+
+			StockMove stockMove = Mapper.toBean(StockMove.class, stockMoveMap);
+			stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+			stockMoveService.splitStockMoveLinesSpecial(stockMove, stockMoveLineList, splitQty);
+			response.setCanClose(true);
+    	} catch(Exception e) {
+    		TraceBackService.trace(response, e);
+    	}
 	}
 
 	public void shipReciveAllProducts(ActionRequest request, ActionResponse response) {
@@ -305,22 +324,37 @@ public class StockMoveController {
 	}
 
 	/**
-	 * Called on load from stock move form view and on trading name change.
-	 * Set the default value and the domain for {@link StockMove#printingSettings}
+	 * Called on printing settings select.
+	 * Set the the domain for {@link StockMove#printingSettings}
 	 * @param request
 	 * @param response
 	 */
 	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		PrintingSettings printingSettings = stockMove.getPrintingSettings();
 
 		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
-		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
-			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
-		}
 		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
 
-		response.setValue("printingSettings", printingSettings);
 		response.setAttr("printingSettings", "domain", domain);
+	}
+
+	/**
+	 * Called on trading name change.
+	 * Set the default value for {@link StockMove#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
+		try {
+			StockMove stockMove = request.getContext().asType(StockMove.class);
+			response.setValue("printingSettings",
+					Beans.get(TradingNameService.class).getDefaultPrintingSettings(
+							stockMove.getTradingName(),
+							stockMove.getCompany()
+					)
+			);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 }

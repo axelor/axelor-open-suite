@@ -37,7 +37,7 @@
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
 			<button name="cancel" title="Cancel" readonlyIf="statusSelect == 2" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
 		</panel>
-</form>
+	</form>
 
 	
 	<action-group name="action-invoice-payment-group-new">
@@ -62,11 +62,11 @@
 		<attribute for="currency" name="readonly"
 				   expr="eval: _invoice?.operationSubTypeSelect == 2"/>
 	</action-attrs>
-    
+
 	<action-method name="action-invoice-payment-method-new">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="filterPaymentMode"/>
 	</action-method>
-	
+
     <action-method name="action-invoice-payment-method-cancel">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="cancelInvoicePayment"/>
     </action-method>

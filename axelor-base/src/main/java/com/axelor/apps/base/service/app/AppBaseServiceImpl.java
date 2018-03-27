@@ -28,12 +28,13 @@ import javax.inject.Singleton;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -42,40 +43,36 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
 	public static final String EXCEPTION = "Warning !";
 
-	private static AppBaseServiceImpl INSTANCE;
-
-	@Inject
-	private AppBaseRepository appBaseRepo;
+	private long appBaseId;
 	
-
-	public static AppBaseServiceImpl get() {
+	private static AppBaseServiceImpl INSTANCE;
+	
+	protected static String DEFAULT_LOCALE = "en";
+	
+	@Inject
+	public AppBaseServiceImpl() {
+		try { appBaseId = Query.of(AppBase.class).fetchOne().getId(); }
+		catch(Exception e) { throw new RuntimeException("Base app is not initialized", e); }
+	}
+	
+	private static AppBaseServiceImpl get() {
 
 		if (INSTANCE == null) { INSTANCE = new AppBaseServiceImpl(); }
-
 		return INSTANCE;
 	}
 
-// Accesseur
 
-	/**
-	 * Récupérer l'administration générale
-	 *
-	 * @return
-	 */
 	@Override
 	public AppBase getAppBase() {
-		return appBaseRepo.all().fetchOne();
+		return Query.of(AppBase.class).filter("self.id = :id").bind("id", get().appBaseId).cacheable().fetchOne(); 
 	}
-
-// Date du jour
+	
 
 	/**
-	 * Récupérer la date du jour avec l'heure.
-	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
-	 * sinon récupère celle de l'administration générale,
-	 * sinon date du jour.
-	 * private
-	 * @return
+	 * Get the today date time
+	 * Get the value defined in User if not null,
+	 * Else get the valued defined in Base app
+	 * Else get the server current date time
 	 */
 	@Override
 	public ZonedDateTime getTodayDateTime(){
@@ -101,12 +98,10 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 	}
 
 	/**
-	 * Récupérer la date du jour.
-	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
-	 * sinon récupère celle de l'administration générale,
-	 * sinon date du jour.
-	 *
-	 * @return
+	 * Get the today date
+	 * Get the value defined in User if not null,
+	 * Else get the valued defined in Base app
+	 * Else get the server current date
 	 */
 	@Override
 	public LocalDate getTodayDate(){
@@ -115,9 +110,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
 	}
 
-
-
-// Log
 
 	@Override
 	public Unit getUnit(){
@@ -141,7 +133,20 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 			return appBase.getNbDecimalDigitForUnitPrice();
 		}
 
-		return IAdministration.DEFAULT_NB_DECIMAL_DIGITS;
+		return DEFAULT_NB_DECIMAL_DIGITS;
+	}
+	
+	@Override
+	public String getDefaultPartnerLanguageCode()  {
+		
+		AppBase appBase = getAppBase();
+		
+		if (appBase != null){
+			Language language = appBase.getDefaultPartnerLanguage();
+			if(language != null && !Strings.isNullOrEmpty(language.getCode()))  {  return language.getCode();  }
+		}
+		return DEFAULT_LOCALE;
+
 	}
 
 

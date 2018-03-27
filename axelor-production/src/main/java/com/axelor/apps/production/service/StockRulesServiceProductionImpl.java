@@ -21,16 +21,31 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.TemplateRepository;
+import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychainImpl {
-
+	
+	@Inject
+	public StockRulesServiceProductionImpl(StockRulesRepository stockRuleRepo, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, PurchaseOrderLineService purchaseOrderLineService, 
+			PurchaseOrderRepository purchaseOrderRepo, TemplateRepository templateRepo, TemplateMessageService templateMessageService, MessageRepository messageRepo) {
+		super(stockRuleRepo, purchaseOrderServiceSupplychainImpl, purchaseOrderLineService, 
+				purchaseOrderRepo, templateRepo, templateMessageService, messageRepo);
+		
+	}
+	
 	public void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException {
 		StockLocation stockLocation = stockLocationLine.getStockLocation();
 		if (stockLocation == null) {return;}

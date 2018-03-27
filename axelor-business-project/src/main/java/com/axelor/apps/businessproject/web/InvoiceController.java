@@ -46,7 +46,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class InvoiceController {
 	
 	@Inject
@@ -272,8 +274,8 @@ public class InvoiceController {
 								.context("_showRecord", String.valueOf(invoice.getId())).map());
 						response.setCanClose(true);
 					}
-				}catch(AxelorException ae){
-					response.setFlash(ae.getLocalizedMessage());
+				}catch(Exception e){
+					response.setFlash(e.getLocalizedMessage());
 				}
 			}
 			

@@ -1,4 +1,4 @@
-"importId";"code";"name";"type.importId";"excessPaymentOk";"editReceiptOk";"descriptionModel";"sequence.importId";"descriptionIdentificationOk";"notExportOk";"exportCode";"statusSelect";"company.importId"
+"importId";"code";"name";"journalType.importId";"excessPaymentOk";"editReceiptOk";"descriptionModel";"sequence.importId";"descriptionIdentificationOk";"notExportOk";"exportCode";"statusSelect";"company.importId"
 1;"SAL";"Sales";1;"false";"false";"Cust. Inv.";110;"true";"false";;1;1
 2;"CREF";"Refunds";2;"false";"false";"Cust. Refund";111;"true";"false";;1;1
 3;"PCH";"Purchases";4;"false";"false";"Suppl. Inv.";112;"true";"false";;1;1

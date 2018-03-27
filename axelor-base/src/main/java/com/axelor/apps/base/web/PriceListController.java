@@ -24,7 +24,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PriceListController {
 	
 	@Inject 
@@ -44,7 +46,7 @@ public class PriceListController {
 		PriceList priceList = request.getContext().asType(PriceList.class);
 		try {
 			priceListService.checkDates(priceList);
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 		    response.setError(e.getMessage());
 		}
 

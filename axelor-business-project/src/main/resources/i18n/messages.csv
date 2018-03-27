@@ -20,7 +20,6 @@
 "Comments",,,
 "Configurations",,,
 "Confirmed Orders Total",,,
-"Cost price",,,
 "Date",,,
 "Deadline",,,
 "Default Invoicing Product for Projects",,,
@@ -232,4 +231,5 @@
 "You haven't select any element to invoice",,,
 "You must add a sale order template",,,
 "You must select a project/task",,,
+"abp-Cost price",,,
 "value:Job costing",,,

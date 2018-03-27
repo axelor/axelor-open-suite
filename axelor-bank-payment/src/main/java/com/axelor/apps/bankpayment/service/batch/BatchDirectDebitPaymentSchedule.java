@@ -17,35 +17,26 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
+import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
-import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
@@ -57,11 +48,10 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.inject.persist.Transactional;
 
 public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
@@ -69,12 +59,12 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
     @Override
     protected void process() {
-        List<PaymentScheduleLine> paymentScheduleLineList = processPaymentScheduleLines(
-                PaymentScheduleRepository.TYPE_TERMS);
+        processPaymentScheduleLines(PaymentScheduleRepository.TYPE_TERMS);
 
-        if (!paymentScheduleLineList.isEmpty() && generateBankOrderFlag) {
+        if (batchBankPaymentService.paymentScheduleLineDoneListExists(batch) && generateBankOrderFlag) {
             try {
-                mergeBankOrders(paymentScheduleLineList);
+                findBatch();
+                batchBankPaymentService.mergeBankOrders(batch);
             } catch (AxelorException e) {
                 TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
                 logger.error(e.getLocalizedMessage());
@@ -82,20 +72,29 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
         }
     }
 
-    protected List<PaymentScheduleLine> processPaymentScheduleLines(int paymentScheduleType) {
+    protected void processPaymentScheduleLines(int paymentScheduleType) {
         AccountingBatch accountingBatch = batch.getAccountingBatch();
 
         if (generateBankOrderFlag) {
-            Preconditions.checkNotNull(accountingBatch.getCompany());
-            Preconditions.checkNotNull(accountingBatch.getCompany().getAccountConfig());
+            Preconditions.checkNotNull(accountingBatch.getCompany(), I18n.get("Company is missing."));
+            Preconditions.checkNotNull(accountingBatch.getCompany().getAccountConfig(),
+                    I18n.get("Company account config is missing."));
             Preconditions.checkArgument(
-                    !StringUtils.isBlank(accountingBatch.getCompany().getAccountConfig().getIcsNumber()));
-            Preconditions.checkNotNull(accountingBatch.getPaymentMode());
+                    !StringUtils.isBlank(accountingBatch.getCompany().getAccountConfig().getIcsNumber()),
+                    I18n.get("Company ICS number is missing."));
+            Preconditions.checkNotNull(accountingBatch.getPaymentMode(), I18n.get("Payment method is missing."));
+            BankDetails companyBankDetails = getCompanyBankDetails(accountingBatch);
             AccountManagement accountManagement = Beans.get(PaymentModeService.class).getAccountManagement(
-                    accountingBatch.getPaymentMode(), accountingBatch.getCompany(),
-                    getCompanyBankDetails(accountingBatch));
-            Preconditions.checkNotNull(accountManagement);
-            Preconditions.checkNotNull(accountManagement.getBankDetails());
+                    accountingBatch.getPaymentMode(), accountingBatch.getCompany(), companyBankDetails);
+            Preconditions.checkNotNull(accountManagement, I18n.get("Account management is missing."));
+            Preconditions.checkNotNull(accountManagement.getBankDetails(),
+                    I18n.get("Bank details in account management is missing."));
+            Preconditions.checkNotNull(companyBankDetails.getCurrency(),
+                    I18n.get("Currency in company bank details is missing."));
+            Preconditions.checkArgument(
+                    new File(accountingBatch.getPaymentMode().getBankOrderExportFolderPath()).exists(),
+                    String.format(I18n.get("Bank order export folder does not exist: %s"),
+                            accountingBatch.getPaymentMode().getBankOrderExportFolderPath()));
         }
 
         QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);
@@ -137,19 +136,15 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
             queryBuilder.bind("paymentMode", accountingBatch.getPaymentMode());
         }
 
-        return processQuery(queryBuilder);
+        queryBuilder.add(":batch NOT MEMBER OF self.batchSet");
+        queryBuilder.bind("batch", batch);
+
+        processQuery(queryBuilder);
     }
 
-    private List<PaymentScheduleLine> processQuery(QueryBuilder<PaymentScheduleLine> queryBuilder) {
-        List<PaymentScheduleLine> doneList = new ArrayList<>();
-
-        List<Long> anomalyList = Lists.newArrayList(0L);
-        queryBuilder.add("self.id NOT IN (:anomalyList)");
-        queryBuilder.bind("anomalyList", anomalyList);
-
+    private void processQuery(QueryBuilder<PaymentScheduleLine> queryBuilder) {
         Query<PaymentScheduleLine> query = queryBuilder.build();
 
-        Set<Long> treatedSet = new HashSet<>();
         List<PaymentScheduleLine> paymentScheduleLineList;
         PaymentScheduleService paymentScheduleService = Beans.get(PaymentScheduleService.class);
         PaymentScheduleLineService paymentScheduleLineService = Beans.get(PaymentScheduleLineService.class);
@@ -158,16 +153,18 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
         BankDetails companyBankDetails = getCompanyBankDetails(batch.getAccountingBatch());
 
         while (!(paymentScheduleLineList = query.fetch(FETCH_LIMIT)).isEmpty()) {
-            if (!JPA.em().contains(companyBankDetails)) {
-                companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
-            }
-
             for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
-                if (treatedSet.contains(paymentScheduleLine.getId())) {
-                    throw new IllegalArgumentException("Payment generation error");
+                if (!JPA.em().contains(batch)) {
+                    findBatch();
+                }
+                if (!JPA.em().contains(companyBankDetails)) {
+                    companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
+                }
+                if (!JPA.em().contains(paymentScheduleLine)) {
+                    paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
                 }
 
-                treatedSet.add(paymentScheduleLine.getId());
+                PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
 
                 try {
                     if (generateBankOrderFlag) {
@@ -177,18 +174,17 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                         if (directDebitPaymentMode
                                 .getOrderTypeSelect() == PaymentModeRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT) {
                             Partner partner = paymentSchedule.getPartner();
-                            Preconditions.checkNotNull(partner);
-                            Preconditions.checkNotNull(partner.getActiveUmr());
+                            Preconditions.checkNotNull(partner, I18n.get("Partner is missing."));
+                            Preconditions.checkNotNull(partner.getActiveUmr(),
+                                    I18n.get("Partner active UMR is missing."));
                         }
                     }
 
-                    paymentScheduleLineService.createPaymentMove(paymentScheduleLine, companyBankDetails);
-                    doneList.add(paymentScheduleLine);
-                    incrementDone();
+                    paymentScheduleLineService.createPaymentMove(paymentScheduleLine, companyBankDetails,
+                            directDebitPaymentMode);
+                    incrementDone(paymentScheduleLine);
                 } catch (Exception e) {
-                    incrementAnomaly();
-                    anomalyList.add(paymentScheduleLine.getId());
-                    query.bind("anomalyList", anomalyList);
+                    incrementAnomaly(paymentScheduleLine);
                     TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
                     logger.error(e.getMessage());
                 }
@@ -196,42 +192,24 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
             JPA.clear();
         }
-
-        PaymentScheduleLineRepository paymentScheduleLineRepo = Beans.get(PaymentScheduleLineRepository.class);
-        return doneList.stream().map(line -> paymentScheduleLineRepo.find(line.getId())).collect(Collectors.toList());
     }
 
-    /**
-     * Merge bank orders from a list of payment schedule lines.
-     * 
-     * @param paymentScheduleLineList
-     * @return
-     * @throws AxelorException
-     */
-    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
-    protected BankOrder mergeBankOrders(List<PaymentScheduleLine> paymentScheduleLineList) throws AxelorException {
-        BankOrderMergeService bankOrderMergeService = Beans.get(BankOrderMergeService.class);
-        ReconcileRepository reconcileRepo = Beans.get(ReconcileRepository.class);
-        InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
-        List<InvoicePayment> invoicePaymentList = new ArrayList<>();
-
-        for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
-            PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
-            MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
-
-            for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-                MoveLine debitMoveLine = moveService.getMoveLineService().getDebitCustomerMoveLine(invoice);
-                Reconcile reconcile = reconcileRepo.findByMoveLines(debitMoveLine, creditMoveLine);
-
-                if (reconcile == null) {
-                    continue;
-                }
-
-                invoicePaymentList.addAll(invoicePaymentRepo.findByReconcile(reconcile).fetch());
-            }
+    protected void incrementDone(PaymentScheduleLine paymentScheduleLine) {
+        findBatch();
+        if (!JPA.em().contains(paymentScheduleLine)) {
+            paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
         }
+        paymentScheduleLine.addBatchSetItem(batch);
+        _incrementDone();
+    }
 
-        return bankOrderMergeService.mergeFromInvoicePayments(invoicePaymentList);
+    protected void incrementAnomaly(PaymentScheduleLine paymentScheduleLine) {
+        findBatch();
+        if (!JPA.em().contains(paymentScheduleLine)) {
+            paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
+        }
+        paymentScheduleLine.addBatchSetItem(batch);
+        _incrementAnomaly();
     }
 
 }

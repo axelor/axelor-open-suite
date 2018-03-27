@@ -26,11 +26,12 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
 import java.math.BigDecimal;
 
-
+@Singleton
 public class PayVoucherElementController {
 
     private CurrencyService currencyService;
@@ -56,7 +57,7 @@ public class PayVoucherElementController {
                     elementToPay.getAmountToPay(),
                     elementToPay.getPaymentVoucher().getPaymentDate()
             );
-        } catch(AxelorException e) {
+        } catch(Exception e) {
             TraceBackService.trace(response, e);
         }
         if (amountToPayCurrency != null) {

@@ -24,8 +24,6 @@ import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.EmployeeBonusService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,9 +31,10 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class EmployeeBonusController {
-	
 	
 	@Inject
 	EmployeeBonusMgtRepository employeeBonusMgtRepo;
@@ -46,13 +45,14 @@ public class EmployeeBonusController {
 
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
 		EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
-		employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
-		employeeBonusService.compute(employeeBonusMgt);
-		response.setReload(true);
+		
 		try {
+			employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
+			employeeBonusService.compute(employeeBonusMgt);
+			response.setReload(true);
 			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getPayPeriod());
 			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getLeavePeriod());
-		} catch (AxelorException e) {
+		} catch (Exception e) {
 			response.setFlash(e.getMessage());
 		}
 	}

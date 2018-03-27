@@ -21,6 +21,7 @@ import javax.persistence.PersistenceException;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 
 public class InvoicePaymentManagementRepository extends InvoicePaymentRepository {
@@ -28,10 +29,10 @@ public class InvoicePaymentManagementRepository extends InvoicePaymentRepository
 	@Override
 	public InvoicePayment save(InvoicePayment invoicePayment) {
 		try {
-
 			Beans.get(InvoicePaymentValidateServiceImpl.class).validate(invoicePayment);
 			return super.save(invoicePayment);
 		} catch (Exception e) {
+			TraceBackService.trace(e);
 			throw new PersistenceException(e);
 		}
 	}

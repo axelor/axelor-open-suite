@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.service.TraceBackService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,12 +54,14 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
 import com.qas.web_2005_02.QAAddressType;
 import com.qas.web_2005_02.QAPicklistType;
 import com.qas.web_2005_02.VerifyLevelType;
 
+@Singleton
 public class AddressController {
 
 	@Inject
@@ -197,64 +201,71 @@ public class AddressController {
 	}
 
 	public void viewMap(ActionRequest request, ActionResponse response)  {
-		Address address = request.getContext().asType(Address.class);
-		address = addressService.checkLatLang(address,false);
-		BigDecimal latit = address.getLatit();
-		BigDecimal longit = address.getLongit();
-		BigDecimal zero = BigDecimal.ZERO;
-		if(zero.compareTo(latit) != 0 && zero.compareTo(longit) != 0){
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Map");
-			mapView.put("resource",  Beans.get(MapService.class).getMapUrl(latit, longit));
-			mapView.put("viewType", "html");
-			response.setView(mapView);
-		}
-		else
-			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),address.getFullName()));
-
-		response.setReload(true);
+        try {
+    		Address address = request.getContext().asType(Address.class);
+    		address = addressService.checkLatLang(address,false);
+    		BigDecimal latit = address.getLatit();
+    		BigDecimal longit = address.getLongit();
+    		BigDecimal zero = BigDecimal.ZERO;
+    		if(zero.compareTo(latit) != 0 && zero.compareTo(longit) != 0){
+    			Map<String,Object> mapView = new HashMap<>();
+    			mapView.put("title", "Map");
+    			mapView.put("resource",  Beans.get(MapService.class).getMapUrl(latit, longit));
+    			mapView.put("viewType", "html");
+    			response.setView(mapView);
+    		}
+    		else
+    			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),address.getFullName()));
+    
+    		response.setReload(true);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
 	}
 
 	public void viewDirection(ActionRequest request, ActionResponse response)  {
-		Partner currPartner = Beans.get(UserService.class).getUserPartner();
-		if(currPartner == null){
-			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
-			return;
-		}
-		if (appBaseService.getAppBase().getMapApiSelect() != IAdministration.MAP_API_GOOGLE) {
-			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
-			return;
-		}
-		Address departureAddress = Beans.get(PartnerService.class).getDeliveryAddress(currPartner);
-		if (departureAddress == null) {
-			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
-			return;
-		}
-		departureAddress = addressService.checkLatLang(departureAddress,false);
-		BigDecimal dLat = departureAddress.getLatit();
-		BigDecimal dLon = departureAddress.getLongit();
-		BigDecimal zero = BigDecimal.ZERO;
-		if(zero.compareTo(dLat) == 0 || zero.compareTo(dLat) == 0){
-			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),departureAddress.getFullName()));
-			return;
-		}
-
-		Address arrivalAddress = request.getContext().asType(Address.class);
-		arrivalAddress = addressService.checkLatLang(arrivalAddress,false);
-		BigDecimal aLat = arrivalAddress.getLatit();
-		BigDecimal aLon =  arrivalAddress.getLongit();
-		if(zero.compareTo(aLat) == 0 || zero.compareTo(aLat) == 0){
-			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),arrivalAddress.getFullName()));
-			return;
-		}
-
-		Map<String,Object> mapView = new HashMap<String,Object>();
-		mapView.put("title", "Map");
-		mapView.put("resource", Beans.get(MapService.class).getDirectionUrl(dLat, dLon, aLat, aLon));
-		mapView.put("viewType", "html");
-		response.setView(mapView);
-		response.setReload(true);
-
+        try {
+    		Partner currPartner = Beans.get(UserService.class).getUserPartner();
+    		if(currPartner == null){
+    			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
+    			return;
+    		}
+    		if (appBaseService.getAppBase().getMapApiSelect() != IAdministration.MAP_API_GOOGLE) {
+    			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
+    			return;
+    		}
+    		Address departureAddress = Beans.get(PartnerService.class).getDeliveryAddress(currPartner);
+    		if (departureAddress == null) {
+    			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
+    			return;
+    		}
+    		departureAddress = addressService.checkLatLang(departureAddress,false);
+    		BigDecimal dLat = departureAddress.getLatit();
+    		BigDecimal dLon = departureAddress.getLongit();
+    		BigDecimal zero = BigDecimal.ZERO;
+    		if(zero.compareTo(dLat) == 0 || zero.compareTo(dLat) == 0){
+    			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),departureAddress.getFullName()));
+    			return;
+    		}
+    
+    		Address arrivalAddress = request.getContext().asType(Address.class);
+    		arrivalAddress = addressService.checkLatLang(arrivalAddress,false);
+    		BigDecimal aLat = arrivalAddress.getLatit();
+    		BigDecimal aLon =  arrivalAddress.getLongit();
+    		if(zero.compareTo(aLat) == 0 || zero.compareTo(aLat) == 0){
+    			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),arrivalAddress.getFullName()));
+    			return;
+    		}
+    
+    		Map<String,Object> mapView = new HashMap<String,Object>();
+    		mapView.put("title", "Map");
+    		mapView.put("resource", Beans.get(MapService.class).getDirectionUrl(dLat, dLon, aLat, aLon));
+    		mapView.put("viewType", "html");
+    		response.setView(mapView);
+    		response.setReload(true);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
 	}
 
 	public void checkLatLang(ActionRequest request, ActionResponse response) {

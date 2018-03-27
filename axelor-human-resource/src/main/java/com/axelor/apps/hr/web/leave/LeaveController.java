@@ -53,8 +53,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class LeaveController {
 
 	@Inject
@@ -140,7 +142,7 @@ public class LeaveController {
 				.add("grid","leave-request-grid")
 				.add("form","leave-request-form");
 
-		actionView.domain("self.statusSelect = 3 OR self.statusSelect = 4");
+		actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
 
 		if(employee == null || !employee.getHrManager())  {
 			actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
@@ -162,13 +164,13 @@ public class LeaveController {
 
 		String domain = "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
 
-		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).bind("_activeCompany", activeCompany).count();
+		long nbLeaveRequests =  Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();
 
 		if(nbLeaveRequests == 0)  {
 			response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));
 		}
 		else  {
-			response.setView(actionView.domain(domain).context("_user", user).context("_activeCompany", activeCompany).map());
+			response.setView(actionView.domain(domain).context("_user", user).map());
 		}
 
 	}
@@ -194,7 +196,11 @@ public class LeaveController {
 			LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
 			leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
 
-			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO) < 0){
+			if(leaveRequest.getUser().getEmployee().getWeeklyPlanning() == null) {
+				response.setAlert(String.format(I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), leaveRequest.getUser().getEmployee().getName()));
+				return;
+			}
+			if(leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).compareTo(BigDecimal.ZERO ) < 0 ){
 				if(!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue() && !leaveService.willHaveEnoughDays(leaveRequest)){
 					String instruction = leaveRequest.getLeaveLine().getLeaveReason().getInstruction();
 					if (instruction == null) { instruction = ""; }

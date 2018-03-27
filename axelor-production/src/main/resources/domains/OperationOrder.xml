@@ -36,7 +36,7 @@
  	<datetime name="realStartDateT" title="Start date"/>
   	<datetime name="realEndDateT" title="End date"/>
     
-    <many-to-one name="inStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
+    <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
     
     <long name="plannedDuration" title="Planned duration"/>
     <long name="realDuration" title="Real duration"/>
@@ -54,6 +54,16 @@
     <string name="comments" title="Comments" large="true"/>
     
     <many-to-one name="barCode" ref="com.axelor.meta.db.MetaFile" title="Barcode" readonly="true"/>
-    
+
+	<extra-code><![CDATA[
+		// STATUS SELECT
+        public static final int STATUS_DRAFT = 1;
+        public static final int STATUS_CANCELED = 2;
+        public static final int STATUS_PLANNED = 3;
+        public static final int STATUS_IN_PROGRESS = 4;
+        public static final int STATUS_STANDBY = 5;
+        public static final int STATUS_FINISHED = 6;
+    ]]></extra-code>
+
   </entity>
 </domain-models>
