@@ -37,14 +37,20 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
+import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
@@ -64,7 +70,11 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	
 	@Inject
 	protected PurchaseProductService productService;
+	
+	@Inject
+	protected ProductMultipleQtyService productMultipleQtyService;
 
+	@Deprecated
 	private int sequence = 0;
 
 	/**
@@ -409,6 +419,37 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
 		SupplierCatalog supplierCatalog = getSupplierCatalog(purchaseOrder, purchaseOrderLine);
 		return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
+	}
+	
+	
+	public void checkMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionRequest request, ActionResponse response)  {
+		
+		BigDecimal minQty = this.getMinQty(purchaseOrder, purchaseOrderLine);
+
+		if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
+			String msg = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
+
+			if (request.getAction().endsWith("onchange")) {
+				response.setFlash(msg);
+			}
+			
+			String title = ContextTool.formatLabel(msg, ContextTool.SPAN_CLASS_WARNING, 75);
+
+			response.setAttr("minQtyNotRespectedLabel", "title", title);
+			response.setAttr("minQtyNotRespectedLabel", "hidden", false);
+		
+		} else {
+			response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+		}
+	}
+
+	public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response)  {
+		
+		Product product = purchaseOrderLine.getProduct();
+		
+		productMultipleQtyService.checkMultipleQty(
+				purchaseOrderLine.getQty(), product.getPurchaseProductMultipleQtyList(), product.getAllowToForcePurchaseQty(), response);
+		
 	}
 
 }

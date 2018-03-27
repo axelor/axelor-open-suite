@@ -15,29 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.base.db.ProductMultipleQty;
+import com.axelor.rpc.ActionResponse;
 
-public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
-    /**
-     * Compute undelivered quantity.
-     * 
-     * @param saleOrderLine
-     * @return
-     */
-    BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine);
+public interface ProductMultipleQtyService {
 
-    /**
-     * Get a list of supplier partner ids available for the product in the sale
-     * order line.
-     *
-     * @param saleOrderLine
-     * @return the list of ids
-     */
-    List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine);
+
+	public boolean checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties);
+	
+	public String toStringMultipleQty(List<ProductMultipleQty> productMultipleQties);
+	
+	public void checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties, boolean allowToForce, ActionResponse response);
+
+
 }

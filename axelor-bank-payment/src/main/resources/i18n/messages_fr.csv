@@ -183,6 +183,7 @@
 "Bank to Bank Transfers","Virements Banque à Banque",,
 "Bank to bank account for external order (multiple company)","Compte comptable pour les ordres bancaires (plusieurs sociétés)",,
 "Bank to bank account for internal order (unique company)","Compte comptable pour les ordres bancaires (une seule société)",,
+"BankStatement.Import","Importer",,
 "BankStatement.accountCurrency","Devise du compte :",,
 "BankStatement.bankAccount","Compte bancaire :",,
 "BankStatement.creationDateFrom","Date de création du",,

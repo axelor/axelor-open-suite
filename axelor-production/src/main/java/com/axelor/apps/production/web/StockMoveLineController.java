@@ -19,6 +19,7 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -54,6 +55,12 @@ public class StockMoveLineController {
                 } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
                     ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
                     company = manufOrder.getCompany();
+                } else if (parentContext.getContextClass().equals(OperationOrder.class)) {
+                    OperationOrder operationOrder = parentContext.asType(OperationOrder.class);
+                    if (operationOrder.getManufOrder() == null) {
+                        return;
+                    }
+                    company = operationOrder.getManufOrder().getCompany();
                 } else {
                     throw new AxelorException(IException.TECHNICAL,
                             IExceptionMessage.STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT);

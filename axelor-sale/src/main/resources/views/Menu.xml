@@ -69,9 +69,9 @@
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="25"
-		 title="Sale orders menu" action="sc.root.sale.orders" />
+		 title="Sale orders" action="sc.root.sale.orders"/>
 	
-	<action-view name="sc.root.sale.orders" title="Sale orders menu"
+	<action-view name="sc.root.sale.orders" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" >
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />

@@ -183,6 +183,7 @@
 "Bank to Bank Transfers",,,
 "Bank to bank account for external order (multiple company)",,,
 "Bank to bank account for internal order (unique company)",,,
+"BankStatement.Import",,,
 "BankStatement.accountCurrency",,,
 "BankStatement.bankAccount",,,
 "BankStatement.creationDateFrom",,,

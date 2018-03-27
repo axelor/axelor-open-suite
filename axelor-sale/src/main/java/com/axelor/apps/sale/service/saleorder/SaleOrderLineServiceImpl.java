@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -43,6 +44,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
@@ -58,6 +60,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 	@Inject
 	protected AppBaseService appBaseService;
+	
+	@Inject
+	protected ProductMultipleQtyService productMultipleQtyService;
 	
 
 	@Override
@@ -299,7 +304,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		
 		Context parentContext = context.getParent();
 		
-		if (!parentContext.get("_model").equals(SaleOrder.class.getName())) {
+		if(!parentContext.getContextClass().toString().equals(SaleOrder.class.toString())){
+
 			parentContext = parentContext.getParent();
 		}
 		
@@ -357,4 +363,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		//defined in supplychain
 		return BigDecimal.ZERO;
 	}
+	
+	public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response)  {
+		
+		Product product = saleOrderLine.getProduct();
+		
+		productMultipleQtyService.checkMultipleQty(
+				saleOrderLine.getQty(), product.getSaleProductMultipleQtyList(), product.getAllowToForceSaleQty(), response);
+		
+	}
+
 }
