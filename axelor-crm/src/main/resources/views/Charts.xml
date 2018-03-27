@@ -19,9 +19,12 @@
                 meta_select_item as selection_item ON selection_item.select_id = selection.id
             LEFT JOIN
                 meta_translation ON selection_item.select_id = selection.id
+            JOIN
+                auth_user AS _user
+                ON _user.id = :__user__
             WHERE
                 cast(selection_item.value as decimal) = self.sales_stage_select
-                AND message_key = selection_item.title AND language = 'fr'
+                AND message_key = selection_item.title AND meta_translation.language = _user.language
             GROUP BY
                 selection_item.id, message_value, message_key
             ORDER BY
@@ -46,9 +49,12 @@
 		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
             LEFT JOIN
                 meta_translation ON selection_item.select_id = selection.id
+            JOIN
+                auth_user AS _user
+                ON _user.id = :__user__
 			WHERE
 				cast(selection_item.value as decimal) = self.sales_stage_select AND self.sales_stage_select != 10		
-		        AND message_key = selection_item.title AND language = 'fr'
+		        AND message_key = selection_item.title AND meta_translation.language = _user.language
 		    GROUP BY
 			   selection_item.id, message_value, message_key
 			ORDER BY
@@ -73,9 +79,12 @@
 		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
             LEFT JOIN
                 meta_translation ON selection_item.select_id = selection.id
+            JOIN
+                auth_user AS _user
+                ON _user.id = :__user__
 			WHERE
 				cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
-                AND message_key = selection_item.title AND language = 'fr'
+                AND message_key = selection_item.title AND meta_translation.language = _user.language
 		    GROUP BY
 			   selection_item.id, message_value, message_key
 			ORDER BY
@@ -184,9 +193,12 @@
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
             LEFT JOIN
                 meta_translation ON selection_item.select_id = selection.id
+            JOIN
+                auth_user AS _user
+                ON _user.id = :__user__
 			WHERE
 				selection_item.value = cast(self.sales_stage_select as char)
-                AND message_key = selection_item.title AND language = 'fr'
+                AND message_key = selection_item.title AND meta_translation.language = _user.language
 			GROUP BY
 			    selection_item.id,
 			    src.name, message_value, message_key
@@ -214,6 +226,9 @@
 	 		meta_select_item as selection_item ON selection_item.select_id = selection.id
         LEFT JOIN
             meta_translation ON selection_item.select_id = selection.id
+        JOIN
+            auth_user AS _user
+            ON _user.id = :__user__
 		WHERE
 			selection_item.value = cast(self.sales_stage_select as char)
 		AND
@@ -221,7 +236,7 @@
 		AND 
     		self.sales_stage_select <9
         AND
-            message_key = selection_item.title AND language = 'fr'
+            message_key = selection_item.title AND meta_translation.language = _user.language
                 
 		GROUP BY
 			selection_item.id, pipeline, message_value, message_key
@@ -284,10 +299,13 @@
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
             LEFT JOIN
                 meta_translation ON selection_item.select_id = selection.id
+            JOIN
+                auth_user AS _user
+                ON _user.id = :__user__
 			WHERE
 				selection_item.value = cast(self.status_select as char)	AND
 				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
-                AND message_key = selection_item.title AND language = 'fr'
+                AND message_key = selection_item.title AND meta_translation.language = _user.language
 	    	GROUP BY
 			  	_status,
                 _team, message_value, message_key
@@ -321,10 +339,13 @@
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
             LEFT JOIN
                 meta_translation ON selection_item.select_id = selection.id
+            JOIN
+                auth_user AS _user
+                ON _user.id = :__user__
 			WHERE
 				selection_item.value = cast(self.status_select as char)	and sale_man.full_name != '' AND
 				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
-                AND message_key = selection_item.title AND meta_translation.language = 'fr'
+                AND message_key = selection_item.title AND meta_translation.language = _user.language
 	    	GROUP BY
 			  	_status,
                 _sale_man, message_value, message_key
@@ -365,8 +386,11 @@
                     AND _item.select_id = _selection.id
                 LEFT JOIN
                     meta_translation ON _item.select_id = _selection.id
+                JOIN
+	                auth_user AS _user
+	                ON _user.id = :__user__
                 WHERE
-                    message_key = _item.title AND meta_translation.language = 'fr'
+                    message_key = _item.title AND meta_translation.language = _user.language
                 GROUP BY
                     _item.value, message_value, message_key
                 ) AS _meta
@@ -413,8 +437,11 @@
 						AND _item.select_id = _selection.id
                     LEFT JOIN
                         meta_translation ON _item.select_id = _selection.id
+                    JOIN
+	                    auth_user AS _user
+	                    ON _user.id = :__user__
                     WHERE
-                        message_key = _item.title AND meta_translation.language = 'fr'
+                        message_key = _item.title AND meta_translation.language = _user.language
                     GROUP BY
                         _item.value, message_value, message_key
 					) AS _meta
@@ -461,8 +488,11 @@
 						AND _item.select_id = _selection.id
 					LEFT JOIN
                         meta_translation ON _item.select_id = _selection.id
+                    JOIN
+                        auth_user AS _user
+                        ON _user.id = :__user__
                     WHERE
-                        message_key = _item.title AND meta_translation.language = 'fr'
+                        message_key = _item.title AND meta_translation.language = _user.language
                     GROUP BY
                         _item.value, message_value, message_key
 					) AS _meta
@@ -509,8 +539,11 @@
 						AND _item.select_id = _selection.id
                     LEFT JOIN
                         meta_translation ON _item.select_id = _selection.id
+                    JOIN
+                        auth_user AS _user
+                        ON _user.id = :__user__
                     WHERE
-                        message_key = _item.title AND meta_translation.language = 'fr'
+                        message_key = _item.title AND meta_translation.language = _user.language
                     GROUP BY
                         _item.value, message_value, message_key
 					) AS _meta
@@ -607,10 +640,13 @@
 	      meta_select_item as selection_item  ON selection_item.select_id = selection.id
         LEFT JOIN
             meta_translation ON selection_item.select_id = selection.id
+        JOIN
+            auth_user AS _user
+            ON _user.id = :__user__
 	    WHERE
 	      self.status_select != 25    
 	      AND cast(selection_item.value as decimal) = self.status_select
-	      AND message_key = selection_item.title AND meta_translation.language = 'fr'
+	      AND message_key = selection_item.title AND meta_translation.language = _user.language
 	    GROUP BY
 	        _status,
 	        _sale_man, message_value, message_key
