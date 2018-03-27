@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.batch;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import java.time.LocalDate;
 import org.slf4j.Logger;

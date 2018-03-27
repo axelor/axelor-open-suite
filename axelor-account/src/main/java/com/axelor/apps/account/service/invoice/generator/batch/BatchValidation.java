@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator.batch;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

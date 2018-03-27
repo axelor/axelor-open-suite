@@ -19,7 +19,7 @@ package com.axelor.apps.helpdesk.web;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.helpdesk.service.TicketServiceImpl;
 import com.axelor.rpc.ActionRequest;

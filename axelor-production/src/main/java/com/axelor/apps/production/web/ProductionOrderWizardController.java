@@ -19,7 +19,7 @@ package com.axelor.apps.production.web;
 
 import java.math.BigDecimal;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
