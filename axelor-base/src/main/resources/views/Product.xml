@@ -318,6 +318,7 @@
     	<action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
 		<action name="action-product-attrs-set-cost-type-select"/>
 		<action name="action-product-record-set-barcode-type-config"/>
+		<action name="action-product-attrs-title-unit"/>
     </action-group>
     
     <action-group name="action-group-base-product-producttype-onchange">

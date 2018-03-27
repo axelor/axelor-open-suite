@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.suppliermanagement.service;
 
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -44,15 +53,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PurchaseOrderSupplierService {
 
@@ -160,7 +160,7 @@ public class PurchaseOrderSupplierService {
 	public void createPurchaseOrder(Partner supplierPartner, List<PurchaseOrderLine> purchaseOrderLineList, PurchaseOrder parentPurchaseOrder) throws AxelorException  {
 
 		LOG.debug("Création d'une commande fournisseur depuis le devis fournisseur : {} et le fournisseur : {}",
-				new Object[] { parentPurchaseOrder.getPurchaseOrderSeq(), supplierPartner.getFullName() });
+				parentPurchaseOrder.getPurchaseOrderSeq(), supplierPartner.getFullName());
 
 		PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
 				user,
@@ -170,7 +170,7 @@ public class PurchaseOrderSupplierService {
 				null,
 				parentPurchaseOrder.getPurchaseOrderSeq(),
 				parentPurchaseOrder.getExternalReference(),
-				Beans.get(StockLocationService.class).getDefaultStockLocation(parentPurchaseOrder.getCompany()),
+				Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(parentPurchaseOrder.getCompany()),
 				Beans.get(AppBaseService.class).getTodayDate(),
 				Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 				supplierPartner);

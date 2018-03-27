@@ -1,2 +1,2 @@
-"importId";"name";"code";"company.importId";"customerVirtualStockLocation.importId";"supplierVirtualStockLocation.importId";"inventoryVirtualStockLocation.importId";"customsWeightUnit.importId";"defaultStockLocation.importId"
-"1";"Axelor";"AXE";1;2;3;4;306;1
+"importId";"name";"code";"company.importId";"customerVirtualStockLocation.importId";"supplierVirtualStockLocation.importId";"inventoryVirtualStockLocation.importId";"customsWeightUnit.importId";"receiptDefaultStockLocation.importId";"pickupDefaultStockLocation.importId"
+"1";"Axelor";"AXE";1;2;3;4;306;1;1

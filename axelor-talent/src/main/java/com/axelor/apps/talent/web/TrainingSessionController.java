@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.talent.web;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;

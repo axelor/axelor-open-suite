@@ -20,7 +20,7 @@ package com.axelor.apps.talent.service;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;

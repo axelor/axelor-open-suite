@@ -30,7 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.persistence.Query;
 
 import org.apache.poi.ss.usermodel.Cell;

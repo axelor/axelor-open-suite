@@ -39,7 +39,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
