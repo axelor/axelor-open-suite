@@ -31,7 +31,6 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
-import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import org.apache.commons.codec.binary.Base64;
 
 import com.axelor.apps.account.db.Account;
@@ -60,10 +59,10 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -73,6 +72,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowParam;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
@@ -510,7 +510,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		Integer atiChoice = invoice.getCompany().getAccountConfig().getInvoiceInAtiSelect();
 		if (atiChoice == 1 || atiChoice == 3) {
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getUntaxedAmount(),
-					expenseLine.getUntaxedAmount(), expenseLine.getComments(), BigDecimal.ONE, product.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
+					expenseLine.getUntaxedAmount(), expenseLine.getComments(), BigDecimal.ONE, product.getUnit(), null, priority, BigDecimal.ZERO, PriceListLineRepository.AMOUNT_TYPE_NONE,
 					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), false) {
 
 				@Override
@@ -526,7 +526,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 			};
 		} else {
 			invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), expenseLine.getTotalAmount(),
-					expenseLine.getTotalAmount(), expenseLine.getComments(), BigDecimal.ONE, product.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
+					expenseLine.getTotalAmount(), expenseLine.getComments(), BigDecimal.ONE, product.getUnit(), null, priority, BigDecimal.ZERO, PriceListLineRepository.AMOUNT_TYPE_NONE,
 					expenseLine.getUntaxedAmount(), expenseLine.getTotalAmount(), false) {
 
 				@Override
