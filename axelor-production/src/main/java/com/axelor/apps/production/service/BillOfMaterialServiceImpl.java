@@ -76,7 +76,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 		    throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
 		}
 
-		product.setCostPrice(billOfMaterial.getCostPrice().divide(billOfMaterial.getQty()).setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+		product.setCostPrice(billOfMaterial.getCostPrice().divide(billOfMaterial.getQty(), Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 
 		Beans.get(ProductService.class).updateSalePrice(product);
 
@@ -118,14 +118,14 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 	
 	public int getLatestBillOfMaterialVersion(BillOfMaterial billOfMaterial, int latestVersion, boolean deep){
 		
-		List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
+		List<BillOfMaterial> billOfMaterialSet;
 		BillOfMaterial up = billOfMaterial;
-		Long previousId = Long.valueOf(0);
+		Long previousId = 0L;
 		do{
-			BillOfMaterialSet = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin AND self.id != :id").bind("origin", up).bind("id", previousId).order("-versionNumber").fetch();
-			if (!BillOfMaterialSet.isEmpty()){
-				latestVersion = (BillOfMaterialSet.get(0).getVersionNumber() > latestVersion) ? BillOfMaterialSet.get(0).getVersionNumber() : latestVersion;
-				for (BillOfMaterial billOfMaterialIterator : BillOfMaterialSet) {
+			billOfMaterialSet = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin AND self.id != :id").bind("origin", up).bind("id", previousId).order("-versionNumber").fetch();
+			if (!billOfMaterialSet.isEmpty()){
+				latestVersion = (billOfMaterialSet.get(0).getVersionNumber() > latestVersion) ? billOfMaterialSet.get(0).getVersionNumber() : latestVersion;
+				for (BillOfMaterial billOfMaterialIterator : billOfMaterialSet) {
 					int search = this.getLatestBillOfMaterialVersion(billOfMaterialIterator, latestVersion, false);
 					latestVersion = (search > latestVersion) ?  search : latestVersion;
 				}
@@ -158,17 +158,15 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 	@Override
 	public TempBomTree generateTree(BillOfMaterial billOfMaterial) {
 		
-		processedBom = new ArrayList<Long>();
+		processedBom = new ArrayList<>();
 
-		TempBomTree bomTree = getBomTree(billOfMaterial, null, null);
-		
-		return bomTree;
+		return getBomTree(billOfMaterial, null, null);
 	}
 	
 	@Transactional
 	public TempBomTree getBomTree(BillOfMaterial bom, BillOfMaterial parentBom, TempBomTree parent) {
 		
-		TempBomTree bomTree = null;
+		TempBomTree bomTree;
 		if (parentBom == null) {
 			bomTree = tempBomTreeRepo.all().filter("self.bom = ?1 and self.parentBom = null", bom).fetchOne();
 		}
@@ -192,7 +190,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 		
 		List<Long> validBomIds = processChildBom(bom, bomTree);
 		
-		validBomIds.add(new Long(0));
+		validBomIds.add(0L);
 		
 		removeInvalidTree(validBomIds, bom);
 			

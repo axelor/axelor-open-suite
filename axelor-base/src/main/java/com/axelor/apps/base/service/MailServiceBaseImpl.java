@@ -20,13 +20,19 @@ package com.axelor.apps.base.service;
 import static com.axelor.common.StringUtils.isBlank;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Singleton;
 import javax.mail.internet.InternetAddress;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -37,12 +43,19 @@ import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.mail.db.MailAddress;
+import com.axelor.mail.db.MailFollower;
+import com.axelor.mail.db.MailMessage;
+import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 
 @Singleton
-public class MailServiceBaseImpl extends MailServiceMessageImpl{
-	
+public class MailServiceBaseImpl extends MailServiceMessageImpl {
+	private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
 	@Override
 	public Model resolve(String email) {
 		final UserRepository users = Beans.get(UserRepository.class);
@@ -58,19 +71,19 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 		return super.resolve(email);
 	}
 
-	
 	@Override
 	public List<InternetAddress> findEmails(String matching, List<String> selected, int maxResult) {
-		
-		//Users
+
+		// Users
 		List<String> selectedWithoutNull = new ArrayList<String>(selected);
-		for (int i = 0; i < selected.size() ; i++) {
-			if(Strings.isNullOrEmpty(selected.get(i))) selectedWithoutNull.remove(i);
+		for (int i = 0; i < selected.size(); i++) {
+			if (Strings.isNullOrEmpty(selected.get(i)))
+				selectedWithoutNull.remove(i);
 		}
-		
+
 		final List<String> where = new ArrayList<>();
 		final Map<String, Object> params = new HashMap<>();
-		
+
 		where.add("((self.partner is not null AND self.partner.emailAddress is not null) OR (self.email is not null))");
 
 		if (!isBlank(matching)) {
@@ -93,27 +106,26 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 		final List<InternetAddress> addresses = new ArrayList<>();
 		for (User user : query.fetch(maxResult)) {
 			try {
-				if(user.getPartner().getEmailAddress() != null && !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())){
+				if (user.getPartner() != null && user.getPartner().getEmailAddress() != null && !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
 					final InternetAddress item = new InternetAddress(user.getPartner().getEmailAddress().getAddress(), user.getFullName());
 					addresses.add(item);
 					selectedWithoutNull.add(user.getPartner().getEmailAddress().getAddress());
-				}
-				else if(!Strings.isNullOrEmpty(user.getEmail())){
+				} else if (!Strings.isNullOrEmpty(user.getEmail())) {
 					final InternetAddress item = new InternetAddress(user.getEmail(), user.getFullName());
 					addresses.add(item);
 					selectedWithoutNull.add(user.getEmail());
 				}
-				
+
 			} catch (UnsupportedEncodingException e) {
 				TraceBackService.trace(e);
 			}
 		}
-		
-		//Partners
-		
+
+		// Partners
+
 		final List<String> where2 = new ArrayList<>();
 		final Map<String, Object> params2 = new HashMap<>();
-		
+
 		where2.add("self.emailAddress is not null");
 
 		if (!isBlank(matching)) {
@@ -135,7 +147,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 
 		for (Partner partner : query2.fetch(maxResult)) {
 			try {
-				if(partner.getEmailAddress() != null && !Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())){
+				if (partner.getEmailAddress() != null && !Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
 					final InternetAddress item = new InternetAddress(partner.getEmailAddress().getAddress(), partner.getFullName());
 					addresses.add(item);
 				}
@@ -145,6 +157,44 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl{
 		}
 
 		return addresses;
+	}
+
+	@Override
+	protected Set<String> recipients(MailMessage message, Model entity) {
+		final Set<String> recipients = new LinkedHashSet<>();
+		final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
+		String entityName = entity.getClass().getName();
+		PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
+
+		if (message.getRecipients() != null) {
+			for (MailAddress address : message.getRecipients()) {
+				recipients.add(address.getAddress());
+			}
+		}
+
+		for (MailFollower follower : followers.findAll(message)) {
+			if (follower.getArchived()) {
+				continue;
+			}
+			User user = follower.getUser();
+			if (user != null) {
+				if (!(user.getReceiveEmails() && user.getFollowedMetaModelSet().stream().anyMatch(x -> x.getFullName().equals(entityName)))) {
+					continue;
+				} else {
+					Partner partner = partnerRepo.findByUser(user);
+					recipients.add(partner.getEmailAddress().getAddress());
+				}
+			} else {
+
+				if (follower.getEmail() != null) {
+					recipients.add(follower.getEmail().getAddress());
+				} else {
+					log.info("No email address found for follower : " + follower);
+
+				}
+			}
+		}
+		return Sets.filter(recipients, Predicates.notNull());
 	}
 
 }

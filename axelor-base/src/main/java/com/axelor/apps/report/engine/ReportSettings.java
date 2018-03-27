@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.report.engine;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
-import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
-import com.beust.jcommander.internal.Maps;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,6 +30,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.beust.jcommander.internal.Maps;
+
 public class ReportSettings {
 	
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -56,7 +56,6 @@ public class ReportSettings {
 	public static String FORMAT_ODS = "ods";
 	public static String FORMAT_ODT = "odt";
 	public static String FORMAT_HTML = "html";
-	public static String DEFAULT_LOCALE = "en";
 
 	protected Map<String, Object> params = Maps.newHashMap();
 	
@@ -260,21 +259,13 @@ public class ReportSettings {
 	 * @return Partner language selected or User language if no partner is given. Otherwise, english.
 	 */
 	public static String getPrintingLocale(Partner partner) {
-	    String locale = null;
 
 	    if (partner != null) {
-	    	locale = partner.getLanguageSelect();
-	    	if (locale == null) {
-	    		locale = Beans.get(AppBaseService.class).getAppBase().getDefaultPartnerLanguage();
-			}
+	    	return Beans.get(PartnerService.class).getPartnerLanguageCode(partner);
 		}
 		else {
-			User user = AuthUtils.getUser();
-			if (user != null) {
-				locale = user.getLanguage();
-			}
+			return Beans.get(UserService.class).getLanguage();
 		}
-		return (locale == null ? DEFAULT_LOCALE : locale);
 	}
 
 }

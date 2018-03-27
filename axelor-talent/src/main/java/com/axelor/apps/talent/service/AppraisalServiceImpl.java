@@ -57,7 +57,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 	
 	@Transactional
 	@Override
-	public void send(Appraisal appraisal){
+	public void send(Appraisal appraisal) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException, MessagingException{
 		
 		Employee employee = appraisal.getEmployee();
 		
@@ -75,17 +75,12 @@ public class AppraisalServiceImpl implements AppraisalService {
 		}
 		
 		if (template != null && email != null) {
-			try {
-				Message message = templateMessageService.generateMessage(appraisal, template);
-				message.addToEmailAddressSetItem(email);
-				messageService.sendByEmail(message);
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | AxelorException
-					| IOException | MessagingException e) {
-				e.printStackTrace();
-			}
+			Message message = templateMessageService.generateMessage(appraisal, template);
+			message.addToEmailAddressSetItem(email);
+			messageService.sendByEmail(message);
 		}
 		
-		appraisal.setStatusSelect(1);
+		appraisal.setStatusSelect(AppraisalRepository.STATUS_SENT);
 		
 		appraisalRepo.save(appraisal);
 	}
@@ -94,7 +89,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 	@Override
 	public void realize(Appraisal appraisal) {
 		
-		appraisal.setStatusSelect(2);
+		appraisal.setStatusSelect(AppraisalRepository.STATUS_COMPLETED);
 		
 		appraisalRepo.save(appraisal);
 	}
@@ -104,7 +99,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 	@Override
 	public void cancel(Appraisal appraisal) {
 		
-		appraisal.setStatusSelect(3);
+		appraisal.setStatusSelect(AppraisalRepository.STATUS_CANCELED);
 		
 		appraisalRepo.save(appraisal);
 	}
@@ -113,7 +108,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 	@Override
 	public void draft(Appraisal appraisal) {
 		
-		appraisal.setStatusSelect(0);
+		appraisal.setStatusSelect(AppraisalRepository.STATUS_DRAFT);
 		
 		appraisalRepo.save(appraisal);
 	}
@@ -121,7 +116,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 	
 	@Transactional
 	@Override
-	public Set<Long> createAppraisals(Appraisal appraisalTemplate, Set<Employee> employees, Boolean send) {
+	public Set<Long> createAppraisals(Appraisal appraisalTemplate, Set<Employee> employees, Boolean send) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException, MessagingException {
 		
 		Set<Long> appraisalIds = new HashSet<Long>();
 		

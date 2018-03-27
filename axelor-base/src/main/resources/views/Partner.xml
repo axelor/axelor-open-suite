@@ -130,7 +130,7 @@
 					<field name="fullName" colSpan="9" showTitle="false">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
-							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4" placeholder="Partner Type"/>
+							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4" placeholder="Partner Type"/>
 							<spacer colSpan="8"/>
 							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="4"/>
 							<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="3"/>
@@ -232,7 +232,7 @@
 				</panel>
 				<panel name="settings" title="Settings" colSpan="12">
 					<field name="partnerSeq" colSpan="6"/>
-					<field name="languageSelect" colSpan="6"/>
+					<field name="language" colSpan="6" canEdit="false"/>
 					<panel title="Assigned to" colSpan="12">
 						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
@@ -323,7 +323,7 @@
 				<field name="name" css="highlight" onChange="action-partner-record-full-name"/>
 				<field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight" onChange="action-partner-record-full-name"/>
 				<field name="partnerCategory" widget="SuggestBox"/>
-				<field name="partnerTypeSelect" onChange="action-partner-attrs-change-name"/>
+				<field name="partnerTypeSelect" onChange="action-partner-partner-type-select-change"/>
 				<field name="isContact" hideIf="partnerTypeSelect != 2"/>
 				<spacer/>
 				<field name="mainPartner" hideIf="!isContact" form-view="partner-form" grid-view="partner-grid"/>
@@ -436,7 +436,7 @@
 		</panel-tabs>
 		<panel name="settings" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
-			<field name="languageSelect"/>
+			<field name="language" canEdit="false"/>
 			<panel title="Assigned to" canCollapse="true" colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
@@ -602,7 +602,7 @@
 		</panel-tabs>
 		<panel name="settings" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
-			<field name="languageSelect"/>
+			<field name="language" canEdit="false"/>
 			<panel title="Assigned to" canCollapse="true" colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
@@ -664,12 +664,19 @@
 		<attribute name="readonly" for="partnerSeq" expr="__config__.app.getApp('base').getGeneratePartnerSequence()"/>
 	</action-attrs>
 
-	<action-attrs name="action-partner-attrs-change-name">
-		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
-		<attribute name="title" for="name" expr="Nom" if="partnerTypeSelect == 2"/>
-		<attribute name="required" for="name" expr="true"/>
-		<attribute name="value" for="firstName" expr="eval:null" if="partnerTypeSelect != 2"/>
-	</action-attrs>
+    <action-attrs name="action-partner-attrs-change-name">
+        <attribute name="title" for="name" expr="Business name" if="partnerTypeSelect == __repo__(Partner).PARTNER_TYPE_COMPANY" />
+        <attribute name="title" for="name" expr="Name" if="partnerTypeSelect == __repo__(Partner).PARTNER_TYPE_INDIVIDUAL" />
+    </action-attrs>
+
+    <action-group name="action-partner-partner-type-select-change">
+        <action name="action-partner-attrs-change-name"/>
+        <action name="action-partner-empty-first-name" if="partnerTypeSelect != __repo__(Partner).PARTNER_TYPE_INDIVIDUAL" />
+    </action-group>
+
+    <action-record name="action-partner-empty-first-name" model="com.axelor.apps.base.db.Partner">
+        <field name="firstName" expr="eval: null" />
+    </action-record>
 
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
 		<attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
@@ -719,7 +726,7 @@
 		<field name="user"  expr="#{__user__}"/>
 		<field name="team"  expr="#{__user__.activeTeam}"/>
 		<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
-		<field name="languageSelect" expr="#{__config__.app.getApp('base').getDefaultPartnerLanguage()}" />
+		<field name="language" expr="#{__config__.app.getApp('base').getDefaultPartnerLanguage()}" />
 		<field name="isCustomer" expr="true" if="_isCustomer"/>
 		<field name="isSupplier" expr="true" if="_isSupplier"/>
 		<field name="isCarrier" expr="true" if="_isCarrier"/>
@@ -729,7 +736,7 @@
 		<field name="partnerTypeSelect" expr="#{2}" />
 		<field name="isContact" expr="#{true}"/>
 		<field name="companySet" expr="#{_parent.companySet}"/>
-		<field name="languageSelect" expr="#{_parent != null ? _parent.languageSelect : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
+		<field name="language" expr="#{_parent != null ? _parent.language : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
 		<field name="user"  expr="#{_parent.user}" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="team"  expr="#{_parent.team}" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
@@ -742,7 +749,7 @@
 		<field name="isContact" expr="#{false}"/>
 		<field name="isEmployee" expr="#{true}"/>
 		<field name="companySet" expr="#{_parent.companySet}"/>
-		<field name="languageSelect" expr="#{_parent != null ? _parent.languageSelect : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
+		<field name="language" expr="#{_parent != null ? _parent.language : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
 		<field name="user"  expr="#{_parent.user}" if="#{_parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="team"  expr="#{_parent.team}" if="#{_parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent?._model != 'com.axelor.apps.base.db.Partner'}"/>
@@ -768,7 +775,7 @@
 	</action-record>
 
 	<action-record name="action-partner-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
-		<field name="carrierPartner" expr="eval:freightCarrierMode.carrierPartner"/>
+		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
 	</action-record>
 
 	<action-record name="action-partner-record-set-payment-modes" model="com.axelor.apps.base.db.Partner" if-module="axelor-account">

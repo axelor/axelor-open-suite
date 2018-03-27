@@ -15,12 +15,10 @@
   	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Category"/>
   	
   	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
-  	<integer name="relatedToSelectId"/>
+    <long name="relatedToSelectId"/>
   	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>
     
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
-  	
-  	<one-to-many name="eventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="event" title="Attendees"/>
 	
 	<string name="calendarEventUid" title="UID (Calendar)"/>
 	
@@ -36,13 +34,13 @@
 <!-- Meeting -->
 	<many-to-one name="meetingType" ref="com.axelor.apps.crm.db.MeetingType" title="Meeting type"/>
 
-	<many-to-many name="internalGuestSet" ref="com.axelor.auth.db.User" title="Internal Guests"/>
-	<many-to-many name="externalGuestSet" ref="com.axelor.apps.base.db.Partner" title="External Guests"/>
-
 <!-- Task -->
   	<boolean name="isRecurrent" title="Recurrent"/>
   	<many-to-one name="parentEvent" ref="com.axelor.apps.crm.db.Event"/>
   	
+    <integer name="prioritySelect" title="Priority"
+        selection="crm.event.priority.select" default="2"/>
+
   	<many-to-one name="recurrenceConfiguration" ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
 	
   	<extra-code>
@@ -52,14 +50,13 @@
 	  		public static final Integer TYPE_MEETING = 2;
 	  		public static final Integer TYPE_TASK = 3;
 	  ]]>
-      </extra-code>
+    </extra-code>
       
-    <track>
+    <track subscribe="true">
       <field name="subject"/>
       <field name="startDateTime"/>
       <field name="endDateTime" on="UPDATE"/>
-      <field name="internalGuestSet"/>
-	   <field name="externalGuestSet"/>
+      <field name="computedAttendeeList"/>
     </track>
       
 

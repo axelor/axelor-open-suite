@@ -68,7 +68,6 @@ public class OperationOrderStockMoveService {
 			for(ProdProduct prodProduct: operationOrder.getToConsumeProdProductList()) {
 
 				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove);
-				stockMove.addStockMoveLineListItem(stockMoveLine);
 
 			}
 
@@ -106,8 +105,8 @@ public class OperationOrderStockMoveService {
 			fromStockLocation = stockConfigService.getDefaultStockLocation(stockConfig);
 		}
 
-		return stockMoveService.createStockMove(null, null, company, null, fromStockLocation, virtualStockLocation,
-				null, operationOrder.getPlannedStartDateT().toLocalDate(), null, null, null);
+		return stockMoveService.createStockMove(null, null, company, fromStockLocation, virtualStockLocation,
+				null, operationOrder.getPlannedStartDateT().toLocalDate(), null);
 
 	}
 
@@ -134,16 +133,14 @@ public class OperationOrderStockMoveService {
 		List<StockMove> stockMoveList = operationOrder.getInStockMoveList();
 
 		if(stockMoveList != null) {
-			List<StockMove> stockMoveToRealizeList = stockMoveList
-					.stream()
-					.filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
-							&& stockMove.getStockMoveLineList() != null)
-					.collect(Collectors.toList());
-            for (StockMove stockMove : stockMoveToRealizeList) {
-				stockMoveService.realize(stockMove);
+			//clear empty stock move
+			stockMoveList.removeIf(stockMove ->
+					CollectionUtils.isEmpty(stockMove.getStockMoveLineList()));
+
+			for (StockMove stockMove : stockMoveList) {
+				Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
 			}
 		}
-
 	}
 
 	/**
@@ -180,10 +177,9 @@ public class OperationOrderStockMoveService {
 		//generate new stock move
 
 		StockMove newStockMove = stockMoveService.createStockMove(
-				null, null, company, null,
+				null, null, company,
 				fromStockLocation, toStockLocation, null,
-				operationOrder.getPlannedStartDateT().toLocalDate(),
-				null, null, null
+				operationOrder.getPlannedStartDateT().toLocalDate(), null
 		);
 
 		newStockMove.setStockMoveLineList(new ArrayList<>());

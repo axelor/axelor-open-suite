@@ -45,7 +45,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -162,7 +161,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 			Address address = Beans.get(PartnerService.class).getDeliveryAddress(supplierPartner);
 
-			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(address, null, company, supplierPartner, startLocation, purchaseOrder.getStockLocation(), null, purchaseOrder.getDeliveryDate(), purchaseOrder.getNotes(), purchaseOrder.getShipmentMode(), purchaseOrder.getFreightCarrierMode());
+			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(address, null, company, supplierPartner, startLocation, purchaseOrder.getStockLocation(), null, 
+					purchaseOrder.getDeliveryDate(), purchaseOrder.getNotes(), purchaseOrder.getShipmentMode(), purchaseOrder.getFreightCarrierMode(), null, null, null);
 			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());

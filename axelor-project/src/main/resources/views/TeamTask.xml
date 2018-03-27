@@ -87,12 +87,9 @@
 			<field name="currency" colSpan="6"/>
         </panel>
 
-		<panel title="Dependencies" canCollapse="true" sidebar="true">
-			<field name="startToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToStartSet" colSpan="12" widget="TagSelect"/>
-			<field name="startToFinishSet" colSpan="12" widget="TagSelect"/>
-			<field name="finishToFinishSet" colSpan="12" widget="TagSelect"/>
-		</panel>
+		<panel-related field="finishToStartSet" canCollapse="true" sidebar="true">
+			<field name="name"/>
+		</panel-related>
 
 		<panel-mail>
 			<mail-messages/>
@@ -137,13 +134,13 @@
 
 		<node model="com.axelor.team.db.TeamTask" domain="self.id = :_id" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
-			<field name="assignedTo" as="assignedTo"/>
+			<field name="assignedTo.fullName" as="assignedTo"/>
 			<field name="progressSelect" as="progress" />
 		</node>    	
 		
 		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
-			<field name="assignedTo" as="assignedTo"/>
+			<field name="assignedTo.fullName" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 		</node>
 
@@ -158,24 +155,26 @@
 		<field name="taskDeadline"/>
 		<field name="priority"/>
 		<field name="progressSelect"/>
-		<hilite color="success" if="$moment(taskDeadline).diff(todayDate,'days') &gt; 7"/>
-		<hilite color="warning" if="$moment(taskDeadline).diff(todayDate,'days') &lt;= 7 &amp;&amp; $moment(taskDeadline).diff(todayDate,'days') &gt;= 0"/>
-		<hilite color="danger" if="$moment(taskDeadline).diff(todayDate,'days') &lt; 0"/>
+		<hilite color="success" if="(taskDeadline == null || $moment(taskDeadline).diff(todayDate,'days') &gt;= 0) &amp;&amp; status != 'closed'"/>
+		<hilite color="danger" if="$moment(taskDeadline).diff(todayDate,'days') &lt; 0 &amp;&amp; status != 'closed'"/>
+		<hilite color="info" if="status == 'closed'"/>
 		<template>
 		<![CDATA[
 			<h4>{{name}}</h4>
 			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
 			<div class="card-body">
-				<div>				
+				<div>
+					<i class="fa fa-calendar" aria-hidden="true"></i>
+					<span ng-if="!taskDeadline"> <span x-translate>Not specified</span> </span>
 					<span ng-if="$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day')"> <span x-translate>Deadline Yesterday</span> </span>
 					<span ng-if="$moment(taskDeadline).isSame($moment(), 'day')"> <span x-translate>Deadline Today</span> </span>
 					<span ng-if="$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day')"> <span x-translate>Deadline Tomorrow</span> </span>
 					<span ng-if="$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment().to($moment(taskDeadline), false) }}</span>
-					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')" > <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
+					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
 					
-					<span class="label label-info pull-right" ng-if="priority == 'low'" x-translate>Low</span>
-					<span class="label pull-right" ng-if="priority == 'normal'" x-translate>Normal</span>
-					<span class="label label-important pull-right" ng-if="priority == 'high'" x-translate>High</span>
+					<span class="label label-success pull-right" ng-if="priority == 'low'" x-translate>Low</span>
+					<span class="label label-info pull-right" ng-if="priority == 'normal'" x-translate>Normal</span>
+					<span class="label label-warning pull-right" ng-if="priority == 'high'" x-translate>High</span>
 					<span class="label label-important pull-right" ng-if="priority == 'urgent'" x-translate>Urgent</span>
 					
 				</div>

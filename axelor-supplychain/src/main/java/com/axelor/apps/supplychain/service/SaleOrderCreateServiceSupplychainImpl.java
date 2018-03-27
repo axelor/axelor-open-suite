@@ -103,7 +103,9 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 				);
 		}
 		
-		
+		saleOrder.setShipmentMode(clientPartner.getShipmentMode());
+		saleOrder.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
+
 		return saleOrder;
 	}
 	

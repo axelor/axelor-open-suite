@@ -17,10 +17,20 @@
  */
 package com.axelor.apps.production.web;
 
-import com.axelor.app.production.db.IManufOrder;
-import com.axelor.app.production.db.IOperationOrder;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
@@ -29,7 +39,6 @@ import com.axelor.apps.production.service.OperationOrderService;
 import com.axelor.apps.production.service.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -37,16 +46,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class OperationOrderController {
@@ -87,7 +86,7 @@ public class OperationOrderController {
 			OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
 
 			operationOrder = operationOrderRepo.find(operationOrder.getId());
-			if (operationOrder != null && operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED) {
+			if (operationOrder != null && operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
 				operationOrder = operationOrderWorkflowService.replan(operationOrder);
 				List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority >= ?2 AND self.statusSelect = 3 AND self.id != ?3",
 						operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("priority").order("plannedEndDateT").fetch();
@@ -106,7 +105,7 @@ public class OperationOrderController {
 			OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
 			if (operationOrder.getManufOrder() != null
 					&& operationOrder.getManufOrder().getStatusSelect() <
-					IManufOrder.STATUS_PLANNED) {
+					ManufOrderRepository.STATUS_PLANNED) {
 				return;
 			}
 			Beans.get(OperationOrderWorkflowService.class).plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()));
@@ -274,15 +273,20 @@ public class OperationOrderController {
 	}
 
 
-	public void updateDiffProdProductList(ActionRequest request, ActionResponse response) {
-		OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+	/**
+	 * Called from operation order form, on consumed stock move line change.
+	 * @param request
+	 * @param response
+	 */
+	public void updateConsumedStockMoveFromOperationOrder(ActionRequest request, ActionResponse response) {
 		try {
-		    Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
-			response.setValue("diffConsumeProdProductList", operationOrder.getDiffConsumeProdProductList());
-		} catch (AxelorException e) {
+			OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+			operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+			Beans.get(OperationOrderService.class).updateConsumedStockMoveFromOperationOrder(operationOrder);
+			response.setReload(true);
+		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
-
 }
 

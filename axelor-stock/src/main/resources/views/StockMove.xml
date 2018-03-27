@@ -82,7 +82,7 @@
         </menubar>
 
         <panel>
-            <panel colSpan="10">
+            <panel colSpan="9">
                 <panel itemSpan="12">
                     <field name="statusSelect" widget="NavSelect" showTitle="false"/>
                     <field name="stockMoveSeq" css="label-bold bold large" showTitle="false"/>
@@ -108,14 +108,15 @@
                     <field name="conformitySelect" showIf="!$readonly()" onChange="action-stock-move-method-change-conformity" readonlyIf="statusSelect &gt; 2"/>
 
                     <field name="cancelReason" colOffset="6" canView="false" showIf="cancelReason != null" readonly="true"/>
+                    <field name="isReversion" hidden="true" />
                 </panel>
             </panel>
 
-            <panel colSpan="2" itemSpan="12">
+            <panel colSpan="3" itemSpan="12">
                 <button name="plan" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
                 <button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
                 <button name="generateInvoice" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
-                <button name="generateReversion" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3"/>
+                <button name="generateReversion" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
                 <button name="cancel" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
                 <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
             </panel>
@@ -125,7 +126,7 @@
             <field name="partner" domain="self.isContact = false" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
             <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-update-info-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
             <field name="name" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-            <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-filter-printing-settings" canEdit="false" if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
+            <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-printing-settings-default-value" canEdit="false" if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
             <spacer if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
 
             <field name="fromStockLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
@@ -165,9 +166,13 @@
         <panel-related field="stockMoveLineList" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form"/>
 
         <panel-tabs>
-            <panel title="Freight Carrier">
-                <field name="shipmentMode" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
-                <field name="freightCarrierMode" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+            <panel title="Freight Carrier" readonlyIf="statusSelect == 3 || statusSelect == 4" >
+                <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
+				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
+                <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
+            	<field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false" />
+            	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
+                
                 <field name="trackingNumber" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
 
                 <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
@@ -200,7 +205,7 @@
                 <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="sale-order-grid" form-view="sale-order-form"/>
                 <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-grid" form-view="purchase-order-form"/>
                 <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="invoice-grid" form-view="invoice-form"/>
-                <field name="printingSettings" required="true" canEdit="false"/>
+                <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
             </panel>
         </panel-tabs>
     </form>
@@ -268,13 +273,14 @@
     <action-group name="action-group-stock-stockmove-onnew">
     	<action name="action-stock-move-record-new"/>
     	<action name="action-stock-move-attrs-typeselect-change"/>
+        <action name="action-stock-move-generate-invoice-button"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
     </action-group>
 
     <action-group name="action-group-stock-stockmove-onload">
         <action name="action-stock-move-attrs-typeselect-change"/>
+        <action name="action-stock-move-generate-invoice-button"/>
         <action name="action-stock-move-hide-reserved-qty"/>
-		<action name="action-stock-move-method-filter-printing-settings"/>
     </action-group>
     
 	<action-group name="action-group-stock-stockmove-plan-click">
@@ -310,19 +316,25 @@
 		<action name="action-stock-move-record-partner-delivery-informations"/>
         <action name="action-stock-move-record-auto-mail"/>
 		<action name="action-stock-move-record-ispm-field"/>
+	   	<action name="action-stock-move-record-partner-shipment-informations"/>
 	</action-group>
 
      <action-attrs name="action-stock-move-attrs-typeselect-change">
     	<attribute name="title" for="stockMoveInformation" expr="eval: com.axelor.i18n.I18n.get('Internal move information')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveInformation" expr="eval: com.axelor.i18n.I18n.get('Outgoing move information')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveInformation" expr="eval: com.axelor.i18n.I18n.get('Incoming move information')" if="typeSelect == 3"/>
-    	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move line')" if="typeSelect == 1"/>
-    	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move line')" if="typeSelect == 2"/>
-    	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move line')" if="typeSelect == 3"/>
+    	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move lines')" if="typeSelect == 1"/>
+    	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move lines')" if="typeSelect == 2"/>
+    	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move lines')" if="typeSelect == 3"/>
     	<attribute name="hidden" for="stockMoveLineList.unitPriceUntaxed" expr="eval: saleOrder?.inAti"/>
     	<attribute name="hidden" for="stockMoveLineList.unitPriceTaxed" expr="eval: !saleOrder?.inAti"/>
     </action-attrs>
-    
+
+    <action-attrs name="action-stock-move-generate-invoice-button">
+        <attribute name="title" for="generateInvoice" expr="eval: com.axelor.i18n.I18n.get('Generate refund')"
+            if="isReversion" />
+    </action-attrs>
+
     <action-attrs name="action-stock-move-attrs-domain-address">
 		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
 		<attribute name="domain" for="toAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
@@ -399,11 +411,11 @@
 	</action-method>
 	
 	<action-method name="action-supply-chain-method-update-so-on-cancel" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateSaleOrderOnCancel" if="__config__.app.isApp('supplychain')" />
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateSaleOrderOnCancel"/>
 	</action-method>
 	
 	<action-method name="action-supply-chain-method-update-po-on-cancel" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updatePurchaseOrderOnCancel" if="__config__.app.isApp('supplychain')"  />
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updatePurchaseOrderOnCancel"/>
 	</action-method>
 	
 	<action-method name="action-print-stock-move">
@@ -537,8 +549,23 @@
 		<field name="printingSettings" expr="eval: company?.printingSettings"/>
 	</action-record>
 
+	<action-method name="action-stock-move-method-printing-settings-default-value">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="fillDefaultPrintingSettings"/>
+	</action-method>
+
 	<action-method name="action-stock-move-method-filter-printing-settings">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="filterPrintingSettings"/>
 	</action-method>
+	
+	<action-record name="action-stock-move-record-freight-carrier" model="com.axelor.apps.stock.db.StockMove">
+		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-partner-shipment-informations" model="com.axelor.apps.stock.db.StockMove">
+		<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
+    	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
+		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
+	</action-record>
+		
 
 </object-views>

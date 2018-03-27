@@ -563,11 +563,15 @@ public interface IExceptionMessage {
 	static final String DEPOSIT_SLIP_CANNOT_DELETE = /*$$(*/ "You cannot delete this deposit slip." /*)*/;
 	static final String DEPOSIT_SLIP_ALREADY_PUBLISHED = /*$$(*/ "The deposit slip has already been published." /*)*/;
 	static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/ "Unsupported payment mode type" /*)*/;;
-    static final String DEPOSIT_SLIP_MISSING_CHEQUE_INFORMATION = /*$$(*/ "Missing cheque information on payment %s" /*)*/;;
 
     /*
      * Partner
      */
     String PARTNER_BANK_DETAILS_MISSING = /*$$(*/ "Bank details are missing for partner %s." /*)*/;
 
+    /*
+     * Invoice printing
+     */
+    String INVOICE_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on invoice %s." /*)*/;
+	String INVOICES_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on following invoices: %s" /*)*/;
 }

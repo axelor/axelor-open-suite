@@ -6,7 +6,7 @@
    <grid name="vehicle-model-grid" title="Vehicle Model" model="com.axelor.apps.fleet.db.VehicleModel">
    		<field name="vehicleMake"/>
    		<field name="model"/>
-   		<field name="vehicleVendors"/>
+        <field name="vehicleVendorsSet"/>
    </grid>
   
    <form name="vehicle-model-form" title="Vehicle Model" model="com.axelor.apps.fleet.db.VehicleModel"  width="large">

@@ -21,7 +21,7 @@
 		    	<field name="defaultPartnerLanguage" />
 				<field name="enableTradingNamesManagement" widget="boolean-switch"/>
 		    	<field name="activateSendingEmail" widget="boolean-switch"/>
-		    	<field name="mailAccountByUser" widget="boolean-switch"/>
+		    	<field name="emailAccountByUser" widget="boolean-switch"/>
 		    	<field name="productInAtiSelect"/>
 		    	<field name="nbDecimalDigitForUnitPrice"/>
 		    	<field name="computeMethodDiscountSelect"/>
@@ -31,7 +31,11 @@
 		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="teamManagement" widget="boolean-switch"/>
-		    	<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
+		    	<panel name="productBarCode" title="Product BarCode">
+		    		<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
+		    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>
+     			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="editProductBarcodeType==false"/>
+				</panel>
 				<field name="generateProductSequence" widget="boolean-switch"/>
 				<field name="manageProductVariants" widget="boolean-switch"/>
 				<field name="manageMultiBanks" widget="boolean-switch"/>
@@ -41,8 +45,8 @@
 		    <panel name="interfaces" title="Interfaces"  colSpan="12">
 				<panel name="map" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
-					<button name="checkMapApi" title="Test mapping service connection"   onClick="com.axelor.apps.base.web.AppBaseController:checkMapApi"/>
-					<field name="googleMapApiKey"/>
+					<button name="checkMapApi" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi"/>
+					<field name="googleMapsApiKey"/>
 				</panel>
 				<panel name="qas" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>

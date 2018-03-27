@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -50,6 +51,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.ShipmentMode;
@@ -153,8 +155,63 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 
 	@Override
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, StockLocation fromStockLocation, StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode) throws AxelorException {
+	/**
+	 * Generic method to create any stock move
+	 * 
+	 * @param fromAddress
+	 * @param toAddress
+	 * @param company
+	 * @param clientPartner
+	 * @param fromStockLocation
+	 * @param toStockLocation
+	 * @param realDate
+	 * @param estimatedDate
+	 * @param description
+	 * @param shipmentMode
+	 * @param freightCarrierMode
+	 * @param carrierPartner
+	 * @param forwarderPartner
+	 * @param incoterm
+	 * @return
+	 * @throws AxelorException No Stock move sequence defined
+	 */
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, 
+			StockLocation fromStockLocation, StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, 
+			String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode,
+			Partner carrierPartner, Partner forwarderPartner, Incoterm incoterm) throws AxelorException {
 
+		StockMove stockMove = this.createStockMove(fromAddress, toAddress, company, fromStockLocation, toStockLocation, realDate, estimatedDate, description);
+		stockMove.setPartner(clientPartner);
+		stockMove.setShipmentMode(shipmentMode);
+		stockMove.setFreightCarrierMode(freightCarrierMode);
+		stockMove.setCarrierPartner(carrierPartner);
+		stockMove.setForwarderPartner(forwarderPartner);
+		stockMove.setIncoterm(incoterm);
+		stockMove.setIsIspmRequired(
+				this.getDefaultISPM(clientPartner, toAddress)
+		);
+
+		return stockMove;
+	}
+	
+	/**
+	 * Generic method to create any stock move for internal stock move (without partner information)
+	 * 
+	 * @param fromAddress
+	 * @param toAddress
+	 * @param company
+	 * @param fromStockLocation
+	 * @param toStockLocation
+	 * @param realDate
+	 * @param estimatedDate
+	 * @param description
+	 * @return
+	 * @throws AxelorException No Stock move sequence defined
+	 */
+	@Override
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company,  StockLocation fromStockLocation,
+			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException  {
+		
 		StockMove stockMove = new StockMove();
 		stockMove.setFromAddress(fromAddress);
 		stockMove.setToAddress(toAddress);
@@ -163,15 +220,12 @@ public class StockMoveServiceImpl implements StockMoveService {
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
 		stockMove.setRealDate(realDate);
 		stockMove.setEstimatedDate(estimatedDate);
-		stockMove.setPartner(clientPartner);
 		stockMove.setFromStockLocation(fromStockLocation);
 		stockMove.setToStockLocation(toStockLocation);
 		stockMove.setDescription(description);
-		stockMove.setShipmentMode(shipmentMode);
-		stockMove.setFreightCarrierMode(freightCarrierMode);
-		stockMove.setIsIspmRequired(
-				this.getDefaultISPM(clientPartner, toAddress)
-		);
+
+		stockMove.setPrintingSettings(Beans.get(TradingNameService.class)
+				.getDefaultPrintingSettings(null, company));
 
 		stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
 		if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
@@ -180,6 +234,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 
 		return stockMove;
+		
 	}
 
 	/**
@@ -579,6 +634,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 				if (split) {
 					newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
 					newStockMoveLine.setRealQty(newStockMoveLine.getQty());
+				} else {
+                    newStockMoveLine.setQty(stockMoveLine.getRealQty());
+				    newStockMoveLine.setRealQty(stockMoveLine.getRealQty());
 				}
 
 				newStockMove.addStockMoveLineListItem(newStockMoveLine);
@@ -590,6 +648,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(computeName(newStockMove, newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " "
                 + stockMove.getStockMoveSeq() + " )"));
+		newStockMove.setIsReversion(true);
 
 		return stockMoveRepo.save(newStockMove);
 
@@ -887,41 +946,49 @@ public class StockMoveServiceImpl implements StockMoveService {
 	public String printStockMove(StockMove stockMove,
 								 List<Integer> lstSelectedMove,
 								 boolean isPicking) throws AxelorException {
-		String stockMoveIds = "";
-
-		if (lstSelectedMove != null) {
-		    StringBuilder bld = new StringBuilder();
-			for(Integer it : lstSelectedMove) {
-				bld.append(it.toString()).append(",");
-			}
-			stockMoveIds = bld.toString();
-		}
-
-		if (!stockMoveIds.equals("")) {
-			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);
-			stockMove = stockMoveRepo.find(Long.valueOf(lstSelectedMove.get(0)));
-		} else if (stockMove.getId() != null) {
-			stockMoveIds = stockMove.getId().toString();
-		}
-
-		if (!stockMoveIds.equals("")) {
-			String title = I18n.get("Stock move");
-			if(stockMove.getStockMoveSeq() != null)  {
-				title = lstSelectedMove == null ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
-			}
-
-			String report = isPicking ? IReport.PICKING_STOCK_MOVE : IReport.STOCK_MOVE;
-
-			LOG.debug("Printing "+title);
-
-			return ReportFactory.createReport(report, title+"-${date}")
-					.addParam("StockMoveId", stockMoveIds)
-					.addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
-					.generate()
-					.getFileLink();
+	    List<Long> selectedStockMoveListId;
+	    if (lstSelectedMove != null && !lstSelectedMove.isEmpty()) {
+			selectedStockMoveListId = lstSelectedMove.stream()
+					.map(integer -> Long.parseLong(integer.toString()))
+					.collect(Collectors.toList());
+			stockMove = stockMoveRepo.find(selectedStockMoveListId.get(0));
+		} else if (stockMove != null && stockMove.getId() != null) {
+	    	 selectedStockMoveListId = new ArrayList<>();
+	    	 selectedStockMoveListId.add(stockMove.getId());
 		} else {
 			throw new AxelorException(StockMove.class, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
 		}
+
+		List<StockMove> stockMoveList = stockMoveRepo.all()
+				.filter("self.id IN (" +
+						selectedStockMoveListId.stream().map(Object::toString).collect(Collectors.joining(",")) +
+						") AND self.printingSettings IS NULL")
+				.fetch();
+		if (!stockMoveList.isEmpty()) {
+			String exceptionMessage = String.format(I18n.get(IExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
+					"<ul>" + stockMoveList.stream()
+							.map(StockMove::getStockMoveSeq)
+							.collect(Collectors.joining("</li><li>", "<li>", "</li>"))
+							+ "<ul>");
+			throw new AxelorException(IException.MISSING_FIELD, exceptionMessage);
+		}
+
+		String stockMoveIds = selectedStockMoveListId.stream()
+				.map(Object::toString)
+				.collect(Collectors.joining(","));
+
+		String title = I18n.get("Stock move");
+		if (stockMove.getStockMoveSeq() != null) {
+			title = selectedStockMoveListId.size() == 1 ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq() : I18n.get("StockMove(s)");
+		}
+
+		String report = isPicking ? IReport.PICKING_STOCK_MOVE : IReport.STOCK_MOVE;
+
+		return ReportFactory.createReport(report, title + "-${date}")
+				.addParam("StockMoveId", stockMoveIds)
+				.addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
+				.generate()
+				.getFileLink();
 	}
 
 	@Override

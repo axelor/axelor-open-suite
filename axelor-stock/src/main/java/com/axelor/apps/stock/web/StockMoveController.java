@@ -324,22 +324,37 @@ public class StockMoveController {
 	}
 
 	/**
-	 * Called on load from stock move form view and on trading name change.
-	 * Set the default value and the domain for {@link StockMove#printingSettings}
+	 * Called on printing settings select.
+	 * Set the the domain for {@link StockMove#printingSettings}
 	 * @param request
 	 * @param response
 	 */
 	public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
-		PrintingSettings printingSettings = stockMove.getPrintingSettings();
 
 		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
-		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
-			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
-		}
 		String domain = String.format("self.id IN (%s)", !printingSettingsList.isEmpty() ? StringTool.getIdListString(printingSettingsList) : "0");
 
-		response.setValue("printingSettings", printingSettings);
 		response.setAttr("printingSettings", "domain", domain);
+	}
+
+	/**
+	 * Called on trading name change.
+	 * Set the default value for {@link StockMove#printingSettings}
+	 * @param request
+	 * @param response
+	 */
+	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
+		try {
+			StockMove stockMove = request.getContext().asType(StockMove.class);
+			response.setValue("printingSettings",
+					Beans.get(TradingNameService.class).getDefaultPrintingSettings(
+							stockMove.getTradingName(),
+							stockMove.getCompany()
+					)
+			);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 }

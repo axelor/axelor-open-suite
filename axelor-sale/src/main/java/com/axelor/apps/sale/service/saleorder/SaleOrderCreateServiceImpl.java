@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.sale.db.ISaleOrder;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -79,7 +79,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 		}
 		saleOrder.setSalemanUser(AuthUtils.getUser());
 		saleOrder.setTeam(saleOrder.getSalemanUser().getActiveTeam());
-		saleOrder.setStatusSelect(ISaleOrder.STATUS_DRAFT);
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT);
 		saleOrderService.computeEndOfValidityDate(saleOrder);
 		return saleOrder;
 	}
@@ -100,6 +100,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 		saleOrder.setExternalReference(externalReference);
 		saleOrder.setDeliveryDate(deliveryDate);
 		saleOrder.setOrderDate(orderDate);
+
+		saleOrder.setPrintingSettings(Beans.get(TradingNameService.class)
+				.getDefaultPrintingSettings(null, company));
 
 		if(salemanUser == null)  {
 			salemanUser = AuthUtils.getUser();
@@ -126,9 +129,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 		}
 		saleOrder.setPriceList(priceList);
 
-		saleOrder.setSaleOrderLineList(new ArrayList<SaleOrderLine>());
+		saleOrder.setSaleOrderLineList(new ArrayList<>());
 
-		saleOrder.setStatusSelect(ISaleOrder.STATUS_DRAFT);
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT);
 
 		saleOrderService.computeEndOfValidityDate(saleOrder);
 

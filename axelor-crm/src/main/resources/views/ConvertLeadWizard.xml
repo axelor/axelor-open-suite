@@ -48,7 +48,7 @@
 						<label title="Notes"/>
 					  	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12" />
 						<label title="Settings"/>
-					  	<field name="languageSelect"/>
+					  	<field name="language"/>
 					  	<label title="Assigned to"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" grid-view="company-grid" form-view="company-form"/>
 					    <field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
@@ -108,7 +108,7 @@
 					  	<field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12" height="7"/>
 					  	
 						<label title="Settings" colSpan="12"/>
-					  	<field name="languageSelect"/>
+					  	<field name="language"/>
 					  	
 					  	<label title="Assigned to" colSpan="12"/>
 					    <field name="companySet"  widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
@@ -358,7 +358,7 @@
 			  <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12" />
 			</panel>
 			<panel name="settings" title="Settings"  >
-			  <field name="languageSelect"/>
+			  <field name="language"/>
 			  <panel title="Assigned to">
 			    <field name="companySet"  widget="TagSelect" canNew="false"/>
 			    <field name="user" canNew="false" canEdit="false" canView="false"/>
@@ -423,7 +423,7 @@
 		    <field name="bankDetailsList" showTitle="false" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="12"/>
 		  </panel>
 		  <panel name="settings" title="Settings" >
-		    <field name="languageSelect" colSpan="12"/>
+		    <field name="language" colSpan="12"/>
 		    <panel title="Assigned to" colSpan="12" >
 		      <field name="companySet" widget="TagSelect" canNew="false"/>
 		      <field name="user" canNew="false" canEdit="false" canView="false"/>
@@ -434,7 +434,7 @@
 	</form>
 	
 	<action-group name="action-group-crm-convlead-partnertype-onchange">
-		<action name="action-partner-attrs-change-name"/>
+		<action name="action-partner-partner-type-select-change"/>
 	</action-group>
     
     <action-record name="action-convert-lead-wizard-record-default-partner-address" model="com.axelor.apps.base.db.Partner">

@@ -26,6 +26,12 @@
 - Partial manuf order realization
 - Add a wizard to select a cancel reason and cancel a Stock move.
 - Add button to open tasks and task kanban view in project module
+- Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
+- New user option to allow notifications to be sent by email on desired entities.
+- Add validation date in Inventory
+- Remove teams app module.
+- Add the number of components on Bill of material form view.
+- Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order. 
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -35,12 +41,21 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
+- Change the title "Delivery date" to "Estimated delivery date" in SaleOrder and PurchaseOrder
 - EndPeriod on currency conversion api
 - Allow to generate bank order file without using bic code in SEPA context.
 - Remove the field supplierPartner from Event Object
 - Upgrade functionality of advanced export feature
 - Change dependency to base instead of CRM,HR and Project of helpdesk module.
 - Update the SaleOrderLine form to look like InvoiceLine form.
+- Update CRM & ICalendar events UI
+- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
+- Allow to read the products from production, stock and crm modules
+- Improve manufacturing order workflow.
+- When we treat a component of a manuf order that is not loaded on MRP because there is no default BOM or because the component of manuf order is not a component of the bill of material, we add it with the level of manuf order product + 1.
+- Replaced selection field for language on Partner per a M2O to Language object to be able to add new partner language easily.
+- New select on product to choose if we want real or planned price for last product price or average price.
+- Improve filter for supplier partner in sale order lines.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -51,6 +66,10 @@
 - Fix default logo position
 - Fix create event from contact m2m of partner
 - Fix copy of manufacturing order
+- Fix multiple NPE in CRM events
+- Fix MRP calculation exception
+- Fix manufacturing order stock move generation in unusual case.
+- Fix default supplier in purchase order generation from sale order.
 
 ## [Unreleased 4.x]
 

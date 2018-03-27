@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -187,7 +186,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
 		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, paymentMode,
 				MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-		setDebitNumber(paymentScheduleLine);
 
 		MoveLine creditMoveLine = moveService.getMoveLineService().createMoveLine(move, partner, account, amount, false,
 				todayDate, 1, name);
@@ -233,35 +231,36 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 	  * Sinon on assigne simplement un numéro de prélèvement à l'échéance		
 	  * @param paymentScheduleLineList		
 	  * 			Une liste d'échéance à prélever		
-	  * @param paymentScheduleLine		
+	 * @param paymentScheduleLine		
 	  * 			L'échéance traité		
-	  * @param company		
+	 * @param company		
 	  * 			Une société		
-	  * @param journal		
+	 * @param paymentMode TODO
+	 * @param journal		
 	  * 			Un journal (prélèvement mensu masse ou grand compte)		
 	  * @throws AxelorException		
 	  */		
 	protected void setDebitNumber(List<PaymentScheduleLine> paymentScheduleLineList,
-			PaymentScheduleLine paymentScheduleLine, Company company) throws AxelorException {
+			PaymentScheduleLine paymentScheduleLine, Company company, PaymentMode paymentMode) throws AxelorException {
 
 		if (hasOtherPaymentScheduleLine(paymentScheduleLineList, paymentScheduleLine)) {
 			DirectDebitManagement directDebitManagement = getDirectDebitManagement(paymentScheduleLineList,
 					paymentScheduleLine);
 			if (directDebitManagement == null) {
-				directDebitManagement = createDirectDebitManagement(getDirectDebitSequence(company), company);
+				directDebitManagement = createDirectDebitManagement(getDirectDebitSequence(company, paymentMode), company);
 			}
 			paymentScheduleLine.setDirectDebitManagement(directDebitManagement);
 			directDebitManagement.getPaymentScheduleLineList().add(paymentScheduleLine);
 		} else {
-			paymentScheduleLine.setDebitNumber(getDirectDebitSequence(company));
+			paymentScheduleLine.setDebitNumber(getDirectDebitSequence(company, paymentMode));
 		}
 	}
 
-	protected void setDebitNumber(PaymentScheduleLine paymentScheduleLine) throws AxelorException {
+	protected void setDebitNumber(PaymentScheduleLine paymentScheduleLine, PaymentMode paymentMode) throws AxelorException {
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		List<PaymentScheduleLine> paymentScheduleLineList = paymentSchedule.getPaymentScheduleLineList();
 		Company company = paymentSchedule.getCompany();
-		setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company);
+		setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company, paymentMode);
 	}
 
 	/**		
@@ -320,18 +319,12 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 		return directDebitManagement;
 	}
 
-	protected String getDirectDebitSequence(Company company) throws AxelorException {
-
-		PaymentMode directDebitPaymentMode = company.getAccountConfig().getDirectDebitPaymentMode();
-
-		if (directDebitPaymentMode == null) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE));
-		}
+	protected String getDirectDebitSequence(Company company, PaymentMode paymentMode) throws AxelorException {
 
 		// TODO manage multi bank
 
 		return sequenceService
-				.getSequenceNumber(paymentModeService.getPaymentModeSequence(directDebitPaymentMode, company, null));
+				.getSequenceNumber(paymentModeService.getPaymentModeSequence(paymentMode, company, null));
 
 	}
 }

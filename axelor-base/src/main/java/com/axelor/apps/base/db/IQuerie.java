@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.db;
 
+@Deprecated
 public interface IQuerie {
 	/**
 	 * Static querie type select

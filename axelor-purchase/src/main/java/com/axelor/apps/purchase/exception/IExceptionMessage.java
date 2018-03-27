@@ -52,4 +52,11 @@ public interface IExceptionMessage {
 	 * Blocking supplier
 	 */
 	String SUPPLIER_BLOCKED = /*$$(*/ "This supplier is blocked:" /*)*/;
+
+	/*
+	 * Purchase order printing
+	 */
+	String NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING = /*$$(*/ "Please select the purchase order(s) to print." /*)*/;
+	String PURCHASE_ORDER_MISSING_PRINTING_SETTINGS  = /*$$(*/ "Please fill printing settings on purchase order %s" /*)*/;
+	String PURCHASE_ORDERS_MISSING_PRINTING_SETTINGS  = /*$$(*/ "Please fill printing settings on following purchase orders: %s" /*)*/;
 }

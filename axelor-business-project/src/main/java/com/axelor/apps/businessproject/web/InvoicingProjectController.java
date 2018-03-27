@@ -107,7 +107,7 @@ public class InvoicingProjectController {
 		try {
 			String fileLink = ReportFactory.createReport(IReport.INVOICING_PROJECT, name + " - ${date}")
 					.addParam("InvoicingProjectId", invoicingProject.getId())
-					.addParam("Locale", invoicingProject.getProject().getClientPartner().getLanguageSelect())
+					.addParam("Locale", ReportSettings.getPrintingLocale(invoicingProject.getProject().getClientPartner()))
 					.addFormat(ReportSettings.FORMAT_PDF)
 					.generate()
 					.getFileLink();

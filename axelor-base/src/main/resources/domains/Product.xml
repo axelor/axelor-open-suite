@@ -9,7 +9,7 @@
 
 		<string name="name" title="Name" required="true" initParam="true"
 			translatable="true" />
-
+		<string name="serialNumber" title="Serial Nbr"/>
 		<string name="sequence" title="Product N°" readonly="true" />
 		<string name="code" title="Code" required="true" initParam="true" />
 		<string name="ean13" title="EAN13 Code" unique="true" />
@@ -27,7 +27,7 @@
 		<many-to-one name="unit" ref="Unit" title="Unit"
 			initParam="true" massUpdate="true" />
 
-		<integer name="saleSupplySelect" title="Sale supply default method"
+		<integer name="saleSupplySelect" title="Sale supply default method on sale order"
 			selection="product.sale.supply.select" initParam="true" massUpdate="true"/>
 
 		<string name="productTypeSelect" title="Type" required="true"
@@ -98,7 +98,7 @@
 
 		<many-to-one name="barCode" title="Barcode"
 			ref="com.axelor.meta.db.MetaFile" />
-
+		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 		<string name="fullName" title="Full name" namecolumn="true" />
 
 
@@ -116,6 +116,19 @@
 		<decimal name="articleVolume" title="Article volume" />
 
 		<boolean name="isShippingCostsProduct" title="Is shipping costs product"/>
+
+		<one-to-many name="saleProductMultipleQtyList"
+			ref="com.axelor.apps.base.db.ProductMultipleQty" mappedBy="saleProduct"
+			title="Multiple quantities" orderBy="multipleQty"/>
+		
+		<boolean name="allowToForceSaleQty" title="Allow to force sales quantities"/>
+		
+		<one-to-many name="purchaseProductMultipleQtyList"
+			ref="com.axelor.apps.base.db.ProductMultipleQty" mappedBy="purchaseProduct"
+			title="Multiple quantities" orderBy="multipleQty" />
+			
+		<boolean name="allowToForcePurchaseQty" title="Allow to force purchases quantities"/>
+			
 
 		<extra-code>
 	   		<![CDATA[
