@@ -33,6 +33,7 @@
 - The distinction between round-trip and one way ticket in kilometric expenses is now only informative.
 - Reconcile invoice with related refund
 - New boolean field "available to users" in expense type
+- Replace "Payer partner"/"Third-payer" with "customer"
 
 ### Bug Fixes
 - Fix demo data en and fr on General config to set the correct value of the fields custStockMoveMgtOnSO and supplStockMoveMgtOnSO.
