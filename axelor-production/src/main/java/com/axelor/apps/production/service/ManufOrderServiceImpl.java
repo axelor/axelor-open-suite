@@ -17,7 +17,20 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.app.production.db.IManufOrder;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
@@ -50,19 +63,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ManufOrderServiceImpl implements  ManufOrderService  {
 
@@ -186,7 +186,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 				product,
 				prodProcess,
 				plannedStartDateT,
-				IManufOrder.STATUS_DRAFT);
+				ManufOrderRepository.STATUS_DRAFT);
 
 		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
 			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {

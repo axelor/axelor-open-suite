@@ -26,8 +26,6 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.axelor.app.production.db.IManufOrder;
-import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
@@ -45,7 +43,6 @@ import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -97,7 +94,7 @@ public class OperationOrderWorkflowService {
 			operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
 		}
 
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
+		operationOrder.setStatusSelect(OperationOrderRepository.STATUS_PLANNED);
 
 		return operationOrderRepo.save(operationOrder);
 	}
@@ -180,8 +177,8 @@ public class OperationOrderWorkflowService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void start(OperationOrder operationOrder) throws AxelorException {
-		if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_IN_PROGRESS) {
-			operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
+		if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS) {
+			operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 			operationOrder.setRealStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
 			startOperationOrderDuration(operationOrder);
@@ -208,7 +205,7 @@ public class OperationOrderWorkflowService {
 		}
 
 		if (operationOrder.getManufOrder().getStatusSelect()
-				!= IManufOrder.STATUS_IN_PROGRESS) {
+				!= ManufOrderRepository.STATUS_IN_PROGRESS) {
 		    Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
 		}
 
@@ -221,7 +218,7 @@ public class OperationOrderWorkflowService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void pause(OperationOrder operationOrder) {
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_STANDBY);
+		operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
 
 		stopOperationOrderDuration(operationOrder);
 
@@ -235,7 +232,7 @@ public class OperationOrderWorkflowService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void resume(OperationOrder operationOrder) {
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
+		operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 
 		startOperationOrderDuration(operationOrder);
 
@@ -250,7 +247,7 @@ public class OperationOrderWorkflowService {
 	 */
 	@Transactional
 	public void finish(OperationOrder operationOrder) throws AxelorException {
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
+		operationOrder.setStatusSelect(OperationOrderRepository.STATUS_FINISHED);
 		operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
 		stopOperationOrderDuration(operationOrder);
@@ -268,9 +265,9 @@ public class OperationOrderWorkflowService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(OperationOrder operationOrder) throws AxelorException {
 	    int oldStatus = operationOrder.getStatusSelect();
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
+		operationOrder.setStatusSelect(OperationOrderRepository.STATUS_CANCELED);
 
-		if (oldStatus == IOperationOrder.STATUS_IN_PROGRESS) {
+		if (oldStatus == OperationOrderRepository.STATUS_IN_PROGRESS) {
 			stopOperationOrderDuration(operationOrder);
 		}
 		if (operationOrder.getConsumedStockMoveLineList() != null) {
@@ -305,7 +302,7 @@ public class OperationOrderWorkflowService {
 		duration.setStoppedBy(AuthUtils.getUser());
 		duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
 
-		if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_FINISHED) {
+		if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
 			long durationLong = getDuration(computeRealDuration(operationOrder));
 			operationOrder.setRealDuration(durationLong);
 			Machine machine = operationOrder.getWorkCenter().getMachine();
