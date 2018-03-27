@@ -151,7 +151,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 		
 		Message message = messageService.createMessage( model, Long.valueOf(objectId).intValue(), subject,  content, getEmailAddress(from), getEmailAddresses(replyToRecipients),
 				getEmailAddresses(toRecipients), getEmailAddresses(ccRecipients), getEmailAddresses(bccRecipients),
-				null, addressBlock, mediaTypeSelect, getMailAccount() );	
+				null, addressBlock, mediaTypeSelect, getMailAccount() );
+		message.setTemplate(template);
 		
 		message = Beans.get(MessageRepository.class).save(message);
 		

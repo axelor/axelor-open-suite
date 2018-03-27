@@ -3,5 +3,7 @@
 "Can not opening the connection to a empty URL.",,,
 "No such template",,,
 "Templating can not be empty",,,
+"The given function cannot be null.",,,
+"The given ids list cannot be null.",,,
 "Url %s is malformed.",,,
 "Years in 360 days",,,

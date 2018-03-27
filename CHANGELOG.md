@@ -31,6 +31,7 @@
 - Add validation date in Inventory
 - Remove teams app module.
 - Add the number of components on Bill of material form view.
+- Add grid for easily regenerating and resending messages that were not sent.
 - Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order. 
 - Add multiple default stock locations (receipt, fixup, component, finished products) in stock config instead of a single default stock location.
 

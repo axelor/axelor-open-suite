@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.DebtRecoveryMethodLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Partner;
@@ -31,7 +32,6 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
 
 public class DebtRecoveryActionService {
@@ -54,21 +55,18 @@ public class DebtRecoveryActionService {
 	protected UserService userService;
 	protected DebtRecoveryRepository debtRecoveryRepo;
 	protected DebtRecoveryHistoryRepository debtRecoveryHistoryRepository;
-	protected TemplateMessageService templateMessageService;
-
+	protected TemplateMessageAccountService templateMessageAccountService;
 	protected AppAccountService appAccountService;
 
 	@Inject
 	public DebtRecoveryActionService(UserService userService, DebtRecoveryRepository debtRecoveryRepo, DebtRecoveryHistoryRepository debtRecoveryHistoryRepository, 
-			TemplateMessageService templateMessageService, AppAccountService appAccountService) {
+			TemplateMessageAccountService templateMessageAccountService, AppAccountService appAccountService) {
 
 		this.userService = userService;
 		this.debtRecoveryRepo = debtRecoveryRepo;
 		this.debtRecoveryHistoryRepository = debtRecoveryHistoryRepository;
-		this.templateMessageService = templateMessageService;
-		
+		this.templateMessageAccountService = templateMessageAccountService;
 		this.appAccountService = appAccountService;
-
 	}
 
 
@@ -118,6 +116,7 @@ public class DebtRecoveryActionService {
 	 * @throws IOException
 	 */
 	public Set<Message> runStandardMessage(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
+	    Set<Message> messages = new HashSet<>();
 
 		DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
 		Partner partner =  debtRecovery.getAccountingSituation().getPartner();
@@ -131,14 +130,10 @@ public class DebtRecoveryActionService {
 		DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
 		for (Template template : templateSet) {
-			Message message = templateMessageService.generateMessage(debtRecoveryHistory, template);
-			message.setRelatedTo2Select(Partner.class.getCanonicalName());
-			message.setRelatedTo2SelectId(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId());
-			debtRecoveryHistory.addDebtRecoveryMessageSetItem(message);
+			messages.add(templateMessageAccountService.generateMessage(debtRecoveryHistory, template));
 		}
 
-		return debtRecoveryHistory.getDebtRecoveryMessageSet();
-
+		return messages;
 	}
 
 
@@ -201,7 +196,6 @@ public class DebtRecoveryActionService {
 			Beans.get(MessageRepository.class).save(message);
 			Beans.get(MessageService.class).sendMessage(message);
 		}
-		this.updateDebtRecoveryHistory(debtRecovery, messageSet);
 	}
 
 	/**
@@ -265,16 +259,5 @@ public class DebtRecoveryActionService {
 		debtRecoveryHistoryRepository.save(debtRecoveryHistory);
 
 	}
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateDebtRecoveryHistory(DebtRecovery debtRecovery, Set<Message> debtRecoveryMessageSet)  {
-
-		if(!debtRecovery.getDebtRecoveryHistoryList().isEmpty())  {
-			DebtRecoveryHistory debtRecoveryHistory = getDebtRecoveryHistory(debtRecovery);
-			debtRecoveryMessageSet.forEach(debtRecoveryHistory::addDebtRecoveryMessageSetItem);
-		}
-
-	}
-
 
 }
