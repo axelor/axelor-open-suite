@@ -43,10 +43,10 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
@@ -253,7 +253,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 								invoicingProduct.getUnit(),
 								taxLine, InvoiceLineGenerator.DEFAULT_SEQUENCE,
 								BigDecimal.ZERO,
-								IPriceListLine.AMOUNT_TYPE_NONE,
+								PriceListLineRepository.AMOUNT_TYPE_NONE,
 								lineAmountToInvoice, null, false)  {
 							@Override
 							public List<InvoiceLine> creates() throws AxelorException {
