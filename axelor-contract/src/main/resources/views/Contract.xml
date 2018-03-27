@@ -52,7 +52,7 @@
                     <button if="__config__.app.getApp('contract').isAmendmentManagement" name="deleteNextVersionBtn" title="Delete next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-contract-method-delete-next-version"/>
                     <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; currentVersion.statusSelect == 1" onClick="save,action-contract-method-waiting"/>
                     <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; currentVersion.statusSelect == 2" onClick="save,action-contract-method-ongoing"/>
-                    <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn" title="Renew" hidden="true" showIf="id &amp;&amp; statusSelect == 2 &amp;&amp; currentVersion.isTacitRenewal" onClick="save,action-contract-method-renew"/>
+                    <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn" title="Renew" hidden="true" showIf="id &amp;&amp; currentVersion.statusSelect == 3" onClick="save,action-contract-method-renew"/>
                 </panel>
                 <panel title="Notes" stacked="true">
                     <field name="note" showTitle="false"/>
@@ -94,7 +94,8 @@
                 <panel name="currentVersionDescription" colSpan="12">
                     <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                            <field name="description" colSpan="12" widget="html"/>
+                            <field name="description" colSpan="9" widget="html"/>
+                            <field name="attachment" colSpan="3" widget="binary-link"/>
                         </editor>
                     </field>
                 </panel>
@@ -106,7 +107,7 @@
                 <button name="invoicingBtn" title="Invoicing" showIf="id &amp;&amp; currentVersion.statusSelect == 3 &amp;&amp; $get('currentVersion.isPeriodicInvoicing') == false" onClick="save,com.axelor.apps.contract.web.ContractController:invoicing"/>
                 <panel-dashlet readonly="false" colSpan="12" height="350" action="action-contract-view-invoicing"/>
             </panel>
-            <panel if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Reconductions" hidden="true" showIf="renewalNumber > 0 || currentVersion.isTacitRenewal" colSpan="12">
+            <panel if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Reconductions" hidden="true" showIf="currentVersion.statusSelect == 3 &amp;&amp; (renewalNumber > 0 || currentVersion.isTacitRenewal)" colSpan="12">
                 <field name="renewalNumber" hidden="true" showIf="renewalNumber > 0" readonly="true"/>
                 <field name="lastRenewalDate" hidden="true" showIf="renewalNumber > 0" readonly="true"/>
                 <panel title="Next renewal" colSpan="12" hidden="true" showIf="currentVersion.isTacitRenewal">
@@ -118,22 +119,24 @@
                 </panel>
             </panel>
             <panel title="Termination" hidden="true" showIf="statusSelect != 1" colSpan="12">
-                <panel colSpan="12">
-                    <field name="terminatedDate" readonlyIf="terminatedManually" colSpan="3"/>
-                    <field name="terminatedBy" readonly="true" hideIf="!terminatedManually" colSpan="3"/>
-                    <field name="terminationDemandDate" hidden="true" readonly="true" showIf="terminationDemandDate" colSpan="3"/>
-                    <field name="terminatedManually" readonly="true" showIf="terminatedManually" colSpan="3"/>
-                </panel>
-                <panel colSpan="12" hidden="true" showIf="id &amp;&amp; statusSelect == 2 &amp;&amp; !terminatedManually">
-                    <button name="terminatedBtn" title="Terminate" colSpan="3" onClick="save,action-contract-method-terminated"/>
-                    <panel colSpan="6" hidden="true" showIf="currentVersion.isWithEngagement" readonly="true">
-                        <field name="engagementStartDate" colSpan="6"/>
-                        <field name="currentVersion.engagementDuration" colSpan="6"/>
+                <field name="terminatedDate" readonlyIf="terminatedManually" colSpan="3"/>
+                <panel colSpan="9">
+                    <panel colSpan="12" hidden="true" showIf="terminatedManually">
+                        <field name="terminatedBy" readonly="true" colSpan="4"/>
+                        <field name="terminationDemandDate" readonly="true" hidden="true" showIf="terminationDemandDate" colSpan="4"/>
+                        <field name="terminatedManually" readonly="true" hidden="true" showIf="terminatedManually" colSpan="4"/>
                     </panel>
-                    <panel colSpan="3" hidden="true" showIf="currentVersion.isWithPriorNotice" readonly="true">
-                        <field name="currentVersion.priorNoticeDuration" colSpan="12"/>
+                    <panel colSpan="12" hidden="true" showIf="id &amp;&amp; statusSelect == 2 &amp;&amp; !terminatedManually">
+                        <panel colSpan="8" hidden="true" showIf="currentVersion.isWithEngagement" readonly="true">
+                            <field name="engagementStartDate" colSpan="6"/>
+                            <field name="currentVersion.engagementDuration" colSpan="6"/>
+                        </panel>
+                        <panel colSpan="4" hidden="true" showIf="currentVersion.isWithPriorNotice" readonly="true">
+                            <field name="currentVersion.priorNoticeDuration" colSpan="12"/>
+                        </panel>
                     </panel>
                 </panel>
+                <button name="terminatedBtn" title="Terminate" colSpan="3" onClick="save,action-contract-method-terminated" hideIf="terminatedManually || statusSelect == 3"/>
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
                 <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
@@ -169,8 +172,9 @@
                 <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal" colSpan="12">
                     <field name="currentVersion" showTitle="false" readonlyIf="currentVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                            <field name="isTacitRenewal" widget="boolean-switch"/>
-                            <field name="renewalDuration" requiredIf="isTacitRenewal"/>
+                            <field name="isTacitRenewal" widget="boolean-switch" colSpan="3"/>
+                            <field name="renewalDuration" requiredIf="isTacitRenewal" colSpan="3"/>
+                            <field name="isAutoEnableVersionOnRenew" colSpan="6"/>
                         </editor>
                     </field>
                 </panel>
@@ -267,7 +271,8 @@
             </panel>
             <field name="supposedEndDate"/>
             <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
-            <field name="description" colSpan="12" widget="html"/>
+            <field name="description" widget="html"/>
+            <field name="attachment" widget="binary-link"/>
         </panel>
     </form>
 
@@ -342,17 +347,20 @@
                     <field name="createdOn"/>
                     <field name="createdBy"/>
                 </panel>
-                <panel readonly="true" showIf="statusSelect >= 3" colSpan="9">
-                    <field name="activatedBy" colSpan="4"/>
-                    <field name="activationDate" colSpan="4"/>
-                    <field name="endDate" hidden="true" readonly="true" showIf="endDate" colSpan="4"/>
+                <panel readonly="true" showIf="statusSelect >= 3" colSpan="12">
+                    <field name="activatedBy" colSpan="3"/>
+                    <field name="activationDate" colSpan="3"/>
+                    <panel colSpan="3">
+                        <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
+                        <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
+                    </panel>
                 </panel>
-                <field name="doNotRenew" hidden="true" showIf="$get('contractNext.isTacitRenewal') == true" colSpan="3"/>
-                <field name="supposedActivationDate" readonlyIf="statusSelect >= 3" colSpan="3"/>
-                <field name="supposedEndDate" colSpan="3"/>
+                <field name="supposedActivationDate" hidden="true" showIf="statusSelect &lt;= 2" colSpan="3"/>
+                <field name="supposedEndDate" hidden="true" showIf="statusSelect &lt;= 2" colSpan="3"/>
             </panel>
             <panel title="Content">
-                <field name="description" colSpan="12" widget="html"/>
+                <field name="description" colSpan="9" widget="html"/>
+                <field name="attachment" colSpan="3" widget="binary-link"/>
                 <field name="contractLineList" colSpan="12" if="__config__.app.getApp('contract').isInvoicingManagement"/>
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
@@ -373,16 +381,18 @@
                     </panel>
                 </panel>
                 <panel title="Renewal" if="__config__.app.getApp('contract').isRenewalManagement" colSpan="12">
-                    <field name="isTacitRenewal" />
-                    <field name="renewalDuration" />
+                    <field name="isTacitRenewal" widget="boolean-switch" colSpan="3"/>
+                    <field name="renewalDuration" requiredIf="isTacitRenewal" colSpan="3"/>
+                    <field name="isAutoEnableVersionOnRenew" colSpan="6"/>
                 </panel>
-                <panel colSpan="12" title="Termination">
-                    <field name="isWithEngagement" colSpan="3" />
-                    <field name="engagementStartFromVersion" showIf="isWithEngagement" requiredIf="isWithEngagement" colSpan="3" />
-                    <field name="engagementDuration" showIf="isWithEngagement" requiredIf="isWithEngagement" canNew="true" />
-                    <spacer/>
-                    <field name="isWithPriorNotice" />
-                    <field name="priorNoticeDuration" showIf="isWithPriorNotice" requiredIf="isWithPriorNotice" canNew="true" />
+                <panel title="Engagement" colSpan="6">
+                    <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
+                    <field name="engagementDuration" colSpan="6" showIf="isWithEngagement" canNew="true" requiredIf="isWithEngagement"/>
+                    <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement"/>
+                </panel>
+                <panel title="Prior notice" colSpan="6">
+                    <field name="isWithPriorNotice" widget="boolean-switch"/>
+                    <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
                 </panel>
             </panel>
         </panel-tabs>

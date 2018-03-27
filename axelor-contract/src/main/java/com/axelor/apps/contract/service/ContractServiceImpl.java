@@ -399,7 +399,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		contract.setCurrentVersion(nextVersion);
 		nextVersion.setContractNext(null);
 		nextVersion.setContract(contract);
-		versionService.ongoing(nextVersion, date);
+		if (nextVersion.getIsTacitRenewal()) {
+			nextVersion.setSupposedEndDate(durationService.computeDuration(nextVersion.getRenewalDuration(), date));
+		}
+		if (nextVersion.getIsAutoEnableVersionOnRenew()) {
+			versionService.ongoing(nextVersion, date);
+		} else {
+			versionService.waiting(nextVersion, date);
+		}
 
 		contract.setLastRenewalDate(date);
 		contract.setRenewalNumber(contract.getRenewalNumber() + 1);

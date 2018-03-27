@@ -35,8 +35,10 @@
 		<one-to-one name="contract" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="currentVersion" copy="false"/>
 		<one-to-one name="contractNext" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="nextVersion" copy="false"/>
 		<many-to-one name="contractHistory" ref="com.axelor.apps.contract.db.Contract" title="Contract" copy="false"/>
+		
 		<many-to-one name="renewalDuration" title="Renewal duration" ref="com.axelor.apps.base.db.Duration" />
 		<boolean name="isTacitRenewal" title="Tacit renewal"/>
+		<boolean name="isAutoEnableVersionOnRenew" title="Auto enable version on renew"/>
 		
 		<boolean name="isWithEngagement" title="With engagement"/>
 		<many-to-one name="engagementDuration" title="Engagement duration" ref="com.axelor.apps.base.db.Duration" />
@@ -47,6 +49,8 @@
 		<boolean name="isConsumptionBeforeEndDate" title="Only invoice consumption before Invoice period end Date" />
 
 		<string name="description" title="Description" multiline="true" large="true" />
+
+		<many-to-one name="attachment" ref="com.axelor.meta.db.MetaFile"/>
 
 		<string name="fullName" namecolumn="true">
 			<![CDATA[

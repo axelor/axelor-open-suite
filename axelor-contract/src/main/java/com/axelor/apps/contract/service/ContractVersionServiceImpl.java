@@ -23,6 +23,8 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -45,14 +47,16 @@ public class ContractVersionServiceImpl extends ContractVersionRepository implem
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void ongoing(ContractVersion version, LocalDate date) throws AxelorException {
 		if(version.getIsPeriodicInvoicing() && (version.getContract().getFirstPeriodEndDate() == null || version.getInvoicingFrequency() == null)) {
-			throw new AxelorException("Please fill the first period end date and the invoice frequency.", IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get("Please fill the first period end date and the invoice frequency."), IException.CONFIGURATION_ERROR);
 		}
 
 		version.setActivationDate(date);
 		version.setActivatedBy(AuthUtils.getUser());
 		version.setStatusSelect(ONGOING_VERSION);
-		if (version.getIsTacitRenewal()) {
-			version.setSupposedEndDate(durationService.computeDuration(version.getRenewalDuration(), date));
+
+		if (version.getVersion() >= 0 && version.getIsWithEngagement() && version.getEngagementStartFromVersion()) {
+			Preconditions.checkNotNull(version.getContract(), I18n.get("No contract is associated to version."));
+			version.getContract().setEngagementStartDate(date);
 		}
 
 		save(version);
