@@ -109,7 +109,7 @@ public class SaleOrderController{
 
 		if(saleOrder != null && saleOrder.getCompany() != null) {
 
-			StockLocation stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany());
+			StockLocation stockLocation = Beans.get(StockLocationService.class).getPickupDefaultStockLocation(saleOrder.getCompany());
 
 			if(stockLocation != null) {
 				response.setValue("stockLocation", stockLocation);

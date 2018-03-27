@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -33,6 +34,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -58,6 +60,9 @@ public class ManufOrderStockMoveService {
 
 	protected static final int PART_FINISH_IN = 1;
 	protected static final int PART_FINISH_OUT = 2;
+
+	protected static final int STOCK_LOCATION_IN = 1;
+	protected static final int STOCK_LOCATION_OUT = 2;
 
 	@Inject
 	public ManufOrderStockMoveService (StockMoveService stockMoveService, StockMoveLineService stockMoveLineService)  {
@@ -102,20 +107,27 @@ public class ManufOrderStockMoveService {
 	    StockConfig stockConfig = stockConfigService.getStockConfig(company);
 	    StockLocation virtualStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
 
-	    StockLocation fromStockLocation = getDefaultStockLocation(manufOrder, company);
+	    StockLocation fromStockLocation = getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
 
 		return stockMoveService.createStockMove(null, null, company, fromStockLocation, virtualStockLocation,
 				null, manufOrder.getPlannedStartDateT().toLocalDate(), null);
 
 	}
 
-	protected StockLocation getDefaultStockLocation(ManufOrder manufOrder, Company company) throws AxelorException {
+	protected StockLocation getDefaultStockLocation(ManufOrder manufOrder, Company company, int inOrOut) throws AxelorException {
+		if (inOrOut != STOCK_LOCATION_IN && inOrOut != STOCK_LOCATION_OUT) {
+			throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
+		}
 		StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
 		StockConfig stockConfig = stockConfigService.getStockConfig(company);
 		if (manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getStockLocation() != null) {
 			return manufOrder.getProdProcess().getStockLocation();
 		} else {
-			return stockConfigService.getDefaultStockLocation(stockConfig);
+			if (inOrOut == STOCK_LOCATION_IN) {
+				return stockConfigService.getComponentDefaultStockLocation(stockConfig);
+			} else {
+				return stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
+			}
 		}
 	}
 
@@ -268,7 +280,7 @@ public class ManufOrderStockMoveService {
 	protected void partialFinish(ManufOrder manufOrder, int inOrOut) throws AxelorException {
 
 		if (inOrOut != PART_FINISH_IN && inOrOut != PART_FINISH_OUT) {
-			throw new IllegalArgumentException("inOrOut is invalid");
+			throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
 		}
 
 		Company company = manufOrder.getCompany();
@@ -281,13 +293,13 @@ public class ManufOrderStockMoveService {
 
 		if (inOrOut == PART_FINISH_IN) {
 			stockMoveList = manufOrder.getInStockMoveList();
-			fromStockLocation = getDefaultStockLocation(manufOrder, company);
+			fromStockLocation = getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
 			toStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
 
 		} else {
 			stockMoveList = manufOrder.getOutStockMoveList();
 		    fromStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
-		    toStockLocation = getDefaultStockLocation(manufOrder, company);
+		    toStockLocation = getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_OUT);
 		}
 
 		//realize current stock move and update the price

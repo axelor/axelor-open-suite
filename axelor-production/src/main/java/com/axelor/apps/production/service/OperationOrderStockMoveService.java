@@ -41,7 +41,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class OperationOrderStockMoveService {
 
@@ -102,7 +101,7 @@ public class OperationOrderStockMoveService {
 		} else if (!operationOrder.getManufOrder().getIsConsProOnOperation() && prodProcessLine != null && prodProcessLine.getProdProcess() != null && prodProcessLine.getProdProcess().getStockLocation() != null) {
 			fromStockLocation = prodProcessLine.getProdProcess().getStockLocation();
 		} else {
-			fromStockLocation = stockConfigService.getDefaultStockLocation(stockConfig);
+			fromStockLocation = stockConfigService.getComponentDefaultStockLocation(stockConfig);
 		}
 
 		return stockMoveService.createStockMove(null, null, company, fromStockLocation, virtualStockLocation,
@@ -162,7 +161,7 @@ public class OperationOrderStockMoveService {
 		List<StockMove> stockMoveList;
 
 		stockMoveList = operationOrder.getInStockMoveList();
-		fromStockLocation = manufOrderStockMoveService.getDefaultStockLocation(manufOrder, company);
+		fromStockLocation = manufOrderStockMoveService.getDefaultStockLocation(manufOrder, company, ManufOrderStockMoveService.STOCK_LOCATION_IN);
 		toStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
 
 		//realize current stock move

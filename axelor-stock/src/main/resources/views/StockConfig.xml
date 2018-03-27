@@ -19,16 +19,13 @@
 	  </panel>
 	  <panel name="stockMoveInformations" title="Stock move informations">
 		  <panel colSpan="12">
-			  <field name="receiptDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-			  <field name="pickupDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			  <field name="receiptDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+			  <field name="pickupDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			  <field name="wasteStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			  <field name="componentDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			  <field name="finishedProductsDefaultStockLocation" domain="self.company = company" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 		  </panel>
 	  </panel>
-		<panel>
-            <field name="defaultStockLocation" domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
-		</panel>
 	  <panel name="customsInformation" title="Customs">
 	  	<field name="customsWeightUnit" domain="self.unitTypeSelect = 1"/>
 	  </panel>
