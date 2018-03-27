@@ -3560,6 +3560,19 @@ row["ClientPartFirstName"]
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
+                                <property name="name">Column Binding_tot_all_sub</property>
+                                <text-property name="displayName">tot_all_sub</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
                                 <property name="name">total_pack</property>
                                 <text-property name="displayName">total_pack</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
@@ -3595,7 +3608,7 @@ row["ClientPartFirstName"]
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1</expression>
+                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["Column Binding_tot_all_sub"] == 0</expression>
                                 </structure>
                             </list-property>
                             <property name="width">0.6in</property>
@@ -4568,7 +4581,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["sale_order_type_select"] == 2</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["sale_order_type_select"] == 2 || (row["Column Binding_tot_all_sub"]== 0)</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -4631,7 +4644,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1 || row["sale_order_type_select"] == 2</expression>
+                                <expression name="valueExpr" type="javascript">row["hideDiscount"] == 1 || row["sale_order_type_select"] == 2 || (row["Column Binding_tot_all_sub"]== 0)</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
@@ -4668,7 +4681,7 @@ row["ClientPartFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer._outer["sale_order_type_select"] == 2</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer._outer["sale_order_type_select"] == 2 || row._outer["Column Binding_tot_all_sub"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -4719,7 +4732,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["sale_order_type_select"] == 2</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["sale_order_type_select"] == 2 || (row["Column Binding_tot_all_sub"]== 0)</expression>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">totalDiscount</property>
@@ -4736,7 +4749,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row._outer["sale_order_type_select"] == 2</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row._outer["sale_order_type_select"] == 2 || (row["Column Binding_tot_all_sub"]== 0)</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
