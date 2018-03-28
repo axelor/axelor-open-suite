@@ -18,12 +18,12 @@
 package com.axelor.apps.bankpayment.service.batch;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.LocalDate;
 
 import com.axelor.apps.bankpayment.db.BankPaymentBatch;
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
@@ -34,7 +34,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -73,7 +73,7 @@ public class BatchBankPayment extends AbstractBatch {
 		
 		Set<EbicsCertificate> certificatesSet = new HashSet<>();
 		
-		LocalDate today = Beans.get(GeneralService.class).getTodayDate();
+		LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
 		LocalDate commingDay = today.plusDays(bankPaymentBatch.getDaysNbr());
 		
 		for (EbicsUser user : users) {
