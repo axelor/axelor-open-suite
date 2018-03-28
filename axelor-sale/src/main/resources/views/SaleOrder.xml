@@ -218,9 +218,9 @@
 		  		<div>
 				  <div class="span7">
 					<h5>
-						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
-						<span class="label label-warning" ng-show="record.deliveryState > 0 && record.deliveryState == 2" x-translate>Partially delivered</span>
-						<span class="label label-success" ng-show="record.deliveryState > 0 && record.deliveryState == 3" x-translate>Delivered</span>
+						<span class="label label-important" ng-show="record.deliveryState == 1" x-translate>Not delivered</span>
+						<span class="label label-warning" ng-show="record.deliveryState == 2" x-translate>Partially delivered</span>
+						<span class="label label-success" ng-show="record.deliveryState == 3" x-translate>Delivered</span>
 					</h5>
 				  </div>
 				</div>
@@ -276,7 +276,7 @@
 	    </panel>
       	<panel name="deliveryInformation" title="Delivery information" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
       		<field name="specificPackage" colSpan="12"/>
-  		    <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" readonlyIf="statusSelect == 3" />
+  		    <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
   		    <field name="deliveryDate"/>
   		    <field name="deliveryCondition" colSpan="12"/>
   		    <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
@@ -485,7 +485,7 @@
 <!-- 	        <field name="invoicingMomentSelect"/> -->
 <!-- 	      </panel> -->
 	      <panel name="stockLocation" title="Stock location" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-   		      <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" readonlyIf="statusSelect == 3"/>
+   		      <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      </panel>
 	      <panel name="description" title="Description" colSpan="12">
 	        <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
@@ -822,7 +822,6 @@
 
 	<action-group name="action-sale-group-confirmed">
 		<action name="action-sale-order-validate-check-on-confirm"/>
-    	<action name="action-supplychain-sale-order-validate-check-stock-location" />
     	<action name="action-sale-order-method-confirm"/>
     	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     </action-group>

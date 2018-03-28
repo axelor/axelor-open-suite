@@ -111,10 +111,6 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setNextInvoicingStartPeriodDate" />
 	</action-method>
 	
-	<action-validate name="action-supplychain-sale-order-validate-check-stock-location">
-		<error message="The stock location must be filled." if="stockLocation == null"/>
-	</action-validate>
-
 	<action-validate name="action-supplychain-sale-order-validate-check-amount-timetable">
 		<alert message="The amount to be spread over the timetable is negative." if="amountToBeSpreadOverTheTimetable &lt; 0"/>
 	</action-validate>

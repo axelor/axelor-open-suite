@@ -61,6 +61,7 @@
 - Improve filter for supplier partner in sale order lines.
 - MRP : manage the case where sale order line is partially delivered
 - Moved Sale order Delivery state in Supplychain module
+- If a service is selected on a sale order and we don't generate a stock move for services, the sale order line should be considered as delivered (or for the oppoiste).
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -76,6 +77,7 @@
 - Fix MRP calculation exception
 - Fix manufacturing order stock move generation in unusual case.
 - Fix default supplier in purchase order generation from sale order.
+- Stock location is no more required if supplychain module is not enabled
 
 
 ## [Unreleased 4.x]

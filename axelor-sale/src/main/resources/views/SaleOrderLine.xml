@@ -77,17 +77,28 @@
 				<field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
 			</panel>
 		</panel>
+ 
 		<panel-tabs>
 			<panel name="informations" title="Informations" hideIf="typeSelect == 1">
-				<field name="deliveryState" showTitle="false" colSpan="12" showIf="deliveryState > 0" if="__config__.app.isApp('supplychain')">
+  				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer><![CDATA[
-                <h3>
-                    <span ng-show="record.deliveryState == 1" class="label label-important" x-translate>Stock move not delivered</span>
-                    <span ng-show="record.deliveryState == 2" class="label label-warning" x-translate>Partial stock move(s) delivered</span>
-                    <span ng-show="record.deliveryState == 3" class="label label-success" x-translate>Stock move(s) delivered</span>
-                </h3>
-				]]></viewer>
+                        <h4>
+                            <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
+                            <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                        </h4>
+                    ]]>
+					</viewer>
 				</field>
+				<field name="deliveryState" showTitle="false" colSpan="3" showIf="deliveryState > 0" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+					<viewer><![CDATA[
+	                    <h4>
+	                        <span class="label label-important" ng-show="record.deliveryState == 1" x-translate>Not delivered</span>
+	                        <span class="label label-warning" ng-show="record.deliveryState == 2" x-translate>Partially delivered</span>
+	                        <span class="label label-success" ng-show="record.deliveryState == 3" x-translate>Delivered</span>
+	                    </h4>
+					]]></viewer>
+				</field>
+       			<spacer/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange,action-sale-order-line-compute-total-pack,action-method-sale-order-line-available-stock" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
 				<panel colSpan="6">
 					<field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
@@ -109,16 +120,7 @@
 				<field name="priceDiscounted" colSpan="4" hidden="true"/>
 				<field name="exTaxTotal" readonly="true" hideIf="typeSelect == 2" />
 				<field name="inTaxTotal" readonly="true" hideIf="typeSelect == 2" />
-				<field name="invoiced" showIf="id &amp;&amp; $readonly()" showTitle="false">
-					<viewer>
-						<![CDATA[
-                        <h4>
-                            <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
-                            <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                        </h4>
-                    ]]>
-					</viewer>
-				</field>
+				<spacer/>
 				<panel name="discount" title="Discount" hideIf="typeSelect != 0">
 					<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
 					<field name="discountAmount" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
