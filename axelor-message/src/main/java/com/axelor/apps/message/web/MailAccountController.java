@@ -79,4 +79,9 @@ public class MailAccountController {
 		response.setFlash(I18n.get(String.format("Total email fetched: %s", totalFetched)));
 	}
 
+	public void validate(ActionRequest request, ActionResponse response) {
+
+		if (request.getContext().get("newPassword") != null)
+			response.setValue("password", mailAccountService.getEncryptPassword(request.getContext().get("newPassword").toString()));
+	}
 }

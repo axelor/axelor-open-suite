@@ -182,7 +182,8 @@ public class MessageServiceImpl implements MessageService {
 		if ( mailAccount == null ){ return message; }
 
 		log.debug("Sent email");
-		com.axelor.mail.MailAccount account = new SmtpAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccount.getPassword(), Beans.get(MailAccountService.class).getSecurity(mailAccount) );
+		MailAccountService mailAccountService = Beans.get(MailAccountService.class);
+		com.axelor.mail.MailAccount account = new SmtpAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), mailAccountService.getDecryptPassword(mailAccount.getPassword()), mailAccountService.getSecurity(mailAccount) );
 
 		List<String> 
 			replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet()),
