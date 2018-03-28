@@ -59,7 +59,8 @@
 - Replaced selection field for language on Partner per a M2O to Language object to be able to add new partner language easily.
 - New select on product to choose if we want real or planned price for last product price or average price.
 - Improve filter for supplier partner in sale order lines.
-
+- MRP : manage the case where sale order line is partially delivered
+- Moved Sale order Delivery state in Supplychain module
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

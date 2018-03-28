@@ -32,7 +32,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -114,7 +114,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
         }
 
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.getDeliveryState() > SaleOrderRepository.STATE_NOT_DELIVERED
+            if (saleOrderLine.getDeliveryState() > SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED
                     && saleOrderView.getSaleOrderLineList() == null
                     || !saleOrderView.getSaleOrderLineList().contains(saleOrderLine)) {
                 throw new AxelorException(saleOrderView, IException.INCONSISTENCY,

@@ -213,7 +213,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
 			if (saleOrderLine.getDeliveryState() == 0) {
-	            saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+	            saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
 			}
 
 			if (stockMoveLine != null) {
@@ -234,7 +234,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					stockMove,
 					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), null);
 
-			saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+			saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
 			return stockMoveLine;
@@ -271,26 +271,26 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
     private int computeDeliveryState(SaleOrder saleOrder) {
         if (saleOrder.getSaleOrderLineList() == null) {
-            return 0;
+            return SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED;
         }
 
-        int deliveryState = SaleOrderRepository.STATE_DELIVERED;
+        int deliveryState = SaleOrderRepository.DELIVERY_STATE_DELIVERED;
         int deliveredCount = 0;
 
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.getDeliveryState() != SaleOrderRepository.STATE_DELIVERED) {
-                if (saleOrderLine.getDeliveryState() == SaleOrderRepository.STATE_PARTIALLY_DELIVERED) {
-                    return SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
+            if (saleOrderLine.getDeliveryState() != SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
+                if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
+                    return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
                 }
 
-                deliveryState = SaleOrderRepository.STATE_NOT_DELIVERED;
+                deliveryState = SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED;
             } else {
                 ++deliveredCount;
             }
         }
 
-        if (deliveryState == SaleOrderRepository.STATE_NOT_DELIVERED && deliveredCount > 0) {
-            return SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
+        if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED && deliveredCount > 0) {
+            return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
         }
 
         return deliveryState;

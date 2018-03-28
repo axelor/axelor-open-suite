@@ -213,7 +213,7 @@
 	    	]]></viewer>
 	    </field>
 	    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3 || clientPartner != null" />
-	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" >
+	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 	    	<viewer><![CDATA[
 		  		<div>
 				  <div class="span7">
