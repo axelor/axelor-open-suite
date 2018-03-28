@@ -96,6 +96,7 @@ import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -123,7 +124,10 @@ public class ICalendarService {
 	
 	@Inject
 	protected ICalendarEventRepository iEventRepo;
-	
+
+	@Inject
+	private MailAccountService mailAccountService;
+
 	public static class GenericPathResolver extends PathResolver {
 		 
         private String principalPath;
@@ -194,7 +198,7 @@ public class ICalendarService {
 		
 		try 
 		{
-			connected = store.connect(cal.getLogin(), cal.getPassword());
+			connected = store.connect(cal.getLogin(), getCalendarDecryptPassword(cal.getPassword()));
 		}
 		finally {
 			store.disconnect();
@@ -647,7 +651,9 @@ public class ICalendarService {
 		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
 		ICalendarStore store = new ICalendarStore(url, RESOLVER);
 		try {
-			if(calendar.getLogin() != null && calendar.getPassword() != null && store.connect(calendar.getLogin(), calendar.getPassword())){
+			String password = getCalendarDecryptPassword(calendar.getPassword());
+
+			if(calendar.getLogin() != null && calendar.getPassword() != null && store.connect(calendar.getLogin(), getCalendarDecryptPassword(calendar.getPassword()))){
 				List<CalDavCalendarCollection> colList = store.getCollections();
 				if(!colList.isEmpty()){
 					calendar = doSync(calendar, colList.get(0));
@@ -867,7 +873,7 @@ public class ICalendarService {
 			URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
 			ICalendarStore store = new ICalendarStore(url, RESOLVER);
 			try {
-				if(store.connect(calendar.getLogin(), calendar.getPassword())){
+				if(store.connect(calendar.getLogin(), getCalendarDecryptPassword(calendar.getPassword()))){
 					List<CalDavCalendarCollection> colList = store.getCollections();
 					if(!colList.isEmpty()){
 						CalDavCalendarCollection collection = colList.get(0);
@@ -906,5 +912,14 @@ public class ICalendarService {
 		
 		return iEventRepo.all().filter("self.calendar = ?1", calendar).fetch();
 	}
-	
+
+	public String getCalendarEncryptPassword(String password) {
+
+		return mailAccountService.getEncryptPassword(password);
+	}
+
+	public String getCalendarDecryptPassword(String password) {
+
+		return mailAccountService.getDecryptPassword(password);
+	}
 }

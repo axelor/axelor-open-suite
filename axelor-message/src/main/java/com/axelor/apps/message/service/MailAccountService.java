@@ -38,6 +38,10 @@ public interface MailAccountService {
 	
 	public String getSignature(EmailAccount mailAccount);
 	
+	public String getEncryptPassword(String password);
+
+	public String getDecryptPassword(String password);
+
 	public int fetchEmails(EmailAccount mailAccount, boolean unseenOnly) throws MessagingException, IOException;
 	
 }
