@@ -1,0 +1,8 @@
+"importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
+1;"partner";"Identifier for accounts and contacts";1;10;"P";;1;0
+107;"debitReject";"Direct debit reject";1;7;"REJDD%YY";;1;1
+108;"doubtfulCustomer";"Transfer in doubtful receivables";1;6;"DBTREC%YY";;1;1
+206;"product";"Product";1;12;"PR";;1;0
+207;"expense";"Expense N°";1;7;"EXP%YY%FM";;1;1
+169;"subrogationRelease";"Subrogation release";1;4;"SR%YY%FM";;1;1
+170;"depositSlip";"Deposit slip";1;4;"DS%YY%FM";;1;1

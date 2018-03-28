@@ -15,6 +15,24 @@
         <field name="typeSelect"/>
     </grid>
     
+    <tree name="stock-location-tree" title="Stock Locations">
+    	<column name="name" type="string" />
+    	<column name="typeSelect" type="integer" />
+    	<column name="company" type="reference" />
+
+    	<node model="com.axelor.apps.stock.db.StockLocation" domain="self.parentStockLocation is null" onClick="action-stock-location-view-show-form-view">
+            <field as="name" name="name"/>
+            <field name="typeSelect" as="typeSelect"/>
+            <field name="company" as="company"/>
+        </node>
+        
+        <node model="com.axelor.apps.stock.db.StockLocation" parent="parentStockLocation" draggable="true" onClick="action-stock-location-view-show-form-view" >
+            <field as="name" name="name"/>
+            <field name="typeSelect" as="typeSelect"/>
+        	<field name="company" as="company"/>
+        </node>
+    </tree>
+    
 	<form name="stock-location-form" title="Stock location" model="com.axelor.apps.stock.db.StockLocation" onNew="action-stock-location-record-new" width="large" onLoad="action-stock-location-method-set-stock-location-value">
 		<toolbar>
 			<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory"/>
@@ -77,5 +95,10 @@
     <action-method name="action-stock-location-method-set-stock-location-value">
     	<call class="com.axelor.apps.stock.web.StockLocationController" method="setStocklocationValue"/>
     </action-method>
+    
+    <action-view name="action-stock-location-view-show-form-view" title="Stock location" model="com.axelor.apps.stock.db.StockLocation">
+    	<view type="form" name="stock-location-form"/>
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
 
 </object-views>
