@@ -20,7 +20,7 @@ package com.axelor.apps.hr.service.lunch.voucher;
 import java.math.RoundingMode;
 import java.util.List;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;

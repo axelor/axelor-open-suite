@@ -17,7 +17,7 @@
  */
 package com.axelor.csv.script;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;

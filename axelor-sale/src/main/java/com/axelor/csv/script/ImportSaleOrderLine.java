@@ -15,27 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.db;
+package com.axelor.csv.script;
 
-/**
- * Interface of PriceListLine object. Enum all static variable of packages.
- * 
- */
-@Deprecated
-public interface IPriceListLine {
+import java.util.Map;
 
-	/**
-	 * Static select for PriceListLine
-	 */
-	
-	// AMOUNT TYPE SELECT
-	static final int AMOUNT_TYPE_PERCENT = 1;
-	static final int AMOUNT_TYPE_FIXED = 2;
-	static final int AMOUNT_TYPE_NONE = 3;
-	
-	// AMOUNT TYPE SELECT
-	static final int TYPE_DISCOUNT = 1;
-	static final int TYPE_ADDITIONNAL = 2;
-	static final int TYPE_REPLACE = 3;
-	
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
+
+public class ImportSaleOrderLine {
+
+	public Object importSaleOrderLine(Object bean, Map<String, Object> values) throws AxelorException {
+		assert bean instanceof SaleOrderLine;
+
+		SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
+		SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+		saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+
+		return saleOrderLine;
+	}
 }

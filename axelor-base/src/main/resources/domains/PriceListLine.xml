@@ -17,9 +17,17 @@
 			<finder-method name="findByPriceListAndProduct" using="priceList,product"/>
 
 			<extra-code>
-				public static final int TYPE_PERCENT = 1;
-				public static final int TYPE_FIXED = 2;
-				public static final int TYPE_NONE = 3;
+			<![CDATA[
+				// AMOUNT TYPE SELECT
+				public static final int AMOUNT_TYPE_PERCENT = 1;
+				public static final int AMOUNT_TYPE_FIXED = 2;
+				public static final int AMOUNT_TYPE_NONE = 3;
+
+				// AMOUNT TYPE SELECT
+				public static final int TYPE_DISCOUNT = 1;
+				public static final int TYPE_ADDITIONNAL = 2;
+				public static final int TYPE_REPLACE = 3;
+			]]>
 			</extra-code>
 		</entity>
 		

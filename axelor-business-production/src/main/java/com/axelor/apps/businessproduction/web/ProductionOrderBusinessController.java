@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.businessproduction.web;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServiceBusinessImpl;
 import com.axelor.apps.production.db.ProductionOrder;

@@ -22,8 +22,13 @@
 
 			<extra-code>
 				<![CDATA[
-                    public static final int TYPE_SALE = 1;
-                    public static final int TYPE_PURCHASE = 2;
+                    // TYPE SELECT
+					public static final int TYPE_SALE = 1;
+					public static final int TYPE_PURCHASE = 2;
+
+					// BASED ON SELECT
+					public static final int BASED_ON_COST_PRICE = 1;
+					public static final int BASED_ON_SALE_PRICE = 2;
                 ]]>
 			</extra-code>
 		</entity>

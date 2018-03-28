@@ -18,7 +18,6 @@
 package com.axelor.apps.production.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.production.db.repo.BillOfMaterialManagementRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
@@ -90,7 +89,6 @@ public class ProductionModule extends AxelorModule {
 		bind(ConfiguratorProdProcessLineService.class).to(ConfiguratorProdProcessLineServiceImpl.class);
 		bind(ConfiguratorServiceImpl.class).to(ConfiguratorServiceProductionImpl.class);
 		bind(AppProductionService.class).to(AppProductionServiceImpl.class);
-		bind(AppBaseServiceImpl.class).to(AppProductionServiceImpl.class);
 		bind(ProdProcessRepository.class).to(ProdProcessManagementRepository.class);
 	}
 

@@ -13,7 +13,7 @@
 		</toolbar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
-		<field name="emailAddress.address"/>
+		<field name="emailAddress.address" title="Email"/>
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
@@ -28,7 +28,8 @@
 		</toolbar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
-		<field name="emailAddress.address" placeholder="whatever@example.com"/>
+		<field name="emailAddress.address" placeholder="whatever@example.com"
+		  title="Email"/>
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email"  icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
@@ -43,7 +44,8 @@
 		</toolbar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
-		<field name="emailAddress.address" placeholder="whatever@example.com"/>
+		<field name="emailAddress.address" placeholder="whatever@example.com"
+		  title="Email"/>
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
@@ -57,7 +59,8 @@
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
-		<field name="emailAddress.address" placeholder="whatever@example.com"/>
+		<field name="emailAddress.address" placeholder="whatever@example.com"
+		  title="Email"/>
 		<field name="jobTitle"/>
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
@@ -67,7 +70,7 @@
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
-		<field name="emailAddress.address"/>
+		<field name="emailAddress.address" title="Email"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
 
@@ -306,7 +309,7 @@
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
-		<field name="emailAddress.address"/>
+		<field name="emailAddress.address" title="Email"/>
 	</grid>
 
 	<form name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
@@ -478,7 +481,7 @@
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
-		<field name="emailAddress.address" />
+		<field name="emailAddress.address" title="Email"/>
 		<field name="partnerCategory" />
 		<field name="partnerTypeSelect" />
 		<field name="titleSelect" />
@@ -513,7 +516,7 @@
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
-		<field name="emailAddress.address" />
+		<field name="emailAddress.address" title="Email"/>
 		<field name="partnerCategory" />
 		<field name="contactAddress" />
 		<field name="titleSelect" />
@@ -543,7 +546,7 @@
 		<field name="firstName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
-		<field name="emailAddress.address"/>
+		<field name="emailAddress.address" title="Email"/>
 	</grid>
 
 	<form name="partner-employee-form" title="Employee" model="com.axelor.apps.base.db.Partner"

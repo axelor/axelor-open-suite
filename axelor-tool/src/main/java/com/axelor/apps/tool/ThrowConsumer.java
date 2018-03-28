@@ -15,25 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.db;
+package com.axelor.apps.tool;
 
 /**
- * Interface of PriceList object. Enum all static variable of packages.
- *
+ * Represents an operation that accepts one argument, returns no result and can throws exception.
+ * @param <T>
  */
-@Deprecated
-public interface IPriceList {
-
-	/**
-	 * Static select for PriceList
-	 */
-
-	// TYPE SELECT
-	public static final int TYPE_SALE = 1;
-	public static final int TYPE_PURCHASE = 2;
-
-	// BASED ON SELECT
-	public static final int BASED_ON_COST_PRICE = 1;
-	public static final int BASED_ON_SALE_PRICE = 2;
-
+@FunctionalInterface
+public interface ThrowConsumer<T> {
+    /**
+     * Performs this operation on the given argument.
+     * @param t the input argument.
+     * @throws Exception from operation.
+     */
+    void accept(T t) throws Exception;
 }

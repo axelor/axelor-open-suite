@@ -20,7 +20,7 @@ package com.axelor.apps.helpdesk.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.base.db.AppHelpdesk;
 import com.axelor.apps.base.db.Company;

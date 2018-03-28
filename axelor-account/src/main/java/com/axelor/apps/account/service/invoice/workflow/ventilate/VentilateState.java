@@ -19,24 +19,21 @@ package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.List;
-
 import java.time.LocalDate;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.axelor.inject.Beans;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.JournalService;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -46,6 +43,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -53,7 +51,7 @@ import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 public class VentilateState extends WorkflowInvoice {
-	
+
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected SequenceService sequenceService;
@@ -118,13 +116,12 @@ public class VentilateState extends WorkflowInvoice {
 	}
 
 	protected void setPartnerAccount() throws AxelorException {
-		AccountingSituation accountSituation = Beans.get(AccountingSituationService.class).getAccountingSituation(invoice.getPartner(), invoice.getCompany());
-		if(accountSituation == null)  {
-			accountSituation = Beans.get(AccountingSituationService.class).createAccountingSituation(invoice.getPartner(), invoice.getCompany());
-		}
 
 		if(invoice.getPartnerAccount() == null)  {
-			Account account = InvoiceToolService.isPurchase(invoice) ? accountSituation.getSupplierAccount() : accountSituation.getCustomerAccount();
+			AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
+			Account account = InvoiceToolService.isPurchase(invoice) ?
+					situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany()) :
+						situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
 
 			if (account == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_5));
