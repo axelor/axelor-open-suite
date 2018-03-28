@@ -8,7 +8,7 @@
 	  <field name="user"/>
 	</grid>
 	
-	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" onSave="com.axelor.apps.crm.web.CalendarController:validate" >
+	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" onSave="com.axelor.apps.base.web.ICalendarController:validate" >
 	<toolbar>
 		  <button name="testConnect" title="Connect" onClick="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:testConnect"/>
 		  <button name="exportCalendar" title="Export calendar" onClick="com.axelor.apps.base.web.ICalendarController:exportCalendar"/>
