@@ -51,7 +51,8 @@
 		public static final int REPORT_ANALYTIC_BALANCE = 2000;
 		
 		// EXPORT TYPE SELECT
-		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 1000; 
+        public static final int EXPORT_ADMINISTRATION = 1000;
+		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 1001;
 		public static final int EXPORT_SALES = 1006;
 		public static final int EXPORT_REFUNDS = 1007;
 		public static final int EXPORT_TREASURY = 1008;

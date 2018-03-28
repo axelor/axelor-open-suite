@@ -843,7 +843,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 	
 	/**
-	* Méthode réalisant l'export des FEC (Fichiers des écritures Comptables)
+	* Méthode réalisant l'export des FEC (Fichiers des écritures Comptables) en administration
 	* @throws AxelorException
 	* @throws IOException
 	*/
@@ -949,8 +949,119 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 		}
 		
 	}
-	
-	
+
+	/**
+	* Méthode réalisant l'export des FEC (Fichiers des écritures Comptables) en interne
+	* @throws AxelorException
+	* @throws IOException
+	*/
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void exportMoveLineTypeSelect1001(MoveLineReport moveLineReport) throws AxelorException, IOException {
+
+		log.info("In Export type 1001 service : ");
+		List<String[]> allMoveLineData = new ArrayList<String[]>();
+		Company company = moveLineReport.getCompany();
+
+		String moveLineQueryStr = "";
+		moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
+		moveLineQueryStr += String.format(" AND self.move.period.year = %s", moveLineReport.getYear().getId());
+
+		if(moveLineReport.getPeriod() != null)	{
+			moveLineQueryStr += String.format(" AND self.move.period = %s", moveLineReport.getPeriod().getId());
+		}
+		else {
+			if (moveLineReport.getDateFrom() != null){
+				moveLineQueryStr += String.format(" AND self.date >= '%s'", moveLineReport.getDateFrom().toString());
+			}
+			if (moveLineReport.getDateTo() != null){
+				moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDateTo().toString());
+			}
+		}
+		if(moveLineReport.getDate() != null)  {
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());
+		}
+
+		moveLineQueryStr += String.format("AND self.move.ignoreInAccountingOk = false AND self.move.accountingOk = false AND self.move.journal.notExportOk = false");
+
+		List<MoveLine> moveLineList = moveLineRepo.all().filter("self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED).order("date").order("name").fetch();
+		if(moveLineList.size() > 0) {
+
+			for (MoveLine moveLine : moveLineList) {
+				String items[] = new String[18];
+				Move move = moveLine.getMove();
+				Journal journal = move.getJournal();
+				items[0] = journal.getCode();
+				items[1] = journal.getName();
+				items[2] = moveLine.getName();
+				items[3] = moveLine.getDate().toString("YYYYMMdd");
+				items[4] = moveLine.getAccount().getCode();
+				items[5] = moveLine.getAccount().getName();
+				items[6] = "";
+				items[7] = "";
+				Partner partner = moveLine.getPartner();
+				if(partner != null)  {
+					items[6] = partner.getPartnerSeq();
+					items[7] = partner.getFullName();
+				}
+				items[8] = moveLine.getOrigin();
+				items[9] = moveLine.getDate().toString("YYYYMMdd"); // Pour le moment on va utiliser la date des lignes d'écriture.
+				items[10]= moveLine.getDescription();
+				items[11]= moveLine.getDebit().toString();
+				items[12]= moveLine.getCredit().toString();
+				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
+					List<String> ReconcileSeqList = new ArrayList<String>();
+					List<String> ReconcileDateList = new ArrayList<String>();
+
+					for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+						ReconcileSeqList.add(reconcile.getReconcileSeq());
+						ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
+					}
+					items[13] = StringUtils.join(ReconcileSeqList, "; ");
+					items[14]= StringUtils.join(ReconcileDateList, "; ");
+				}
+				else{
+					List<String> ReconcileSeqList = new ArrayList<String>();
+					List<String> ReconcileDateList = new ArrayList<String>();
+					for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+						if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
+							ReconcileSeqList.add(reconcile.getReconcileSeq());
+							ReconcileDateList.add(reconcile.getReconciliationDate().toString("YYYYMMdd"));
+						}
+					}
+					items[13] = StringUtils.join(ReconcileSeqList, "; ");
+					items[14]= StringUtils.join(ReconcileDateList, "; ");
+				}
+				items[15]= move.getValidationDate().toString("YYYYMMdd");
+				items[16]= moveLine.getCurrencyAmount().toString();
+				if(move.getCurrency() != null){
+					items[17]= move.getCurrency().getCode();
+				}
+				allMoveLineData.add(items);
+
+				move.setAccountingOk(true);
+				move.setMoveLineReport(moveLineReport);
+			}
+		}
+
+		String fileName = this.setFileName(moveLineReport);
+		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
+		//TODO create a template Helper
+
+		new File(filePath).mkdirs();
+		log.debug("Full path to export : {}{}" , filePath, fileName);
+//		CsvTool.csvWriter(filePath, fileName, '|', null, allMoveLineData);
+		CsvTool.csvWriter(filePath, fileName, '|', this.createHeaderForPayrollJournalEntry(), allMoveLineData);
+		moveLineReportRepo.save(moveLineReport);
+
+		Path path = Paths.get(filePath+fileName);
+
+		try (InputStream is = new FileInputStream(path.toFile())) {
+			Beans.get(MetaFiles.class).attach(is, fileName, moveLineReport);
+		}
+
+	}
+
+
 	/**
 	 * Méthode réalisant l'export SI - Agresso des fichiers détails
 	 * @param mlr
@@ -1269,9 +1380,13 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 			this.exportMoveLineTypeSelect1009(moveLineReport, false);
 			break;
+
+		case MoveLineReportRepository.EXPORT_ADMINISTRATION:
+			this.exportMoveLineTypeSelect1000(moveLineReport);
+			break;
 			
 		case MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
-			this.exportMoveLineTypeSelect1000(moveLineReport);
+			this.exportMoveLineTypeSelect1001(moveLineReport);
 			break;
 			
 		default:
