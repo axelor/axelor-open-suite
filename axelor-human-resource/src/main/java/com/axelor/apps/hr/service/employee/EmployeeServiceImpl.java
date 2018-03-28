@@ -74,7 +74,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		
 		LOG.debug("Employee: {}",employee);
 
-		BigDecimal dailyWorkHrs = new BigDecimal(1);
+		BigDecimal dailyWorkHrs = new BigDecimal(0);
 		String timePref = null;
 		if(employee != null)  {
 			timePref = employee.getTimeLoggingPreferenceSelect();

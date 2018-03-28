@@ -48,6 +48,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
@@ -699,14 +700,18 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	@Override
 	public String getPeriodTotalConvertTitleByUserPref(User user) {
-		String title;
+		String title = "";
 		if (user.getEmployee() != null) {
 			if (user.getEmployee().getTimeLoggingPreferenceSelect() != null) {
-				title = user.getEmployee().getTimeLoggingPreferenceSelect().equals("days") ? I18n.get("Days") : user.getEmployee().getTimeLoggingPreferenceSelect().equals("minutes") ? I18n.get("Minutes") : I18n.get("Hours");
-				return title;
+				title = user.getEmployee().getTimeLoggingPreferenceSelect();
 			}
 		}
-		return null;
+		else{
+			title = Beans.get(AppBaseService.class).getAppBase().getTimeLoggingPreferenceSelect();
+		}
+		return title.equals("days") ? I18n.get("Days") :
+			title.equals("minutes") ? I18n.get("Minutes") :
+				I18n.get("Hours");
 	}
 
 	@Override

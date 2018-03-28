@@ -98,7 +98,7 @@
 		</panel>
 		<panel sidebar="true" name="totals" title="Totals on period">
 			<field name="periodTotal" readonly="true"/>
-			<field name="$periodTotalConvert" readonly="true" hidden="true"/>
+			<field name="$periodTotalConvert" type="decimal" readonly="true" hidden="true"/>
 		</panel>
 		<panel name="lines">
 			<panel-dashlet name="timesheetLineEditor" colSpan="12" action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
