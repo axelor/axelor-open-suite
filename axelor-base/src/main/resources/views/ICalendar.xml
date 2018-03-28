@@ -8,12 +8,12 @@
 	  <field name="user"/>
 	</grid>
 	
-	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" >
+	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" onSave="com.axelor.apps.crm.web.CalendarController:validate" >
 	<toolbar>
-		  <button name="testConnect" title="Connect" onClick="com.axelor.apps.base.web.ICalendarController:testConnect"/>
+		  <button name="testConnect" title="Connect" onClick="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:testConnect"/>
 		  <button name="exportCalendar" title="Export calendar" onClick="com.axelor.apps.base.web.ICalendarController:exportCalendar"/>
     	  <button name="importCalendar" title="Import calendar" onClick="com.axelor.apps.base.web.ICalendarController:importCalendar"/>
-    	  <button name="synchronizeCalendars" title="Synchronize calendar" onClick="save,com.axelor.apps.base.web.ICalendarController:synchronizeCalendar"/>
+    	  <button name="synchronizeCalendars" title="Synchronize calendar" onClick="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:synchronizeCalendar"/>
     </toolbar>
 	  <panel name="main" >
 		  <field name="name" />
@@ -29,7 +29,12 @@
 		</panel>
 		<panel name="credentials" title="Credentials">
 		  <field name="login"/>
-		  <field name="password" widget="password"/>
+			<field name="change" title="Change password?" showIf="id &amp;&amp; !$readonly()" widget="boolean"/>
+			<panel colSpan="12" showIf="change || !id">
+				<field name="newPassword" title="Password" placeholder="new password" requiredIf="!id || change" validIf="(!change &amp;&amp; id) || confirm == newPassword" widget="password" />
+				<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
+				<field name="password" hidden="true"/>
+			</panel>
 		</panel>
 	  <panel-dashlet action="action-icalendar-view-ievent-dashlet"/>
 	</form>
