@@ -17,23 +17,6 @@
  */
 package com.axelor.apps.base.service.message;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.invoke.MethodHandles;
-import java.net.URLEncoder;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.mail.MessagingException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
@@ -55,6 +38,21 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.mail.MessagingException;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.invoke.MethodHandles;
+import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl {
 
@@ -63,7 +61,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 	protected UserService userService;
 
 	@Inject
-	public MessageServiceBaseImpl( MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository, UserService userService) {
+	public MessageServiceBaseImpl(MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository, UserService userService) {
 		super(metaAttachmentRepository, messageRepository);
 		this.userService = userService;
 	}
@@ -131,7 +129,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 		return messageRepository.save(message);
 		
 	}
-	
+
 	public List<String> getEmailAddressNames(Set<EmailAddress> emailAddressSet)  {
         
 	   List<String> recipients = Lists.newArrayList();

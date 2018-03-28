@@ -24,8 +24,8 @@ import java.util.List;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.exception.AxelorException;
 
@@ -52,7 +52,7 @@ public class ElementsToInvoiceService {
 		Product product = elementsToInvoice.getProduct();
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), elementsToInvoice.getSalePrice(),
-					elementsToInvoice.getSalePrice(),null,elementsToInvoice.getQty(),elementsToInvoice.getUnit(), null,priority,BigDecimal.ZERO,IPriceListLine.AMOUNT_TYPE_NONE,
+					elementsToInvoice.getSalePrice(),null,elementsToInvoice.getQty(),elementsToInvoice.getUnit(), null,priority,BigDecimal.ZERO, PriceListLineRepository.AMOUNT_TYPE_NONE,
 					elementsToInvoice.getSalePrice().multiply(elementsToInvoice.getQty()), null,false)  {
 
 			@Override

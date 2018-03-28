@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.factory;
 
-//import javax.inject.Inject;
+//import com.google.inject.Inject;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.validate.ValidateState;

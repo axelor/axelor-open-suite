@@ -15,28 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.app.production.db;
+package com.axelor.apps.tool;
 
 /**
- * Interface of Event package. Enum all static variable of packages.
- * 
- * @author dubaux
- * 
+ * Represents an operation that accepts one argument, returns no result and can throws exception.
+ * @param <T>
  */
-@Deprecated
-public interface IManufOrder {
-
-
-	/**
-	 * Static status select
-	 */
-
-	static final int STATUS_DRAFT = 1;
-	static final int STATUS_CANCELED = 2;
-	static final int STATUS_PLANNED = 3;
-	static final int STATUS_IN_PROGRESS = 4;
-	static final int STATUS_STANDBY = 5;
-	static final int STATUS_FINISHED = 6;
-
-	
+@FunctionalInterface
+public interface ThrowConsumer<T> {
+    /**
+     * Performs this operation on the given argument.
+     * @param t the input argument.
+     * @throws Exception from operation.
+     */
+    void accept(T t) throws Exception;
 }

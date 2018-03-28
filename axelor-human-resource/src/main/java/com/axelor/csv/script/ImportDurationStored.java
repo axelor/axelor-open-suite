@@ -32,14 +32,15 @@ public class ImportDurationStored {
 	@Inject
 	protected EmployeeService employeeService;
 
-	public String getDurationHoursImport(String duration, String userId) throws AxelorException{
+	public String getDurationHoursImport(String duration, String userImportId) throws AxelorException{
 		
-		if(StringUtils.isEmpty(duration) || StringUtils.isEmpty(userId)) {
+		if(StringUtils.isEmpty(duration) || StringUtils.isEmpty(userImportId)) {
 			return duration;
 		}
 		
 		BigDecimal visibleDuration = new BigDecimal(duration);
-		User user = Beans.get(UserRepository.class).find(Long.valueOf(userId));
+        User user = Beans.get(UserRepository.class).all().filter("self.importId = :importId")
+                .bind("importId", Long.valueOf(userImportId)).fetchOne();
 		BigDecimal durationStored = employeeService.getUserDuration(visibleDuration, user, true);
 		return durationStored.toString();
 	}

@@ -8,7 +8,19 @@
         <field name="senderUser" form-view="user-form" grid-view="user-grid"/>
         <field name="subject"/>
     </grid>
-    
+
+	<grid name="message-not-sent-grid" title="Emails"
+		  model="com.axelor.apps.message.db.Message" orderBy="-sentDateT"
+		  canNew="false" canDelete="false" canArchive="false">
+		<toolbar>
+			<button name="regenerateMessage" title="Regenerate messages" onClick="action-message-method-regenerate-messages"/>
+			<button name="resendMessage" title="Resend messages" onClick="action-message-method-send-messages"/>
+		</toolbar>
+		<field name="createdOn"/>
+		<field name="senderUser" form-view="user-form" grid-view="user-grid"/>
+		<field name="subject"/>
+	</grid>
+
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message"
     onNew="action-group-message-message-onnew">
 		<toolbar>
@@ -101,7 +113,15 @@
 	<action-method name="action-message-method-send-message">
 		<call class="com.axelor.apps.message.web.MessageController" method="sendMessage"/>
 	</action-method>
-    
+
+    <action-method name="action-message-method-send-messages">
+		<call class="com.axelor.apps.message.web.MessageController" method="sendMessages"/>
+	</action-method>
+
+	<action-method name="action-message-method-regenerate-messages">
+		<call class="com.axelor.apps.message.web.MessageController" method="regenerateMessages"/>
+	</action-method>
+
     <!-- 	Common action for all messages sent by email using a template and the context -->
 	
 	<action-method name="action-send-by-email-with-template">

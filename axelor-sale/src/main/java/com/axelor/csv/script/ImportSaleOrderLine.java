@@ -15,28 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.app.production.db;
+package com.axelor.csv.script;
 
-/**
- * Interface of Event package. Enum all static variable of packages.
- * 
- * @author dubaux
- * 
- */
-@Deprecated
-public interface IOperationOrder {
+import java.util.Map;
 
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 
-	/**
-	 * Static status select
-	 */
+public class ImportSaleOrderLine {
 
-	static final int STATUS_DRAFT = 1;
-	static final int STATUS_CANCELED = 2;
-	static final int STATUS_PLANNED = 3;
-	static final int STATUS_IN_PROGRESS = 4;
-	static final int STATUS_STANDBY = 5;
-	static final int STATUS_FINISHED = 6;
+	public Object importSaleOrderLine(Object bean, Map<String, Object> values) throws AxelorException {
+		assert bean instanceof SaleOrderLine;
 
-	
+		SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
+		SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+		saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+
+		return saleOrderLine;
+	}
 }

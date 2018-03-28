@@ -60,15 +60,27 @@ public class StockLocationServiceImpl implements StockLocationService {
 		this.productRepo = productRepo;
 	}
 
-	public StockLocation getDefaultStockLocation(Company company) {
-		try {
-			StockConfigService stockConfigService = Beans.get(StockConfigService.class);
-			StockConfig stockConfig = stockConfigService.getStockConfig(company);
-			return stockConfig.getDefaultStockLocation();
-		} catch (Exception e) {
-			return null;
-		}
-	}
+    @Override
+    public StockLocation getDefaultReceiptStockLocation(Company company) {
+        try {
+            StockConfigService stockConfigService = Beans.get(StockConfigService.class);
+            StockConfig stockConfig = stockConfigService.getStockConfig(company);
+            return stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public StockLocation getPickupDefaultStockLocation(Company company) {
+        try {
+            StockConfigService stockConfigService = Beans.get(StockConfigService.class);
+            StockConfig stockConfig = stockConfigService.getStockConfig(company);
+            return stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 	public List<StockLocation> getNonVirtualStockLocations() {
 		return stockLocationRepo.all().filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL).fetch();

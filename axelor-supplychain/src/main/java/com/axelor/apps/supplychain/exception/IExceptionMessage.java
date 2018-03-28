@@ -120,12 +120,6 @@ public interface IExceptionMessage {
 	String VENTILATE_STATE_MISSING_ADVANCE_ACCOUNT = /*$$(*/ "Please configure the advance payment account for the company %s" /*)*/;
 
 	/**
-	 * Stock Config
-	 */
-	String STOCK_CONFIG_SUPPLYCHAIN_RECEIPT = /*$$(*/ "You must configure a receipt stock location for company %s" /*)*/;
-	String STOCK_CONFIG_SUPPLYCHAIN_PICKUP = /*$$(*/ "You must configure a pickup stock location for company %s." /*)*/;
-
-	/**
 	 * Supply Chain Config
 	 */
 

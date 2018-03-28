@@ -27,14 +27,27 @@ import com.axelor.apps.stock.db.StockLocation;
 
 public interface StockLocationService {
 
-    /**
-     * Get the default stock location of the given company
-     * @param company
-     * @return the default stock location or null
-     */
-    public StockLocation getDefaultStockLocation(Company company);
+	/**
+	 * Get default receipt location for the given company.
+	 *
+	 * @param company
+	 * @return the default stock location if found,
+	 * null if there was an exception or if the default location
+	 * is empty
+	 */
+	StockLocation getDefaultReceiptStockLocation(Company company);
 
-	public BigDecimal getQty(Long productId, Long locationId, String qtyType);
+	/**
+	 * Get default pickup location for the given company.
+	 *
+	 * @param company
+	 * @return the default stock location if found,
+	 * null if there was an exception or if the default location
+	 * is empty
+	 */
+	StockLocation getPickupDefaultStockLocation(Company company);
+
+    public BigDecimal getQty(Long productId, Long locationId, String qtyType);
 	
 	public BigDecimal getRealQty(Long productId, Long locationId);
 	

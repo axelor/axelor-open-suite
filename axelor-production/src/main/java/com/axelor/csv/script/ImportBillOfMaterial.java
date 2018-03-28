@@ -19,7 +19,7 @@ package com.axelor.csv.script;
 
 import java.util.Map;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
