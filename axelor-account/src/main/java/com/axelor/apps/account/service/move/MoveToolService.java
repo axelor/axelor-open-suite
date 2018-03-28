@@ -27,14 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -55,7 +54,7 @@ public class MoveToolService {
 	protected AccountConfigService accountConfigService;
 
 	@Inject
-	public MoveToolService(MoveLineService moveLineService, MoveLineRepository moveLineRepository, 
+	public MoveToolService(MoveLineService moveLineService, MoveLineRepository moveLineRepository,
 			AccountCustomerService accountCustomerService, AccountConfigService accountConfigService) {
 
 		this.moveLineService = moveLineService;
@@ -221,28 +220,8 @@ public class MoveToolService {
 
 
 	public Account getCustomerAccount(Partner partner, Company company, boolean isSupplierAccount) throws AxelorException  {
-
-		AccountingSituation accountingSituation = accountCustomerService.getAccountingSituationService().getAccountingSituation(partner, company);
-
-		if(accountingSituation != null)  {
-
-			if(!isSupplierAccount && accountingSituation.getCustomerAccount() != null )  {
-				return accountingSituation.getCustomerAccount();
-			}
-			else if(isSupplierAccount && accountingSituation.getSupplierAccount() != null)  {
-				return accountingSituation.getSupplierAccount();
-			}
-		}
-
-		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-		if(isSupplierAccount)  {
-			return accountConfigService.getSupplierAccount(accountConfig);
-		}
-		else  {
-			return accountConfigService.getCustomerAccount(accountConfig);
-		}
-
+		AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
+		return isSupplierAccount ? situationService.getSupplierAccount(partner, company) : situationService.getCustomerAccount(partner, company);
 	}
 
 
@@ -365,31 +344,31 @@ public class MoveToolService {
 		return null;
 	}
 
-	
+
 	public List <MoveLine> orderListByDate(List <MoveLine> list)  {
 		Collections.sort(list, new Comparator<MoveLine>() {
 
 			@Override
 			public int compare(MoveLine o1, MoveLine o2) {
-				
+
 				return o1.getDate().compareTo(o2.getDate());
 			}
 		});
 
 		return list;
 	}
-	
-	
+
+
 	public boolean isDebitMoveLine(MoveLine moveLine)  {
-		
+
 		if(moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1)  {
 			return true;
 		}
 		else  {
 			return false;
 		}
-		
+
 	}
-	
-		
+
+
 }
