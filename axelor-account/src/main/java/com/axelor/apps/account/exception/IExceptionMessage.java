@@ -111,6 +111,8 @@ public interface IExceptionMessage {
 	static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/ ;
 	static final String ACCOUNTING_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/ ;
 	static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/ ;
+	static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/ "Unknown accounting report type: %d" /*)*/ ;
+	static final String ACCOUNTING_REPORT_ANALYTIC_REPORT = /*$$(*/ "%s : Error : You must configure an analytic report sequence for the company %s" /*)*/ ;
 
 	/**
 	 * Move line service
@@ -562,7 +564,7 @@ public interface IExceptionMessage {
 	static final String DEPOSIT_SLIP_MISSING_SEQUENCE = /*$$(*/ "Missing deposit slip sequence for company %s" /*)*/;
 	static final String DEPOSIT_SLIP_CANNOT_DELETE = /*$$(*/ "You cannot delete this deposit slip." /*)*/;
 	static final String DEPOSIT_SLIP_ALREADY_PUBLISHED = /*$$(*/ "The deposit slip has already been published." /*)*/;
-	static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/ "Unsupported payment mode type" /*)*/;;
+	static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/ "Unsupported payment mode type" /*)*/;
 
     /*
      * Partner

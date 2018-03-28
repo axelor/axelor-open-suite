@@ -133,6 +133,7 @@
 		<option value="subrogationRelease">Subrogation release</option>
         <option value="depositSlip">Deposit slip</option>
         <option value="logisticalForm">Logistical form</option>
+        <option value="analyticReport">Analytic report</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
