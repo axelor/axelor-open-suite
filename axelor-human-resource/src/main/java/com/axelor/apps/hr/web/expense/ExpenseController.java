@@ -456,41 +456,7 @@ public class ExpenseController {
 			TraceBackService.trace(response, e);
 		}
 	}
-	
-	/**
-	 * This method is used in mobile application.
-	 * @param request
-	 * @param response
-	 * @throws AxelorException
-	 */
-	@Transactional
-	public void insertKMExpenses(ActionRequest request, ActionResponse response) throws AxelorException {
-		User user = AuthUtils.getUser();
-		if (user != null) {
-			Expense expense = expenseServiceProvider.get().getOrCreateExpense(user);
-			ExpenseLine expenseLine = new ExpenseLine();
-			expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
-			expenseLine.setFromCity(request.getData().get("locationFrom").toString());
-			expenseLine.setToCity(request.getData().get("locationTo").toString());
-			expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
-			expenseLine.setComments(request.getData().get("comments").toString());
-			expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
 
-			Employee employee = user.getEmployee();
-			if (employee != null) {
-				expenseLine.setKilometricAllowParam(
-						expenseServiceProvider.get().getListOfKilometricAllowParamVehicleFilter(expenseLine).get(0));
-				expenseLine.setTotalAmount(
-						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
-				expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
-			}
-
-			expense.addGeneralExpenseLineListItem(expenseLine);
-
-			Beans.get(ExpenseRepository.class).save(expense);
-		}
-	}
-	
 	public void computeAmounts(ActionRequest request, ActionResponse response){
 		
 		Expense expense = request.getContext().asType(Expense.class);
