@@ -185,8 +185,7 @@ public class PartnerController {
 
 		User user = AuthUtils.getUser();
 
-		String name = I18n.get("Client Situation");
-		
+		String name = I18n.get("Customer Situation");
 		String fileLink = ReportFactory.createReport(IReport.CLIENT_SITUATION, name+"-${date}")
 				.addParam("Locale", ReportSettings.getPrintingLocale(partner))
 				.addParam("UserId", user.getId())
