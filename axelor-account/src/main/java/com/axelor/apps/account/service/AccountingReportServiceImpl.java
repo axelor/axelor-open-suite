@@ -221,25 +221,35 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 	}
 
 	public String getSequence(AccountingReport accountingReport) throws AxelorException  {
-		if(accountingReport.getTypeSelect() <= 0)  { 	return null;  }
 
 		SequenceService sequenceService = Beans.get(SequenceService.class);
-		if(accountingReport.getTypeSelect() <= 5 || accountingReport.getTypeSelect() >= 10 )  {
+		int accountingReportTypeSelect = accountingReport.getTypeSelect();
 
+		if(accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000) {
 			String seq = sequenceService.getSequenceNumber(IAdministration.ACCOUNTING_REPORT, accountingReport.getCompany());
 			if (seq == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}
-
 			return seq;
-		} else {
+		}
+		else if(accountingReportTypeSelect >= 1000 && accountingReportTypeSelect < 2000 ) {
 			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_EXPORT, accountingReport.getCompany());
 			if (seq == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_2), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}
-
 			return seq;
 		}
+		else if(accountingReportTypeSelect >= 2000 && accountingReportTypeSelect < 3000 ){
+			String seq = sequenceService.getSequenceNumber(IAdministration.ANALYTIC_REPORT, accountingReport.getCompany());
+			if (seq == null) {
+				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
+			}
+			return seq;
+		}
+		throw new AxelorException(accountingReport, IException.CONFIGURATION_ERROR,
+				I18n.get(IExceptionMessage.ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE),
+				accountingReport.getTypeSelect());
+
 	}
 
 

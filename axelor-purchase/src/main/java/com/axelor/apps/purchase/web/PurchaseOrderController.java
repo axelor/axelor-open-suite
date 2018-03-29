@@ -23,34 +23,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.db.repo.BlockingRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.apps.base.service.BlockingService;
-import com.axelor.apps.base.service.PartnerPriceListService;
-import com.google.common.base.Strings;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
-import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -61,6 +57,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -403,7 +400,8 @@ public class PurchaseOrderController {
 	public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		Company company = purchaseOrder.getCompany();
-		String domain = "self.id != " + company.getPartner().getId() + " AND self.isContact = false AND self.isSupplier = true";
+		long companyId = company.getPartner() == null ? 0L : company.getPartner().getId();
+		String domain = String.format("self.id != %d AND self.isContact = false AND self.isSupplier = true", companyId);
 		String blockedPartnerQuery = Beans.get(BlockingService.class)
 				.listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
 

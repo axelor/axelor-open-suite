@@ -101,7 +101,7 @@
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
 				<item title="Print Informations" action="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
-				<item title="Client Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isCustomer == true"  if-module="axelor-account"/>
+				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isCustomer == true"  if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -374,7 +374,7 @@
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
 				<item title="Print Informations" action="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
-				<item title="Client Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
+				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -555,7 +555,7 @@
 		<menubar>
 			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
 				<item title="Print Informations" action="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
-				<item title="Client Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
+				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
