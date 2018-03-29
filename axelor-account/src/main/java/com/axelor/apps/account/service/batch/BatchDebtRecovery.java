@@ -17,6 +17,13 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
@@ -36,13 +43,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
 
 public class BatchDebtRecovery extends BatchStrategy {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
@@ -117,28 +118,36 @@ public class BatchDebtRecovery extends BatchStrategy {
 
 		List<Partner> partnerList;
 		while (!(partnerList = query.fetch(FETCH_LIMIT)).isEmpty()) {
-			for (Partner partner : partnerList) {
+            for (Partner partner : partnerList) {
 				try {
 					boolean remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company);
 					if (remindedOk) {
 					    DebtRecovery debtRecovery = debtRecoveryService.getDebtRecovery(partner, company);
 					    debtRecovery.addBatchSetItem(batch);
 					}
+                    incrementDone(partner);
 				} catch (AxelorException e) {
 					TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Partner") + " %s", partner.getName()), IException.DEBT_RECOVERY, batch.getId());
-					incrementAnomaly();
+                    incrementAnomaly(partner);
 				} catch (Exception e) {
 					TraceBackService.trace(new Exception(String.format(I18n.get("Partner") + " %s", partner.getName()), e), IException.DEBT_RECOVERY, batch.getId());
-					incrementAnomaly();
-				} finally {
-					updatePartner(partner);
+                    incrementAnomaly(partner);
 				}
 			}
 			JPA.clear();
+            findBatch();
 		}
 	}
 
+    protected void incrementDone(Partner partner) {
+        partner.addBatchSetItem(batch);
+        _incrementDone();
+    }
 
+    protected void incrementAnomaly(Partner partner) {
+        partner.addBatchSetItem(batch);
+        _incrementAnomaly();
+    }
 
 	protected void generateMail() {
 		Query<DebtRecovery> query = debtRecoveryRepository
