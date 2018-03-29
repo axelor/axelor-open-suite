@@ -175,9 +175,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
 		if(hrConfig.getTimesheetMailNotification())  {
-				
+
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
-				
+
 		}
 		
 		return null;
@@ -197,9 +197,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
 		if(hrConfig.getTimesheetMailNotification())  {
-				
+
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
-				
+
 		}
 		
 		return null;
@@ -541,50 +541,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 		return sum;
 	}
-	
-	public void getActivities(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<>();
-		try{
-			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
-			for (Product product : productList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("name", product.getName());
-				map.put("id", product.getId().toString());
-				dataList.add(map);
-			}
-			response.setData(dataList);
-			response.setTotal(dataList.size());
-		}
-		catch(Exception e){
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
-	}
-	
-	// Method used for mobile application
-	@Transactional
-	public void insertTSLine(ActionRequest request, ActionResponse response){
-		
-		User user = AuthUtils.getUser();
-		Project project = Beans.get(ProjectRepository.class).find(new Long(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
-		LocalDate date = LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
-		if(user != null){
-			Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-			if(timesheet == null){
-				timesheet = createTimesheet(user, date, date);
-			}
-			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-			TimesheetLine line = createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
-			
-			Beans.get(TimesheetRepository.class).save(timesheet);
-			response.setTotal(1);
-			HashMap<String, Object> data = new HashMap<>();
-			data.put("id", line.getId());
-			response.setData(data);
-		}
-	}
-	
+
 	public String computeFullName(Timesheet timesheet){
 		
 		User timesheetUser = timesheet.getUser();

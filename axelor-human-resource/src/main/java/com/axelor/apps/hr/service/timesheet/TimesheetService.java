@@ -79,9 +79,6 @@ public interface TimesheetService {
 	public BigDecimal computeSubTimeSpent(Project project);
 	public void computeParentTimeSpent(Project project);
 	public BigDecimal computeTimeSpent(Project project);
-	public void getActivities(ActionRequest request, ActionResponse response);
-	@Transactional
-	public void insertTSLine(ActionRequest request, ActionResponse response);
 	public String computeFullName(Timesheet timesheet);
 	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet) throws AxelorException;
 

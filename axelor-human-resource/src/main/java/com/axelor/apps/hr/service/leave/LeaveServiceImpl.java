@@ -22,15 +22,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
@@ -38,13 +34,11 @@ import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
-import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -52,19 +46,16 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class LeaveServiceImpl  implements  LeaveService  {
 
-	protected LeaveLineRepository leaveLineRepo;
+	private LeaveLineRepository leaveLineRepo;
 	protected WeeklyPlanningService weeklyPlanningService;
 	protected PublicHolidayHrService publicHolidayHrService;
 	protected LeaveRequestRepository leaveRequestRepo;
@@ -79,7 +70,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			PublicHolidayHrService publicHolidayHrService, LeaveRequestRepository leaveRequestRepo, AppBaseService appBaseService,
 			HRConfigService hrConfigService, TemplateMessageService templateMessageService, ICalendarEventRepository icalEventRepo, ICalendarService icalendarService){
 
-		this.leaveLineRepo = leaveLineRepo;
+		this.setLeaveLineRepo(leaveLineRepo);
 		this.weeklyPlanningService = weeklyPlanningService;
 		this.publicHolidayHrService = publicHolidayHrService;
 		this.leaveRequestRepo = leaveRequestRepo;
@@ -168,9 +159,8 @@ public class LeaveServiceImpl  implements  LeaveService  {
 			}
 			EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
 			if(publicHolidayPlanning == null){
-				HRConfig conf = leave.getCompany().getHrConfig();
-				if(conf != null){
-					publicHolidayPlanning = conf.getPublicHolidayEventsPlanning();
+				if(leave.getCompany() != null && leave.getCompany().getHrConfig() != null){
+					publicHolidayPlanning = leave.getCompany().getHrConfig().getPublicHolidayEventsPlanning();
 				}
 			}
 
@@ -224,7 +214,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		if (employee == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), leave.getUser().getName());
 		}
-		LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", employee,leave.getLeaveLine().getLeaveReason()).fetchOne();
+		LeaveLine leaveLine = getLeaveLineRepo().all().filter("self.employee = ?1 AND self.leaveReason = ?2", employee,leave.getLeaveLine().getLeaveReason()).fetchOne();
 		if (leaveLine == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), employee.getName(), leave.getLeaveLine().getLeaveReason().getLeaveReason());
 		}
@@ -242,7 +232,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		if (employee == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),leave.getUser().getName());
 		}
-		LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", employee,leave.getLeaveLine().getLeaveReason()).fetchOne();
+		LeaveLine leaveLine = getLeaveLineRepo().all().filter("self.employee = ?1 AND self.leaveReason = ?2", employee,leave.getLeaveLine().getLeaveReason()).fetchOne();
 		if (leaveLine == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), employee.getName(), leave.getLeaveLine().getLeaveReason().getLeaveReason());
 		}
@@ -269,7 +259,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		if (employee == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), leave.getUser().getName());
 		}
-		LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", employee,leave.getLeaveLine().getLeaveReason()).fetchOne();
+		LeaveLine leaveLine = getLeaveLineRepo().all().filter("self.employee = ?1 AND self.leaveReason = ?2", employee,leave.getLeaveLine().getLeaveReason()).fetchOne();
 		if (leaveLine == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), employee.getName(), leave.getLeaveLine().getLeaveReason().getLeaveReason());
 		}
@@ -287,7 +277,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		if (employee == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), leave.getUser().getName());
 		}
-		LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", employee,leave.getLeaveLine().getLeaveReason()).fetchOne();
+		LeaveLine leaveLine = getLeaveLineRepo().all().filter("self.employee = ?1 AND self.leaveReason = ?2", employee,leave.getLeaveLine().getLeaveReason()).fetchOne();
 		if (leaveLine == null) {
 			throw new AxelorException(leave, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), employee.getName(), leave.getLeaveLine().getLeaveReason().getLeaveReason());
 		}
@@ -433,70 +423,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	
 		return leaveDays;
 	}
-	
-	public void getLeaveReason(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<>();
-		try{
-			List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
-			for (LeaveReason leaveReason : leaveReasonList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("name", leaveReason.getLeaveReason());
-				map.put("id", leaveReason.getId().toString());
-				dataList.add(map);
-			}
-			response.setData(dataList);
-			response.setTotal(dataList.size());
-		}
-		catch(Exception e){
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
-	}
-	
-	@Transactional
-	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException{
-		User user = AuthUtils.getUser();
-		Map<String, Object> requestData = request.getData();
-		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(requestData.get("leaveReason").toString()));
-		if (user.getEmployee() == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), user.getName());
-		}
-		if (user != null && leaveReason != null) {
-			LeaveRequest leave = new LeaveRequest();
-			leave.setUser(user);
-			Company company = null;
-			if (user.getEmployee() != null
-					&& user.getEmployee().getMainEmploymentContract() != null) {
-				company = user.getEmployee().getMainEmploymentContract().getPayCompany();
-			}
-			leave.setCompany(company);
-			LeaveLine leaveLine = leaveLineRepo.all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
-			if (leaveLine == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), user.getEmployee().getName(), leaveReason.getLeaveReason());
-			}
-			leave.setLeaveLine(leaveLine);
-			leave.setRequestDate(appBaseService.getTodayDate());
-			if (requestData.get("fromDate") != null) {
-				leave.setFromDate(LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
-			}
-			leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
-			if (requestData.get("toDate") != null) {
-				leave.setToDate(LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE));
-			}
-			leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
-			leave.setDuration(this.computeDuration(leave));
-			leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-			if(requestData.get("comments") != null){
-				leave.setComments(requestData.get("comments").toString());
-			}
-			leave = Beans.get(LeaveRequestRepository.class).save(leave);
-			response.setTotal(1);
-			HashMap<String, Object> data = new HashMap<String, Object>();
-			data.put("id", leave.getId());
-			response.setData(data);
-		}
-	}
-	
+
 	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void cancel(LeaveRequest leaveRequest) throws AxelorException {
@@ -651,7 +578,7 @@ public class LeaveServiceImpl  implements  LeaveService  {
 		leaveLineEmployee.setLeaveReason(leaveReason);
 		leaveLineEmployee.setEmployee(employee);
 
-		leaveLineRepo.save(leaveLineEmployee);
+		getLeaveLineRepo().save(leaveLineEmployee);
 		return leaveLineEmployee;
 	}
 	
@@ -669,5 +596,19 @@ public class LeaveServiceImpl  implements  LeaveService  {
 	public LeaveLine leaveReasonToJustify(Employee employee, LeaveReason leaveReason) throws AxelorException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * @return the leaveLineRepo
+	 */
+	public LeaveLineRepository getLeaveLineRepo() {
+		return leaveLineRepo;
+	}
+
+	/**
+	 * @param leaveLineRepo the leaveLineRepo to set
+	 */
+	public void setLeaveLineRepo(LeaveLineRepository leaveLineRepo) {
+		this.leaveLineRepo = leaveLineRepo;
 	}
 }

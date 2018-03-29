@@ -23,8 +23,10 @@ import java.time.LocalDate;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
@@ -50,28 +52,32 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 
 			if (dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null
 					&& dayPlanning.getMorningFrom().isAfter(dayPlanning.getMorningTo())) {
-				String message = "Invalid times in morning on " + dayPlanning.getName();
+
+				String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_1, dayPlanning);
 				throw new AxelorException(IException.INCONSISTENCY, message);
 			}
 
 			if (dayPlanning.getMorningTo() != null && dayPlanning.getAfternoonFrom() != null
 					&& dayPlanning.getMorningTo().isAfter(dayPlanning.getAfternoonFrom())) {
-				String message = "Invalid times between morning and afternoon on " + dayPlanning.getName();
+
+				String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_2, dayPlanning);
 				throw new AxelorException(IException.INCONSISTENCY, message);
 			}
 
 			if (dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null
 					&& dayPlanning.getAfternoonFrom().isAfter(dayPlanning.getAfternoonTo())) {
-				String message = "Invalid times in afternoon on " + dayPlanning.getName();
+
+				String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_3, dayPlanning);
 				throw new AxelorException(IException.INCONSISTENCY, message);
 			}
 
 			if ((dayPlanning.getMorningFrom() == null && dayPlanning.getMorningTo() != null)
 				|| (dayPlanning.getMorningTo() == null && dayPlanning.getMorningFrom() != null)
 				|| (dayPlanning.getAfternoonFrom() == null && dayPlanning.getAfternoonTo() != null)
-				|| (dayPlanning.getAfternoonTo() == null && dayPlanning.getAfternoonFrom() != null)) {
-				String message = "Some times are null and should not on " + dayPlanning.getName();
-				throw new AxelorException(IException.INCONSISTENCY, message);
+				|| (dayPlanning.getAfternoonTo() == null && dayPlanning.getAfternoonFrom() != null)){
+
+				String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_4,dayPlanning);
+				throw new AxelorException(IException.INCONSISTENCY,message);
 			}
 		}
 		return planning;
@@ -147,5 +153,12 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 			}
 		}
 		return null;
+	}
+
+	public String messageInCheckPlanning(String message, DayPlanning dayPlanning){
+		String dayPlanningName = dayPlanning.getName();
+		return String.format(I18n.get(message),
+				I18n.get(Character.toUpperCase(dayPlanningName.charAt(0)) +
+						dayPlanningName.substring(1)).toLowerCase()); // Because day of week are traduced with a upperCase at the first letter
 	}
 }

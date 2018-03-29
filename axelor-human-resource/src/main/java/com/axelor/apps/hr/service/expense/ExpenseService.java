@@ -28,8 +28,6 @@ import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
 
 import javax.mail.MessagingException;
@@ -84,16 +82,6 @@ public interface ExpenseService  {
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException;
 
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine, int priority) throws AxelorException;
-
-	public void getExpensesTypes(ActionRequest request, ActionResponse response);
-	
-	/**
-	 * This method is used in mobile application.
-	 * @param request
-	 * @param response
-	 */
-	@Transactional
-	public void insertExpenseLine(ActionRequest request, ActionResponse response);
 	
 	/**
 	 * Get the expense from user, if no expense is found create one.
@@ -118,4 +106,6 @@ public interface ExpenseService  {
 	 * @param expense
 	 */
 	void completeExpenseLines(Expense expense);
+
+	public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(ExpenseLine expenseLine, Expense expense) throws AxelorException;
 }
