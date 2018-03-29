@@ -76,7 +76,7 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
 		
 		if(isMultiple)  {
 			response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
-			response.setValue("qtyValid", true);
+			response.setValue("$qtyValid", true);
 		} else {
 			String spanClass = allowToForce ? ContextTool.SPAN_CLASS_WARNING : ContextTool.SPAN_CLASS_IMPORTANT;
 
@@ -85,7 +85,7 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
 			
 			response.setAttr("multipleQtyNotRespectedLabel", "title", title);
 			response.setAttr("multipleQtyNotRespectedLabel", "hidden", false);
-			response.setValue("qtyValid", allowToForce);
+			response.setValue("$qtyValid", allowToForce);
 		}
 		
 	}	

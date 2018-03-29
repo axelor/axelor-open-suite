@@ -106,9 +106,9 @@
 				</panel>
 				<field name="productName" colSpan="12"/>
 				<panel>
-					<field name="qty"  hideIf="typeSelect == 2" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="typeSelect == 2"  validIf="qtyValid != false"/>
+					<field name="qty"  hideIf="typeSelect == 2" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="typeSelect == 2"  validIf="$qtyValid != false"/>
 					<label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
-					<label name="qtyValid" hidden="true" colSpan="12"/>
+					<field name="$qtyValid" hidden="true" colSpan="12"/>
 				</panel>
 				<field name="reservedQty" hideIf="typeSelect == 2" if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="$availableStock" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain" hideIf="typeSelect == 2" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>

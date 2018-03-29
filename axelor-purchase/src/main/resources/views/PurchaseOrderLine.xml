@@ -89,10 +89,10 @@
 			<field name="productName"/>
 			<field name="productCode"/>
 			<panel>
-				<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="12" validIf="qtyValid != false"/>
+				<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="12" validIf="$qtyValid != false"/>
 				<label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
 				<label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
-				<label name="qtyValid" hidden="true" colSpan="12"/>
+				<field name="$qtyValid" hidden="true" colSpan="12"/>
 			</panel>
 			<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="taxLine" canEdit="false" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
