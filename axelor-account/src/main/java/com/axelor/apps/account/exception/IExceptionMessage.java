@@ -117,7 +117,6 @@ public interface IExceptionMessage {
 	 */
 	static final String MOVE_LINE_1 = /*$$(*/ "Partner is missing on the invoice %s" /*)*/ ;
 	static final String MOVE_LINE_2 = /*$$(*/ "Partner account missing on the invoice %s" /*)*/ ;
-	static final String MOVE_LINE_3 = /*$$(*/ "Product missing on invoice line, invoice : %s (company : %s)" /*)*/ ;
 	static final String MOVE_LINE_4 = /*$$(*/ "Account missing on configuration for line : %s (company : %s)" /*)*/ ;
 	static final String MOVE_LINE_5 = /*$$(*/ "Analytic account %s associated to sales account for the product %s is not configured : (company : %s)" /*)*/ ;
 	static final String MOVE_LINE_6 = /*$$(*/ "Account missing on the tax line : %s (company : %s)" /*)*/ ;

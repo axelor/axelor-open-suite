@@ -62,6 +62,7 @@
 - MRP : manage the case where sale order line is partially delivered
 - Moved Sale order Delivery state in Supplychain module
 - If a service is selected on a sale order and we don't generate a stock move for services, the sale order line should be considered as delivered (or for the opposite).
+- Allow to ventilate an invoice without product on the lines (mainly for purchase invoice).
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
