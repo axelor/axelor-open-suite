@@ -345,7 +345,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
             paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
         }
 
-        // this.updateInvoices(paymentSchedule); //TODO
+        this.updateInvoices(paymentSchedule); //TODO
 
         paymentSchedule.setStatusSelect(PaymentScheduleRepository.STATUS_CONFIRMED);
     }

@@ -94,11 +94,14 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 	 * @throws JAXBException 
 	 * 		
 	 */
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
-		
-		if(invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT)  {  return;  }
-		
+	public void validate(InvoicePayment invoicePayment, boolean force) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
+
+	    if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
+            return;
+        }
+
 		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 		
 		//TODO assign an automatic reference
@@ -119,8 +122,13 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		}
 		invoicePaymentRepository.save(invoicePayment);
 	}
-	
-	
+
+    @Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    public void validate(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
+	    validate(invoicePayment, false);
+	}
+
 	/**
 	 * Method to create a payment move for an invoice Payment
 	 * 

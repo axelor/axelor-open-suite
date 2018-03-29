@@ -82,11 +82,13 @@ public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentVa
 	 * 		
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
-		
-		if(invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT)  {  return;  }
-		
-		PaymentMode paymentMode = invoicePayment.getPaymentMode();
+	public void validate(InvoicePayment invoicePayment, boolean force) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
+
+	    if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
+            return;
+        }
+
+        PaymentMode paymentMode = invoicePayment.getPaymentMode();
 		int typeSelect = paymentMode.getTypeSelect();
 		int inOutSelect = paymentMode.getInOutSelect();
 		
