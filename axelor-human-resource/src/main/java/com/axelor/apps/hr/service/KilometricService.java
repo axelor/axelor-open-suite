@@ -67,13 +67,13 @@ public class KilometricService {
 	private AppBaseService appBaseService;
 	private KilometricLogRepository kilometricLogRepo;
 
-	private String googleMapsApiKey;
+	private MapService mapService;
 
 	@Inject
 	public KilometricService(AppBaseService appBaseService, KilometricLogRepository kilometricLogRepo, MapService mapService) {
 		this.appBaseService = appBaseService;
 		this.kilometricLogRepo = kilometricLogRepo;
-		googleMapsApiKey = mapService.getGoogleMapsApiKey();
+		this.mapService = mapService;
 	}
 
 	public KilometricLog getKilometricLog(Employee employee, LocalDate refDate) {
@@ -123,7 +123,7 @@ public class KilometricService {
 
 		BigDecimal distance =  expenseLine.getDistance();
 		if (employee.getMainEmploymentContract() == null || employee.getMainEmploymentContract().getPayCompany() == null) {
-		    throw new AxelorException(I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), IException.CONFIGURATION_ERROR);
+		    throw new AxelorException(String.format(I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), employee.getName()), IException.CONFIGURATION_ERROR);
 		}
 		Company company = employee.getMainEmploymentContract().getPayCompany();
 
@@ -256,10 +256,7 @@ public class KilometricService {
 		ub.addParameter("origins", origins);
 		ub.addParameter("destinations", destinations);
 		ub.addParameter("language", language);
-
-		if (!Strings.isNullOrEmpty(googleMapsApiKey)) {
-			ub.addParameter("key", googleMapsApiKey);
-		}
+		ub.addParameter("key", mapService.getGoogleMapsApiKey());
 
 		URL url = new URL(ub.toString());
 		URLConnection connection = url.openConnection();
