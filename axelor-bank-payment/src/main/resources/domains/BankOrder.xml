@@ -25,7 +25,8 @@
 	<boolean name="isMultiCurrency" title="Multicurrency"/>
 	<decimal name="arithmeticTotal" title="Arithmetic total" readonly="true"/>
 	<boolean name="testMode" title="Test mode"/>
-	
+    <many-to-one name="batch" ref="com.axelor.apps.base.db.Batch" title="Batch" />
+
 	<!-- Sender -->
 	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	<many-to-one name="senderBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Account"/>
@@ -42,7 +43,7 @@
 	<many-to-one name="signatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Signatory"/>
 	<many-to-one name="generatedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Generated file" />
 	<many-to-one name="signedMetaFile" ref="com.axelor.meta.db.MetaFile" title="Signed file" />
-	
+
 	<unique-constraint columns="bankOrderSeq,senderCompany"/>
 	
 	<extra-code><![CDATA[
