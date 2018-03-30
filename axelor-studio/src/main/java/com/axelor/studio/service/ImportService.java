@@ -19,11 +19,10 @@ package com.axelor.studio.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
-
-import org.apache.commons.codec.binary.Base64;
 
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -155,7 +154,7 @@ public class ImportService {
 			return null;
 		}
 		
-		byte[] img = Base64.decodeBase64(data);
+		byte[] img = Base64.getDecoder().decode(data);
 		
 		ByteArrayInputStream inImg = new ByteArrayInputStream(img);
 		

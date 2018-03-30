@@ -20,9 +20,9 @@ package com.axelor.studio.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -41,7 +41,7 @@ public class ExportService {
 			if (file != null) {
 				try {
 					byte[] img = IOUtils.toByteArray(new FileInputStream(file));
-					return Base64.encodeBase64URLSafeString(img);
+					return Base64.getEncoder().encodeToString(img);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
