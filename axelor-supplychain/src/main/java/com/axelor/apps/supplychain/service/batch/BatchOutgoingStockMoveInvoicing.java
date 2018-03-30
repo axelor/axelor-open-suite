@@ -65,6 +65,7 @@ public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
 					query.bind("anomalyList", anomalyList);
 					TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
 					e.printStackTrace();
+					break;
 				}
 			}
 		}

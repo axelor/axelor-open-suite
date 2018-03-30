@@ -152,6 +152,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
         BankDetails companyBankDetails = getCompanyBankDetails(batch.getAccountingBatch());
 
         while (!(paymentScheduleLineList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+            findBatch();
             companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
             PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
 
@@ -176,11 +177,11 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                 } catch (Exception e) {
                     TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
                     incrementAnomaly(paymentScheduleLine);
+                    break;
                 }
             }
 
             JPA.clear();
-            findBatch();
         }
     }
 
@@ -190,6 +191,8 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
     }
 
     protected void incrementAnomaly(PaymentScheduleLine paymentScheduleLine) {
+        findBatch();
+        paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
         paymentScheduleLine.addBatchSetItem(batch);
         _incrementAnomaly();
     }

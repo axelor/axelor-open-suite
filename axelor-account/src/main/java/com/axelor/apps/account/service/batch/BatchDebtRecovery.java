@@ -118,7 +118,9 @@ public class BatchDebtRecovery extends BatchStrategy {
 
 		List<Partner> partnerList;
 		while (!(partnerList = query.fetch(FETCH_LIMIT)).isEmpty()) {
-            for (Partner partner : partnerList) {
+	        findBatch();
+
+	        for (Partner partner : partnerList) {
 				try {
 					boolean remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company);
 					if (remindedOk) {
@@ -129,13 +131,15 @@ public class BatchDebtRecovery extends BatchStrategy {
 				} catch (AxelorException e) {
 					TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Partner") + " %s", partner.getName()), IException.DEBT_RECOVERY, batch.getId());
                     incrementAnomaly(partner);
+                    break;
 				} catch (Exception e) {
 					TraceBackService.trace(new Exception(String.format(I18n.get("Partner") + " %s", partner.getName()), e), IException.DEBT_RECOVERY, batch.getId());
                     incrementAnomaly(partner);
+                    break;
 				}
 			}
+
 			JPA.clear();
-            findBatch();
 		}
 	}
 
@@ -145,6 +149,8 @@ public class BatchDebtRecovery extends BatchStrategy {
     }
 
     protected void incrementAnomaly(Partner partner) {
+        findBatch();
+        partner = partnerRepository.find(partner.getId());
         partner.addBatchSetItem(batch);
         _incrementAnomaly();
     }
@@ -159,9 +165,10 @@ public class BatchDebtRecovery extends BatchStrategy {
 		int offset = 0;
 		List<DebtRecovery> debtRecoveries;
 		while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+		    int count = 0;
 			for (DebtRecovery debtRecovery: debtRecoveries) {
 				try {
-					DebtRecoveryHistory debtRecoveryHistory = debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
+				    DebtRecoveryHistory debtRecoveryHistory = debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
 					if (debtRecoveryHistory == null) {
 						continue;
 					}
@@ -172,9 +179,12 @@ public class BatchDebtRecovery extends BatchStrategy {
 				} catch (Exception e) {
 					TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+" %s", debtRecovery.getAccountingSituation().getPartner().getName()), e), IException.REMINDER, batch.getId());
 					incrementAnomaly();
+					break;
+				} finally {
+				    ++count;
 				}
 			}
-			offset += debtRecoveries.size();
+			offset += count;
 			JPA.clear();
 		}
 	}
