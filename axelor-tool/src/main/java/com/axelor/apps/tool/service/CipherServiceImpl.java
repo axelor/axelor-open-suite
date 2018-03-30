@@ -50,7 +50,7 @@ public class CipherServiceImpl implements CipherService {
 				cipher.init(Cipher.ENCRYPT_MODE, key);
 				byte[] plainText = unencryptedString.getBytes(UNICODE_FORMAT);
 				byte[] encryptedText = cipher.doFinal(plainText);
-				encryptedString = new String(Base64.getDecoder().decode(encryptedText));
+                encryptedString = Base64.getEncoder().encodeToString(encryptedText);
 			} else {
 				return unencryptedString;
 			}
