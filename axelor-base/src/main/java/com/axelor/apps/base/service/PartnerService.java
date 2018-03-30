@@ -222,7 +222,7 @@ public class PartnerService {
 	}
 
 
-	private Address getAddress(Partner partner, String querySpecific, String queryComman){
+	protected Address getAddress(Partner partner, String querySpecific, String queryComman){
 
 		if(partner != null){
 			PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
