@@ -50,6 +50,7 @@ import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -531,5 +532,26 @@ public class SaleOrderController{
 			response.setValue("nextInvoicingEndPeriodDate", subscriptionToDate);
 		}
 	}
-	
+
+	/**
+     * Called on load of sale order invoicing wizard view.
+	 * Fill dummy field with default value to avoid issues with null values.
+	 *
+	 * @param request
+	 * @param response
+	 */
+	public void fillDefaultValueWizard(ActionRequest request, ActionResponse response) {
+	    try {
+	        SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+	        List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
+			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()){
+				Map<String,Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
+				saleOrderLineMap.put("qtyToInvoice", BigDecimal.ZERO);
+				saleOrderLineList.add(saleOrderLineMap);
+			}
+			response.setValue("saleOrderLineList", saleOrderLineList);
+	    } catch (Exception e) {
+	        TraceBackService.trace(response, e);
+	    }
+	}
 }

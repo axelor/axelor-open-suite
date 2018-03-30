@@ -61,6 +61,7 @@
 	</grid>
 
 	<action-group name="action-group-sale-order-invoicing-wizard-onload">
+		<action name="action-method-sale-order-invoicing-wizard-default"/>
 		<action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
 		<action name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment"/>
 	</action-group>
@@ -89,5 +90,10 @@
 	<action-method name="action-method-sale-order-invoicing-wizard-generate">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController"
 			  method="generateInvoice"/>
+	</action-method>
+
+	<action-method name="action-method-sale-order-invoicing-wizard-default">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController"
+			  method="fillDefaultValueWizard"/>
 	</action-method>
 </object-views>
