@@ -282,18 +282,16 @@
 			<panel name="carrier" title="Carrier" showIf="isCarrier">
 				<field name="freightCarrierModeList" title="Freight Carrier Mode" form-view="freight-carrier-mode-freight-carrier-form" grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
 			</panel>
-            <panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer">
+            <panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer" if="__config__.app.isApp('stock')" if-module="axelor-stock">
                 <field name="deliveryDelay" showIf="isSupplier"/>
                 <spacer/>
-                <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode" if="__config__.app.isApp('stock')" />
-                <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode" if="__config__.app.isApp('stock')" />
-                <field name="carrierPartner" if-module="axelor-stock" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true" if="__config__.app.isApp('stock')" />
-				<field name="isIspmRequired" if-module="axelor-stock" if="__config__.app.isApp('stock')" hidden="true" showIf="isCustomer || isProspect"/>
-				<field name="partnerStockSettingsList" if-module="axelor-stock"
-					   if="__config__.app.isApp('stock')"
-					   colSpan="12"
+                <field name="shipmentMode" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode"/>
+                <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode"/>
+                <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true"/>
+				<field name="isIspmRequired" hidden="true" showIf="isCustomer || isProspect"/>
+				<field name="partnerStockSettingsList" colSpan="12"
 					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
-                <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form" if="__config__.app.isApp('stock')" />
+                <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form"/>
             </panel>
         </panel-tabs>
         <panel>
