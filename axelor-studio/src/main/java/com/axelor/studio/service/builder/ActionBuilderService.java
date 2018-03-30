@@ -55,7 +55,7 @@ public class ActionBuilderService {
 
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
-	private Inflector inflector;
+	private Inflector inflector = Inflector.getInstance();
 	
 	private boolean isCreate = false;
 
@@ -75,7 +75,6 @@ public class ActionBuilderService {
 			return null;
 		}
 		
-		inflector = Inflector.getInstance();
 		MetaAction metaAction = null;
 		String xml = null;
 		if (builder.getTypeSelect() == 3) {
@@ -87,6 +86,10 @@ public class ActionBuilderService {
 			xml = buildActionScript(builder);
 			metaAction = metaService.updateMetaAction(builder.getName(), "action-script", xml, null);
 		}
+		
+		if (builder.getMetaModule() != null) {
+			metaAction.setModule(builder.getMetaModule().getName());
+		}
 
 		log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
 		
@@ -96,7 +99,7 @@ public class ActionBuilderService {
 		return metaAction;
 	}
 	
-	private String buildActionScript(ActionBuilder builder) {
+	public String buildActionScript(ActionBuilder builder) {
 		
 		String name = builder.getName();
 		String code = null;
@@ -124,7 +127,7 @@ public class ActionBuilderService {
 		return xml;
 	}
 
-	private String generateScriptCode(ActionBuilder builder) {
+	public String generateScriptCode(ActionBuilder builder) {
 		
 		StringBuilder stb = new StringBuilder();
 		fbuilder = new ArrayList<StringBuilder>();
@@ -660,7 +663,7 @@ public class ActionBuilderService {
 
 	}
 	
-	private String[] buildActionView(ActionBuilder builder) {
+	public String[] buildActionView(ActionBuilder builder) {
 		
 		if (builder.getActionBuilderViews() == null || builder.getActionBuilderViews().isEmpty()) {
 			return null;
