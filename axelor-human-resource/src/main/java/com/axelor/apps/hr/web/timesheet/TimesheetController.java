@@ -457,7 +457,10 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 
 		response.setView(ActionView
 				.define(I18n.get("Timesheet lines"))
-				.add("html", url).map());
+				.add("html", url)
+				.param("popup", "reload")
+				.param("popup-save", "false")
+				.map());
 
 	}
 
