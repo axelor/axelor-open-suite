@@ -13,8 +13,8 @@
     
     <form name="product-variant-value-form" title="Product variant value"
         model="com.axelor.apps.base.db.ProductVariantValue"
-        onNew="action-product-attrs-scale-and-precision"
-        onLoad="action-product-attrs-scale-and-precision">
+        onNew="action-product-variant-value-attrs-scale-and-precision"
+        onLoad="action-product-variant-value-attrs-scale-and-precision">
     	<panel name="main" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
@@ -23,7 +23,7 @@
         </panel>
     </form>   
 
-    <action-attrs name="action-product-attrs-scale-and-precision">
+    <action-attrs name="action-product-variant-value-attrs-scale-and-precision">
         <attribute name="scale" for="priceExtra"
             expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
