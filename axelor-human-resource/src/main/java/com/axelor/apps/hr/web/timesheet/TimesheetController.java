@@ -17,6 +17,16 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -56,15 +66,6 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class TimesheetController {
@@ -93,36 +94,43 @@ public class TimesheetController {
 
 	@SuppressWarnings("unchecked")
 	public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException{
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		Context context = request.getContext();
-		
-		LocalDate fromGenerationDate = null;
-		if(context.get("fromGenerationDate") != null)
-			fromGenerationDate = LocalDate.parse(context.get("fromGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
-		LocalDate toGenerationDate = null;
-		if(context.get("toGenerationDate") != null)
-			toGenerationDate = LocalDate.parse(context.get("toGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
-		BigDecimal logTime = BigDecimal.ZERO;
-		if(context.get("logTime") != null)
-			logTime = new BigDecimal(context.get("logTime").toString());
-		
-		Map<String, Object> projectContext = (Map<String, Object>) context.get("project");
-		Project project = null;
-		if (projectContext != null) {
-            project = projectRepoProvider.get().find(((Integer) projectContext.get("id")).longValue());
-        }
-		
-		Map<String, Object> productContext = (Map<String, Object>) context.get("product");
-		Product product = null;
-		if(productContext != null)
-			product = productRepoProvider.get().find(((Integer) productContext.get("id")).longValue());
+        try {
+            Timesheet timesheet = request.getContext().asType(Timesheet.class);
+            Context context = request.getContext();
 
-		if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
-			product = userHrservice.get().getTimesheetProduct(timesheet.getUser());
-		}
-		
-		timesheet = timesheetServiceProvider.get().generateLines(timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
-		response.setValue("timesheetLineList",timesheet.getTimesheetLineList());
+            LocalDate fromGenerationDate = null;
+            if (context.get("fromGenerationDate") != null)
+                fromGenerationDate = LocalDate.parse(context.get("fromGenerationDate").toString(),
+                        DateTimeFormatter.ISO_DATE);
+            LocalDate toGenerationDate = null;
+            if (context.get("toGenerationDate") != null)
+                toGenerationDate = LocalDate.parse(context.get("toGenerationDate").toString(),
+                        DateTimeFormatter.ISO_DATE);
+            BigDecimal logTime = BigDecimal.ZERO;
+            if (context.get("logTime") != null)
+                logTime = new BigDecimal(context.get("logTime").toString());
+
+            Map<String, Object> projectContext = (Map<String, Object>) context.get("project");
+            Project project = null;
+            if (projectContext != null) {
+                project = projectRepoProvider.get().find(((Integer) projectContext.get("id")).longValue());
+            }
+
+            Map<String, Object> productContext = (Map<String, Object>) context.get("product");
+            Product product = null;
+            if (productContext != null) {
+                product = productRepoProvider.get().find(((Integer) productContext.get("id")).longValue());
+            }
+            if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
+                product = userHrservice.get().getTimesheetProduct(timesheet.getUser());
+            }
+
+            timesheet = timesheetServiceProvider.get().generateLines(timesheet, fromGenerationDate, toGenerationDate,
+                    logTime, project, product);
+            response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
 	}
 
 	public void editTimesheet(ActionRequest request, ActionResponse response){
