@@ -33,11 +33,6 @@
 		<field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 
-	<form title="Invoice line" name="invoice-line-menu-form" model="com.axelor.apps.account.db.InvoiceLine" width="large"
-		  canNew="false" canEdit="false" canSave="false" canDelete="false" canCopy="false" canArchive="false">
-		<panel-include view="invoice-line-form"/>
-	</form>
-
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
 		  onNew="action-account-invoice-line-onnew-group"
 		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form">
@@ -115,7 +110,7 @@
 	</form>
 
 	<form name="invoice-line-menu-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
-		  onNew="action-account-invoice-line-onnew-group"
+		canNew="false" canEdit="false" canSave="false" canDelete="false" canCopy="false" canArchive="false"
 		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-menu-form">
 		<panel name="main">
 			<field name="invoice.partner"/>

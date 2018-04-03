@@ -78,10 +78,6 @@
         <call class="com.axelor.apps.base.web.ICalendarEventController" method="addEmailGuest"/>
     </action-method>
 
-    <action-record name="action-event-record-compute-attendee-list" model="com.axelor.apps.crm.db.Event">
-        <field if="attendees" name="computedAttendeeList" expr="eval:attendees.collect{it?.name}.join(', ')"/>
-    </action-record>
-
     <action-record name="action-icalendar-event-default-record" model="com.axelor.apps.base.db.ICalendarEvent">
         <field name="calendar" expr="eval: __repo__(ICalendar).findByUser(__user__)" />
     </action-record>
