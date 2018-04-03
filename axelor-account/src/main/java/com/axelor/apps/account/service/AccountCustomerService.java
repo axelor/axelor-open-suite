@@ -182,6 +182,7 @@ public class AccountCustomerService {
 			mailTransitTime = accountConfig.getMailTransitTime();
 		}
 
+		// TODO: Replace native query to standard JPQL query
 		Query query = JPA.em().createNativeQuery("SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 				"FROM public.account_move_line as ml  "+
 				"LEFT OUTER JOIN ( "+
@@ -198,9 +199,10 @@ public class AccountCustomerService {
 					"GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "+
 				"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
+                "LEFT JOIN public.account_invoice AS invoice ON (move.invoice = invoice.id) "+
 				"WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_debt_recovery_ok in ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'" +
-				"AND move.status_select = ?5 AND ml.amount_remaining > 0 ")
+				"AND move.status_select = ?5 AND ml.amount_remaining > 0 AND invoice.debt_recovery_blocking_ok = FALSE ")
 				.setParameter(1, mailTransitTime)
 				.setParameter(2, Date.from(appBaseService.getTodayDate().atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
 				.setParameter(3, partner)
