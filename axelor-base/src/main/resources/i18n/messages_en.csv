@@ -497,6 +497,7 @@
 "End date",,,
 "Enter proper 'From' and 'To' date.",,,
 "Entities you wish to follow by email",,,
+"Envelope",,,
 "Equal",,,
 "Error : Data file is unreachable.",,,
 "Error : Incorrect query for the querie %s",,,
