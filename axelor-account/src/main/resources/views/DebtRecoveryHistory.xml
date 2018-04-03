@@ -34,7 +34,7 @@
         	<field name="debtRecoveryDate"/>
     	</panel>
     	<panel name="debtRecoveryContent" title="Debt recovery content">
-			<panel-dashlet action="action.message.view.related.to.first" colSpan="12"/>
+			<panel-dashlet action="action.message.view.messages" colSpan="12"/>
     	</panel>
 	</form>
     
