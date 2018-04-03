@@ -599,6 +599,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(computeName(newStockMove, newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_7) + " "
                 + stockMove.getStockMoveSeq() + " )"));
+        newStockMove.setExTaxTotal(compute(newStockMove));
 
 		return stockMoveRepo.save(newStockMove);
 
@@ -649,7 +650,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(computeName(newStockMove, newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " "
                 + stockMove.getStockMoveSeq() + " )"));
-		newStockMove.setIsReversion(true);
+        newStockMove.setExTaxTotal(compute(newStockMove));
+        newStockMove.setIsReversion(true);
 
 		return stockMoveRepo.save(newStockMove);
 
