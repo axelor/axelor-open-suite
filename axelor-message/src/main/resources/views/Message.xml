@@ -131,5 +131,13 @@
 	<action-validate name="action-validate-message-content-onsave">
 		<alert message="No Mail content entered." if="mediaTypeSelect == 1 &amp;&amp; content== null"/>
 	</action-validate>
-	
+
+	<action-view name="action.message.view.related.to.first" model="com.axelor.apps.message.db.Message" title="Messages">
+		<view name="message-grid" type="grid"/>
+		<view name="message-form" type="form"/>
+		<domain>self.relatedTo1Select = :related_class AND self.relatedTo1SelectId = :related_id</domain>
+		<context name="related_class" expr="eval: __self__.class.superclass.name"/>
+		<context name="related_id" expr="eval: __self__.id"/>
+	</action-view>
+
 </object-views>
