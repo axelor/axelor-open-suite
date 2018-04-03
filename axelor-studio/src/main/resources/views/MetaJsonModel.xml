@@ -7,32 +7,10 @@
     <toolbar>
     	<button name="openWorkflow" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
     </toolbar>
-    <panel title="Overview">
+    <panel>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
-      <spacer/>
-      <field name="name" readonlyIf="id" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+"/>
-      <field name="title" />
-      <field name="onNew" />
-      <field name="onSave" />
     </panel>
-    <panel title="Menu">
-      <field name="menuTitle" title="Title"/>
-      <field name="menuParent" title="Parent menu" domain="self.action is null" canNew="true" form-view="meta-menu-form"/>
-      <field name="menuIcon" title="Icon"/>
-      <field name="menuBackground" title="Icon background"/>
-      <field name="menuOrder" title="Order"/>
-      <field name="menuTop" title="Show in top menu"/>
-    </panel>
-    <panel-tabs>
-	  <panel-related field="fields" form-view="json-field-form-2" orderBy="sequence" canMove="true">
-        <field name="name" />
-        <field name="type" />
-        <field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
-	  </panel-related>
-	  <panel-related field="roles">
-	    <field name="name"/>
-	  </panel-related>
-	</panel-tabs>
+    <panel-include view="json-model-form" from="axelor-core"/>
   </form>
 
   <action-method name="action-studio-json-model-method-open-workflow">
