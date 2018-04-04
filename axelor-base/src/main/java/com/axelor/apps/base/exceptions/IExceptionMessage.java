@@ -209,6 +209,7 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
+    static final String PRODUCT_NO_ACTIVE_COMPANY = /*$$(*/ "No active company for this user, please define an active company." /*)*/;
 
 	/**
 	 * Calendar
@@ -252,4 +253,5 @@ public interface IExceptionMessage {
 	public static final String WEEKLY_PLANNING_2 = /*$$(*/ "Invalid times on %s between morning and afternoon" /*)*/;
 	public static final String WEEKLY_PLANNING_3 = /*$$(*/ "Invalid times %s afternoon" /*)*/;
 	public static final String WEEKLY_PLANNING_4 = /*$$(*/ "Some times are null and should not on %s" /*)*/;
+
 }
