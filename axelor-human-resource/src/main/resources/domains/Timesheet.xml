@@ -21,6 +21,7 @@
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
 	  <decimal name="periodTotal" title="Total on period (hours)"/>
 	  <boolean name="showEditor" title="Show editor" />
+      <string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select"/>
 
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

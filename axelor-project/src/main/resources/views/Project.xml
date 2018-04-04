@@ -31,7 +31,7 @@
 		<field name="clientPartner"/>
 	</grid>
 
-	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" width="large" onLoad="action-project-on-load-group,save" onNew="action-project-group-on-new-project">
+	<form name="project-form" title="Project" model="com.axelor.apps.project.db.Project" width="large" onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project">
 		<toolbar>
 			<button if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="printProject" title="Reporting folder" showIf="isBusinessProject" onClick="save,action-project-method-print-project"/>
 		</toolbar>
@@ -123,12 +123,12 @@
 				<field name="fromDate" colSpan="4"/>
 				<field name="toDate" colSpan="4"/>
 				<field name="dueDate" colSpan="4" showIf="isProject"/>
-				<field name="$visibleDuration" title="Duration" onChange="action-project-method-set-stored-duration,action-attrs-project-compute-leadDelay"/>
+				<field name="duration" title="Duration" onChange="action-attrs-project-compute-leadDelay"/>
 				<field name="progress" widget="Progress" showIf="isProject" onChange="action-attrs-project-compute-leadDelay"/>
 			</panel>
             <panel name="timesheet" colSpan="12" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
-				<field name="$visibleLeadDelay" title="Lead/Delay" readonly="true" showIf="isProject" type="decimal" onChange="action-project-method-set-stored-lead-delay,action-method-project-compute-progress"/>
-				<field name="$visibleTimeSpent" title="Time Spent" readonly="true"  type="decimal" onChange="action-project-method-set-stored-time-spent"/>
+				<field name="leadDelay" title="Lead/Delay" readonly="true" showIf="isProject" onChange="action-project-method-set-stored-lead-delay,action-method-project-compute-progress"/>
+				<field name="timeSpent" title="Time Spent" readonly="true"/>
 			</panel>
 			<panel if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="humanResource" title=" " colSpan="12">
 				<field name="imputable" widget="boolean-switch" colSpan="4"/>
@@ -357,16 +357,12 @@
 	
 	<action-group name="action-project-group-on-new-project">
 		<action name="action-project-defaults"/>
-		<action name="action-project-attrs-duration-title"/>
 		<action name="action-project-attrs-scale-and-precision"/>
 		<action name="action-attrs-project-set-project-type" if="__config__.app.isApp('business-project')" />
 		<action name="action-project-record-init-type"/>
 	</action-group>
 	
 	<action-group name="action-project-on-load-group">
-		<action name="action-project-method-set-visible-duration" />
-		<action name="action-project-attrs-duration-title" />
-		<action name="action-project-method-set-visible-duration-log-times" />
 		<action name="action-project-attrs-scale-and-precision" />
 		<action name="action-attrs-project-set-project-type"  if="__config__.app.isApp('business-project')" />
 		<action name="action-project-method-count-to-invoice" if="__config__.app.isApp('business-project')"/>
@@ -421,13 +417,6 @@
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
     	
-    <action-attrs name="action-project-attrs-duration-title">
-	    <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-		<attribute name="title" for="$visibleDuration" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(Minutes)') : com.axelor.i18n.I18n.get('Duration(Hours)')"/>
-		<attribute name="title" for="$visibleTimeSpent" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Time Spent(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Time Spent(Minutes)') : com.axelor.i18n.I18n.get('Time Spent(Hours)')"/>
-		<attribute name="title" for="$visibleLeadDelay" expr="eval:__user__.employee?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Lead/Delay(Days)') : __user__.employee?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Lead/Delay(Minutes)') : com.axelor.i18n.I18n.get('Lead/Delay(Hours)')"/>
-	</action-attrs>
-	
 	<action-view name="action-project-view-show-project" title="Related Projects" model="com.axelor.apps.project.db.Project">
 		<view type="grid" name="project-grid" />
 		<view type="form" name="project-form" />
@@ -580,24 +569,12 @@
 		<field name="exTaxTotal" expr="eval: product?.salePrice"/>
 	</action-record>
 	
-	<action-method name="action-project-method-set-stored-duration" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
-		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredDuration"/>
-	</action-method>
-	
 	<action-method name="action-project-method-set-stored-time-spent" model="com.axelor.apps.project.db.Project">
 		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredTimeSpent"/>
 	</action-method>
 	
-	<action-method name="action-project-method-set-visible-duration" model="com.axelor.apps.project.db.Project" if-module="axelor-human-resource">
-	    <call class="com.axelor.apps.hr.web.project.ProjectController" method="setProjectVisibleDuration"/>
-	</action-method>
-	
 	<action-method name="action-project-method-set-stored-lead-delay" model="com.axelor.apps.project.db.Project">
 		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredLeadDelay"/>
-	</action-method>
-	
-	<action-method name="action-project-method-set-visible-duration-log-times" if-module="axelor-human-resource">
-		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setVisibleDuration"/>
 	</action-method>
 	
 	<action-method name="action-method-project-compute-progress">
@@ -621,7 +598,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-project-compute-leadDelay" model="com.axelor.apps.project.db.Project">
-		<attribute name="value" for="$visibleLeadDelay" expr="eval: progress.divide(100).multiply(new BigDecimal(visibleDuration)).subtract(new BigDecimal(visibleTimeSpent))" if="visibleDuration != ''"/>
+		<attribute name="value" for="leadDelay" expr="eval: progress.divide(100).multiply(new BigDecimal(duration)).subtract(new BigDecimal(timeSpent))" if="duration"/>
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-domain-on-contact-partner">
