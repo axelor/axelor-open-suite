@@ -35,7 +35,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -52,6 +51,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -161,20 +161,19 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	protected StockLocation findSaleOrderToStockLocation(SaleOrder saleOrder) throws AxelorException {
 		Partner partner = saleOrder.getClientPartner();
 		Company company = saleOrder.getCompany();
-	    if (partner == null || company == null) {
-	    	return null;
-		}
+
+        Preconditions.checkNotNull(partner, I18n.get("Partner cannot be null."));
+        Preconditions.checkNotNull(company, I18n.get("Company cannot be null."));
+
 		List<PartnerStockSettings> defaultStockLocations = partner.getPartnerStockSettingsList();
-	    if (defaultStockLocations == null) {
-	    	return null;
-		}
-		List<StockLocation> candidateStockLocations = defaultStockLocations
+
+        List<StockLocation> candidateStockLocations = defaultStockLocations != null ? defaultStockLocations
 				.stream()
 				.filter(Objects::nonNull)
 				.filter(partnerStockSettings -> partnerStockSettings.getCompany().equals(company))
 				.map(PartnerStockSettings::getDefaultStockLocation)
 				.filter(Objects::nonNull)
-				.collect(Collectors.toList());
+                .collect(Collectors.toList()) : new ArrayList<>();
 
 	    //check external or internal stock location
 	    Optional<StockLocation> candidateNonVirtualStockLocation = candidateStockLocations
@@ -259,7 +258,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 
 
-	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
+	@Override
+    public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		Company company = saleOrderLine.getSaleOrder().getCompany();
 		
