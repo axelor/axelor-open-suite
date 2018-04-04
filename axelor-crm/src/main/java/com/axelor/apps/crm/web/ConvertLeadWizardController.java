@@ -34,6 +34,8 @@ import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -191,42 +193,49 @@ public class ConvertLeadWizardController {
 	}
 	
 	public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response) { 
-		Context context = request.getContext();
-		Lead lead;
-		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
-			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		} else {
-			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
-		}
-		AppBase appBase = appBaseService.getAppBase();
-		Company company = companyRepo.all().fetchOne();
-		Long noOfCompany = companyRepo.all().count();
-		response.setAttr("lead", "value", lead);
-		response.setAttr("amount", "value", lead.getOpportunityAmount());
-		response.setAttr("description", "value", lead.getDescription());
-		response.setAttr("source", "value", lead.getSource());
-		response.setAttr("user", "value", lead.getUser());
-		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("salesStageSelect", "value", "1");
-		response.setAttr("webSite", "value", lead.getWebSite());
-		response.setAttr("source", "value", lead.getSource());
-		response.setAttr("department", "value", lead.getDepartment());
-		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("isCustomer", "value", true);
-		response.setAttr("partnerTypeSelect", "value", "1");
-		response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
-		if(lead.getUser() != null) {
-			if(lead.getUser().getActiveCompany() != null) {
-				response.setAttr("company", "value", lead.getUser().getActiveCompany());
-				response.setAttr("currency", "value",lead.getUser().getActiveCompany().getCurrency());
-			} else if(noOfCompany == 1){
-				response.setAttr("company", "value", company);
-				response.setAttr("currency", "value",company);
-			}
-			
-		} else if(noOfCompany == 1) {
-			response.setAttr("company", "value", company);
-			response.setAttr("currency", "value",company);
+        try {
+            Context context = request.getContext();
+            Lead lead;
+            if (context.getParent() != null
+                    && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+                lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
+            } else {
+                lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
+            }
+
+            if (lead == null) {
+                throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.CONVERT_LEAD_MISSING));
+            }
+            AppBase appBase = appBaseService.getAppBase();
+            response.setAttr("lead", "value", lead);
+            response.setAttr("amount", "value", lead.getOpportunityAmount());
+            response.setAttr("description", "value", lead.getDescription());
+            response.setAttr("source", "value", lead.getSource());
+            response.setAttr("user", "value", lead.getUser());
+            response.setAttr("team", "value", lead.getTeam());
+            response.setAttr("salesStageSelect", "value", "1");
+            response.setAttr("webSite", "value", lead.getWebSite());
+            response.setAttr("source", "value", lead.getSource());
+            response.setAttr("department", "value", lead.getDepartment());
+            response.setAttr("team", "value", lead.getTeam());
+            response.setAttr("isCustomer", "value", true);
+            response.setAttr("partnerTypeSelect", "value", "1");
+            response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
+
+            Company company = null;
+
+            if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
+                company = lead.getUser().getActiveCompany();
+            } else if (companyRepo.all().count() == 1) {
+                company = companyRepo.all().fetchOne();
+            }
+
+            if (company != null) {
+                response.setAttr("company", "value", company);
+                response.setAttr("currency", "value", company.getCurrency());
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
 		}
 	}
 	
