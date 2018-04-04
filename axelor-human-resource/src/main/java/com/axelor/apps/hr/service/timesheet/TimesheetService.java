@@ -40,7 +40,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.google.inject.persist.Transactional;
 
 public interface TimesheetService {
-	public void getTimeFromTask(Timesheet timesheet);
+	public void getTimeFromTask(Timesheet timesheet) throws AxelorException;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

@@ -7,8 +7,7 @@
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="date" />
 		<field name="product" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
-		<field name="durationStored" hidden="true"/>
+		<field name="durationStored" width="62%" min="0.01"/>
 		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
 		<field name="enableEditor" hidden="true" />
@@ -123,7 +122,7 @@
 			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="date" />
 			<field name="product" canEdit="false" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-			<field name="visibleDuration" width="62%" colSpan="2" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
+			<field name="storedDuration" width="62%" colSpan="2" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 			<field name="durationStored" hidden="true" />

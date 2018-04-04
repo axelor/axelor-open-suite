@@ -112,10 +112,14 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	@Override
 	@Transactional(rollbackOn={Exception.class})
-	public void getTimeFromTask(Timesheet timesheet){
+	public void getTimeFromTask(Timesheet timesheet) throws AxelorException {
 
 		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.timesheet = null AND self.project != null", timesheet.getUser()).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
+			timesheetLine.setVisibleDuration(Beans.get(TimesheetLineService.class)
+							.computeHoursDuration(timesheet,
+									timesheetLine.getDurationStored(),
+									false));
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
 	}
@@ -583,7 +587,6 @@ public class TimesheetServiceImpl implements TimesheetService{
   			return "N°"+timesheet.getId();
   		}
 	}
-	@Override
 
 	
 	

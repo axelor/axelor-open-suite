@@ -86,10 +86,14 @@ public class TimesheetController {
 	private Provider<UserHrService> userHrservice;
 	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
-		timesheetServiceProvider.get().getTimeFromTask(timesheet);
-		response.setReload(true);
+	    try {
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+			timesheetServiceProvider.get().getTimeFromTask(timesheet);
+			response.setReload(true);
+		} catch (Exception e) {
+	    	TraceBackService.trace(response, e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

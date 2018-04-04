@@ -57,8 +57,6 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningService;
 import com.axelor.apps.hr.service.project.ProjectPlanningServiceImpl;
-import com.axelor.apps.hr.service.project.ProjectService;
-import com.axelor.apps.hr.service.project.ProjectServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
@@ -83,7 +81,6 @@ public class HumanResourceModule extends AxelorModule {
 		bind(TimesheetLineRepository.class).to(TimesheetLineHRRepository.class);
 		bind(TSTimerRepository.class).to(TimesheetTimerHRRepository.class);
 		bind(MailBatchService.class).to(MailBatchServiceHR.class);
-		bind(ProjectService.class).to(ProjectServiceImpl.class);
 		bind(AccountConfigBankPaymentService.class).to(AccountConfigHRService.class);
 		bind(ExtraHoursService.class).to(ExtraHoursServiceImpl.class);
 		bind(LeaveService.class).to(LeaveServiceImpl.class);
