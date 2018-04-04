@@ -65,6 +65,7 @@
 - Allow to ventilate an invoice without product on the lines (mainly for purchase invoice).
 - Improve timesheet form by adding time logging preferences.
 - Rename "durationStored" to "hoursDuration" and "visibleDuration" to "duration".
+- Add "show partner" button in lead form.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

@@ -116,7 +116,8 @@
 		</panel> 
       
 		<panel sidebar="true">
-		  <field name="statusSelect" colSpan="6"/>    
+			<field name="statusSelect" colSpan="6"/>
+			<button name="showPartner" title="Show Partner" colSpan="6" showIf="partner" onClick="action-lead-view-show-partner"/>
 		</panel>
 	
 		<panel sidebar="true" name="followUp" title="Follow-up" colSpan="12">
@@ -235,6 +236,11 @@
 		<view type="form" name="convert-lead-wizard-form"/>
 		<context name="_lead" expr="eval: __self__"/>
 		<context name="_primaryAddress" expr="eval: primaryAddress"/>
+	</action-view>
+
+	<action-view name="action-lead-view-show-partner" title="Partner" model="com.axelor.apps.base.db.Partner">
+		<view type="form" name="partner-form"/>
+		<context name="_showRecord" expr="eval: partner.id"/>
 	</action-view>
     
     <!--     CREATE CRM OBJECT FROM LEAD -->
