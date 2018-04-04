@@ -12,7 +12,7 @@
       <many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true" column="user_id"/>
       <date name="date" column="date_val"/>
       <many-to-one name="timesheet" ref="com.axelor.apps.hr.db.Timesheet" title="Time Sheet" readonly="true"/>
-	  <decimal name="durationStored" title="Duration"/>
+	  <decimal name="hoursDuration" title="Duration"/>
 	  <decimal name="visibleDuration" title="Duration"/>
       <string name="comments" large="true"/>
       <boolean name="toInvoice"/>

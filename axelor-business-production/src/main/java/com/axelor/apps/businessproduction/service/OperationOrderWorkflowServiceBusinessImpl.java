@@ -64,7 +64,7 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
                                     || timesheetLine.getTimesheet().getStatusSelect() == TimesheetRepository.STATUS_CONFIRMED)
                     .collect(Collectors.toList());
             for (TimesheetLine timesheetLine : timesheetLineDurationList) {
-                totalSecDuration += timesheetLine.getDurationStored().multiply(new BigDecimal("3600")).longValue();
+                totalSecDuration += timesheetLine.getHoursDuration().multiply(new BigDecimal("3600")).longValue();
             }
             return Duration.ofSeconds(totalSecDuration);
         } else {

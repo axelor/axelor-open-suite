@@ -88,7 +88,7 @@
 "InvoicingProject.date","date",,
 "InvoicingProject.deadline","Deadline",,
 "InvoicingProject.dueDate","Due date",,
-"InvoicingProject.durationStored","Duration stored",,
+"InvoicingProject.hoursDuration","Duration in hours",,
 "InvoicingProject.elementsToInvoice","Elements to invoice",,
 "InvoicingProject.exTaxTotal","Total W.T.",,
 "InvoicingProject.expenseDate","Expense date",,

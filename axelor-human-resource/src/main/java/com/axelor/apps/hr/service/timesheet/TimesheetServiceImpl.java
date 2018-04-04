@@ -118,7 +118,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			timesheetLine.setVisibleDuration(Beans.get(TimesheetLineService.class)
 							.computeHoursDuration(timesheet,
-									timesheetLine.getDurationStored(),
+									timesheetLine.getHoursDuration(),
 									false));
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
@@ -387,7 +387,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheetLine.setProduct(product);
 		timesheetLine.setProject(project);
 		timesheetLine.setUser(user);
-		timesheetLine.setDurationStored(hours);
+		timesheetLine.setHoursDuration(hours);
 		timesheet.addTimesheetLineListItem(timesheetLine);
 		
 		return timesheetLine;
@@ -411,7 +411,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			tabInformations[2] = timesheetLine.getDate();
 			//End date, useful only for consolidation
 			tabInformations[3] = timesheetLine.getDate();
-			tabInformations[4] = timesheetLine.getDurationStored();
+			tabInformations[4] = timesheetLine.getHoursDuration();
 
 			String key = null;
 			if(consolidate){
@@ -426,7 +426,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 						//If date is upper than end date then replace end date by this one
 						tabInformations[3] = timesheetLine.getDate();
 					}
-					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getDurationStored());
+					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getHoursDuration());
 				}else{
 					timeSheetInformationsMap.put(key, tabInformations);
 				}
@@ -446,7 +446,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			User user = (User)timesheetInformations[1];
 			LocalDate startDate = (LocalDate)timesheetInformations[2];
 			LocalDate endDate = (LocalDate)timesheetInformations[3];
-			BigDecimal durationStored = (BigDecimal) timesheetInformations[4];
+			BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
 
 			if (consolidate){
 				strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
@@ -454,7 +454,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				strDate = ddmmFormat.format(startDate);
 			}
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, durationStored, priority*100+count));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, hoursDuration, priority*100+count));
 			count++;
 		}
 
@@ -463,7 +463,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 
 	@Override
-    public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal durationStored, int priority) throws AxelorException  {
+    public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal hoursDuration, int priority) throws AxelorException  {
 
 		int discountTypeSelect = 1;
 		if(product == null){
@@ -473,8 +473,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal discountAmount = product.getCostPrice();
 
 
-		BigDecimal qtyConverted = durationStored;
-		qtyConverted = Beans.get(UnitConversionService.class).convert(appHumanResourceService.getAppBase().getUnitHours(), product.getUnit(), durationStored);
+		BigDecimal qtyConverted = Beans.get(UnitConversionService.class).convert(appHumanResourceService.getAppBase().getUnitHours(), product.getUnit(), hoursDuration);
 
 		PriceList priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 		if(priceList != null)  {
@@ -531,7 +530,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			Project project = timesheetLine.getProject();
 			if (project != null) {
-				project.setTimeSpent(timesheetLine.getDurationStored().add(this.computeSubTimeSpent(project)));
+				project.setTimeSpent(timesheetLine.getHoursDuration().add(this.computeSubTimeSpent(project)));
 				this.computeParentTimeSpent(project);
 			}
 		}
@@ -565,7 +564,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal sum = BigDecimal.ZERO;
 		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.project = ?1 AND self.timesheet.statusSelect = ?2", project, TimesheetRepository.STATUS_VALIDATED).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
-			sum = sum.add(timesheetLine.getDurationStored());
+			sum = sum.add(timesheetLine.getHoursDuration());
 		}
 		return sum;
 	}
@@ -663,7 +662,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		if (timesheetLines != null) {
 			for (TimesheetLine timesheetLine : timesheetLines) {
-				periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+				periodTotal = periodTotal.add(timesheetLine.getHoursDuration());
 			}
 		}
 
@@ -723,7 +722,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
 				timesheetLine.setVisibleDuration(Beans.get(TimesheetLineService.class)
 						.computeHoursDuration(timesheet,
-								timesheetLine.getDurationStored(), false)
+								timesheetLine.getHoursDuration(), false)
 				);
 			}
 		}

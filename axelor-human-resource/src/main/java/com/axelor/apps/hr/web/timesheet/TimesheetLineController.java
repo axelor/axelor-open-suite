@@ -30,7 +30,7 @@ import com.axelor.rpc.Context;
 
 public class TimesheetLineController {
 
-    private final String HOURS_DURATION_FIELD = "durationStored";
+    private final String HOURS_DURATION_FIELD = "hoursDuration";
 
     /**
      * Called from timesheet line editable grid or form.
