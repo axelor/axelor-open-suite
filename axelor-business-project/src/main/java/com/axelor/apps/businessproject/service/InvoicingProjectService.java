@@ -345,6 +345,16 @@ public class InvoicingProjectService {
 		}
 	}
 	
+	public void createEmptyLines(InvoicingProject invoicingProject){
+		
+		invoicingProject.setSaleOrderLineSet(new HashSet<SaleOrderLine>());
+		invoicingProject.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>());
+		invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
+		invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
+		invoicingProject.setElementsToInvoiceSet(new HashSet<ElementsToInvoice>());
+		
+	}
+	
 	public void clearLines(InvoicingProject invoicingProject){
 		
 		invoicingProject.clearSaleOrderLineSet();
@@ -395,4 +405,27 @@ public class InvoicingProjectService {
 		
 		return invoicingProjectRepo.save( invoicingProject );
 	}
+	
+	public int countToInvoice(Project project) {
+
+		int toInvoiceCount = 0;
+		
+		toInvoiceCount += Beans.get(SaleOrderLineRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+		
+		toInvoiceCount += Beans.get(PurchaseOrderLineRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+		
+		toInvoiceCount += Beans.get(ExpenseLineRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+		
+		toInvoiceCount += Beans.get(TimesheetLineRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+		
+		toInvoiceCount += Beans.get(ElementsToInvoiceRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+
+		return toInvoiceCount;
+	}
+
 }

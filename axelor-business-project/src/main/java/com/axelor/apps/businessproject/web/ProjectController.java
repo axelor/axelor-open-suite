@@ -20,7 +20,9 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.report.IReport;
+import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.Project;
@@ -55,7 +57,10 @@ public class ProjectController {
 
     @Inject
     private ProjectBusinessService projectBusinessService;
-	
+    
+    @Inject
+    private InvoicingProjectService invoicingProjectService;
+    
 	public void printProject(ActionRequest request,ActionResponse response) throws AxelorException  {
 		Project project = request.getContext().asType(Project.class);
 
@@ -107,7 +112,29 @@ public class ProjectController {
 		}
 	}
 	
-	
+	public void countToInvoice(ActionRequest request, ActionResponse response) {
+
+		Project project = request.getContext().asType(Project.class);
+
+		int toInvoiceCount = invoicingProjectService.countToInvoice(project);
+
+		response.setValue("$toInvoiceCounter", toInvoiceCount);
+	}
+
+	public void showInvoicingProjects(ActionRequest request, ActionResponse response) {
+
+		Project project = request.getContext().asType(Project.class);
+		project = Beans.get(ProjectRepository.class).find(project.getId());
+
+		response.setView(ActionView
+				.define("Invoice Buisness Project")
+				.model(InvoicingProject.class.getName())
+				.add("form", "invoicing-project-form")
+				.param("forceEdit", "true")
+				.context("_project", project)
+				.map());
+	}
+
 	public void printPlannifAndCost(ActionRequest request,ActionResponse response) throws AxelorException  {
 
 		Project project = request.getContext().asType(Project.class);
@@ -134,16 +161,16 @@ public class ProjectController {
     public void managePurchaseInvoiceLine(ActionRequest request, ActionResponse response) {
 	    Project project = Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
 	    InvoiceLine purchaseInvoiceLine = Beans.get(InvoiceLineRepository.class).find(Long.valueOf(((Integer) ((Map) request.getContext().get("purchaseInvoiceLine")).get("id"))));
-
-        projectBusinessService.manageInvoiceLine(purchaseInvoiceLine, project);
-
+	    
+	    projectBusinessService.manageInvoiceLine(purchaseInvoiceLine, project);
+	    
 	    response.setReload(true);
     }
 
     public void manageSaleInvoiceLine(ActionRequest request, ActionResponse response) {
         Project project = Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
         InvoiceLine saleInvoiceLine = Beans.get(InvoiceLineRepository.class).find(Long.valueOf(((Integer) ((Map) request.getContext().get("saleInvoiceLine")).get("id"))));
-
+        
         projectBusinessService.manageInvoiceLine(saleInvoiceLine, project);
 
         response.setReload(true);
