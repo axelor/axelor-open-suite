@@ -81,4 +81,24 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 		invoicingProject.clearManufOrderSet();
 	}
 	
+	@Override
+	public void createEmptyLines(InvoicingProject invoicingProject) {
+
+		super.createEmptyLines(invoicingProject);
+		invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
+	}
+
+	@Override
+	public int countToInvoice(Project project) {
+
+		int toInvoiceCount = super.countToInvoice(project);
+		
+		int productionOrderCount = (int) Beans.get(ManufOrderRepository.class).all()
+				.filter("self.productionOrder.project = ?1", project).count();
+		toInvoiceCount += productionOrderCount;
+		
+		return toInvoiceCount;
+
+	}
+
 }
