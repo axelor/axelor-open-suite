@@ -38,17 +38,19 @@
 	 	
 		<decimal name="remainingAmount" title="Amount remaining to allocate">
 			<![CDATA[
-			BigDecimal totalElementToPay = BigDecimal.ZERO;
-			if (paidAmount != null)  {
-		    	if(payVoucherElementToPayList != null)  {
-					for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList){
-						totalElementToPay = totalElementToPay.add(payVoucherElementToPay.getAmountToPayCurrency());
-					}
-				}
-				return paidAmount.subtract(totalElementToPay);
-			}
-			else return totalElementToPay;
-				
+            BigDecimal totalElementToPay = BigDecimal.ZERO;
+            if (getPaidAmount().signum() != 0) {
+                if (getPayVoucherElementToPayList() != null) {
+                    for (PayVoucherElementToPay payVoucherElementToPay : getPayVoucherElementToPayList()) {
+                        if (payVoucherElementToPay != null) {
+                            totalElementToPay = totalElementToPay.add(payVoucherElementToPay.getAmountToPayCurrency());
+                        }
+                    }
+                }
+                return getPaidAmount().subtract(totalElementToPay);
+            } else {
+                return totalElementToPay;
+            }
 		    ]]>  
 		</decimal>
 		
