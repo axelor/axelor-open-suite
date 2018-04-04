@@ -71,7 +71,7 @@ public interface TimesheetService {
 	public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate);
 	public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments);
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException;
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal visibleDuration, int priority) throws AxelorException;
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal hoursDuration, int priority) throws AxelorException;
 	@Transactional
 	public void computeTimeSpent(Timesheet timesheet);
 	public BigDecimal computeSubTimeSpent(Project project);

@@ -7,7 +7,7 @@
 		<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid"/>
 		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
 		<field name="operationOrder"  width="200" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid"/>
-		<field name="visibleDuration" width="100" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
+		<field name="duration" width="100" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
 		<field name="toInvoice" width="100"/>
 		<field name="enableEditor" hidden="true" />
@@ -20,7 +20,7 @@
 		<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid"/>
 		<field name="operationOrder"  width="200" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="visibleDuration" width="62%" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
+		<field name="duration" width="62%" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		<field name="comments" />
@@ -35,7 +35,7 @@
 			<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid"/>
 			<field name="date" />
 			<field name="operationOrder" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid"/>
-			<field name="visibleDuration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
+			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="hoursDuration" hidden="true" />
 			<field name="toInvoice"/>

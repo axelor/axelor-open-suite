@@ -286,7 +286,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-set-visible-duration-title">
-        <attribute name="title" for="timesheetLineList.visibleDuration" expr="eval: timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')" />
+        <attribute name="title" for="timesheetLineList.duration" expr="eval: timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')" />
         <attribute name="title" for="panelDashboard" expr="eval: timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Total Days in the period') : timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Total Minutes per Day') : com.axelor.i18n.I18n.get('Total Hours per Day')"/>
 	</action-attrs>
 	

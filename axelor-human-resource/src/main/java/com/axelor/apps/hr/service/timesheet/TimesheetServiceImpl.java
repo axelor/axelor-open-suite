@@ -116,7 +116,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.timesheet = null AND self.project != null", timesheet.getUser()).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
-			timesheetLine.setVisibleDuration(Beans.get(TimesheetLineService.class)
+			timesheetLine.setDuration(Beans.get(TimesheetLineService.class)
 							.computeHoursDuration(timesheet,
 									timesheetLine.getHoursDuration(),
 									false));
@@ -321,7 +321,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 									logTime, true),
 							""
 					);
-					timesheetLine.setVisibleDuration(logTime);
+					timesheetLine.setDuration(logTime);
 				}
 				
 			}
@@ -720,7 +720,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		if (timesheet.getTimesheetLineList() != null) {
 			for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
-				timesheetLine.setVisibleDuration(Beans.get(TimesheetLineService.class)
+				timesheetLine.setDuration(Beans.get(TimesheetLineService.class)
 						.computeHoursDuration(timesheet,
 								timesheetLine.getHoursDuration(), false)
 				);

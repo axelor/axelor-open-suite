@@ -121,7 +121,7 @@
 "InvoicingProject.unit","Unit",,
 "InvoicingProject.untaxedAmount","Untaxed amount",,
 "InvoicingProject.user","User",,
-"InvoicingProject.visibleDuration","Visible duration",,
+"InvoicingProject.duration","Duration",,
 "Job costing",,,
 "Log Times",,,
 "Log Times Priority",,,

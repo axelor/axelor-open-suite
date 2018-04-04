@@ -51,7 +51,7 @@ public class TimesheetLineController {
                 timesheet = timesheetLine.getTimesheet();
             }
             BigDecimal hoursDuration = Beans.get(TimesheetLineService.class)
-                    .computeHoursDuration(timesheet, timesheetLine.getVisibleDuration(), true);
+                    .computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
 
             response.setValue(HOURS_DURATION_FIELD, hoursDuration);
 
