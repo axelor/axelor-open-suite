@@ -37,12 +37,10 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
 
 public interface TimesheetService {
-	public void getTimeFromTask(Timesheet timesheet);
+	public void getTimeFromTask(Timesheet timesheet) throws AxelorException;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -73,18 +71,26 @@ public interface TimesheetService {
 	public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate);
 	public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments);
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException;
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal visibleDuration, int priority) throws AxelorException;
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal hoursDuration, int priority) throws AxelorException;
 	@Transactional
 	public void computeTimeSpent(Timesheet timesheet);
 	public BigDecimal computeSubTimeSpent(Project project);
 	public void computeParentTimeSpent(Project project);
 	public BigDecimal computeTimeSpent(Project project);
 	public String computeFullName(Timesheet timesheet);
-	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet) throws AxelorException;
 
-	public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
+    public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
 	public BigDecimal computePeriodTotal(Timesheet timesheet);
-	public String getPeriodTotalConvertTitleByUserPref(User user);
+	public String getPeriodTotalConvertTitle(Timesheet timesheet);
 
 	public void createValidateDomainTimesheetLine(User user, Employee employee, ActionView.ActionViewBuilder actionView);
+
+	/**
+	 * Update {@link Timesheet#timeLoggingPreferenceSelect}
+	 * and recompute all durations.
+     *
+	 * @param timesheet a context timesheet
+	 * @return the updated timesheet
+	 */
+	void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
 }

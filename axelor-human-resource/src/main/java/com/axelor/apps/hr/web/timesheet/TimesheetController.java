@@ -43,7 +43,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
-import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
@@ -86,10 +86,14 @@ public class TimesheetController {
 	private Provider<UserHrService> userHrservice;
 	
 	public void getTimeFromTask(ActionRequest request, ActionResponse response){
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
-		timesheetServiceProvider.get().getTimeFromTask(timesheet);
-		response.setReload(true);
+	    try {
+			Timesheet timesheet = request.getContext().asType(Timesheet.class);
+			timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+			timesheetServiceProvider.get().getTimeFromTask(timesheet);
+			response.setReload(true);
+		} catch (Exception e) {
+	    	TraceBackService.trace(response, e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -401,18 +405,7 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 			timesheetServiceProvider.get().computeTimeSpent(timesheet);
 		}
 	}
-	
-	public void setVisibleDuration(ActionRequest request, ActionResponse response){
-	    try {
-		Timesheet timesheet = request.getContext().asType(Timesheet.class);
-		timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
-		
-		response.setValue("timesheetLineList", timesheetServiceProvider.get().computeVisibleDuration(timesheet));
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
+
 	/* Count Tags displayed on the menu items */
 	public String timesheetValidateMenuTag()  {
 		
@@ -476,16 +469,37 @@ public void historicTimesheetLine(ActionRequest request, ActionResponse response
 	public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
 		try {
 			Timesheet timesheet = request.getContext().asType(Timesheet.class);
-			User user = timesheet.getUser();
 
 			BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
 
 			response.setAttr("periodTotal", "value", periodTotal);
 			response.setAttr("$periodTotalConvert", "hidden", false);
-			response.setAttr("$periodTotalConvert", "value", Beans.get(EmployeeService.class).getUserDuration(periodTotal, user, false));
-			response.setAttr("$periodTotalConvert", "title", timesheetServiceProvider.get().getPeriodTotalConvertTitleByUserPref(user));
+			response.setAttr("$periodTotalConvert", "value", Beans.get(TimesheetLineService.class).computeHoursDuration(timesheet, periodTotal, false));
+			response.setAttr("$periodTotalConvert", "title", timesheetServiceProvider.get().getPeriodTotalConvertTitle(timesheet));
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
+	}
+
+	/**
+     * Called from timesheet form, on user change.
+     * Call {@link TimesheetService#updateTimeLoggingPreference(Timesheet)}
+	 * to update the timesheet, and update the dummy field $periodTotalConvert
+	 *
+	 * @param request
+	 * @param response
+	 */
+	public void updateTimeLoggingPreference(ActionRequest request, ActionResponse response) {
+	    try {
+	        Timesheet timesheet = request.getContext().asType(Timesheet.class);
+	        timesheetServiceProvider.get().updateTimeLoggingPreference(timesheet);
+			response.setAttr("$periodTotalConvert", "hidden", false);
+			response.setAttr("$periodTotalConvert", "value", Beans.get(TimesheetLineService.class).computeHoursDuration(timesheet, timesheet.getPeriodTotal(), false));
+			response.setAttr("$periodTotalConvert", "title", timesheetServiceProvider.get().getPeriodTotalConvertTitle(timesheet));
+			response.setValue("timeLoggingPreferenceSelect", timesheet.getTimeLoggingPreferenceSelect());
+			response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
+	    } catch (Exception e) {
+	        TraceBackService.trace(response, e);
+	    }
 	}
 }

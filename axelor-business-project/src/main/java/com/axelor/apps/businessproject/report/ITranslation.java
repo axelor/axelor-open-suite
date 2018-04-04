@@ -87,8 +87,8 @@ public interface ITranslation {
     public static final String INVOICING_PROJECT_LOG_TIMES_USER = /*$$(*/ "InvoicingProject.user"; /*)*/
     public static final String INVOICING_PROJECT_LOG_TIMES_DATE = /*$$(*/ "InvoicingProject.date"; /*)*/
     public static final String INVOICING_PROJECT_LOG_TIMES_PRODUCT = /*$$(*/ "InvoicingProject.product"; /*)*/
-    public static final String INVOICING_PROJECT_LOG_TIMES_VISIBLE_DURATION = /*$$(*/ "InvoicingProject.visibleDuration"; /*)*/
-    public static final String INVOICING_PROJECT_LOG_TIMES_DURATION_STORED = /*$$(*/ "InvoicingProject.durationStored"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_DURATION = /*$$(*/ "InvoicingProject.duration"; /*)*/
+    public static final String INVOICING_PROJECT_LOG_TIMES_HOURS_DURATION = /*$$(*/ "InvoicingProject.hoursDuration"; /*)*/
     public static final String INVOICING_PROJECT_LOG_TIMES_TIMESHEET = /*$$(*/ "InvoicingProject.timesheet"; /*)*/
     public static final String INVOICING_PROJECT_LOG_TIMES_TO_INVOICE = /*$$(*/ "InvoicingProject.toInvoice"; /*)*/
     public static final String INVOICING_PROJECT_LOG_TIMES_COMMENTS = /*$$(*/ "InvoicingProject.comments"; /*)*/
