@@ -30,6 +30,7 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -93,36 +94,9 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			}
 		}
 
-		if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
-			dailyWorkHrs = new BigDecimal(1);
-		}
-		LOG.debug("Employee's time pref: {}, Daily Working hours: {}", timePref, dailyWorkHrs);
-		
-		if (timePref ==  null) {
-			return duration;
-		}
-		
-		if(toHours)  {
-			if(timePref.equals("days"))  {
-				duration = duration.multiply(dailyWorkHrs);
-			}
-			else if (timePref.equals("minutes"))  {
-				duration = duration.divide(new BigDecimal(60),4, RoundingMode.HALF_UP);
-			}
-		}
-		else  {
-			if(timePref.equals("days"))  {
-				duration = duration.divide(dailyWorkHrs,4, RoundingMode.HALF_UP);
-			}
-			else if (timePref.equals("minutes"))  {
-				duration = duration.multiply(new BigDecimal(60));
-			}
-		}
-
-		LOG.debug("Calculated duration: {}",  duration);
-		return duration;
+		return Beans.get(TimesheetLineService.class).computeHoursDuration(timePref, duration, dailyWorkHrs, toHours);
 	}
-	
+
 	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException{
 		
 		try{

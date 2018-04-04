@@ -23,8 +23,10 @@ import java.util.List;
 
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -45,7 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
 		
 		for(TimesheetLine timesheetLine : timesheetLineList)  {
 
-			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), timesheetLine.getUser(), false));
+			timesheetLine.setVisibleDuration(Beans.get(TimesheetLineService.class).computeHoursDuration(timesheetLine.getTimesheet(), timesheetLine.getDurationStored(), false));
 		
 		}
 

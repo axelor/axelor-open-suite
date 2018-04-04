@@ -53,6 +53,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -60,7 +61,6 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.project.ProjectService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -93,10 +93,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
 	protected AppHumanResourceService appHumanResourceService;
-	
-	@Inject
-	protected ProjectService projectService;
-	
+
 	@Inject
 	protected HRConfigService  hrConfigService;
 	
@@ -232,6 +229,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Override
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, Project project, Product product) throws AxelorException{
 
+		TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
 		User user = timesheet.getUser();
 		Employee employee = user.getEmployee();
 		
@@ -313,7 +311,12 @@ public class TimesheetServiceImpl implements TimesheetService{
 				}
 				
 				if(noLeave && noPublicHoliday){
-					TimesheetLine timesheetLine = createTimesheetLine(project, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, user, true), "");
+					TimesheetLine timesheetLine = createTimesheetLine(project,
+							product, user, fromDate, timesheet,
+							timesheetLineService.computeHoursDuration(timesheet,
+									logTime, true),
+							""
+					);
 					timesheetLine.setVisibleDuration(logTime);
 				}
 				
@@ -580,22 +583,8 @@ public class TimesheetServiceImpl implements TimesheetService{
   			return "N°"+timesheet.getId();
   		}
 	}
-	
 	@Override
-    public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet) throws AxelorException {
-		
-		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		
-		for(TimesheetLine timesheetLine : timesheetLineList)  {
-			
-			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), timesheet.getUser(), false));
-			
-		}
-		
-		timesheetLineList = projectService._sortTimesheetLineByDate(timesheetLineList);
-		
-		return timesheetLineList;
-	}
+
 	
 	
 	public void validToDate(Timesheet timesheet) throws AxelorException  {
@@ -679,19 +668,23 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 
 	@Override
-	public String getPeriodTotalConvertTitleByUserPref(User user) {
+	public String getPeriodTotalConvertTitle(Timesheet timesheet) {
 		String title = "";
-		if (user.getEmployee() != null) {
-			if (user.getEmployee().getTimeLoggingPreferenceSelect() != null) {
-				title = user.getEmployee().getTimeLoggingPreferenceSelect();
+		if (timesheet != null) {
+			if (timesheet.getTimeLoggingPreferenceSelect() != null) {
+				title = timesheet.getTimeLoggingPreferenceSelect();
 			}
-		}
-		else{
+		} else {
 			title = Beans.get(AppBaseService.class).getAppBase().getTimeLoggingPreferenceSelect();
 		}
-		return title.equals("days") ? I18n.get("Days") :
-			title.equals("minutes") ? I18n.get("Minutes") :
-				I18n.get("Hours");
+		switch (title) {
+			case EmployeeRepository.TIME_PREFERENCE_DAYS:
+				return I18n.get("Days");
+			case EmployeeRepository.TIME_PREFERENCE_MINUTES:
+				return I18n.get("Minutes");
+			default:
+				return I18n.get("Hours");
+		}
 	}
 
 	@Override
@@ -708,6 +701,27 @@ public class TimesheetServiceImpl implements TimesheetService{
 			else {
 				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.managerUser = :_user")
 						.context("_user", user);
+			}
+		}
+	}
+
+	@Override
+	public void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException {
+		String timeLoggingPref;
+		if (timesheet.getUser() == null || timesheet.getUser().getEmployee() == null) {
+			timeLoggingPref = EmployeeRepository.TIME_PREFERENCE_HOURS;
+		} else {
+			Employee employee = timesheet.getUser().getEmployee();
+			timeLoggingPref = employee.getTimeLoggingPreferenceSelect();
+		}
+		timesheet.setTimeLoggingPreferenceSelect(timeLoggingPref);
+
+		if (timesheet.getTimesheetLineList() != null) {
+			for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
+				timesheetLine.setVisibleDuration(Beans.get(TimesheetLineService.class)
+						.computeHoursDuration(timesheet,
+								timesheetLine.getDurationStored(), false)
+				);
 			}
 		}
 	}
