@@ -56,13 +56,15 @@
                     <panel colSpan="12" hidden="true" showIf="!$readonly()">
                         <field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isProject" colSpan="6" widget="boolean-switch"/>
                         <field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="isBusinessProject" colSpan="6" widget="boolean-switch"/>
+                    	<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="$toInvoiceCounter" showTitle="false" colSpan="6" hidden="true"/> 
                     </panel>
 
                     <panel colSpan="12" hidden="true" showIf="$readonly()">
                         <field name="$viewerProjectTags" showTitle="false" colSpan="12">
-                            <viewer depends="isBusinessProject,isProject,projectTypeSelect">
+                            <viewer depends="isBusinessProject,isProject,projectTypeSelect,$toInvoiceCounter">
                                 <![CDATA[
                                     <h4 style="text-align: right;">
+                                        <span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" ng-show="record.isBusinessProject" x-translate>To Invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;" ng-show="record.isBusinessProject">{{record.$toInvoiceCounter}}</span>
                                         <span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 1" x-translate>Project</span>
                                         <span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 2" x-translate>Project phase</span>
                                         <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
@@ -81,6 +83,7 @@
                         </editor>
                     </field>
                 </panel>
+            
             </panel>
 
             <panel colSpan="2" hideIf="statusSelect == 4">
@@ -88,6 +91,7 @@
                 <button name="finish" title="Finish" icon="fa-check" onClick="action-project-record-status-finished,save" hidden="true" showIf="statusSelect == 2" colSpan="12"/>
                 <button name="cancel" title="Cancel" icon="fa-times-circle" css="btn-danger" onClick="action-project-record-status-canceled,save" hidden="true" showIf="statusSelect == 2 &#124;&#124; statusSelect == 3" colSpan="12"/>
             </panel>
+            
         </panel>
 
 		<panel>
@@ -167,6 +171,7 @@
 
 			<panel title="Related elements" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject() || __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())" showIf="isBusinessProject">
                 <button-group colSpan="12">
+                	<button name="showInvoicingProjects" title="Create invoicing project" onClick="save,action-project-view-show-invoicing-projects" css="btn-custom" icon="fa-file-text-o" showIf="$toInvoiceCounter &gt; 0"/>
                     <button name="showPurchaseOrderLines" title="Show purchase orders" onClick="action-project-view-show-purchase-order-lines" css="btn-custom" icon="fa-shopping-cart"/>
                     <button name="showSaleOrderLines" title="Show sale orders" onClick="action-project-view-show-sale-order-lines" css="btn-custom" icon="fa-line-chart"/>
                     <button name="showExpenseLines" title="Show expenses" onClick="action-project-view-show-expense-lines" css="btn-custom" icon="fa-credit-card"/>
@@ -186,7 +191,7 @@
                 <panel colSpan="12" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" if-module="axelor-business-production">
                     <panel-dashlet action="action-project-dashlet-show-sale-invoice-lines" colSpan="12"/>
                     <field title="Sale invoice line" name="$saleInvoiceLine" domain="self.invoice.operationTypeSelect = 3" onChange="action-project-attrs-ro-sale-order-line-buttons" widget="ManyToOne" target="com.axelor.apps.account.db.InvoiceLine" colSpan="8"/>
-                    <button name="addSaleInvoiceLine" title="Add" icon="fa-plus" css="btn-custom" colSpan="2" onClick="com.axelor.apps.businessproject.web.ProjectController:managePurchaseInvoiceLine"/>
+                    <button name="addSaleInvoiceLine" title="Add" icon="fa-plus" css="btn-custom" colSpan="2" onClick="com.axelor.apps.businessproject.web.ProjectController:manageSaleInvoiceLine"/>
                     <button name="remSaleInvoiceLine" title="Remove" readonly="true" icon="fa-times" css="btn-custom" colSpan="2" onClick="com.axelor.apps.businessproject.web.ProjectController:manageSaleInvoiceLine"/>
                 </panel>
 				<panel-related field="productionOrderList" if="eval: __config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()" if-module="axelor-business-production" colSpan="12" canSelect="true" canNew="false" canEdit="false"/>
@@ -364,6 +369,7 @@
 		<action name="action-project-method-set-visible-duration-log-times" />
 		<action name="action-project-attrs-scale-and-precision" />
 		<action name="action-attrs-project-set-project-type"  if="__config__.app.isApp('business-project')" />
+		<action name="action-project-method-count-to-invoice" if="__config__.app.isApp('business-project')"/>
 	</action-group>
 
 	<action-record name="action-project-record-inv-type-select" model="com.axelor.apps.project.db.Project">
@@ -601,7 +607,15 @@
 	<action-method name="action-method-project-compute-duration-fromchildren">
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="computeDurationFromChildren"/>
 	</action-method>
-	
+		
+	<action-method name="action-project-method-count-to-invoice">
+	 	<call class="com.axelor.apps.businessproject.web.ProjectController" method="countToInvoice"/>
+     </action-method>
+     
+     <action-method name="action-project-view-show-invoicing-projects">
+		<call class="com.axelor.apps.businessproject.web.ProjectController" method="showInvoicingProjects"/>
+	</action-method>
+		
   	<action-attrs name="action-project-attrs-scale-and-precision">
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
