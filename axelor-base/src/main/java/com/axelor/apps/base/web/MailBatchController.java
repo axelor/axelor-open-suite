@@ -40,7 +40,7 @@ public class MailBatchController {
 
   public void remindTimesheet(ActionRequest request, ActionResponse response)
       throws AxelorException {
-
+try{
     MailBatch mailBatch = request.getContext().asType(MailBatch.class);
 
     Batch batch = null;
@@ -49,7 +49,10 @@ public class MailBatchController {
 
     if (batch != null) response.setFlash(batch.getComments());
     response.setReload(true);
-  }
+  }catch (Exception e) {
+	        TraceBackService.trace(response, e);
+	    }
+}
 
   public void remindTimesheetGeneral(ActionRequest request, ActionResponse response)
       throws AxelorException {
