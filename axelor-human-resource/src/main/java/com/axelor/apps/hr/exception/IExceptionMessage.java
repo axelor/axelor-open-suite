@@ -53,6 +53,7 @@ public interface IExceptionMessage {
 	static final String TIMESHEET_DATE_CONFLICT = /*$$(*/ "There is a conflict between the dates entered and the dates in the lines : %s"/*)*/ ;
 	static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty"/*)*/ ;
 	static final String GENERAL_EMPLOYEE_ACTIVITY = /*$$(*/ "Please, enter an activity for the employee %s"/*)*/ ;
+	static final String TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING = /*$$(*/ "Please add an employee's public holiday events planning related to user %s"/*)*/;
 
 	static final String LEAVE_USER_EMPLOYEE = /*$$(*/ "Please create an employee for the user %s"/*)*/ ;
 	static final String LEAVE_LINE = /*$$(*/ "There is no leave line for the employee %s and the reason %s."/*)*/ ;
