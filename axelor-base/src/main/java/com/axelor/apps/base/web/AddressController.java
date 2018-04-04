@@ -31,11 +31,11 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
 import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -228,7 +228,7 @@ public class AddressController {
     			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
     			return;
     		}
-    		if (appBaseService.getAppBase().getMapApiSelect() != IAdministration.MAP_API_GOOGLE) {
+    		if (appBaseService.getAppBase().getMapApiSelect() != AppBaseRepository.MAP_API_GOOGLE) {
     			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
     			return;
     		}

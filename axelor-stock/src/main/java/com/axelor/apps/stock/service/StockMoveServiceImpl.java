@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
@@ -942,7 +943,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		if (Strings.isNullOrEmpty(dString) || Strings.isNullOrEmpty(aString)) {
 			throw new AxelorException(stockMove, IException.MISSING_FIELD, I18n.get(IExceptionMessage.STOCK_MOVE_11));
 		}
-		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_OSM) {
+		if (appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
 			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_12));
 		}
 			Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
@@ -212,19 +212,37 @@ public class MapService {
 		return null;
 	}
 
-	public HashMap<String,Object> getMap(String qString){
+	public HashMap<String,Object> getMap(String qString)  {
 		LOG.debug("qString = {}", qString);
-		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
-			return getMapGoogle(qString);
-		else
-			return getMapOsm(qString);
+		
+		switch (appBaseService.getAppBase().getMapApiSelect()) {
+      case AppBaseRepository.MAP_API_GOOGLE:
+        
+        return getMapGoogle(qString);
+        
+      case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+        
+        return getMapOsm(qString);
+
+      default:
+        return null;
+    }
 	}
 
 	public String getMapUrl(BigDecimal latitude, BigDecimal longitude){
-		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
-			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18"+"&key="+getGoogleMapsApiKey();
-		else
-			return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
+		
+		switch (appBaseService.getAppBase().getMapApiSelect()) {
+      case AppBaseRepository.MAP_API_GOOGLE:
+        
+        return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18"+"&key="+getGoogleMapsApiKey();
+        
+      case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+        
+        return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
+
+      default:
+        return null;
+    }
 	}
 
 	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){

@@ -96,12 +96,4 @@ public interface IAdministration {
 	static final String ANALYTIC_REPORT = "analyticReport";
 
 	
-	/**
-	 * Static select in General
-	 */
-
-	// TYPE
-	static final int MAP_API_GOOGLE = 1;
-	static final int MAP_API_OSM = 2;
-	
 }
