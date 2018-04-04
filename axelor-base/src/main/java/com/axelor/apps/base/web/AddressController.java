@@ -25,9 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +32,6 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
@@ -48,6 +44,8 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -283,7 +281,10 @@ public class AddressController {
 		}
 
 		String parentModel = (String) parentContext.get("_model");
-		String partnerField = IPartner.modelPartnerFieldMap.get(parentModel);
+    LOG.debug("Create partner address : Parent model = {}", parentModel);
+
+		String partnerField = PartnerAddressRepository.modelPartnerFieldMap.get(parentModel);
+    LOG.debug("Create partner address : Parent field = {}", partnerField);
 
 		Partner partner = null;
 		if (parentContext.get(partnerField) instanceof Partner) {
@@ -293,18 +294,26 @@ public class AddressController {
 			partner = Mapper.toBean(Partner.class, (Map<String, Object>) parentContext.get(partnerField));
 		}
 
+    LOG.debug("Create partner address : Partner = {}", partner);
+		
 		if (partner == null || partner.getId() == null) {
 			return;
 		}
 		Address address = context.asType(Address.class);
 
 		PartnerAddress partnerAddress = Beans.get(PartnerAddressRepository.class).all().filter("self.partner.id = ? AND self.address.id = ?", partner.getId(), address.getId()).fetchOne();
+		
+    LOG.debug("Create partner address : Partner Address = {}", partnerAddress);
+
 		if (partnerAddress == null) {
 			partner = Beans.get(PartnerRepository.class).find(partner.getId());
 			address = Beans.get(AddressRepository.class).find(address.getId());
 			Boolean invoicing = (Boolean)context.get("isInvoicingAddr");
+			if(invoicing == null)  {  invoicing = false;  }
 			Boolean delivery = (Boolean)context.get("isDeliveryAddr");
+	     if(delivery == null)  {  delivery = false;  }
 			Boolean isDefault = (Boolean)context.get("isDefault");
+	     if(isDefault == null)  {  isDefault = false;  }
 			PartnerService partnerService = Beans.get(PartnerService.class);
 			partnerService.addPartnerAddress(partner, address, isDefault, invoicing, delivery);
 			partnerService.savePartner(partner);

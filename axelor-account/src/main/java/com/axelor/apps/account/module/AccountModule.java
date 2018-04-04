@@ -95,7 +95,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
-import com.axelor.apps.base.db.IPartner;
+import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
@@ -192,7 +192,7 @@ public class AccountModule extends AxelorModule {
 
         bind(TemplateMessageAccountService.class).to(TemplateMessageAccountServiceImpl.class);
 
-        IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
+        PartnerAddressRepository.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
     }
     
     
