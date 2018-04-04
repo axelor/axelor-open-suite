@@ -193,9 +193,9 @@
         <field name="orderBeingEdited" hidden="true"/>
 		<field name="$viewerOrderBeingEdited" showTitle="false" readonly="true" colSpan="9" showIf="orderBeingEdited">
 		  <viewer depends="orderBeingEdited"><![CDATA[
-	 		<h3 style="text-align: right;">
+	 		<h4>
 	        	<span class="label label-important" ng-show="record.orderBeingEdited" x-translate>Order being edited</span>
-	        </h3>
+	        </h4>
 		  ]]></viewer>
 		</field>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
