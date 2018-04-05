@@ -168,13 +168,19 @@
 	    <field name="product" expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(__repo__(User).find(__parent__.user.id))" if="__parent__.user != null"/>
 	</action-record>
 
-	<action-record name="action-timesheet-line-record-to-invoice" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="toInvoice" expr="eval: project?.projInvTypeSelect == 2 || project?.project?.projInvTypeSelect == 2"  if="__config__.app.isApp('business-project')"/>
-	</action-record>
+    <action-record name="action-timesheet-line-record-to-invoice"
+        model="com.axelor.apps.hr.db.TimesheetLine">
+        <field name="toInvoice"
+            expr="eval: project?.projInvTypeSelect == 2 || project?.parentProject?.projInvTypeSelect == 2"
+            if="__config__.app.isApp('business-project')"/>
+    </action-record>
 	
-	<action-record name="action-timesheet-line-record-to-invoice-parent" model="com.axelor.apps.hr.db.TimesheetLine">
-		<field name="toInvoice" expr="eval: _parent?.project?.projInvTypeSelect == 2 || _parent?.project?.project?.projInvTypeSelect == 2"  if="__config__.app.isApp('business-project')"/>
-	</action-record>
+    <action-record name="action-timesheet-line-record-to-invoice-parent"
+        model="com.axelor.apps.hr.db.TimesheetLine">
+        <field name="toInvoice"
+            expr="eval: _parent?.project?.projInvTypeSelect == 2 || _parent?.parentProject?.parentProject?.projInvTypeSelect == 2"
+            if="__config__.app.isApp('business-project')"/>
+    </action-record>
 	
 	<action-record name="action-hr-timesheet-line-record-empty-product" model="com.axelor.apps.hr.db.TimesheetLine">
 		<field name="product" expr="eval:null" if="!project?.productSet?.contains(product)"/>
