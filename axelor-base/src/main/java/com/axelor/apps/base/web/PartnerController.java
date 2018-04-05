@@ -17,6 +17,21 @@
  */
 package com.axelor.apps.base.web;
 
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.eclipse.birt.core.exception.BirtException;
+import org.iban4j.IbanFormatException;
+import org.iban4j.InvalidCheckDigitException;
+import org.iban4j.UnsupportedCountryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
@@ -37,8 +52,10 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -51,20 +68,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.eclipse.birt.core.exception.BirtException;
-import org.iban4j.IbanFormatException;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Singleton
 public class PartnerController {
@@ -291,11 +294,28 @@ public class PartnerController {
 			response.setAlert(String.format(IExceptionMessage.BANK_DETAILS_2, "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
 		}
 	}
-	
-	public String normalizePhoneNumber(String phoneNumber){
-		return phoneNumber.replaceAll("\\s|\\.", "");
-	}
-	
+
+    public void normalizePhoneNumber(ActionRequest request, ActionResponse response) {
+        try {
+            String phoneNumberFieldName = partnerService.getPhoneNumberFieldName(request.getAction());
+            String phoneNumber = (String) request.getContext().get(phoneNumberFieldName);
+
+            if (!StringUtils.isBlank(phoneNumber)) {
+                String normalizedPhoneNumber = partnerService.normalizePhoneNumber(phoneNumber);
+
+                if (!phoneNumber.equals(normalizedPhoneNumber)) {
+                    response.setValue(phoneNumberFieldName, normalizedPhoneNumber);
+                }
+
+                if (!partnerService.checkPhoneNumber(normalizedPhoneNumber)) {
+                    response.addError(phoneNumberFieldName, I18n.get("Invalid phone number"));
+                }
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
 	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
 		if (partner.getId() == null) {
