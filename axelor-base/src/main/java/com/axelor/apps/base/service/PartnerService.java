@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.inject.Singleton;
 
@@ -44,11 +45,13 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -60,6 +63,8 @@ public class PartnerService {
   
 	@Inject
 	private PartnerRepository partnerRepo;
+
+    private Pattern phoneNumberPattern = Pattern.compile("^\\+?(?:[0-9]{2,3}(?:\\s|\\.)?){3,6}[0-9]{2,3}$");
 
 	public Partner createPartner(String name, String firstName, String fixedPhone, String mobilePhone, EmailAddress emailAddress, Currency currency, Address deliveryAddress, Address mainInvoicingAddress){
 		Partner partner = new Partner();
@@ -385,5 +390,36 @@ public class PartnerService {
     	return Beans.get(AppBaseService.class).getDefaultPartnerLanguageCode();
 		
 	}
-	
+
+    /**
+     * Normalize phone number.
+     * 
+     * @param phoneNumber
+     * @return
+     */
+    public String normalizePhoneNumber(String phoneNumber) {
+        return StringUtils.isBlank(phoneNumber) ? null : phoneNumber.replaceAll("\\s|\\.|-", "");
+    }
+
+    /**
+     * Check phone number.
+     * 
+     * @param phoneNumber
+     * @return
+     */
+    public boolean checkPhoneNumber(String phoneNumber) {
+        return StringUtils.isBlank(phoneNumber) ? false : phoneNumberPattern.matcher(phoneNumber).matches();
+    }
+
+    /**
+     * Get phone number field name.
+     * 
+     * @param actionName
+     * @return
+     */
+    public String getPhoneNumberFieldName(String actionName) {
+        Preconditions.checkNotNull(actionName, I18n.get("Action name cannot be null."));
+        return actionName.substring(actionName.lastIndexOf('-') + 1);
+    }
+
 }
