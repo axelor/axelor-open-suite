@@ -28,18 +28,7 @@ import com.axelor.inject.Beans;
 
 import javax.persistence.PersistenceException;
 
-public class ContractRepository extends JpaRepository<Contract> {
-
-	static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";
-	static final String SUPPLIER_CONTRACT_SEQUENCE = "supplierContract";
-
-	public static final int DRAFT_CONTRACT = 1;
-	public static final int ACTIVE_CONTRACT = 2;
-	public static final int CLOSED_CONTRACT = 3;
-
-	public ContractRepository() {
-		super(Contract.class);
-	}
+public class ContractManagementRepository extends ContractRepository {
 
 	@Override
 	public Contract save(Contract contract) {

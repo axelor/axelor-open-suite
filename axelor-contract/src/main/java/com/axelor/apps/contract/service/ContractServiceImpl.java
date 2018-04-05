@@ -57,16 +57,14 @@ import com.google.inject.persist.Transactional;
 
 public class ContractServiceImpl extends ContractRepository implements ContractService {
 
-	protected ContractService contractService;
 	protected ContractVersionService versionService;
 	protected DurationService durationService;
 	protected ContractLineRepository contractLineRepo;
 	protected ConsumptionLineRepository consumptionLineRepo;
 
 	@Inject
-	public ContractServiceImpl(ContractService contractService, ContractVersionService versionService, DurationService durationService,
+	public ContractServiceImpl(ContractVersionService versionService, DurationService durationService,
 							   ContractLineRepository contractLineRepo, ConsumptionLineRepository consumptionLineRepo) {
-        this.contractService = contractService;
 		this.versionService = versionService;
 		this.durationService = durationService;
 		this.contractLineRepo = contractLineRepo;
@@ -87,8 +85,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 	public void waitingCurrentVersion(Contract contract, LocalDate date) {
 		ContractVersion currentVersion = contract.getCurrentVersion();
 		versionService.waiting(currentVersion, date);
-
-		//save(contract);
 	}
 
 	@Override
@@ -105,22 +101,17 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 			}
 		}
 
-		// Active the contract if not yet activated
 		if(contract.getStatusSelect() != ContractRepository.ACTIVE_CONTRACT) {
-			Beans.get(ContractService.class).activeContract(contract, date);
+			activeContract(contract, date);
 			
 		}
 		
-		// Ongoing current version
 		versionService.ongoing(currentVersion, date);
 
-		// Inc contract version number
 		contract.setVersionNumber(contract.getVersionNumber() + 1);
 		
 		if (contract.getCurrentVersion().getAutomaticInvoicing() && contract.getCurrentVersion().getInvoicingMoment() == 2 ){
-			//set date de factu a date du jour
-			//facturer
-			contract.setInvoicingDate( Beans.get(AppBaseService.class).getTodayDate() );
+			contract.setInvoicingDate(getTodayDate());
 			invoice = invoicingContract(contract);
 		}
 
@@ -147,14 +138,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		versionService.terminate(currentVersion, date.minusDays(1));
 
 		// Archive current version
-		Beans.get(ContractService.class).archiveVersion(contract, date);
+		archiveVersion(contract, date);
 
 		if(contract.getCurrentVersion().getDoNotRenew()) {
 			contract.getCurrentVersion().setIsTacitRenewal(false);
 		}
 
 		// Ongoing current version
-		Beans.get(ContractService.class).ongoingCurrentVersion(contract, date);
+		ongoingCurrentVersion(contract, date);
 
 		save(contract);
 	}
@@ -241,7 +232,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract) {
-			
 			@Override
 			public Invoice generate() throws AxelorException {
 				return super.createInvoiceHeader();
@@ -250,7 +240,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		
 		Invoice invoice = invoiceGenerator.generate();
 		
-		invoice.setOperationSubTypeSelect( contract.getEndDate() == null || contract.getEndDate().isAfter( Beans.get(AppBaseService.class).getTodayDate() ) ? InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_INVOICE : InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE  );
+		invoice.setOperationSubTypeSelect( contract.getEndDate() == null || contract.getEndDate().isAfter(getTodayDate()) ? InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_INVOICE : InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE  );
 		invoice.setContract(contract);
 		//invoice.setContractVersion(contract.getCurrentVersion());
 		

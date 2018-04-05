@@ -28,9 +28,12 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractService;
+import com.axelor.apps.tool.ModelTool;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -45,21 +48,26 @@ import com.google.inject.persist.Transactional;
 @Singleton
 public class ContractController {
 
-	@Inject
-	protected ContractService contractService;
-	
 	public void waiting(ActionRequest request, ActionResponse response) {
+		Contract contract = Beans.get(ContractRepository.class)
+				.find(request.getContext().asType(Contract.class).getId());
 		try  {
-			contractService.waitingCurrentVersion(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()), getToDay());
+			Beans.get(ContractService.class)
+					.waitingCurrentVersion(contract, getTodayDate());
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
 
+	// TODO: move to ContractVersionController
 	public void waitingNextVersion(ActionRequest request, ActionResponse response) {
 		try  {
-			contractService.waitingNextVersion(JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId()).getContractNext(), getToDay());
+			Beans.get(ContractService.class).waitingNextVersion(
+					JPA.find(
+							ContractVersion.class,
+							request.getContext().asType(ContractVersion.class).getId()
+					).getContractNext(), getTodayDate());
 			response.setReload(true);
 		} catch(Exception e) {
 			String flash = e.toString();
@@ -69,8 +77,11 @@ public class ContractController {
 	}
 
 	public void ongoing(ActionRequest request, ActionResponse response) {
+		Contract contract = Beans.get(ContractRepository.class)
+				.find(request.getContext().asType(Contract.class).getId());
 		try  {
-			Invoice invoice = contractService.ongoingCurrentVersion(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()), getToDay());
+			Invoice invoice = Beans.get(ContractService.class)
+					.ongoingCurrentVersion(contract, getTodayDate());
 			if ( invoice == null){
 				response.setReload(true);
 			}else{
@@ -82,51 +93,47 @@ public class ContractController {
 						.context("_showRecord", invoice.getId().toString())
 						.map() );
 			}
-			
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
 
 	public void invoicing(ActionRequest request, ActionResponse response) {
+		Contract contract = Beans.get(ContractRepository.class)
+				.find(request.getContext().asType(Contract.class).getId());
 		try  {
-			Invoice invoice = contractService.invoicingContract(JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()));
-			
-			if (invoice == null){
-				response.setError("ERROR");
-				return;
-			}
-			
-			response.setView ( ActionView.define( I18n.get("Invoice") ) 
+			Invoice invoice = Beans.get(ContractService.class)
+					.invoicingContract(contract);
+			response.setView ( ActionView.define( I18n.get("Invoice") )
 					.model(Invoice.class.getName())
 					.add("form", "invoice-form")
 					.add("grid", "invoice-grid")
 					.param("forceTitle", "true")
 					.context("_showRecord", invoice.getId().toString())
 					.map() );
-			
-			
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
 
 	public void terminated(ActionRequest request, ActionResponse response) {
-		Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
+		Contract contract = Beans.get(ContractRepository.class)
+				.find(request.getContext().asType(Contract.class).getId());
 		try  {
-		    contractService.checkCanTerminateContract(contract);
-			contractService.terminateContract(contract, true, contract.getTerminatedDate());
+			ContractService service = Beans.get(ContractService.class);
+		    service.checkCanTerminateContract(contract);
+			service.terminateContract(contract, true, contract.getTerminatedDate());
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void renew(ActionRequest request, ActionResponse response) {
+		Contract contract = Beans.get(ContractRepository.class)
+				.find(request.getContext().asType(Contract.class).getId());
 		try  {
-			Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
-			contractService.renewContract(contract, getToDay());
+			Beans.get(ContractService.class).renewContract(contract, getTodayDate());
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
@@ -134,10 +141,12 @@ public class ContractController {
 	}
 	
 
+	// TODO: move to ContractVersionController
 	public void activeNextVersion(ActionRequest request, ActionResponse response) {
 		try  {
 			ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
-			contractService.activeNextVersion(JPA.find(ContractVersion.class, contractVersion.getId()).getContractNext(), getToDay());
+			Beans.get(ContractService.class)
+					.activeNextVersion(JPA.find(ContractVersion.class, contractVersion.getId()).getContractNext(), getTodayDate());
 			response.setView(ActionView
 					.define("Contract")
 					.model(Contract.class.getName())
@@ -154,6 +163,7 @@ public class ContractController {
 	public void deleteNextVersion(ActionRequest request, ActionResponse response) {
 		final Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
 
+		// TODO: move this code in Service
 		JPA.runInTransaction(new Runnable() {
 
 			@Override
@@ -168,10 +178,7 @@ public class ContractController {
 		response.setReload(true);
 	}
 
-	private LocalDate getToDay() {
-		return Beans.get(AppBaseService.class).getTodayDate();
-	}
-
+	// TODO: Move to ContractVersionService
 	public void saveNextVersion(ActionRequest request, ActionResponse response) {
 		final ContractVersion version = JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
 		if(version.getContractNext() != null) { return; }
@@ -191,6 +198,7 @@ public class ContractController {
 			return;
 		}
 
+		// TODO: move in service
 		JPA.runInTransaction(new Runnable() {
 			@Override
 			public void run() {
@@ -206,10 +214,12 @@ public class ContractController {
 	@Transactional
 	public void copyFromTemplate(ActionRequest request, ActionResponse response){
 
-		ContractTemplate template = JPA.find(ContractTemplate.class, new Long((Integer) ((Map) request.getContext().get("contractTemplate")).get("id"))) ;
+		ContractTemplate template = ModelTool.toBean(ContractTemplate.class, request.getContext().get("contractTemplate"));
+		template = Beans.get(ContractTemplateRepository.class).find(template.getId());
 		
-		Contract copy = contractService.createContractFromTemplate(template);
-		
+		Contract copy = Beans.get(ContractService.class).createContractFromTemplate(template);
+
+		// TODO: move in service
 		if (request.getContext().asType(Contract.class).getPartner() != null ){
 			copy.setPartner(Beans.get(PartnerRepository.class).find( request.getContext().asType(Contract.class).getPartner().getId() ) );
 			Beans.get(ContractRepository.class).save(copy);
@@ -223,5 +233,9 @@ public class ContractController {
 				.param("forceTitle", "true")
 				.context("_showRecord", copy.getId().toString())
 				.map() );
+	}
+
+	private LocalDate getTodayDate() {
+		return Beans.get(AppBaseService.class).getTodayDate();
 	}
 }

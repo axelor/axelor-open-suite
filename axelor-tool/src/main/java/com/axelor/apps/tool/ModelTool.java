@@ -18,13 +18,17 @@
 package com.axelor.apps.tool;
 
 import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
@@ -58,6 +62,12 @@ public final class ModelTool {
 			}
 		}
 		return error;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T toBean(Class<T> klass, Object mapObject) {
+		Map<String, Object> map = (Map<String, Object>) mapObject;
+		return Mapper.toBean(klass, map);
 	}
 
 }
