@@ -51,6 +51,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -64,7 +65,6 @@ public abstract class InvoiceGenerator  {
 
 	protected JournalService journalService;
 
-	protected boolean months30days;
 	protected int operationType;
 	protected Company company;
 	protected PaymentCondition paymentCondition;
@@ -221,6 +221,9 @@ public abstract class InvoiceGenerator  {
 
 		invoice.setExternalReference(externalReference);
 
+		invoice.setPrintingSettings(Beans.get(TradingNameService.class)
+				.getDefaultPrintingSettings(null, company));
+
 		// Set ATI mode on invoice
 		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
@@ -375,23 +378,21 @@ public abstract class InvoiceGenerator  {
 
 			// In the invoice currency
 			invoice.setTaxTotal(invoice.getTaxTotal().add( invoiceLineTax.getTaxTotal() ));
-			invoice.setInTaxTotal(invoice.getInTaxTotal().add( invoiceLineTax.getInTaxTotal() ));
 
 			// In the company accounting currency
 			invoice.setCompanyTaxTotal(invoice.getCompanyTaxTotal().add( invoiceLineTax.getCompanyTaxTotal() ));
-			invoice.setCompanyInTaxTotal(invoice.getCompanyInTaxTotal().add( invoiceLineTax.getCompanyInTaxTotal() ));
 
 		}
 		
-		invoice.setAmountRemaining(invoice.getInTaxTotal());
-		invoice.setHasPendingPayments(false);
-
 		// In the invoice currency
 		invoice.setInTaxTotal(invoice.getExTaxTotal().add( invoice.getTaxTotal() ));
 
 		// In the company accounting currency
 		invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add( invoice.getCompanyTaxTotal() ));
 
+		invoice.setAmountRemaining(invoice.getInTaxTotal());
+		invoice.setHasPendingPayments(false);
+		
 		logger.debug("Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
 			new Object[] { invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal() });
 

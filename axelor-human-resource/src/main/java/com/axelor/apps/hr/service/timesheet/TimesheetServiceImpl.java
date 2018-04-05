@@ -23,7 +23,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,23 +35,25 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
-import com.axelor.apps.base.db.IPriceListLine;
+import com.axelor.apps.base.db.EventsPlanning;
+import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -60,7 +61,6 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.project.ProjectService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -75,8 +75,6 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -95,10 +93,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	@Inject
 	protected AppHumanResourceService appHumanResourceService;
-	
-	@Inject
-	protected ProjectService projectService;
-	
+
 	@Inject
 	protected HRConfigService  hrConfigService;
 	
@@ -117,16 +112,21 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	@Override
 	@Transactional(rollbackOn={Exception.class})
-	public void getTimeFromTask(Timesheet timesheet){
+	public void getTimeFromTask(Timesheet timesheet) throws AxelorException {
 
 		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.timesheet = null AND self.project != null", timesheet.getUser()).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
+			timesheetLine.setDuration(Beans.get(TimesheetLineService.class)
+							.computeHoursDuration(timesheet,
+									timesheetLine.getHoursDuration(),
+									false));
 			timesheet.addTimesheetLineListItem(timesheetLine);
 		}
 	}
 
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void confirm(Timesheet timesheet) throws AxelorException  {
 				
 		this.validToDate(timesheet);
@@ -148,7 +148,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 	
 	
-	public Message sendConfirmationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+	@Override
+    public Message sendConfirmationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
@@ -160,7 +161,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validate(Timesheet timesheet) throws AxelorException {
 
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
@@ -169,21 +171,23 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 	
 	
-	public Message sendValidationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+	@Override
+    public Message sendValidationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
 		if(hrConfig.getTimesheetMailNotification())  {
-				
+
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
-				
+
 		}
 		
 		return null;
 		
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void refuse(Timesheet timesheet) throws AxelorException {
 		
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
@@ -191,26 +195,29 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setRefusalDate(appHumanResourceService.getTodayDate());
 	}
 	
-	public Message sendRefusalEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+	@Override
+    public Message sendRefusalEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 		
 		if(hrConfig.getTimesheetMailNotification())  {
-				
+
 			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
-				
+
 		}
 		
 		return null;
 		
 	}
 	
-	@Transactional(rollbackOn={Exception.class})
+	@Override
+    @Transactional(rollbackOn={Exception.class})
 	public void cancel(Timesheet timesheet){
 		timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
 	}
 	
-	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+	@Override
+    public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
 
 		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
@@ -226,6 +233,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Override
 	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, Project project, Product product) throws AxelorException{
 
+		TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
 		User user = timesheet.getUser();
 		Employee employee = user.getEmployee();
 		
@@ -262,8 +270,15 @@ public class TimesheetServiceImpl implements TimesheetService{
 		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", user).fetch();
 		
 		//Public holidays list
-		List<EventsPlanningLine> publicHolidayList = employee.getPublicHolidayEventsPlanning().getEventsPlanningLineList();
-		 
+		EventsPlanning publicHolidayEventsPlanning = employee.getPublicHolidayEventsPlanning();
+		List<EventsPlanningLine> publicHolidayList;
+        if (publicHolidayEventsPlanning == null) {
+            throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR,
+                    I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING), user.getName());
+        } else {
+            publicHolidayList = employee.getPublicHolidayEventsPlanning().getEventsPlanningLineList();
+        }
+
 		while(!fromDate.isAfter(toDate)){
 			DayPlanning dayPlanningCurr = new DayPlanning();
 			for (DayPlanning dayPlanning : dayPlanningList) {
@@ -300,8 +315,13 @@ public class TimesheetServiceImpl implements TimesheetService{
 				}
 				
 				if(noLeave && noPublicHoliday){
-					TimesheetLine timesheetLine = createTimesheetLine(project, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, user, true), "");
-					timesheetLine.setVisibleDuration(logTime);
+					TimesheetLine timesheetLine = createTimesheetLine(project,
+							product, user, fromDate, timesheet,
+							timesheetLineService.computeHoursDuration(timesheet,
+									logTime, true),
+							""
+					);
+					timesheetLine.setDuration(logTime);
 				}
 				
 			}
@@ -321,7 +341,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 	}
 	
-	public Timesheet getCurrentTimesheet(){
+	@Override
+    public Timesheet getCurrentTimesheet(){
 		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = ?1 AND self.user.id = ?2", TimesheetRepository.STATUS_DRAFT, AuthUtils.getUser().getId()).order("-id").fetchOne();
 		if(timesheet != null){
 			return timesheet;
@@ -331,14 +352,16 @@ public class TimesheetServiceImpl implements TimesheetService{
 		}
 	}
 	
-	public Timesheet getCurrentOrCreateTimesheet(){
+	@Override
+    public Timesheet getCurrentOrCreateTimesheet(){
 		Timesheet timesheet = getCurrentTimesheet();
 		if(timesheet == null)
 			timesheet = createTimesheet(AuthUtils.getUser(), appHumanResourceService.getTodayDateTime().toLocalDate(), null);
 		return timesheet;
 	}
 	
-	public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate){
+	@Override
+    public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate){
 		Timesheet timesheet = new Timesheet();
 		
 		timesheet.setUser(user);
@@ -355,7 +378,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		return timesheet;
 	}
 	
-	public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
+	@Override
+    public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
 		TimesheetLine timesheetLine = new TimesheetLine();
 		
 		timesheetLine.setDate(date);
@@ -363,13 +387,14 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheetLine.setProduct(product);
 		timesheetLine.setProject(project);
 		timesheetLine.setUser(user);
-		timesheetLine.setDurationStored(hours);
+		timesheetLine.setHoursDuration(hours);
 		timesheet.addTimesheetLineListItem(timesheetLine);
 		
 		return timesheetLine;
 	}
 
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException  {
+	@Override
+    public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException  {
 
 		List<InvoiceLine> invoiceLineList = new ArrayList<>();
 		int count = 0;
@@ -386,7 +411,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			tabInformations[2] = timesheetLine.getDate();
 			//End date, useful only for consolidation
 			tabInformations[3] = timesheetLine.getDate();
-			tabInformations[4] = timesheetLine.getDurationStored();
+			tabInformations[4] = timesheetLine.getHoursDuration();
 
 			String key = null;
 			if(consolidate){
@@ -401,7 +426,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 						//If date is upper than end date then replace end date by this one
 						tabInformations[3] = timesheetLine.getDate();
 					}
-					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getDurationStored());
+					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getHoursDuration());
 				}else{
 					timeSheetInformationsMap.put(key, tabInformations);
 				}
@@ -421,7 +446,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			User user = (User)timesheetInformations[1];
 			LocalDate startDate = (LocalDate)timesheetInformations[2];
 			LocalDate endDate = (LocalDate)timesheetInformations[3];
-			BigDecimal durationStored = (BigDecimal) timesheetInformations[4];
+			BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
 
 			if (consolidate){
 				strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
@@ -429,7 +454,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				strDate = ddmmFormat.format(startDate);
 			}
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, durationStored, priority*100+count));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, hoursDuration, priority*100+count));
 			count++;
 		}
 
@@ -437,7 +462,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 	}
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal durationStored, int priority) throws AxelorException  {
+	@Override
+    public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal hoursDuration, int priority) throws AxelorException  {
 
 		int discountTypeSelect = 1;
 		if(product == null){
@@ -447,8 +473,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		BigDecimal discountAmount = product.getCostPrice();
 
 
-		BigDecimal qtyConverted = durationStored;
-		qtyConverted = Beans.get(UnitConversionService.class).convert(appHumanResourceService.getAppBase().getUnitHours(), product.getUnit(), durationStored);
+		BigDecimal qtyConverted = Beans.get(UnitConversionService.class).convert(appHumanResourceService.getAppBase().getUnitHours(), product.getUnit(), hoursDuration);
 
 		PriceList priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 		if(priceList != null)  {
@@ -456,7 +481,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			if(priceListLine!=null){
 				discountTypeSelect = priceListLine.getTypeSelect();
 			}
-			if((appHumanResourceService.getAppBase().getComputeMethodDiscountSelect() == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || appHumanResourceService.getAppBase().getComputeMethodDiscountSelect() == AppBaseRepository.INCLUDE_DISCOUNT)
+			if((appHumanResourceService.getAppBase().getComputeMethodDiscountSelect() == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE) || appHumanResourceService.getAppBase().getComputeMethodDiscountSelect() == AppBaseRepository.INCLUDE_DISCOUNT)
 			{
 				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 				if(discounts != null){
@@ -505,13 +530,14 @@ public class TimesheetServiceImpl implements TimesheetService{
 		for (TimesheetLine timesheetLine : timesheetLineList) {
 			Project project = timesheetLine.getProject();
 			if (project != null) {
-				project.setTimeSpent(timesheetLine.getDurationStored().add(this.computeSubTimeSpent(project)));
+				project.setTimeSpent(timesheetLine.getHoursDuration().add(this.computeSubTimeSpent(project)));
 				this.computeParentTimeSpent(project);
 			}
 		}
 	}
 
-	public BigDecimal computeSubTimeSpent(Project project) {
+	@Override
+    public BigDecimal computeSubTimeSpent(Project project) {
 		BigDecimal sum = BigDecimal.ZERO;
 		List<Project> subProjectList = Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 		if (subProjectList == null || subProjectList.isEmpty()) {
@@ -523,7 +549,8 @@ public class TimesheetServiceImpl implements TimesheetService{
 		return sum;
 	}
 
-	public void computeParentTimeSpent(Project project) {
+	@Override
+    public void computeParentTimeSpent(Project project) {
 		Project parentProject = project.getParentProject();
 		if (parentProject == null) {
 			return;
@@ -532,59 +559,18 @@ public class TimesheetServiceImpl implements TimesheetService{
 		this.computeParentTimeSpent(parentProject);
 	}
 
-	public BigDecimal computeTimeSpent(Project project){
+	@Override
+    public BigDecimal computeTimeSpent(Project project){
 		BigDecimal sum = BigDecimal.ZERO;
 		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.project = ?1 AND self.timesheet.statusSelect = ?2", project, TimesheetRepository.STATUS_VALIDATED).fetch();
 		for (TimesheetLine timesheetLine : timesheetLineList) {
-			sum = sum.add(timesheetLine.getDurationStored());
+			sum = sum.add(timesheetLine.getHoursDuration());
 		}
 		return sum;
 	}
-	
-	public void getActivities(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<>();
-		try{
-			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
-			for (Product product : productList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("name", product.getName());
-				map.put("id", product.getId().toString());
-				dataList.add(map);
-			}
-			response.setData(dataList);
-			response.setTotal(dataList.size());
-		}
-		catch(Exception e){
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
-	}
-	
-	// Method used for mobile application
-	@Transactional
-	public void insertTSLine(ActionRequest request, ActionResponse response){
-		
-		User user = AuthUtils.getUser();
-		Project project = Beans.get(ProjectRepository.class).find(new Long(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
-		LocalDate date = LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
-		if(user != null){
-			Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-			if(timesheet == null){
-				timesheet = createTimesheet(user, date, date);
-			}
-			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-			TimesheetLine line = createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
-			
-			Beans.get(TimesheetRepository.class).save(timesheet);
-			response.setTotal(1);
-			HashMap<String, Object> data = new HashMap<>();
-			data.put("id", line.getId());
-			response.setData(data);
-		}
-	}
-	
-	public String computeFullName(Timesheet timesheet){
+
+	@Override
+    public String computeFullName(Timesheet timesheet){
 		
 		User timesheetUser = timesheet.getUser();
 		LocalDateTime createdOn = timesheet.getCreatedOn();
@@ -600,21 +586,7 @@ public class TimesheetServiceImpl implements TimesheetService{
   			return "N°"+timesheet.getId();
   		}
 	}
-	
-	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet) throws AxelorException {
-		
-		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		
-		for(TimesheetLine timesheetLine : timesheetLineList)  {
-			
-			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), timesheet.getUser(), false));
-			
-		}
-		
-		timesheetLineList = projectService._sortTimesheetLineByDate(timesheetLineList);
-		
-		return timesheetLineList;
-	}
+
 	
 	
 	public void validToDate(Timesheet timesheet) throws AxelorException  {
@@ -690,7 +662,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		if (timesheetLines != null) {
 			for (TimesheetLine timesheetLine : timesheetLines) {
-				periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+				periodTotal = periodTotal.add(timesheetLine.getHoursDuration());
 			}
 		}
 
@@ -698,15 +670,23 @@ public class TimesheetServiceImpl implements TimesheetService{
 	}
 
 	@Override
-	public String getPeriodTotalConvertTitleByUserPref(User user) {
-		String title;
-		if (user.getEmployee() != null) {
-			if (user.getEmployee().getTimeLoggingPreferenceSelect() != null) {
-				title = user.getEmployee().getTimeLoggingPreferenceSelect().equals("days") ? I18n.get("Days") : user.getEmployee().getTimeLoggingPreferenceSelect().equals("minutes") ? I18n.get("Minutes") : I18n.get("Hours");
-				return title;
+	public String getPeriodTotalConvertTitle(Timesheet timesheet) {
+		String title = "";
+		if (timesheet != null) {
+			if (timesheet.getTimeLoggingPreferenceSelect() != null) {
+				title = timesheet.getTimeLoggingPreferenceSelect();
 			}
+		} else {
+			title = Beans.get(AppBaseService.class).getAppBase().getTimeLoggingPreferenceSelect();
 		}
-		return null;
+		switch (title) {
+			case EmployeeRepository.TIME_PREFERENCE_DAYS:
+				return I18n.get("Days");
+			case EmployeeRepository.TIME_PREFERENCE_MINUTES:
+				return I18n.get("Minutes");
+			default:
+				return I18n.get("Hours");
+		}
 	}
 
 	@Override
@@ -723,6 +703,27 @@ public class TimesheetServiceImpl implements TimesheetService{
 			else {
 				actionView.domain(actionView.get().getDomain() + " AND self.timesheet.user.employee.managerUser = :_user")
 						.context("_user", user);
+			}
+		}
+	}
+
+	@Override
+	public void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException {
+		String timeLoggingPref;
+		if (timesheet.getUser() == null || timesheet.getUser().getEmployee() == null) {
+			timeLoggingPref = EmployeeRepository.TIME_PREFERENCE_HOURS;
+		} else {
+			Employee employee = timesheet.getUser().getEmployee();
+			timeLoggingPref = employee.getTimeLoggingPreferenceSelect();
+		}
+		timesheet.setTimeLoggingPreferenceSelect(timeLoggingPref);
+
+		if (timesheet.getTimesheetLineList() != null) {
+			for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
+				timesheetLine.setDuration(Beans.get(TimesheetLineService.class)
+						.computeHoursDuration(timesheet,
+								timesheetLine.getHoursDuration(), false)
+				);
 			}
 		}
 	}

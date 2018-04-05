@@ -104,7 +104,8 @@ public interface IExceptionMessage {
 	 */
 	static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/ "No delivery stock move to generate for this sale order" /*)*/;
 	static final String SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS = /*$$(*/ "An active stock move (%s) already exists for the sale order %s." /*)*/;
-	String SO_CANT_REMOVED_DELIVERED_LINE = /*$$(*/ "Can't remove delivered detail line %s." /*)*/;
+	static final String SO_CANT_REMOVED_DELIVERED_LINE = /*$$(*/ "Can't remove delivered detail line %s." /*)*/;
+	static final String SO_MISSING_STOCK_LOCATION = /*$$(*/ "Stock location is missing for the sale order %s." /*)*/;
 
 	/**
 	 * Timetable Controller
@@ -118,12 +119,6 @@ public interface IExceptionMessage {
 	 * Ventilate State Service
 	 */
 	String VENTILATE_STATE_MISSING_ADVANCE_ACCOUNT = /*$$(*/ "Please configure the advance payment account for the company %s" /*)*/;
-
-	/**
-	 * Stock Config
-	 */
-	String STOCK_CONFIG_SUPPLYCHAIN_RECEIPT = /*$$(*/ "You must configure a receipt stock location for company %s" /*)*/;
-	String STOCK_CONFIG_SUPPLYCHAIN_PICKUP = /*$$(*/ "You must configure a pickup stock location for company %s." /*)*/;
 
 	/**
 	 * Supply Chain Config

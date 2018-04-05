@@ -27,9 +27,13 @@
 - Add a wizard to select a cancel reason and cancel a Stock move.
 - Add button to open tasks and task kanban view in project module
 - Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
+- New user option to allow notifications to be sent by email on desired entities.
 - Add validation date in Inventory
 - Remove teams app module.
 - Add the number of components on Bill of material form view.
+- Add grid for easily regenerating and resending messages that were not sent.
+- Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order. 
+- Add multiple default stock locations (receipt, fixup, component, finished products) in stock config instead of a single default stock location.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -39,6 +43,7 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
+- Add purchase order line and sale order line import processes to compute tax related fields.
 - Change the title "Delivery date" to "Estimated delivery date" in SaleOrder and PurchaseOrder
 - EndPeriod on currency conversion api
 - Allow to generate bank order file without using bic code in SEPA context.
@@ -47,17 +52,26 @@
 - Change dependency to base instead of CRM,HR and Project of helpdesk module.
 - Update the SaleOrderLine form to look like InvoiceLine form.
 - Update CRM & ICalendar events UI
-- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
+- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'.
 - Allow to read the products from production, stock and crm modules
 - Improve manufacturing order workflow.
 - When we treat a component of a manuf order that is not loaded on MRP because there is no default BOM or because the component of manuf order is not a component of the bill of material, we add it with the level of manuf order product + 1.
 - Replaced selection field for language on Partner per a M2O to Language object to be able to add new partner language easily.
 - New select on product to choose if we want real or planned price for last product price or average price.
+- Improve filter for supplier partner in sale order lines.
+- MRP : manage the case where sale order line is partially delivered
+- Moved Sale order Delivery state in Supplychain module
+- If a service is selected on a sale order and we don't generate a stock move for services, the sale order line should be considered as delivered (or for the opposite).
+- Allow to ventilate an invoice without product on the lines (mainly for purchase invoice).
+- Improve timesheet form by adding time logging preferences.
+- Rename "durationStored" to "hoursDuration" and "visibleDuration" to "duration".
+- Add "show partner" button in lead form.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
+- Fix purchase order status in demo data.
 - Fix different split methods in StockMove
 - Fix event hide when we create new from calendar and set domain for my calendar and team calendar
 - Fix default logo position
@@ -66,13 +80,19 @@
 - Fix multiple NPE in CRM events
 - Fix MRP calculation exception
 - Fix manufacturing order stock move generation in unusual case.
+- Fix default supplier in purchase order generation from sale order.
+- Stock location is no more required if supplychain module is not enabled
+
 
 ## [Unreleased 4.x]
 
+## [4.1.3] - 2018-02-28
 ### Improvements
 - New assistant in expense form to select payment mode
 - Leave management reset batch now creates a new line with negative quantity
   instead of clearing old lines
+- Password encryption for ICALENDAR and SMTP account.
+- Title "IBAN" became "IBAN / BBAN" in bankdetails
 
 ### Bug Fixes
 - Permission change in most HR form
@@ -83,7 +103,11 @@
 - Hide button in leave request instead of making it readonly
 - Fix count tags in hr menus
 - Remove the wrong process to create an useless move for excess payment on refund invoice ventilation
-
+- Generate a signature user certificate in EBICS TS mode for Transport User
+- LEAD : convert wizard
+- On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
+- On Invoice payment, fix NPE by requiring paymentMode
+- Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
@@ -379,6 +403,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 
 [Unreleased 5.x]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
 [Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...dev
+[4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0

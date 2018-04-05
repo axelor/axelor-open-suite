@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -198,7 +199,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setExternalReference(externalReference);
 		purchaseOrder.setOrderDate(orderDate);
 		purchaseOrder.setPriceList(priceList);
-		purchaseOrder.setPurchaseOrderLineList(new ArrayList<PurchaseOrderLine>());
+		purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
+
+		purchaseOrder.setPrintingSettings(Beans.get(TradingNameService.class)
+				.getDefaultPrintingSettings(null, company));
 
 		purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
 		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
@@ -229,7 +233,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Override
 	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException  {
 		if (purchaseOrder.getPrintingSettings() == null) {
-			throw new AxelorException(IException.MISSING_FIELD, IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS);
+			throw new AxelorException(IException.MISSING_FIELD, String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS), purchaseOrder.getPurchaseOrderSeq()));
 		}
 
 		String language= ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());

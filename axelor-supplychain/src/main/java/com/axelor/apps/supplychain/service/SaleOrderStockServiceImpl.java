@@ -35,7 +35,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -52,6 +51,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -78,6 +78,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	@Override
 	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
+		if(!this.isSaleOrderWithProductsToDeliver(saleOrder))  {  return null;  }
+		
 	    Optional<StockMove> activeStockMove = findActiveStockMoveForSaleOrder(saleOrder);
 
         if (activeStockMove.isPresent()) {
@@ -86,37 +88,52 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
                     activeStockMove.get().getName(), saleOrder.getSaleOrderSeq());
         }
 
-		Company company = saleOrder.getCompany();
+        if(saleOrder.getStockLocation() == null)  {
+    	   throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR,
+                   I18n.get(IExceptionMessage.SO_MISSING_STOCK_LOCATION), saleOrder.getSaleOrderSeq());
+        }
+        
+		StockMove stockMove = this.createStockMove(saleOrder, saleOrder.getCompany());
 
-		if(saleOrder.getSaleOrderLineList() != null && company != null) {
-		    Beans.get(SaleOrderService.class).sortSaleOrderLineList(saleOrder);
-			StockMove stockMove = this.createStockMove(saleOrder, company);
+		for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+			if(saleOrderLine.getProduct() != null || saleOrderLine.getTypeSelect().equals(SaleOrderLineRepository.TYPE_PACK)) {
+			    BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
 
-			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
-				if(saleOrderLine.getProduct() != null || saleOrderLine.getTypeSelect().equals(SaleOrderLineRepository.TYPE_PACK)) {
-				    BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
+			    if (qty.signum() > 0) {
+                    createStockMoveLine(stockMove, saleOrderLine, qty);
+			    }
+			}
+		}
 
-				    if (qty.signum() > 0) {
-	                    createStockMoveLine(stockMove, saleOrderLine, qty);
-				    }
-				}
+		if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
+			if (stockMove.getStockMoveLineList().stream()
+					.noneMatch(stockMoveLine -> stockMoveLine.getSaleOrderLine() != null && stockMoveLine
+							.getSaleOrderLine().getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL)) {
+				stockMove.setFullySpreadOverLogisticalFormsFlag(true);
 			}
 
-			if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-				if (stockMove.getStockMoveLineList().stream()
-						.noneMatch(stockMoveLine -> stockMoveLine.getSaleOrderLine() != null && stockMoveLine
-								.getSaleOrderLine().getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL)) {
-					stockMove.setFullySpreadOverLogisticalFormsFlag(true);
-				}
-
-                stockMove.setEstimatedDate(saleOrder.getDeliveryDate());
-				stockMoveService.plan(stockMove);
-				return stockMove;
-			}
+            stockMove.setEstimatedDate(saleOrder.getDeliveryDate());
+			stockMoveService.plan(stockMove);
+			return stockMove;
 		}
 		
 		return null;
 		
+	}
+	
+	protected boolean isSaleOrderWithProductsToDeliver(SaleOrder saleOrder) throws AxelorException  {
+		
+		if(saleOrder.getSaleOrderLineList() == null)  {  return false;  }
+		
+		for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
+			
+			if(this.isStockMoveProduct(saleOrderLine)) {  
+				
+				return true;
+				
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -142,22 +159,23 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	 * 			null if there is no default stock location
 	 */
 	protected StockLocation findSaleOrderToStockLocation(SaleOrder saleOrder) throws AxelorException {
-		Partner partner = saleOrder.getClientPartner();
+        Preconditions.checkNotNull(saleOrder, I18n.get("Sale order cannot be null."));
+
+        Partner partner = saleOrder.getClientPartner();
 		Company company = saleOrder.getCompany();
-	    if (partner == null || company == null) {
-	    	return null;
-		}
+
+        Preconditions.checkNotNull(partner, I18n.get("Partner cannot be null."));
+        Preconditions.checkNotNull(company, I18n.get("Company cannot be null."));
+
 		List<PartnerStockSettings> defaultStockLocations = partner.getPartnerStockSettingsList();
-	    if (defaultStockLocations == null) {
-	    	return null;
-		}
-		List<StockLocation> candidateStockLocations = defaultStockLocations
+
+        List<StockLocation> candidateStockLocations = defaultStockLocations != null ? defaultStockLocations
 				.stream()
 				.filter(Objects::nonNull)
 				.filter(partnerStockSettings -> partnerStockSettings.getCompany().equals(company))
 				.map(PartnerStockSettings::getDefaultStockLocation)
 				.filter(Objects::nonNull)
-				.collect(Collectors.toList());
+                .collect(Collectors.toList()) : new ArrayList<>();
 
 	    //check external or internal stock location
 	    Optional<StockLocation> candidateNonVirtualStockLocation = candidateStockLocations
@@ -185,9 +203,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
     @Override
 	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException  {
 
-		Product product = saleOrderLine.getProduct();
-
-		if(product != null && this.isStockMoveProduct(saleOrderLine)) {
+		if(this.isStockMoveProduct(saleOrderLine)) {
 			
 			Unit unit = saleOrderLine.getProduct().getUnit();
 			BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
@@ -203,7 +219,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 			}
 			
 			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
-					product,
+					saleOrderLine.getProduct(),
 					saleOrderLine.getProductName(),
 					saleOrderLine.getDescription(),
 					qty,
@@ -213,7 +229,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
 
 			if (saleOrderLine.getDeliveryState() == 0) {
-	            saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+	            saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
 			}
 
 			if (stockMoveLine != null) {
@@ -234,7 +250,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 					stockMove,
 					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), null);
 
-			saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+			saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
 			stockMoveLine.setSaleOrderLine(saleOrderLine);
 
 			return stockMoveLine;
@@ -244,7 +260,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
 
 
-	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
+	@Override
+    public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
 
 		Company company = saleOrderLine.getSaleOrder().getCompany();
 		
@@ -265,34 +282,44 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 
     @Override
     @Transactional
-    public void updateDeliveryState(SaleOrder saleOrder) {
+    public void updateDeliveryState(SaleOrder saleOrder) throws AxelorException {
+    	
         saleOrder.setDeliveryState(computeDeliveryState(saleOrder));
     }
 
-    private int computeDeliveryState(SaleOrder saleOrder) {
-        if (saleOrder.getSaleOrderLineList() == null) {
-            return 0;
+    private int computeDeliveryState(SaleOrder saleOrder) throws AxelorException {
+      
+    	if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
+            return SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED;
         }
-
-        int deliveryState = SaleOrderRepository.STATE_DELIVERED;
-        int deliveredCount = 0;
-
+    	
+        int deliveryState = -1;
+        
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.getDeliveryState() != SaleOrderRepository.STATE_DELIVERED) {
-                if (saleOrderLine.getDeliveryState() == SaleOrderRepository.STATE_PARTIALLY_DELIVERED) {
-                    return SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
-                }
-
-                deliveryState = SaleOrderRepository.STATE_NOT_DELIVERED;
-            } else {
-                ++deliveredCount;
-            }
+        	
+    		if(this.isStockMoveProduct(saleOrderLine)) {
+        	
+	            if(saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
+	            	if(deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED || deliveryState == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)  {
+	                	return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
+	            	}
+	            	else  {
+	            		deliveryState = SaleOrderRepository.DELIVERY_STATE_DELIVERED;
+	            	}
+	            }
+	            else if(saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED) {
+	            	if(deliveryState == SaleOrderRepository.DELIVERY_STATE_DELIVERED || deliveryState == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)  {
+	                	return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
+	            	}
+	            	else  {
+	            		deliveryState = SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED;
+	            	}
+	            }
+	            else if(saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
+	            	return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
+	            }
+    		}
         }
-
-        if (deliveryState == SaleOrderRepository.STATE_NOT_DELIVERED && deliveredCount > 0) {
-            return SaleOrderRepository.STATE_PARTIALLY_DELIVERED;
-        }
-
         return deliveryState;
     }
 

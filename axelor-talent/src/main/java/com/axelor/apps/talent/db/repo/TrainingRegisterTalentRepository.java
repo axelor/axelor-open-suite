@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.talent.db.repo;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.validation.ValidationException;
 
 import com.axelor.apps.talent.db.Training;

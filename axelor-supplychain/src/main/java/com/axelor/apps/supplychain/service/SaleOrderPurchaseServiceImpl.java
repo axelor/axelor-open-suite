@@ -107,7 +107,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 	public PurchaseOrder createPurchaseOrder(Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder) throws AxelorException  {
 
 		LOG.debug("Création d'une commande fournisseur pour le devis client : {}",
-				new Object[] { saleOrder.getSaleOrderSeq() });
+				saleOrder.getSaleOrderSeq());
 
 		PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
 				AuthUtils.getUser(),
@@ -117,7 +117,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				null,
 				saleOrder.getSaleOrderSeq(),
 				saleOrder.getExternalReference(),
-				Beans.get(StockLocationService.class).getDefaultStockLocation(saleOrder.getCompany()),
+				Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(saleOrder.getCompany()),
 				Beans.get(AppBaseService.class).getTodayDate(),
 				Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
 				supplierPartner);

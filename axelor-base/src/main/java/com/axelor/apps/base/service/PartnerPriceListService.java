@@ -36,6 +36,8 @@ public interface PartnerPriceListService {
      * @param partner
      * @param priceListTypeSelect
      * @return  the default price list from the partner
+     *          null if partner is null, or no price list was found
+     *          for the given partner
      */
     PriceList getDefaultPriceList(Partner partner, int priceListTypeSelect);
 

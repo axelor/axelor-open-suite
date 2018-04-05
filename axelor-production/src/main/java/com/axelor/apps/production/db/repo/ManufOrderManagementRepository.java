@@ -17,15 +17,13 @@
  */
 package com.axelor.apps.production.db.repo;
 
-import com.axelor.app.production.db.IManufOrder;
-import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 
 public class ManufOrderManagementRepository extends ManufOrderRepository {
 	@Override
 	public ManufOrder copy(ManufOrder entity, boolean deep) {
-		entity.setStatusSelect(IManufOrder.STATUS_DRAFT);
+		entity.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
 		entity.setManufOrderSeq(null);
 		entity.setPlannedStartDateT(null);
 		entity.setPlannedEndDateT(null);
@@ -42,7 +40,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
 		entity.setWasteProdProductList(null);
 		if (entity.getOperationOrderList() != null) {
 			for (OperationOrder operationOrder : entity.getOperationOrderList()) {
-				operationOrder.setStatusSelect(IOperationOrder.STATUS_DRAFT);
+				operationOrder.setStatusSelect(OperationOrderRepository.STATUS_DRAFT);
 				operationOrder.setPlannedStartDateT(null);
 				operationOrder.setPlannedEndDateT(null);
 				operationOrder.setPlannedDuration(0L);

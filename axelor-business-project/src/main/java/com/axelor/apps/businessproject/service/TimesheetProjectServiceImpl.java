@@ -55,7 +55,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 			tabInformations[2] = timesheetLine.getDate();
 			//End date, useful only for consolidation
 			tabInformations[3] = timesheetLine.getDate();
-			tabInformations[4] = timesheetLine.getVisibleDuration();
+			tabInformations[4] = timesheetLine.getHoursDuration();
 			tabInformations[5] = timesheetLine.getProject();
 
 			String key = null;
@@ -71,7 +71,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 						//If date is upper than end date then replace end date by this one
 						tabInformations[3] = timesheetLine.getDate();
 					}
-					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getVisibleDuration());
+					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getHoursDuration());
 				}else{
 					timeSheetInformationsMap.put(key, tabInformations);
 				}
@@ -91,7 +91,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 			User user = (User)timesheetInformations[1];
 			LocalDate startDate = (LocalDate)timesheetInformations[2];
 			LocalDate endDate = (LocalDate)timesheetInformations[3];
-			BigDecimal visibleDuration = (BigDecimal) timesheetInformations[4];
+			BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
 			Project project = (Project) timesheetInformations[5];
 			if (consolidate){
 				strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
@@ -99,7 +99,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 				strDate = startDate.format(ddmmFormat);
 			}
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, visibleDuration, priority*100+count));
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, hoursDuration, priority*100+count));
 			invoiceLineList.get(0).setProject(project);
 			count++;
 		}

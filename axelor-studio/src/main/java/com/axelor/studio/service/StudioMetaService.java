@@ -246,6 +246,9 @@ public class StudioMetaService {
 		menu.setTagStyle(builder.getTagStyle());
 		
 		menu.setLink(builder.getLink());
+		if (builder.getMetaModule() != null) {
+			menu.setModule(builder.getMetaModule().getName());
+		}
 		
 		return menu;
 	}

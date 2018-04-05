@@ -17,9 +17,7 @@
  */
 package com.axelor.apps.crm.web;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -27,12 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.ILead;
@@ -45,8 +40,6 @@ import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -60,8 +53,6 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-
-import net.fortuna.ical4j.model.ValidationException;
 
 @Singleton
 public class EventController {

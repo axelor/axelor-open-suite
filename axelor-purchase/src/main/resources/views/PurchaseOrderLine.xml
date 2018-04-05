@@ -89,8 +89,10 @@
 			<field name="productName"/>
 			<field name="productCode"/>
 			<panel>
-				<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="12"/>
+				<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="12" validIf="$qtyValid != false"/>
 				<label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
+				<label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
+				<field name="$qtyValid" hidden="true" colSpan="12"/>
 			</panel>
 			<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="taxLine" canEdit="false" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
@@ -195,12 +197,13 @@
 	<!-- ACTION GROUPs -->
 	
 	<action-group name="action-group-purchase-purchase-orderline-onnew">
-		<action name="action-purchase-order-line-method-check-qty"/>
+		<action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
 		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-record-new"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
 		<action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
+		<action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-onload">
@@ -217,6 +220,7 @@
 		<action name="action-purchase-order-line-method-get-product-information"/>
 		<action name="action-purchase-order-line-method-compute"/>
 		<action name="action-purchase-order-line-method-compute-analytic-distribution" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
+		<action name="action-purchase-order-line-method-check-qty"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-qty-onchange">
@@ -248,6 +252,12 @@
 	
 	<action-attrs name="action-purchase-order-line-attrs-show-priceDiscounted">
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price"/>
+	</action-attrs>
+	
+	<action-attrs name="action-purchase-order-line-attrs-hide-qty-warning-label">
+		<attribute name="hidden" for="minQtyNotRespectedLabel" expr="true"/>
+		<attribute name="hidden" for="multipleQtyNotRespectedLabel" expr="true"/>
+		<attribute name="hidden" for="qtyValid" expr="true"/>
 	</action-attrs>
 	
 	<!-- ACTION RECORD -->

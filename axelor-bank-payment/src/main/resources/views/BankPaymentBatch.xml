@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	
+	
+	<grid name="bank-payment-batch-grid" title="Bank payment batches" model="com.axelor.apps.bankpayment.db.BankPaymentBatch">
+		<field name="code"/>
+		<field name="actionSelect"/>
+		<field name="company"/>
+		<field name="description"/>
+	</grid>
+	
+	<form name="bank-payment-batch-form" title="Bank payment batch" model="com.axelor.apps.bankpayment.db.BankPaymentBatch">
+		<panel name="main" >
+    		<field name="actionSelect"/>
+    		<field name="code"/>
+    		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+  		</panel>
+  		
+  		 <panel-tabs>
+  		 	<panel name="ebicsCertificatePage" title="Ebics certificate page" showIf="actionSelect == 1">
+				<field name="template" domain="self.metaModel.name = 'EbicsCertificate' AND self.mediaTypeSelect = 2"/>
+				<field name="daysNbr"/>
+				<button name="bankPaymentBatch" title="Bank payment batch" onClick="save,action-ecbatch-method-check-ebics-certificate-validation-date"/>
+			</panel>
+    		
+    		<panel name="information" title="Information" >
+      			<field name="createdOn" title="Created on"/>
+      			<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+      			<field name="description" colSpan="12" />
+      			<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+    		</panel>
+  		</panel-tabs>
+		
+	</form>
+	
+	<action-method name="action-ecbatch-method-check-ebics-certificate-validation-date">
+		<call class="com.axelor.apps.bankpayment.web.BankPaymentBatchController" method="launchBankPaymentBatch"/>
+	</action-method>
+
+</object-views>

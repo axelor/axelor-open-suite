@@ -30,10 +30,7 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.message.db.Message;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
 
 public interface LeaveService {
@@ -64,11 +61,6 @@ public interface LeaveService {
 	public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException;
 
     public BigDecimal computeLeaveDaysByLeaveRequest(LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee) throws AxelorException;
-	
-	public void getLeaveReason(ActionRequest request, ActionResponse response);
-
-	@Transactional
-	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException;
 	
 	@Transactional
 	public void cancel(LeaveRequest leaveRequest) throws AxelorException;

@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -109,11 +110,16 @@ public class AccountingBatchController {
 	 * @param response
 	 */
 	public void actionDirectDebit(ActionRequest request, ActionResponse response){
-		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
-		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
-		Batch batch = accountingBatchService.directDebit(accountingBatch);
-		response.setFlash(batch.getComments());
-		response.setReload(true);
+	    try {
+	        AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+	        accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+	        Batch batch = accountingBatchService.directDebit(accountingBatch);
+	        response.setFlash(batch.getComments());
+	    } catch (Exception e) {
+	        TraceBackService.trace(response, e);
+        } finally {
+            response.setReload(true);
+        }
 	}
 
 

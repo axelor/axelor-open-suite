@@ -30,11 +30,16 @@
 	<integer name="standardDelay" title="Standard delay (days)" default="0"  />
   	<extra-code>
   		<![CDATA[
-  		// SALE SUPPLY SELECT
+            // SALE SUPPLY SELECT
 	  		public static final int SALE_SUPPLY_NONE = 0;
 	  		public static final int SALE_SUPPLY_FROM_STOCK = 1;
 	  		public static final int SALE_SUPPLY_PURCHASE = 2;
 	  		public static final int SALE_SUPPLY_PRODUCE = 3;
+	  		
+	        // DELIVERY STATE SELECT
+            public static final int DELIVERY_STATE_NOT_DELIVERED = 1;
+            public static final int DELIVERY_STATE_PARTIALLY_DELIVERED = 2;
+            public static final int DELIVERY_STATE_DELIVERED = 3;
 	  	]]>
   	</extra-code>
   	

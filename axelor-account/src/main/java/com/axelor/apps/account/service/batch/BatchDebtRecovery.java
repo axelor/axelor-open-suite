@@ -17,6 +17,13 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
@@ -28,6 +35,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -35,30 +43,25 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
+import com.google.inject.Inject;
 
 public class BatchDebtRecovery extends BatchStrategy {
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
 	protected boolean stopping = false;
 	protected PartnerRepository partnerRepository;
+	protected MessageRepository messageRepository;
 	protected DebtRecoveryRepository debtRecoveryRepository;
 	protected DebtRecoveryActionService debtRecoveryActionService;
 
 	@Inject
-	public BatchDebtRecovery(DebtRecoveryService debtRecoveryService, PartnerRepository partnerRepository,
-							 DebtRecoveryRepository debtRecoveryRepository, DebtRecoveryActionService debtRecoveryActionService) {
-
+	public BatchDebtRecovery(DebtRecoveryService debtRecoveryService, PartnerRepository partnerRepository, DebtRecoveryRepository debtRecoveryRepository,
+							 DebtRecoveryActionService debtRecoveryActionService, MessageRepository messageRepository) {
 		super(debtRecoveryService);
 		this.partnerRepository = partnerRepository;
 		this.debtRecoveryRepository = debtRecoveryRepository;
 		this.debtRecoveryActionService = debtRecoveryActionService;
+		this.messageRepository = messageRepository;
 	}
 
 
@@ -115,28 +118,42 @@ public class BatchDebtRecovery extends BatchStrategy {
 
 		List<Partner> partnerList;
 		while (!(partnerList = query.fetch(FETCH_LIMIT)).isEmpty()) {
-			for (Partner partner : partnerList) {
+	        findBatch();
+
+	        for (Partner partner : partnerList) {
 				try {
 					boolean remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company);
 					if (remindedOk) {
 					    DebtRecovery debtRecovery = debtRecoveryService.getDebtRecovery(partner, company);
 					    debtRecovery.addBatchSetItem(batch);
 					}
+                    incrementDone(partner);
 				} catch (AxelorException e) {
 					TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Partner") + " %s", partner.getName()), IException.DEBT_RECOVERY, batch.getId());
-					incrementAnomaly();
+                    incrementAnomaly(partner);
+                    break;
 				} catch (Exception e) {
 					TraceBackService.trace(new Exception(String.format(I18n.get("Partner") + " %s", partner.getName()), e), IException.DEBT_RECOVERY, batch.getId());
-					incrementAnomaly();
-				} finally {
-					updatePartner(partner);
+                    incrementAnomaly(partner);
+                    break;
 				}
 			}
+
 			JPA.clear();
 		}
 	}
 
+    protected void incrementDone(Partner partner) {
+        partner.addBatchSetItem(batch);
+        _incrementDone();
+    }
 
+    protected void incrementAnomaly(Partner partner) {
+        findBatch();
+        partner = partnerRepository.find(partner.getId());
+        partner.addBatchSetItem(batch);
+        _incrementAnomaly();
+    }
 
 	protected void generateMail() {
 		Query<DebtRecovery> query = debtRecoveryRepository
@@ -148,21 +165,26 @@ public class BatchDebtRecovery extends BatchStrategy {
 		int offset = 0;
 		List<DebtRecovery> debtRecoveries;
 		while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+		    int count = 0;
 			for (DebtRecovery debtRecovery: debtRecoveries) {
 				try {
-					DebtRecoveryHistory debtRecoveryHistory = debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
+				    DebtRecoveryHistory debtRecoveryHistory = debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
 					if (debtRecoveryHistory == null) {
 						continue;
 					}
-					if (CollectionUtils.isEmpty(debtRecoveryHistory.getDebtRecoveryMessageSet())) {
+					if (CollectionUtils.isEmpty(messageRepository.findByRelatedTo(Math.toIntExact(debtRecoveryHistory.getId()),
+							DebtRecoveryHistory.class.getCanonicalName()).fetch())) {
 						debtRecoveryActionService.runMessage(debtRecovery);
 					}
 				} catch (Exception e) {
 					TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+" %s", debtRecovery.getAccountingSituation().getPartner().getName()), e), IException.REMINDER, batch.getId());
 					incrementAnomaly();
+					break;
+				} finally {
+				    ++count;
 				}
 			}
-			offset += debtRecoveries.size();
+			offset += count;
 			JPA.clear();
 		}
 	}

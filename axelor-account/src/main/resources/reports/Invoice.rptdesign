@@ -1552,7 +1552,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT line.id, timesheet_user.name AS ts_user, 
 product.name AS ts_activity, 
-line.duration_stored AS ts_duration, 
+line.hours_duration AS ts_duration,
 product_unit.name AS ts_product_unit, 
 line.date_val AS ts_date,
 invproj.invoice AS invoice_id,

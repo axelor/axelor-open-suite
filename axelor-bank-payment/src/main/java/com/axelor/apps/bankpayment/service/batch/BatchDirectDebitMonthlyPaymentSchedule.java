@@ -36,7 +36,7 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
         if (batchBankPaymentService.paymentScheduleLineDoneListExists(batch) && generateBankOrderFlag) {
             try {
                 findBatch();
-                batchBankPaymentService.createBankOrderFromPaymentScheduleLines(batch);
+                batchBankPaymentService.createBankOrderFromMonthlyPaymentScheduleLines(batch);
             } catch (Exception e) {
                 TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
                 logger.error(e.getLocalizedMessage());

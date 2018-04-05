@@ -74,13 +74,20 @@ public class StockConfigService
 		
 	}
 
-	public StockLocation getDefaultStockLocation(StockConfig stockConfig) throws AxelorException  {
+	public StockLocation getReceiptDefaultStockLocation(StockConfig stockConfig) throws AxelorException {
 
-		if (stockConfig.getDefaultStockLocation() == null) {
-			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_5), stockConfig.getCompany().getName());
+		if (stockConfig.getReceiptDefaultStockLocation() == null) {
+			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_RECEIPT), stockConfig.getCompany().getName());
 		}
 
-		return stockConfig.getDefaultStockLocation();
+		return stockConfig.getReceiptDefaultStockLocation();
 
+	}
+
+	public StockLocation getPickupDefaultStockLocation(StockConfig stockConfig) throws AxelorException {
+		if (stockConfig.getPickupDefaultStockLocation() == null) {
+			throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_CONFIG_PICKUP), stockConfig.getCompany().getName());
+		}
+		return stockConfig.getPickupDefaultStockLocation();
 	}
 }

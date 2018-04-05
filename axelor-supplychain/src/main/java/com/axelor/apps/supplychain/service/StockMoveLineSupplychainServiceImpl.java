@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
@@ -37,11 +38,13 @@ import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -51,15 +54,28 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImpl{
 	
-	@Inject
 	protected AccountManagementService accountManagementService;
 	
-	@Inject
 	protected PriceListService priceListService;
 	
-	@Inject
 	private PurchaseProductService productService;
-	
+
+	private UnitConversionService unitConversionService;
+
+	@Inject
+	public StockMoveLineSupplychainServiceImpl(TrackingNumberService trackingNumberService,
+											   AppBaseService appBaseService,
+											   AccountManagementService accountManagementService,
+											   PriceListService priceListService,
+											   PurchaseProductService productService,
+											   UnitConversionService unitConversionService) {
+		super(trackingNumberService, appBaseService);
+		this.accountManagementService = accountManagementService;
+		this.priceListService = priceListService;
+		this.productService = productService;
+		this.unitConversionService = unitConversionService;
+	}
+
 	@Override
 	public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove) throws AxelorException{
 		BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
@@ -125,12 +141,13 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 	    int statusSelect = stockMove.getStatusSelect();
 	    if (statusSelect == StockMoveRepository.STATUS_PLANNED
 				|| statusSelect == StockMoveRepository.STATUS_REALIZED) {
-			Beans.get(StockMoveService.class).cancel(stockMoveLine.getStockMove());
+			StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+			stockMoveService.cancel(stockMoveLine.getStockMove());
 			stockMoveLine.setReservedQty(reservedQty);
 			stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
-			Beans.get(StockMoveService.class).plan(stockMove);
+			stockMoveService.plan(stockMove);
 			if (statusSelect == StockMoveRepository.STATUS_REALIZED) {
-			    Beans.get(StockMoveService.class).realize(stockMove);
+			    stockMoveService.realize(stockMove);
 			}
 		} else {
 	    	stockMoveLine.setReservedQty(stockMoveLine.getReservedQty());
@@ -138,37 +155,15 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 	}
 
 	@Override
-	public void updateLocations(StockLocation fromStockLocation, StockLocation toStockLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList,
-								LocalDate lastFutureStockMoveDate, boolean realQty) throws AxelorException {
-		for (StockMoveLine stockMoveLine : stockMoveLineList) {
-
-			Product product = stockMoveLine.getProduct();
-
-			if (product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-				Unit productUnit = stockMoveLine.getProduct().getUnit();
-				Unit stockMoveLineUnit = stockMoveLine.getUnit();
-
-				BigDecimal qty = null;
-				BigDecimal reservedQty =  stockMoveLine.getReservedQty();
-				if (realQty) {
-					qty = stockMoveLine.getRealQty();
-				} else {
-					qty = stockMoveLine.getQty();
-				}
-
-				if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
-					qty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
-					reservedQty = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLineUnit, productUnit, reservedQty, stockMoveLine.getProduct());
-				}
-
-				if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-					this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, toStatus);
-				}
-				this.updateLocations(fromStockLocation, toStockLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus,
-						lastFutureStockMoveDate, stockMoveLine.getTrackingNumber(), reservedQty);
-				Beans.get(StockLocationServiceImpl.class).computeAvgPriceForProduct(stockMoveLine.getProduct());
-			}
+	public void updateLocations(StockMoveLine stockMoveLine, StockLocation fromStockLocation, StockLocation toStockLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate
+			lastFutureStockMoveDate, TrackingNumber trackingNumber, BigDecimal reservedQty) throws AxelorException  {
+		BigDecimal realReservedQty =  stockMoveLine.getReservedQty();
+		Unit productUnit = product.getUnit();
+		Unit stockMoveLineUnit = stockMoveLine.getUnit();
+		if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
+			qty = unitConversionService.convertWithProduct(stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+			realReservedQty = unitConversionService.convertWithProduct(stockMoveLineUnit, productUnit, realReservedQty, stockMoveLine.getProduct());
 		}
-
-	}
+	    super.updateLocations(stockMoveLine, fromStockLocation, toStockLocation, product, qty, fromStatus, toStatus, lastFutureStockMoveDate, trackingNumber, realReservedQty);
+    }
 }

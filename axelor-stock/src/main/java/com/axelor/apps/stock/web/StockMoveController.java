@@ -345,14 +345,16 @@ public class StockMoveController {
 	 * @param response
 	 */
 	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
-		StockMove stockMove = request.getContext().asType(StockMove.class);
-		PrintingSettings printingSettings = stockMove.getPrintingSettings();
-
-		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
-		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
-			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+		try {
+			StockMove stockMove = request.getContext().asType(StockMove.class);
+			response.setValue("printingSettings",
+					Beans.get(TradingNameService.class).getDefaultPrintingSettings(
+							stockMove.getTradingName(),
+							stockMove.getCompany()
+					)
+			);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-
-		response.setValue("printingSettings", printingSettings);
 	}
 }

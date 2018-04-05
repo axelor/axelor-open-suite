@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
@@ -31,4 +32,12 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
      */
     BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine);
 
+    /**
+     * Get a list of supplier partner ids available for the product in the sale
+     * order line.
+     *
+     * @param saleOrderLine
+     * @return the list of ids
+     */
+    List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine);
 }

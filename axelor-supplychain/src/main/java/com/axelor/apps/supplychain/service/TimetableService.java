@@ -26,8 +26,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -114,7 +114,7 @@ public class TimetableService {
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, timetable.getProductName(),
 				timetable.getAmount(), timetable.getAmount(), timetable.getComments(), timetable.getQty(),
-				timetable.getUnit(), null, 1, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
+				timetable.getUnit(), null, 1, BigDecimal.ZERO, PriceListLineRepository.AMOUNT_TYPE_NONE,
 				timetable.getAmount().multiply(timetable.getQty()),null, false,
 				this.findFirstSaleOrderLine(timetable), this.findFirstPurchaseOrderLine(timetable), null) {
 

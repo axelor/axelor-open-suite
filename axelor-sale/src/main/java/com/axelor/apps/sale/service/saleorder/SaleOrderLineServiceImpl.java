@@ -25,17 +25,27 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -43,6 +53,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
@@ -58,6 +69,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 	@Inject
 	protected AppBaseService appBaseService;
+	
+	@Inject
+	protected ProductMultipleQtyService productMultipleQtyService;
 	
 
 	@Override
@@ -96,10 +110,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	}
 
 	@Override
-	public BigDecimal[] computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
+	public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
 
+		HashMap<String, BigDecimal> map = new HashMap<>();
 		if(saleOrder == null || (saleOrderLine.getProduct() == null && saleOrderLine.getProductName() == null) || saleOrderLine.getPrice() == null || saleOrderLine.getQty() == null)  {
-			return null;
+			return map;
 		}
 
 		BigDecimal exTaxTotal;
@@ -107,8 +122,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		BigDecimal inTaxTotal;
 		BigDecimal companyInTaxTotal;
 		BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine);
-
 		BigDecimal taxRate = BigDecimal.ZERO;
+
 		if(saleOrderLine.getTaxLine() != null)  {  taxRate = saleOrderLine.getTaxLine().getValue();  }
 
 		if(!saleOrder.getInAti()){
@@ -126,10 +141,15 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
 		saleOrderLine.setInTaxTotal(inTaxTotal);
 		saleOrderLine.setExTaxTotal(exTaxTotal);
+		saleOrderLine.setPriceDiscounted(priceDiscounted);
 		saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
 		saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
-
-		return new BigDecimal[]{exTaxTotal,inTaxTotal,companyInTaxTotal,companyExTaxTotal,priceDiscounted};
+		map.put("inTaxTotal", inTaxTotal);
+		map.put("exTaxTotal", exTaxTotal);
+		map.put("priceDiscounted", priceDiscounted);
+		map.put("companyExTaxTotal", companyExTaxTotal);
+		map.put("companyInTaxTotal", companyInTaxTotal);
+		return map;
 	}
 
 
@@ -241,7 +261,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 			Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 			if(discounts != null){
 				int computeMethodDiscountSelect = appBaseService.getAppBase().getComputeMethodDiscountSelect();
-				if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
+				if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE) 
 						|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
 					
 					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
@@ -299,7 +319,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		
 		Context parentContext = context.getParent();
 		
-		if (!parentContext.get("_model").equals(SaleOrder.class.getName())) {
+		if(!parentContext.getContextClass().toString().equals(SaleOrder.class.toString())){
+
 			parentContext = parentContext.getParent();
 		}
 		
@@ -357,4 +378,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		//defined in supplychain
 		return BigDecimal.ZERO;
 	}
+	
+	public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response)  {
+		
+		Product product = saleOrderLine.getProduct();
+		
+		productMultipleQtyService.checkMultipleQty(
+				saleOrderLine.getQty(), product.getSaleProductMultipleQtyList(), product.getAllowToForceSaleQty(), response);
+		
+	}
+
 }

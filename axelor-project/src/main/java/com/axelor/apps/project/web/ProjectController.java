@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
-import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.service.TraceBackService;
@@ -33,7 +32,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.team.db.Team;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -43,7 +41,6 @@ public class ProjectController {
 		Project project = request.getContext().asType(Project.class);
 		long diffInDays = ChronoUnit.DAYS.between(project.getFromDate(),project.getToDate());
 		BigDecimal duration = new BigDecimal(diffInDays);
-		response.setValue("$visibleDuration", duration);
 		response.setValue("duration", duration);
 	}
 	

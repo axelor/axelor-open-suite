@@ -11,6 +11,18 @@
 		<boolean name="isDefaultAddr" title="Default address" />
 		<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" />
+	
+		<extra-imports>
+			import java.util.HashMap;
+			import java.util.Map;	
+		</extra-imports>
+		
+		<extra-code>
+		<![CDATA[
+			public  static Map<String,String> modelPartnerFieldMap = new HashMap<>();
+		]]>
+		</extra-code>
+	
 	</entity>
 
 </domain-models>

@@ -25,7 +25,7 @@
 		</panel>
         <panel-include view="user-form" from="axelor-core"/>
         <panel-tabs>
-			 <panel name="contactInformations" title="Contact Informations">
+		<panel name="contactInformations" title="Contact Informations" showIf="id != null">
       			<button name="partner" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-record-form-partner-contact"/>
       			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true" form-view="partner-employee-form" grid-view="partner-employee-grid">
         			<editor x-viewer="true">
@@ -73,6 +73,8 @@
 			<panel-related title="Internal companies" field="companySet" hidden="true"/>
 			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
 			<panel-related field="calendarManagementList" colSpan="12"/>
+			<field name="receiveEmails"/>
+			<field hideIf="receiveEmails == false" name="followedMetaModelSet" widget="TagSelect" colSpan="12" canNew="false" form-view="meta-model-form" grid-view="meta-model-grid"/>
 			<panel-related field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
 		</panel>
 	</form>

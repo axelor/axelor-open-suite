@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
@@ -52,6 +56,8 @@ import com.google.inject.persist.Transactional;
 @Singleton
 public class PartnerService {
 
+  private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  
 	@Inject
 	private PartnerRepository partnerRepo;
 
@@ -175,10 +181,10 @@ public class PartnerService {
 	@Transactional
 	public void resetDefaultAddress(Partner partner, String addrTypeQuery) {
 
-		if(partner.getId() != null){
+		if(partner.getId() != null)  {
 			PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
-			PartnerAddress partnerAddress =  partnerAddressRepo.all().filter("self.partner.id = ? AND self.isDefaultAddr = true"+addrTypeQuery,partner.getId()).fetchOne();
-			if(partnerAddress != null){
+			PartnerAddress partnerAddress =  partnerAddressRepo.all().filter("self.partner.id = ? AND self.isDefaultAddr = true" + addrTypeQuery, partner.getId()).fetchOne();
+			if(partnerAddress != null)  {
 				partnerAddress.setIsDefaultAddr(false);
 				partnerAddressRepo.save(partnerAddress);
 			}
@@ -191,17 +197,11 @@ public class PartnerService {
 		PartnerAddress partnerAddress = createPartnerAddress(address,isDefault);
 		
 		if(isDefault != null && isDefault){
-			String query = " AND self.isDeliveryAddr = false AND self.isInvoicingAddr = false";
-			if((isInvoicing != null && isInvoicing)  && (isDelivery != null && isDelivery)){
-				query = " AND self.isDeliveryAddr = true AND self.isInvoicingAddr = true";
-			}
-			else if(isInvoicing != null && isInvoicing){
-				query = " AND self.isDeliveryAddr = false AND self.isInvoicingAddr = true";
-			}
-			else if(isDelivery != null && isDelivery){
-				query = " AND self.isDeliveryAddr = true AND self.isInvoicingAddr = false";
-			}
-			resetDefaultAddress(partner,query);
+	    LOG.debug("Add partner address : isDelivery = {}", isDelivery);
+      LOG.debug("Add partner address : isInvoicing = {}", isInvoicing);
+
+			String query = String.format(" AND self.isDeliveryAddr = %s AND self.isInvoicingAddr = %s", isDelivery, isInvoicing);
+			resetDefaultAddress(partner, query);
 		}
 		
 		partnerAddress.setIsInvoicingAddr(isInvoicing);
@@ -222,7 +222,7 @@ public class PartnerService {
 	}
 
 
-	private Address getAddress(Partner partner, String querySpecific, String queryComman){
+	protected Address getAddress(Partner partner, String querySpecific, String queryComman){
 
 		if(partner != null){
 			PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);

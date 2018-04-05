@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,23 +29,29 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
+import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
@@ -64,8 +71,59 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	
 	@Inject
 	protected PurchaseProductService productService;
+	
+	@Inject
+	protected ProductMultipleQtyService productMultipleQtyService;
 
+	@Deprecated
 	private int sequence = 0;
+
+
+	public Map<String, BigDecimal> compute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException{
+
+		HashMap<String, BigDecimal> map = new HashMap<>();
+		if(purchaseOrder == null || purchaseOrderLine.getPrice() == null || purchaseOrderLine.getQty() == null)  {  return map;  }
+
+		BigDecimal exTaxTotal = BigDecimal.ZERO;
+		BigDecimal companyExTaxTotal = BigDecimal.ZERO;
+		BigDecimal inTaxTotal = BigDecimal.ZERO;
+		BigDecimal companyInTaxTotal = BigDecimal.ZERO;
+		BigDecimal priceDiscounted = computeDiscount(purchaseOrderLine);
+		BigDecimal taxRate = BigDecimal.ZERO;
+
+		if(purchaseOrderLine.getTaxLine() != null)  {  taxRate = purchaseOrderLine.getTaxLine().getValue();  }
+
+		if(!purchaseOrder.getInAti()){
+			exTaxTotal = computeAmount(purchaseOrderLine.getQty(), computeDiscount(purchaseOrderLine));
+			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+			companyExTaxTotal = getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
+			companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
+		}
+		else  {
+			inTaxTotal = computeAmount(purchaseOrderLine.getQty(), computeDiscount(purchaseOrderLine));
+			exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+			companyInTaxTotal = getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
+			companyExTaxTotal = companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+		}
+
+		if (purchaseOrderLine.getProduct() != null) {
+			map.put("saleMinPrice", getMinSalePrice(purchaseOrder, purchaseOrderLine));
+			map.put("salePrice", getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(), purchaseOrderLine.getPrice()));
+		}
+		map.put("exTaxTotal", exTaxTotal);
+		map.put("inTaxTotal", inTaxTotal);
+		map.put("companyExTaxTotal", companyExTaxTotal);
+		map.put("companyInTaxTotal", companyInTaxTotal);
+		map.put("priceDiscounted", priceDiscounted);
+		purchaseOrderLine.setExTaxTotal(exTaxTotal);
+		purchaseOrderLine.setInTaxTotal(inTaxTotal);
+		purchaseOrderLine.setPriceDiscounted(priceDiscounted);
+		purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
+		purchaseOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
+		purchaseOrderLine.setSaleMinPrice(getMinSalePrice(purchaseOrder, purchaseOrderLine));
+		purchaseOrderLine.setSalePrice(getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(), purchaseOrderLine.getPrice()));
+		return map;
+	}
 
 	/**
 	 * Calculer le montant HT d'une ligne de commande.
@@ -244,14 +302,14 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		BigDecimal exTaxTotal, inTaxTotal, companyExTaxTotal, companyInTaxTotal;
 		
 		if(!purchaseOrder.getInAti()){
-			exTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
+			exTaxTotal = computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
 			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 			companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
 			companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
 
 		}
 		else{
-			inTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
+			inTaxTotal = computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
 			exTaxTotal = inTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 			companyInTaxTotal = this.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
 			companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
@@ -352,7 +410,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 			discountAmount = (BigDecimal) discounts.get("discountAmount");
 			
-			if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
+			if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE) 
 					|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
 				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
 			}
@@ -409,6 +467,37 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
 		SupplierCatalog supplierCatalog = getSupplierCatalog(purchaseOrder, purchaseOrderLine);
 		return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
+	}
+	
+	
+	public void checkMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionRequest request, ActionResponse response)  {
+		
+		BigDecimal minQty = this.getMinQty(purchaseOrder, purchaseOrderLine);
+
+		if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
+			String msg = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
+
+			if (request.getAction().endsWith("onchange")) {
+				response.setFlash(msg);
+			}
+			
+			String title = ContextTool.formatLabel(msg, ContextTool.SPAN_CLASS_WARNING, 75);
+
+			response.setAttr("minQtyNotRespectedLabel", "title", title);
+			response.setAttr("minQtyNotRespectedLabel", "hidden", false);
+		
+		} else {
+			response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+		}
+	}
+
+	public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response)  {
+		
+		Product product = purchaseOrderLine.getProduct();
+		
+		productMultipleQtyService.checkMultipleQty(
+				purchaseOrderLine.getQty(), product.getPurchaseProductMultipleQtyList(), product.getAllowToForcePurchaseQty(), response);
+		
 	}
 
 }

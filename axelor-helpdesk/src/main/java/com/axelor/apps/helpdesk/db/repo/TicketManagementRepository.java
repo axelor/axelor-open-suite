@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.helpdesk.db.repo;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.service.TicketService;

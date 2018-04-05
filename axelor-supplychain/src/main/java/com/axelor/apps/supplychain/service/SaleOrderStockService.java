@@ -59,6 +59,6 @@ public interface SaleOrderStockService {
      * 
      * @param saleOrder
      */
-    void updateDeliveryState(SaleOrder saleOrder);
+    void updateDeliveryState(SaleOrder saleOrder) throws AxelorException;
 
 }

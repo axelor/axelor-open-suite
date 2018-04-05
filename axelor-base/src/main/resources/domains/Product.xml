@@ -117,6 +117,19 @@
 
 		<boolean name="isShippingCostsProduct" title="Is shipping costs product"/>
 
+		<one-to-many name="saleProductMultipleQtyList"
+			ref="com.axelor.apps.base.db.ProductMultipleQty" mappedBy="saleProduct"
+			title="Multiple quantities" orderBy="multipleQty"/>
+		
+		<boolean name="allowToForceSaleQty" title="Allow to force sales quantities"/>
+		
+		<one-to-many name="purchaseProductMultipleQtyList"
+			ref="com.axelor.apps.base.db.ProductMultipleQty" mappedBy="purchaseProduct"
+			title="Multiple quantities" orderBy="multipleQty" />
+			
+		<boolean name="allowToForcePurchaseQty" title="Allow to force purchases quantities"/>
+			
+
 		<extra-code>
 	   		<![CDATA[
 				// PRODUCT TYPE SELECT

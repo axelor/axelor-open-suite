@@ -10,8 +10,6 @@
   		<many-to-one name="resourceType" ref="ResourceType" title="Type" />
   		<decimal name="cost" title="Cost"/>
   		<string name="batchNo" title="Serial/batch number"/>
-  		<boolean name="isModel" />
-  		<many-to-one name="resourceModel" ref="Resource" title="Model" />
   		<many-to-one name="resourceImage" title="Image" ref="com.axelor.meta.db.MetaFile" />
 	</entity>
  

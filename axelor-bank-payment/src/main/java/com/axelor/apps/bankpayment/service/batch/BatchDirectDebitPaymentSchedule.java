@@ -45,7 +45,6 @@ import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -64,8 +63,8 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
         if (batchBankPaymentService.paymentScheduleLineDoneListExists(batch) && generateBankOrderFlag) {
             try {
                 findBatch();
-                batchBankPaymentService.mergeBankOrders(batch);
-            } catch (AxelorException e) {
+                batchBankPaymentService.createBankOrderFromPaymentScheduleLines(batch);
+            } catch (Exception e) {
                 TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
                 logger.error(e.getLocalizedMessage());
             }
@@ -153,19 +152,11 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
         BankDetails companyBankDetails = getCompanyBankDetails(batch.getAccountingBatch());
 
         while (!(paymentScheduleLineList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+            findBatch();
+            companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
+            PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
+
             for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
-                if (!JPA.em().contains(batch)) {
-                    findBatch();
-                }
-                if (!JPA.em().contains(companyBankDetails)) {
-                    companyBankDetails = bankDetailsRepo.find(companyBankDetails.getId());
-                }
-                if (!JPA.em().contains(paymentScheduleLine)) {
-                    paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
-                }
-
-                PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
-
                 try {
                     if (generateBankOrderFlag) {
                         PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
@@ -184,9 +175,9 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                             directDebitPaymentMode);
                     incrementDone(paymentScheduleLine);
                 } catch (Exception e) {
-                    incrementAnomaly(paymentScheduleLine);
                     TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
-                    logger.error(e.getMessage());
+                    incrementAnomaly(paymentScheduleLine);
+                    break;
                 }
             }
 
@@ -195,19 +186,13 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
     }
 
     protected void incrementDone(PaymentScheduleLine paymentScheduleLine) {
-        findBatch();
-        if (!JPA.em().contains(paymentScheduleLine)) {
-            paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
-        }
         paymentScheduleLine.addBatchSetItem(batch);
         _incrementDone();
     }
 
     protected void incrementAnomaly(PaymentScheduleLine paymentScheduleLine) {
         findBatch();
-        if (!JPA.em().contains(paymentScheduleLine)) {
-            paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
-        }
+        paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
         paymentScheduleLine.addBatchSetItem(batch);
         _incrementAnomaly();
     }

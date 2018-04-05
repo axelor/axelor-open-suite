@@ -31,27 +31,25 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.axelor.apps.base.db.DayPlanning;
-import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.production.db.IOperationOrder;
+import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
-//import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
@@ -94,7 +92,7 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 				manufOrder, 
 				workCenter, 
 				machineWorkCenter, 
-				IOperationOrder.STATUS_DRAFT, 
+				OperationOrderRepository.STATUS_DRAFT,
 				prodProcessLine);
 		
 		this._createHumanResourceList(operationOrder, machineWorkCenter);

@@ -18,7 +18,6 @@
 package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
@@ -36,6 +35,7 @@ import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
+import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
@@ -60,6 +60,8 @@ import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
+import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -131,6 +133,7 @@ public class BaseModule extends AxelorModule {
         bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
         bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
         bind(ICalendarEventRepository.class).to(ICalendarEventManagementRepository.class);
-        IPartner.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
+        bind(ProductMultipleQtyService.class).to(ProductMultipleQtyServiceImpl.class);
+        PartnerAddressRepository.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
     }
 }

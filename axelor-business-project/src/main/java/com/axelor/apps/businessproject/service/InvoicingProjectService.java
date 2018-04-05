@@ -34,9 +34,9 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -249,7 +249,7 @@ public class InvoicingProjectService {
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, project.getName(), project.getPrice(),
-					project.getPrice(), null, project.getQty(), project.getUnit(), null, priority, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
+					project.getPrice(), null, project.getQty(), project.getUnit(), null, priority, BigDecimal.ZERO, PriceListLineRepository.AMOUNT_TYPE_NONE,
 					project.getPrice().multiply(project.getQty()), null,false)  {
 
 			@Override
@@ -345,6 +345,16 @@ public class InvoicingProjectService {
 		}
 	}
 	
+	public void createEmptyLines(InvoicingProject invoicingProject){
+		
+		invoicingProject.setSaleOrderLineSet(new HashSet<SaleOrderLine>());
+		invoicingProject.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>());
+		invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
+		invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
+		invoicingProject.setElementsToInvoiceSet(new HashSet<ElementsToInvoice>());
+		
+	}
+	
 	public void clearLines(InvoicingProject invoicingProject){
 		
 		invoicingProject.clearSaleOrderLineSet();
@@ -395,4 +405,27 @@ public class InvoicingProjectService {
 		
 		return invoicingProjectRepo.save( invoicingProject );
 	}
+	
+	public int countToInvoice(Project project) {
+
+		int toInvoiceCount = 0;
+		
+		toInvoiceCount += Beans.get(SaleOrderLineRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+		
+		toInvoiceCount += Beans.get(PurchaseOrderLineRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+		
+		toInvoiceCount += Beans.get(ExpenseLineRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+		
+		toInvoiceCount += Beans.get(TimesheetLineRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+		
+		toInvoiceCount += Beans.get(ElementsToInvoiceRepository.class).all()
+				.filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project).count();
+
+		return toInvoiceCount;
+	}
+
 }

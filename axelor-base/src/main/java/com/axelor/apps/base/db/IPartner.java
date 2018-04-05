@@ -33,5 +33,4 @@ public interface IPartner {
 
 	static final int PARTNER_TYPE_SELECT_ENTERPRISE = 1;
 	static final int PARTNER_TYPE_SELECT_INDIVIDUAL = 2;
-	static Map<String,String> modelPartnerFieldMap = new HashMap<>();
 }

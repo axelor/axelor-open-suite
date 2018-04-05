@@ -599,9 +599,8 @@ public class InvoiceController {
 											 ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
-		Set<Invoice> invoices = null;
 		try {
-			invoices = invoiceService
+			Set<Invoice> invoices = invoiceService
                     .getDefaultAdvancePaymentInvoice(invoice);
 			response.setValue("advancePaymentInvoiceSet", invoices);
 		} catch (Exception e) {
@@ -652,15 +651,17 @@ public class InvoiceController {
 	 * @param response
 	 */
 	public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
-		Invoice invoice = request.getContext().asType(Invoice.class);
-		PrintingSettings printingSettings = invoice.getPrintingSettings();
-
-		List<PrintingSettings> printingSettingsList = Beans.get(TradingNameService.class).getPrintingSettingsList(invoice.getTradingName(), invoice.getCompany());
-		if (printingSettings == null || !printingSettingsList.contains(printingSettings)) {
-			printingSettings = printingSettingsList.size() == 1 ? printingSettingsList.get(0) : null;
+	    try {
+			Invoice invoice = request.getContext().asType(Invoice.class);
+			response.setValue("printingSettings",
+					Beans.get(TradingNameService.class).getDefaultPrintingSettings(
+							invoice.getTradingName(),
+							invoice.getCompany()
+					)
+			);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-
-		response.setValue("printingSettings", printingSettings);
 	}
 
 	/**
@@ -671,13 +672,20 @@ public class InvoiceController {
 	 * @param response
 	 */
 	public void fillPriceList(ActionRequest request, ActionResponse response) {
-	    Invoice invoice = request.getContext().asType(Invoice.class);
-	    Partner partner = invoice.getPartner();
-	    int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
-		response.setValue("priceList",
-				Beans.get(PartnerPriceListService.class)
-						.getDefaultPriceList(partner, priceListTypeSelect)
-		);
+		try {
+			Invoice invoice = request.getContext().asType(Invoice.class);
+			Partner partner = invoice.getPartner();
+			if (partner == null) {
+				return;
+			}
+			int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
+			response.setValue("priceList",
+					Beans.get(PartnerPriceListService.class)
+							.getDefaultPriceList(partner, priceListTypeSelect)
+			);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 	/**
@@ -687,10 +695,17 @@ public class InvoiceController {
 	 * @param response
 	 */
 	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
-	    Invoice invoice = request.getContext().asType(Invoice.class);
-		Partner partner = invoice.getPartner();
-		int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
-	    String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(partner, priceListTypeSelect);
-	    response.setAttr("priceList", "domain", domain);
+		try {
+			Invoice invoice = request.getContext().asType(Invoice.class);
+			Partner partner = invoice.getPartner();
+			if (partner == null) {
+				return;
+			}
+			int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
+			String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(partner, priceListTypeSelect);
+			response.setAttr("priceList", "domain", domain);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 }

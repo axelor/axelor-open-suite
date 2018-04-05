@@ -12,7 +12,7 @@
 	
 	<selection name="sale.order.status.select">
 		<option value="1">Draft</option>
-		<option value="2">Finalize</option>
+		<option value="2">Finalized</option>
 		<option value="3">Order confirmed</option>
 		<option value="4">Finished</option>
 		<option value="5">Canceled</option>
@@ -39,7 +39,7 @@
 	</selection>
 	
 	<selection name="sale.order.line.type.select">
-		<option value="0">Normal</option>
+		<option value="0">Standard</option>
 		<option value="1">Title</option>
 		<option value="2">Pack</option>
 	</selection>

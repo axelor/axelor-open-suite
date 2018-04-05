@@ -79,19 +79,10 @@
 		<view type="form" name="wiki-form"/>
 	</action-view>
 	
-	<menuitem name="project-resource-model" title="Resource Models" order="31" parent="menu-project-root" action="project.resource.model" if="__config__.app.getApp('project').getResourceManagement()" />
-	<action-view name="project.resource.model" title="Resource Models" model="com.axelor.apps.project.db.Resource">
-		<view type="grid" name="resource-grid" />
-		<view type="form" name="resource-form" />
-		<domain>self.isModel = true</domain>
-		<context name="_isModel" expr="eval:true"/>
-	</action-view>
-	
 	<menuitem name="project-resource" title="Resources" order="32" parent="menu-project-root" action="project.resource" if="__config__.app.getApp('project').getResourceManagement()" />
 	<action-view name="project.resource" title="Resources" model="com.axelor.apps.project.db.Resource">
 		<view type="grid" name="resource-grid" />
 		<view type="form" name="resource-form" />
-		<domain>self.isModel = false</domain>
 	</action-view>
 	
 	<menuitem name="project-resource-booking" title="Resource bookings" order="35" parent="menu-project-root" action="project.resource.booking" if="__config__.app.getApp('project').getResourceManagement()" />
@@ -101,12 +92,6 @@
 		<view type="calendar" name="resource-booking-calendar" />
 	</action-view>
 	
-	
-	<menuitem name="project-resource-booking-mgt" title="Resource booking mgt" order="36" parent="menu-project-root" action="project.resource.booking.mgt" if="__config__.app.getApp('project').getResourceManagement()" />
-	<action-view name="project.resource.booking.mgt" title="Resource booking mgt" model="com.axelor.apps.project.db.ResourceBooking">
-		<view type="form" name="resource-booking-mgt-form" />
-		<view-param name="show-toolbar" value="false"/> 
-	</action-view>
 	
     <!-- PROJECT CONFIGURATION -->
 	<menuitem name="project-configurations" parent="menu-project-root" title="Configurations" order="40"/>

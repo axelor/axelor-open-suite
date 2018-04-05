@@ -15,7 +15,7 @@
 	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100" 
 	     icon="fa-wrench" icon-background="#2fa042" />
 
-	<menuitem name="admin-root-general" parent="admin-root" order="10"
+	<menuitem name="admin-root-general" parent="admin-root" order="10" if="__config__.app.isApp('base')"
 		title="General data"  />
 
 	<menuitem name="admin-root-general-unit" parent="admin-root-general" order="-10"
@@ -87,7 +87,17 @@
 		<view type="form" name="barcodeTypeConfig-form"/>
 	</action-view>
 
-	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root"/>
+    <menuitem name="admin-root-general-language"
+        parent="admin-root-general" title="Languages"
+        action="admin.root.general.language"/>
+
+    <action-view name="admin.root.general.language"
+        title="Languages" model="com.axelor.apps.base.db.Language" >
+        <view type="grid" name="language-grid"/>
+        <view type="form" name="language-form"/>
+    </action-view>
+
+	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root" if="__config__.app.isApp('base')"/>
 		
 	<menuitem name="referential-root-partners" parent="referential-root"
 		title="Partners" action="referential.root.partners" order="10"/>
@@ -171,7 +181,7 @@
 	
 	<menuitem name="referential-root-price-list" parent="referential-root"
 		if="__config__.app.isApp('account') || __config__.app.isApp('sale') || __config__.app.isApp('purchase')"
-		title="Price lists" action="referential.root.price.list"  order="95" />
+		title="Price lists" action="referential.root.price.list" order="95"/>
 
 	<action-view name="referential.root.price.list" title="Price lists"
 		model="com.axelor.apps.base.db.PriceList" >
@@ -183,7 +193,7 @@
 		/>
 	
 	<menuitem name="referential-conf-address" parent="referential-conf"
-		title="Addresses" action="referential.conf.address"  />
+		title="Addresses" action="referential.conf.address" order="110"/>
 
 	<action-view name="referential.conf.address" title="Addresses"
 		model="com.axelor.apps.base.db.Address" >
@@ -194,7 +204,7 @@
 	</action-view>
 	
 	<menuitem name="referential-conf-invoice-rib" parent="referential-conf"
-		title="Bank details" action="referential.conf.invoice.rib" />
+		title="Bank details" action="referential.conf.invoice.rib" order="120"/>
 
 	<action-view name="referential.conf.invoice.rib"
 		title="Bank details" model="com.axelor.apps.base.db.BankDetails" >
@@ -203,7 +213,7 @@
 	</action-view>
 
 	<menuitem name="referential-conf-invoice-bank" parent="referential-conf"
-		title="SWIFT codes" action="referential.conf.invoice.bank"/>
+		title="SWIFT codes" action="referential.conf.invoice.bank" order="130"/>
 
 	<action-view name="referential.conf.invoice.bank"
 		title="SWIFT codes" model="com.axelor.apps.base.db.Bank" >
@@ -212,7 +222,7 @@
 	</action-view>
 	
 	<menuitem name="referential-conf-partner-category" parent="referential-conf"
-		title="Partner categories" action="referential.conf.partner.category" />
+		title="Partner categories" action="referential.conf.partner.category" order="140"/>
 
 	<action-view name="referential.conf.partner.category" title="Partner categories"
 		model="com.axelor.apps.base.db.PartnerCategory" >
@@ -222,7 +232,7 @@
 
 	<menuitem name="referential-conf-partner-sources"
 		parent="referential-conf" title="Partner sources"
-		action="referential.conf.partner.sources" />
+		action="referential.conf.partner.sources" order="150"/>
 
 	<action-view name="referential.conf.partner.sources"
 		title="Partner sources" model="com.axelor.apps.base.db.Source" >
@@ -231,7 +241,7 @@
 	</action-view>
 
 	<menuitem name="referential-conf-industry-sector-config" parent="referential-conf"
-		title="Industry sectors" action="referential.conf.industry.sector.config" />
+		title="Industry sectors" action="referential.conf.industry.sector.config" order="160"/>
 
 	<action-view name="referential.conf.industry.sector.config" title="Industry sectors"
 		model="com.axelor.apps.base.db.IndustrySector" >
@@ -240,7 +250,7 @@
 	</action-view>
 
 	<menuitem name="referential-conf-product-category" parent="referential-conf"
-		title="Product categories" action="referential.conf.product.category" />
+		title="Product categories" action="referential.conf.product.category" order="170"/>
 
 	<action-view name="referential.conf.product.category" title="Product categories"
 		model="com.axelor.apps.base.db.ProductCategory" >
@@ -249,7 +259,7 @@
 	</action-view>
 
 	<menuitem name="referential-conf-product-family" parent="referential-conf"
-		title="Product families" action="referential.conf.product.family" />
+		title="Product families" action="referential.conf.product.family" order="180"/>
 
 	<action-view name="referential.conf.product.family" title="Product families"
 		model="com.axelor.apps.base.db.ProductFamily" >
@@ -258,8 +268,19 @@
 		<context name="fromMenu" expr="eval:true"/>		
 	</action-view>
 	
+    <menuitem name="referential-conf-product-variant-attr"
+        parent="referential-conf"
+        title="Products variant attributes" action="referential.conf.product.variant.attr" order="190"/>
+
+    <action-view name="referential.conf.product.variant.attr"
+        title="Product variant attributes"
+        model="com.axelor.apps.base.db.ProductVariantAttr" >
+        <view type="grid" name="product-variant-attr-grid"/>
+        <view type="form" name="product-variant-attr-form"/>
+    </action-view>
+
 	<menuitem name="referential-conf-stop-reason" parent="referential-conf"
-		title="Blocking reasons" action="referential.conf.stop.reason" />
+		title="Blocking reasons" action="referential.conf.stop.reason" order="200"/>
 
 	<action-view name="referential.conf.stop.reason" title="Blocking reasons"
 		model="com.axelor.apps.base.db.StopReason" >
@@ -312,7 +333,7 @@
 	  <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
 	</action-method>
 
-	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization" order="20"/>
+	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization" order="20"  if="__config__.app.isApp('base')"/>
 
 	<menuitem name="admin-root-organisation-territory"
 		parent="admin-root-organisation" title="Territories"
@@ -375,7 +396,7 @@
 		<view type="form" name="canton-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-user" parent="admin-root"
+	<menuitem name="admin-root-user" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Users/Companies" order="25" />
 
 	<menuitem name="admin-root-user-user" parent="admin-root-user"
@@ -414,7 +435,7 @@
 		<view type="form" name="trading-name-form" />
 	</action-view>
 
-	<menuitem name="alarm-root" title="Alarms" order="30"
+	<menuitem name="alarm-root" title="Alarms" order="30" if="__config__.app.isApp('base')"
 		  parent="admin-root"/>
 
 	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
@@ -455,7 +476,7 @@
 		<view type="form" name="alarm-engine-batch-form"/>
 	</action-view>
 	
-	<menuitem name="admin-root-batch" parent="admin-root"
+	<menuitem name="admin-root-batch" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Batches" order="35" />
 
 	<menuitem name="admin-root-batch-base" parent="admin-root-batch"
@@ -476,7 +497,7 @@
 		<view type="form" name="mail-batch-form"/>
 	</action-view>
 	
-	<menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root"
+	<menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Message"  order="40" />
 
 	<menuitem name="mail-conf-pdf-templates"
@@ -489,7 +510,7 @@
 		<view type="form" name="birt-template-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-maintenance" parent="admin-root"
+	<menuitem name="admin-root-maintenance" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Technical maintenance" order="45" />
 
 	<menuitem name="admin-root-maintenance-trace-back" parent="admin-root-maintenance"
@@ -535,7 +556,7 @@
 		<view type="form" name="advanced-export-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-calendars" parent="admin-root"
+	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"
 			  title="Calendars" order="50"/>
 
 	<menuitem name="admin-root-calendars-icalendars" title="iCalendars"

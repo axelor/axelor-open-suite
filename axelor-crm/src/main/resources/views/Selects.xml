@@ -21,6 +21,13 @@
 		<option value="com.axelor.apps.crm.db.Event">Event</option>
 	</selection>
 	
+	<selection name="crm.event.priority.select">
+        <option value="1">Low</option>
+        <option value="2">Normal</option>
+        <option value="3">High</option>
+        <option value="4">Urgent</option>
+    </selection>
+
 	<selection name="crm.opportunity.sales.stage.select">
 		<option value="1">New</option>
 		<option value="2">Qualification</option>

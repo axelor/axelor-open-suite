@@ -30,7 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.persistence.Query;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -286,18 +286,19 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		return criteria;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Filter getJpaSecurityFilter(MetaModel metaModel) {
 		
 		JpaSecurity jpaSecurity = Beans.get(JpaSecurity.class);
 		
 		try {
-			Filter filter = jpaSecurity.getFilter(JpaSecurity.CAN_EXPORT, 
-					(Class<? extends Model>) Class.forName(metaModel.getFullName()), null);
-			
-			return filter;
+			return jpaSecurity.getFilter(
+					JpaSecurity.CAN_EXPORT,
+					(Class<? extends Model>) Class.forName(metaModel.getFullName()),
+					(Long) null);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		
 		return null;

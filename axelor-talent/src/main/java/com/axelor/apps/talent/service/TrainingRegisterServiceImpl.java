@@ -20,7 +20,7 @@ package com.axelor.apps.talent.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

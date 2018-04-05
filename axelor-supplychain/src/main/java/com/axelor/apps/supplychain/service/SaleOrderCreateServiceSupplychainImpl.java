@@ -73,13 +73,13 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
 		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
-				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
+				company.getName(), externalReference, clientPartner.getFullName());
 
 		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference,
 				externalReference, orderDate, priceList, clientPartner, team);
 
 		if(stockLocation == null)  {
-			stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(company);
+			stockLocation = Beans.get(StockLocationService.class).getPickupDefaultStockLocation(company);
 		}
 		
 		saleOrder.setStockLocation(stockLocation);

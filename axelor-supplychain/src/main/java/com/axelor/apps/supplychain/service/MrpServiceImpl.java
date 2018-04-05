@@ -458,7 +458,6 @@ public class MrpServiceImpl implements MrpService  {
 	}
 	
 	
-	// achat ferme
 	protected void createPurchaseMrpLines() throws AxelorException  {
 		
 		MrpLineType purchaseProposalMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
@@ -495,7 +494,6 @@ public class MrpServiceImpl implements MrpService  {
 		}
 	}
 
-	// Vente ferme
 	protected void createSaleOrderMrpLines() throws AxelorException  {
 		
 		MrpLineType saleForecastMrpLineType = this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
@@ -506,15 +504,14 @@ public class MrpServiceImpl implements MrpService  {
 			statusList.add(SaleOrderRepository.STATUS_CONFIRMED);
 		}
 
-		// TODO : Manage the case where order is partially delivered
 		List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
 		
 		if(mrp.getSaleOrderLineSet().isEmpty())  {
 			
 			saleOrderLineList.addAll(saleOrderLineRepository.all()
-				.filter("self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.saleOrder.deliveryState = ?3 "
+				.filter("self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
 						+ "AND self.saleOrder.statusSelect IN (?4)",
-						this.productMap.keySet(), this.stockLocationList, SaleOrderRepository.STATE_NOT_DELIVERED, statusList).fetch());
+						this.productMap.keySet(), this.stockLocationList, SaleOrderLineRepository.DELIVERY_STATE_DELIVERED, statusList).fetch());
 			
 		}
 		else  {
@@ -535,7 +532,7 @@ public class MrpServiceImpl implements MrpService  {
 			
 			if(this.isBeforeEndDate(maturityDate))  {
 				Unit unit = saleOrderLine.getProduct().getUnit();
-				BigDecimal qty = saleOrderLine.getQty();
+				BigDecimal qty = saleOrderLine.getQty().subtract(saleOrderLine.getDeliveredQty());
 				if(!unit.equals(saleOrderLine.getUnit())){
 					qty = Beans.get(UnitConversionService.class).convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
 				}

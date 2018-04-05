@@ -87,7 +87,7 @@ public class PurchaseOrderController {
 
 		if(purchaseOrder.getCompany() != null) {
 
-			response.setValue("stockLocation", Beans.get(StockLocationService.class).getDefaultStockLocation(purchaseOrder.getCompany()));
+			response.setValue("stockLocation", Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(purchaseOrder.getCompany()));
 		}
 	}
 

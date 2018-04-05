@@ -151,6 +151,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 					query.bind("anomalyList", anomalyList);
 					TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
 					LOG.error(e.getMessage());
+					break;
 				}
 			}
 

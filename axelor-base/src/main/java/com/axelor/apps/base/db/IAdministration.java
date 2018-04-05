@@ -93,14 +93,7 @@ public interface IAdministration {
 	static final String QUALITY_ALERT = "qualityAlert";
 	static final String QUALITY_CONTROL = "qualityControl";
 	static final String TICKET = "ticket";
+	static final String ANALYTIC_REPORT = "analyticReport";
 
-	
-	/**
-	 * Static select in General
-	 */
-
-	// TYPE
-	static final int MAP_API_GOOGLE = 1;
-	static final int MAP_API_OSM = 2;
 	
 }
