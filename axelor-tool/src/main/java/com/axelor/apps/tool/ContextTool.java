@@ -35,9 +35,9 @@ public final class ContextTool {
 	 */
 	public static String formatLabel(String message, String spanClass, int length)  {
 		if(message.length() > 80)  {
-			String formattedMessage = String.format("<span class='label %s'>%s</span>", 
+            String formattedMessage = String.format("<span class='label %s'>%s</span>",
 					spanClass, message.substring(0, length));
-			formattedMessage += String.format("</br><span class='label %s'>%s</span>", 
+            formattedMessage += String.format("<br/><span class='label %s'>%s</span>",
 					spanClass, message.substring(length));
 			return formattedMessage;
 		}

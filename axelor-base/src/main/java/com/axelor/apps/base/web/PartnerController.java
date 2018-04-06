@@ -44,6 +44,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
@@ -337,5 +338,15 @@ public class PartnerController {
 				"hidden",
 				!partnerService.isThereDuplicatePartner(partner));
 	}
+
+    public void showPartnerOnMap(ActionRequest request, ActionResponse response) {
+        try {
+            Partner partner = request.getContext().asType(Partner.class);
+            response.setView(ActionView.define(partner.getFullName())
+                    .add("html", Beans.get(MapService.class).getMapURI("partner", partner.getId())).map());
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+        }
+    }
 
 }
