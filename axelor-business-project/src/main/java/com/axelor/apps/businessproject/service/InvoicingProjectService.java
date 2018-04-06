@@ -49,6 +49,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.db.Project;
@@ -59,6 +60,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -383,27 +385,47 @@ public class InvoicingProjectService {
 		
 		Project project = saleOrder.getProject();
 		invoicingProject.setProject(project);
-		
-		Set<SaleOrderLine> saleOrderLineList = new HashSet<>();
-		
-		saleOrderLineList.addAll( Beans.get(SaleOrderLineRepository.class)
-				.all().filter("self.saleOrder = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.saleOrder.creationDate < ?2 or ?3 is null)", saleOrder, deadlineDate, deadlineDate ).fetch() );
+
+		Set<SaleOrderLine> saleOrderLineList = new HashSet<>(
+				Beans.get(SaleOrderLineRepository.class).all()
+						.filter("self.saleOrder.id = :_saleOrderId" +
+								" AND self.toInvoice = true" +
+								" AND self.invoiced = false" +
+								" AND self.saleOrder.creationDate < :_deadlineDate")
+						.bind("_saleOrderId", saleOrder.getId())
+						.bind("_deadlineDate", deadlineDate)
+						.fetch()
+		);
 		invoicingProject.setSaleOrderLineSet(saleOrderLineList);
-		
-		
-		if (invoicingType == 2){
-			Set<TimesheetLine> timesheetLineList = new HashSet<>();
-			timesheetLineList.addAll(Beans.get(TimesheetLineRepository.class)
-					.all().filter("self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.date < ?2 or ?3 is null)", project, deadlineDate, deadlineDate).fetch());
+
+
+		if (invoicingType == SaleOrderRepository.INVOICE_TIMESHEET) {
+			Set<TimesheetLine> timesheetLineList = new HashSet<>(
+					Beans.get(TimesheetLineRepository.class).all()
+							.filter("self.timesheet.statusSelect = :_statusValidated" +
+									" AND self.project = :_project" +
+									" AND self.toInvoice = true" +
+									" AND self.invoiced = false" +
+									" AND self.date < :_deadlineDate")
+							.bind("_statusValidated", TimesheetRepository.STATUS_VALIDATED)
+							.bind("_project", project)
+							.bind("_deadlineDate", deadlineDate)
+							.fetch());
 			invoicingProject.setLogTimesSet(timesheetLineList);
-		}else if (invoicingType == 3) {
-			Set<ExpenseLine> expenseLineList = new HashSet<>();
-			expenseLineList.addAll(Beans.get(ExpenseLineRepository.class)
-					.all().filter("self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND (self.expenseDate < ?2 or ?3 is null)", project, deadlineDate, deadlineDate).fetch());
+		} else if (invoicingType == SaleOrderRepository.INVOICE_EXPENSE) {
+			Set<ExpenseLine> expenseLineList = new HashSet<>(
+					Beans.get(ExpenseLineRepository.class).all()
+							.filter("self.project = _project" +
+									" AND self.toInvoice = true" +
+									" AND self.invoiced = false" +
+									" AND self.expenseDate < :_deadlineDate")
+							.bind("_project", project)
+							.bind("_deadlineDate", deadlineDate)
+							.fetch());
 			invoicingProject.setExpenseLineSet(expenseLineList);
 		}
 		
-		return invoicingProjectRepo.save( invoicingProject );
+		return invoicingProjectRepo.save(invoicingProject);
 	}
 	
 	public int countToInvoice(Project project) {

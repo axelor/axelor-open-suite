@@ -122,7 +122,7 @@
 			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="date" />
 			<field name="product" canEdit="false" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-			<field name="storedDuration" width="62%" colSpan="2" min="0.01"/>
+			<field name="hoursDuration" width="62%" colSpan="2" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 			<field name="hoursDuration" hidden="true" />

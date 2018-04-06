@@ -280,9 +280,9 @@ public class SaleOrderLineController {
 
 		Context context = request.getContext();
 		SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-		
-		saleOrderLineService.checkMultipleQty(saleOrderLine, response);
-		
+		if (saleOrderLine.getProduct() != null) {
+			saleOrderLineService.checkMultipleQty(saleOrderLine, response);
+		}
 	}
 
 }

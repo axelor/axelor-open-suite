@@ -301,22 +301,22 @@ public class MapService {
 		StringBuilder addressString = new StringBuilder();
 
 		if (address.getAddressL2() != null) {
-			addressString.append(address.getAddressL2() + "</br>");
+            addressString.append(address.getAddressL2() + "<br/>");
 		}
 		if (address.getAddressL3() != null) {
-			addressString.append(address.getAddressL3() + "</br>");
+            addressString.append(address.getAddressL3() + "<br/>");
 		}
 		if (address.getAddressL4() != null) {
-			addressString.append(address.getAddressL4() + "</br>");
+            addressString.append(address.getAddressL4() + "<br/>");
 		}
 		if (address.getAddressL5() != null) {
-			addressString.append(address.getAddressL5() + "</br>");
+            addressString.append(address.getAddressL5() + "<br/>");
 		}
 		if (address.getAddressL6() != null) {
 			addressString.append(address.getAddressL6());
 		}
 		if (address.getAddressL7Country() != null) {
-			addressString = addressString.append("</br>" + address.getAddressL7Country().getName());
+            addressString = addressString.append("<br/>" + address.getAddressL7Country().getName());
 		}
 
 		return addressString.toString();
@@ -369,12 +369,21 @@ public class MapService {
     }
 
     public String getMapURI(String name) {
+        return getMapURI(name, null);
+    }
+
+    public String getMapURI(String name, Long id) {
         final String uri = "map/gmap-objs.html";
 
         try {
             URIBuilder ub = new URIBuilder(uri);
             ub.addParameter("key", getGoogleMapsApiKey());
             ub.addParameter("object", name);
+
+            if (id != null) {
+                ub.addParameter("id", String.valueOf(id));
+                ub.addParameter("fit", String.valueOf(true));
+            }
 
             return ub.toString();
         } catch (Exception e) {
