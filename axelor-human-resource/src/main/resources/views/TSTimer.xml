@@ -61,7 +61,7 @@
 	</action-record>
 	
 	<action-record name="action-hr-ts-timer-record-empty-product" model="com.axelor.apps.hr.db.TSTimer">
-		<field name="product" expr="eval:null" if="!project?.productSet??.contains(product)"/>
+		<field name="product" expr="eval:null" if="!project?.productSet?.contains(product)"/>
 	</action-record>
 	
 	<action-method name="action-ts-timer-method-pause">
