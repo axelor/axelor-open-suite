@@ -17,19 +17,25 @@
  */
 package com.axelor.web;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -50,19 +56,22 @@ public class MapRest {
 	@Inject
 	private AddressRepository addressRepo;
 	
+    @Inject
+    private MapService mapService;
 	
 	@Transactional
-	@Path("/partner")
+    @Path("/partner")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonNode getPartners() {
-		
-		List<? extends Partner> customers = partnerRepo.all().filter("self.isCustomer = true OR self.isSupplier = true AND self.isContact=?", false).fetch();
+    public JsonNode getPartners() {
+
+        List<? extends Partner> partners = partnerRepo.all()
+                .filter("self.isCustomer = true OR self.isSupplier = true AND self.isContact=?", false).fetch();
 		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
 		
-		for (Partner partner : customers) {
+		for (Partner partner : partners) {
 			
 			ObjectNode objectNode = factory.objectNode();
 			objectNode.put("fullName", partner.getFullName());
@@ -83,7 +92,7 @@ public class MapRest {
 			if (partner.getIsSupplier()) {
 				pinChar = pinChar + "/S";
 			}									
-			objectNode.put("pinChar", pinChar);			
+            objectNode.put("pinChar", pinChar);
 			arrayNode.add(objectNode);
 		}
 		
@@ -92,7 +101,109 @@ public class MapRest {
 		
 		return mainNode;
 	}
-	
+
+    @Path("/partner/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonNode getPartner(@PathParam("id") long id) {
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+        ObjectNode mainNode = factory.objectNode();
+        Partner partner = partnerRepo.find(id);
+
+        if (partner == null) {
+            mainNode.put("status", -1);
+            return mainNode;
+        }
+
+        ArrayNode arrayNode = factory.arrayNode();
+        String pinColor = getPinColor(partner);
+
+        List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList() != null
+                ? partner.getPartnerAddressList()
+                : Collections.emptyList();
+
+        partnerAddressList.stream().filter(partnerAddress -> partnerAddress.getAddress() != null)
+                .forEach(partnerAddress -> {
+                    ObjectNode objectNode = factory.objectNode();
+                    objectNode.put("fullName", getFullName(partnerAddress));
+
+                    if (partnerAddress.getIsDefaultAddr()) {
+                        if (!StringUtils.isBlank(partner.getFixedPhone())) {
+                            objectNode.put("fixedPhone", partner.getFixedPhone());
+                        }
+
+                        if (partner.getEmailAddress() != null) {
+                            objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
+                        }
+                    }
+
+                    Address address = partnerAddress.getAddress();
+
+                    if (!StringUtils.isBlank(address.getFullName())) {
+                        String addressString = mapService.makeAddressString(address, objectNode);
+                        objectNode.put("address", addressString);
+                    }
+
+                    objectNode.put("pinColor", pinColor);
+                    objectNode.put("pinChar", getPinChar(partnerAddress));
+
+                    arrayNode.add(objectNode);
+                });
+
+        mainNode.put("status", 0);
+        mainNode.set("data", arrayNode);
+
+        return mainNode;
+    }
+
+    protected String getFullName(PartnerAddress partnerAddress) {
+        String fullName = partnerAddress.getPartner().getFullName();
+
+        if (StringUtils.isBlank(fullName)) {
+            fullName = "";
+        }
+
+        List<String> texts = new ArrayList<>();
+
+        if (partnerAddress.getIsDefaultAddr()) {
+            texts.add(I18n.get(ITranslation.DEFAULT));
+        }
+
+        if (partnerAddress.getIsInvoicingAddr()) {
+            texts.add(I18n.get(ITranslation.INVOICING));
+        }
+
+        if (partnerAddress.getIsDeliveryAddr()) {
+            texts.add(I18n.get(ITranslation.DELIVERY));
+        }
+
+        if (!texts.isEmpty()) {
+            fullName += String.format(" (%s)", String.join(", ", texts));
+        }
+
+        return fullName;
+    }
+
+    protected String getPinColor(Partner partner) {
+        return partner.getIsProspect() ? "red" : "orange";
+    }
+
+    protected String getPinChar(PartnerAddress partnerAddress) {
+        if (partnerAddress.getIsDefaultAddr()) {
+            return "";
+        }
+
+        if (partnerAddress.getIsInvoicingAddr()) {
+            return I18n.get(ITranslation.PIN_CHAR_INVOICING);
+        }
+
+        if (partnerAddress.getIsDeliveryAddr()) {
+            return I18n.get(ITranslation.PIN_CHAR_DELIVERY);
+        }
+
+        return "";
+    }
+
 	@Transactional
 	@Path("/customer")
 	@GET

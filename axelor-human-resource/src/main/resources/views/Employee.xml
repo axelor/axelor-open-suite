@@ -175,8 +175,8 @@
 			  </div>
 			  <div class="span8">
 			  	<span>
-				<strong>{{contactPartner.fullName}}</strong></br>
-			    FP : {{contactPartner.fixedPhone}}</br>
+				<strong>{{contactPartner.fullName}}</strong><br/>
+			    FP : {{contactPartner.fixedPhone}}<br/>
 			    MP : {{contactPartner.mobilePhone}}
 			    </span>
 			  </div>
