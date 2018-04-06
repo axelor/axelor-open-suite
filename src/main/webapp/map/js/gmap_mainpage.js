@@ -66,10 +66,19 @@
             // To show Object details on click of Pinpoint
             var infowindow = new google.maps.InfoWindow();
 
+            var bounds = new google.maps.LatLngBounds();
+
+            var url = appHome + "/ws/map/" + getQueryVariable("object");
+            var id = getQueryVariable("id");
+
+            if (id) {
+                url += "/" + id;
+            }
+
             var requestP = $.ajax({
                 type: "GET",
                 contentType: 'application/json',
-                url: appHome + "/ws/map/" + getQueryVariable("object")
+                url: url
             });
 
             requestP.done(function(result) {
@@ -81,9 +90,11 @@
                         var d = result.data[i];
                         var icon = 'http://thydzik.com/thydzikGoogleMap/markerlink.php?text=' + d['pinChar'];
                         var latlng = new google.maps.LatLng(d['latit'], d['longit']);
-                        var title = d['fullName'].trim();
-                        var content = "<b>" + title + "</b></br>" + d['address'] + "</br><i class='fa fa-phone'></i>&nbsp;" + d['fixedPhone'];
-                        content = content + "</br><i class='fa fa-envelope'></i>&nbsp;" + d['emailAddress'];
+                        var title = d['fullName'] ? d['fullName'].trim() : '';
+                        var address = d['address'] ? d['address'] + '<br/>' : '';
+                        var fixedPhone = d['fixedPhone'] ? "<i class='fa fa-phone'></i>&nbsp;" + d['fixedPhone'] + '<br/>' : '';
+                        var emailAddress = d['emailAddress'] ? "<i class='fa fa-envelope'></i>&nbsp;" + d['emailAddress'] : '';
+                        var content = "<b>" + title + "</b><br/>" + address + fixedPhone + emailAddress;
                         var iconcolor;
 
                         switch (d['pinColor']) {
@@ -118,7 +129,7 @@
                         var marker = new google.maps.Marker({
                             position: latlng,
                             map: map,
-                            title: title.split('</br>')[0],
+                            title: title.split('<br/>')[0],
                             icon: icon
                         });
 
@@ -130,8 +141,19 @@
                         })(content));
 
                         markers.push(marker);
+                        bounds.extend(marker.getPosition());
 
-                    } //end loop	
+                    } //end loop
+
+                    if (markers.length > 0) {
+                        if (getQueryVariable("fit")) {
+                            map.fitBounds(bounds);
+                        }
+
+                        if (markers.length == 1) {
+                            map.setZoom(15);
+                        }
+                    }
                 } // end if
             });
 
