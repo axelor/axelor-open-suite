@@ -85,12 +85,6 @@
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
     </action-method>
 
-    <action-group name="action-supplychain-sale-order-group-generate-invoice">
-    	<action name="action-supplychain-sale-order-view-invoicing-wizard"
-				if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
-    	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getEnableToInvoiceExpense() || __config__.app.getApp('business-project').getEnableToInvoiceTimesheet())" />
-    </action-group>
-
     <action-method name="action-supplychain-sale-order-method-generate-invoice">
  		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
 	</action-method>

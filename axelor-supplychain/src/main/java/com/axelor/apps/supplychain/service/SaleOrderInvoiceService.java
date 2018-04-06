@@ -262,6 +262,12 @@ public interface SaleOrderInvoiceService {
 	 * @return  the tax invoiced amount
 	 */
 	BigDecimal getInTaxInvoicedAmount(SaleOrder saleOrder);
+
+	/**
+	 * @param saleOrder the sale order from context
+	 * @return the domain for the operation select field in the invoicing wizard form
+	 */
+	Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
 }
 
 

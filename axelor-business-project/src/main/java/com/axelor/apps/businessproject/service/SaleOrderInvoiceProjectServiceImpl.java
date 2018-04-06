@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -25,6 +26,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -59,14 +61,29 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
 			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder,Project project)
 					throws AxelorException {
 		Invoice invoiceMerged = super.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition,saleOrder);
-		if (project != null){
-			if(!appBusinessProjectService.getAppBusinessProject().getProjectInvoiceLines()){
+		if (project != null && !appBusinessProjectService.getAppBusinessProject().getProjectInvoiceLines()) {
 				invoiceMerged.setProject(project);
 				for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()){
 					invoiceLine.setProject(project);
 				}
-			}
 		}
 		return invoiceMerged;
 	}
+
+	@Override
+	public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
+	    Map<String, Integer> contextValues = super.getInvoicingWizardOperationDomain(saleOrder);
+		AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+	    boolean canInvoiceTimesheet = appBusinessProject.getEnableToInvoiceTimesheet();
+		boolean canInvoiceExpense = appBusinessProject.getEnableToInvoiceExpense();
+
+		contextValues.put("invoiceTs", canInvoiceTimesheet
+				? SaleOrderRepository.INVOICE_TIMESHEET
+				: 0);
+		contextValues.put("invoiceExpense", canInvoiceExpense
+				? SaleOrderRepository.INVOICE_EXPENSE
+				: 0);
+
+		return contextValues;
+    }
 }

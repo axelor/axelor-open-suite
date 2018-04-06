@@ -37,6 +37,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -451,7 +452,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 												List<SaleOrderLine> saleOrderLineList,
 												Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException  {
 
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+		List<InvoiceLine> invoiceLineList = new ArrayList<>();
 		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
 
 			if (qtyToInvoiceMap.containsKey(saleOrderLine.getId())) {
@@ -693,6 +694,23 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		}
 	}
 
+	@Override
+	public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
+	    boolean manageAdvanceInvoice = Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
+	    BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
+		Map<String, Integer> contextValues = new HashMap<>();
+
+		contextValues.put("invoiceAll",
+				amountInvoiced.compareTo(BigDecimal.ZERO) == 0
+						? SaleOrderRepository.INVOICE_ALL
+						: 0);
+		contextValues.put("invoiceFraction", SaleOrderRepository.INVOICE_PART);
+		contextValues.put("invoiceLines", SaleOrderRepository.INVOICE_LINES);
+		contextValues.put("invoiceAdvPayment", manageAdvanceInvoice
+				? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT
+				: 0);
+		return contextValues;
+	}
 }
 
 

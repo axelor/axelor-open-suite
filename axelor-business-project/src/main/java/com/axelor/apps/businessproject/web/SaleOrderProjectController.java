@@ -111,12 +111,12 @@ public class SaleOrderProjectController {
 	}
 
 	public void generateInvoicingProject(ActionRequest request, ActionResponse response) {
-		SaleOrder saleOrder = saleOrderRepo.find( Long.valueOf( request.getContext().get("_id").toString() ) );
+		SaleOrder saleOrder = saleOrderRepo.find(request.getContext().asType(SaleOrder.class).getId());
 		LocalDate deadline= null;
 		if (request.getContext().get("deadline") != null) {
 			deadline = LocalDate.parse(request.getContext().get("deadline").toString(), DateTimeFormatter.ISO_DATE);
 		}
-		InvoicingProject invoicingProject = invoicingProjectService.createInvoicingProject(saleOrder, deadline, Integer.valueOf( request.getContext().get("invoicingTypeSelect").toString() ));
+		InvoicingProject invoicingProject = invoicingProjectService.createInvoicingProject(saleOrder, deadline, Integer.valueOf( request.getContext().get("operationSelect").toString() ));
 		if (invoicingProject != null ){
 			response.setCanClose(true);
 			response.setFlash(I18n.get(IExceptionMessage.INVOICING_PROJECT_GENERATION));
