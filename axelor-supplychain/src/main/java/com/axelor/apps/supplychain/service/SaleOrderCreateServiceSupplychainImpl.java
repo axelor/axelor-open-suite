@@ -47,27 +47,34 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServiceImpl {
-	
+
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+
 	protected AccountConfigService accountConfigService;
 	protected SaleOrderRepository saleOrderRepository;
 
 	@Inject
-	public SaleOrderCreateServiceSupplychainImpl(PartnerService partnerService, SaleOrderRepository saleOrderRepo, 
-			AppSaleService appSaleService, SaleOrderService saleOrderService, SaleOrderComputeService saleOrderComputeService, 
+	public SaleOrderCreateServiceSupplychainImpl(PartnerService partnerService, SaleOrderRepository saleOrderRepo,
+			AppSaleService appSaleService, SaleOrderService saleOrderService, SaleOrderComputeService saleOrderComputeService,
 			AccountConfigService accountConfigService, SaleOrderRepository saleOrderRepository) {
-		
-		super(partnerService, saleOrderRepo, 
+
+		super(partnerService, saleOrderRepo,
 				appSaleService, saleOrderService, saleOrderComputeService);
-		
+
 		this.accountConfigService = accountConfigService;
 		this.saleOrderRepository = saleOrderRepository;
 
 	}
-	
-	
-	
+
+
+	@Override
+	public SaleOrder createSaleOrder(User salemanUser, Company company, Partner contactPartner, Currency currency,
+			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
+			PriceList priceList, Partner clientPartner, Team team) throws AxelorException {
+		return createSaleOrder(salemanUser, company, contactPartner, currency, deliveryDate, internalReference,
+				externalReference, null, orderDate, priceList, clientPartner, team);
+	}
+
 	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation stockLocation, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
@@ -81,12 +88,12 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 		if(stockLocation == null)  {
 			stockLocation = Beans.get(StockLocationService.class).getPickupDefaultStockLocation(company);
 		}
-		
+
 		saleOrder.setStockLocation(stockLocation);
 
 		saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
 		saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
-		
+
 		if (saleOrder.getPaymentMode() == null) {
 			saleOrder.setPaymentMode(
 					this.accountConfigService
@@ -102,13 +109,13 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 					.getDefPaymentCondition()
 				);
 		}
-		
+
 		saleOrder.setShipmentMode(clientPartner.getShipmentMode());
 		saleOrder.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
 
 		return saleOrder;
 	}
-	
+
 
 	@Transactional
 	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency,
