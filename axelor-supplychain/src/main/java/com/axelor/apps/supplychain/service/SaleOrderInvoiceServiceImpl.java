@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.Query;
 
@@ -477,7 +478,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 		Product product = saleOrderLine.getProduct();
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(), 
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, saleOrderLine.getProductName(),
 				saleOrderLine.getDescription(), qtyToInvoice, saleOrderLine.getUnit(),
 				saleOrderLine.getSequence(), false, saleOrderLine, null, null)  {
 
@@ -486,7 +487,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
 				InvoiceLine invoiceLine = this.createInvoiceLine();
 
-				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				List<InvoiceLine> invoiceLines = new ArrayList<>();
 				invoiceLines.add(invoiceLine);
 
 				return invoiceLines;
@@ -543,27 +544,35 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 	public BigDecimal getInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)  {
 
 		BigDecimal invoicedAmount = BigDecimal.ZERO;
-		
+
 		BigDecimal saleAmount = this.getAmountVentilated(saleOrder, currentInvoiceId, excludeCurrentInvoice, InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
 		BigDecimal refundAmount = this.getAmountVentilated(saleOrder, currentInvoiceId, excludeCurrentInvoice, InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
 
 		if(saleAmount != null)  {  invoicedAmount = invoicedAmount.add(saleAmount);  }
 		if(refundAmount != null)  {  invoicedAmount = invoicedAmount.subtract(refundAmount);  }
-		
+
 		if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency()) && saleOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
 			BigDecimal rate = invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
 			invoicedAmount = saleOrder.getExTaxTotal().multiply(rate);
 		}
 
 		log.debug("Compute the invoiced amount ({}) of the sale order : {}", invoicedAmount, saleOrder.getSaleOrderSeq());
-		
+
 		return invoicedAmount;
 
 	}
-	
-	
+
+	@Override
+	public List<Invoice> getInvoices(SaleOrder saleOrder) {
+		return invoiceRepo.all()
+				.filter("self.saleOrder.id = ? OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (?)))",
+						saleOrder.getId(), saleOrder.getSaleOrderLineList().stream().map(SaleOrderLine::getId).collect(Collectors.toList()))
+				.fetch();
+	}
+
+
 	private BigDecimal getAmountVentilated(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice, int invoiceOperationTypeSelect)  {
-		
+
 		String query = "SELECT SUM(self.companyExTaxTotal)"
 					 + " FROM InvoiceLine as self";
 
@@ -588,7 +597,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 				query += " OR (self.invoice.id = :invoiceId AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect) ";
 			}
 		}
-			
+
 		Query q = JPA.em().createQuery(query, BigDecimal.class);
 
 		q.setParameter("saleOrderId", saleOrder.getId());
@@ -599,12 +608,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		}
 
 		BigDecimal invoicedAmount = (BigDecimal) q.getSingleResult();
-		
+
 		if(invoicedAmount != null)  {  return invoicedAmount;  }
 		else  {  return BigDecimal.ZERO;  }
-		
+
 	}
-	
+
 
 	@Override
 	public void fillInLines(Invoice invoice){
@@ -626,7 +635,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 		if (saleOrder != null){
 			String numSeq = "";
 			String externalRef = "";
-			
+
 			for (Invoice invoiceLocal : invoiceList) {
 				if (!numSeq.isEmpty()){
 					numSeq += "-";
@@ -646,12 +655,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			Invoice invoiceMerged = invoiceGenerator.generate();
 			invoiceMerged.setExternalReference(externalRef);
 			invoiceMerged.setInternalReference(numSeq);
-			
+
 			if( paymentMode != null)
 				invoiceMerged.setPaymentMode(paymentMode);
 			if( paymentCondition != null)
 				invoiceMerged.setPaymentCondition(paymentCondition);
-			
+
 			List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
 			invoiceGenerator.populate(invoiceMerged, invoiceLines);
 			invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
@@ -674,9 +683,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 			else{
 				return invoiceService.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition);
 			}
-			
+
 		}
-		
+
 	}
 
 
