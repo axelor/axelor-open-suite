@@ -164,7 +164,7 @@ public class MoveLineService {
 	 * @throws AxelorException
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amountInSpecificMoveCurrency, BigDecimal amountInCompanyCurrency, 
-			BigDecimal currencyRate, boolean isDebit, LocalDate date, LocalDate dueDate, int counter, String origin, String invoiceLineName) throws AxelorException  {
+			BigDecimal currencyRate, boolean isDebit, LocalDate date, LocalDate dueDate, int counter, String origin, String description) throws AxelorException  {
 		
 		amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
 		
@@ -199,7 +199,7 @@ public class MoveLineService {
 		}
 
 		return new MoveLine(move, partner, account, date, dueDate, counter, debit, credit, 
-				this.determineDescriptionMoveLine(move.getJournal(), origin, invoiceLineName), origin,
+				this.determineDescriptionMoveLine(move.getJournal(), origin, description), origin,
 				currencyRate.setScale(5, RoundingMode.HALF_EVEN), amountInSpecificMoveCurrency);
 		
 	}
@@ -545,22 +545,24 @@ public class MoveLineService {
 	 * 			Le n° pièce réglée, facture, avoir ou de l'opération rejetée
 	 * @return
 	 */
-    public String determineDescriptionMoveLine(Journal journal, String origin, String invoiceLineName) {
-		String description = "";
-		if(journal != null)  {
-			if(journal.getDescriptionModel() != null)  {
-
-				description = String.format("%s", journal.getDescriptionModel());
-			}
-			if(journal.getDescriptionIdentificationOk() && origin != null)  {
-				description += String.format(" %s", origin);
-			}
-
-            if (!journal.getIsInvoiceMoveConsolidated() && invoiceLineName != null) {
-                description += String.format(" - %s", invoiceLineName);
-            }
+    public String determineDescriptionMoveLine(Journal journal, String origin, String description) {
+		String descriptionComputed = "";
+		if(journal == null)  {  return "";  }
+		
+		if(journal.getDescriptionModel() != null)  {
+		  descriptionComputed += journal.getDescriptionModel();
 		}
-		return description;
+		
+		if(journal.getDescriptionIdentificationOk() && origin != null)  {
+		  if(!descriptionComputed.isEmpty())  {  descriptionComputed += " ";  }
+		  descriptionComputed += origin;
+		}
+
+    if (!journal.getIsInvoiceMoveConsolidated() && description != null) {
+      if(!descriptionComputed.isEmpty())  {  descriptionComputed += " - ";  }
+      descriptionComputed += description;
+    }
+    return descriptionComputed;
 	}
 
 
