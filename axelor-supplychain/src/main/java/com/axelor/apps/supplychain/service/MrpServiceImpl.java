@@ -121,7 +121,8 @@ public class MrpServiceImpl implements MrpService  {
 		this.appBaseService = appBaseService;
 	}
 	
-	public void runCalculation(Mrp mrp) throws AxelorException  {
+	@Override
+    public void runCalculation(Mrp mrp) throws AxelorException  {
 		
 		this.startMrp(mrpRepository.find(mrp.getId()));
 		this.completeMrp(mrpRepository.find(mrp.getId()));
@@ -145,7 +146,8 @@ public class MrpServiceImpl implements MrpService  {
 		mrpRepository.save(mrp);
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void reset(Mrp mrp)  {
 		
 		mrp.setStatusSelect(MrpRepository.STATUS_DRAFT);
@@ -625,7 +627,7 @@ public class MrpServiceImpl implements MrpService  {
 			return mrpLineType;
 		}
 		
-		throw new AxelorException(mrpLineType, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE), elementSelect);
+		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE), elementSelect);
 		
 		//TODO get the right label in fact of integer value
 	
@@ -753,7 +755,8 @@ public class MrpServiceImpl implements MrpService  {
 	}	
 	
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateProposals(Mrp mrp) throws AxelorException  {
 		
 		Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
