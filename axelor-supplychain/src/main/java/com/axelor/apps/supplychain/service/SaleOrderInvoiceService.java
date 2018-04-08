@@ -249,6 +249,14 @@ public interface SaleOrderInvoiceService {
 
 	BigDecimal getInvoicedAmount(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
 
+	/**
+	 * Return all invoices for the given sale order. Beware that some of them may
+	 * be bound to several orders (through the lines).
+	 * @param saleOrder Sale order to get invoices for
+	 * @return A possibly empty list of invoices related to this order.
+	 */
+	List<Invoice> getInvoices(SaleOrder saleOrder);
+
 	void fillInLines(Invoice invoice);
 
 	@Transactional
