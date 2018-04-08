@@ -75,14 +75,14 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 				externalReference, null, orderDate, priceList, clientPartner, team);
 	}
 
-	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
+	public SaleOrder createSaleOrder(User salemanUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation stockLocation, LocalDate orderDate,
 			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
 
 		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
 				company.getName(), externalReference, clientPartner.getFullName());
 
-		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference,
+		SaleOrder saleOrder = super.createSaleOrder(salemanUser, company, contactPartner, currency, deliveryDate, internalReference,
 				externalReference, orderDate, priceList, clientPartner, team);
 
 		if(stockLocation == null)  {
