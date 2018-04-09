@@ -383,6 +383,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 		
 		Product product = saleOrderLine.getProduct();
 		
+		if(product == null)  {  return;  }
+		
 		productMultipleQtyService.checkMultipleQty(
 				saleOrderLine.getQty(), product.getSaleProductMultipleQtyList(), product.getAllowToForceSaleQty(), response);
 		

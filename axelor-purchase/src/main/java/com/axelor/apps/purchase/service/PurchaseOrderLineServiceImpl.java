@@ -187,6 +187,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
 		Product product = purchaseOrderLine.getProduct();
 		
+		if(product == null)  {  return BigDecimal.ZERO;  }
+		
 		TaxLine saleTaxLine = accountManagementService.getTaxLine(
 				purchaseOrder.getOrderDate(), purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner().getFiscalPosition(), false);
 		
@@ -200,6 +202,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	@Override
 	public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, Product product, BigDecimal price) throws AxelorException  {
 
+    if(product == null)  {  return BigDecimal.ZERO;  }
+	  
 		TaxLine saleTaxLine = accountManagementService.getTaxLine(
 				purchaseOrder.getOrderDate(), product, purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner().getFiscalPosition(), false);
 		
@@ -494,6 +498,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response)  {
 		
 		Product product = purchaseOrderLine.getProduct();
+		
+		if(product == null)  {  return;  }
 		
 		productMultipleQtyService.checkMultipleQty(
 				purchaseOrderLine.getQty(), product.getPurchaseProductMultipleQtyList(), product.getAllowToForcePurchaseQty(), response);
