@@ -44,6 +44,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
@@ -190,8 +191,9 @@ public class SaleOrderController{
 
 	/**
 	 * Called from the sale order invoicing wizard.
-	 * Call {@link com.axelor.apps.supplychain.service.SaleOrderInvoiceService#generateInvoice }
+	 * Call {@link com.axelor.apps.supplychain.service.SaleOrderInvoiceService#generateInvoice(SaleOrder, int, BigDecimal, boolean, Map)}  }
      * Return to the view the generated invoice.
+	 *
 	 * @param request
 	 * @param response
 	 */
@@ -217,17 +219,17 @@ public class SaleOrderController{
 							map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString()
 					);
 					if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
-						Long SOlineId = new Long((Integer) map.get("id"));
-						qtyToInvoiceMap.put(SOlineId, qtyToInvoiceItem);
+						Long sOlineId = Long.valueOf((Integer) map.get("id"));
+						qtyToInvoiceMap.put(sOlineId, qtyToInvoiceItem);
 					}
 				}
 			}
 
 			saleOrder = saleOrderRepo.find(saleOrder.getId());
-			
-			SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl = Beans.get(SaleOrderInvoiceServiceImpl.class);
 
-			Invoice invoice = saleOrderInvoiceServiceImpl.generateInvoice(
+			SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
+
+			Invoice invoice = saleOrderInvoiceService.generateInvoice(
 							saleOrder, operationSelect, amountToInvoice, isPercent,
 							qtyToInvoiceMap
 					);
@@ -249,49 +251,6 @@ public class SaleOrderController{
 	}
 	
 	
-	public void generateInvoiceFromPopup(ActionRequest request, ActionResponse response)  {
-
-		 String saleOrderId = request.getContext().get("_id").toString();
-
-		try {
-
-			SaleOrder saleOrder = saleOrderRepo.find( Long.valueOf(saleOrderId) );
-			//Check if at least one row is selected. If yes, then invoiced only the selected rows, else invoiced all rows
-			List<Long> saleOrderLineIdSelected = new ArrayList<>();
-			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				if (saleOrderLine.isSelected()){
-					saleOrderLineIdSelected.add(saleOrderLine.getId());
-				}
-			}
-			 	
-			Invoice invoice = null;
-			
-			SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl = Beans.get(SaleOrderInvoiceServiceImpl.class);
-
-			if (!saleOrderLineIdSelected.isEmpty()){
-				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder, saleOrderLinesSelected);
-			}else{
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder);
-			}
-
-			if(invoice != null)  {
-				
-				response.setCanClose(true);
-
-				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
-				response.setView(ActionView
-		            .define(I18n.get("Invoice generated"))
-		            .model(Invoice.class.getName())
-		            .add("form", "invoice-form")
-		            .add("grid", "invoice-grid")
-		            .context("_showRecord",String.valueOf(invoice.getId()))
-		            .map());
-			}
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergeSaleOrder(ActionRequest request, ActionResponse response)  {
@@ -495,6 +454,18 @@ public class SaleOrderController{
             response.setReload(true);
         }
     }
+
+	/**
+	 * Called on sale order invoicing wizard form.
+	 * Call {@link SaleOrderInvoiceService#getInvoicingWizardOperationDomain(SaleOrder)}
+	 * @param request
+	 * @param response
+	 */
+	public void changeWizardOperationDomain(ActionRequest request, ActionResponse response) {
+	    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+	    Map<String, Integer> contextValues = Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
+	    response.setValues(contextValues);
+	}
 
 	/**
 	 * Called from sale order generate purchase order form.

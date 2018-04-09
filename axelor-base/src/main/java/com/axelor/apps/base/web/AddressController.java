@@ -205,15 +205,17 @@ public class AddressController {
     		BigDecimal latit = address.getLatit();
     		BigDecimal longit = address.getLongit();
     		BigDecimal zero = BigDecimal.ZERO;
-    		if(zero.compareTo(latit) != 0 && zero.compareTo(longit) != 0){
+
+            if (zero.compareTo(latit) != 0 && zero.compareTo(longit) != 0) {
+                MapService mapService = Beans.get(MapService.class);
     			Map<String,Object> mapView = new HashMap<>();
     			mapView.put("title", "Map");
-    			mapView.put("resource",  Beans.get(MapService.class).getMapUrl(latit, longit));
+                mapView.put("resource", mapService.getMapUrl(latit, longit, address.getFullName()));
     			mapView.put("viewType", "html");
     			response.setView(mapView);
+            } else {
+                response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5), address.getFullName()));
     		}
-    		else
-    			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),address.getFullName()));
     
     		response.setReload(true);
         } catch (Exception e) {

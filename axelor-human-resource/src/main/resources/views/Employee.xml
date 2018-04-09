@@ -42,9 +42,9 @@
 							<field name="name" title="Name"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
 							<field name="firstName"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
 				            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
-							<field name="fax" pattern="^\+?\d{8,11}$" placeholder="+33000000000"/>
-							<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
-							<field name="mobilePhone" placeholder="+33600000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+							<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
+							<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
+							<field name="mobilePhone" placeholder="+33600000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
 				           	<field name="webSite"/>
 				         </panel>
 			        </panel>
@@ -54,9 +54,9 @@
         <panel-tabs>
         	<panel name="information" title="Information">
 	        	<panel name="phonePro" title="Work phones" colSpan="12">
-	        		<field name="fixedProPhone" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" colSpan="4"/>
-	        		<field name="mobileProPhone" placeholder="+33600000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" colSpan="4"/>
-					<field name="phoneAtCustomer" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" colSpan="4"/>
+	        		<field name="fixedProPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-employee-method-normalize-fixedProPhone" colSpan="4"/>
+	        		<field name="mobileProPhone" placeholder="+33600000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-employee-method-normalize-mobileProPhone" colSpan="4"/>
+					<field name="phoneAtCustomer" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-employee-method-normalize-phoneAtCustomer" colSpan="4"/>
 	        	</panel>
       			<panel name="personalInfo" title="Personal Info." colSpan="12">
         			<field name="birthDate" colSpan="4"/>
@@ -65,7 +65,7 @@
       			</panel>
 	        	<panel name="emergencyContact" title="Contact in case of emergency" colSpan="12">
 	        		<field name="emergencyContact" colSpan="4"/>
-	        		<field name="emergencyNumber" colSpan="4" placeholder="+33100000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$"/>
+	        		<field name="emergencyNumber" colSpan="4" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-employee-method-normalize-emergencyNumber"/>
 	        	</panel>
      			<panel name="contractualInfo" title="Contractual Info." colSpan="12">
         			<field name="dateOfHire" colSpan="4"/>
@@ -175,8 +175,8 @@
 			  </div>
 			  <div class="span8">
 			  	<span>
-				<strong>{{contactPartner.fullName}}</strong></br>
-			    FP : {{contactPartner.fixedPhone}}</br>
+				<strong>{{contactPartner.fullName}}</strong><br/>
+			    FP : {{contactPartner.fixedPhone}}<br/>
 			    MP : {{contactPartner.mobilePhone}}
 			    </span>
 			  </div>
@@ -239,7 +239,23 @@
 	<action-method name="action-employee-method-show-annual-report">
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="showAnnualReport"/>
 	</action-method>
-	
+
+    <action-method name="action-employee-method-normalize-fixedProPhone">
+        <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
+    </action-method>
+
+    <action-method name="action-employee-method-normalize-mobileProPhone">
+        <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
+    </action-method>
+
+    <action-method name="action-employee-method-normalize-phoneAtCustomer">
+        <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
+    </action-method>
+
+    <action-method name="action-employee-method-normalize-emergencyNumber">
+        <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
+    </action-method>
+
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
         <field name="mainEmploymentContract.payCompany"

@@ -8,41 +8,36 @@
 		  onLoad="action-group-sale-order-invoicing-wizard-onload">
 		<panel>
             <field name="operationSelect" title="Operation choice"
-				   showIf="$manageAdvanceInvoice &amp;&amp; (!amountInvoiced || amountInvoiced == 0)"
-				   type="selection" required="true"
-				   selection="supplychain.sale.order.invoicing.wizard.select"/>
+				   type="selection"
+				   selection="supplychain.sale.order.invoicing.wizard.select"
+                   selection-in="[invoiceAll, invoiceFraction, invoiceLines, invoiceAdvPayment, invoiceTs, invoiceExpense]"
+				   required="true"/>
 
-			<field name="operationSelect" title="Operation choice"
-				   showIf="!$manageAdvanceInvoice &amp;&amp; (!amountInvoiced || amountInvoiced == 0)"
-				   type="selection" required="true" selection-in="[1,2,3]"
-				   selection="supplychain.sale.order.invoicing.wizard.select"/>
-
-			<field name="operationSelect" title="Operation choice"
-				   showIf="$manageAdvanceInvoice &amp;&amp; amountInvoiced &amp;&amp; amountInvoiced > 0"
-				   type="selection" required="true" selection-in="[2,3,4]"
-				   selection="supplychain.sale.order.invoicing.wizard.select"/>
-
-			<field name="operationSelect" title="Operation choice"
-				   showIf="!$manageAdvanceInvoice &amp;&amp; amountInvoiced &amp;&amp; amountInvoiced > 0"
-				   type="selection" required="true" selection-in="[2,3]"
-				   selection="supplychain.sale.order.invoicing.wizard.select"/>
-
-            <field name="amountToInvoice" title="Amount to invoice" type="decimal"
-				   hideIf="operationSelect == 1 || operationSelect == 3"/>
-            <field name="isPercent" title="Is amount in % ?" type="boolean"
-				   hideIf="operationSelect == 1"/>
+		</panel>
+        <panel showIf="[2,3,4].includes($number(operationSelect))">
+			<field name="isPercent" title="Is amount in % ?" type="boolean"
+				   />
+			<field name="amountToInvoice" title="Amount to invoice" type="decimal"
+				   showIf="[2,4].includes($number(operationSelect))"/>
+		</panel>
+        <panel if-module="axelor-business-project" if="__config__.app.isApp('business-project')" showIf="operationSelect &gt; 4">
+			<field name="deadline" title="Deadline" type="date" colSpan="6"/>
 		</panel>
 		<panel-related field="saleOrderLineList" hideIf="operationSelect != 3"
 					   grid-view="invoicing-wizard-sale-order-line-grid"
 					   editable="true"/>
-		<panel>
+
+		<panel showIf="operationSelect &lt; 5">
 			<button name="createInvoice" title="Generate the invoice"
 					onClick="action-method-sale-order-invoicing-wizard-generate"/>
+		</panel>
+
+        <panel if-module="axelor-business-project" if="__config__.app.isApp('business-project')" showIf="operationSelect &gt; 4" >
+			<button name="createInvoicingProject" title="Generate the invoicing project" colSpan="6" onClick="action-business-project-sale-order-condition-invoicing,action-business-project-sale-order-method-generate-invoicing-project" />
 		</panel>
         <panel hidden="true">
 			<field name="amountInvoiced" hidden="true"/>
 			<field name="exTaxTotal" hidden="true"/>
-            <field name="$manageAdvanceInvoice" type="boolean" hidden="true"/>
 		</panel>
 	</form>
 
@@ -64,6 +59,7 @@
 		<action name="action-method-sale-order-invoicing-wizard-default"/>
 		<action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
 		<action name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment"/>
+		<action name="action-method-sale-order-invoicing-wizard-operation-select-domain"/>
 	</action-group>
 
 	<action-attrs name="action-attrs-sale-order-line-invoicing-wizard-fill-qty">
@@ -71,11 +67,6 @@
 				   expr="eval: qty"/>
 		<attribute for="qtyToInvoice" name="value" if="invoiceAll &amp;&amp; __parent__?.isPercent"
 				   expr="eval: 100"/>
-	</action-attrs>
-
-	<action-attrs name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment">
-		<attribute for="$manageAdvanceInvoice" name="value"
-				   expr="eval: __config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
 	</action-attrs>
 
 	<action-attrs name="action-attrs-sale-order-invoicing-wizard-amount-invoiced">
@@ -86,6 +77,11 @@
 		<attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
 				   expr="eval: exTaxTotal - amountInvoiced"/>
 	</action-attrs>
+
+	<action-method name="action-method-sale-order-invoicing-wizard-operation-select-domain">
+        <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+			  method="changeWizardOperationDomain"/>
+	</action-method>
 
 	<action-method name="action-method-sale-order-invoicing-wizard-generate">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController"

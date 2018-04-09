@@ -66,6 +66,7 @@
 - Improve timesheet form by adding time logging preferences.
 - Rename "durationStored" to "hoursDuration" and "visibleDuration" to "duration".
 - Add "show partner" button in lead form.
+- Merge invoicing project sale order wizard with invoicing sale order wizard.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)

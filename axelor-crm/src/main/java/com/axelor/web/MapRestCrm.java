@@ -72,7 +72,7 @@ public class MapRestCrm {
 			String fullName = lead.getFirstName() + " " + lead.getName();
 			
 			if (lead.getEnterpriseName() != null) {
-				fullName = lead.getEnterpriseName() + "</br>" + fullName;
+                fullName = lead.getEnterpriseName() + "<br/>" + fullName;
 			}			
 			ObjectNode objectNode = factory.objectNode();
 			objectNode.put("fullName", fullName);
@@ -85,16 +85,16 @@ public class MapRestCrm {
 			StringBuilder addressString = new StringBuilder();
 			
 			if (lead.getPrimaryAddress() != null) {
-				addressString.append(lead.getPrimaryAddress() + "</br>");
+                addressString.append(lead.getPrimaryAddress() + "<br/>");
 			}
 			if (lead.getPrimaryCity() != null) {
-				addressString.append(lead.getPrimaryCity() + "</br>");
+                addressString.append(lead.getPrimaryCity() + "<br/>");
 			}
 			if (lead.getPrimaryPostalCode() != null) {
-				addressString.append(lead.getPrimaryPostalCode() + "</br>");
+                addressString.append(lead.getPrimaryPostalCode() + "<br/>");
 			}
 			if (lead.getPrimaryState() != null) {
-				addressString.append(lead.getPrimaryState() + "</br>");
+                addressString.append(lead.getPrimaryState() + "<br/>");
 			}
 			if (lead.getPrimaryCountry() != null) {
 				addressString.append(lead.getPrimaryCountry().getName());
@@ -142,7 +142,7 @@ public class MapRestCrm {
 			}
 			String amount = amtLabel + " : " +opportunity.getAmount() + " " + currencyCode;
 			
-			objectNode.put("fullName", opportunity.getName() + "</br>" + amount);
+            objectNode.put("fullName", opportunity.getName() + "<br/>" + amount);
 			objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
 			
 			if (partner.getEmailAddress() != null) {

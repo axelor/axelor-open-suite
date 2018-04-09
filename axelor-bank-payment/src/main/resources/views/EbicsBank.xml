@@ -13,7 +13,7 @@
 			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large" hideIf="!fullName" readonly="true"/>
 			<field name="bank" canNew="true" onChange="action-ebics-bank-record-onchange-bank"/>
 			<field name="hostId"/>
-			<field name="fax" placeholder="+33000000000" pattern="^\+?(?:[0-9]{2,3}(?:\s|\.)?){3,6}[0-9]{2,3}$" onChange="action-ebics-bank-record-normalize-fax-phone-number"/>
+			<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 			<field name="emailAddress" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 			<field name="protocolSelect" required="true" />
 			<field name="url" colSpan="12" pattern="http(s)?://.+" />
@@ -28,10 +28,6 @@
 		
 		<panel-dashlet action="action-ebics-bank-view-ebics-users"/>
 	</form>
-	
-	<action-record name="action-ebics-bank-record-normalize-fax-phone-number" model="com.axelor.apps.bankpayment.db.EbicsBank">
-		<field name="fax" expr="call:com.axelor.apps.bankpayment.ebics.web.EbicsBankController:normalizeFaxNumber(fax)"/>
-	</action-record>
 
 	<action-record name="action-ebics-bank-record-onchange-bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
 		<field name="hostId" expr="eval: bank?.code"/>

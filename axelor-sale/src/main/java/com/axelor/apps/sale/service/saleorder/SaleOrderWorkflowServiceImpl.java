@@ -42,7 +42,6 @@ import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -60,7 +59,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	protected PartnerRepository partnerRepo;
 	protected SaleOrderRepository saleOrderRepo;
 	protected AppSaleService appSaleService;
-	protected User currentUser;
+	protected UserService userService;
 	
 
 	@Inject
@@ -71,7 +70,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 		this.partnerRepo = partnerRepo;
 		this.saleOrderRepo = saleOrderRepo;
 		this.appSaleService = appSaleService;
-		this.currentUser = userService.getUser();
+		this.userService = userService;
 	}
 	
 
@@ -150,7 +149,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
 		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_CONFIRMED);
 		saleOrder.setConfirmationDate(appSaleService.getTodayDate());
-		saleOrder.setConfirmedByUser(this.currentUser);
+		saleOrder.setConfirmedByUser(userService.getUser());
 		
 		this.validateCustomer(saleOrder);
 		
