@@ -54,6 +54,7 @@ public interface IExceptionMessage {
 	 * Convert lead wizard controller
 	 */
 	static final String CONVERT_LEAD_1 = /*$$(*/ "Lead converted" /*)*/;
+    static final String CONVERT_LEAD_MISSING = /*$$(*/ "Parent lead is missing." /*)*/;
 
 	/**
 	 * Event controller
@@ -91,4 +92,5 @@ public interface IExceptionMessage {
 	static final String RECURRENCE_DAYS_CHECKED = /*$$(*/ "You must choose at least one day in the week" /*)*/;
 	static final String RECURRENCE_REPETITION_NUMBER = /*$$(*/ "The number of repetitions must be greater than 0" /*)*/;
 	static final String RECURRENCE_END_DATE = /*$$(*/ "The end date must be after the start date" /*)*/;
+
 }
