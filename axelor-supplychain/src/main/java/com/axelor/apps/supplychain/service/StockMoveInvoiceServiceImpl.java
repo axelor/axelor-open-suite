@@ -690,8 +690,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 	 * 
 	 * @param stockMoveLineList
 	 * @return
+	 * @throws AxelorException
 	 */
-	private List<StockMoveLine> getConsolidatedStockMoveLineList(List<StockMoveLine> stockMoveLineList) {
+	private List<StockMoveLine> getConsolidatedStockMoveLineList(List<StockMoveLine> stockMoveLineList) throws AxelorException {
 		Map<Product, List<StockMoveLine>> stockMoveLineMap = new LinkedHashMap<>();
 
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
@@ -703,8 +704,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 			list.add(stockMoveLine);
 		}
 
-		return stockMoveLineMap.values().stream().map(stockMoveLineService::getMergedStockMoveLine)
-				.collect(Collectors.toList());
+		List<StockMoveLine> mergedStockMoveLineList = new ArrayList<>();
+		for(List<StockMoveLine> stockMoveLines : stockMoveLineMap.values()) {
+			mergedStockMoveLineList.add(stockMoveLineService.getMergedStockMoveLine(stockMoveLines));
+		}
+		return mergedStockMoveLineList;
 	}
 
 }

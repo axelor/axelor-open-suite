@@ -518,7 +518,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList) {
+	public StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList) throws AxelorException {
 		if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
 			return null;
 		}
@@ -543,14 +543,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			quantity = quantity.add(stockMoveLine.getQty());
 		}
 
-		StockMoveLine stockMoveLine = null;
-		try {
-			stockMoveLine = createStockMoveLine(product, productName, description, quantity, unitPriceUntaxed, unitPriceTaxed, unit,
+		return createStockMoveLine(product, productName, description, quantity, unitPriceUntaxed, unitPriceTaxed, unit,
 					stockMove, trackingNumber);
-		} catch (Exception e) {
-			TraceBackService.trace(e);
-		}
-		return stockMoveLine;
 	}
 
 	@Override

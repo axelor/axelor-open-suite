@@ -139,8 +139,9 @@ public interface StockMoveLineService {
 	 * 
 	 * @param stockMoveLineList
 	 * @return
+	 * @throws AxelorException
 	 */
-	StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList);
+	StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList) throws AxelorException;
 
 	/**
 	 * Check whether a stock move line is fully spread over logistical form lines.

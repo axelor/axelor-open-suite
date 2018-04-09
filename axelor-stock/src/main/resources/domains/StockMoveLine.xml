@@ -13,7 +13,7 @@
 	<decimal name="qty" title="Expected Qty"/>
 	<decimal name="realQty" title="Real Qty"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-    <decimal name="netWeight" title="Net weight" nullable="true"/>
+    <decimal name="netWeight" title="Net weight"/>
     <decimal name="totalNetWeight" title="Total net weight"/>
     
     <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr."/>
