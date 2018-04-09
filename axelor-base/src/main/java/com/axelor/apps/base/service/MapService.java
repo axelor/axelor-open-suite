@@ -382,7 +382,6 @@ public class MapService {
 
             if (id != null) {
                 ub.addParameter("id", String.valueOf(id));
-                ub.addParameter("fit", String.valueOf(true));
             }
 
             return ub.toString();
