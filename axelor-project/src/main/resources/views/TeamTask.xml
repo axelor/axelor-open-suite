@@ -219,7 +219,8 @@
 		<field name="parentTask" expr="eval: null"/>
 		<field name="membersUserSet" expr="eval: null"/>
 		<field name="team" expr="eval: project?.team"/>
-		<field name="team" expr="eval: project?.project?.team " if="project?.team == null"/>
+        <field name="team" expr="eval: project?.parentProject?.team"
+            if="project?.team == null"/>
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">

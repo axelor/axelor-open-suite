@@ -229,21 +229,35 @@ public class MapService {
     }
 	}
 
-	public String getMapUrl(BigDecimal latitude, BigDecimal longitude){
-		
-		switch (appBaseService.getAppBase().getMapApiSelect()) {
-      case AppBaseRepository.MAP_API_GOOGLE:
-        
-        return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18"+"&key="+getGoogleMapsApiKey();
-        
-      case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
-        
-        return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
-
-      default:
-        return null;
+    public String getMapUrl(BigDecimal latitude, BigDecimal longitude) {
+        return getMapUrl(latitude, longitude, null);
     }
-	}
+
+    public String getMapUrl(BigDecimal latitude, BigDecimal longitude, String title) {
+        try {
+            switch (appBaseService.getAppBase().getMapApiSelect()) {
+            case AppBaseRepository.MAP_API_GOOGLE:
+                final String uri = "map/gmaps.html";
+                URIBuilder ub = new URIBuilder(uri);
+                ub.addParameter("key", getGoogleMapsApiKey());
+                ub.addParameter("x", String.valueOf(latitude));
+                ub.addParameter("y", String.valueOf(longitude));
+                ub.addParameter("z", String.valueOf(18));
+                ub.addParameter("title", title);
+                return ub.toString();
+
+            case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+
+                return "map/oneMarker.html?x=" + latitude + "&y=" + longitude + "&z=18";
+
+            default:
+                return null;
+            }
+        } catch (URISyntaxException e) {
+            TraceBackService.trace(e);
+            return getErrorURI(e.getMessage());
+        }
+    }
 
 	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
 			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon+"&key="+getGoogleMapsApiKey();
@@ -298,29 +312,33 @@ public class MapService {
 		objectNode.put("latit",latit);
 		objectNode.put("longit",longit);
 
-		StringBuilder addressString = new StringBuilder();
+        return makeAddressString(address);
+    }
 
-		if (address.getAddressL2() != null) {
+    public String makeAddressString(Address address) {
+        StringBuilder addressString = new StringBuilder();
+
+        if (address.getAddressL2() != null) {
             addressString.append(address.getAddressL2() + "<br/>");
-		}
-		if (address.getAddressL3() != null) {
+        }
+        if (address.getAddressL3() != null) {
             addressString.append(address.getAddressL3() + "<br/>");
-		}
-		if (address.getAddressL4() != null) {
+        }
+        if (address.getAddressL4() != null) {
             addressString.append(address.getAddressL4() + "<br/>");
-		}
-		if (address.getAddressL5() != null) {
+        }
+        if (address.getAddressL5() != null) {
             addressString.append(address.getAddressL5() + "<br/>");
-		}
-		if (address.getAddressL6() != null) {
-			addressString.append(address.getAddressL6());
-		}
-		if (address.getAddressL7Country() != null) {
+        }
+        if (address.getAddressL6() != null) {
+            addressString.append(address.getAddressL6());
+        }
+        if (address.getAddressL7Country() != null) {
             addressString = addressString.append("<br/>" + address.getAddressL7Country().getName());
-		}
+        }
 
-		return addressString.toString();
-	}
+        return addressString.toString();
+    }
 
     public void testGMapService() throws AxelorException, JSONException {
         RESTClient restClient = new RESTClient("https://maps.googleapis.com");
@@ -382,7 +400,6 @@ public class MapService {
 
             if (id != null) {
                 ub.addParameter("id", String.valueOf(id));
-                ub.addParameter("fit", String.valueOf(true));
             }
 
             return ub.toString();

@@ -75,8 +75,11 @@ public class MapRest {
 			
 			ObjectNode objectNode = factory.objectNode();
 			objectNode.put("fullName", partner.getFullName());
-			objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
-			
+
+            if (partner.getFixedPhone() != null) {
+                objectNode.put("fixedPhone", partner.getFixedPhone());
+            }
+
 			if (partner.getEmailAddress() != null) {
 				objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
 			}
