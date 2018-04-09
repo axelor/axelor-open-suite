@@ -928,6 +928,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="overflow">hidden</property>
                         <property name="height">70px</property>
                         <property name="width">240px</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["CompanyLogo"] == null</expression>
+                            </structure>
+                        </list-property>
                         <structure name="toc"/>
                         <method name="onCreate"><![CDATA[this.altText = ""]]></method>
                         <property name="source">file</property>

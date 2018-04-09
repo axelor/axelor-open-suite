@@ -2514,6 +2514,12 @@ group by AdvanceInvoice.id]]></xml-property>
                                         <property name="overflow">hidden</property>
                                         <property name="height">71px</property>
                                         <property name="width">309px</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <structure name="toc"/>
                                         <property name="source">file</property>
                                         <property name="proportionalScale">true</property>

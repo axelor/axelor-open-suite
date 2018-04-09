@@ -947,6 +947,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <image id="3440">
                         <property name="height">2.169583333333333cm</property>
                         <property name="width">6.138333333333333cm</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                            </structure>
+                        </list-property>
                         <property name="source">file</property>
                         <property name="proportionalScale">true</property>
                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>

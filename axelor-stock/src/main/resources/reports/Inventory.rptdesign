@@ -884,6 +884,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="height">117px</property>
                             <property name="width">298px</property>
                             <property name="dataSet">InventoryDS</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                </structure>
+                            </list-property>
                             <list-property name="boundDataColumns">
                                 <structure>
                                     <property name="name">inventoryName</property>

@@ -2033,6 +2033,12 @@ group by month) CostData group by month)) ChartData group by month order by mont
                     <image id="3419">
                         <property name="height">0.8645833333333334in</property>
                         <property name="width">2.78125in</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                            </structure>
+                        </list-property>
                         <structure name="toc"/>
                         <property name="source">file</property>
                         <property name="proportionalScale">true</property>
