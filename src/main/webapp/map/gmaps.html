@@ -32,8 +32,8 @@
     </script> -->
     <script type="text/javascript">
 	    var query = window.location.search.substring(1);
-	    query = decodeURIComponent(query);
-	
+		query = decodeURIComponent(query.replace(/\+/g, '%20'));
+
 	    function loadGoogleMapAPIJS(key, callback) {
 			if (!key) {
 				throw 'Google Maps API key is missing.';
@@ -63,6 +63,7 @@
 			var y = getQueryVariable("y");
 			var z = getQueryVariable("z");
 			var id = getQueryVariable("id");
+			var title = getQueryVariable("title");
 		
 			var myLatlng = new google.maps.LatLng(x, y);
 		
@@ -78,9 +79,10 @@
 			var marker = new google.maps.Marker({
 		      position: myLatlng,
 		      map: map,
-		      title:"Here!"
-		  });
-      }
+		      title: title || "Here!"
+			  });
+
+	    }
 
 
 	    window.onload = function() {
