@@ -101,7 +101,7 @@
 	<action-view name="action-bill-of-material-sub-versions" title="subVersions" model="com.axelor.apps.production.db.BillOfMaterial">
 		<view type="grid" name="bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
-		<domain>self.originalBillOfMaterial.versionNumber = :bom AND self.originalBillOfMaterial.id = :id</domain>
+		<domain>self.originalBillOfMaterial.versionNumber = :versionNumber AND self.originalBillOfMaterial.id = :id</domain>
 	</action-view>
 
 	<action-view name="action-bill-of-material-line-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
