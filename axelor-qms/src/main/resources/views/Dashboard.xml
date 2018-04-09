@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+			
+	<dashboard title="Dashboard" name="qms.improvementForm.dashboard.1"  >
+		<dashlet action="qms-improvement-forms-dashboard-global-stats" height="350" canSearch="true" colSpan="12"/>
+	</dashboard>
+	
+	<action-view name="qms-improvement-forms-dashboard-global-stats" title="Monthly statistics" model="com.axelor.apps.qms.db.ImprovementForm">
+		<view type="chart" name="qms-improvement-form-chart"/>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany?.id"/>
+	</action-view>
+</object-views>

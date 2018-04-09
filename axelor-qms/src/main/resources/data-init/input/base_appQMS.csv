@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"QMS";"qms";100;"Quality management system";"app-qms.png";"axelor-qms";"crm,quality";100

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<!--
+	Represents a document in the quality management system.
+	Documents handle versions with a file associated to each.
+	Detailed information are stored in the version, only constant
+	information are stored here.
+-->
+	<module name="axelor-qms" package="com.axelor.apps.qms.db" />
+
+	<entity name="QMSDocument" lang="java" cachable="true" sequential="true">
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
+		<many-to-one name="process" ref="com.axelor.apps.qms.db.QMSProcess" required="true"/>
+		<!-- This is fake field, only here to allow in-process editing, it'll always contain one
+		unique entry, synced with process -->
+		<many-to-many name="processes" ref="com.axelor.apps.qms.db.QMSProcess" mappedBy="documents"/>
+		<many-to-one name="type" ref="com.axelor.apps.qms.db.QMSDocumentType" required="true" />
+		<string name="title" nullable="false" required="true" title="Title"/>
+		<!-- [process code]-[type code]-[quality document sequence]
+		We cannot set nullable="false" since we generate it on save which is called after first
+		flush to DB (resource.save() → JPA.manage() → JPA.save()… then repository.save)-->
+		<string name="reference" title="Reference" readonly="true" unique="true"/>
+
+		<!--  It seems that name columns cannot be transient -->
+		<string name="fullReference" namecolumn="true">
+		<![CDATA[
+			return String.format(com.axelor.i18n.I18n.get("%s - %s"), reference, title);
+		]]>
+		</string>
+
+		<many-to-many name="responsibles" ref="com.axelor.apps.hr.db.Employee" title="Responsibles" required="true"/>
+
+		<one-to-many name="versions" ref="com.axelor.apps.qms.db.QMSDocumentVersion" mappedBy="document" orderBy="length(versionIndex), versionIndex"/>
+		<one-to-one ref="com.axelor.apps.qms.db.QMSDocumentVersion" name="currentVersion" readonly="true" title="Last version">
+		<![CDATA[
+			List<QMSDocumentVersion> versions = getVersions();
+			if(versions == null || versions.size() == 0) return null;
+			for(java.util.ListIterator<QMSDocumentVersion> it = versions.listIterator(versions.size()) ; it.hasPrevious() ; ) {
+				QMSDocumentVersion version = it.previous();
+				if(version.getVersionApprover() != null && version.getVersionApprovalDate() != null) return version;
+			}
+			return null;
+		]]>
+		</one-to-one>
+		<unique-constraint columns="company,fullReference"/>
+	</entity>
+</domain-models>

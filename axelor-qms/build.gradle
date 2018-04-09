@@ -1,0 +1,19 @@
+apply plugin: "com.axelor.app-module"
+
+apply {
+	version = "1.0.0-SNAPSHOT"
+}
+
+axelor {
+	title "Axelor :: QMS"
+	description "Quality Management System"
+	removable true
+}
+
+dependencies {
+	compile project(":modules:axelor-base")
+	compile project(":modules:axelor-human-resource")
+	compile project(":modules:axelor-quality")
+	compile project(":modules:axelor-production")
+	compile project(":modules:axelor-stock")
+}

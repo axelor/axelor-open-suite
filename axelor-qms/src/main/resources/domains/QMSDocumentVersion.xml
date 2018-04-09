@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<!--
+	Represents a specific version of a document in the quality
+	management system.
+-->
+	<module name="axelor-qms" package="com.axelor.apps.qms.db" />
+
+	<entity name="QMSDocumentVersion" lang="java" cachable="true" sequential="true">
+		<many-to-one name="document" ref="com.axelor.apps.qms.db.QMSDocument" readonly="true"/>
+		
+		<string name="fullReference" namecolumn="true">
+		<![CDATA[
+			return String.format(com.axelor.i18n.I18n.get("%s-%s"), getDocument().getReference(), versionIndex);
+	    ]]>
+		</string>
+		
+		<string name="versionIndex" readonly="true"/>
+		
+		<many-to-one name="versionMetaFile" ref="com.axelor.meta.db.MetaFile" title="File" required="true"/>
+
+		<!-- Avoid conflict with AuditableModel -->
+		<many-to-one name="versionCreator" ref="com.axelor.apps.hr.db.Employee" title="Creator" required="true"/>
+		<date name="versionCreationDate" title="Creation date" required="true"/>
+		<many-to-one name="versionReviewer" ref="com.axelor.apps.hr.db.Employee" title="Reviewer" />
+		<date name="versionReviewDate" title="Review date" />
+		<many-to-one name="versionApprover" ref="com.axelor.apps.hr.db.Employee" title="Approver" />
+		<date name="versionApprovalDate" title="Approval date" />
+		
+		<unique-constraint columns="document,versionIndex"/>
+	</entity>
+</domain-models>

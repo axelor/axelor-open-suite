@@ -1,0 +1,11 @@
+name;roles
+menu-qms-root;role.user|role.admin|role.qms.manager
+qms-improvement-forms-root;role.user|role.admin|role.qms.manager
+qms-improvement-forms-all;role.user|role.admin|role.qms.manager
+qms-improvement-forms-mine;role.user|role.admin|role.qms.manager
+qms-improvement-forms-dashboard;role.admin|role.qms.manager
+qms-documents-root;role.user|role.admin|role.qms.manager
+qms-document-all;role.user|role.admin|role.qms.manager
+qms-config-root;role.admin|role.qms.manager
+qms-process-config;role.admin|role.qms.manager
+qms-document-type-config;role.admin|role.qms.manager
