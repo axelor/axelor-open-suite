@@ -146,7 +146,7 @@
                     } //end loop
 
                     if (markers.length > 0) {
-                        if (getQueryVariable("fit")) {
+                        if (id) {
                             map.fitBounds(bounds);
                         }
 
