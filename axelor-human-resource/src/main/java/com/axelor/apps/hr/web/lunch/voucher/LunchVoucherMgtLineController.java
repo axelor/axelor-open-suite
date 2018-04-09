@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.hr.web.lunch.voucher;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;

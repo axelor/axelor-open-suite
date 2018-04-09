@@ -18,9 +18,8 @@
 			<field name="showExpenseLineRelatedToProject" widget="boolean-switch"/>
 			<field name="showPurchaseInvoiceLineRelatedToProject" widget="boolean-switch"/>
 			<field name="showSaleInvoiceLineRelatedToProject" widget="boolean-switch"/>
-			<field name="enableToInvoiceTimesheet" showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
-			<field name="enableToInvoiceExpense"  showIf="generateInvoiceFromSaleOrder" widget="boolean-switch" />
-			<field name="defaultInvoiceTypeSelect" showIf="generateInvoiceFromSaleOrder" />
+			<field name="enableToInvoiceTimesheet" widget="boolean-switch" />
+			<field name="enableToInvoiceExpense" widget="boolean-switch" />
 		</panel>
 	</form>
 	

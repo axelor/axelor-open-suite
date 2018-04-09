@@ -84,6 +84,9 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
 
     @Override
     public PriceList getDefaultPriceList(Partner partner, int priceListTypeSelect) {
+        if (partner == null) {
+            return null;
+        }
         partner = Beans.get(PartnerRepository.class).find(partner.getId());
         PartnerPriceList partnerPriceList = getPartnerPriceList(partner, priceListTypeSelect);
         if (partnerPriceList == null) {

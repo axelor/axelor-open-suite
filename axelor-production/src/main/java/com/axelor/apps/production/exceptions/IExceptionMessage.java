@@ -47,6 +47,7 @@ public interface IExceptionMessage {
 	 */
 
 	static final String MANUF_ORDER_SEQ = /*$$(*/ "There's no configured sequence for fabrication's orders"/*)*/;
+	static final String IN_OR_OUT_INVALID_ARG = /*$$(*/ "inOrOut is invalid"/*)*/;
 
 	/**
 	 * Bill of Material Service
@@ -68,6 +69,7 @@ public interface IExceptionMessage {
 	static final String PRODUCTION_CONFIG_2 = /*$$(*/ "You must configure a production virtual stock location for company %s" /*)*/;
 	static final String PRODUCTION_CONFIG_3 = /*$$(*/ "You must configure a waste stock location for company %s." /*)*/;
 	static final String PRODUCTION_CONFIG_4 = /*$$(*/ "You must configure a finished products default stock location for company %s." /*)*/;
+	static final String PRODUCTION_CONFIG_5 = /*$$(*/ "You must configure a component default stock location for company %s." /*)*/;
 
 	/**
 	 * Manuf Order Controller

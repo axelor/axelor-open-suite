@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.purchase.web;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
@@ -27,9 +30,9 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -38,8 +41,6 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import java.math.BigDecimal;
-import java.util.Map;
 
 @Singleton
 public class PurchaseOrderLineController {
@@ -49,53 +50,17 @@ public class PurchaseOrderLineController {
 
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
 
-		Context context = request.getContext();
-		
-		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-
-		PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
-		
-		Product product = purchaseOrderLine.getProduct();
-
 		try{
-			if(purchaseOrder == null || purchaseOrderLine.getPrice() == null || purchaseOrderLine.getQty() == null)  {  return;  }
+			Context context = request.getContext();
+			PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+			PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
 
-			BigDecimal exTaxTotal = BigDecimal.ZERO;
-			BigDecimal companyExTaxTotal = BigDecimal.ZERO;
-			BigDecimal inTaxTotal = BigDecimal.ZERO;
-			BigDecimal companyInTaxTotal = BigDecimal.ZERO;
-			BigDecimal priceDiscounted = purchaseOrderLineService.computeDiscount(purchaseOrderLine);
-			response.setValue("priceDiscounted", priceDiscounted);
-			response.setAttr("priceDiscounted", "hidden", priceDiscounted.compareTo(purchaseOrderLine.getPrice()) == 0);
-			
-			BigDecimal taxRate = BigDecimal.ZERO;
-			if(purchaseOrderLine.getTaxLine() != null)  {  taxRate = purchaseOrderLine.getTaxLine().getValue();  }
-			
-			if(!purchaseOrder.getInAti()){
-				exTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLineService.computeDiscount(purchaseOrderLine));
-				inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
-				companyExTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
-				companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
-			}
-			else  {
-				inTaxTotal = PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLineService.computeDiscount(purchaseOrderLine));
-				exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-				companyInTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
-				companyExTaxTotal = companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-			}
-
-			if (product != null) {
-				response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
-				response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, product, purchaseOrderLine.getPrice()));
-			}
-			response.setValue("exTaxTotal", exTaxTotal);
-			response.setValue("inTaxTotal", inTaxTotal);
-			response.setValue("companyExTaxTotal", companyExTaxTotal);
-			response.setValue("companyInTaxTotal", companyInTaxTotal);
-
+			Map<String, BigDecimal> map = purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+			response.setValues(map);
+			response.setAttr("priceDiscounted", "hidden", map.getOrDefault("priceDiscounted", BigDecimal.ZERO).compareTo(purchaseOrderLine.getPrice()) == 0);
 		}
 		catch(Exception e)  {
-			response.setFlash(e.getMessage());
+			TraceBackService.trace(response, e);
 		}
 	}
 	
@@ -154,8 +119,8 @@ public class PurchaseOrderLineController {
 			response.setValue("productCode", productCode);
 		}
 		catch(Exception e) {
-			response.setFlash(e.getMessage());
 			this.resetProductInformation(response);
+			response.setFlash(e.getMessage());
 		}
 	}
 
@@ -176,6 +141,7 @@ public class PurchaseOrderLineController {
 		response.setValue("companyExTaxTotal", null);
 		response.setValue("productCode", null);
 		response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+		response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
 
 	}
 
@@ -280,29 +246,17 @@ public class PurchaseOrderLineController {
 	}
 
 	public void checkQty(ActionRequest request, ActionResponse response) {
-		if (request.getAction().endsWith("onnew")) {
-			response.setAttr("minQtyNotRespectedLabel", "hidden", true);
-			return;
-		}
 
 		Context context = request.getContext();
 		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 		PurchaseOrder purchaseOrder = getPurchaseOrder(context);
-		BigDecimal minQty = purchaseOrderLineService.getMinQty(purchaseOrder, purchaseOrderLine);
-
-		if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
-			String msg = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
-
-			if (request.getAction().endsWith("onchange")) {
-				response.setFlash(msg);
-			}
-
-			response.setAttr("minQtyNotRespectedLabel", "title",
-					String.format("<span class='label label-warning'>%s</span>", msg));
-			response.setAttr("minQtyNotRespectedLabel", "hidden", false);
-		} else {
-			response.setAttr("minQtyNotRespectedLabel", "hidden", true);
-		}
+		
+		purchaseOrderLineService.checkMinQty(purchaseOrder, purchaseOrderLine, request, response);
+		
+		purchaseOrderLineService.checkMultipleQty(purchaseOrderLine, response);
+		
 	}
-
+	
+	
+	
 }

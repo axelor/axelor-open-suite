@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.ZoneOffset;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
@@ -25,7 +37,6 @@ import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -37,16 +48,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.List;
 
 public class AccountCustomerService {
 
@@ -181,6 +182,7 @@ public class AccountCustomerService {
 			mailTransitTime = accountConfig.getMailTransitTime();
 		}
 
+		// TODO: Replace native query to standard JPQL query
 		Query query = JPA.em().createNativeQuery("SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 				"FROM public.account_move_line as ml  "+
 				"LEFT OUTER JOIN ( "+
@@ -197,9 +199,10 @@ public class AccountCustomerService {
 					"GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "+
 				"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
 				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
+                "LEFT JOIN public.account_invoice AS invoice ON (move.invoice = invoice.id) "+
 				"WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_debt_recovery_ok in ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'" +
-				"AND move.status_select = ?5 AND ml.amount_remaining > 0 ")
+				"AND move.status_select = ?5 AND ml.amount_remaining > 0 AND invoice.debt_recovery_blocking_ok = FALSE ")
 				.setParameter(1, mailTransitTime)
 				.setParameter(2, Date.from(appBaseService.getTodayDate().atStartOfDay().atZone(ZoneOffset.UTC).toInstant()), TemporalType.DATE)
 				.setParameter(3, partner)
@@ -310,64 +313,36 @@ public class AccountCustomerService {
 		}
 		accountingSituation.setCustAccountMustBeUpdateOk(false);
 		accSituationRepo.save(accountingSituation);
-		
+
 		return accountingSituation;
 	}
 
 
 
 	public Account getPartnerAccount(Partner partner, Company company, boolean isSupplierInvoice) throws AxelorException  {
-
-		if(isSupplierInvoice)  {  return this.getSupplierAccount(partner, company);  }
-
-		else  {  return this.getCustomerAccount(partner, company);  }
-
+		return isSupplierInvoice ? getSupplierAccount(partner, company) : getCustomerAccount(partner, company);
 	}
 
 
 	protected Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
-
-		Account customerAccount = null;
-		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
-
-		if(accountingSituation != null)   {
-			customerAccount = accountingSituation.getCustomerAccount();
-		}
-
-		if(customerAccount == null)  {
-			AccountConfigService accountConfigService = new AccountConfigService();
-			customerAccount = accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
-		}
+		Account customerAccount = accountingSituationService.getCustomerAccount(partner, company);
 
 		if (customerAccount == null) {
 			throw new AxelorException(partner, IException.MISSING_FIELD, I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return customerAccount;
-
 	}
 
 
 	protected Account getSupplierAccount(Partner partner, Company company) throws AxelorException  {
-
-		Account supplierAccount = null;
-		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, company);
-
-		if (accountingSituation != null) {
-			supplierAccount = accountingSituation.getSupplierAccount();
-		}
-
-		if(supplierAccount == null)  {
-			AccountConfigService accountConfigService = new AccountConfigService();
-			supplierAccount = accountConfigService.getSupplierAccount(accountConfigService.getAccountConfig(company));
-		}
+		Account supplierAccount = accountingSituationService.getSupplierAccount(partner, company);
 
 		if (supplierAccount == null) {
 			throw new AxelorException(partner, IException.MISSING_FIELD, I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return supplierAccount;
-
 	}
 
 }

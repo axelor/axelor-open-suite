@@ -118,30 +118,4 @@ public class ProjectBusinessService extends ProjectServiceImpl {
 
         projectRepo.save(project);
     }
-    
-    public void getProjects(ActionRequest request, ActionResponse response){
-    	
- 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
- 		try{
- 			User user = AuthUtils.getUser();
- 			if(user != null){
- 				List<Project> projectList = Beans.get(ProjectRepository.class).all().filter("self.imputable = true").fetch();
- 				for (Project project : projectList) {
- 					if((project.getMembersUserSet() != null && project.getMembersUserSet().contains(user))
- 							|| user.equals(project.getAssignedTo())){
- 						Map<String, String> map = new HashMap<String,String>();
- 						map.put("name", project.getName());
- 						map.put("id", project.getId().toString());
- 						dataList.add(map);
- 					}
- 				}
- 			}
- 			response.setData(dataList);
- 			response.setTotal(dataList.size());
- 		}
- 		catch(Exception e){
- 			response.setStatus(-1);
- 			response.setError(e.getMessage());
- 		}
-    }			
 }

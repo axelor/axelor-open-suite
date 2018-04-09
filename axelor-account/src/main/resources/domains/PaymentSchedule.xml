@@ -5,7 +5,7 @@
   
   <entity name="PaymentSchedule" lang="java">
 
-	<integer name="typeSelect" title="Type" selection="iaccount.payment.schedule.type.select" />
+	<integer name="typeSelect" title="Type" selection="iaccount.payment.schedule.type.select" default="1"/>
     <string name="paymentScheduleSeq" title="Ref." required="false" namecolumn="true" readonly="true"/>
     <date name="creationDate" title="Creation Date"/>
     <date name="startDate" title="Schedule start Date"/>

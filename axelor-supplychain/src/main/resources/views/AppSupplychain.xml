@@ -29,6 +29,7 @@
 		</panel>
 		<panel title="Purchase order">
 			<field name="generateInvoiceFromPurchaseOrder" widget="boolean-switch" colSpan="4"/>
+            <field name="allowFinishManuallyPurchaseOrder" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel title="Interco">
 			<field name="intercoFromPurchase" widget="boolean-switch"/>

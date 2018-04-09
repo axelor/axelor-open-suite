@@ -27,7 +27,6 @@
 			<field name="typeSelect" readonlyIf="statusSelect != 1" />
 			<field name="creationDate" readonlyIf="statusSelect != 1" />
 			<field name="startDate" readonlyIf="statusSelect != 1" required="true" />
-			<field name="nbrTerm" readonlyIf="statusSelect != 1" />
 			<panel colSpan="12">
 				<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-partner" domain="self.isContact = false" />
 				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" />
@@ -39,13 +38,14 @@
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" readonlyIf="statusSelect != 1" />
 			<field name="currency" canEdit="false" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="inTaxAmount" readonlyIf="statusSelect != 1 || typeSelect == 1" />
+            <field name="nbrTerm" readonlyIf="statusSelect != 1" />
 		</panel>
 		
 		<panel-related title="Invoices" field="invoiceSet" grid-view="invoice-account-grid" form-view="invoice-form" 
 			domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.companyInTaxTotalRemaining > 0.0 AND self.currency = :currency"
 			readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount" hideIf="typeSelect == 2" canNew="false" />
 			
-		<panel-related title="Payment Schedule Line" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
+		<panel-related title="Payment schedule lines" field="paymentScheduleLineList" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
 			readonlyIf="statusSelect != 3" />
 
 		<panel name="actions" title="Actions" sidebar="true">

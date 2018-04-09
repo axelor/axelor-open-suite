@@ -15,7 +15,7 @@
 	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100" 
 	     icon="fa-wrench" icon-background="#2fa042" />
 
-	<menuitem name="admin-root-general" parent="admin-root" order="10"
+	<menuitem name="admin-root-general" parent="admin-root" order="10" if="__config__.app.isApp('base')"
 		title="General data"  />
 
 	<menuitem name="admin-root-general-unit" parent="admin-root-general" order="-10"
@@ -88,16 +88,16 @@
 	</action-view>
 
     <menuitem name="admin-root-general-language"
-        parent="admin-root-general" title="Language"
+        parent="admin-root-general" title="Languages"
         action="admin.root.general.language"/>
 
     <action-view name="admin.root.general.language"
-        title="Language" model="com.axelor.apps.base.db.Language" >
+        title="Languages" model="com.axelor.apps.base.db.Language" >
         <view type="grid" name="language-grid"/>
         <view type="form" name="language-form"/>
     </action-view>
 
-	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root"/>
+	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root" if="__config__.app.isApp('base')"/>
 		
 	<menuitem name="referential-root-partners" parent="referential-root"
 		title="Partners" action="referential.root.partners" order="10"/>
@@ -333,7 +333,7 @@
 	  <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
 	</action-method>
 
-	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization" order="20"/>
+	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization" order="20"  if="__config__.app.isApp('base')"/>
 
 	<menuitem name="admin-root-organisation-territory"
 		parent="admin-root-organisation" title="Territories"
@@ -396,7 +396,7 @@
 		<view type="form" name="canton-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-user" parent="admin-root"
+	<menuitem name="admin-root-user" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Users/Companies" order="25" />
 
 	<menuitem name="admin-root-user-user" parent="admin-root-user"
@@ -435,7 +435,7 @@
 		<view type="form" name="trading-name-form" />
 	</action-view>
 
-	<menuitem name="alarm-root" title="Alarms" order="30"
+	<menuitem name="alarm-root" title="Alarms" order="30" if="__config__.app.isApp('base')"
 		  parent="admin-root"/>
 
 	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
@@ -476,7 +476,7 @@
 		<view type="form" name="alarm-engine-batch-form"/>
 	</action-view>
 	
-	<menuitem name="admin-root-batch" parent="admin-root"
+	<menuitem name="admin-root-batch" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Batches" order="35" />
 
 	<menuitem name="admin-root-batch-base" parent="admin-root-batch"
@@ -497,7 +497,7 @@
 		<view type="form" name="mail-batch-form"/>
 	</action-view>
 	
-	<menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root"
+	<menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Message"  order="40" />
 
 	<menuitem name="mail-conf-pdf-templates"
@@ -510,7 +510,7 @@
 		<view type="form" name="birt-template-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-maintenance" parent="admin-root"
+	<menuitem name="admin-root-maintenance" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Technical maintenance" order="45" />
 
 	<menuitem name="admin-root-maintenance-trace-back" parent="admin-root-maintenance"
@@ -556,7 +556,7 @@
 		<view type="form" name="advanced-export-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-calendars" parent="admin-root"
+	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"
 			  title="Calendars" order="50"/>
 
 	<menuitem name="admin-root-calendars-icalendars" title="iCalendars"

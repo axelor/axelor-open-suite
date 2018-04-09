@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.batch;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

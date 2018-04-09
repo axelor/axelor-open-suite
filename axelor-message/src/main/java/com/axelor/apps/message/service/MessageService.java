@@ -41,7 +41,7 @@ public interface MessageService {
 	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles );
 	
 	public Set<MetaAttachment> getMetaAttachments( Message message );
-	
+
 	public Message sendMessage(Message message) throws AxelorException;
 	
 	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
@@ -54,5 +54,13 @@ public interface MessageService {
 	public Message sendByMail(Message message);
 	
 	public String printMessage(Message message) throws AxelorException;
-	
+
+	/**
+	 * Regenerate message with template attached it.
+	 * @param message Message to regenerate.
+	 * @return The new message regenerated.
+	 * @throws Exception If a error append during generation.
+	 */
+	Message regenerateMessage(Message message) throws Exception;
+
 }

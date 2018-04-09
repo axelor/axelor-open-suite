@@ -132,6 +132,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
 					ex.printStackTrace();
 					log.error(String.format("Credit transfer batch for invoices: anomaly for invoice %s",
 							invoice.getInvoiceId()));
+					break;
 				}
 			}
 		}

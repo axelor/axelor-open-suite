@@ -99,7 +99,8 @@
 	<gantt name="task-gantt" title="Tasks" model="com.axelor.team.db.TeamTask" 
 		taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
 		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
-		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">	
+		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet"
+		taskUser="assignedTo">	
 		<field name="name"/>
 	</gantt> 
 	
@@ -218,7 +219,8 @@
 		<field name="parentTask" expr="eval: null"/>
 		<field name="membersUserSet" expr="eval: null"/>
 		<field name="team" expr="eval: project?.team"/>
-		<field name="team" expr="eval: project?.project?.team " if="project?.team == null"/>
+        <field name="team" expr="eval: project?.parentProject?.team"
+            if="project?.team == null"/>
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">

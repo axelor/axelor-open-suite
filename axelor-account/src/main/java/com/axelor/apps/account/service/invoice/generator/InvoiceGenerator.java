@@ -378,23 +378,21 @@ public abstract class InvoiceGenerator  {
 
 			// In the invoice currency
 			invoice.setTaxTotal(invoice.getTaxTotal().add( invoiceLineTax.getTaxTotal() ));
-			invoice.setInTaxTotal(invoice.getInTaxTotal().add( invoiceLineTax.getInTaxTotal() ));
 
 			// In the company accounting currency
 			invoice.setCompanyTaxTotal(invoice.getCompanyTaxTotal().add( invoiceLineTax.getCompanyTaxTotal() ));
-			invoice.setCompanyInTaxTotal(invoice.getCompanyInTaxTotal().add( invoiceLineTax.getCompanyInTaxTotal() ));
 
 		}
 		
-		invoice.setAmountRemaining(invoice.getInTaxTotal());
-		invoice.setHasPendingPayments(false);
-
 		// In the invoice currency
 		invoice.setInTaxTotal(invoice.getExTaxTotal().add( invoice.getTaxTotal() ));
 
 		// In the company accounting currency
 		invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add( invoice.getCompanyTaxTotal() ));
 
+		invoice.setAmountRemaining(invoice.getInTaxTotal());
+		invoice.setHasPendingPayments(false);
+		
 		logger.debug("Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
 			new Object[] { invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal() });
 

@@ -219,6 +219,14 @@
 		<view type="form" name="stock-location-form"/>
 	</action-view>
 	
+	<menuitem name="stock-root-stock-location-tree" parent="stock-root-conf"
+		title="Stock Location Tree" action="stock.root.stock.location.tree" />
+	
+	<action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
+		model="com.axelor.apps.stock.db.StockLocation" >
+		<view type="tree" name="stock-location-tree"/>
+	</action-view>
+	
 	<menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf"
 		title="Stock rules" action="stock.root.conf.stock.rules" />
 	

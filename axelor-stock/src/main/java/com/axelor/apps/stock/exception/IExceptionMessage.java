@@ -99,7 +99,8 @@ public interface IExceptionMessage {
 	static final String STOCK_CONFIG_2 = /*$$(*/ "You must configure an inventory virtual stock location for the company %s" /*)*/;
 	static final String STOCK_CONFIG_3 = /*$$(*/ "You must configure a supplier virtual stock location for the company %s" /*)*/;
 	static final String STOCK_CONFIG_4 = /*$$(*/ "You must configure a customer virtual stock location for the company %s" /*)*/;
-	static final String STOCK_CONFIG_5 = /*$$(*/ "You must configure a default stock location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_RECEIPT = /*$$(*/ "You must configure a default receipt stock location for the company %s" /*)*/;
+	static final String STOCK_CONFIG_PICKUP = /*$$(*/ "You must configure a default pickup stock location for the company %s" /*)*/;
 
 	/**
 	 * Stock Location Controller

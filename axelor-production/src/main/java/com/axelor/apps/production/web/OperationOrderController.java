@@ -28,11 +28,9 @@ import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.production.db.IManufOrder;
-import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
@@ -88,7 +86,7 @@ public class OperationOrderController {
 			OperationOrderWorkflowService operationOrderWorkflowService = Beans.get(OperationOrderWorkflowService.class);
 
 			operationOrder = operationOrderRepo.find(operationOrder.getId());
-			if (operationOrder != null && operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED) {
+			if (operationOrder != null && operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
 				operationOrder = operationOrderWorkflowService.replan(operationOrder);
 				List<OperationOrder> operationOrderList = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority >= ?2 AND self.statusSelect = 3 AND self.id != ?3",
 						operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("priority").order("plannedEndDateT").fetch();
@@ -107,7 +105,7 @@ public class OperationOrderController {
 			OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
 			if (operationOrder.getManufOrder() != null
 					&& operationOrder.getManufOrder().getStatusSelect() <
-					IManufOrder.STATUS_PLANNED) {
+					ManufOrderRepository.STATUS_PLANNED) {
 				return;
 			}
 			Beans.get(OperationOrderWorkflowService.class).plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()));

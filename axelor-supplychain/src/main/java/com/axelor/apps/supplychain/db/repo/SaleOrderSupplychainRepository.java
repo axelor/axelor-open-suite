@@ -37,7 +37,7 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
 		}
 		
 		copy.setShipmentDate(null);
-		copy.setDeliveryState(STATE_NOT_DELIVERED);
+		copy.setDeliveryState(DELIVERY_STATE_NOT_DELIVERED);
 		copy.setAmountInvoiced(null);
 		copy.setStockMoveList(null);
 		return copy;

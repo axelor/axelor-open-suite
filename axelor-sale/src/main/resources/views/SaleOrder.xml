@@ -193,9 +193,9 @@
         <field name="orderBeingEdited" hidden="true"/>
 		<field name="$viewerOrderBeingEdited" showTitle="false" readonly="true" colSpan="9" showIf="orderBeingEdited">
 		  <viewer depends="orderBeingEdited"><![CDATA[
-	 		<h3 style="text-align: right;">
+	 		<h4>
 	        	<span class="label label-important" ng-show="record.orderBeingEdited" x-translate>Order being edited</span>
-	        </h3>
+	        </h4>
 		  ]]></viewer>
 		</field>
 	    <field name="saleOrderSeq" css="label-bold bold"/>
@@ -213,14 +213,14 @@
 	    	]]></viewer>
 	    </field>
 	    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3 || clientPartner != null" />
-	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" >
+	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 	    	<viewer><![CDATA[
 		  		<div>
 				  <div class="span7">
 					<h5>
-						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
-						<span class="label label-warning" ng-show="record.deliveryState > 0 && record.deliveryState == 2" x-translate>Partially delivered</span>
-						<span class="label label-success" ng-show="record.deliveryState > 0 && record.deliveryState == 3" x-translate>Delivered</span>
+						<span class="label label-important" ng-show="record.deliveryState == 1" x-translate>Not delivered</span>
+						<span class="label label-warning" ng-show="record.deliveryState == 2" x-translate>Partially delivered</span>
+						<span class="label label-success" ng-show="record.deliveryState == 3" x-translate>Delivered</span>
 					</h5>
 				  </div>
 				</div>
@@ -276,7 +276,7 @@
 	    </panel>
       	<panel name="deliveryInformation" title="Delivery information" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
       		<field name="specificPackage" colSpan="12"/>
-  		    <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" readonlyIf="statusSelect == 3" />
+  		    <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
   		    <field name="deliveryDate"/>
   		    <field name="deliveryCondition" colSpan="12"/>
   		    <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
@@ -316,7 +316,7 @@
 
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">
 	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
-        <button name="finishManuallySaleOrder" title="Finish manually sale order" if="__config__.app.getApp('supplychain').allowFinishManuallySaleOrder" showIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-finish"/>
+        <button name="finishManuallySaleOrder" title="Finish manually sale order" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" showIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-finish"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
         <button name="editOrder" title="Edit order" if="__config__.app.getApp('sale').allowPendingOrderModification" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
         <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>
@@ -324,7 +324,7 @@
 	    	if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto"
 	    	onClick="save, action-supplychain-sale-order-create-stock-move"/>
 	    <button name="confirmOrder" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
-	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-group-generate-invoice" if-module="axelor-supplychain"/>
+	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-view-invoicing-wizard" if-module="axelor-supplychain"/>
 	    <button name="generatePO" title="Generate purchase order"  colSpan="12" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 	    <button name="generateProductionOrder" title="Generate production order"  colSpan="12" if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" onClick="save,action-sale-order-method-create-production-order"/>
 		<spacer/>
@@ -481,18 +481,13 @@
 	        <field name="paymentMode" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	        <field name="paymentCondition" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	      </panel>
-<!-- 	      <panel title="Invoicing" if-module="axelor-supplychain" colSpan="12" showIf="invoicingTypeSelect == 2"> -->
-<!-- 	        <field name="invoicingMomentSelect"/> -->
-<!-- 	      </panel> -->
 	      <panel name="stockLocation" title="Stock location" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-   		      <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" readonlyIf="statusSelect == 3"/>
+   		      <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      </panel>
 	      <panel name="description" title="Description" colSpan="12">
 	        <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
 	      </panel>
 	    </panel>
-
-<!-- 	    <panel-related field="saleOrderScheduleLineList" title="Schedules" showIf="invoicingTypeSelect == 2" showTitle="false" if-module="axelor-supplychain" form-view="sale-order-schedule-line-form" grid-view="sale-order-schedule-line-grid"/>           -->
 
 	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12"/>
@@ -822,7 +817,6 @@
 
 	<action-group name="action-sale-group-confirmed">
 		<action name="action-sale-order-validate-check-on-confirm"/>
-    	<action name="action-supplychain-sale-order-validate-check-stock-location" />
     	<action name="action-sale-order-method-confirm"/>
     	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     </action-group>

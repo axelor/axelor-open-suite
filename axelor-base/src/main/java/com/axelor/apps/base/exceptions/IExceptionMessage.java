@@ -209,6 +209,7 @@ public interface IExceptionMessage {
 	 */
 	static final public String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
 	static final public String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
+    static final String PRODUCT_NO_ACTIVE_COMPANY = /*$$(*/ "No active company for this user, please define an active company." /*)*/;
 
 	/**
 	 * Calendar
@@ -228,12 +229,12 @@ public interface IExceptionMessage {
 	 */
 	static final String ADVANCED_EXPORT_1 = /*$$(*/ "Please select fields for export." /*)*/;
 	static final String ADVANCED_EXPORT_2 = /*$$(*/ "There is no records to export." /*)*/;
-	
-		
+
+
 	/**
 	 * Barcode Generator Service
 	 */
-		
+
 	static final public String BARCODE_GENERATOR_1 =  /*$$(*/ "Invalid serial number '%s' for '%s' barcode type.It must be of %d digits only." /*)*/;
 	static final public String BARCODE_GENERATOR_2 =  /*$$(*/ "Invalid serial number '%s' for '%s' barcode type.It must be digits only with even number length." /*)*/;
 	static final public String BARCODE_GENERATOR_3 =  /*$$(*/ "Invalid serial number '%s' for '%s' barcode type.It must be digits only" /*)*/;
@@ -243,5 +244,14 @@ public interface IExceptionMessage {
 
     public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
     public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/ "Google Maps API key is missing in configuration." /*)*/;;
+
+
+	/**
+	 * Weekly planning service
+	 */
+	public static final String WEEKLY_PLANNING_1 = /*$$(*/ "Invalid times %s morning" /*)*/;
+	public static final String WEEKLY_PLANNING_2 = /*$$(*/ "Invalid times on %s between morning and afternoon" /*)*/;
+	public static final String WEEKLY_PLANNING_3 = /*$$(*/ "Invalid times %s afternoon" /*)*/;
+	public static final String WEEKLY_PLANNING_4 = /*$$(*/ "Some times are null and should not on %s" /*)*/;
 
 }

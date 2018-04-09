@@ -963,10 +963,10 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                     <text-property name="heading">product</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">visible_duration</property>
+                    <property name="columnName">duration</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">visible_duration</text-property>
-                    <text-property name="heading">visible_duration</text-property>
+                    <text-property name="displayName">duration</text-property>
+                    <text-property name="heading">duration</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">timesheet</property>
@@ -1019,7 +1019,7 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">visible_duration</property>
+                        <property name="name">duration</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
@@ -1064,8 +1064,8 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">visible_duration</property>
-                    <property name="nativeName">visible_duration</property>
+                    <property name="name">duration</property>
+                    <property name="nativeName">duration</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
@@ -1094,7 +1094,7 @@ WHERE InvoicingProject.id = ?]]></xml-property>
             <xml-property name="queryText"><![CDATA[SELECT TimesheetUser.full_name as "user",
        TimesheetLine.date_val,
        Product.full_name as "product",
-       TimesheetLine.visible_duration,
+       TimesheetLine.duration,
        Timesheet.full_name as "timesheet",
        TimesheetLine.to_invoice,
        TimesheetLine.comments
@@ -2724,9 +2724,9 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">visible_duration</property>
-                                <text-property name="displayName">visible_duration</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["visible_duration"]</expression>
+                                <property name="name">duration</property>
+                                <text-property name="displayName">duration</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["duration"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -2756,7 +2756,7 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["visible_duration"]</expression>
+                                        <expression name="value" type="javascript">row["duration"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2922,7 +2922,7 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'InvoicingProject.visibleDuration'</value>
+                                                    <value type="javascript">'InvoicingProject.duration'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3089,7 +3089,7 @@ WHERE InvoicingProject.id = ?]]></xml-property>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4045">
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">visible_duration</property>
+                                        <property name="resultSetColumn">duration</property>
                                     </data>
                                 </cell>
                                 <cell id="4046">

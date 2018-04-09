@@ -33,10 +33,10 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.service.TraceBackService;
@@ -68,7 +68,7 @@ public class AddressController {
 	public void viewSalesMap(ActionRequest request, ActionResponse response)  {
 	    try {
 	        // Only allowed for google maps to prevent overloading OSM
-	        if (appAccountService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
+	        if (appAccountService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE) {
 	            PartnerList partnerList = request.getContext().asType(PartnerList.class);
 
 //	          File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
@@ -118,7 +118,6 @@ public class AddressController {
 	            mapView.put("resource", url);
 	            mapView.put("viewType", "html");
 	            response.setView(mapView);
-	            //response.reload = true
 
 	        } else {
 	            response.setFlash(I18n.get(IExceptionMessage.ADDRESS_2));

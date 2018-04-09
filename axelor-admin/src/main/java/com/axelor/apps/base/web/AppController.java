@@ -67,7 +67,7 @@ public class AppController {
 		
 		appService.installApp(app, false);
 		
-		response.setReload(true);
+		response.setSignal("refresh-app", true);
 	}
 	
 	public void configure(ActionRequest request, ActionResponse response) {
@@ -97,7 +97,7 @@ public class AppController {
 		
 		appService.unInstallApp(app);
 		
-		response.setReload(true);
+		response.setSignal("refresh-app", true);
 	}
 	
 	public void bulkInstall(ActionRequest request, ActionResponse response) {

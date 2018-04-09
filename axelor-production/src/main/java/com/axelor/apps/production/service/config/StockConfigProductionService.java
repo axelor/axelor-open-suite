@@ -20,12 +20,12 @@ package com.axelor.apps.production.service.config;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.supplychain.service.config.StockConfigSupplychainService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
-public class StockConfigProductionService extends StockConfigSupplychainService {
+public class StockConfigProductionService extends StockConfigService {
 
     public StockLocation getProductionVirtualStockLocation(StockConfig stockConfig) throws AxelorException {
 
@@ -51,4 +51,10 @@ public class StockConfigProductionService extends StockConfigSupplychainService 
         return stockConfig.getFinishedProductsDefaultStockLocation();
     }
 
+    public StockLocation getComponentDefaultStockLocation(StockConfig stockConfig) throws AxelorException {
+        if (stockConfig.getComponentDefaultStockLocation() == null) {
+            throw new AxelorException(stockConfig, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_5), stockConfig.getCompany().getName());
+        }
+        return stockConfig.getComponentDefaultStockLocation();
+    }
 }

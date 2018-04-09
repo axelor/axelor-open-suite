@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -75,15 +74,15 @@ public class PriceListService {
 	public BigDecimal getDiscountAmount(PriceListLine priceListLine, BigDecimal unitPrice)  {
 
 		switch (priceListLine.getTypeSelect()) {
-			case IPriceListLine.TYPE_ADDITIONNAL:
+			case PriceListLineRepository.TYPE_ADDITIONNAL:
 
 				return priceListLine.getAmount().negate();
 
-			case IPriceListLine.TYPE_DISCOUNT:
+			case PriceListLineRepository.TYPE_DISCOUNT:
 
 				return priceListLine.getAmount();
 
-			case IPriceListLine.TYPE_REPLACE:
+			case PriceListLineRepository.TYPE_REPLACE:
 
 				return unitPrice.subtract(priceListLine.getAmount());
 
@@ -96,29 +95,29 @@ public class PriceListService {
 	public BigDecimal getUnitPriceDiscounted(PriceListLine priceListLine, BigDecimal unitPrice)  {
 
 		switch (priceListLine.getTypeSelect()) {
-			case IPriceListLine.TYPE_ADDITIONNAL:
+			case PriceListLineRepository.TYPE_ADDITIONNAL:
 
-				if(priceListLine.getAmountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
+				if(priceListLine.getAmountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED)  {
 					return unitPrice.add(priceListLine.getAmount());
 				}
-				else if(priceListLine.getAmountTypeSelect() == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
+				else if(priceListLine.getAmountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_PERCENT)  {
 					return unitPrice.multiply(
 							BigDecimal.ONE.add(
 									priceListLine.getAmount().divide(new BigDecimal(100))));
 				}
 
-			case IPriceListLine.TYPE_DISCOUNT:
+			case PriceListLineRepository.TYPE_DISCOUNT:
 
-				if(priceListLine.getAmountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
+				if(priceListLine.getAmountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED)  {
 					return unitPrice.subtract(priceListLine.getAmount());
 				}
-				else if(priceListLine.getAmountTypeSelect() == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
+				else if(priceListLine.getAmountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_PERCENT)  {
 					return unitPrice.multiply(
 							BigDecimal.ONE.subtract(
 									priceListLine.getAmount().divide(new BigDecimal(100))));
 				}
 
-			case IPriceListLine.TYPE_REPLACE:
+			case PriceListLineRepository.TYPE_REPLACE:
 
 				return priceListLine.getAmount();
 
@@ -141,10 +140,10 @@ public class PriceListService {
 
 	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect,BigDecimal discountAmount)  {
 
-		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
+		if(discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_FIXED)  {
 			return  unitPrice.subtract(discountAmount).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 		}
-		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
+		else if(discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_PERCENT)  {
 			return unitPrice.multiply(
 					BigDecimal.ONE.subtract(
 							discountAmount.divide(new BigDecimal(100),appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP))).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
@@ -165,7 +164,7 @@ public class PriceListService {
 		}
 		else  {
 			discounts.put("discountAmount", priceList.getGeneralDiscount().setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
-			discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
+			discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_PERCENT);
 		}
 
 		return discounts;

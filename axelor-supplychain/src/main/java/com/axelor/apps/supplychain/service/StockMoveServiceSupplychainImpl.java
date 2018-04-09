@@ -34,6 +34,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
@@ -96,11 +97,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 			//Update linked saleOrder delivery state depending on BackOrder's existence
 			SaleOrder saleOrder = stockMove.getSaleOrder();
 			if (newStockSeq != null){
-				saleOrder.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
+				saleOrder.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
             } else {
                 Beans.get(SaleOrderStockService.class).updateDeliveryState(saleOrder);
 
-                if (saleOrder.getDeliveryState() == SaleOrderRepository.STATE_DELIVERED
+                if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED
                         && appSupplychain.getTerminateSaleOrderOnDelivery()) {
                     Beans.get(SaleOrderWorkflowServiceImpl.class).finishSaleOrder(saleOrder);
                 }
@@ -145,10 +146,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 		SaleOrder so = Beans.get(SaleOrderRepository.class).find(stockMove.getSaleOrder().getId());
 
 		List<StockMove> stockMoveList = stockMoveRepo.all().filter("self.saleOrder = ?1", so).fetch();
-		so.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+		so.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED);
 		for (StockMove stock : stockMoveList){
 			if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED && !stock.getId().equals(stockMove.getId())){
-				so.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
+				so.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
 				break;
 			}
 		}
@@ -169,13 +170,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 					saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(stockMoveLine.getRealQty()));
 				}
 				if (saleOrderLine.getDeliveredQty().signum() == 0) {
-					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+					saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
 				}
 				else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
-					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
+					saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
 				}
 				else {
-					saleOrderLine.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
+					saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
 				}
 			}
 		}

@@ -17,14 +17,19 @@
  */
 package com.axelor.apps.base.service;
 
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
@@ -40,11 +45,13 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,8 +59,12 @@ import com.google.inject.persist.Transactional;
 @Singleton
 public class PartnerService {
 
+  private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  
 	@Inject
 	private PartnerRepository partnerRepo;
+
+    private Pattern phoneNumberPattern = Pattern.compile("^\\+?(?:[0-9]{2,3}(?:\\s|\\.)?){3,6}[0-9]{2,3}$");
 
 	public Partner createPartner(String name, String firstName, String fixedPhone, String mobilePhone, EmailAddress emailAddress, Currency currency, Address deliveryAddress, Address mainInvoicingAddress){
 		Partner partner = new Partner();
@@ -175,10 +186,10 @@ public class PartnerService {
 	@Transactional
 	public void resetDefaultAddress(Partner partner, String addrTypeQuery) {
 
-		if(partner.getId() != null){
+		if(partner.getId() != null)  {
 			PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
-			PartnerAddress partnerAddress =  partnerAddressRepo.all().filter("self.partner.id = ? AND self.isDefaultAddr = true"+addrTypeQuery,partner.getId()).fetchOne();
-			if(partnerAddress != null){
+			PartnerAddress partnerAddress =  partnerAddressRepo.all().filter("self.partner.id = ? AND self.isDefaultAddr = true" + addrTypeQuery, partner.getId()).fetchOne();
+			if(partnerAddress != null)  {
 				partnerAddress.setIsDefaultAddr(false);
 				partnerAddressRepo.save(partnerAddress);
 			}
@@ -191,17 +202,11 @@ public class PartnerService {
 		PartnerAddress partnerAddress = createPartnerAddress(address,isDefault);
 		
 		if(isDefault != null && isDefault){
-			String query = " AND self.isDeliveryAddr = false AND self.isInvoicingAddr = false";
-			if((isInvoicing != null && isInvoicing)  && (isDelivery != null && isDelivery)){
-				query = " AND self.isDeliveryAddr = true AND self.isInvoicingAddr = true";
-			}
-			else if(isInvoicing != null && isInvoicing){
-				query = " AND self.isDeliveryAddr = false AND self.isInvoicingAddr = true";
-			}
-			else if(isDelivery != null && isDelivery){
-				query = " AND self.isDeliveryAddr = true AND self.isInvoicingAddr = false";
-			}
-			resetDefaultAddress(partner,query);
+	    LOG.debug("Add partner address : isDelivery = {}", isDelivery);
+      LOG.debug("Add partner address : isInvoicing = {}", isInvoicing);
+
+			String query = String.format(" AND self.isDeliveryAddr = %s AND self.isInvoicingAddr = %s", isDelivery, isInvoicing);
+			resetDefaultAddress(partner, query);
 		}
 		
 		partnerAddress.setIsInvoicingAddr(isInvoicing);
@@ -222,7 +227,7 @@ public class PartnerService {
 	}
 
 
-	private Address getAddress(Partner partner, String querySpecific, String queryComman){
+	protected Address getAddress(Partner partner, String querySpecific, String queryComman){
 
 		if(partner != null){
 			PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
@@ -385,5 +390,36 @@ public class PartnerService {
     	return Beans.get(AppBaseService.class).getDefaultPartnerLanguageCode();
 		
 	}
-	
+
+    /**
+     * Normalize phone number.
+     * 
+     * @param phoneNumber
+     * @return
+     */
+    public String normalizePhoneNumber(String phoneNumber) {
+        return StringUtils.isBlank(phoneNumber) ? null : phoneNumber.replaceAll("\\s|\\.|-", "");
+    }
+
+    /**
+     * Check phone number.
+     * 
+     * @param phoneNumber
+     * @return
+     */
+    public boolean checkPhoneNumber(String phoneNumber) {
+        return StringUtils.isBlank(phoneNumber) ? false : phoneNumberPattern.matcher(phoneNumber).matches();
+    }
+
+    /**
+     * Get phone number field name.
+     * 
+     * @param actionName
+     * @return
+     */
+    public String getPhoneNumberFieldName(String actionName) {
+        Preconditions.checkNotNull(actionName, I18n.get("Action name cannot be null."));
+        return actionName.substring(actionName.lastIndexOf('-') + 1);
+    }
+
 }

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
@@ -212,19 +212,37 @@ public class MapService {
 		return null;
 	}
 
-	public HashMap<String,Object> getMap(String qString){
+	public HashMap<String,Object> getMap(String qString)  {
 		LOG.debug("qString = {}", qString);
-		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
-			return getMapGoogle(qString);
-		else
-			return getMapOsm(qString);
+		
+		switch (appBaseService.getAppBase().getMapApiSelect()) {
+      case AppBaseRepository.MAP_API_GOOGLE:
+        
+        return getMapGoogle(qString);
+        
+      case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+        
+        return getMapOsm(qString);
+
+      default:
+        return null;
+    }
 	}
 
 	public String getMapUrl(BigDecimal latitude, BigDecimal longitude){
-		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_GOOGLE)
-			return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18"+"&key="+getGoogleMapsApiKey();
-		else
-			return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
+		
+		switch (appBaseService.getAppBase().getMapApiSelect()) {
+      case AppBaseRepository.MAP_API_GOOGLE:
+        
+        return "map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18"+"&key="+getGoogleMapsApiKey();
+        
+      case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+        
+        return "map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18";
+
+      default:
+        return null;
+    }
 	}
 
 	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
@@ -283,22 +301,22 @@ public class MapService {
 		StringBuilder addressString = new StringBuilder();
 
 		if (address.getAddressL2() != null) {
-			addressString.append(address.getAddressL2() + "</br>");
+            addressString.append(address.getAddressL2() + "<br/>");
 		}
 		if (address.getAddressL3() != null) {
-			addressString.append(address.getAddressL3() + "</br>");
+            addressString.append(address.getAddressL3() + "<br/>");
 		}
 		if (address.getAddressL4() != null) {
-			addressString.append(address.getAddressL4() + "</br>");
+            addressString.append(address.getAddressL4() + "<br/>");
 		}
 		if (address.getAddressL5() != null) {
-			addressString.append(address.getAddressL5() + "</br>");
+            addressString.append(address.getAddressL5() + "<br/>");
 		}
 		if (address.getAddressL6() != null) {
 			addressString.append(address.getAddressL6());
 		}
 		if (address.getAddressL7Country() != null) {
-			addressString = addressString.append("</br>" + address.getAddressL7Country().getName());
+            addressString = addressString.append("<br/>" + address.getAddressL7Country().getName());
 		}
 
 		return addressString.toString();
@@ -351,12 +369,21 @@ public class MapService {
     }
 
     public String getMapURI(String name) {
+        return getMapURI(name, null);
+    }
+
+    public String getMapURI(String name, Long id) {
         final String uri = "map/gmap-objs.html";
 
         try {
             URIBuilder ub = new URIBuilder(uri);
             ub.addParameter("key", getGoogleMapsApiKey());
             ub.addParameter("object", name);
+
+            if (id != null) {
+                ub.addParameter("id", String.valueOf(id));
+                ub.addParameter("fit", String.valueOf(true));
+            }
 
             return ub.toString();
         } catch (Exception e) {

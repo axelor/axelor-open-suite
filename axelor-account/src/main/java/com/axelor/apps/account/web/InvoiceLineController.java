@@ -80,7 +80,7 @@ public class InvoiceLineController {
 
 		Invoice invoice = this.getInvoice(context);
 		
-		if(invoice == null || invoiceLine.getProduct() == null || invoiceLine.getPrice() == null || invoiceLine.getQty() == null)  {  return;  }
+		if(invoice == null || invoiceLine.getPrice() == null || invoiceLine.getQty() == null)  {  return;  }
 		
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyExTaxTotal = BigDecimal.ZERO;

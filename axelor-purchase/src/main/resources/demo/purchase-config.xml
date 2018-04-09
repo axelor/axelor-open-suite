@@ -14,12 +14,20 @@
  		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" column="orderDate"/>
  	</input>
  	
- 	<input file="purchase_purchaseOrderLine.csv" separator=";" type="com.axelor.apps.purchase.db.PurchaseOrderLine">
+ 	<input file="purchase_purchaseOrderLine.csv" separator=";" type="com.axelor.apps.purchase.db.PurchaseOrderLine" call="com.axelor.apps.purchase.script.ImportPurchaseOrderLine:importPurchaseOrderLine">
  		<bind to="desiredDelivDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(desiredDelivDate)" column="desiredDelivDate"/>
  		<bind to="estimatedDelivDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedDelivDate)" column="estimatedDelivDate"/>
  	</input>
  	
 	<input file="purchase_supplierCatalog.csv" separator=";" type="com.axelor.apps.purchase.db.SupplierCatalog"/>
+	
+	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
+     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
+     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
+     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
+     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+     	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" />
+     </input>
 	
 </csv-inputs>
 

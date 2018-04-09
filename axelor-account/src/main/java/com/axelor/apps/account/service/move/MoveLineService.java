@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
@@ -44,6 +43,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -56,7 +56,6 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
@@ -165,7 +164,7 @@ public class MoveLineService {
 	 * @throws AxelorException
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amountInSpecificMoveCurrency, BigDecimal amountInCompanyCurrency, 
-			BigDecimal currencyRate, boolean isDebit, LocalDate date, LocalDate dueDate, int counter, String origin, String invoiceLineName) throws AxelorException  {
+			BigDecimal currencyRate, boolean isDebit, LocalDate date, LocalDate dueDate, int counter, String origin, String description) throws AxelorException  {
 		
 		amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
 		
@@ -200,7 +199,7 @@ public class MoveLineService {
 		}
 
 		return new MoveLine(move, partner, account, date, dueDate, counter, debit, credit, 
-				this.determineDescriptionMoveLine(move.getJournal(), origin, invoiceLineName), origin,
+				this.determineDescriptionMoveLine(move.getJournal(), origin, description), origin,
 				currencyRate.setScale(5, RoundingMode.HALF_EVEN), amountInSpecificMoveCurrency);
 		
 	}
@@ -235,15 +234,12 @@ public class MoveLineService {
 	 * @param consolidate
 	 * @return
 	 */
-	public List<MoveLine> createMoveLines(Invoice invoice, Move move, Company company, Partner partner, Account account, boolean consolidate, boolean isPurchase, boolean isDebitCustomer) throws AxelorException{
+	public List<MoveLine> createMoveLines(Invoice invoice, Move move, Company company, Partner partner, Account partnerAccount, boolean consolidate, boolean isPurchase, boolean isDebitCustomer) throws AxelorException{
 
 		log.debug("Création des lignes d'écriture comptable de la facture/l'avoir {}", invoice.getInvoiceId());
 
-		Account account2 = account;
-
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
-		AccountManagement accountManagement = null;
 		Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
 
 		int moveLineId = 1;
@@ -251,66 +247,61 @@ public class MoveLineService {
 		if (partner == null) {
 			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_1), invoice.getInvoiceId());
 		}
-		if (account2 == null) {
+		if (partnerAccount == null) {
 			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_2), invoice.getInvoiceId());
 		}
 		
-		MoveLine moveLine1 = this.createMoveLine(move, partner, account2, invoice.getInTaxTotal(), invoice.getCompanyInTaxTotal(), null,
+		// Creation of partner move line
+		MoveLine moveLine1 = this.createMoveLine(move, partner, partnerAccount, invoice.getInTaxTotal(), invoice.getCompanyInTaxTotal(), null,
 				isDebitCustomer, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId(), null);
 		moveLines.add(moveLine1);
 		
 		AnalyticMoveLineRepository analyticMoveLineRepository = Beans.get(AnalyticMoveLineRepository.class);
 		
-		// Traitement des lignes de facture
+		// Creation of product move lines for each invoice line
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()){
 			
-			if(invoiceLine.getProduct() != null){
-				BigDecimal companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
-				
-				if(companyExTaxTotal.compareTo(BigDecimal.ZERO) != 0)  {
-				
-					analyticAccounts.clear();
-		
-					Product product = invoiceLine.getProduct();
-		
-					if (product == null) {
-						throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_3), invoice.getInvoiceId(), company.getName());
-					}
-		
-					accountManagement = accountManagementService.getAccountManagement(product, company);
-		
-					account2 = accountManagementService.getProductAccount(accountManagement, isPurchase);
-		
-					if (account2 == null) {
-						throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_4), invoiceLine.getName(), company.getName());
-					}
-		
-					companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
-		
-					log.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), companyExTaxTotal});
-				
-					MoveLine moveLine = this.createMoveLine(move, partner, account2, invoiceLine.getExTaxTotal(), companyExTaxTotal, null, 
-							!isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId(), invoiceLine.getProductName());
-					
-					if(invoiceLine.getAnalyticMoveLineList() != null)  {
-						for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
-							AnalyticMoveLine analyticMoveLine = analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
-							analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
-							analyticMoveLine.setInvoiceLine(null);
-							analyticMoveLine.setAccount(moveLine.getAccount());
-							moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
-						}
-					}
-					moveLine.setTaxLine(invoiceLine.getTaxLine());
-					moveLine.setTaxRate(invoiceLine.getTaxLine().getValue());
-					moveLine.setTaxCode(invoiceLine.getTaxLine().getTax().getCode());
-					moveLines.add(moveLine);
-				}
-			}
+			BigDecimal companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
 			
+			if(companyExTaxTotal.compareTo(BigDecimal.ZERO) != 0)  {
+			
+				analyticAccounts.clear();
+	
+				Account account = invoiceLine.getAccount();
+				
+				if(account == null)  {
+					throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_4), invoiceLine.getName(), company.getName());
+				}
+	
+				companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
+	
+				log.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account.getName(), companyExTaxTotal});
+			
+				MoveLine moveLine = this.createMoveLine(move, partner, account, invoiceLine.getExTaxTotal(), companyExTaxTotal, null, 
+						!isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId(), invoiceLine.getProductName());
+				
+				if(invoiceLine.getAnalyticMoveLineList() != null)  {
+					for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+						AnalyticMoveLine analyticMoveLine = analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
+						analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+						analyticMoveLine.setInvoiceLine(null);
+						analyticMoveLine.setAccount(moveLine.getAccount());
+						moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+					}
+				}
+				
+				TaxLine taxLine = invoiceLine.getTaxLine();
+				if(taxLine != null)  {
+					moveLine.setTaxLine(taxLine);
+					moveLine.setTaxRate(taxLine.getValue());
+					moveLine.setTaxCode(taxLine.getTax().getCode());
+				}
+					
+				moveLines.add(moveLine);
+			}
 		}
 
-		// Traitement des lignes de tva
+		// Creation of tax move lines for each invoice line tax
 		for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()){
 
 			BigDecimal companyTaxTotal = invoiceLineTax.getCompanyTaxTotal();
@@ -319,13 +310,13 @@ public class MoveLineService {
 			
 				Tax tax = invoiceLineTax.getTaxLine().getTax();
 	
-				account2 = taxAccountService.getAccount(tax, company);
+				Account account = taxAccountService.getAccount(tax, company);
 	
-				if (account2 == null) {
+				if (account == null) {
 					throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_6), tax.getName(), company.getName());
 				}
 
-				MoveLine moveLine = this.createMoveLine(move, partner, account2, invoiceLineTax.getTaxTotal(), companyTaxTotal, null, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId(), null);
+				MoveLine moveLine = this.createMoveLine(move, partner, account, invoiceLineTax.getTaxTotal(), companyTaxTotal, null, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId(), null);
 				moveLine.setTaxLine(invoiceLineTax.getTaxLine());
 				moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
 				moveLine.setTaxCode(tax.getCode());
@@ -554,22 +545,24 @@ public class MoveLineService {
 	 * 			Le n° pièce réglée, facture, avoir ou de l'opération rejetée
 	 * @return
 	 */
-    public String determineDescriptionMoveLine(Journal journal, String origin, String invoiceLineName) {
-		String description = "";
-		if(journal != null)  {
-			if(journal.getDescriptionModel() != null)  {
-
-				description = String.format("%s", journal.getDescriptionModel());
-			}
-			if(journal.getDescriptionIdentificationOk() && origin != null)  {
-				description += String.format(" %s", origin);
-			}
-
-            if (!journal.getIsInvoiceMoveConsolidated() && invoiceLineName != null) {
-                description += String.format(" - %s", invoiceLineName);
-            }
+    public String determineDescriptionMoveLine(Journal journal, String origin, String description) {
+		String descriptionComputed = "";
+		if(journal == null)  {  return "";  }
+		
+		if(journal.getDescriptionModel() != null)  {
+		  descriptionComputed += journal.getDescriptionModel();
 		}
-		return description;
+		
+		if(journal.getDescriptionIdentificationOk() && origin != null)  {
+		  if(!descriptionComputed.isEmpty())  {  descriptionComputed += " ";  }
+		  descriptionComputed += origin;
+		}
+
+    if (!journal.getIsInvoiceMoveConsolidated() && description != null) {
+      if(!descriptionComputed.isEmpty())  {  descriptionComputed += " - ";  }
+      descriptionComputed += description;
+    }
+    return descriptionComputed;
 	}
 
 

@@ -133,6 +133,7 @@
 		<option value="subrogationRelease">Subrogation release</option>
         <option value="depositSlip">Deposit slip</option>
         <option value="logisticalForm">Logistical form</option>
+        <option value="analyticReport">Analytic report</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
@@ -168,6 +169,7 @@
 
 	<selection name="base.app.base.map.api.select">
 		<option value="1">Google</option>
+		<option value="2">Open street map</option>
 	</selection>
 	
 	<selection name="base.app.base.currency.api.select">

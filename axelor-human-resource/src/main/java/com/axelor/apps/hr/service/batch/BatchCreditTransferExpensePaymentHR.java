@@ -144,6 +144,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 					ex.printStackTrace();
 					log.error(String.format("Credit transfer batch for expense payment: anomaly for expense %s",
 							expense.getExpenseSeq()));
+					break;
 				}
 			}
 		}

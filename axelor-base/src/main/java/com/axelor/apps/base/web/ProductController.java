@@ -34,6 +34,8 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -115,23 +117,31 @@ public class ProductController {
 	}
 
 	public void printProductSheet(ActionRequest request, ActionResponse response) throws AxelorException {
+        try {
+            Product product = request.getContext().asType(Product.class);
+            User user =  Beans.get(UserService.class).getUser();
 
-		Product product = request.getContext().asType(Product.class);
-		User user =  Beans.get(UserService.class).getUser();
+            String name = I18n.get("Product") + " " + product.getCode();
 
-		String name = I18n.get("Product") + " " + product.getCode();
-		
-		String fileLink = ReportFactory.createReport(IReport.PRODUCT_SHEET, name+"-${date}")
-				.addParam("ProductId", product.getId())
-				.addParam("CompanyId", user.getActiveCompany().getId())
-				.addParam("Locale", ReportSettings.getPrintingLocale(null))
-				.generate()
-				.getFileLink();
+            if (user.getActiveCompany() == null) {
+                throw new AxelorException(IException.CONFIGURATION_ERROR,
+                        I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+            }
 
-		logger.debug("Printing "+name);
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
+            String fileLink = ReportFactory.createReport(IReport.PRODUCT_SHEET, name+"-${date}")
+                    .addParam("ProductId", product.getId())
+                    .addParam("CompanyId", user.getActiveCompany().getId())
+                    .addParam("Locale", ReportSettings.getPrintingLocale(null))
+                    .generate()
+                    .getFileLink();
+
+            logger.debug("Printing "+name);
+
+            response.setView(ActionView
+                    .define(name)
+                    .add("html", fileLink).map());
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
 	}
 }

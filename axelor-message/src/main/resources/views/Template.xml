@@ -34,18 +34,27 @@
         	<field name="ccRecipients" height="2" colSpan="12"/>
         	<field name="bccRecipients" height="2" colSpan="12"/>
         </panel>
-		<panel name="subjectContent" title="Content" colSpan="12">
-			<field name="subject" colSpan="12" height="2"/>
-			<field name="content" showTitle="false" widget="html" colSpan="12"/>
-		</panel>
+		<panel-tabs>
+			<panel name="subjectContent" title="Content" colSpan="12">
+				<field name="subject" colSpan="12" height="2"/>
+				<field name="content" showTitle="false" widget="html" colSpan="12"/>
+			</panel>
+			<panel-dashlet action="template.messages.by.template" title="Messages"/>
+		</panel-tabs>
 	</form>
-	
-    
+
     <action-record name="action-template-record-new" model="com.axelor.apps.message.db.Template">
     	<field name="metaModel" expr="eval: _parent?.targetSelect == 1 ? __repo__(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : (_parent?.targetSelect == 2 ? __repo__(MetaModel).all().filter('self.name = \'Lead\'').fetchOne() : null)" if="_parent?.targetSelect"/>
     	<field name="metaModel" expr="eval: _parent?.metaModel" if="_parent?.metaModel"/>
     	<field name="metaModel" expr="eval: _parent?._parent?.metaModel" if="_parent?._parent?.metaModel"/>
     	<field if="_mediaType != null" name="mediaTypeSelect" expr="eval:_mediaType"/>
     </action-record>
-	
+
+	<action-view name="template.messages.by.template" title="All messages" model="com.axelor.apps.message.db.Message" >
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+        <domain>self.template.id = :template</domain>
+		<context name="template" expr="eval: id"/>
+	</action-view>
+
 </object-views>

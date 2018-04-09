@@ -10,7 +10,7 @@
 	</grid>
 
 	<form name="invoicing-project-form" title="Invoicing business project" model="com.axelor.apps.businessproject.db.InvoicingProject"
-		onNew="action-invoicing-project-attrs-title-project" onLoad="action-invoicing-project-attrs-title-project" width="large">
+		onNew="action-invoicing-project-attrs-title-project,action-invoicing-project-method-set-default-lines" onLoad="action-invoicing-project-attrs-title-project" width="large">
 		<toolbar>
   			<button name="delete" hidden="true" showIf="invoice == null" title="Delete"/>
   			<button name="print" title="Print delivery sheet" hidden="true" showIf="project" onClick="action-invoicing-project-method-print"/>
@@ -21,8 +21,8 @@
   		</panel>
 
 		<panel name="main">
-			<field name="project" form-view="project-form" grid-view="project-grid" onChange="save,action-invoicing-project-method-fill-in" readonlyIf="invoice != null"/>
-			<field name="deadlineDate" readonlyIf="invoice != null" onChange="save,action-invoicing-project-method-fill-in"/>
+			<field name="project" form-view="project-form" grid-view="project-grid" onChange="save,action-invoicing-project-method-fill-in" readonlyIf="invoice"/>
+			<field name="deadlineDate" readonlyIf="invoice" onChange="save,action-invoicing-project-method-fill-in"/>
 			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-project-method-fill-in" hideIf="invoice != null"/>
 			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" hideIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
@@ -33,20 +33,60 @@
             <field name="comments" colSpan="12" />
         </panel>
 
-        <panel-tabs>
-            <panel-related title="Sale" field="saleOrderLineSet" canNew="false" canEdit="false" canSelect="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid" readonlyIf="invoice != null"/>
-            <panel-related title="Purchase" field="purchaseOrderLineSet"  canNew="false" canEdit="false" canSelect="false" grid-view="purchase-order-line-invoicing-project-grid" form-view="purchase-order-line-form" readonlyIf="invoice != null"/>
-            <panel-related title="Time spent" field="logTimesSet" canNew="false" canEdit="false" canSelect="false" grid-view="timesheet-line-project-grid" form-view="timesheet-line-project-form" readonlyIf="invoice != null"/>
-            <panel-related title="Expenses" field="expenseLineSet" canNew="false" canEdit="false" canSelect="false" form-view="expense-line-form" grid-view="expense-line-grid" readonlyIf="invoice != null"/>
+		<panel-tabs>
+			<panel title="Elements To Invoice">
+				<panel-related title="Sale" field="saleOrderLineSet"
+							   colSpan="12" canNew="false" canEdit="false"
+							   canSelect="false"
+							   form-view="sale-order-line-form"
+							   grid-view="sale-order-line-grid"
+							   showIf="saleOrderLineSet &amp;&amp; saleOrderLineSet.length &gt; 0"
+							   readonlyIf="invoice"/>
+				<panel-related title="Purchase" field="purchaseOrderLineSet"
+							   colSpan="12" canNew="false" canEdit="false"
+							   canSelect="false"
+							   grid-view="purchase-order-line-invoicing-project-grid"
+							   form-view="purchase-order-line-form"
+							   showIf="purchaseOrderLine &amp;&amp; purchaseOrderLine.length &gt; 0"
+							   readonlyIf="invoice"/>
+				<panel-related title="Time spent" field="logTimesSet"
+							   colSpan="12" canNew="false" canEdit="false"
+							   canSelect="false"
+							   grid-view="timesheet-line-project-grid"
+							   form-view="timesheet-line-project-form"
+							   showIf="logTimesSet &amp;&amp; logTimesSet.length &gt; 0"
+							   readonlyIf="invoice"/>
+				<panel-related title="Expenses" field="expenseLineSet"
+							   colSpan="12" canNew="false" canEdit="false"
+							   canSelect="false" form-view="expense-line-form"
+							   grid-view="expense-line-grid"
+							   showIf="expenseLineSet &amp;&amp; expenseLineSet.length &gt; 0"
+							   readonlyIf="invoice"/>
 
-            <panel title="Fixed Rate">
-                <panel-related field="projectSet" colSpan="12" canNew="false" canEdit="false" canSelect="false" form-view="project-form" grid-view="project-grid" readonlyIf="invoice != null"/>
-                <panel-related field="elementsToInvoiceSet" colSpan="12" canNew="false" canEdit="false" canSelect="false" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form" readonlyIf="invoice != null"/>
-            </panel>
+				<panel-related field="projectSet" colSpan="12" canNew="false"
+							   canEdit="false" canSelect="false"
+							   form-view="project-form" grid-view="project-grid"
+							   showIf="projectSet &amp;&amp; projectSet.length &gt; 0"
+							   readonlyIf="invoice"/>
+				<panel-related field="elementsToInvoiceSet" colSpan="12"
+							   canNew="false" canEdit="false" canSelect="false"
+							   grid-view="elements-to-invoice-grid"
+							   form-view="elements-to-invoice-form"
+							   showIf="elementsToInvoiceSet &amp;&amp; elementsToInvoiceSet.length &gt; 0"
+							   readonlyIf="invoice"/>
 
-            <panel-related title="Production" field="manufOrderSet" canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production" grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form" readonlyIf="invoice != null"  if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()" />
+				<panel-related title="Production" field="manufOrderSet"
+							   colSpan="12" canNew="false" canEdit="false"
+							   canSelect="false"
+							   if-module="axelor-business-production"
+							   grid-view="manuf-order-invoicing-project-grid"
+							   form-view="manuf-order-form"
+							   showIf="manufOrderSet &amp;&amp; manufOrderSet.length &gt; 0"
+							   readonlyIf="invoice"
+							   if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()"/>
+			</panel>
 
-            <panel title="Configurations" readonlyIf="invoice != null">
+			<panel title="Configurations" readonlyIf="invoice">
                 <field name="saleOrderLineSetPrioritySelect"/>
                 <field name="purchaseOrderLineSetPrioritySelect"/>
                 <field name="logTimesSetPrioritySelect"/>
@@ -70,9 +110,14 @@
 		<call class="com.axelor.apps.businessproject.web.InvoicingProjectController" method="print"/>
 	</action-method>
 
+	<action-method name="action-invoicing-project-method-set-default-lines">
+		<call class="com.axelor.apps.businessproject.web.InvoicingProjectController" method="setDefaultLines"/>
+	</action-method>
+
 	<action-attrs name="action-invoicing-project-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 		<attribute name="title" for="projectSet" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+		<attribute name="value" for="project" expr="eval: _project"/>
 	</action-attrs>
 	
 	<action-view name="action-invoicing-project-show-timesheet-lines" title="Timesheet lines" model="com.axelor.apps.hr.db.TimesheetLine">
@@ -81,5 +126,5 @@
 		<domain>self.id IN (:list) </domain>
   		<context name="list" expr="eval: logTimesSet.collect{it.id}"/>
 	</action-view>
-	    
+
 </object-views>

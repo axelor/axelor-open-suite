@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
@@ -598,6 +600,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(computeName(newStockMove, newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_7) + " "
                 + stockMove.getStockMoveSeq() + " )"));
+        newStockMove.setExTaxTotal(compute(newStockMove));
 
 		return stockMoveRepo.save(newStockMove);
 
@@ -648,7 +651,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
 		newStockMove.setName(computeName(newStockMove, newStockMove.getStockMoveSeq() + " " + I18n.get(IExceptionMessage.STOCK_MOVE_8) + " "
                 + stockMove.getStockMoveSeq() + " )"));
-		newStockMove.setIsReversion(true);
+        newStockMove.setExTaxTotal(compute(newStockMove));
+        newStockMove.setIsReversion(true);
 
 		return stockMoveRepo.save(newStockMove);
 
@@ -694,7 +698,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				selected = true;
 				StockMoveLine line = stockMoveLineRepo.find(moveLine.getId());
 				BigDecimal totalQty = line.getQty();
-				LOG.debug("Move Line selected: {}, Qty: {}",new Object[]{line,totalQty});
+				LOG.debug("Move Line selected: {}, Qty: {}", line, totalQty);
 				while(splitQty.compareTo(totalQty) < 0){
 					totalQty = totalQty.subtract(splitQty);
 					StockMoveLine newLine = JPA.copy(line, false);
@@ -721,10 +725,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void splitStockMoveLinesSpecial(StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty){
 
-		LOG.debug("SplitQty: {}",new Object[] {splitQty});
+		LOG.debug("SplitQty: {}", splitQty);
 
 		for(StockMoveLine moveLine : stockMoveLines){
-			LOG.debug("Move line: {}",new Object[]{moveLine});
+			LOG.debug("Move line: {}", moveLine);
 			BigDecimal totalQty = moveLine.getQty();
 			while(splitQty.compareTo(totalQty) < 0){
 				totalQty = totalQty.subtract(splitQty);
@@ -750,47 +754,54 @@ public class StockMoveServiceImpl implements StockMoveService {
 	public StockMove splitInto2(StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines) throws AxelorException{
 
 		//Copy this stock move
-		StockMove newStockMove = stockMoveRepo.copy(originalStockMove, true);
+		StockMove newStockMove = stockMoveRepo.copy(originalStockMove, false);
+		newStockMove.setStockMoveLineList(new ArrayList<>());
 
-		List<StockMoveLine> stockMoveLinesToRemove = new ArrayList<>();
-		int lineNumber = 0;
-		for(StockMoveLine moveLine : modifiedStockMoveLines){
-			if (BigDecimal.ZERO.compareTo(moveLine.getQty()) == 1 || moveLine.getQty().compareTo(originalStockMove.getStockMoveLineList().get(lineNumber).getRealQty()) == 1) {
+		modifiedStockMoveLines = modifiedStockMoveLines.stream()
+				.filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
+				.collect(Collectors.toList());
+		for (StockMoveLine moveLine : modifiedStockMoveLines) {
+			StockMoveLine newStockMoveLine;
+
+			//Set quantity in new stock move line
+			newStockMoveLine = stockMoveLineRepo.copy(moveLine, false);
+			newStockMoveLine.setQty(moveLine.getQty());
+			newStockMoveLine.setRealQty(moveLine.getQty());
+
+			//add stock move line
+			newStockMove.addStockMoveLineListItem(newStockMoveLine);
+
+			//find the original move line to update it
+			Optional<StockMoveLine> correspondingMoveLine = originalStockMove.getStockMoveLineList()
+					.stream()
+					.filter(stockMoveLine -> stockMoveLine.getId().equals(moveLine.getId()))
+					.findFirst();
+			if (BigDecimal.ZERO.compareTo(moveLine.getQty()) > 0
+					|| (correspondingMoveLine.isPresent()
+					&& moveLine.getQty().compareTo(correspondingMoveLine.get().getRealQty()) > 0)
+					) {
 				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_16), originalStockMove);
 			}
-			if (BigDecimal.ZERO.compareTo(moveLine.getQty()) == 0){
-				//Remove stock move line from new stock move
-				stockMoveLinesToRemove.add(newStockMove.getStockMoveLineList().get(lineNumber));
-			}else{
-				//Set quantity in new stock move
-				newStockMove.getStockMoveLineList().get(lineNumber).setQty(moveLine.getQty());
-				newStockMove.getStockMoveLineList().get(lineNumber).setRealQty(moveLine.getQty());
 
+			if (correspondingMoveLine.isPresent()) {
 				//Update quantity in original stock move.
 				//If the remaining quantity is 0, remove the stock move line
-				StockMoveLine currentOriginalStockMoveLine = originalStockMove.getStockMoveLineList().get(lineNumber);
-				BigDecimal remainingQty = currentOriginalStockMoveLine.getQty().subtract(moveLine.getQty());
-				if (BigDecimal.ZERO.compareTo(remainingQty) == 0){
+				BigDecimal remainingQty = correspondingMoveLine.get().getQty().subtract(moveLine.getQty());
+				if (BigDecimal.ZERO.compareTo(remainingQty) == 0) {
 					//Remove the stock move line
-					originalStockMove.removeStockMoveLineListItem(moveLine);
-				}else{
-					currentOriginalStockMoveLine.setQty(remainingQty);
-					currentOriginalStockMoveLine.setRealQty(remainingQty);
+					originalStockMove.removeStockMoveLineListItem(correspondingMoveLine.get());
+				} else {
+					correspondingMoveLine.get().setQty(remainingQty);
+					correspondingMoveLine.get().setRealQty(remainingQty);
 				}
 			}
-			lineNumber++;
 		}
 
-		newStockMove.getStockMoveLineList().removeAll(stockMoveLinesToRemove);
-		if (!newStockMove.getStockMoveLineList().isEmpty()){
+		if (!newStockMove.getStockMoveLineList().isEmpty()) {
 			newStockMove.setExTaxTotal(compute(newStockMove));
 			originalStockMove.setExTaxTotal(compute(originalStockMove));
-			newStockMove = stockMoveRepo.save(newStockMove);
-			for(StockMoveLine stockMoveLine : newStockMove.getStockMoveLineList()) {
-				stockMoveLine.setStockMove(newStockMove);
-			}
-			return newStockMove;
-		}else{
+			return stockMoveRepo.save(newStockMove);
+		} else {
 			return null;
 		}
 	}
@@ -932,7 +943,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		if (Strings.isNullOrEmpty(dString) || Strings.isNullOrEmpty(aString)) {
 			throw new AxelorException(stockMove, IException.MISSING_FIELD, I18n.get(IExceptionMessage.STOCK_MOVE_11));
 		}
-		if (appBaseService.getAppBase().getMapApiSelect() == IAdministration.MAP_API_OSM) {
+		if (appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
 			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_12));
 		}
 			Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);

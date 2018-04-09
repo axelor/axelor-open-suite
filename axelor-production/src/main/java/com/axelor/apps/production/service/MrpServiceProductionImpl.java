@@ -25,7 +25,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -101,7 +100,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl  {
 		List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
 		if (statusList.isEmpty()) {
-			statusList.add(IManufOrder.STATUS_FINISHED);
+			statusList.add(ManufOrderRepository.STATUS_FINISHED);
 		}
 
 		List<ManufOrder> manufOrderList = manufOrderRepository.all()

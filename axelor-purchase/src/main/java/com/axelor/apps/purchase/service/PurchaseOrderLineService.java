@@ -30,6 +30,8 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
 public interface PurchaseOrderLineService{
 
@@ -47,6 +49,8 @@ public interface PurchaseOrderLineService{
 	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder) throws AxelorException;
 
 	public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList);
+
+	public Map<String, BigDecimal> compute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException;
 
 	public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine);
 
@@ -78,6 +82,10 @@ public interface PurchaseOrderLineService{
 	 */
 	public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
+	public void checkMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionRequest request, ActionResponse response);
+	
+	public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response);
+	
 	public String[] getProductSupplierInfos(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
 }

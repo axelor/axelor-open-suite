@@ -30,18 +30,13 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -49,80 +44,8 @@ import java.util.List;
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
 	@Inject
-	private AppBaseService appBaseService;
-	
-	@Inject
 	protected WeeklyPlanningService weeklyPlanningService;
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	/**
-	 * Convert hours duration to user duration using time logging preference of user
-	 * @param duration
-	 * @return
-	 */
-	@Override
-	public BigDecimal getUserDuration(BigDecimal duration, User user, boolean toHours) throws AxelorException {
-
-		LOG.debug("Get user duration for duration: {}, to hours : {}",  duration, toHours);
-
-		if(duration == null) { return null; }
-
-		if(user == null)  {  user = this.getUser();  }
-		
-		Employee employee = user.getEmployee();
-		
-		LOG.debug("Employee: {}",employee);
-
-		BigDecimal dailyWorkHrs = new BigDecimal(1);
-		String timePref = null;
-		if(employee != null)  {
-			timePref = employee.getTimeLoggingPreferenceSelect();
-			dailyWorkHrs = employee.getDailyWorkHours();
-		}
-		if (timePref ==  null) {
-			timePref = appBaseService.getAppBase().getTimeLoggingPreferenceSelect();
-		}
-		
-		if(dailyWorkHrs == null || dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0)  {
-			dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
-			if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
-			    throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS),
-						employee == null ? user.getName() : employee.getName()),
-						IException.CONFIGURATION_ERROR);
-			}
-		}
-
-		if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
-			dailyWorkHrs = new BigDecimal(1);
-		}
-		LOG.debug("Employee's time pref: {}, Daily Working hours: {}", timePref, dailyWorkHrs);
-		
-		if (timePref ==  null) {
-			return duration;
-		}
-		
-		if(toHours)  {
-			if(timePref.equals("days"))  {
-				duration = duration.multiply(dailyWorkHrs);
-			}
-			else if (timePref.equals("minutes"))  {
-				duration = duration.divide(new BigDecimal(60),4, RoundingMode.HALF_UP);
-			}
-		}
-		else  {
-			if(timePref.equals("days"))  {
-				duration = duration.divide(dailyWorkHrs,4, RoundingMode.HALF_UP);
-			}
-			else if (timePref.equals("minutes"))  {
-				duration = duration.multiply(new BigDecimal(60));
-			}
-		}
-
-		LOG.debug("Calculated duration: {}",  duration);
-		return duration;
-	}
-	
 	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException{
 		
 		try{
