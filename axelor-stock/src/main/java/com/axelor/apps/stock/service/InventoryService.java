@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
@@ -488,14 +487,18 @@ public class InventoryService {
 		List<String[]> list = new ArrayList<>();
 
 		for (InventoryLine inventoryLine:inventory.getInventoryLineList()) {
-			String item[] = new String[7];
-			
+			String[] item = new String[7];
+			String realQty = "";
+
 			item[0] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getName();
 			item[1] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getCode();
 			item[2] = (inventoryLine.getRack() == null) ? "" : inventoryLine.getRack();
 			item[3] = (inventoryLine.getTrackingNumber() == null) ? "" : inventoryLine.getTrackingNumber().getTrackingNumberSeq();
 			item[4] = inventoryLine.getCurrentQty().toString();
-			item[5] = inventoryLine.getRealQty().toString();
+            if (inventory.getStatusSelect() > 2) {
+                realQty = inventoryLine.getRealQty().toString();
+            }
+			item[5] = realQty;
 			item[6] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
 			list.add(item);
 		}
