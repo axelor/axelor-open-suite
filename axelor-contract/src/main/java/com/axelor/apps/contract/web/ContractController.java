@@ -18,11 +18,9 @@
 package com.axelor.apps.contract.web;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractTemplate;
@@ -33,15 +31,12 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.db.JPA;
-import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
@@ -57,22 +52,6 @@ public class ContractController {
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
-		}
-	}
-
-	// TODO: move to ContractVersionController
-	public void waitingNextVersion(ActionRequest request, ActionResponse response) {
-		try  {
-			Beans.get(ContractService.class).waitingNextVersion(
-					JPA.find(
-							ContractVersion.class,
-							request.getContext().asType(ContractVersion.class).getId()
-					).getContractNext(), getTodayDate());
-			response.setReload(true);
-		} catch(Exception e) {
-			String flash = e.toString();
-			if (e.getMessage() != null) { flash = e.getMessage(); }
-			response.setError(flash);
 		}
 	}
 
@@ -141,25 +120,6 @@ public class ContractController {
 	}
 	
 
-	// TODO: move to ContractVersionController
-	public void activeNextVersion(ActionRequest request, ActionResponse response) {
-		try  {
-			ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
-			Beans.get(ContractService.class)
-					.activeNextVersion(JPA.find(ContractVersion.class, contractVersion.getId()).getContractNext(), getTodayDate());
-			response.setView(ActionView
-					.define("Contract")
-					.model(Contract.class.getName())
-					.add("form", "contract-form")
-					.add("grid", "contract-grid")
-					.context("_showRecord", contractVersion.getContract().getId()).map());
-		} catch(Exception e) {
-			String flash = e.toString();
-			if (e.getMessage() != null) { flash = e.getMessage(); }
-			response.setError(flash);
-		}
-	}
-
 	public void deleteNextVersion(ActionRequest request, ActionResponse response) {
 		final Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
 
@@ -178,39 +138,6 @@ public class ContractController {
 		response.setReload(true);
 	}
 
-	// TODO: Move to ContractVersionService
-	public void saveNextVersion(ActionRequest request, ActionResponse response) {
-		final ContractVersion version = JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
-		if(version.getContractNext() != null) { return; }
-
-		Object xContractId = request.getContext().get("_xContractId");
-		Long contractId;
-
-		if (xContractId != null) {
-			contractId = Long.valueOf(xContractId.toString());
-		} else if (version.getContract() != null) {
-			contractId = version.getContract().getId();
-		} else {
-			contractId = null;
-		}
-
-		if (contractId == null) {
-			return;
-		}
-
-		// TODO: move in service
-		JPA.runInTransaction(new Runnable() {
-			@Override
-			public void run() {
-				Contract contract = JPA.find(Contract.class, contractId);
-				contract.setNextVersion(version);
-				Beans.get(ContractRepository.class).save(contract);
-			}
-		});
-
-		response.setReload(true);
-	}
-	
 	@Transactional
 	public void copyFromTemplate(ActionRequest request, ActionResponse response){
 

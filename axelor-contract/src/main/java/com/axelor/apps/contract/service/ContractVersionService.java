@@ -17,11 +17,12 @@
  */
 package com.axelor.apps.contract.service;
 
+import java.time.LocalDate;
+
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-
-import java.time.LocalDate;
 
 public interface ContractVersionService {
 
@@ -52,4 +53,11 @@ public interface ContractVersionService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	void terminate(ContractVersion version, LocalDate date);
 
+	/**
+	 * Create new version from contract but don't save it.
+	 * There will be use for set values from form view.
+	 * @param contract for use the actual version as base.
+	 * @return the copy a contract's actual version.
+	 */
+	ContractVersion newDraft(Contract contract);
 }

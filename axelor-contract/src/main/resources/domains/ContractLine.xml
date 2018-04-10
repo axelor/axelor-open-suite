@@ -17,7 +17,7 @@
 	  	]]>
 		</string>
 
-		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true" />
 		<decimal name="qty" title="Qty" default="1"/>
 
 		<string name="productName" title="Displayed Product name" required="true"/>

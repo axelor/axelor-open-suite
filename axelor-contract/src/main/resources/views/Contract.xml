@@ -18,6 +18,7 @@
         </toolbar>
         <panel>
             <panel colSpan="9">
+                <field name="currentVersion.statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
                 <field name="statusSelect" showTitle="false" readonly="true" colSpan="12">
                     <viewer depends="contractId,versionNumber"><![CDATA[
 			<h3>
@@ -63,7 +64,6 @@
             <panel title="Current version">
                 <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false">
                     <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                        <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
                         <panel showIf="id" colSpan="6">
                             <field name="createdOn"/>
                             <field name="createdBy"/>
@@ -126,7 +126,7 @@
                         <field name="terminationDemandDate" readonly="true" hidden="true" showIf="terminationDemandDate" colSpan="4"/>
                         <field name="terminatedManually" readonly="true" hidden="true" showIf="terminatedManually" colSpan="4"/>
                     </panel>
-                    <panel colSpan="12" hidden="true" showIf="id &amp;&amp; statusSelect == 2 &amp;&amp; !terminatedManually">
+                    <panel if="__config__.app.getApp('contract').isConfigContract" colSpan="12" hidden="true" showIf="id &amp;&amp; statusSelect == 2 &amp;&amp; !terminatedManually">
                         <panel colSpan="8" hidden="true" showIf="currentVersion.isWithEngagement" readonly="true">
                             <field name="engagementStartDate" colSpan="6"/>
                             <field name="currentVersion.engagementDuration" colSpan="6"/>
@@ -252,12 +252,6 @@
         <call class="com.axelor.apps.contract.web.ContractController" method="renew"/>
     </action-method>
 
-    <!-- Archived versions -->
-
-    <!--
-     TODO: Add invoicing fields
-     -->
-
     <form name="contract-archived-version-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion">
         <panel title="Informations">
             <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
@@ -275,8 +269,6 @@
             <field name="attachment" widget="binary-link"/>
         </panel>
     </form>
-
-    <!-- Next version views -->
 
     <action-view name="action-view-contract-show-version" title="Version" model="com.axelor.apps.contract.db.ContractVersion">
         <view type="grid" name="contract-version-next-grid"/>
@@ -300,126 +292,11 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="contract-version-next-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion" width="large"
-          onSave="save,com.axelor.apps.contract.web.ContractController:saveNextVersion"
-          onLoad="action-record-contract-version-load"
-          onNew="com.axelor.apps.contract.web.ContractVersionController:newVersion,action-record-contract-version-load">
-        <panel>
-            <panel readonly="true" colSpan="9">
-                <field name="contractNext.contractId" hidden="true"/>
-                <field name="contractNext.statusSelect" showTitle="false" readonly="true" colSpan="12">
-                    <viewer depends="contractNext.contractId"><![CDATA[
-                    <h3>
-                        <span x-translate>Contract Version</span><span ng-show="record.contractNext.contractId"> - {{ record.contractNext.contractId }}</span>
-                        <span class="label label-default pull-right" x-translate ng-show="record.contractNext.statusSelect == 1">Draft</span>
-                        <span class="label label-info pull-right" x-translate ng-show="record.contractNext.statusSelect == 2">Active</span>
-                        <span class="label label-important pull-right" x-translate ng-show="record.contractNext.statusSelect == 3">Closed</span>
-                    </h3>
-                ]]></viewer>
-                </field>
-                <field name="contractNext.targetType"/>
-                <field name="contractNext.company"/>
-                <field name="contractNext.name" css="highlight"/>
-                <field name="contractNext.partner" showIf="contractNext.targetType"/>
-                <field name="contractNext.currency" if="__config__.app.getApp('contract').isInvoicingManagement"/>
-                <panel title="Contract Dates" hidden="true" showIf="id" colSpan="12">
-                    <field name="contractNext.createdOn" colSpan="3"/>
-                    <field name="contractNext.createdBy" colSpan="3"/>
-                    <field name="contractNext.startDate" readonly="true" showIf="contractNext.statusSelect >= 2" colSpan="3"/>
-                    <field name="contractNext.endDate" hidden="true" showIf="contractNext.statusSelect == 3" colSpan="3"/>
-                </panel>
-            </panel>
-            <panel colSpan="3" stacked="true">
-                <panel stacked="true">
-                    <button name="showBtn" title="Show contract" onClick="action.contract.view.contract,close" showIf="id"/>
-                    <button name="waitingBtn" title="Waiting" onClick="save,action-contract-method-waiting-next-version" showIf="id &amp;&amp; statusSelect == 1"/>
-                    <button name="ongoingBtn" title="Ongoing" onClick="save,action-contract-method-active-next-version,close" showIf="id &amp;&amp; statusSelect == 2"/>
-                </panel>
-                <panel stacked="true" title="Notes">
-                    <field name="contractNext.note" showTitle="false"/>
-                </panel>
-            </panel>
-        </panel>
-        <panel-tabs>
-            <panel title="Current version">
-                <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
-                <panel showIf="id" colSpan="6">
-                    <field name="createdOn"/>
-                    <field name="createdBy"/>
-                </panel>
-                <panel readonly="true" showIf="statusSelect >= 3" colSpan="12">
-                    <field name="activatedBy" colSpan="3"/>
-                    <field name="activationDate" colSpan="3"/>
-                    <panel colSpan="3">
-                        <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
-                        <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
-                    </panel>
-                </panel>
-                <field name="supposedActivationDate" hidden="true" showIf="statusSelect &lt;= 2" colSpan="3"/>
-                <field name="supposedEndDate" hidden="true" showIf="statusSelect &lt;= 2" colSpan="3"/>
-            </panel>
-            <panel title="Content">
-                <field name="description" colSpan="9" widget="html"/>
-                <field name="attachment" colSpan="3" widget="binary-link"/>
-                <field name="contractLineList" colSpan="12" if="__config__.app.getApp('contract').isInvoicingManagement"/>
-            </panel>
-            <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
-                <panel title="Invoicing" if="__config__.app.getApp('contract').isInvoicingManagement" colSpan="12">
-                    <field name="isConsumptionBeforeEndDate" colSpan="12"/>
-                    <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" canEdit="false"/>
-                    <spacer/>
-                    <field name="paymentCondition" canEdit="false" widget="SuggestBox" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-                    <field name="invoicingMoment"/>
-                    <field name="automaticInvoicing" readonlyIf="statusSelect &gt; 2"/>
-                    <field name="isPeriodicInvoicing" readonlyIf="statusSelect &gt; 2"/>
-                    <panel showIf="isPeriodicInvoicing" title="Periodic invoicing" colSpan="12">
-                        <field name="invoicingFrequency"/>
-                        <field name="isProratedFirstInvoice"/>
-                        <field name="isProratedLastInvoice"/>
-                        <field name="isTimeProratedInvoice" />
-                        <field name="isVersionProratedInvoice" showIf="isTimeProratedInvoice"/>
-                    </panel>
-                </panel>
-                <panel title="Renewal" if="__config__.app.getApp('contract').isRenewalManagement" colSpan="12">
-                    <field name="isTacitRenewal" widget="boolean-switch" colSpan="3"/>
-                    <field name="renewalDuration" requiredIf="isTacitRenewal" colSpan="3"/>
-                    <field name="isAutoEnableVersionOnRenew" colSpan="6"/>
-                </panel>
-                <panel title="Engagement" colSpan="6">
-                    <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
-                    <field name="engagementDuration" colSpan="6" showIf="isWithEngagement" canNew="true" requiredIf="isWithEngagement"/>
-                    <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement"/>
-                </panel>
-                <panel title="Prior notice" colSpan="6">
-                    <field name="isWithPriorNotice" widget="boolean-switch"/>
-                    <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
-                </panel>
-            </panel>
-        </panel-tabs>
-        <panel hidden="true">
-            <field name="contractNext"/>
-            <field name="$_xIsNext" type="Boolean"/>
-        </panel>
-    </form>
-    
     <action-view name="action.contract.view.contract" model="com.axelor.apps.contract.db.Contract" title="Contract">
         <view type="form" name="contract-form"/>
         <view type="grid" name="contract-grid"/>
         <context name="_showRecord" expr="eval: contractNext.id"/>
     </action-view>
-
-    <action-method name="action-contract-method-waiting-next-version">
-        <call class="com.axelor.apps.contract.web.ContractController" method="waitingNextVersion"/>
-    </action-method>
-
-    <action-method name="action-contract-method-active-next-version">
-        <call class="com.axelor.apps.contract.web.ContractController" method="activeNextVersion"/>
-    </action-method>
-
-    <action-attrs name="action-record-contract-version-load">
-        <attribute for="$_xIsNext" name="value" expr="eval: contractNext"/>
-        <attribute for="$_xIsNext" name="value" expr="eval: _xIsNextVersion" if="_xIsNextVersion"/>
-    </action-attrs>
 
     <action-view name="action-contract-view-invoicing" model="com.axelor.apps.account.db.Invoice" title="Invoices">
         <view type="grid" name="invoice-lite-grid" />

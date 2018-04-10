@@ -28,10 +28,9 @@ import com.google.inject.persist.Transactional;
 public interface ContractService {
 
 	/**
-	 * Active the contract
-	 *
-	 * @param contract
-	 * @param date
+	 * Active the contract at the specific date.
+	 * @param contract to active.
+	 * @param date to use for active contract.
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	void activeContract(Contract contract, LocalDate date);
