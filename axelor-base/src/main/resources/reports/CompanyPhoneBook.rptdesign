@@ -1013,6 +1013,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="height">2.169583333333333cm</property>
                             <property name="width">6.138333333333333cm</property>
                             <property name="dataSet">CompanyDS</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                </structure>
+                            </list-property>
                             <list-property name="boundDataColumns">
                                 <structure>
                                     <property name="name">logo_path</property>

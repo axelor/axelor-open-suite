@@ -1108,6 +1108,12 @@ where prod.to_consume_prod_process_line = ?;
                                     <image id="3419">
                                         <property name="height">91px</property>
                                         <property name="width">350px</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <structure name="toc"/>
                                         <method name="onRender"><![CDATA[this.getRowData().getColumnName(name);]]></method>
                                         <property name="source">file</property>
