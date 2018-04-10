@@ -66,4 +66,6 @@ public interface ITranslation {
       "SaleOrder.subscriptionContract"; /*)*/
   public static final String SALES_ORDER_SUBSCRIPTION_PERIODICITY = /*$$(*/
       "SaleOrder.periodicity"; /*)*/
+  public static final String SALES_ORDER_DURATION = /*$$(*/ "SaleOrder.duration"; /*)*/;
+  public static final String SALES_ORDER_VALIDITY_DATE = /*$$(*/ "SaleOrder.validityDate"; /*)*/;
 }
