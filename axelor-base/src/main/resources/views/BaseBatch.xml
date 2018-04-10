@@ -59,7 +59,7 @@
 	</action-attrs>
 
 	<action-condition name="action-base-batch-condition-check-unique-code">
-		<check field="code" if="eval: __repo__(__this__.class).all().filter('self.code = ?', code).fetchOne()"
+		<check field="code" if="eval: code != null &amp;&amp; __repo__(com.axelor.db.EntityHelper.getEntityClass(__this__)).all().filter('self.code = ?', code).fetchOne()"
 			   error="This code is already use by another batch."/>
 	</action-condition>
 
