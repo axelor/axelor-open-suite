@@ -50,7 +50,6 @@ public interface ITranslation {
 	public static final String INVOICE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.invoiceBalanceNo"; /*)*/
 	public static final String INVOICE_DRAFT_INVOICE_NO = /*$$(*/ "Invoice.draftInvoiceNo"; /*)*/
 	public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
-	public static final String INVOICE_LAW = /*$$(*/ "Invoice.law"; /*)*/
 	public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
 	public static final String INVOICE_ADVANCE_PAYMENT = /*$$(*/ "Invoice.advancePayment"; /*)*/
 	public static final String INVOICE_OF = /*$$(*/ "Invoice.of"; /*)*/
@@ -60,22 +59,22 @@ public interface ITranslation {
 
 	public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
 	public static final String INVOICE_EXPENSE_TITLE = /*$$(*/ "Invoice.expenseTitle"; /*)*/
-	
+
 	public static final String INVOICE_TIMESHEET_USER = /*$$(*/ "Invoice.timesheetUser"; /*)*/
 	public static final String INVOICE_TIMESHEET_ACTIVITY = /*$$(*/ "Invoice.timesheetActivity"; /*)*/
 	public static final String INVOICE_TIMESHEET_DURATION = /*$$(*/ "Invoice.timesheetDuration"; /*)*/
 
-	
+
 	public static final String INVOICE_EXPENSE_TOTAL_AMOUNT = /*$$(*/ "Invoice.expenseTotalAmount"; /*)*/
 	public static final String INVOICE_EXPENSE_TAX_AMOUNT = /*$$(*/ "Invoice.expenseTaxAmount"; /*)*/
 	public static final String INVOICE_EXPENSE_PRODUCT = /*$$(*/ "Invoice.expenseProduct"; /*)*/
 
 	public static final String INVOICE_PRODUCT_CODE = /*$$(*/ "Invoice.productCode"; /*)*/
 	public static final String INVOICE_TERMS_AND_CONDITIONS = /*$$(*/ "Invoice.termsAndConditions"; /*)*/
-	
+
 	public static final String INVOICE_SUBSCRIPTION_PERIOD = /*$$(*/ "Invoice.subscriptionPeriod"; /*)*/
 
-	
+
 	public static final String ACCOUNTING_REPORT_1_TITLE = /*$$(*/ "AccountingReportType1.title"; /*)*/
 	public static final String ACCOUNTING_REPORT_1_JOURNAL = /*$$(*/ "AccountingReportType1.journal"; /*)*/
 	public static final String ACCOUNTING_REPORT_1_COMPANY = /*$$(*/ "AccountingReportType1.company"; /*)*/
@@ -92,7 +91,7 @@ public interface ITranslation {
 	public static final String ACCOUNTING_REPORT_1_CREDIT = /*$$(*/ "AccountingReportType1.credit"; /*)*/
 	public static final String ACCOUNTING_REPORT_1_TOTAL = /*$$(*/ "AccountingReportType1.total"; /*)*/
 
-	
+
 	public static final String ACCOUNTING_REPORT_2_TITLE = /*$$(*/ "AccountingReportType2.title"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_JOURNAL = /*$$(*/ "AccountingReportType2.journal"; /*)*/
 	public static final String ACCOUNTING_REPORT_2_COMPANY = /*$$(*/ "AccountingReportType2.company"; /*)*/
@@ -171,7 +170,7 @@ public interface ITranslation {
 	public static final String ACCOUNT_MOVE_PERIOD = /*$$(*/ "move.period"; /*)*/
 	public static final String ACCOUNT_MOVE_CURRENCY = /*$$(*/ "move.currency"; /*)*/
 	public static final String ACCOUNT_MOVE_COMPANY = /*$$(*/ "move.company"; /*)*/
-	
+
 	public static final String ACCOUNT_MOVE_LINE_DATE = /*$$(*/ "moveLine.date"; /*)*/
 	public static final String ACCOUNT_MOVE_LINE_PARTNER = /*$$(*/ "moveLine.partner"; /*)*/
 	public static final String ACCOUNT_MOVE_LINE_ACCOUNT = /*$$(*/ "moveLine.account"; /*)*/
