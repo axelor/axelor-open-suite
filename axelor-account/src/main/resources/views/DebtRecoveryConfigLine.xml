@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
    
-    <grid name="debt-recovery-config-line-grid" title="Debt recovery method configuration lines" model="com.axelor.apps.account.db.DebtRecoveryConfigLine">
+    <grid name="debt-recovery-config-line-grid" title="Debt recovery method configuration lines" editable="true" model="com.axelor.apps.account.db.DebtRecoveryConfigLine">
         <field name="partnerCategory" form-view="partner-category-form" grid-view="partner-category-grid"/>
         <field name="debtRecoveryMethod" form-view="debt-recovery-method-form" grid-view="debt-recovery-method-grid"/>
     </grid>

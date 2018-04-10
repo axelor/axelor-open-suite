@@ -152,15 +152,9 @@
 				</panel>
 			</panel>
 			<panel name="receivablesRecovery" title="Receivables recovery" >
-                <field name="factorPartner" colSpan="12" domain="self.isFactor = TRUE" if="__config__.app.getApp('account')?.manageFactors" />
-				<field name="mailTransitTime" colSpan="12"/>
-				<field name="debtRecoveryConfigLineList" showTitle="false" colSpan="12" grid-view="debt-recovery-config-line-grid" form-view="debt-recovery-config-line-form">
-				<!-- TODO:Check whether editor works or not -->
-				<editor x-show-titles="false" x-layout="table">
-					<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
-				    <field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
-				</editor>
-				</field>
+                <field name="factorPartner" domain="self.isFactor = TRUE" if="__config__.app.getApp('account')?.manageFactors" />
+				<field name="mailTransitTime"/>
+				<field name="debtRecoveryConfigLineList" colSpan="12" grid-view="debt-recovery-config-line-grid" form-view="debt-recovery-config-line-form"/>
 			</panel>
 			
 			<panel name="bankOrder" title="Bank Order" if-module="axelor-bank-payment">
