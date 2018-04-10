@@ -309,7 +309,6 @@
 "SaleOrder.description","Description to display",,
 "SaleOrder.discountAmount","Discount",,
 "SaleOrder.invoicingAddrs","Invoicing address",,
-"SaleOrder.law","Law",,
 "SaleOrder.no","Order N°",,
 "SaleOrder.note","Note",,
 "SaleOrder.order","Order",,

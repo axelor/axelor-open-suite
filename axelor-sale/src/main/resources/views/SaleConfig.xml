@@ -2,44 +2,45 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
-    <grid name="sale-config-grid" title="Sale configurations" model="com.axelor.apps.sale.db.SaleConfig">
-        <field name="company" form-view="sale-config-form" grid-view="sale-config-grid"/>
-    </grid>
+
+	<grid name="sale-config-grid" title="Sale configurations" model="com.axelor.apps.sale.db.SaleConfig">
+		<field name="company" form-view="sale-config-form" grid-view="sale-config-grid"/>
+	</grid>
 
 	<form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig" onNew="action-sale-config-record-default" width="large">
-	  	<panel name="main" >
-	    	<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
-	    	<field name="saleOrderInAtiSelect"/>
-	    	<field name="defaultValidityDuration" form-view="duration-form" grid-view="duration-grid"/>
-	  	</panel>
-	  	<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >   
-	  		<field name="acceptedCredit"/>
-	  		<button name="updateCustomerAcceptedCredit" title="Update customer's accepted credit" onClick="save,action-sale-config-method-update-customer-accepted-credit" />
-	  	</panel>
-  		<panel name="printingSettings" title="Printing settings">
-  			<field name="displaySalemanOnPrinting"/>
-  			<field name="displayDelCondOnPrinting"/>
-  			<field name="displayProductCodeOnPrinting"/>
-  			<field name="displayTaxDetailOnPrinting"/>
-	 		<field name="saleOrderClientBox" widget="html" x-lite="true" colSpan="12"/>
-	  	</panel>
+		<panel name="main">
+			<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+			<field name="saleOrderInAtiSelect"/>
+			<field name="defaultValidityDuration" form-view="duration-form" grid-view="duration-grid"/>
+		</panel>
+		<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+			<field name="acceptedCredit"/>
+			<button name="updateCustomerAcceptedCredit" title="Update customer's accepted credit" onClick="save,action-sale-config-method-update-customer-accepted-credit"/>
+		</panel>
+		<panel name="printingSettings" title="Printing settings">
+			<field name="displaySalemanOnPrinting"/>
+			<field name="displayDelCondOnPrinting"/>
+			<field name="displayProductCodeOnPrinting"/>
+			<field name="displayTaxDetailOnPrinting"/>
+			<field name="saleOrderClientBox" widget="html" x-lite="true" colSpan="12"/>
+			<field name="saleOrderLegalNote" widget="html" x-lite="true" colSpan="12"/>
+		</panel>
 	</form>
-	
+
 	<action-record name="action-sale-config-record-default" model="com.axelor.apps.sale.db.SaleConfig">
 		<field name="company" expr="eval: _company" if="_company != null"/>
-		<field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+		<field name="company" expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
+		<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
-	
+
 	<action-method name="action-sale-config-method-update-customer-accepted-credit">
 		<call class="com.axelor.apps.supplychain.service.SupplychainSaleConfigService" method="updateCustomerCredit(__self__)"/>
 	</action-method>
-	
+
 	<action-view name="action-company-view-sale-config" title="Sale config (${ name })" model="com.axelor.apps.sale.db.SaleConfig">
-    	<view type="form" name="sale-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.saleConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
-	
+		<view type="form" name="sale-config-form"/>
+		<context name="_showRecord" expr="eval: __self__.saleConfig?.id"/>
+		<context name="_company" expr="eval: __this__"/>
+	</action-view>
+
 </object-views>

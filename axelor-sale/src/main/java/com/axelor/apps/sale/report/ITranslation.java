@@ -45,7 +45,6 @@ public interface ITranslation {
 	public static final String SALES_ORDER_NOTE = /*$$(*/ "SaleOrder.note"; /*)*/
 	public static final String SALES_ORDER_CHEQUE = /*$$(*/ "SaleOrder.cheque"; /*)*/
 	public static final String SALES_ORDER_BANK = /*$$(*/ "SaleOrder.bank"; /*)*/
-	public static final String SALES_ORDER_LAW = /*$$(*/ "SaleOrder.law"; /*)*/
 	public static final String SALES_ORDER_SALEMAN_NAME = /*$$(*/ "SaleOrder.salemanName"; /*)*/
 	public static final String SALES_ORDER_SALEMAN_EMAIL = /*$$(*/ "SaleOrder.salemanEmail"; /*)*/
 	public static final String SALES_ORDER_SALEMAN_PHONE = /*$$(*/ "SaleOrder.salemanPhone"; /*)*/
