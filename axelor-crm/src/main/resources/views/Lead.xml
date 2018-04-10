@@ -43,7 +43,6 @@
 			  <item title="Schedule Event" action="save,action-lead-view-schedule-event"/>
 			  <item title="Show all events" readonlyIf="id == null" action="action-lead-view-events"/>
 			  <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
-			  <item title="Convert lead" hideIf="statusSelect == 4" readonlyIf="statusSelect == 4 || statusSelect == 6" action="save,action-lead-view-convert-lead"/>
 			  <item title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 6" action="save,action-send-by-email-with-template"/>
 			</menu>
 		</menubar>
