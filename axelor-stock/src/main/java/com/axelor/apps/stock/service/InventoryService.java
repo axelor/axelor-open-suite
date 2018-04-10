@@ -495,7 +495,7 @@ public class InventoryService {
 			item[2] = (inventoryLine.getRack() == null) ? "" : inventoryLine.getRack();
 			item[3] = (inventoryLine.getTrackingNumber() == null) ? "" : inventoryLine.getTrackingNumber().getTrackingNumberSeq();
 			item[4] = inventoryLine.getCurrentQty().toString();
-            if (inventory.getStatusSelect() > 2) {
+            if (inventory.getStatusSelect() > InventoryRepository.STATUS_DRAFT) {
                 realQty = inventoryLine.getRealQty().toString();
             }
 			item[5] = realQty;
