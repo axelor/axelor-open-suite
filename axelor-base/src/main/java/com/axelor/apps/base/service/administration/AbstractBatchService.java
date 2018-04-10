@@ -24,7 +24,6 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.google.common.base.Preconditions;
 
 public abstract class AbstractBatchService {
 
@@ -69,9 +68,13 @@ public abstract class AbstractBatchService {
    *
    * @param code
    * @return
+   * @throws AxelorException
    */
-  public Model findModelByCode(String code) {
-	    Preconditions.checkNotNull(code, I18n.get("Code cannot be null."));
+  public Model findModelByCode(String code) throws AxelorException {
+    if (code == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Code cannot be null."));
+    }
     return Query.of(getModelClass()).filter("self.code = :code").bind("code", code).fetchOne();
   }
 }

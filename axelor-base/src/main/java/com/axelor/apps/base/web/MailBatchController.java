@@ -24,6 +24,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -40,19 +41,17 @@ public class MailBatchController {
 
   public void remindTimesheet(ActionRequest request, ActionResponse response)
       throws AxelorException {
-try{
-    MailBatch mailBatch = request.getContext().asType(MailBatch.class);
+    try {
+      MailBatch mailBatch = request.getContext().asType(MailBatch.class);
 
-    Batch batch = null;
+      Batch batch = mailBatchService.remindMail(mailBatchRepo.find(mailBatch.getId()));
 
-    batch = mailBatchService.remindMail(mailBatchRepo.find(mailBatch.getId()));
-
-    if (batch != null) response.setFlash(batch.getComments());
-    response.setReload(true);
-  }catch (Exception e) {
-	        TraceBackService.trace(response, e);
-	    }
-}
+      if (batch != null) response.setFlash(batch.getComments());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
   public void remindTimesheetGeneral(ActionRequest request, ActionResponse response)
       throws AxelorException {
