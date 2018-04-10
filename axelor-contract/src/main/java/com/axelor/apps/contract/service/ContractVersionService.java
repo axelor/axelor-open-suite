@@ -27,28 +27,46 @@ import com.google.inject.persist.Transactional;
 public interface ContractVersionService {
 
 	/**
-	 * Waiting version
-	 *
-	 * @param version
-	 * @param date
+	 * Waiting version at the today date.
+	 * @param version of the contract will be waiting.
+     */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	void waiting(ContractVersion version);
+
+	/**
+	 * Waiting version at the specific date.
+	 * @param version of the contract will be waiting.
+	 * @param date of waiting.
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	void waiting(ContractVersion version, LocalDate date);
 
 	/**
-	 * Ongoing version
-	 *
-	 * @param version
-	 * @param date
+	 * Ongoing version at the today date.
+	 * @param version of te contract will be ongoing.
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	void ongoing(ContractVersion version) throws AxelorException;
+
+	/**
+	 * Ongoing version at the specific date.
+	 * @param version of the contract will be ongoing.
+	 * @param date of activation.
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	void ongoing(ContractVersion version, LocalDate date) throws AxelorException;
 
 	/**
-	 * terminate version
-	 *
-	 * @param version
-	 * @param date
+	 * Terminate version at the today date.
+	 * @param version of the contract will be terminate.
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	void terminate(ContractVersion version);
+
+	/**
+	 * Terminate version at the specific date.
+	 * @param version of the contract will be terminate.
+	 * @param date of terminate.
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	void terminate(ContractVersion version, LocalDate date);

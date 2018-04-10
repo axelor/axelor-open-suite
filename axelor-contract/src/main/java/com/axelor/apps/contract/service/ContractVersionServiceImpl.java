@@ -19,6 +19,7 @@ package com.axelor.apps.contract.service;
 
 import java.time.LocalDate;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
@@ -27,16 +28,32 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ContractVersionServiceImpl extends ContractVersionRepository implements ContractVersionService {
 
+	protected AppBaseService appBaseService;
+
+	@Inject
+	public ContractVersionServiceImpl(AppBaseService appBaseService) {
+	    this.appBaseService = appBaseService;
+	}
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void waiting(ContractVersion version) {
+	    waiting(version, appBaseService.getTodayDate());
+	}
+
+	@Override
 	public void waiting(ContractVersion version, LocalDate date) {
 		version.setStatusSelect(WAITING_VERSION);
+	}
 
-		save(version);
+	@Override
+	public void ongoing(ContractVersion version) throws AxelorException {
+	    ongoing(version, appBaseService.getTodayDate());
 	}
 
 	@Override
@@ -59,9 +76,13 @@ public class ContractVersionServiceImpl extends ContractVersionRepository implem
 	}
 
 	@Override
+	public void terminate(ContractVersion version) {
+	    terminate(version, appBaseService.getTodayDate());
+	}
+
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void terminate(ContractVersion version, LocalDate date) {
-
 		version.setEndDate(date);
 		version.setStatusSelect(TERMINATED_VERSION);
 

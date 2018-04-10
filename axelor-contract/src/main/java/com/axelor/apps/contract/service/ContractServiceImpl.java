@@ -57,14 +57,16 @@ import com.google.inject.persist.Transactional;
 
 public class ContractServiceImpl extends ContractRepository implements ContractService {
 
+    protected AppBaseService appBaseService;
 	protected ContractVersionService versionService;
 	protected DurationService durationService;
 	protected ContractLineRepository contractLineRepo;
 	protected ConsumptionLineRepository consumptionLineRepo;
 
 	@Inject
-	public ContractServiceImpl(ContractVersionService versionService, DurationService durationService,
+	public ContractServiceImpl(AppBaseService appBaseService, ContractVersionService versionService, DurationService durationService,
 							   ContractLineRepository contractLineRepo, ConsumptionLineRepository consumptionLineRepo) {
+		this.appBaseService = appBaseService;
 		this.versionService = versionService;
 		this.durationService = durationService;
 		this.contractLineRepo = contractLineRepo;
@@ -93,17 +95,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		ContractVersion currentVersion = contract.getCurrentVersion();
 		
 		Invoice invoice = null;
-		
-		if (currentVersion.getIsWithEngagement()){
-			
-			if (contract.getStatusSelect() != ContractRepository.ACTIVE_CONTRACT || currentVersion.getEngagementStartFromVersion()){
-				contract.setEngagementStartDate(date);
-			}
+
+		if (currentVersion.getIsWithEngagement() &&
+				contract.getStatusSelect() != ContractRepository.ACTIVE_CONTRACT || currentVersion.getEngagementStartFromVersion()) {
+			contract.setEngagementStartDate(date);
 		}
 
 		if(contract.getStatusSelect() != ContractRepository.ACTIVE_CONTRACT) {
 			activeContract(contract, date);
-			
 		}
 		
 		versionService.ongoing(currentVersion, date);
@@ -111,7 +110,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		contract.setVersionNumber(contract.getVersionNumber() + 1);
 		
 		if (contract.getCurrentVersion().getAutomaticInvoicing() && contract.getCurrentVersion().getInvoicingMoment() == 2 ){
-			contract.setInvoicingDate(getTodayDate());
+			contract.setInvoicingDate(appBaseService.getTodayDate());
 			invoice = invoicingContract(contract);
 		}
 
@@ -203,7 +202,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		ContractVersion currentVersion = contract.getCurrentVersion();
 		
 		if (isManual) {
-			contract.setTerminationDemandDate(getTodayDate());
+			contract.setTerminationDemandDate(appBaseService.getTodayDate());
 			contract.setTerminatedManually(true);
 			contract.setTerminatedDate(date);
 			contract.setTerminatedBy(AuthUtils.getUser());
@@ -214,7 +213,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 			}
 		}
 
-		if (contract.getTerminatedDate().isBefore(getTodayDate()) || contract.getTerminatedDate().equals(getTodayDate())){
+		if (contract.getTerminatedDate().isBefore(appBaseService.getTodayDate()) ||
+				contract.getTerminatedDate().equals(appBaseService.getTodayDate())){
 			versionService.terminate(currentVersion, date);
 			contract.setEndDate(date);
 			contract.setStatusSelect(CLOSED_CONTRACT);
@@ -228,9 +228,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice invoicingContract(Contract contract) throws AxelorException {
-		
-		
-		
 		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract) {
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -239,8 +236,12 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		};
 		
 		Invoice invoice = invoiceGenerator.generate();
-		
-		invoice.setOperationSubTypeSelect( contract.getEndDate() == null || contract.getEndDate().isAfter(getTodayDate()) ? InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_INVOICE : InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE  );
+
+		if (contract.getEndDate() == null || contract.getEndDate().isAfter(appBaseService.getTodayDate())) {
+			invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_INVOICE);
+		} else {
+		    invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
+		}
 		invoice.setContract(contract);
 		//invoice.setContractVersion(contract.getCurrentVersion());
 		
@@ -504,10 +505,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 			}
 		}
 		return false;
-	}
-
-	protected LocalDate getTodayDate() {
-		return Beans.get(AppBaseService.class).getTodayDate();
 	}
 
 }
