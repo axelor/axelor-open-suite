@@ -5248,7 +5248,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["description"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["description"] == null || row._outer["description"] == ""</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">

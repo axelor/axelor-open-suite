@@ -4817,15 +4817,14 @@ row["partnerFirstName"]
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <text id="5104">
-                                        <property name="fontFamily">monospace</property>
-                                        <property name="fontSize">13pt</property>
+                                        <property name="fontSize">11pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#606062</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer["note"] == null</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["note"] == null || row._outer["note"] == ""</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
