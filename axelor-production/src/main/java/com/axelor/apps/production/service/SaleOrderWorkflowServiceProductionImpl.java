@@ -34,36 +34,35 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderWorkflowServiceProductionImpl extends SaleOrderWorkflowServiceSupplychainImpl {
-	
+
 	protected ProductionOrderSaleOrderService productionOrderSaleOrderService;
 	protected AppProductionService appProductionService;
-	
+
 	@Inject
-	public SaleOrderWorkflowServiceProductionImpl(SequenceService sequenceService, PartnerRepository partnerRepo, 
+	public SaleOrderWorkflowServiceProductionImpl(SequenceService sequenceService, PartnerRepository partnerRepo,
 			SaleOrderRepository saleOrderRepo, AppSaleService appSaleService, UserService userService,
-			SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService, 
+			SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService,
 			AppSupplychainService appSupplychainService, AccountingSituationSupplychainService accountingSituationSupplychainService,
 			ProductionOrderSaleOrderService productionOrderSaleOrderService, AppProductionService appProductionService) {
-		
+
 		super(sequenceService, partnerRepo, saleOrderRepo, appSaleService, userService,
 				saleOrderStockService, saleOrderPurchaseService, appSupplychainService, accountingSituationSupplychainService);
 
 		this.productionOrderSaleOrderService = productionOrderSaleOrderService;
 		this.appProductionService = appProductionService;
-		
-	}
-	
-	
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
 
+	}
+
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+	public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException  {
 		super.confirmSaleOrder(saleOrder);
-		
+
 		if(appProductionService.getAppProduction().getProductionOrderGenerationAuto())  {
 			productionOrderSaleOrderService.generateProductionOrder(saleOrder);
 		}
-		
+
 	}
-	
+
 }

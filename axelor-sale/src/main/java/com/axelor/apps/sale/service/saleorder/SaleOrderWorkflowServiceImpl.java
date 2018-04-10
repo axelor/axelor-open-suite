@@ -60,22 +60,21 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	protected SaleOrderRepository saleOrderRepo;
 	protected AppSaleService appSaleService;
 	protected UserService userService;
-	
 
 	@Inject
 	public SaleOrderWorkflowServiceImpl(SequenceService sequenceService,
 			PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo, AppSaleService appSaleService, UserService userService)  {
-		
+
 		this.sequenceService = sequenceService;
 		this.partnerRepo = partnerRepo;
 		this.saleOrderRepo = saleOrderRepo;
 		this.appSaleService = appSaleService;
 		this.userService = userService;
 	}
-	
+
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public Partner validateCustomer(SaleOrder saleOrder)  {
 
 		Partner clientPartner = partnerRepo.find(saleOrder.getClientPartner().getId());
@@ -99,7 +98,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
 		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
 		q.setParameter(1, SaleOrderRepository.STATUS_CONFIRMED);
@@ -119,8 +118,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	}
 
     @Override
-    @Transactional(rollbackOn = { AxelorException.class, Exception.class }, ignore = { BlockedSaleOrderException.class })
-    public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+    @Transactional(rollbackOn = { AxelorException.class, RuntimeException.class }, ignore = { BlockedSaleOrderException.class })
+    public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 	    Partner partner = saleOrder.getClientPartner();
 
 	    Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
@@ -145,24 +144,24 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     }
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
+	@Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+	public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException  {
 		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_CONFIRMED);
 		saleOrder.setConfirmationDate(appSaleService.getTodayDate());
 		saleOrder.setConfirmedByUser(userService.getUser());
-		
+
 		this.validateCustomer(saleOrder);
-		
+
 		saleOrderRepo.save(saleOrder);
 	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+
+	@Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
 	public void finishSaleOrder(SaleOrder saleOrder) throws AxelorException {
 		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINISHED);
 
 		saleOrderRepo.save(saleOrder);
 	}
-	
+
 
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
@@ -178,17 +177,17 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 				.toAttach(saleOrder)
 				.generate()
 				.getFileLink();
-		
+
 //		String relatedModel = generalService.getPersistentClass(saleOrder).getCanonicalName(); required ?
-		
+
 	}
 
 	@Override
 	public String getFileName(SaleOrder saleOrder)  {
-		
+
 		return I18n.get("Sale order") + " " + saleOrder.getSaleOrderSeq() + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");
 	}
-	
+
 
 
 
