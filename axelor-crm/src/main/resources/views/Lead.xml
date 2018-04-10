@@ -41,34 +41,20 @@
 			</menu>
 			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
 			  <item title="Schedule Event" action="save,action-lead-view-schedule-event"/>
+			  <item title="Show all events" readonlyIf="id == null" action="action-lead-view-events"/>
 			  <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
 			  <item title="Convert lead" hideIf="statusSelect == 4" readonlyIf="statusSelect == 4 || statusSelect == 6" action="save,action-lead-view-convert-lead"/>
 			  <item title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 6" action="save,action-send-by-email-with-template"/>
 			</menu>
 		</menubar>
 		<panel name="main" >
-			<panel colSpan="2">
-				<field name="picture" showTitle="false" widget="Image" colSpan="12" width="80" height="80"/>
+			<panel colSpan="12">
+				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false" readonly="true"/>
 			</panel>
-			
-			<panel x-span="9" >
-				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-					<editor x-show-titles="false">
-						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="12" onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
-						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="12" onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
-						<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="12"/>
-					</editor>
-				</field>
-				<static name="duplicateLeadText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a lead with this name.</span>]]></static>
-				<field name="companyName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-					<editor x-show-titles="false">
-						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
-						<field name="jobTitle" colSpan="12" placeholder="Function"/>
-						<field name="industrySector" colSpan="12" form-view="industry-sector-form" grid-view="industry-sector-grid"/>
-						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-					</editor>
-				</field>
-				<panel colSpan="4" showIf="fullName != null">
+
+			<panel colSpan="3">
+				<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+				<panel colSpan="12" showIf="fullName != null">
 					<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
@@ -76,58 +62,92 @@
 					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
 			</panel>
-		</panel>
-		
-		<panel name="contactDetails" title="Contact details">
-			<panel colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
-				<field name="mobilePhone" colSpan="3" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-				<field name="isDoNotCall" colSpan="3"/>
-				<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" colSpan="3">
+
+			<panel colSpan="9" >
+				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6" css="bold">
 					<editor x-show-titles="false">
-						<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+						<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
+						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
+						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5" onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
 					</editor>
 				</field>
-				<field name="isDoNotSendEmail" colSpan="3"/>
-				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
-				<field name="fax" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
-				<field name="webSite"/>
-				<spacer colSpan="6"/>
-			</panel>
-			<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="6">
-				<field name="primaryAddress" colSpan="12"/>
-				<field name="primaryCity" colSpan="4"/>
-				<field name="primaryState" colSpan="4"/>
-				<field name="primaryPostalCode" colSpan="4"/>
-				<spacer colSpan="8"/>
-				<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
-			</panel>
-			<panel name="otherAddress" title="Other address" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="6">
-				<field name="otherAddress" colSpan="12"/>
-				<field name="otherCity" colSpan="4"/>
-				<field name="otherState" colSpan="4"/>
-				<field name="otherPostalCode" colSpan="4"/>
-				<field name="otherCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
-				<spacer colSpan="8"/> 
-				<field name="isCopyAddress" onChange="action-group-crm-lead-iscopyaddress-onchange"/>
+				<static name="duplicateLeadText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a lead with this name.</span>]]></static>
+				<field name="companyName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 6">
+					<editor x-show-titles="false">
+						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
+						<field name="jobTitle" colSpan="6" placeholder="Function"/>
+						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid"/>
+						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+					</editor>
+				</field>
 			</panel>
 		</panel>
-		<panel name="description" title="Description" colSpan="12">
-				<field name="description" colSpan="12" showTitle="false" widget="html" height="200"/>
-		</panel> 
+
+		<panel-tabs>
+			<panel name="contact" title="Contact" colSpan="12">
+				<panel title="Contact details" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
+					<field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
+					<field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
+					<field name="$viewerCallAndEmail" showIf="$readonly" colSpan="12" showTitle="false">
+						<viewer>
+							<![CDATA[
+								<h4>
+									<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotCall" x-translate>Rejection of calls</span>
+									<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotSendEmail" x-translate>Rejection of e-mails</span>
+								</h4>
+							]]>
+						</viewer>
+					</field>
+					<spacer colSpan="6"/>
+					<field name="mobilePhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-mobilePhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
+					<field name="emailAddress" colSpan="3" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+						<editor x-show-titles="false">
+							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+						</editor>
+					</field>
+					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
+					<field name="fax" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fax" pattern="^\+?([\s()-.]*\d){7,}$"/>
+					<field name="webSite" colSpan="3"/>
+				</panel>
+
+				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
+					<field name="primaryAddress" colSpan="12"/>
+					<field name="primaryCity" colSpan="4"/>
+					<field name="primaryState" colSpan="4"/>
+					<field name="primaryPostalCode" colSpan="4"/>
+					<spacer colSpan="8"/>
+					<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
+				</panel>
+
+				<panel title="Description" colSpan="12">
+					<field name="description" colSpan="12" showTitle="false" widget="html" height="200"/>
+				</panel>
+			</panel>
+
+			<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
+				<panel-related colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid"/>
+				<panel-related colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-grid"/>
+				<panel-dashlet action="action-lead-view-emails"/>
+				<panel-dashlet if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns"/>
+			</panel>
+		</panel-tabs>
+
       
 		<panel sidebar="true">
-			<field name="statusSelect" colSpan="6"/>
-			<button name="showPartner" title="Show Partner" colSpan="6" showIf="partner" onClick="action-lead-view-show-partner"/>
+			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 6" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+			<button name="start" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start"/>
+			<button name="convert" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead,reload"/>
+			<button name="recycle" title="Recycle" hideIf="statusSelect == 5" icon="fa-recycle" onClick="save,action-lead-record-status-recycle"/>
+			<button name="cancel" title="Cancel" hideIf="statusSelect == 6" icon="fa-times" onClick="save,action-lead-record-status-cancel"/>
+			<button name="new" title="Draft" hideIf="statusSelect != 6" icon="fa-undo" onClick="action-lead-record-status-new"/>
+			<button name="showPartner" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
 		</panel>
 	
 		<panel sidebar="true" name="followUp" title="Follow-up" colSpan="12">
 			<field name="user" canNew="false" canEdit="false" canView="false" colSpan="6" form-view="user-form" grid-view="user-grid" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
 			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
-			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
-			<field name="createdBy" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
-			<field name="createdOn" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
 			<field name="contactDate" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
-			<field name="lostReason" colSpan="12" canNew="true" readonlyIf="statusSelect == 4" requiredIf="statusSelect == 6"/>
+			<field name="lostReason" colSpan="12" readonlyIf="statusSelect == 4" requiredIf="statusSelect == 6" showIf="statusSelect == 6"/>
 		</panel>
 		
 		<panel sidebar="true" name="marketing" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 6" colSpan="12">
@@ -135,14 +155,6 @@
 			<field name="referredBy" colSpan="6"/>
 			<field name="opportunityAmount" colSpan="6"/>
 		</panel>
-     
- 		<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6" itemSpan="12">
- 			<button name="showAllEvents" title="Show all events" onClick="action-lead-view-events" readonlyIf="id == null"/>
- 			<panel-related field="eventList" colSpan="12" grid-view="lead-event-grid" form-view="event-form"/>
-			<panel-related field="opportunitiesList" colSpan="12" grid-view="opportunity-grid" form-view="opportunity-form"/>
-			<panel-dashlet action="action-lead-view-emails"/>
-			<panel-dashlet action="action-lead-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')"/>
- 		</panel>
  		
  		<panel-mail>
 		  <mail-messages limit="4" />
@@ -215,7 +227,25 @@
     	<field name="user"  expr="eval:__user__"/>
     	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     </action-record>
+
+    <action-record name="action-lead-record-status-new" model="com.axelor.apps.crm.db.Lead">
+    	<field name="statusSelect" expr="1"/>
+    	<field name="user" expr="eval:null"/>
+    	<field name="lostReason" expr="eval:null"/>
+    </action-record>
+
+    <action-record name="action-lead-record-status-cancel" model="com.axelor.apps.crm.db.Lead">
+    	<field name="statusSelect" expr="6"/>
+    </action-record>
+
+	<action-record name="action-lead-record-status-start" model="com.axelor.apps.crm.db.Lead">
+    	<field name="statusSelect" expr="3"/>
+    </action-record>
     
+   	<action-record name="action-lead-record-status-recycle" model="com.axelor.apps.crm.db.Lead">
+    	<field name="statusSelect" expr="5"/>
+    </action-record>
+
     <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
     	<field name="otherAddress" expr="eval: primaryAddress" if="isCopyAddress"/>
     	<field name="otherCity" expr="eval: primaryCity" if="isCopyAddress"/>
@@ -223,14 +253,6 @@
     	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="isCopyAddress"/>
     	<field name="otherCountry" expr="eval: primaryCountry" if="isCopyAddress"/>
     </action-record>
-    
-   	<action-attrs name="action-lead-attrs-readonly-other-address">
-   		<attribute name="readonly" for="otherAddress" expr="isCopyAddress"/>
-   		<attribute name="readonly" for="otherCity" expr="eval: isCopyAddress"/>
-   		<attribute name="readonly" for="otherState" expr="eval: isCopyAddress"/>
-   		<attribute name="readonly" for="otherPostalCode" expr="eval: isCopyAddress"/>
-   		<attribute name="readonly" for="otherCountry" expr="eval: isCopyAddress"/>
-   	</action-attrs>
    	
    	<action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-lead-wizard-form"/>
