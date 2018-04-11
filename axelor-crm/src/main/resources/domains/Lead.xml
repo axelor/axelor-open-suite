@@ -47,8 +47,8 @@
     <decimal name="opportunityAmount" title="Opportunity amount"/>
  	<string name="sourceDescription" title="Source description" large="true"/>
     <string name="referredBy" title="Referred by"/>
-    <boolean name="isDoNotCall" title="Allow calls ?"/>
-    <boolean name="isDoNotSendEmail" title="Allow emails ?"/>
+    <boolean name="isDoNotCall" title="Rejection of calls"/>
+    <boolean name="isDoNotSendEmail" title="Rejection of e-mails"/>
     
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Contact" readonly="true"/>
     
@@ -64,9 +64,9 @@
     <string name="fullName" title="Contact name" namecolumn="true">
 	    <![CDATA[
 	    String fullName = "";
-	    if(name != null && firstName != null) fullName = firstName + " "+name;
+	    if(name != null && firstName != null) fullName = firstName + " " + name;
 	    else if(name != null) fullName = name;
-	    else if(firstName != null)  fullName = firstName;
+	    else if(firstName != null) fullName = firstName;
 	    return fullName;
 	    ]]>
     </string>
@@ -74,7 +74,7 @@
     <string name="companyName" title="Company name" namecolumn="true">
 	    <![CDATA[
 	    String companyName =  enterpriseName;
-	    if(companyName != null && fullName != null) companyName = companyName + "," + fullName;
+	    if(companyName != null && fullName != null) companyName = companyName + ", " + fullName;
 	    return companyName;
 	    ]]>
     </string>
