@@ -10,12 +10,12 @@
 		<field name="inTaxAmount" aggregate="sum"/>
 		<field name="inTaxAmountPaid" aggregate="sum"/>
 		<field name="scheduleDate" />
-		<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
-		<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
-		<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+		<field name="debitBlockingOk" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
+		<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"/>
+		<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 		<field name="statusSelect" />
-		<field name="debitNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
-		<field name="fromReject" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+		<field name="debitNumber" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
+		<field name="fromReject" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  if-module="axelor-bank-payment" />
 	</grid>
 
 	<form name="payment-schedule-line-form" title="Schedule line"
@@ -23,19 +23,19 @@
 		<panel name="main" >
 			<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" readonly="true" />
 			<field name="scheduleLineSeq" />
-			<field name="inTaxAmount" readonlyIf="fromReject || statusSelect > 2" />
+			<field name="inTaxAmount" readonlyIf="fromReject || statusSelect > 2"/>
 			<field name="inTaxAmountPaid" readonlyIf="fromReject || statusSelect > 2" />
-			<field name="scheduleDate" readonlyIf="statusSelect > 2" />
-			<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  />
-			<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  />
-			<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+			<field name="scheduleDate" readonlyIf="statusSelect > 2"/>
+			<field name="debitBlockingOk" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  />
+			<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  />
+			<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 			<field name="statusSelect" />
-			<field name="debitNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
-			<field name="directDebitManagement" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
-			<field name="rejectMoveLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="advanceOrPaymentMove" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  form-view="move-form" grid-view="move-grid"/>
-			<field name="advanceMoveLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()"  form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="fromReject" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+			<field name="debitNumber" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
+			<field name="directDebitManagement" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
+			<field name="rejectMoveLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="advanceOrPaymentMove" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  form-view="move-form" grid-view="move-grid"/>
+			<field name="advanceMoveLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="fromReject" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
 		</panel>
 	</form>
 
@@ -44,10 +44,10 @@
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" aggregate="sum"/>
 		<field name="scheduleDate"  />
-		<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
-		<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
-		<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-		<field name="fromReject" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+		<field name="debitBlockingOk" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"/>
+		<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"/>
+		<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+		<field name="fromReject" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  if-module="axelor-bank-payment" />
 		<field name="statusSelect" />
 	</grid>
 
@@ -57,15 +57,15 @@
 			<field name="scheduleLineSeq" />
 			<field name="inTaxAmount" readonlyIf="fromReject || statusSelect > 2" />
 			<field name="scheduleDate" readonlyIf="statusSelect > 2" />
-			<field name="debitBlockingOk" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
-			<field name="rejectDate" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
-			<field name="interbankCodeLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-			<field name="debitNumber" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
-			<field name="directDebitManagement" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid"/>
-			<field name="rejectMoveLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="advanceOrPaymentMove" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="move-form" grid-view="move-grid"/>
-			<field name="advanceMoveLine" if="__config__.app.getApp('account').getManageDirectDebitPayment()" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="fromReject" if="__config__.app.getApp('account').getManageDirectDebitPayment()" />
+			<field name="debitBlockingOk" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
+			<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
+			<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+			<field name="debitNumber" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  if-module="axelor-bank-payment" />
+			<field name="directDebitManagement" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="direct-debit-management-form-payment-schedule-line" grid-view="direct-debit-management-grid" if-module="axelor-bank-payment" />
+			<field name="rejectMoveLine"  if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="advanceOrPaymentMove" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-form" grid-view="move-grid"/>
+			<field name="advanceMoveLine" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-line-form" grid-view="move-line-grid"/>
+			<field name="fromReject" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" />
 			<field name="statusSelect" readonly="true" />
 		</panel>
 		

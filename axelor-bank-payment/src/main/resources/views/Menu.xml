@@ -6,7 +6,7 @@
 	<menuitem name="account-root-bank-orders" parent="account-root"
 		title="Bank Orders" order="26"/>
 		
-	<menuitem name="account-root-bank-order-direct-debit" if="__config__.app.getApp('account').getManageDirectDebitPayment()"
+	<menuitem name="account-root-bank-order-direct-debit" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment').manageDirectDebitPayment"
 		parent="account-root-bank-orders" title="Direct Debits"/>
 		
 	<menuitem name="account-root-bank-order-sepa-direct-debit"
@@ -33,7 +33,7 @@
 		<context name="_orderTypeSelect" expr="4"/>
 	</action-view>
 	
-	<menuitem name="account-root-bank-order-credit-transfer"
+	<menuitem name="account-root-bank-order-credit-transfer" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment').manageCreditTransferPayment"
 		parent="account-root-bank-orders" title="Credit Transfers"/>
 		
 	<menuitem name="account.bank.order.sepa.credit.transfert"
@@ -61,7 +61,8 @@
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-bank-to-bank-transfer"
-		parent="account-root-bank-orders" title="Bank to Bank Transfers"/>
+		parent="account-root-bank-orders" title="Bank to Bank Transfers" if-module="axelor-bank-payment"
+		if="__config__.app.getApp('bank-payment').manageBankToBankTransferPayment" />
 	
 	<menuitem name="account-root-bank-order-sepa-bank-to-bank-transfer"
 		parent="account-root-bank-order-bank-to-bank-transfer" title="National Bank to Bank Transfers"
@@ -102,8 +103,11 @@
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
+      	if-module="axelor-bank-payment"
+		if="eval: __config__.app.getApp('bank-payment').enableEBICSModule"
 		action="account.bank.order.awaiting.for.signature" tag-count="true"
 		tag-style="default"/>
+	
 	
 	<action-view name="account.bank.order.awaiting.for.signature"
 		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >
@@ -171,7 +175,8 @@
 	</action-view>
 	
 	
-	<menuitem name="account-conf-ebics" parent="account-conf" title="Ebics" />
+	<menuitem name="account-conf-ebics" parent="account-conf" title="Ebics" if-module="axelor-bank-payment"
+			  if="eval: __config__.app.getApp('bank-payment').enableEBICSModule" />
 
 	<menuitem name="account-conf-ebics-ebics-user" parent="account-conf-ebics"
 		title="Ebics users" action="account.conf.ebics.ebics.user" />

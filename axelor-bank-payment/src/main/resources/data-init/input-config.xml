@@ -6,7 +6,13 @@
   	<input file="bankpayment_bankOrderFileFormat.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankOrderFileFormat" search="self.importId = :importId" />
   	
   	<input file="bankpayment_bankStatementFileFormat.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankStatementFileFormat" search="self.importId = :importId" />
-  	
+
+	<input file="base_appBankPayment.csv" separator=";" type="com.axelor.apps.base.db.AppBankPayment"  call="com.axelor.csv.script.ImportApp:importApp">
+		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
+	</input>
+
+<!--    <input file="bankpayment_bankPaymentConfig.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankPaymentConfig" search="self.importId = :importId" /> -->
+
 <!--   	<input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
 <!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
 <!-- 	</input> -->

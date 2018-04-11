@@ -30,7 +30,7 @@ import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
-import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.AccountIdentification4Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ActiveOrHistoricCurrencyAndAmount;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.BranchAndFinancialInstitutionIdentification4;
@@ -554,7 +554,8 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
             party6Choice.setPrvtId(personIdentification5);
             GenericPersonIdentification1 genericPersonIdentification1 = factory.createGenericPersonIdentification1();
             personIdentification5.getOthr().add(genericPersonIdentification1);
-            genericPersonIdentification1.setId(Beans.get(AccountConfigBankPaymentService.class).getIcsNumber(senderCompany.getAccountConfig()));
+            genericPersonIdentification1.setId(
+                    Beans.get(BankPaymentConfigService.class).getIcsNumber(senderCompany.getBankPaymentConfig()));
             PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice = factory.createPersonIdentificationSchemeName1Choice();
             genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
             personIdentificationSchemeName1Choice.setPrtry("SEPA");
