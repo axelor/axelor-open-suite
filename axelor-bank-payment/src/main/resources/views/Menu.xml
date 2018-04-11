@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="account-root-bank-orders" parent="account-root"
-		title="Bank Orders" order="26"/>
+		title="Bank Orders" order="26" if="__config__.app.isApp('bank-payment')"/>
 		
 	<menuitem name="account-root-bank-order-direct-debit" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment').manageDirectDebitPayment"
 		parent="account-root-bank-orders" title="Direct Debits"/>
@@ -104,7 +104,7 @@
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
 		parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
       	if-module="axelor-bank-payment"
-		if="eval: __config__.app.getApp('bank-payment').enableEBICSModule"
+		if="__config__.app.getApp('bank-payment').enableEBICSModule"
 		action="account.bank.order.awaiting.for.signature" tag-count="true"
 		tag-style="default"/>
 	
@@ -117,7 +117,7 @@
 	</action-view>
 	
 	<menuitem name="account-root-bank-statement" parent="account-root"
-		title="Bank Statement" order="17"/>
+		title="Bank Statement" order="17" if="__config__.app.isApp('bank-payment')"/>
 
 	<menuitem name="account-root-bank-statement-bank-statement"
 		parent="account-root-bank-statement" title="Bank Statement"
@@ -131,7 +131,7 @@
 	</action-view>
 	
 	<menuitem name="account-root-bank-reconciliation" parent="account-root"
-		title="Bank Reconciliations" order="27"/>
+		title="Bank Reconciliations" order="27" if="__config__.app.isApp('bank-payment')"/>
 
 	<menuitem name="account-root-bank-reconciliation-bank-reconciliation"
 		parent="account-root-bank-reconciliation" title="Bank Reconciliations"
@@ -176,7 +176,7 @@
 	
 	
 	<menuitem name="account-conf-ebics" parent="account-conf" title="Ebics" if-module="axelor-bank-payment"
-			  if="eval: __config__.app.getApp('bank-payment').enableEBICSModule" />
+			  if="__config__.app.getApp('bank-payment').enableEBICSModule" />
 
 	<menuitem name="account-conf-ebics-ebics-user" parent="account-conf-ebics"
 		title="Ebics users" action="account.conf.ebics.ebics.user" />
