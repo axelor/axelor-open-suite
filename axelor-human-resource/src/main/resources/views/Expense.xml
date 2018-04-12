@@ -39,11 +39,14 @@
 		  onNew="action-expense-record-default,action-expense-attrs-hide-button-readonly-field,action-expense-attrs-multiple-users"
 		  onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
 		  onSave="action-expense-method-validate-date,action-expense-method-compute-amounts,action-expense-method-compute" canCopy="false">
-		<toolbar>
-			<button name="printExpense" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-expense"/>
-		</toolbar>
+		<menubar>
+			<menu title="Reports" icon="fa-files-o">
+				<item name="printExpense" title="Print" action="save,action-print-expense"/>
+			</menu>
+		</menubar>
 		<panel>
 			<panel colSpan="9">
+				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 				<field name="expenseSeq"/>
 				<panel itemSpan="12" colSpan="6">
 					<field name="move" readonly="true" showTitle="false" showIf="move">
@@ -56,25 +59,13 @@
 						</viewer>
 					</field>
 				</panel>
-
-				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-				<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-				<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
-				<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-				<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
-				<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" canView="false"/>
-				<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
-				<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" readonlyIf="statusSelect != 1"/>
-				<field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
-				<field name="personalExpenseAmount" hidden="true" />
-				<field name="advanceAmount" hidden="true" />
 			</panel>
-			<panel name="actions" title="Actions" colSpan="3" stacked="true">
-				<button name="sendExpenses" colSpan="4" title="Send Expenses" onClick="action-expense-group-send" hidden="true" hideIf="statusSelect &gt; 1"/>
-				<button name="ventilate" colSpan="4" title="Ventilate" onClick="save,action-expense-method-ventilate" hidden="true"/>
-				<button name="validateButton" onClick="action-expense-group-validate" title="Validate"/>
-				<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse"/>
-				<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field" hidden="true" title="Cancel" icon="fa-close"/>
+			<panel name="actions" itemSpan="12" colSpan="3">
+				<button name="sendExpenses" title="Send Expenses" onClick="action-expense-group-send" hidden="true" hideIf="statusSelect &gt; 1"/>
+				<button name="ventilate" title="Ventilate" onClick="save,action-expense-method-ventilate" hidden="true"/>
+				<button name="validateButton" onClick="action-expense-group-validate" title="Validate" hidden="true"/>
+				<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse" hidden="true"/>
+				<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field" hidden="true" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
 				<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field" title="Return to draft status" showIf="statusSelect &gt; 4 "/>
 				<button name="addPaymentButton" title="Register payment" onClick="save,action-expense-add-payment-form" showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
 				<button name="cancelPaymentButton" title="Cancel payment"
@@ -82,6 +73,18 @@
 						onClick="save,action-expense-method-cancel-payment"/>
 			</panel>
 	    </panel>
+		<panel>
+			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
+			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
+			<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+			<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
+			<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" canView="false"/>
+			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
+			<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" readonlyIf="statusSelect != 1"/>
+			<field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
+			<field name="personalExpenseAmount" hidden="true" />
+			<field name="advanceAmount" hidden="true" />
+		</panel>
 		<panel-tabs>
 			<panel-related field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12"
 				editable="true" form-view="general-expense-line-form" grid-view="general-expense-line-grid" onChange="action-expense-method-compute" />
