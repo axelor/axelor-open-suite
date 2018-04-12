@@ -79,9 +79,6 @@
 						</panel>
 					</editor>
 				</field>
-				<panel title="Technical" colSpan="12">
-					<field name="toClosed"/>
-				</panel>
 			</panel>
 		</panel-tabs>
 	</form>
