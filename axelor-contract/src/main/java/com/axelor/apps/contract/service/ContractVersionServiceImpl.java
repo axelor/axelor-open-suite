@@ -41,12 +41,12 @@ public class ContractVersionServiceImpl extends ContractVersionRepository implem
 	}
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void waiting(ContractVersion version) {
 	    waiting(version, appBaseService.getTodayDate());
 	}
 
 	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void waiting(ContractVersion version, LocalDate date) {
 		version.setStatusSelect(WAITING_VERSION);
 	}
