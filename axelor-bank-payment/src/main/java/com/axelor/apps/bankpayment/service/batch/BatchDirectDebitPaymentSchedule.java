@@ -37,14 +37,16 @@ import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.bankpayment.db.BankPaymentConfig;
+import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.QueryBuilder;
-import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -76,11 +78,6 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
         if (generateBankOrderFlag) {
             Preconditions.checkNotNull(accountingBatch.getCompany(), I18n.get("Company is missing."));
-            Preconditions.checkNotNull(accountingBatch.getCompany().getAccountConfig(),
-                    I18n.get("Company account config is missing."));
-            Preconditions.checkArgument(
-                    !StringUtils.isBlank(accountingBatch.getCompany().getAccountConfig().getIcsNumber()),
-                    I18n.get("Company ICS number is missing."));
             Preconditions.checkNotNull(accountingBatch.getPaymentMode(), I18n.get("Payment method is missing."));
             BankDetails companyBankDetails = getCompanyBankDetails(accountingBatch);
             AccountManagement accountManagement = Beans.get(PaymentModeService.class).getAccountManagement(
@@ -94,6 +91,16 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                     new File(accountingBatch.getPaymentMode().getBankOrderExportFolderPath()).exists(),
                     String.format(I18n.get("Bank order export folder does not exist: %s"),
                             accountingBatch.getPaymentMode().getBankOrderExportFolderPath()));
+
+            BankPaymentConfigService bankPaymentConfigService = Beans.get(BankPaymentConfigService.class);
+
+            try {
+                BankPaymentConfig bankPaymentConfig = bankPaymentConfigService
+                        .getBankPaymentConfig(accountingBatch.getCompany());
+                bankPaymentConfigService.getIcsNumber(bankPaymentConfig);
+            } catch (AxelorException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);

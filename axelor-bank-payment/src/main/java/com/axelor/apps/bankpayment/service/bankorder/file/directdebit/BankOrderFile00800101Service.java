@@ -30,7 +30,7 @@ import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
-import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.AccountIdentification3Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.BranchAndFinancialInstitutionIdentification3;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.CashAccount7;
@@ -519,7 +519,8 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
             party2Choice.getPrvtId().add(personIdentification3);
             GenericIdentification4 genericIdentification4 = factory.createGenericIdentification4();
             personIdentification3.setOthrId(genericIdentification4);
-            genericIdentification4.setId(Beans.get(AccountConfigBankPaymentService.class).getIcsNumber(senderCompany.getAccountConfig()));
+            genericIdentification4.setId(
+                    Beans.get(BankPaymentConfigService.class).getIcsNumber(senderCompany.getBankPaymentConfig()));
             genericIdentification4.setIdTp("SEPA");
 
             /*
