@@ -57,7 +57,8 @@
         <field name="saleOrder.statusSelect" hidden="true"/>
     </grid>
 
-    <form name="sale-order-line-project-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" readonlyIf="true" canEdit="false">
+    <form name="sale-order-line-project-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client" 
+    		readonlyIf="true" canEdit="false">
         <panel title="Sale order">
             <field name="saleOrder.saleOrderSeq" title="Reference" colSpan="4"/>
             <field name="saleOrder.creationDate" colSpan="4"/>
@@ -74,7 +75,7 @@
 			<field name="productName" title="Title"/>
 			<panel colSpan="6">
 				<field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
-				<field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
+				<field name="typeSelect" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
 			</panel>
 		</panel>
  
@@ -102,7 +103,7 @@
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange,action-sale-order-line-compute-total-pack,action-method-sale-order-line-available-stock" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
 				<panel colSpan="6">
 					<field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
-					<field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
+					<field name="typeSelect" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
 				</panel>
 				<field name="productName" colSpan="12"/>
 				<panel>
@@ -118,8 +119,8 @@
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 				<field name="price"  hideIf="typeSelect == 2" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
 				<field name="priceDiscounted" colSpan="4" hidden="true"/>
-				<field name="exTaxTotal" readonly="true" hideIf="typeSelect == 2" />
-				<field name="inTaxTotal" readonly="true" hideIf="typeSelect == 2" />
+				<field name="exTaxTotal" readonly="true"/>
+				<field name="inTaxTotal" readonly="true"/>
 				<spacer/>
 				<panel name="discount" title="Discount" hideIf="typeSelect != 0">
 					<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
@@ -180,7 +181,7 @@
 		  onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-template-attrs-hidden-fields-for-client" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel>
 			<field name="typeSelect"  onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-			<field name="typeSelect"  onChange="action-sale-order-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
+			<field name="typeSelect"  onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 			<field name="productName" showIf="typeSelect == 1" title="Title"/>
 		</panel>
 		<panel hideIf="typeSelect == 1">
@@ -192,8 +193,8 @@
 			<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 			<field name="price"  hideIf="typeSelect == 2" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
 			<field name="priceDiscounted" colSpan="4" hidden="true"/>
-			<field name="exTaxTotal" readonly="true" hideIf="typeSelect == 2" />
-			<field name="inTaxTotal" readonly="true" hideIf="typeSelect == 2" />
+			<field name="exTaxTotal" readonly="true"/>
+			<field name="inTaxTotal" readonly="true"/>
 		</panel>
 		<panel name="discount" title="Discount" hideIf="typeSelect != 0">
 			<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
@@ -287,9 +288,9 @@
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-record-new"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    	<action name="action-sale-order-line-attrs-set-company-currency" />
     	<action name="action-sale-order-attrs-hide-ati"/>
     	<action name="action-sale-order-line-attrs-type-select"/>
-    	<action name="action-sale-order-line-attrs-set-company-currency" />
 		<action name="action-supplychain-sale-order-line-attrs-hide-button"/>
     </action-group>
     
@@ -299,11 +300,11 @@
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
 		<action name="action-method-sale-order-line-available-stock"/>
-    	<action name="action-sale-order-attrs-hide-ati"/>
-    	<action name="action-sale-order-line-attrs-type-select"/>
     	<action name="action-sale-order-line-attrs-set-company-currency" />
+    	<action name="action-sale-order-line-attrs-type-select"/>
 		<action name="action-supplychain-sale-order-line-attrs-hide-button"/>
 		<action name="action-sale-order-line-method-check-qty"/>
+		<action name="action-sale-order-attrs-hide-ati"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -339,8 +340,10 @@
     </action-group>
     
     <action-attrs name="action-sale-order-attrs-hide-ati">
-		<attribute name="hidden" for="exTaxTotal" expr="eval: _parent.inAti" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval: !_parent.inAti" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval: _parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval: !_parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval: saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'" />
+		<attribute name="hidden" for="inTaxTotal" expr="eval: !saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'" />
 	</action-attrs>
 	
 	<action-attrs if-module="axelor-business-project" name="action-sale-order-line-attrs-title-project-task">
