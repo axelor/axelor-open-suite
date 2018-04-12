@@ -172,7 +172,7 @@
 "Bank order export folder path","Dossier d'export des ordres bancaires",,
 "Bank order file format","Format de fichier des ordres bancaires",,
 "Bank order file formats","Formats de fichier des ordres bancaires",,
-"Bank payment",,,
+"Bank payment","Paiement bancaire",,
 "Bank payment batch",,,
 "Bank payment batches",,,
 "Bank payment config (${ name })",,,
