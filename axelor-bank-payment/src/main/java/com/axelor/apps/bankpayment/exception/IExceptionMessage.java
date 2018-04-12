@@ -134,8 +134,8 @@ public interface IExceptionMessage {
 	static final String EBICS_INVALID_BANK_URL = /*$$(*/  "Invalid bank url. It must be start with http:// or https://" /*)*/;
 	static final String EBICS_MISSING_USER_TRANSPORT = /*$$(*/ "Please insert a EBICS user for transport in the EBICS partner" /*)*/;
 	static final String EBICS_NO_SERVICE_CONFIGURED = /*$$(*/ "No service configured on EBICS partner %s for file format %s" /*)*/;
-
 	static final String EBICS_PARTNER_BANK_DETAILS_WARNING = /*$$(*/ "At least one bank details you have entered is missing currency. Here is the list of invalid bank details : %s" /*)*/;
+    static final String EBICS_MISSING_SIGNATORY_EBICS_USER = /* $$( */ "Signatory EBICS user is missing." /* ) */;
 
 	/**
 	 * Batch bank statement

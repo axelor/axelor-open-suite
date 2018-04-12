@@ -48,6 +48,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
@@ -56,13 +57,11 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
-import com.axelor.apps.base.db.AppBankPayment;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -257,19 +256,17 @@ public class BankOrderServiceImpl implements BankOrderService {
 		
 		setSequenceOnBankOrderLines(bankOrder);
 
-        if (Beans.get(AppService.class).isApp("bank-payment")
-                && Beans.get(AppBankPayment.class).getEnableEBICSModule()) {
-		generateFile(bankOrder);
-		
-		bankOrder.setConfirmationDateTime(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-		bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
-		makeEbicsUserFollow(bankOrder);
+        if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEBICSModule()) {
+            generateFile(bankOrder);
 
-		bankOrderRepo.save(bankOrder);
-	}
-		else {
-			validate(bankOrder);
-		}
+            bankOrder.setConfirmationDateTime(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+            bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+            makeEbicsUserFollow(bankOrder);
+
+            bankOrderRepo.save(bankOrder);
+        } else {
+            validate(bankOrder);
+        }
 	}
 
 	@Override
@@ -294,13 +291,18 @@ public class BankOrderServiceImpl implements BankOrderService {
 	@Override
     public void realize(BankOrder bankOrder) throws AxelorException {
 
-        if (Beans.get(AppBankPayment.class).getEnableEBICSModule()) {
-		if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
-				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
-		}
+        if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEBICSModule()) {
+            if (bankOrder.getSignatoryEbicsUser() == null) {
+                throw new AxelorException(bankOrder, IException.MISSING_FIELD,
+                        I18n.get(IExceptionMessage.EBICS_MISSING_SIGNATORY_EBICS_USER));
+            }
+            if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
+                throw new AxelorException(bankOrder.getSignatoryEbicsUser().getEbicsPartner(), IException.MISSING_FIELD,
+                        I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
+            }
 
-		sendBankOrderFile(bankOrder);
-		}
+            sendBankOrderFile(bankOrder);
+        }
 		realizeBankOrder(bankOrder);
 
 	}
@@ -329,11 +331,15 @@ public class BankOrderServiceImpl implements BankOrderService {
 		
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 		Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
-		
-		bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
-		bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
-		bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
-		bankOrderRepo.save(bankOrder);
+
+        bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
+        bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
+
+        if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEBICSModule()) {
+            bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
+        }
+
+        bankOrderRepo.save(bankOrder);
 	}
 	
 
