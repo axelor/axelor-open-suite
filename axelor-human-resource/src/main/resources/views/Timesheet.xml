@@ -50,45 +50,47 @@
 	    onNew="action-group-timesheet-onnew"
 	    onLoad="action-timesheet-group-onload" canNew="false"
 	    onSave="action-timesheet-group-onsave" canCopy="false">
-	    <toolbar>
-	    	<button name="printTimesheet" title="Print" colSpan="2" icon="fa-print" onClick="save,action-print-timesheet"/>
-	    </toolbar>
 	    <menubar>
-	    	<menu title="Tools">
-                <item title="Get time from projects" showIf="statusSelect == 1"
-                    action="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
-	    		<item title="Generate Lines Automatically" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false"/>
-	    	</menu>
-	    </menubar>
-    	<panel name="head">
-		    <field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"/>
-		    <field name="showEditor" colSpan="2" title="Editor" widget="boolean-switch" onChange="action-timesheet-attrs-refresh-editor" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+			<menu title="Reports" icon="fa-files-o">
+				<item name="printTimesheet" title="Print" action="save,action-print-timesheet"/>
+			</menu>
+			<menu title="Tools" icon="fa-wrench">
+				<item title="Get time from projects" showIf="statusSelect == 1"
+					  action="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
+				<item title="Generate Lines Automatically" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false"/>
+			</menu>
+		</menubar>
+		<panel>
+			<panel name="head" colSpan="9">
+				<field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"/>
+				<field name="showEditor" colSpan="2" title="Editor" widget="boolean-switch" onChange="action-timesheet-attrs-refresh-editor" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+			</panel>
+			<panel name="actions" colSpan="3" itemSpan="12">
+				<button name="confirmButton" onClick="action-timesheet-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+				<button name="continueButton" onClick="action-timesheet-group-continue,close" title="Continue" showIf="statusSelect == 2 &amp;&amp; user != null &amp;&amp; user.code == $user" icon="fa-arrow-right"/>
+				<button name="confirmContinueButton" onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+				<button name="validateButton" hidden="true" onClick="action-timesheet-group-validate" title="Validate" icon="fa-check" css="btn-success"/>
+				<button name="refuseButton" hidden="true" onClick="action-timesheet-group-refuse" title="Refuse" icon="fa-times" css="btn-danger" />
+				<button name="cancelButton" hidden="true" onClick="save,action-timesheet-method-cancel,action-timesheet-attrs-buttons" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+				<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+				<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
+						if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
+			</panel>
 		</panel>
 		<panel>
-			<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date"/>
-			<field name="toDate" onChange="action-timesheet-validate-toDate"/>
-			<button name="create" title="Create" colSpan="2" hideIf="id" onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
-		</panel>
-	    <panel name="actions" sidebar="true" stacked="true">
-	    	<button name="confirmButton" onClick="action-timesheet-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-            <button name="continueButton" onClick="action-timesheet-group-continue,close" title="Continue" showIf="statusSelect == 2 &amp;&amp; user != null &amp;&amp; user.code == $user" icon="fa-arrow-right"/>
-	    	<button name="confirmContinueButton" onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-	    	<button name="validateButton" onClick="action-timesheet-group-validate" title="Validate" icon="fa-check" css="btn-success"/>
-	    	<button name="refuseButton" onClick="action-timesheet-group-refuse" title="Refuse" icon="fa-times" css="btn-danger" />
-	    	<button name="cancelButton" onClick="save,action-timesheet-method-cancel,action-timesheet-attrs-buttons" title="Cancel" icon="fa-close" css="btn-danger"/>
-	    	<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
-	    	<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
-			    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
-	    </panel>
-	    <panel sidebar="true" stacked="true">
-		    <panel>
+			<panel>
 				<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid" onChange="action-hr-record-empty-user"/>
 				<field name="user" colSpan="6" form-view="user-form" onChange="action-timesheet-group-user-onchange" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="timeLoggingPreferenceSelect" readonly="true"/>
 				<field name="user.employee" hidden="true" />
 				<field if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()" name="user.employee.timesheetImputationSelect" hidden="true"/>
-		    </panel>
-	    </panel>
+			</panel>
+			<panel>
+				<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date"/>
+				<field name="toDate" onChange="action-timesheet-validate-toDate"/>
+				<button name="create" title="Create" colSpan="2" hideIf="id" onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
+			</panel>
+		</panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
 		    <field name="$fromGenerationDate" title="From generation date" widget="Date"/>
 			<field name="$toGenerationDate" title="To generation date" widget="Date"/>
@@ -96,10 +98,6 @@
 			<field name="$product" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" Select="action-hr-timesheet-attrs-domain-product" onSelect="action-hr-timesheet-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="$logTime" type="decimal"/>
 			<button name="generateLines" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true,save,action-timesheet-attrs-refresh-editor"/>
-		</panel>
-		<panel sidebar="true" name="totals" title="Totals on period">
-			<field name="periodTotal" readonly="true"/>
-			<field name="$periodTotalConvert" type="decimal" readonly="true" hidden="true"/>
 		</panel>
 		<panel name="lines">
 			<panel-dashlet name="timesheetLineEditor" colSpan="12" action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
@@ -111,8 +109,12 @@
 			<field name="$showActivity" hidden="true" type="boolean"/>
 			<field name="$enableTimesheetManufOrder" hidden="true" type="boolean"/>
 		</panel>
+		<panel name="totals" title="Totals on period">
+			<field name="periodTotal" readonly="true"/>
+			<field name="$periodTotalConvert" type="decimal" readonly="true" hidden="true"/>
+		</panel>
 		<panel-dashlet name="panelDashboard" title="Total Hours per Day" showIf="id" action="action-timesheet-view-total-hours-per-day"/>
-		<panel showIf="sentDate != null" sidebar="true" stacked="true">
+		<panel showIf="sentDate != null">
 		 	<field name="sentDate"/>
 			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid" showIf="validatedBy != null"/>
 			<field name="refusedBy"  canEdit="false"  form-view="user-form" grid-view="user-grid" showIf="refusedBy != null"/>
