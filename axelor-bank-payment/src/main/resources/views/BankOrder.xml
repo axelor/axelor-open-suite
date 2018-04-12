@@ -75,7 +75,7 @@
         <field name="bankOrderTotalAmount"/>
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
-        <field name="signatoryEbicsUser"/>
+        <field name="signatoryEbicsUser" if="eval: __config__.app.getApp('bank-payment').enableEBICSModule"/>
         <field name="statusSelect"/>
     </grid>
     
