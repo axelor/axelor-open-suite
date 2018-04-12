@@ -10,9 +10,11 @@
             <field name="manageBankToBankTransferPayment" widget="boolean-switch"/>
             <field name="enableEBICSModule" widget="boolean-switch"/>
         </panel>
-        <panel-tabs>
-            <panel-dashlet action="admin.root.conf.bank.payment.config" colSpan="12" title="Bank payment configurations" />
-        </panel-tabs>
+        <panel>
+            <button name="generateBankPaymentConfigurations" title="Generate bank payment configurations" colSpan="4"
+                onClick="save,com.axelor.apps.bankpayment.web.AppBankPaymentController:generateBankPaymentConfigurations"/>
+            <panel-dashlet action="admin.root.conf.bank.payment.config" colSpan="12"/>
+        </panel>
     </form>
 
     <action-view name="action-company-view-bank-payment-config" title="Bank payment config (${ name })" model="com.axelor.apps.bankpayment.db.BankPaymentConfig">

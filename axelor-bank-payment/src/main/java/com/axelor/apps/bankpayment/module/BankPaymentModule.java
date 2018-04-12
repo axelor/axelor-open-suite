@@ -35,6 +35,8 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankServiceImpl;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerServiceImpl;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
@@ -51,39 +53,42 @@ import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidat
 
 public class BankPaymentModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		
-		 bind(BankReconciliationRepository.class).to(BankReconciliationManagementRepository.class);
-		 
-		 bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
-		 
-		 bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
-	        
-		 bind(EbicsBankService.class).to(EbicsBankServiceImpl.class);
-		 
-		 bind(EbicsPartnerService.class).to(EbicsPartnerServiceImpl.class);
-        
-		 bind(EbicsCertificateRepository.class).to(EbicsCertificateAccountRepository.class);
-		 
-		 bind(BankOrderService.class).to(BankOrderServiceImpl.class);
-		 
-		 bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
-	        
-	     bind(BankOrderMoveService.class).to(BankOrderMoveServiceImpl.class);
-	    
-	     bind(InvoicePaymentCancelServiceImpl.class).to(InvoicePaymentCancelServiceBankPayImpl.class);
-	     
-	     bind(InvoicePaymentValidateServiceImpl.class).to(InvoicePaymentValidateServiceBankPayImpl.class);
+    @Override
+    protected void configure() {
 
-	     bind(BatchCreditTransferSupplierPayment.class).to(BatchCreditTransferSupplierPaymentBankPayment.class);
+        bind(AppBankPaymentService.class).to(AppBankPaymentServiceImpl.class);
 
-	     bind(BatchCreditTransferPartnerReimbursement.class).to(BatchCreditTransferPartnerReimbursementBankPayment.class);
+        bind(BankReconciliationRepository.class).to(BankReconciliationManagementRepository.class);
 
-	     bind(AccountingBatchService.class).to(AccountingBatchBankPaymentService.class);
+        bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
 
-	     bind(BatchBankPaymentService.class).to(BatchBankPaymentServiceImpl.class);
+        bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
 
-	}
+        bind(EbicsBankService.class).to(EbicsBankServiceImpl.class);
+
+        bind(EbicsPartnerService.class).to(EbicsPartnerServiceImpl.class);
+
+        bind(EbicsCertificateRepository.class).to(EbicsCertificateAccountRepository.class);
+
+        bind(BankOrderService.class).to(BankOrderServiceImpl.class);
+
+        bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
+
+        bind(BankOrderMoveService.class).to(BankOrderMoveServiceImpl.class);
+
+        bind(InvoicePaymentCancelServiceImpl.class).to(InvoicePaymentCancelServiceBankPayImpl.class);
+
+        bind(InvoicePaymentValidateServiceImpl.class).to(InvoicePaymentValidateServiceBankPayImpl.class);
+
+        bind(BatchCreditTransferSupplierPayment.class).to(BatchCreditTransferSupplierPaymentBankPayment.class);
+
+        bind(BatchCreditTransferPartnerReimbursement.class)
+                .to(BatchCreditTransferPartnerReimbursementBankPayment.class);
+
+        bind(AccountingBatchService.class).to(AccountingBatchBankPaymentService.class);
+
+        bind(BatchBankPaymentService.class).to(BatchBankPaymentServiceImpl.class);
+
+    }
 
 }

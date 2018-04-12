@@ -5,7 +5,7 @@
   	
 	<input file="bankpayment_bankOrderEconomicReason.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" />
 
-	<input file="bankpayment_bankPaymentConfig.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankPaymentConfig" />
+	<input file="bankpayment_bankPaymentConfig.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankPaymentConfig" search="self.importId = :importId"/>
 
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
 		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
