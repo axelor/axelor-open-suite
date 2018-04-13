@@ -11,6 +11,10 @@
 		<field name="statusSelect"/>
 	</grid>
 	
+    <action-method name="action-project-method-generate-quotation">
+        <call class="com.axelor.apps.businessproject.web.ProjectController" method="generateQuotation"/>
+    </action-method>
+
 	<action-method name="action-project-method-print-project">
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="printProject"/>
 	</action-method>
