@@ -83,6 +83,7 @@
 - Fix manufacturing order stock move generation in unusual case.
 - Fix default supplier in purchase order generation from sale order.
 - Stock location is no more required if supplychain module is not enabled
+- Compute the sale price and min sale price on purchase order line only if the product is saleable
 
 
 ## [Unreleased 4.x]
