@@ -92,18 +92,6 @@ public class InvoicingProjectController {
 		response.setValues(invoicingProject);
 	}
 
-	public void setDefaultLines(ActionRequest request, ActionResponse response) {
-
-		InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
-
-		Project project = (Project) request.getContext().get("project");
-
-		invoicingProjectService.createEmptyLines(invoicingProject);
-		invoicingProjectService.fillLines(invoicingProject, project);
-
-		response.setValues(invoicingProject);
-	}
-
     /**
      * Generates invoicing project minutes report
      *

@@ -347,24 +347,14 @@ public class InvoicingProjectService {
 		}
 	}
 	
-	public void createEmptyLines(InvoicingProject invoicingProject){
+	public void clearLines(InvoicingProject invoicingProject){
 		
 		invoicingProject.setSaleOrderLineSet(new HashSet<SaleOrderLine>());
 		invoicingProject.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>());
 		invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
 		invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
 		invoicingProject.setElementsToInvoiceSet(new HashSet<ElementsToInvoice>());
-		
-	}
-	
-	public void clearLines(InvoicingProject invoicingProject){
-		
-		invoicingProject.clearSaleOrderLineSet();
-		invoicingProject.clearPurchaseOrderLineSet();
-		invoicingProject.clearLogTimesSet();
-		invoicingProject.clearExpenseLineSet();
-		invoicingProject.clearElementsToInvoiceSet();
-		invoicingProject.clearProjectSet();
+		invoicingProject.setProjectSet(new HashSet<Project>());
 	}
 	
 	
