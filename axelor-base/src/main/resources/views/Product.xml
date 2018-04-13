@@ -68,7 +68,7 @@
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
 			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"/>
-           			<field name="isShippingCostsProduct" colSpan="4"/>
+                    <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect == 'service'"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
                         requiredIf="productTypeSelect == 'storable'"
@@ -152,6 +152,7 @@
 	    	</panel>
             <panel name="accounting" title="Accounting" if="__config__.app.isApp('account')">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
+                <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
                 <panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
 	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
@@ -227,7 +228,7 @@
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
 	    		</panel>
-	    	<panel name="links" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct">
+            <panel name="links" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct" showIf="id">
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned" showIf="id" />
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line" showIf="id" />
@@ -236,7 +237,7 @@
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical" showIf="id" />
 	    	</panel>
-	    	<panel name="packaging" title="Packaging" hideIf="isShippingCostsProduct">
+            <panel name="packaging" title="Packaging" hideIf="isShippingCostsProduct || productTypeSelect =='service'">
 	  			<panel name="weight" title="Weight" colSpan="6">
 	  				<field name="weightUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
 	  				<field name="grossWeight"/>
@@ -250,7 +251,6 @@
 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
-				  <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
   			</panel>
   			<panel-related field="packLines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
   		</panel-tabs>
