@@ -33,8 +33,8 @@ import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -51,14 +51,25 @@ public class ProjectController {
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
     @Inject
-    private ProjectService projectService;
-
-    @Inject
     private ProjectBusinessService projectBusinessService;
     
     @Inject
     private InvoicingProjectService invoicingProjectService;
-    
+
+    public void generateQuotation(ActionRequest request, ActionResponse response) {
+        try {
+            Project project = request.getContext().asType(Project.class);
+            SaleOrder order = projectBusinessService.generateQuotation(project);
+            response.setView(ActionView
+                    .define("Sale Order")
+                    .model(SaleOrder.class.getName())
+                    .add("form", "sale-order-form")
+                    .context("_showRecord", String.valueOf(order.getId())).map());
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
 	public void printProject(ActionRequest request,ActionResponse response) throws AxelorException  {
 		Project project = request.getContext().asType(Project.class);
 
@@ -99,7 +110,7 @@ public class ProjectController {
 		try {
 			Project project = request.getContext().asType(Project.class);
 
-			BigDecimal duration = projectService.computeDurationFromChildren(project.getId());
+			BigDecimal duration = projectBusinessService.computeDurationFromChildren(project.getId());
 
 			response.setValue("duration", duration);
 		} catch (Exception e) {

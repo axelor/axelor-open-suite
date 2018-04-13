@@ -15,26 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
-
-import java.time.LocalDate;
+package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.service.TeamTaskService;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 
-public class TeamTaskServiceImpl implements TeamTaskService {
-
-    @Override
-    public TeamTask create(String subject, Project project, User assignedTo) {
-        TeamTask task = new TeamTask();
-        task.setName(subject);
-        task.setAssignedTo(assignedTo);
-        task.setTaskDate(LocalDate.now());
-        task.setStatus("new");
-        task.setPriority("normal");
-        project.addTeamTaskListItem(task);
-        return task;
-    }
-
+public interface TeamTaskBusinessService extends TeamTaskService {
+    TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo);
 }
