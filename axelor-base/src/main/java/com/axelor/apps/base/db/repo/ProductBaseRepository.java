@@ -46,7 +46,7 @@ public class ProductBaseRepository extends ProductRepository{
 	@Override
 	public Product save(Product product){
 		
-		product.setFullName("["+product.getCode()+"]"+product.getName());
+		product.setFullName("["+product.getCode()+"] "+product.getName());
 		
 		product = super.save(product);
 		if(product.getBarCode() == null && product.getSerialNumber()!=null  &&  appBaseService.getAppBase().getActivateBarCodeGeneration() && product.getBarcodeTypeConfig()!=null) {

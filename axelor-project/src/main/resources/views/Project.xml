@@ -44,7 +44,7 @@
 				<item title="Gantt" action="action-project-open-gantt" showIf="isProject"/>
 				<item title="Book resource" action="save,action-project-book-resource" showIf="isProject"/>
 				<item title="Planning the project" action="save,action-project-method-create-planning" showIf="!excludePlanning &amp;&amp; isProject"/>
-				<item title="Generate quotation" action="action-project-method-generate-quotation" showIf="isBusinessProject"/>
+				<item title="Generate quotation" action="action-project-method-generate-quotation" showIf="isBusinessProject" if="__config__.app.isApp('business-project')"/>
 			</menu>
 		</menubar>
 
@@ -613,10 +613,6 @@
 
 	<action-method name="action-project-method-create-planning">
 		<call class="com.axelor.apps.project.web.ProjectController" method="createPlanning"/>
-	</action-method>
-
-	<action-method name="action-project-method-generate-quotation">
-		<call class="com.axelor.apps.project.web.ProjectController" method="generateQuotation"/>
 	</action-method>
 
 	<action-method name="action-project-method-import-members">

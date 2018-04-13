@@ -10,7 +10,7 @@
 	</grid>
 
 	<form name="invoicing-project-form" title="Invoicing business project" model="com.axelor.apps.businessproject.db.InvoicingProject"
-		onNew="action-invoicing-project-attrs-title-project,action-invoicing-project-method-set-default-lines" onLoad="action-invoicing-project-attrs-title-project" width="large">
+		onNew="action-invoicing-project-group-on-new" onLoad="action-invoicing-project-attrs-title-project" width="large">
 		<toolbar>
   			<button name="delete" hidden="true" showIf="invoice == null" title="Delete"/>
   			<button name="print" title="Print delivery sheet" hidden="true" showIf="project" onClick="action-invoicing-project-method-print"/>
@@ -98,6 +98,12 @@
 
 	</form>
 	
+	<action-group name="action-invoicing-project-group-on-new">
+		<action name="action-invoicing-project-attrs-title-project"/>
+		<action name="action-invoicing-project-record-default"/>
+		<action name="action-invoicing-project-method-fill-in" if="project != null"/>
+	</action-group>
+	
 	<action-method name="action-invoicing-project-method-generate-invoice">
 		<call class="com.axelor.apps.businessproject.web.InvoicingProjectController" method="generateInvoice"/>
 	</action-method>
@@ -110,15 +116,14 @@
 		<call class="com.axelor.apps.businessproject.web.InvoicingProjectController" method="print"/>
 	</action-method>
 
-	<action-method name="action-invoicing-project-method-set-default-lines">
-		<call class="com.axelor.apps.businessproject.web.InvoicingProjectController" method="setDefaultLines"/>
-	</action-method>
-
 	<action-attrs name="action-invoicing-project-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 		<attribute name="title" for="projectSet" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
-		<attribute name="value" for="project" expr="eval: _project"/>
 	</action-attrs>
+	
+	<action-record name="action-invoicing-project-record-default" model="com.axelor.apps.businessproject.db.InvoicingProject">
+		<field name="project" expr="eval: _project"/>
+	</action-record>
 	
 	<action-view name="action-invoicing-project-show-timesheet-lines" title="Timesheet lines" model="com.axelor.apps.hr.db.TimesheetLine">
 		<view name="timesheet-line-project-grid" type="grid"/>

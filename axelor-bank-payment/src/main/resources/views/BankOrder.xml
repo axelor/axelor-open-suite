@@ -18,7 +18,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
-        <field name="signatoryEbicsUser"/>
+        <field name="signatoryEbicsUser" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').enableEBICSModule"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -37,7 +37,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
-        <field name="signatoryEbicsUser"/>
+        <field name="signatoryEbicsUser" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').enableEBICSModule"/>
         <field name="statusSelect"/>
     </grid>
 
@@ -75,7 +75,7 @@
         <field name="bankOrderTotalAmount"/>
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
-        <field name="signatoryEbicsUser"/>
+        <field name="signatoryEbicsUser" if="eval: __config__.app.getApp('bank-payment').enableEBICSModule"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -101,7 +101,7 @@
 	        </panel>
 	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
 		        <field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
-		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1" showIf="senderBankDetails"/>
+		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEBICSModule"/>
 		        <field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
 		        <field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
 		        	<viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
@@ -244,7 +244,7 @@
 				<field name="senderBankDetails" canView="false" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 			</panel>
 	        <panel colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
-				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails"/>
+				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEBICSModule"/>
 				<field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 				<field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
 				<field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">

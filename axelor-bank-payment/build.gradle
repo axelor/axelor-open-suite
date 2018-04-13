@@ -5,7 +5,7 @@ apply {
 }
 
 axelor {
-	title "Axelor bank payment"
+	title "Axelor :: Bank Payment"
 	description "Axelor Bank Payment Module"
 	removable true
 }

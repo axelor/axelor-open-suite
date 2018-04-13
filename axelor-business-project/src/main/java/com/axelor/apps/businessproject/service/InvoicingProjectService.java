@@ -29,10 +29,10 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.util.InvoiceLineComparator;
-import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -111,7 +111,7 @@ public class InvoicingProjectService {
 			}
 		};
 		Invoice invoice = invoiceGenerator.generate();
-		AccountConfigBankPaymentService accountConfigService = Beans.get(AccountConfigBankPaymentService.class);
+		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
 		invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
@@ -347,24 +347,14 @@ public class InvoicingProjectService {
 		}
 	}
 	
-	public void createEmptyLines(InvoicingProject invoicingProject){
+	public void clearLines(InvoicingProject invoicingProject){
 		
 		invoicingProject.setSaleOrderLineSet(new HashSet<SaleOrderLine>());
 		invoicingProject.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>());
 		invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
 		invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
 		invoicingProject.setElementsToInvoiceSet(new HashSet<ElementsToInvoice>());
-		
-	}
-	
-	public void clearLines(InvoicingProject invoicingProject){
-		
-		invoicingProject.clearSaleOrderLineSet();
-		invoicingProject.clearPurchaseOrderLineSet();
-		invoicingProject.clearLogTimesSet();
-		invoicingProject.clearExpenseLineSet();
-		invoicingProject.clearElementsToInvoiceSet();
-		invoicingProject.clearProjectSet();
+		invoicingProject.setProjectSet(new HashSet<Project>());
 	}
 	
 	
