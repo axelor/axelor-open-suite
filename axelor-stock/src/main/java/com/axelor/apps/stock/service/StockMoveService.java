@@ -224,4 +224,13 @@ public interface StockMoveService {
      */
     Address getToAddress(StockMove stockMove);
 
+
+    /**
+     * Check whether weight information is required.
+     * 
+     * @param stockMove
+     * @return
+     */
+    boolean checkWeightsRequired(StockMove stockMove);
+
 }

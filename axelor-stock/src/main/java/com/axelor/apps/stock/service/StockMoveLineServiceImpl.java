@@ -46,7 +46,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -59,11 +58,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	private TrackingNumberService trackingNumberService;
 
 	protected AppBaseService appBaseService;
+	protected StockMoveService stockMoveService;
 
 	@Inject
-	public StockMoveLineServiceImpl(TrackingNumberService trackingNumberService, AppBaseService appBaseService) {
+	public StockMoveLineServiceImpl(TrackingNumberService trackingNumberService, AppBaseService appBaseService, StockMoveService stockMoveService) {
 		this.trackingNumberService = trackingNumberService;
 		this.appBaseService = appBaseService;
+		this.stockMoveService = stockMoveService;
 	}
 
 	/**
@@ -641,7 +642,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
         startUnit = product.getWeightUnit();
         if(startUnit == null) {
-        	throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_PRODUCT_WEIGHT_UNIT), product.getName());
+            StockMove stockMove = stockMoveLine.getStockMove();
+
+            if (stockMove != null && !stockMoveService.checkWeightsRequired(stockMove)) {
+                return product.getNetWeight();
+            }
+
+            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_PRODUCT_WEIGHT_UNIT), product.getName());
         }
 
 		if (company != null && company.getStockConfig() != null
