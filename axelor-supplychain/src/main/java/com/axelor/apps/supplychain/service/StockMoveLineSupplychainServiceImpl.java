@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -39,9 +38,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.TrackingNumberService;
@@ -64,12 +61,12 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 
 	@Inject
 	public StockMoveLineSupplychainServiceImpl(TrackingNumberService trackingNumberService,
-											   AppBaseService appBaseService,
+											   AppBaseService appBaseService, StockMoveService stockMoveService,
 											   AccountManagementService accountManagementService,
 											   PriceListService priceListService,
 											   PurchaseProductService productService,
 											   UnitConversionService unitConversionService) {
-		super(trackingNumberService, appBaseService);
+		super(trackingNumberService, appBaseService, stockMoveService);
 		this.accountManagementService = accountManagementService;
 		this.priceListService = priceListService;
 		this.productService = productService;
