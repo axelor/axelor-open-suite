@@ -72,22 +72,10 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 	@Override
 	public void clearLines(InvoicingProject invoicingProject){
 		
-		invoicingProject.clearSaleOrderLineSet();
-		invoicingProject.clearPurchaseOrderLineSet();
-		invoicingProject.clearLogTimesSet();
-		invoicingProject.clearExpenseLineSet();
-		invoicingProject.clearElementsToInvoiceSet();
-		invoicingProject.clearProjectSet();
-		invoicingProject.clearManufOrderSet();
-	}
-	
-	@Override
-	public void createEmptyLines(InvoicingProject invoicingProject) {
-
-		super.createEmptyLines(invoicingProject);
+		super.clearLines(invoicingProject);
 		invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
 	}
-
+	
 	@Override
 	public int countToInvoice(Project project) {
 
