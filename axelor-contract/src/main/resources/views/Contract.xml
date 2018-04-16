@@ -32,7 +32,7 @@
                 <field name="targetType" readonlyIf="id" onChange="action-contract-attrs-domains-template"/>
                 <field name="company" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="6" css="highlight"/>
-                <field name="partner" readonlyIf="statusSelect >= 2" showIf="targetType" canEdit="false" onChange="action-attrs-contract-update-partner" required="true"/>
+                <field name="partner" readonlyIf="statusSelect >= 2" form-view="partner-form" showIf="targetType" canEdit="false" required="true" onChange="action-contract-record-partner-payment-config"/>
                 <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" name="currency" canEdit="false" readonlyIf="statusSelect >= 2"/>
                 <panel title="Contract Dates" hidden="true" showIf="id" colSpan="12">
                     <field name="createdOn" colSpan="3"/>
@@ -140,7 +140,7 @@
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
                 <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
-                    <field name="isInvoicingManagement" readonlyIf="statusSelect > 1" colSpan="6" onChange="action-contract-attrs-require-payment-config"/>
+                    <field name="isInvoicingManagement" readonlyIf="statusSelect > 1" colSpan="6" onChange="action-contract-attrs-required-payment-config,action-contract-record-partner-payment-config"/>
                     <panel colSpan="6" hidden="true" showIf="isInvoicingManagement">
                         <field name="isAdditionaBenefitManagement" colSpan="6" if="__config__.app.getApp('contract')isAdditionalBenefitManagement"/>
                         <field name="isConsumptionManagement" colSpan="6" if="__config__.app.getApp('contract').isConsumptionManagement"/>
@@ -314,9 +314,14 @@
         <call class="com.axelor.apps.contract.web.ContractController" method="terminated"/>
     </action-method>
 
-    <action-attrs name="action-contract-attrs-require-payment-config">
+    <action-attrs name="action-contract-attrs-required-payment-config">
         <attribute for="currentVersion.paymentMode" name="required" expr="eval: isInvoicingManagement"/>
         <attribute for="currentVersion.paymentCondition" name="required" expr="eval: isInvoicingManagement"/>
+    </action-attrs>
+
+    <action-attrs name="action-contract-attrs-partner-payment-config">
+        <attribute for="currentVersion.paymentMode" name="value" expr="eval: partner?.inPaymentMode"/>
+        <attribute for="currentVersion.paymentCondition" name="value" expr="eval: partner?.paymentCondition"/>
     </action-attrs>
 
 </object-views>

@@ -20,14 +20,20 @@ package com.axelor.apps.contract.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.service.DurationService;
@@ -287,14 +293,27 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 			}
 			 
 		}
-		
-		
-		for (ContractLine line : contract.getCurrentVersion().getContractLineList()) {
-			
-			if (line.getIsConsumptionLine()) { continue; }
-			
+
+		List<ContractLine> contractLines = new ArrayList<>();
+		contractLines.addAll(contract
+				.getCurrentVersion()
+				.getContractLineList()
+				.stream()
+				.filter(contractLine -> !contractLine.getIsConsumptionLine())
+				.collect(Collectors.toList()));
+
+		contractLines.addAll(contract
+				.getAdditionalBenefitList()
+                .stream()
+				.filter(contractLine -> !contractLine.getIsInvoiced())
+                .peek(contractLine -> contractLine.setIsInvoiced(true))
+				.collect(Collectors.toList()));
+
+		InvoiceLineRepository invoiceLineRepository = Beans.get(InvoiceLineRepository.class);
+		AccountManagementAccountService accountManagementAccountService = Beans.get(AccountManagementAccountService.class);
+
+		for (ContractLine line: contractLines) {
 			InvoiceLine invoiceLine = new InvoiceLine();
-			
 			invoiceLine.setProduct(line.getProduct());
 			invoiceLine.setExTaxTotal(line.getExTaxTotal());
 			invoiceLine.setInTaxTotal(line.getInTaxTotal());
@@ -305,34 +324,19 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 			invoiceLine.setUnit(line.getUnit());
 			invoiceLine.setTaxLine(line.getTaxLine());
 			invoiceLine.setInvoice(invoice);
+
+			AccountManagement accountManagement = accountManagementAccountService.getAccountManagement(line.getProduct(), contract.getCompany());
+			Account account = accountManagementAccountService.getProductAccount(accountManagement, false);
+			invoiceLine.setAccount(account);
+
 			invoice.addInvoiceLineListItem(invoiceLine);
-			 
-			JPA.save(invoiceLine);
-			
-			//invLineList.add(invoiceLine);
-		}
-		for (ContractLine line : contract.getAdditionalBenefitList() ) {
-			if (!line.getIsInvoiced()){
-				InvoiceLine invoiceLine = new InvoiceLine();
-				invoiceLine.setProduct(line.getProduct());
-				invoiceLine.setExTaxTotal(line.getExTaxTotal());
-				invoiceLine.setInTaxTotal(line.getInTaxTotal());
-				invoiceLine.setDescription(line.getDescription());
-				invoiceLine.setPrice(line.getPrice());
-				invoiceLine.setProductName(line.getProductName());
-				invoiceLine.setQty(line.getQty());
-				invoiceLine.setUnit(line.getUnit());
-				invoiceLine.setTaxLine(line.getTaxLine());
-				invoiceLine.setInvoice(invoice);
-				invoice.addInvoiceLineListItem(invoiceLine);
-				
-				//invLineList.add(invoiceLine);
-				line.setIsInvoiced(true);
+
+			invoiceLineRepository.save(invoiceLine);
+			if (line.getIsInvoiced()) {
 				contractLineRepo.save(line);
-				JPA.save(invoiceLine);
 			}
 		}
-		
+
 		Multimap<ContractLine, ConsumptionLine> multiMap = HashMultimap.create();
 		for (Entry<ConsumptionLine, ContractLine> entry : linesFromOlderVersionsMp.entrySet()) {
 		  multiMap.put(entry.getValue(), entry.getKey());

@@ -2,11 +2,9 @@ package com.axelor.apps.contract.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.MalformedURLException;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -16,8 +14,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-
-import wslite.json.JSONException;
 
 public class ContractLineServiceImpl implements ContractLineService {
 
@@ -45,6 +41,7 @@ public class ContractLineServiceImpl implements ContractLineService {
         contractLine.setPrice(null);
         contractLine.setExTaxTotal(null);
         contractLine.setInTaxTotal(null);
+        contractLine.setDescription(null);
         return contractLine;
     }
 
@@ -57,6 +54,7 @@ public class ContractLineServiceImpl implements ContractLineService {
             contractLine.setUnit(product.getUnit());
         }
         contractLine.setPrice(product.getSalePrice());
+        contractLine.setDescription(product.getDescription());
         return contractLine;
     }
 

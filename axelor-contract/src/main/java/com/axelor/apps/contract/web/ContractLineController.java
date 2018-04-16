@@ -17,21 +17,11 @@
  */
 package com.axelor.apps.contract.web;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-
-import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.CurrencyConversionService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.service.ContractLineService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
