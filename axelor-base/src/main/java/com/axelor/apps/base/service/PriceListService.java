@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -152,7 +151,7 @@ public class PriceListService {
 
 	public Map<String, Object>  getDiscounts(PriceList priceList, PriceListLine priceListLine, BigDecimal price)  {
 
-		Map<String, Object> discounts = new HashMap<String, Object>();
+		Map<String, Object> discounts = new HashMap<>();
 
 		if(priceListLine != null)  {
 			discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
@@ -160,8 +159,13 @@ public class PriceListService {
 
 		}
 		else  {
-			discounts.put("discountAmount", priceList.getGeneralDiscount().setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
-			discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
+			BigDecimal discountAmount = priceList.getGeneralDiscount().setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			discounts.put("discountAmount", discountAmount);
+			if (discountAmount.compareTo(BigDecimal.ZERO) == 0) {
+				discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_NONE);
+			} else {
+				discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
+			}
 		}
 
 		return discounts;
@@ -182,7 +186,7 @@ public class PriceListService {
 		priceListRepo.save(priceList);
 		return priceList;
 	}
-	
-	
+
+
 
 }
