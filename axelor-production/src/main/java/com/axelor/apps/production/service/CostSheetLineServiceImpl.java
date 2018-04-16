@@ -37,6 +37,7 @@ import com.axelor.apps.production.db.repo.CostSheetLineRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class CostSheetLineServiceImpl implements CostSheetLineService  {
@@ -128,7 +129,14 @@ public class CostSheetLineServiceImpl implements CostSheetLineService  {
 	
 	public CostSheetLine createWorkCenterCostSheetLine(WorkCenter workCenter, int priority, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal costPrice, Unit unit)  {
 		
-		return this.createCostSheetLine(workCenter.getName(), priority + " - " + workCenter.getCode(), bomLevel, consumptionQty, costPrice, workCenter.getCostSheetGroup(), 
+		StringBuilder sb = new StringBuilder();
+		sb.append("");
+		sb.append(priority);
+		String code = sb.toString();
+		if(!Strings.isNullOrEmpty(workCenter.getCode())) {
+			code += " - " + workCenter.getCode();
+		}
+		return this.createCostSheetLine(workCenter.getName(), code, bomLevel, consumptionQty, costPrice, workCenter.getCostSheetGroup(), 
 				null, CostSheetLineRepository.TYPE_WORK_CENTER, unit, workCenter, parentCostSheetLine);
 		
 	}
