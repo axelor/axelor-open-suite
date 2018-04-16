@@ -29,12 +29,12 @@
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
     
     <many-to-one name="prodProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine" title="Operation" initParam="true"/> 
-  
-    <datetime name="plannedStartDateT" title="Start date"/>
-  	<datetime name="plannedEndDateT" title="End date"/>
-  	
- 	<datetime name="realStartDateT" title="Start date"/>
-  	<datetime name="realEndDateT" title="End date"/>
+
+      <datetime name="plannedStartDateT" title="Planned start"/>
+      <datetime name="plannedEndDateT" title="Planned end"/>
+
+      <datetime name="realStartDateT" title="Real start"/>
+      <datetime name="realEndDateT" title="Real end"/>
     
     <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in"/>
     
