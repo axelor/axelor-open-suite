@@ -8,7 +8,7 @@
         <boolean name="manageDirectDebitPayment" title="Manage direct debit payment" default="false" />
         <boolean name="manageCreditTransferPayment" title="Manage credit transfer payment" default="true"/>
         <boolean name="manageBankToBankTransferPayment" title="Manage bank to bank transfer payment" default="true"/>
-        <boolean name="enableEBICSModule" title="Enable EBICS module" default="false"/>
+        <boolean name="enableEbicsModule" title="Enable EBICS module" default="false"/>
     </entity>
 
 </domain-models>

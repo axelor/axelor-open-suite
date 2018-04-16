@@ -256,7 +256,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		
 		setSequenceOnBankOrderLines(bankOrder);
 
-        if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEBICSModule()) {
+        if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
             generateFile(bankOrder);
 
             bankOrder.setConfirmationDateTime(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
@@ -291,7 +291,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 	@Override
     public void realize(BankOrder bankOrder) throws AxelorException {
 
-        if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEBICSModule()) {
+        if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
             if (bankOrder.getSignatoryEbicsUser() == null) {
                 throw new AxelorException(bankOrder, IException.MISSING_FIELD,
                         I18n.get(IExceptionMessage.EBICS_MISSING_SIGNATORY_EBICS_USER));
@@ -335,7 +335,7 @@ public class BankOrderServiceImpl implements BankOrderService {
         bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
         bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
-        if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEBICSModule()) {
+        if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
             bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
         }
 
