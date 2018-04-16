@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 5.0.0-rc1] - 2018-04-16
+## [5.0.0-rc1] - 2018-04-16
 ## Features
 - New currency conversion API (ECB)
 - Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
