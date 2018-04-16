@@ -19,32 +19,23 @@ package com.axelor.apps.base.service.app;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.exception.AxelorException;
 
 public interface AppService {
 	
-	public String importDataDemo(App app);
+	public App importDataDemo(App app) throws AxelorException;
 	
 	public App getApp(String type);
 	
 	public boolean isApp(String type);
 	
-	public List<App> getDepends(App app, Boolean active);
-	
-	public List<String> getNames(List<App> apps);
-	
-	public List<App> getChildren(App app, Boolean active);
-	
-	public App installApp(App app, Boolean importDemo);
+	public App installApp(App app, String language) throws AxelorException;
 	
 	public App unInstallApp(App app) throws AxelorException;
 	
-	public List<App> sortApps(Collection<App> apps);
-
 	public void refreshApp() throws IOException, ClassNotFoundException;
 	
-	public App updateLanguage(App app, String language);
+	public void bulkInstall(Collection<App> apps, Boolean importDeomo, String language) throws AxelorException;
 }

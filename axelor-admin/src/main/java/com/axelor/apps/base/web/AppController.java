@@ -50,22 +50,23 @@ public class AppController {
 	@Inject
 	private AppRepository appRepo;
 
-	public void importDataDemo(ActionRequest request, ActionResponse response) {
+	public void importDataDemo(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		App app = request.getContext().asType(App.class);
 		app = appRepo.find(app.getId());
+		appService.importDataDemo(app);
 		
-		response.setFlash(appService.importDataDemo(app));
+		response.setFlash(I18n.get(IAppExceptionMessages.DEMO_DATA_SUCCESS));
 		
 		response.setReload(true);
 	}
 	
-	public void installApp(ActionRequest request, ActionResponse response) {
+	public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		App app = request.getContext().asType(App.class);
 		app = appRepo.find(app.getId());
 		
-		appService.installApp(app, false);
+		appService.installApp(app, null);
 		
 		response.setSignal("refresh-app", true);
 	}
@@ -100,7 +101,7 @@ public class AppController {
 		response.setSignal("refresh-app", true);
 	}
 	
-	public void bulkInstall(ActionRequest request, ActionResponse response) {
+	public void bulkInstall(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Context context = request.getContext();
 		
@@ -117,16 +118,10 @@ public class AppController {
 		List<App> appList = new ArrayList<App>();
 		for (Map<String,Object> appData : apps) {
 			App app = appRepo.find(Long.parseLong(appData.get("id").toString()));
-			app = appService.updateLanguage(app, language);
 			appList.add(app);
 		}
 		
-		appList = appService.sortApps(appList);
-		
-		for (App app : appList) {
-			app = appRepo.find(app.getId());
-			app = appService.installApp(app, importDemo);
-		}
+		appService.bulkInstall(appList, importDemo, language);
 		
 		response.setFlash(I18n.get(IAppExceptionMessages.BULK_INSTALL_SUCCESS));
 		response.setSignal("refresh-app", true);

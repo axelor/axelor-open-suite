@@ -85,29 +85,37 @@ public class AppServiceImpl implements AppService {
 	
 	@Inject
 	private MetaModelRepository metaModelRepo;
-
+	
 	@Override
-	public String importDataDemo(App app) {
-		app = appRepo.find(app.getId());
+	public App importDataDemo(App app) throws AxelorException {
+		
+		if (app.getDemoDataLoaded()) {
+			return app;
+		}
 		
 		log.debug("Demo import: App code: {}, App lang: {}", app.getCode(), app.getLanguageSelect());
 		importParentData(app);
 		
 		String lang = getLanguage(app);
 		if (lang == null) {
-			return I18n.get(IAppExceptionMessages.NO_LANGAUAGE_SELECTED);
+			throw new AxelorException(IException.CONFIGURATION_ERROR,
+					I18n.get(IAppExceptionMessages.NO_LANGAUAGE_SELECTED));
 		}
 		
 		importData(app, DIR_DEMO);
 		
 		app = appRepo.find(app.getId());
+		
 		app.setDemoDataLoaded(true);
 		
-		saveApp(app);
-		
-		return I18n.get(IAppExceptionMessages.DEMO_DATA_SUCCESS);
+		return saveApp(app);
 	}
 	
+	@Transactional
+	public App saveApp(App app) {
+		return appRepo.save(app);
+	}
+
 	private void importData(App app, String dataDir) {
 		
 		String modules = app.getModules();
@@ -149,9 +157,10 @@ public class AppServiceImpl implements AppService {
 		return lang;
 	}
 	
-	private void importParentData(App app) {
+	private void importParentData(App app) throws AxelorException {
 		
 		List<App> depends = getDepends(app, true);
+		
 		for (App parent : depends) {
 			parent = appRepo.find(parent.getId());
 			if (!parent.getDemoDataLoaded()) {
@@ -161,30 +170,27 @@ public class AppServiceImpl implements AppService {
 
 	}
 
-	@Transactional
-	public App saveApp(App app) {
-		return appRepo.save(app);
-	}
-
-	private void importDataInit(App app) {
+	private App importDataInit(App app) {
 
 		String lang = getLanguage(app);
 		if (lang == null) {
-			return;
+			return app;
 		}
 		
 		importData(app, DIR_INIT);
 		
 		app = appRepo.find(app.getId());
+		
 		app.setInitDataLoaded(true);
 
-		saveApp(app);
+		return app;
 
 	}
 
 	private void runImport(File config, File data) {
 
-		log.debug("Running import with config path: {}, data path: {}", config.getAbsolutePath(), data.getAbsolutePath());
+		log.debug("Running import with config path: {}, data path: {}", 
+				config.getAbsolutePath(), data.getAbsolutePath());
 
 		try {
 			Scanner scanner = new Scanner(config);
@@ -286,8 +292,7 @@ public class AppServiceImpl implements AppService {
 		return app.getActive();
 	}
 
-	@Override
-	public List<App> getDepends(App app, Boolean active) {
+	private List<App> getDepends(App app, Boolean active) {
 
 		List<App> apps = new ArrayList<App>();
 		
@@ -300,8 +305,7 @@ public class AppServiceImpl implements AppService {
 		return sortApps(apps);
 	}
 
-	@Override
-	public List<String> getNames(List<App> apps) {
+	private List<String> getNames(List<App> apps) {
 
 		List<String> names = new ArrayList<String>();
 
@@ -312,8 +316,7 @@ public class AppServiceImpl implements AppService {
 		return names;
 	}
 
-	@Override
-	public List<App> getChildren(App app, Boolean active) {
+	private List<App> getChildren(App app, Boolean active) {
 
 		String code = app.getCode();
 
@@ -328,37 +331,40 @@ public class AppServiceImpl implements AppService {
 
 		return apps;
 	}
-
+	
 	@Override
-	public App installApp(App app, Boolean importDemo) {
+	public App installApp(App app, String language) throws AxelorException {
+		
+		app = appRepo.find(app.getId());
+		
+		if (app.getActive()) {
+			return app;
+		}
+		
+		if (language != null) {
+			app.setLanguageSelect(language);
+		}
+		else {
+			language = app.getLanguageSelect();
+		}
+		
 		List<App> apps = getDepends(app, false);
 
 		for (App parentApp : apps) {
-			parentApp = appRepo.find(parentApp.getId());
-			installApp(parentApp, importDemo);
+			installApp(parentApp, language);
 		}
 
-		app = appRepo.find(app.getId());
-		
 		log.debug("Init data loaded: {}, for app: {}", app.getInitDataLoaded(), app.getCode());
 		if (!app.getInitDataLoaded()) {
-			importDataInit(app);
+			app = importDataInit(app);
 		}
-
-		app = appRepo.find(app.getId());
-		if (importDemo != null && importDemo && !app.getDemoDataLoaded()) {
-			importDataDemo(app);
-		}
-
-		app = appRepo.find(app.getId());
-
+		
 		app.setActive(true);
-
+		
 		return saveApp(app);
 	}
 
-	@Override
-	public List<App> sortApps(Collection<App> apps) {
+	private List<App> sortApps(Collection<App> apps) {
 
 		List<App> appsList = new ArrayList<App>();
 
@@ -399,7 +405,8 @@ public class AppServiceImpl implements AppService {
 		csvConfig.setInputs(new ArrayList<CSVInput>());
 		
 		List<MetaModel> metaModels = metaModelRepo.all()
-				.filter("self.name != 'App' and self.name like 'App%' and self.packageName =  ?1", App.class.getPackage().getName())
+				.filter("self.name != 'App' and self.name like 'App%' and self.packageName =  ?1",
+						App.class.getPackage().getName())
 				.fetch();
 		
 		log.debug("Total app models: {}", metaModels.size());
@@ -458,30 +465,33 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	@Transactional
-	public App updateLanguage(App app, String language) {
-		
-		if (language != null) {
-			app.setLanguageSelect(language);
-			app = appRepo.save(app);
-		}
-		
-		return app;
-	}
-
-	@Override
-	@Transactional
 	public App unInstallApp(App app) throws AxelorException {
 		
 		List<App> children = getChildren(app, true);
 		if (!children.isEmpty()) {
 			List<String> childrenNames = getNames(children);
-			throw new AxelorException(IException.INCONSISTENCY, IAppExceptionMessages.APP_IN_USE, childrenNames);
+			throw new AxelorException(IException.INCONSISTENCY, 
+					IAppExceptionMessages.APP_IN_USE, childrenNames);
 		}
 		
 		app.setActive(false);
 		
-		return appRepo.save(app);
+		return saveApp(app);
+	}
+	
+	@Override
+	public void bulkInstall(Collection<App> apps, Boolean importDemo, String language)
+			throws AxelorException {
+		
+		apps = sortApps(apps);
+		
+		for (App app : apps) {
+			app = installApp(app, language);
+			if (importDemo) {
+				importDataDemo(app);
+			}
+		}
+		
 	}
 
 }
