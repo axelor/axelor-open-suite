@@ -404,20 +404,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		Map<String, Object> discounts = null;
 		
 		if(priceList != null)  {
-			int discountTypeSelect = 0;
-
 			PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList);
-			if(priceListLine != null)  {
-				discountTypeSelect = priceListLine.getTypeSelect();
-			}
-			
-			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-			discountAmount = (BigDecimal) discounts.get("discountAmount");
-			
-			if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE) 
-					|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
-				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
-			}
+			discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
 		}
 
 		if(discountAmount.compareTo(BigDecimal.ZERO) == 0)  {
