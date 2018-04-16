@@ -1,6 +1,6 @@
 "code";"name";"importId";"password";"group.code";"language";"homeAction";"companySet.importId";"activeCompany.importId";"partner.importId";"teamSet.importId";"employee.importId";"activeTeam.importId";"picture_fileName"
-"admin";"Admin";1;"axadmin";"admins";"fr";;"1";1;90000;4;;4;"img/user/1033_128px_fr.png"
-"demo";"Demo";2;"axdemo";"users";"fr";;"1";1;90000;4;;4;"img/user/1033_128px_fr.png"
+"admin";"Admin";1;"admin";"admins";"fr";;"1";1;90000;4;;4;"img/user/1033_128px_fr.png"
+"demo";"Demo";2;"demo";"users";"fr";;"1";1;90000;4;;4;"img/user/1033_128px_fr.png"
 "dirg";"Yoann MARQUES";3;"dirg";"MGT";"fr";;"1";1;90001;4;1;4;"img/user/1033_128px_fr.png"
 "assist";"Lucy ROBERT";4;"assist";"MGT";"fr";;"1";1;90002;4;2;4;"img/user/1033_128px_fr.png"
 "dirpro";"Lucas RICHARD";5;"dirpro";"MGT";"fr";;"1";1;90003;4;3;4;"img/user/1033_128px_fr.png"
