@@ -50,19 +50,15 @@ public class ImportSaleOrder {
 
         saleOrderService.computeAddressStr(saleOrder);
 
-        if (sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
-            saleOrder.setSaleOrderSeq(saleOrderWorkflowService.getSequence(saleOrder.getCompany()));
-        }
+        saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
 
+        if (saleOrder.getStatusSelect() == 1) {
+        	saleOrder.setSaleOrderSeq(sequenceService.getDraftSequenceNumber(saleOrder));
+        } else {
+        		saleOrderWorkflowService.finalizeSaleOrder(saleOrder);
+        }
+       
         return saleOrder;
     }
 
-    public Object computeAmt(Object bean, Map<String, Object> values) throws AxelorException {
-
-        assert bean instanceof SaleOrder;
-
-        SaleOrder saleOrder = (SaleOrder) bean;
-
-        return saleOrderComputeService.computeSaleOrder(saleOrder);
-    }
 }
