@@ -93,20 +93,20 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	public BigDecimal getUnitPrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine) throws AxelorException  {
 
 		Product product = purchaseOrderLine.getProduct();
-		
+
 		BigDecimal price = this.convertUnitPrice(product, taxLine, product.getPurchasePrice(), purchaseOrder);
 
 		return currencyService.getAmountCurrencyConvertedAtDate(
 			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
 			.setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 	}
-	
+
 
 	@Override
 	public BigDecimal getMinSalePrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
 
 		Product product = purchaseOrderLine.getProduct();
-		
+
 		TaxLine saleTaxLine = accountManagementService.getTaxLine(
 				purchaseOrder.getOrderDate(), purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner().getFiscalPosition(), false);
 		
@@ -320,20 +320,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		Map<String, Object> discounts = null;
 		
 		if(priceList != null)  {
-			int discountTypeSelect = 0;
-
 			PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList);
-			if(priceListLine != null)  {
-				discountTypeSelect = priceListLine.getTypeSelect();
-			}
-			
-			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-			discountAmount = (BigDecimal) discounts.get("discountAmount");
-			
-			if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-					|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
-				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
-			}
+			discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
 		}
 
 		if(discountAmount.compareTo(BigDecimal.ZERO) == 0)  {

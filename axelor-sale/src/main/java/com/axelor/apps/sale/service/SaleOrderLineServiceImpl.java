@@ -152,33 +152,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	}
 
 	public Map<String,Object> getDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price)  {
-		
+
 		PriceList priceList = saleOrder.getPriceList();
-		if(priceList != null)  {
-			int discountTypeSelect = 0;
-			
-			PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
-			if(priceListLine != null){
-				discountTypeSelect = priceListLine.getTypeSelect();
-			}
-			
-			Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-			if(discounts != null){
-				int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
-				if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-						|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
-					
-					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
-					discounts.put("price", price);
-					discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_NONE);
-					discounts.put("discountAmount", BigDecimal.ZERO);
-				}
-			}
-			return discounts;
+		if (priceList == null) {
+			return null;
 		}
-		
-		return null;
-		
+
+		PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+		return priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
 	}
 
 	public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine){

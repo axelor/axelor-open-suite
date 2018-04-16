@@ -201,21 +201,10 @@ public class InvoiceLineService {
 		int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
 
 		if(priceList != null)  {
-			int discountTypeSelect = 0;
-			
 			PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
-			if(priceListLine!=null){
-				discountTypeSelect = priceListLine.getTypeSelect();
-			}
+			discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
 
-			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
 			discountAmount = (BigDecimal) discounts.get("discountAmount");
-			
-			if((computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) 
-					|| computeMethodDiscountSelect == GeneralRepository.INCLUDE_DISCOUNT)  {
-				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
-
-			}
 		}
 
 		if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE && discountAmount.compareTo(BigDecimal.ZERO) == 0){
