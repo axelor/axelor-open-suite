@@ -8,7 +8,7 @@ buildscript {
     }
     repositories repos
     dependencies {
-        classpath "com.axelor:axelor-gradle:5.0.0-SNAPSHOT" 
+        classpath "com.axelor:axelor-gradle:5.0.0-rc2" 
     }
 }
 
@@ -19,11 +19,13 @@ allprojects {
 apply plugin: 'eclipse'
 apply plugin: "com.axelor.app"
 
+apply from: "modules/abs/version.gradle"
+
 allprojects {
 	apply plugin: 'eclipse'
 	
 	group = "com.axelor"
-	version = "5.0.0-SNAPSHOT"
+	version = absVersion
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -35,7 +37,7 @@ file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { it
 }
 
 axelor {
-	title "Axelor :: ERP"
+	title "Axelor ERP"
 	description "Axelor Entreprise Application"
 
 	modules.each { dir ->
