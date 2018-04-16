@@ -155,7 +155,7 @@ public class PriceListService {
 
 	public Map<String, Object>  getDiscounts(PriceList priceList, PriceListLine priceListLine, BigDecimal price)  {
 
-		Map<String, Object> discounts = new HashMap<String, Object>();
+		Map<String, Object> discounts = new HashMap<>();
 
 		if(priceListLine != null)  {
 			discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price).setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
@@ -163,8 +163,13 @@ public class PriceListService {
 
 		}
 		else  {
-			discounts.put("discountAmount", priceList.getGeneralDiscount().setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
-			discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_PERCENT);
+			BigDecimal discountAmount = priceList.getGeneralDiscount().setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+			discounts.put("discountAmount", discountAmount);
+			if (discountAmount.compareTo(BigDecimal.ZERO) == 0) {
+				discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
+			} else {
+				discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_PERCENT);
+			}
 		}
 
 		return discounts;

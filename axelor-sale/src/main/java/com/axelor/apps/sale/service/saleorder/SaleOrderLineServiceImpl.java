@@ -266,6 +266,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 					
 					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
 					discounts.put("price", price);
+					discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
+					discounts.put("discountAmount", BigDecimal.ZERO);
 				}
 			}
 			return discounts;
