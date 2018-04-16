@@ -104,7 +104,7 @@
 		</panel>
 		</panel>
 		<panel-tabs colSpan="4" >
-			<panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" form-view="operation-order-form" grid-view="operation-order-grid"/>
+			<panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form" grid-view="operation-order-grid"/>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 6">
 				<panel name="plannedDates" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
