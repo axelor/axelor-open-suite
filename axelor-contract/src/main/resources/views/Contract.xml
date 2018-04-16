@@ -12,7 +12,7 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract" width="large" onNew="action-record-contract-default-record" onLoad="action-attrs-contract-on-load" readonlyIf="statusSelect == 3">
+    <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract" width="large" onNew="action-record-contract-default-record" onLoad="action-group-contact-on-load" readonlyIf="statusSelect == 3">
         <toolbar>
             <button name="printContractBtn" title="Print" hidden="true" icon="fa-print" onClick="notImplementedYet"/>
         </toolbar>
@@ -33,7 +33,7 @@
                 <field name="company" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="6" css="highlight"/>
                 <field name="partner" readonlyIf="statusSelect >= 2" showIf="targetType" canEdit="false" onChange="action-attrs-contract-update-partner" required="true"/>
-                <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" name="currency"/>
+                <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" name="currency" canEdit="false" readonlyIf="statusSelect >= 2"/>
                 <panel title="Contract Dates" hidden="true" showIf="id" colSpan="12">
                     <field name="createdOn" colSpan="3"/>
                     <field name="createdBy" colSpan="3"/>
@@ -100,7 +100,7 @@
                     </field>
                 </panel>
             </panel>
-            <panel title="Invoicing" showIf="isInvoicingManagement">
+            <panel title="Invoicing" showIf="isInvoicingManagement &amp;&amp; statusSelect >= 2">
                 <field name="invoicePeriodStartDate" showIf="currentVersion.isPeriodicInvoicing" colSpan="4"/>
                 <field name="invoicePeriodEndDate" showIf="currentVersion.isPeriodicInvoicing" colSpan="4"/>
                 <field name="invoicingDate" colSpan="4"/>
@@ -140,30 +140,34 @@
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
                 <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
-                    <field name="isInvoicingManagement" readonlyIf="statusSelect > 1"/>
-                    <panel hideIf="!isInvoicingManagement" colSpan="12">
-                        <field name="isConsumptionManagement" colSpan="6"/>
-                        <field name="isAdditionaBenefitManagement" colSpan="6"/>
-                        <panel name="isConsumptionBeforeEndDatePanel" colSpan="6">
-                            <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false">
-                                <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                                    <field name="isConsumptionBeforeEndDate" colSpan="12"/>
-                                </editor>
-                            </field>
-                        </panel>
+                    <field name="isInvoicingManagement" readonlyIf="statusSelect > 1" colSpan="6" onChange="action-contract-attrs-require-payment-config"/>
+                    <panel colSpan="6" hidden="true" showIf="isInvoicingManagement">
+                        <field name="isAdditionaBenefitManagement" colSpan="6" if="__config__.app.getApp('contract')isAdditionalBenefitManagement"/>
+                        <field name="isConsumptionManagement" colSpan="6" if="__config__.app.getApp('contract').isConsumptionManagement"/>
                     </panel>
-                    <panel name="invoicingSubPanel" colSpan="12">
+                    <field name="currentVersion" colSpan="6" showTitle="false" x-show-icons="false" hidden="true" showIf="isConsumptionManagement" if="__config__.app.getApp('contract').isConsumptionManagement">
+                        <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                            <field name="isConsumptionBeforeEndDate" colSpan="12"/>
+                        </editor>
+                    </field>
+                    <panel name="invoicingSubPanel" colSpan="12" hidden="true" showIf="isInvoicingManagement">
                         <field name="currentVersion" showTitle="false" readonlyIf="currentVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                                <field name="paymentMode" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-                                <field name="paymentCondition" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-                                <field name="invoicingMoment"/>
-                                <field name="automaticInvoicing" readonlyIf="statusSelect > 2"/>
-                                <field name="isPeriodicInvoicing" readonlyIf="statusSelect > 2"/>
-                                <panel title="Periodic invoicing" showIf="isPeriodicInvoicing" colSpan="12">
-                                    <field name="invoicingFrequency"/>
-                                    <field name="isTimeProratedInvoice"/>
-                                    <field name="isVersionProratedInvoice" showIf="isTimeProratedInvoice"/>
+                                <panel colSpan="6">
+                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                                    <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                                </panel>
+                                <panel colSpan="6">
+                                    <field name="automaticInvoicing" colSpan="6" readonlyIf="statusSelect > 2"/>
+                                    <field name="invoicingMoment" colSpan="6" showIf="automaticInvoicing"/>
+                                </panel>
+                                <panel colSpan="12">
+                                    <field name="isPeriodicInvoicing" readonlyIf="statusSelect > 2" colSpan="3"/>
+                                    <panel showIf="isPeriodicInvoicing" colSpan="9">
+                                        <field name="invoicingFrequency" colSpan="4"/>
+                                        <field name="isTimeProratedInvoice" colSpan="4"/>
+                                        <field name="isVersionProratedInvoice" showIf="isTimeProratedInvoice" colSpan="4"/>
+                                    </panel>
                                 </panel>
                             </editor>
                         </field>
@@ -204,14 +208,9 @@
         </panel-tabs>
     </form>
 
-    <action-attrs name="action-attrs-contract-on-load">
-        <attribute name="readonly" for="isConsumptionBeforeEndDatePanel" expr="eval: __config__.app.getApp('contract').getIsUnchangableContract() || currentVersion.statusSelect >= 3"/>
-        <attribute name="readonly" for="invoicingSubPanel" expr="eval: __config__.app.getApp('contract').getIsUnchangableContract() || currentVersion.statusSelect >= 3"/>
-        <attribute name="readonly" for="contractLineListPanel" expr="eval: __config__.app.getApp('contract').getIsUnchangableContract() || currentVersion.statusSelect >= 3"/>
-        <attribute name="readonly" for="engagementStartDate" expr="eval: __config__.app.getApp('contract').getIsUnchangableContract()"/>
-        <attribute name="hidden" for="isConsumptionManagement" expr="eval: !__config__.app.getApp('contract').getIsConsumptionManagement()"/>
-        <attribute name="readonly" for="currentVersionDescription" expr="eval: __config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentVersion.statusSelect >= 3"/>
-    </action-attrs>
+    <action-group name="action-group-contact-on-load">
+        <action name="action-contract-attrs-require-payment-config"/>
+    </action-group>
 
     <action-record name="action-record-contract-default-record" model="com.axelor.apps.contract.db.Contract">
         <field name="statusSelect" expr="eval: 1"/>
@@ -314,5 +313,10 @@
     <action-method name="action-contract-method-terminated">
         <call class="com.axelor.apps.contract.web.ContractController" method="terminated"/>
     </action-method>
+
+    <action-attrs name="action-contract-attrs-require-payment-config">
+        <attribute for="currentVersion.paymentMode" name="required" expr="eval: isInvoicingManagement"/>
+        <attribute for="currentVersion.paymentCondition" name="required" expr="eval: isInvoicingManagement"/>
+    </action-attrs>
 
 </object-views>

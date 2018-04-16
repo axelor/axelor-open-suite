@@ -61,27 +61,42 @@
                 <field name="supposedEndDate" hidden="true" showIf="statusSelect &lt;= 2" colSpan="3"/>
             </panel>
             <panel title="Content">
+                <field name="contractLineList" colSpan="12" if="__config__.app.getApp('contract').isInvoicingManagement"/>
                 <field name="description" colSpan="9" widget="html"/>
                 <field name="attachment" colSpan="3" widget="binary-link"/>
-                <field name="contractLineList" colSpan="12" if="__config__.app.getApp('contract').isInvoicingManagement"/>
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
-                <panel title="Invoicing" if="__config__.app.getApp('contract').isInvoicingManagement" colSpan="12">
-                    <field name="isConsumptionBeforeEndDate" colSpan="12"/>
-                    <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" canEdit="false"/>
-                    <spacer/>
-                    <field name="paymentCondition" canEdit="false" widget="SuggestBox" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-                    <field name="invoicingMoment"/>
-                    <field name="automaticInvoicing" readonlyIf="statusSelect &gt; 2"/>
-                    <field name="isPeriodicInvoicing" readonlyIf="statusSelect &gt; 2"/>
-                    <panel showIf="isPeriodicInvoicing" title="Periodic invoicing" colSpan="12">
-                        <field name="invoicingFrequency"/>
-                        <field name="isProratedFirstInvoice"/>
-                        <field name="isProratedLastInvoice"/>
-                        <field name="isTimeProratedInvoice" />
-                        <field name="isVersionProratedInvoice" showIf="isTimeProratedInvoice"/>
+
+                <!-- START panel config for invoicing -->
+                <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
+                    <field name="contractNext.isInvoicingManagement" colSpan="6"/>
+
+                    <panel colSpan="6" hidden="true" showIf="contractNext.isInvoicingManagement">
+                        <field name="contractNext.isAdditionaBenefitManagement" colSpan="6" if="__config__.app.getApp('contract')isAdditionalBenefitManagement"/>
+                        <field name="contractNext.isConsumptionManagement" colSpan="6" if="__config__.app.getApp('contract').isConsumptionManagement"/>
+                    </panel>
+
+                    <field name="isConsumptionBeforeEndDate" colSpan="6" hidden="true" showIf="contractNext.isConsumptionManagement" if="__config__.app.getApp('contract').isConsumptionManagement"/>
+
+                    <panel name="invoicingSubPanel" colSpan="12" hidden="true" showIf="contractNext.isInvoicingManagement">
+                        <panel colSpan="12">
+                            <field name="paymentMode" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                            <field name="paymentCondition" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                            <field name="automaticInvoicing" colSpan="3" />
+                            <field name="invoicingMoment" colSpan="3" showIf="automaticInvoicing"/>
+                        </panel>
+                        <panel colSpan="12">
+                            <field name="isPeriodicInvoicing" colSpan="3"/>
+                            <panel showIf="isPeriodicInvoicing" colSpan="9">
+                                <field name="invoicingFrequency" colSpan="4"/>
+                                <field name="isTimeProratedInvoice" colSpan="4"/>
+                                <field name="isVersionProratedInvoice" showIf="isTimeProratedInvoice" colSpan="4"/>
+                            </panel>
+                        </panel>
                     </panel>
                 </panel>
+                <!-- END panel config for invoicing -->
+
                 <panel title="Renewal" if="__config__.app.getApp('contract').isRenewalManagement" colSpan="12">
                     <field name="isTacitRenewal" widget="boolean-switch" colSpan="3"/>
                     <field name="renewalDuration" requiredIf="isTacitRenewal" colSpan="3"/>

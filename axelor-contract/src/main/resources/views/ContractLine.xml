@@ -22,6 +22,7 @@
             <field name="exTaxTotal" readonly="true"/>
             <field name="inTaxTotal" readonly="true"/>
             <field name="isConsumptionLine" onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute"/>
+            <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid" canEdit="false"/>
             <field name="isInvoiced" readonly="true" showIf="isInvoiced" />
             <field name="description" colSpan="12"/>
             <field name="contractVersion" hidden="true"/>
