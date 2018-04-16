@@ -71,7 +71,7 @@
 	      onLoad="action-manuf-order-attrs-isConsProOnOperation" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
-	     <menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
 	            <item title="Print" action="save,action-manuf-order-set-draft-seq,action-manuf-order-method-print"  />
 	            <item title="Print Production Process" action="save,action-production-process-method-print"  />
 	        </menu>
