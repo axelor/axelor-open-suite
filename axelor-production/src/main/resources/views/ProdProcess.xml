@@ -13,7 +13,7 @@
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
           onNew="action-prod-process-record-set-default-company"
-          onLoad="action-prod-process-record-count-number-of-components"
+          onLoad="action-prod-process-record-count-number-of-phases"
           onSave="action-prod-process-method-validate-prod-process" width="large">
 
     	<toolbar>
@@ -26,11 +26,11 @@
                 <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false" css="label-bold bold large"/>
                 <field name="name" hidden="true" showIf="!$readonly()" showTitle="false" css="label-bold bold large"/>
             </panel>
-            <field name="$numberOfComponents" showTitle="false" readonly="true" showIf="$numberOfComponents > 0" colSpan="4">
-                <viewer depends="$numberOfComponents">
+            <field name="$numberOfPhases" showTitle="false" readonly="true" showIf="$numberOfPhases > 0" colSpan="4">
+                <viewer depends="$numberOfPhases">
                     <![CDATA[
                         <h4 class="text-right">
-                            <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of components</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{record.$numberOfComponents}}</span>
+                            <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of phases</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{record.$numberOfPhases}}</span>
                         </h4>
 					]]>
                 </viewer>
@@ -45,7 +45,7 @@
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
         </panel>
 
-        <panel-related field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-components" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
+        <panel-related field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 
         <panel name="versionManagement" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
             <field name="versionNumber" colSpan="3" />
@@ -90,7 +90,7 @@
 		<field name="company" expr="eval: __user__.getActiveCompany()"/>
 	</action-record>
 
-    <action-record name="action-prod-process-record-count-number-of-components" model="com.axelor.apps.production.db.ProdProcess">
+    <action-record name="action-prod-process-record-count-number-of-phases" model="com.axelor.apps.production.db.ProdProcess">
         <field name="$numberOfComponents" expr="eval: prodProcessLineList.size()"/>
     </action-record>
 </object-views>
