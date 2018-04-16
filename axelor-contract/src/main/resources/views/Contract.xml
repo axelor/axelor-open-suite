@@ -90,7 +90,7 @@
                     </field>
                 </panel>
                 <field name="consumptionLineList" showIf="isConsumptionManagement" colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid"/>
-                <field name="additionalBenefitList" showIf="isAdditionaBenefitManagement" colSpan="12" form-view="additional-contract-line-form" grid-view="contract-line-grid"/>
+                <field name="additionalBenefitContractLineList" showIf="isAdditionaBenefitManagement" colSpan="12" form-view="additional-contract-line-form" grid-view="contract-line-grid"/>
                 <panel name="currentVersionDescription" colSpan="12">
                     <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
@@ -323,5 +323,9 @@
         <attribute for="currentVersion.paymentMode" name="value" expr="eval: partner?.inPaymentMode"/>
         <attribute for="currentVersion.paymentCondition" name="value" expr="eval: partner?.paymentCondition"/>
     </action-attrs>
+
+    <action-method name="action-method-contract-change-product">
+        <call class="com.axelor.apps.contract.web.ContractController" method="changeProduct"/>
+    </action-method>
 
 </object-views>

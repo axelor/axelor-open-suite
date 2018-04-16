@@ -13,7 +13,7 @@
 
     <form name="contract-line-form" title="Contract Line" model="com.axelor.apps.contract.db.ContractLine">
         <panel>
-            <field name="product" canEdit="false" onChange="action-method-contract-line-change-product,action-method-contract-line-compute"/>
+            <field name="product" canEdit="false" onChange="action-method-contract-version-change-product,action-method-contract-line-compute"/>
             <field name="productName"/>
             <field name="qty" onChange="action-method-contract-line-compute" readonlyIf="isConsumptionLine"/>
             <field name="price" onChange="action-method-contract-line-compute"/>
@@ -51,7 +51,7 @@
 
     <form name="additional-contract-line-form" title="Additional benefit" model="com.axelor.apps.contract.db.ContractLine">
         <panel>
-            <field name="product" canEdit="false" onChange="action-method-contract-line-change-product,action-method-contract-line-compute"/>
+            <field name="product" canEdit="false" onChange="action-method-contract-change-product,action-method-contract-line-compute"/>
             <field name="productName"/>
             <field name="qty" onChange="action-method-contract-line-compute" readonlyIf="isConsumptionLine"/>
             <field name="price" onChange="action-method-contract-line-compute"/>

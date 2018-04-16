@@ -19,11 +19,14 @@ package com.axelor.apps.contract.web;
 
 import java.time.LocalDate;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.db.JPA;
@@ -77,9 +80,9 @@ public class ContractVersionController {
 	}
 
 	public void active(ActionRequest request, ActionResponse response) {
-		Long id = request.getContext().asType(ContractVersion.class).getId();
-		ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
 		try {
+			Long id = request.getContext().asType(ContractVersion.class).getId();
+			ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
 			Beans.get(ContractService.class).activeNextVersion(contractVersion.getContractNext(), getTodayDate());
 			response.setView(ActionView
 					.define("Contract")
@@ -88,18 +91,38 @@ public class ContractVersionController {
 					.add("grid", "contract-grid")
 					.context("_showRecord", contractVersion.getContract().getId()).map());
 		} catch (Exception e) {
-		    TraceBackService.trace(response, e);
+			TraceBackService.trace(response, e);
 		}
 	}
 
 	public void waiting(ActionRequest request, ActionResponse response) {
-		Long id = request.getContext().asType(ContractVersion.class).getId();
-		ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
 		try  {
+			Long id = request.getContext().asType(ContractVersion.class).getId();
+			ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
 			Beans.get(ContractService.class).waitingNextVersion(contractVersion.getContractNext(), getTodayDate());
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
+		}
+	}
+
+	public void changeProduct(ActionRequest request, ActionResponse response) {
+		ContractLineService contractLineService = Beans.get(ContractLineService.class);
+		ContractLine contractLine = new ContractLine();
+
+		try  {
+			contractLine = request.getContext().asType(ContractLine.class);
+
+			ContractVersion contractVersion = request.getContext().getParent().asType(ContractVersion.class);
+			Contract contract = contractVersion.getContractNext() == null ? contractVersion.getContract() : contractVersion.getContractNext() ;
+			Product product = contractLine.getProduct();
+
+			contractLine = contractLineService.fillAndCompute(contractLine, contract, product);
+			response.setValues(contractLine);
+		}
+		catch (Exception e)  {
+			TraceBackService.trace(response, e);
+			response.setValues(contractLineService.reset(contractLine));
 		}
 	}
 

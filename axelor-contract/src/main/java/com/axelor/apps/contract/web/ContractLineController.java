@@ -18,11 +18,8 @@
 package com.axelor.apps.contract.web;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.service.ContractLineService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,32 +27,8 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class ContractLineController {
-	
-	public void changeProduct(ActionRequest request, ActionResponse response) {
-		ContractLine contractLine = request.getContext().asType(ContractLine.class);
 
-		Contract contract = null;
-		if(request.getContext().getParent().getContextClass() == Contract.class){
-			contract = request.getContext().getParent().asType(Contract.class);
-		}else if (request.getContext().getParent().getContextClass() == ContractVersion.class){
-			ContractVersion contractVersion = request.getContext().getParent().asType(ContractVersion.class);
-			contract = contractVersion.getContractNext() == null ? contractVersion.getContract() : contractVersion.getContractNext() ;
-		}
-		Product product = contractLine.getProduct();
-
-		ContractLineService contractLineService = Beans.get(ContractLineService.class);
-		try  {
-			contractLine = contractLineService.update(contractLine, product);
-		    contractLine = contractLineService.computePrice(contractLine, contract, product);
-		    response.setValues(contractLine);
-		}
-		catch (Exception e)  {
-			TraceBackService.trace(response, e);
-			response.setValues(contractLineService.reset(contractLine));
-		}
-	}
-	
-	public void compute(ActionRequest request, ActionResponse response) {
+	public void computeTotalProduct(ActionRequest request, ActionResponse response) {
 		ContractLine contractLine = request.getContext().asType(ContractLine.class);
 		Product product = contractLine.getProduct();
 

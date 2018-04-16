@@ -140,5 +140,8 @@
         <call class="com.axelor.apps.contract.web.ContractVersionController" method="waiting"/>
     </action-method>
 
+    <action-method name="action-method-contract-version-change-product">
+        <call class="com.axelor.apps.contract.web.ContractVersionController" method="changeProduct"/>
+    </action-method>
 
 </object-views>

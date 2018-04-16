@@ -46,7 +46,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     }
 
     @Override
-    public ContractLine update(ContractLine contractLine, Product product) {
+    public ContractLine fill(ContractLine contractLine, Product product) {
         contractLine.setProductName(product.getName());
         if (product.getSalesUnit() != null) {
             contractLine.setUnit(product.getSalesUnit());
@@ -59,7 +59,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     }
 
     @Override
-    public ContractLine computePrice(ContractLine contractLine, Contract contract,
+    public ContractLine compute(ContractLine contractLine, Contract contract,
                                    Product product) throws AxelorException {
         Preconditions.checkNotNull(contract, I18n.get("Contract can't be " +
                 "empty for compute contract line price."));
@@ -69,7 +69,7 @@ public class ContractLineServiceImpl implements ContractLineService {
         // TODO: maybe put tax computing in another method
         TaxLine taxLine = accountManagementService.getTaxLine(
                 appBaseService.getTodayDate(), product, contract.getCompany(),
-                contract.getPartner().getFiscalPosition(), false);
+                contractLine.getFiscalPosition(), false);
         contractLine.setTaxLine(taxLine);
 
         if(taxLine != null && product.getInAti()) {
@@ -85,6 +85,13 @@ public class ContractLineServiceImpl implements ContractLineService {
                         contract.getCurrency(), appBaseService.getTodayDate());
         contractLine.setPrice(price.multiply(convert));
 
+        return contractLine;
+    }
+
+    @Override
+    public ContractLine fillAndCompute(ContractLine contractLine, Contract contract, Product product) throws AxelorException {
+        contractLine = fill(contractLine, product);
+        contractLine = compute(contractLine, contract, product);
         return contractLine;
     }
 

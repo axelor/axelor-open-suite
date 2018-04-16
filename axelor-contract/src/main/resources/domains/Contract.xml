@@ -42,7 +42,7 @@
 		<one-to-one name="currentVersion" ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"/>
 		<one-to-one name="nextVersion" ref="com.axelor.apps.contract.db.ContractVersion" title="Next version"/>
 
-		<one-to-many name="additionalBenefitList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
+		<one-to-many name="additionalBenefitContractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
 		<one-to-many name="invoicePeriodHistory" ref="com.axelor.apps.contract.db.InvoicePeriod" title="Invoice period history"/>
 		<one-to-many name="versionHistory" ref="com.axelor.apps.contract.db.ContractVersion" mappedBy="contractHistory" orderBy="-createdOn"/>
 		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>

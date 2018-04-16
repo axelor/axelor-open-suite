@@ -303,7 +303,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 				.collect(Collectors.toList()));
 
 		contractLines.addAll(contract
-				.getAdditionalBenefitList()
+				.getAdditionalBenefitContractLineList()
                 .stream()
 				.filter(contractLine -> !contractLine.getIsInvoiced())
                 .peek(contractLine -> contractLine.setIsInvoiced(true))
@@ -433,7 +433,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 				
 				ContractLine newLine = contractLineRepo.copy(line, false);
 				contractLineRepo.save(newLine);
-				contract.addAdditionalBenefitListItem(newLine);
+				contract.addAdditionalBenefitContractLineListItem(newLine);
 			}
 		}
 		

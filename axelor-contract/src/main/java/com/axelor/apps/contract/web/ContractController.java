@@ -20,14 +20,17 @@ package com.axelor.apps.contract.web;
 import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.db.JPA;
@@ -160,6 +163,25 @@ public class ContractController {
 				.param("forceTitle", "true")
 				.context("_showRecord", copy.getId().toString())
 				.map() );
+	}
+
+	public void changeProduct(ActionRequest request, ActionResponse response) {
+		ContractLineService contractLineService = Beans.get(ContractLineService.class);
+		ContractLine contractLine = new ContractLine();
+
+		try  {
+			contractLine = request.getContext().asType(ContractLine.class);
+
+			Contract contract = request.getContext().getParent().asType(Contract.class);
+			Product product = contractLine.getProduct();
+
+			contractLine = contractLineService.fillAndCompute(contractLine, contract, product);
+			response.setValues(contractLine);
+		}
+		catch (Exception e)  {
+			TraceBackService.trace(response, e);
+			response.setValues(contractLineService.reset(contractLine));
+		}
 	}
 
 	private LocalDate getTodayDate() {
