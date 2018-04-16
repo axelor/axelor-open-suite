@@ -243,8 +243,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		    invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
 		}
 		invoice.setContract(contract);
-		//invoice.setContractVersion(contract.getCurrentVersion());
-		
+		invoice.setInvoiceDate(contract.getInvoicingDate());
+
 		JPA.save(invoice);
 		
 		ContractVersion version = null;

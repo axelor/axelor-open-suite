@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyConversionService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
@@ -22,15 +23,15 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     protected AppBaseService appBaseService;
     protected AccountManagementService accountManagementService;
-    protected CurrencyConversionService currencyConversionService;
+    protected CurrencyService currencyService;
 
     @Inject
     public ContractLineServiceImpl(AppBaseService appBaseService,
                                    AccountManagementService accountManagementService,
-                                   CurrencyConversionService currencyConversionService) {
+                                   CurrencyService currencyService) {
         this.appBaseService = appBaseService;
         this.accountManagementService = accountManagementService;
-        this.currencyConversionService = currencyConversionService;
+        this.currencyService = currencyService;
     }
 
     @Override
@@ -61,8 +62,7 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     @Override
     public ContractLine computePrice(ContractLine contractLine, Contract contract,
-                                   Product product) throws AxelorException,
-            MalformedURLException, JSONException {
+                                   Product product) throws AxelorException {
         Preconditions.checkNotNull(contract, I18n.get("Contract can't be " +
                 "empty for compute contract line price."));
         Preconditions.checkNotNull(product, "Product can't be " +
@@ -82,7 +82,9 @@ public class ContractLineServiceImpl implements ContractLineService {
         }
 
         BigDecimal price = contractLine.getPrice();
-        BigDecimal convert = currencyConversionService.convert(product.getSaleCurrency(), contract.getCurrency());
+        BigDecimal convert = currencyService
+                .getCurrencyConversionRate(product.getSaleCurrency(),
+                        contract.getCurrency(), appBaseService.getTodayDate());
         contractLine.setPrice(price.multiply(convert));
 
         return contractLine;

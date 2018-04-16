@@ -55,6 +55,7 @@ public class ContractLineController {
 
 		ContractLineService contractLineService = Beans.get(ContractLineService.class);
 		try  {
+			contractLine = contractLineService.update(contractLine, product);
 		    contractLine = contractLineService.computePrice(contractLine, contract, product);
 		    response.setValues(contractLine);
 		}
