@@ -5,7 +5,7 @@
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 	<menubar>
-		<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+		<menu title="Tools" icon="fa-wrench" showTitle="true">
 				<item title="Gantt with user" action="action-project-open-popup-select-users"/>
 				<item title="Gantt with project" action="action-project-open-popup-select-projects"/>
 		</menu>
@@ -37,7 +37,7 @@
 		</toolbar>
 
 		<menubar>
-			<menu title="Reports" icon="fa-files-o" showTitle="true">
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
 				<item if-module="axelor-business-project" title="Planification and costs" action="save,action-project-method-print-planif-and-cost"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
