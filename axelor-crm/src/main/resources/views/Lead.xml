@@ -63,7 +63,7 @@
 			</panel>
 
 			<panel colSpan="9" >
-				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5" css="bold">
+				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5" css="label-bold bold large">
 					<editor x-show-titles="false">
 						<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
 						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
@@ -152,7 +152,7 @@
 		<panel sidebar="true" name="marketing" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
 			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid"/>
 			<field name="referredBy" colSpan="6"/>
-			<field name="opportunityAmount" colSpan="6"/>
+			<field name="estimatedBudget" colSpan="6"/>
 		</panel>
  		
  		<panel-mail>
