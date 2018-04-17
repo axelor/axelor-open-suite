@@ -54,13 +54,7 @@ public class InvoiceToolService {
 		switch (paymentCondition.getTypeSelect()) {
 		case PaymentConditionRepository.TYPE_NET:
 			
-			
-			if(paymentCondition.getPeriodTypeSelect().equals(PaymentConditionRepository.PERIOD_TYPE_DAYS)) {
-				return invoiceDate.plusDays(paymentCondition.getPaymentTime());
-			}
-			else {				
-				return invoiceDate.plusMonths(paymentCondition.getPaymentTime());
-			}
+			return nDaysDate;
 			
 		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
 			if(paymentCondition.getPeriodTypeSelect().equals(PaymentConditionRepository.PERIOD_TYPE_DAYS)) {
