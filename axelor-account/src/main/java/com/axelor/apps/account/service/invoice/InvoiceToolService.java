@@ -43,16 +43,33 @@ public class InvoiceToolService {
 
 	public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate)  {
 		
-		LocalDate nDaysDate = invoiceDate.plusDays(paymentCondition.getPaymentTime());
+		LocalDate nDaysDate = null;
+		if(paymentCondition.getPeriodTypeSelect().equals(PaymentConditionRepository.PERIOD_TYPE_DAYS)) {
+			nDaysDate = invoiceDate.plusDays(paymentCondition.getPaymentTime());
+		}
+		else {				
+			nDaysDate = invoiceDate.plusMonths(paymentCondition.getPaymentTime());
+		}
 		
 		switch (paymentCondition.getTypeSelect()) {
 		case PaymentConditionRepository.TYPE_NET:
 			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime());
+			
+			if(paymentCondition.getPeriodTypeSelect().equals(PaymentConditionRepository.PERIOD_TYPE_DAYS)) {
+				return invoiceDate.plusDays(paymentCondition.getPaymentTime());
+			}
+			else {				
+				return invoiceDate.plusMonths(paymentCondition.getPaymentTime());
+			}
 			
 		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
-					
-			return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusDays(paymentCondition.getPaymentTime());
+			if(paymentCondition.getPeriodTypeSelect().equals(PaymentConditionRepository.PERIOD_TYPE_DAYS)) {
+				return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusDays(paymentCondition.getPaymentTime());
+			}
+			else {
+				return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusMonths(paymentCondition.getPaymentTime());
+			}
+			
 					
 		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
 			
@@ -60,8 +77,13 @@ public class InvoiceToolService {
 			
 		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
 			
-			return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusDays(paymentCondition.getDaySelect());
-
+			if(paymentCondition.getPeriodTypeSelect().equals(PaymentConditionRepository.PERIOD_TYPE_DAYS)) {
+				return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusDays(paymentCondition.getDaySelect());
+			}
+			else {				
+				return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusMonths(paymentCondition.getDaySelect());
+			}
+			
 		default:
 			return invoiceDate;
 		}
