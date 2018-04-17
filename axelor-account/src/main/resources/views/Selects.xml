@@ -182,9 +182,14 @@
 
 	<selection name="account.payment.condition.type.select">
 		<option value="1">Net</option>
-		<option value="2">End of month + n days</option>
-		<option value="3">N days + end of month</option>
-		<option value="4">N days + end of month at</option>
+		<option value="2">End of month + n days / month</option>
+		<option value="3">N days / month + end of month</option>
+		<option value="4">N days / month + end of month at</option>
+	</selection>
+	
+	<selection name="account.payment.condition.period.type.select">
+		<option value="1">Days</option>
+		<option value="2">Month</option>
 	</selection>
 	
 	<selection name="move.template.line.debit.credit.select">
