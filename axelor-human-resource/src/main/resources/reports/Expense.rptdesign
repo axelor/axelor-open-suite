@@ -886,7 +886,7 @@ ExpenseLine.comments, ExpenseLine.total_amount, ExpenseLine.untaxed_amount, Expe
 from hr_expense as Expense
 inner join hr_expense_line as ExpenseLine on (ExpenseLine.expense = Expense.id)
 left join project_project as Task on (ExpenseLine.project = Task.id)
-left join project_project as Project on (Task.project = Project.id)
+left join project_project as Project on (Task.parent_project = Project.id)
 left join base_partner as ClientPartner on ((Task.client_partner is null and Project.client_partner = ClientPartner.id) or (Task.client_partner = ClientPartner.id))
 left join base_product as Product on (ExpenseLine.expense_product = Product.id)
 where Expense.id = ? AND ExpenseLine.kilometric_expense IS NULL]]></xml-property>
