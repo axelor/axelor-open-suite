@@ -27,6 +27,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.service.TranslationService;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -42,12 +44,22 @@ public class ProductBaseRepository extends ProductRepository{
 	@Inject
 	protected AppBaseService appBaseService;
 
-	
+	@Inject
+    protected TranslationService translationService;
+
+    protected static final String FULL_NAME_FORMAT = "[%s] %s";
+
 	@Override
 	public Product save(Product product){
-		
-		product.setFullName("["+product.getCode()+"] "+product.getName());
-		
+        Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
+        product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
+
+        if (!StringUtils.isBlank(oldProduct.getFullName()) && !oldProduct.getFullName().equals(product.getFullName())) {
+            translationService.removeValueTranslations(oldProduct.getFullName());
+        }
+
+        translationService.createFormatedValueTranslations(FULL_NAME_FORMAT, product.getCode(), product.getName());
+
 		product = super.save(product);
 		if(product.getBarCode() == null && product.getSerialNumber()!=null  &&  appBaseService.getAppBase().getActivateBarCodeGeneration() && product.getBarcodeTypeConfig()!=null) {
 			try {
