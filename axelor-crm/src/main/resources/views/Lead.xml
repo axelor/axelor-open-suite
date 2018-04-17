@@ -137,7 +137,7 @@
 			<button name="start" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start"/>
 			<button name="convert" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead,reload"/>
 			<button name="recycle" title="Recycle" hideIf="statusSelect == 5" icon="fa-recycle" onClick="save,action-lead-record-status-recycle"/>
-			<button name="cancel" title="Cancel" hideIf="statusSelect == 6" icon="fa-times" onClick="save,action-lead-record-status-cancel"/>
+			<button name="loose" title="Loose" hideIf="statusSelect == 6" icon="fa-times" onClick="save,action-lead-record-status-cancel" css="btn-danger"/>
 			<button name="new" title="Draft" hideIf="statusSelect != 6" icon="fa-undo" onClick="action-lead-record-status-new"/>
 			<button name="showPartner" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
 		</panel>
