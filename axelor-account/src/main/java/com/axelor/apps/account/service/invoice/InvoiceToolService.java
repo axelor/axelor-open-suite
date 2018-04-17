@@ -77,12 +77,7 @@ public class InvoiceToolService {
 			
 		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
 			
-			if(paymentCondition.getPeriodTypeSelect().equals(PaymentConditionRepository.PERIOD_TYPE_DAYS)) {
-				return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusDays(paymentCondition.getDaySelect());
-			}
-			else {				
-				return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusMonths(paymentCondition.getDaySelect());
-			}
+			return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusDays(paymentCondition.getDaySelect());
 			
 		default:
 			return invoiceDate;
