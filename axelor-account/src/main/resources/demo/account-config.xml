@@ -19,13 +19,6 @@
 		<bind column="compatibleAccounts" to="compatibleAccountSet" search="self.code in :compatibleAccounts" eval="compatibleAccounts.split('\\|') as List"/>
 	</input>
 	
-	<!--  	TO DO Remplir le M2O activeTaxLine par un update en utilisant le code Tax  -->
-	<input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax" search="self.code = :code" />
-  	
-  	<input file="account_taxLine.csv" separator=";" type="com.axelor.apps.account.db.TaxLine" search="self.importId = :importId and self.tax.code = :tax_code">
-		<bind to="tax" search="self.code = :tax_code" />
-	</input>	
-	
 	<input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv" search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code" />
 	
 	<input file="account_taxAccount.csv" separator=";" type="com.axelor.apps.account.db.TaxAccount">
@@ -34,10 +27,6 @@
 		<bind to="account" search="self.code = :account_code and self.company.id = :company_id" update="true" />
 	</input>
 	
-	<input file="account_tax.csv" separator=";" update="true" search="self.importId = :importId" type="com.axelor.apps.account.db.Tax">
-		<bind to="activeTaxLine" search="self.importId = :_activeTaxLine AND self.tax.code = :code" update="true" />
-	</input>
-  	
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
 		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>

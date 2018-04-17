@@ -31,6 +31,7 @@ public class ImportSaleOrderLine {
 
 		SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
 		SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+		saleOrderLine.setTaxLine(saleOrderLineService.getTaxLine(saleOrderLine.getSaleOrder(), saleOrderLine));
 		saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
 
 		return saleOrderLine;
