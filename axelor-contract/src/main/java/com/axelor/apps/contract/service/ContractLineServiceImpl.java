@@ -67,6 +67,8 @@ public class ContractLineServiceImpl implements ContractLineService {
                 "empty for compute contract line price.");
 
         // TODO: maybe put tax computing in another method
+        contractLine.setFiscalPosition(contract.getPartner().getFiscalPosition());
+
         TaxLine taxLine = accountManagementService.getTaxLine(
                 appBaseService.getTodayDate(), product, contract.getCompany(),
                 contractLine.getFiscalPosition(), false);

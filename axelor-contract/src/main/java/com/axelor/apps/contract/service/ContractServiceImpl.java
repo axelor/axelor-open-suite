@@ -28,16 +28,21 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -50,7 +55,6 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.apps.contract.supplychain.service.InvoiceGeneratorContract;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -251,47 +255,44 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		invoice.setContract(contract);
 		invoice.setInvoiceDate(contract.getInvoicingDate());
 
-		JPA.save(invoice);
-		
+		InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
+		invoiceRepository.save(invoice);
+
 		ContractVersion version = null;
 		
 		Map <ConsumptionLine, ContractLine> linesFromOlderVersionsMp = Maps.newHashMap();
-		
-		
+
 		for (ConsumptionLine consumptionLine : contract.getCurrentVersion().getConsumptionLineList()) {
 			
 			if (consumptionLine.getIsInvoiced()) { continue; }
 			
 			 version = getVersionSpecificVersion( contract, consumptionLine.getConsumptionLineDate() );
-			 
-			 if (version == null) { 
-				 consumptionLine.setIsError(true);
-			}else{
+
+			if (version == null) {
+				consumptionLine.setIsError(true);
+			} else {
 				ContractLine linkedContractLine = null;
-				
 				for (ContractLine contractLine : version.getContractLineList()) {
-					if (contractLine.getProduct().equals( consumptionLine.getProduct() ) && contractLine.getProductName().equals(consumptionLine.getReference())){
+					if (contractLine.getProduct().equals(consumptionLine.getProduct()) && contractLine.getProductName().equals(consumptionLine.getReference())) {
 						linkedContractLine = contractLine;
 						break;
 					}
 				}
 				
-				if (linkedContractLine == null){
+				if (linkedContractLine == null) {
 					consumptionLine.setIsError(true);
-				}else{
+				} else {
 					linkedContractLine.setQty(linkedContractLine.getQty().add(consumptionLine.getQty()));
 					BigDecimal taxRate = BigDecimal.ZERO;
-					if(linkedContractLine.getTaxLine() != null)  {  taxRate = linkedContractLine.getTaxLine().getValue();  }
+					if (linkedContractLine.getTaxLine() != null)  {  taxRate = linkedContractLine.getTaxLine().getValue();  }
 					linkedContractLine.setExTaxTotal( linkedContractLine.getQty().multiply(linkedContractLine.getPrice()).setScale(2, RoundingMode.HALF_EVEN) );
 					linkedContractLine.setInTaxTotal( linkedContractLine.getExTaxTotal().add(linkedContractLine.getExTaxTotal().multiply(taxRate) ) );
 					consumptionLine.setContractLine(linkedContractLine);
-					if (!isInVersion(linkedContractLine, contract.getCurrentVersion() ) ){
+					if (!isInVersion(linkedContractLine, contract.getCurrentVersion())) {
 						linesFromOlderVersionsMp.put(consumptionLine, linkedContractLine);
-					} 
+					}
 				}
-				
-			}
-			 
+			 }
 		}
 
 		List<ContractLine> contractLines = new ArrayList<>();
@@ -309,29 +310,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                 .peek(contractLine -> contractLine.setIsInvoiced(true))
 				.collect(Collectors.toList()));
 
-		InvoiceLineRepository invoiceLineRepository = Beans.get(InvoiceLineRepository.class);
-		AccountManagementAccountService accountManagementAccountService = Beans.get(AccountManagementAccountService.class);
-
 		for (ContractLine line: contractLines) {
-			InvoiceLine invoiceLine = new InvoiceLine();
-			invoiceLine.setProduct(line.getProduct());
-			invoiceLine.setExTaxTotal(line.getExTaxTotal());
-			invoiceLine.setInTaxTotal(line.getInTaxTotal());
-			invoiceLine.setDescription(line.getDescription());
-			invoiceLine.setPrice(line.getPrice());
-			invoiceLine.setProductName(line.getProductName());
-			invoiceLine.setQty(line.getQty());
-			invoiceLine.setUnit(line.getUnit());
-			invoiceLine.setTaxLine(line.getTaxLine());
-			invoiceLine.setInvoice(invoice);
-
-			AccountManagement accountManagement = accountManagementAccountService.getAccountManagement(line.getProduct(), contract.getCompany());
-			Account account = accountManagementAccountService.getProductAccount(accountManagement, false);
-			invoiceLine.setAccount(account);
-
-			invoice.addInvoiceLineListItem(invoiceLine);
-
-			invoiceLineRepository.save(invoiceLine);
+			generate(invoice, line);
 			if (line.getIsInvoiced()) {
 				contractLineRepo.save(line);
 			}
@@ -343,40 +323,57 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		}
 
 		for (Entry<ContractLine, Collection<ConsumptionLine>> entry : multiMap.asMap().entrySet()) {
-			
 			ContractLine line = entry.getKey();
 			InvoiceLine invoiceLine = new InvoiceLine();
-			
-			invoiceLine.setProduct(line.getProduct());
-			invoiceLine.setExTaxTotal(line.getExTaxTotal());
-			invoiceLine.setInTaxTotal(line.getInTaxTotal());
-			invoiceLine.setDescription(line.getDescription());
-			invoiceLine.setPrice(line.getPrice());
-			invoiceLine.setProductName(line.getProductName());
-			invoiceLine.setQty(line.getQty());
-			invoiceLine.setUnit(line.getUnit());
-			invoiceLine.setTaxLine(line.getTaxLine());
-			invoiceLine.setInvoice(invoice);
-			invoice.addInvoiceLineListItem(invoiceLine);
-			JPA.save(invoiceLine);
-			
+
+			generate(invoice, line);
+
 			for (ConsumptionLine consLine : entry.getValue()) {
 				consLine.setInvoiceLine(invoiceLine);
 				consLine.setIsInvoiced(true);
 				consumptionLineRepo.save(consLine);
 			}
-			
 		}
-		
-		JPA.save(invoice);
-		
 		if (invoice.getInvoiceLineList() != null && !invoice.getInvoiceLineList().isEmpty()){
 			Beans.get(InvoiceServiceImpl.class).compute(invoice);
 		}
-		
-		
-		return invoice;
-		
+
+		return invoiceRepository.save(invoice);
+	}
+
+	protected InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, line.getProduct(), line.getProductName(),
+				line.getPrice(), null, line.getDescription(), line.getQty(), line.getUnit(),
+				line.getTaxLine(), InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO,
+				PriceListLineRepository.AMOUNT_TYPE_NONE, line.getExTaxTotal(), line.getInTaxTotal(), false) {
+			@Override
+			public List<InvoiceLine> creates() throws AxelorException {
+				InvoiceLine invoiceLine = this.createInvoiceLine();
+
+				List<InvoiceLine> invoiceLines = new ArrayList<>();
+				invoiceLines.add(invoiceLine);
+				return invoiceLines;
+			}
+		};
+
+		InvoiceLine invoiceLine = invoiceLineGenerator.creates().get(0);
+
+		FiscalPositionServiceAccountImpl fiscalPositionService = Beans.get(FiscalPositionServiceAccountImpl.class);
+		FiscalPosition fiscalPosition = line.getFiscalPosition();
+		Account currentAccount = invoiceLine.getAccount();
+		Account replacedAccount = fiscalPositionService.getAccount(fiscalPosition, currentAccount);
+
+		boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
+
+		TaxLine taxLine = Beans.get(AccountManagementService.class)
+				.getTaxLine(appBaseService.getTodayDate(), invoiceLine.getProduct(), invoice.getCompany(), fiscalPosition, isPurchase);
+
+		invoiceLine.setTaxLine(taxLine);
+		invoiceLine.setAccount(replacedAccount);
+
+		invoice.addInvoiceLineListItem(invoiceLine);
+
+		return Beans.get(InvoiceLineRepository.class).save(invoiceLine);
 	}
 
 	@Override
