@@ -54,7 +54,7 @@ public class ProductBaseRepository extends ProductRepository{
         Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
         product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
 
-        if (!StringUtils.isBlank(oldProduct.getFullName()) && !oldProduct.getFullName().equals(product.getFullName())) {
+        if (!StringUtils.isBlank(oldProduct.getFullName())) {
             translationService.removeValueTranslations(oldProduct.getFullName());
         }
 
