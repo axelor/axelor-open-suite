@@ -401,7 +401,7 @@ public class HumanResourceMobileController {
 			response.setData(data);
 			Beans.get(LeaveRequestRepository.class).save(leave);
 
-			response.setValue("id", leaveLine.getId());
+			response.setValue("id", leave.getId());
 		}
 	}
 
