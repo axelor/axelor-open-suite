@@ -28,7 +28,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class ContractLineController {
 
-	public void computeTotalProduct(ActionRequest request, ActionResponse response) {
+	public void computeTotal(ActionRequest request, ActionResponse response) {
 		ContractLine contractLine = request.getContext().asType(ContractLine.class);
 		Product product = contractLine.getProduct();
 

@@ -206,7 +206,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void terminateContract(Contract contract, Boolean isManual, LocalDate date) throws AxelorException {
 		ContractVersion currentVersion = contract.getCurrentVersion();
-		
+
 		if (isManual) {
 			contract.setTerminationDemandDate(appBaseService.getTodayDate());
 			contract.setTerminatedManually(true);

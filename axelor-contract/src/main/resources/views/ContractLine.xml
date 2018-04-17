@@ -13,7 +13,7 @@
 
     <form name="contract-line-form" title="Contract Line" model="com.axelor.apps.contract.db.ContractLine">
         <panel>
-            <field name="product" canEdit="false" onChange="action-method-contract-version-change-product,action-method-contract-line-compute"/>
+            <field name="product" canEdit="false" onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total"/>
             <field name="productName"/>
             <field name="qty" onChange="action-method-contract-line-compute" readonlyIf="isConsumptionLine"/>
             <field name="price" onChange="action-method-contract-line-compute"/>
@@ -21,7 +21,7 @@
             <field name="unit"/>
             <field name="exTaxTotal" readonly="true"/>
             <field name="inTaxTotal" readonly="true"/>
-            <field name="isConsumptionLine" onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute"/>
+            <field name="isConsumptionLine" onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
             <field name="fiscalPosition" form-view="fiscal-position-form" grid-view="fiscal-position-grid" canEdit="false"/>
             <field name="isInvoiced" readonly="true" showIf="isInvoiced" />
             <field name="description" colSpan="12"/>
@@ -33,12 +33,8 @@
         <field name="qty" expr="eval: 0"/>
     </action-record>
     
-    <action-method name="action-method-contract-line-change-product">
-        <call class="com.axelor.apps.contract.web.ContractLineController" method="changeProduct"/>
-    </action-method>
-
-    <action-method name="action-method-contract-line-compute">
-        <call class="com.axelor.apps.contract.web.ContractLineController" method="compute"/>
+    <action-method name="action-method-contract-line-compute-total">
+        <call class="com.axelor.apps.contract.web.ContractLineController" method="computeTotal"/>
     </action-method>
 
     <grid name="additional-contract-line-grid" title="Additional benefit lines" model="com.axelor.apps.contract.db.ContractLine">
