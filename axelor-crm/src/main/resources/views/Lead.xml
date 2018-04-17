@@ -131,13 +131,12 @@
 			</panel>
 		</panel-tabs>
 
-      
 		<panel sidebar="true">
 			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
 			<button name="start" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start"/>
 			<button name="convert" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead,reload"/>
 			<button name="recycle" title="Recycle" hideIf="statusSelect == 6" icon="fa-recycle" onClick="save,action-lead-record-status-recycle"/>
-			<button name="loose" title="Loose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-record-status-loose" css="btn-danger"/>
+			<button name="lose" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose" css="btn-danger"/>
 			<button name="new" title="Draft" hideIf="statusSelect != 5" icon="fa-undo" onClick="action-lead-record-status-new"/>
 			<button name="showPartner" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
 		</panel>
@@ -161,6 +160,13 @@
 	  	</panel-mail>
 
 	</form>
+
+    <form name="lead-lose-wizard-form" model="com.axelor.apps.crm.db.Lead" title="Loss confirmation" >
+		<panel name="main">
+			<field name="lostReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"/>
+			<button name="lostReasonConfirm" title="Confirm lost reason" onClick="action-lead-lost-reason-check,action-lead-method-confirm-lost-reason" colOffset="4" colSpan="4"/>
+		</panel>
+    </form>
 
 	<grid name="event-lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="enterpriseName">
         <field name="name"/>
@@ -192,6 +198,14 @@
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 	
+	<action-condition name="action-lead-lost-reason-check">
+		<check error="A lost reason must be selected" field="lostReason" if="lostReason == null || lostReason == 0"/>
+	</action-condition>
+
+	<action-method name="action-lead-method-confirm-lost-reason">
+		<call class="com.axelor.apps.crm.web.LeadController" method="loseLead"/>
+	</action-method>
+
 	<action-group name="action-group-crm-lead-onnew">
 		<action name="action-account-record-new"/>
 		<action name="action-lead-default-record-new"/>
@@ -233,10 +247,6 @@
     	<field name="lostReason" expr="eval:null"/>
     </action-record>
 
-    <action-record name="action-lead-record-status-loose" model="com.axelor.apps.crm.db.Lead">
-    	<field name="statusSelect" expr="5"/>
-    </action-record>
-
 	<action-record name="action-lead-record-status-start" model="com.axelor.apps.crm.db.Lead">
     	<field name="statusSelect" expr="3"/>
     </action-record>
@@ -244,6 +254,16 @@
    	<action-record name="action-lead-record-status-recycle" model="com.axelor.apps.crm.db.Lead">
     	<field name="statusSelect" expr="6"/>
     </action-record>
+
+    <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead" title="Lose">
+	  	<view type="form" name="lead-lose-wizard-form"/>
+	  	<view-param name="popup" value="reload"/>
+	  	<view-param name="show-toolbar" value="false"/>
+	  	<view-param name="show-confirm" value="false" />
+  	  	<view-param name="popup-save" value="false"/>
+	  	<view-param name="forceEdit" value="true" />
+	  	<context name="_showRecord" expr="eval: __this__.id" />
+	</action-view>
 
     <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
     	<field name="otherAddress" expr="eval: primaryAddress" if="isCopyAddress"/>

@@ -43,6 +43,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -50,6 +51,8 @@ public class LeadController {
 
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
+	@Inject
+	LeadRepository leadRepo;
 	
 
 	/**
@@ -159,4 +162,13 @@ public class LeadController {
 				!Beans.get(LeadService.class).isThereDuplicateLead(lead));
 	}
 	
+	public void loseLead(ActionRequest request, ActionResponse response) {
+		try {
+			Lead lead = request.getContext().asType(Lead.class);
+			Beans.get(LeadService.class).loseLead(leadRepo.find(lead.getId()), lead.getLostReason());
+			response.setCanClose(true);
+		} catch(Exception e) {
+			TraceBackService.trace(response, e);
+		}
+	}
 }
