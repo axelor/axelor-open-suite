@@ -20,12 +20,15 @@ package com.axelor.apps.tool.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.tool.service.CipherService;
 import com.axelor.apps.tool.service.CipherServiceImpl;
+import com.axelor.apps.tool.service.TranslationService;
+import com.axelor.apps.tool.service.TranslationServiceImpl;
 
 public class ToolModule extends AxelorModule {
 
     @Override
     protected void configure() {
         bind(CipherService.class).to(CipherServiceImpl.class);
+        bind(TranslationService.class).to(TranslationServiceImpl.class);
     }
 
 }
