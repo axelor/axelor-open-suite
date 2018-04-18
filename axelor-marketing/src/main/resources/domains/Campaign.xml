@@ -14,6 +14,9 @@
   	<many-to-one name="leadTemplate" ref="com.axelor.apps.message.db.Template" title="Leads template" />
   	<many-to-one name="emailLog" ref="com.axelor.meta.db.MetaFile" title="Email sending log" />
   	<many-to-one name="campaignType" ref="CampaignType" title="Campaign Type" />
+  	<boolean name="emailing" title="Emailing" />
+  	<boolean name="generateEventPerTarget" title="Generate event per target" />
+  	<boolean name="generateEventPerPartnerOrLead" title="Generate event to the team and salesman in charge of the partner/leads" />
   	<many-to-many name="leads" ref="com.axelor.apps.crm.db.Lead" title="Leads" />
   	<many-to-many name="partners" ref="com.axelor.apps.base.db.Partner" title="Partners" />
   	<many-to-one name="eventUser" ref="com.axelor.auth.db.User" title="Assigned to"/>
