@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.imports;
 
 import java.io.IOException;
+import java.util.Map;
 
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
@@ -37,6 +38,12 @@ public class ImportService {
 	public ImportHistory run( ImportConfiguration configuration ) throws AxelorException, IOException {
 		
 		 return factoryImporter.createImporter( importConfigRepo.find( configuration.getId() ) ).run();
+		
+	}
+	
+	public ImportHistory run( ImportConfiguration configuration, Map<String, Object> config ) throws AxelorException, IOException {
+		
+		 return factoryImporter.createImporter( importConfigRepo.find( configuration.getId() ) ).run(config);
 		
 	}
 

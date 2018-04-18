@@ -27,6 +27,7 @@ import java.util.Map;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -152,8 +153,28 @@ public class PriceListService {
 		return unitPrice;
 	}
 
+	public Map<String, Object> getReplacedPriceAndDiscounts(PriceList priceList, PriceListLine priceListLine, BigDecimal price) {
+		int discountTypeSelect = 0;
 
-	public Map<String, Object>  getDiscounts(PriceList priceList, PriceListLine priceListLine, BigDecimal price)  {
+		if(priceListLine != null){
+			discountTypeSelect = priceListLine.getTypeSelect();
+		}
+		Map<String, Object> discounts = getDiscounts(priceList, priceListLine, price);
+		if (discounts != null) {
+			int computeMethodDiscountSelect = appBaseService.getAppBase().getComputeMethodDiscountSelect();
+			if ((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE)
+					|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT) {
+
+				price = computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
+				discounts.put("price", price);
+				discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
+				discounts.put("discountAmount", BigDecimal.ZERO);
+			}
+		}
+		return discounts;
+	}
+
+	public Map<String, Object> getDiscounts(PriceList priceList, PriceListLine priceListLine, BigDecimal price)  {
 
 		Map<String, Object> discounts = new HashMap<>();
 

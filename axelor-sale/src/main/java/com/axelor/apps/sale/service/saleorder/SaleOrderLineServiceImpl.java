@@ -25,14 +25,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
@@ -41,8 +34,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -250,31 +241,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 	public Map<String,Object> getDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price)  {
 		
 		PriceList priceList = saleOrder.getPriceList();
-		if(priceList != null)  {
-			int discountTypeSelect = 0;
-			
-			PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
-			if(priceListLine != null){
-				discountTypeSelect = priceListLine.getTypeSelect();
-			}
-			
-			Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-			if(discounts != null){
-				int computeMethodDiscountSelect = appBaseService.getAppBase().getComputeMethodDiscountSelect();
-				if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE) 
-						|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
-					
-					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
-					discounts.put("price", price);
-					discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
-					discounts.put("discountAmount", BigDecimal.ZERO);
-				}
-			}
-			return discounts;
+		if(priceList == null) {
+			return null;
 		}
-		
-		return null;
-		
+
+		PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+		return priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
 	}
 
 	public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine){

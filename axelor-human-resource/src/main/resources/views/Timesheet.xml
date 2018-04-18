@@ -51,7 +51,7 @@
 	    onLoad="action-timesheet-group-onload" canNew="false"
 	    onSave="action-timesheet-group-onsave" canCopy="false">
 	    <menubar>
-			<menu title="Reports" icon="fa-files-o">
+            <menu title="Reports" icon="fa-files-o">
 				<item name="printTimesheet" title="Print" action="save,action-print-timesheet"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench">

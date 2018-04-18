@@ -1,0 +1,11 @@
+"importId";"company_id";"typeSelect";"product.importId";"tax.code";"productFamily.importId";"paymentMode.importId";"saleAccount_code";"saleTax.code";"purchaseAccount_code";"purchaseTax.code";"cashAccount_code";"journal_importId";"sequence_importId";"bankDetails_importId"
+1;1;1;;;1;;706000;"N_C";604000;"N_D";;;;
+2;1;1;;;2;;707100;"N_C";601000;"N_D";;;;
+3;1;1;;;3;;707100;"N_C";602100;"N_D";;;;
+4;1;1;;;4;;707100;"N_C";602200;"N_D";;;;
+5;1;1;;;5;;706000;"N_C";604000;"N_D";;;;
+6;1;1;;;6;;708000;"N_C";625100;"N_D";;;;
+28;1;1;302;;;;705000;"N_C";621400;"N_D";;;;
+29;1;1;303;;;;708400;"N_C";621400;"N_D";;;;
+30;1;1;304;;;;708400;"N_C";621400;"N_D";;;;
+31;1;1;305;;;;708400;"N_C";621400;"N_D";;;;

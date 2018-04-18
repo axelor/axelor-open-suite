@@ -88,8 +88,8 @@ public abstract class Importer {
 		log.debug("Initialisation de l'import pour la configuration {}", configuration.getName());
 		return this;
 	}
-
-	public ImportHistory run() throws AxelorException, IOException {
+	
+	public ImportHistory run(Map<String, Object> importContext) throws AxelorException, IOException {
 
 		File 
 			bind = MetaFiles.getPath( configuration.getBindMetaFile() ).toFile(), 
@@ -103,7 +103,7 @@ public abstract class Importer {
 		}
 
 		File workspace = createFinalWorkspace(configuration.getDataMetaFile());
-		ImportHistory importHistory = process( bind.getAbsolutePath(), workspace.getAbsolutePath() );
+		ImportHistory importHistory = process( bind.getAbsolutePath(), workspace.getAbsolutePath(), importContext );
 		deleteFinalWorkspace(workspace);
 
 		log.debug("Import terminé : {}", importHistory.getLog());
@@ -112,7 +112,13 @@ public abstract class Importer {
 		
 	}
 	
-	abstract protected ImportHistory process( String bind, String data ) throws IOException;
+	public ImportHistory run() throws AxelorException, IOException {
+		return run(null);
+	}
+	
+	abstract protected ImportHistory process( String bind, String data, Map<String, Object> importContext ) throws IOException;
+	
+	abstract protected ImportHistory process( String bind, String data) throws IOException;
 	
 	protected void deleteFinalWorkspace( File workspace ) throws IOException {
 
