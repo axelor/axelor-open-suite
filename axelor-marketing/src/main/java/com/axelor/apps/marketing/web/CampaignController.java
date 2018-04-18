@@ -66,17 +66,18 @@ public class CampaignController {
 	}
 	
 	public void generateEvents(ActionRequest request, ActionResponse response) {
-		
+
 		Campaign campaign = request.getContext().asType(Campaign.class);
 		
-		try  {
+		try {
 			campaign = campaignRepo.find(campaign.getId());
 			campaignService.generateEvents(campaign);
 			response.setAttr("plannedEvents", "refresh", true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
 		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
 	}
-	
+
 	public void generateTargets(ActionRequest request, ActionResponse response) {
 		
 		Campaign campaign = request.getContext().asType(Campaign.class);
