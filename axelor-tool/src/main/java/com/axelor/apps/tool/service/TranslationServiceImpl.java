@@ -20,8 +20,7 @@ package com.axelor.apps.tool.service;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.commons.lang3.StringUtils;
-
+import com.axelor.common.StringUtils;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.google.inject.Inject;
@@ -30,11 +29,21 @@ import com.google.inject.persist.Transactional;
 public class TranslationServiceImpl implements TranslationService {
     protected MetaTranslationRepository metaTranslationRepo;
 
-    private static final String VALUE_KEY_PREFIX = "value:";
+    protected static final String VALUE_KEY_PREFIX = "value:";
 
     @Inject
     TranslationServiceImpl(MetaTranslationRepository metaTranslationRepo) {
         this.metaTranslationRepo = metaTranslationRepo;
+    }
+
+    @Override
+    @Transactional
+    public void updateFormatedValueTranslations(String oldKey, String format, Object... args) {
+        if (!StringUtils.isBlank(oldKey)) {
+            removeValueTranslations(oldKey);
+        }
+
+        createFormatedValueTranslations(format, args);
     }
 
     @Override
