@@ -71,9 +71,7 @@ public interface InvoiceService {
 	 * 
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice compute(final Invoice invoice) throws AxelorException;
-	
+    public Invoice compute(final Invoice invoice) throws AxelorException;	
 	
 	/**
 	 * Validate an invoice.
@@ -82,11 +80,7 @@ public interface InvoiceService {
 	 * @param compute
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice, boolean compute) throws AxelorException;
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice) throws AxelorException;
+    public void validate(Invoice invoice) throws AxelorException;
 
 	/**
 	 * Ventilation comptable d'une facture.
@@ -97,10 +91,17 @@ public interface InvoiceService {
 	 * 
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void ventilate( Invoice invoice ) throws AxelorException;
+    public void ventilate(Invoice invoice) throws AxelorException;
 
-	/**
+    /**
+     * Validate and ventilate an invoice.
+     * 
+     * @param invoice
+     * @throws AxelorException
+     */
+    void validateAndVentilate(Invoice invoice) throws AxelorException;
+
+    /**
 	 * Annuler une facture.
 	 * (Transaction)
 	 * 

@@ -12,7 +12,7 @@
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 	            <item title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
 	            <item title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
 	     	</menu>
@@ -46,7 +46,7 @@
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 	     	</menu>
 		</menubar>
@@ -78,7 +78,7 @@
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 	            <item title="Generate subscriptions invoices" action="action-supplychain-method-generate-subscription-invoice" if="__config__.app.isApp('supplychain')"/>
 	     	</menu>

@@ -17,47 +17,59 @@
  */
 package com.axelor.apps.tool;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Collection;
 
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import com.google.inject.persist.Transactional;
 
 public final class ModelTool {
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	/**
-	 * Find models by id from id list and apply given function on each message found.
-	 * @param ids list of message ids.
-	 * @param consumer to apply on each message.
-	 * @return the number of errors append.
-	 */
-	@Transactional
-	public static int apply(Class<? extends Model> modelClass, List<Integer> ids, ThrowConsumer<Model> consumer) {
-		Preconditions.checkNotNull(ids, I18n.get("The given ids list cannot be null."));
-		Preconditions.checkNotNull(consumer, I18n.get("The given function cannot be null."));
-		int error = 0;
-		for (Integer id: ids) {
-		    try {
-				Model model = JPA.find(modelClass, Long.valueOf(id));
-				if (model == null) { error++; continue; }
-				consumer.accept(model);
-			} catch (Exception e) {
-				TraceBackService.trace(e);
-				error++;
-			} finally {
-		    	JPA.clear();
-			}
-		}
-		return error;
-	}
+    private ModelTool() {
+    }
+
+    /**
+     * Apply consumer to each record found from collection of IDs.
+     * 
+     * @param ids
+     *            collection of IDs.
+     * @param consumer
+     *            to apply on each record.
+     * @return the number of errors that occurred.
+     */
+    public static <T extends Model> int apply(Class<? extends Model> modelClass, Collection<? extends Number> ids,
+            ThrowConsumer<T> consumer) {
+
+        Preconditions.checkNotNull(ids, I18n.get("The collection of IDs cannot be null."));
+        Preconditions.checkNotNull(consumer, I18n.get("The consumer cannot be null."));
+
+        int errorCount = 0;
+
+        for (Number id : ids) {
+            try {
+                if (id != null) {
+                    Model model = JPA.find(modelClass, id.longValue());
+                    if (model != null) {
+                        consumer.accept((T) model);
+                        continue;
+                    }
+                }
+
+                throw new AxelorException(modelClass, IException.NO_VALUE, I18n.get("Cannot find record #%s"),
+                        String.valueOf(id));
+            } catch (Exception e) {
+                ++errorCount;
+                TraceBackService.trace(e);
+            } finally {
+                JPA.clear();
+            }
+        }
+
+        return errorCount;
+    }
 
 }

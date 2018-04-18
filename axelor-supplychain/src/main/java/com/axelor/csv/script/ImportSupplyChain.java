@@ -130,8 +130,7 @@ public class ImportSupplyChain {
 					invoice.setInvoiceDate(LocalDate.now());
 				}
 				invoiceService.compute(invoice);
-				invoiceService.validate(invoice);
-				invoiceService.ventilate(invoice);				
+				invoiceService.validateAndVentilate(invoice);
 				purchaseOrderServiceSupplychainImpl.finishPurchaseOrder(purchaseOrder);
 			}
 			
@@ -172,8 +171,7 @@ public class ImportSupplyChain {
 					invoice.setInvoiceDate(LocalDate.now());
 				}
 				invoiceService.compute(invoice);
-				invoiceService.validate(invoice);
-				invoiceService.ventilate(invoice);
+				invoiceService.validateAndVentilate(invoice);
 				StockMove stockMove = stockMoveRepo.all().filter("saleOrder = ?1",saleOrder).fetchOne();
 				if(stockMove != null && stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 					stockMoveService.copyQtyToRealQty(stockMove);

@@ -109,7 +109,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	
 // WKF
 	
-	public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices){
+	@Override
+    public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices){
 		return alarmEngineService.get( Invoice.class, invoices );
 	}
 	
@@ -122,7 +123,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * 
 	 * @throws Exception 
 	 */
-	public void raisingAlarms(Invoice invoice, String alarmEngineCode) {
+	@Override
+    public void raisingAlarms(Invoice invoice, String alarmEngineCode) {
 
 		Alarm alarm = alarmEngineService.get(alarmEngineCode, invoice, true);
 		
@@ -150,7 +152,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * 
 	 * @throws AxelorException
 	 */
-	public Invoice compute(final Invoice invoice) throws AxelorException {
+	@Override
+    public Invoice compute(final Invoice invoice) throws AxelorException {
 
 		log.debug("Calcul de la facture");
 		
@@ -174,8 +177,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		return invoice1;
 		
 	}
-	
-	
+
+    @Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    public void validateAndVentilate(Invoice invoice) throws AxelorException {
+        validate(invoice);
+        ventilate(invoice);
+    }
+
 	/**
 	 * Validation d'une facture.
 	 * (Transaction)
@@ -187,13 +196,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 */
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice, boolean compute) throws AxelorException {
+	public void validate(Invoice invoice) throws AxelorException {
 
 		log.debug("Validation de la facture");
-
-		if (compute) {
-			compute(invoice);
-		}
 
 		validateFactory.getValidator(invoice).process( );
 		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
@@ -206,12 +211,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		    ventilate(invoice);
 		}
 
-	}
-
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice) throws AxelorException {
-		validate(invoice, false);
 	}
 
 	@Override
@@ -237,7 +236,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * 
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void ventilate( Invoice invoice ) throws AxelorException {
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 			if (!invoiceLine.getIsTitleLine() && invoiceLine.getAccount() == null) {
@@ -266,7 +266,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * 
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(Invoice invoice) throws AxelorException {
 
 		log.debug("Annulation de la facture {}", invoice.getInvoiceId());
@@ -286,7 +287,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * @param invoice
 	 * 		Une facture
 	 */
-	@Transactional
+	@Override
+    @Transactional
 	public void usherProcess(Invoice invoice)  {
 		Move move = invoice.getMove();
 		
@@ -317,7 +319,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * @return
 	 * @throws AxelorException 
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Override
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createRefund(Invoice invoice) throws AxelorException {
 		
 		log.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
@@ -466,7 +469,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	 * @return
 	 * 			La facture trouvée
 	 */
-	public Invoice getInvoice(MoveLine moveLine)  {
+	@Override
+    public Invoice getInvoice(MoveLine moveLine)  {
 		Invoice invoice = null;
 		if(moveLine.getMove().getRejectOk())  {
 			invoice = moveLine.getInvoiceReject();
@@ -658,7 +662,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING), partner.getName());
     }
 
-	public int getPurchaseTypeOrSaleType(Invoice invoice) {
+	@Override
+    public int getPurchaseTypeOrSaleType(Invoice invoice) {
 		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
 				|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
 			return PriceListRepository.TYPE_SALE;
