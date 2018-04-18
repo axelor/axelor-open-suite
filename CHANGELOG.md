@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased 5.0.0-rc2]
+
+## Bug Fixes
+
+
+
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
 - New currency conversion API (ECB)
@@ -404,6 +410,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+
+[Unreleased 5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...dev
 [5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
 [Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
 [4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
