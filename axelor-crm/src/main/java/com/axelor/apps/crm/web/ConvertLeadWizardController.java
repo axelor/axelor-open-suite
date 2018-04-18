@@ -208,7 +208,7 @@ public class ConvertLeadWizardController {
             }
             AppBase appBase = appBaseService.getAppBase();
             response.setAttr("lead", "value", lead);
-            response.setAttr("amount", "value", lead.getOpportunityAmount());
+            response.setAttr("amount", "value", lead.getEstimatedBudget());
             response.setAttr("description", "value", lead.getDescription());
             response.setAttr("source", "value", lead.getSource());
             response.setAttr("user", "value", lead.getUser());

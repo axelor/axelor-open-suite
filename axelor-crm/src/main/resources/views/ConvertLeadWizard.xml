@@ -5,7 +5,7 @@
     
 	<form name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" width="large" onNew="action-convert-lead-wizard-address,action-record-convert-lead-wizard-set-is-prospect" canSave="false">
 	  	<toolbar>
-		    <button name="validate" title="Validate" onClick="action-convert-lead-validate-confirm-validate-lead,action-lead-method-convert-lead"/>
+		    <button name="validate" title="Validate" onClick="action-convert-lead-condition-check-fields,action-convert-lead-validate-confirm-validate-lead,action-lead-method-convert-lead"/>
 	  	</toolbar>
 	  	<panel name="main" >
 		    <field name="$hasConvertIntoProspect" title="Convert into Prospect ?" widget="Boolean"/>
@@ -299,6 +299,10 @@
     	<field name="$hasConvertIntoProspect" expr="eval: true"/>
     </action-record>
     
+    <action-condition name="action-convert-lead-condition-check-fields">
+    	<check field="opportunity.name" error="Opportunity name must be defined." if="hasConvertIntoOpportunity &amp;&amp; !opportunity.name"/>
+    </action-condition>
+
     <action-validate name="action-convert-lead-validate-confirm-validate-lead">
        <alert message="Are you sure to convert lead ?"/>
     </action-validate>
