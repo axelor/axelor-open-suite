@@ -28,7 +28,6 @@ import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.service.TranslationService;
-import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -54,11 +53,8 @@ public class ProductBaseRepository extends ProductRepository{
         Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
         product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
 
-        if (!StringUtils.isBlank(oldProduct.getFullName())) {
-            translationService.removeValueTranslations(oldProduct.getFullName());
-        }
-
-        translationService.createFormatedValueTranslations(FULL_NAME_FORMAT, product.getCode(), product.getName());
+        translationService.updateFormatedValueTranslations(oldProduct.getFullName(), FULL_NAME_FORMAT,
+                product.getCode(), product.getName());
 
 		product = super.save(product);
 		if(product.getBarCode() == null && product.getSerialNumber()!=null  &&  appBaseService.getAppBase().getActivateBarCodeGeneration() && product.getBarcodeTypeConfig()!=null) {
