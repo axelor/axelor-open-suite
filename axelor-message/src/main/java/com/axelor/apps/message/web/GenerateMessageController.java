@@ -95,6 +95,7 @@ public class GenerateMessageController {
 						ActionView.define( I18n.get( IExceptionMessage.MESSAGE_2 ) )
 						.model(Wizard.class.getName())
 						.add("form", "generate-message-wizard-form")
+						.param("show-confirm", "false")
 						.context( "_objectId", context.getId().toString() )
 						.context( "_templateContextModel", model )
 						.context( "_tag", simpleModel )
@@ -123,8 +124,10 @@ public class GenerateMessageController {
 		String model = (String) context.get("_templateContextModel");
 		String tag = (String) context.get("_tag");
 
-		try { response.setView( generateMessage( objectId, model, tag, template ) ); } 
-		catch(Exception e)  { TraceBackService.trace(response, e); }
+		try {
+			response.setView(generateMessage(objectId, model, tag, template));
+			response.setCanClose(true);
+		} catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
 	
@@ -146,6 +149,7 @@ public class GenerateMessageController {
 		return ActionView.define( I18n.get(IExceptionMessage.MESSAGE_3) )
 				.model( Message.class.getName() )
 				.add("form", "message-form")
+				.param("forceEdit", "true")
 				.context("_showRecord", message.getId().toString() )
 				.map();
 			
