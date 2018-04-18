@@ -12,8 +12,9 @@
     <form name="account-chart-form" title="Account Chart" model="com.axelor.apps.account.db.AccountChart">
         <panel name="general" title="General">
 	        <field name="name" />
-	        <field name="code" x-bind="{{code|unaccent|uppercase}}" readonly="true"/>
-	        <field name="countryCode" readonly="true"/>
+	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
+	        <field name="countryCode"/>
+	        <field name="metaFile" widget="binary-link" form-view="meta-files-form" grid-view="meta-files-grid"/>
         </panel>
     </form>
     

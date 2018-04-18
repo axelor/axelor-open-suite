@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-
 import java.util.List;
 
 import com.axelor.apps.account.db.Account;
@@ -30,6 +29,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountChartService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -54,23 +54,23 @@ public class AccountChartController {
 	@Inject
 	AccountChartRepository accountChartRepo;
 	
-	public void installChart(ActionRequest request, ActionResponse response){
-		
+	public void installChart(ActionRequest request, ActionResponse response) throws AxelorException {
+
 		AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
 		AccountChart act = accountChartRepo.find(accountConfig.getAccountChart().getId());
 		Company company = companyRepo.find(accountConfig.getCompany().getId());
 		accountConfig = accountConfigRepo.find(accountConfig.getId());
-		List<? extends Account> accountList = accountRepo.all().filter("self.company.id = ?1 AND self.parentAccount != null", company.getId()).fetch();
-		
-		if(accountList.isEmpty()){
-			if(accountChartsService.installAccountChart(act,company,accountConfig))
+		List<? extends Account> accountList = accountRepo.all()
+				.filter("self.company.id = ?1 AND self.parentAccount != null", company.getId()).fetch();
+
+		if (accountList.isEmpty()) {
+			if (accountChartsService.installAccountChart(act, company, accountConfig))
 				response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_1));
 			else
 				response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_2));
 			response.setReload(true);
-		}
-		else 
+		} else
 			response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_3));
-		
+
 	}
 }
