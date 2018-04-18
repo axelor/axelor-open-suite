@@ -5,6 +5,10 @@
 
 ## Improvements
 
+## Improvements
+- sale order: Allow user to manually define a legal note that will be put on edited orders.
+- sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
+
 ## Bug Fixes
 
 
