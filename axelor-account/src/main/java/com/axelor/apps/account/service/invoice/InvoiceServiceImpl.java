@@ -204,6 +204,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
 		log.debug("Validation de la facture");
 
+		compute(invoice);
+
 		validateFactory.getValidator(invoice).process( );
 		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
 			this.generateBudgetDistribution(invoice);

@@ -117,7 +117,6 @@ public class InvoiceController {
 		invoice = invoiceRepo.find(invoice.getId());
 
 		try{
-            invoiceService.compute(invoice);
 			invoiceService.validate(invoice);
 			response.setReload(true);
 		}
@@ -161,7 +160,6 @@ public class InvoiceController {
 		invoice = invoiceRepo.find(invoice.getId());
 
 		try {
-            invoiceService.compute(invoice);
             invoiceService.validateAndVentilate(invoice);
 			response.setReload(true);
 		} catch(Exception e) {
