@@ -461,7 +461,10 @@ public class HumanResourceMobileController {
 	public void getExpensesTypes(ActionRequest request, ActionResponse response) {
 		List<Map<String, String>> dataList = new ArrayList<>();
 		try {
-			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
+			List<Product> productList =
+					Beans.get(ProductRepository.class).all().
+					filter("self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false").
+					fetch();
 			for (Product product : productList) {
 				Map<String, String> map = new HashMap<>();
 				map.put("name", product.getName());
