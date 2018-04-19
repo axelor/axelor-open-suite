@@ -39,10 +39,6 @@ file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { it
 axelor {
 	title "Axelor ERP"
 	description "Axelor Entreprise Application"
-
-	modules.each { dir ->
-		install "$dir.name"
-	}
 }
 
 dependencies {
