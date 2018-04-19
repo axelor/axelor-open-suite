@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +66,9 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -674,8 +678,65 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		return -1;
 	}
 
+	@Override
+    public Pair<Integer, Integer> massValidate(Collection<? extends Number> invoiceIds) {
+	    return massProcess(invoiceIds, this::validate, STATUS_DRAFT);
+	}
+
+	@Override
+    public Pair<Integer, Integer> massValidateAndVentilate(Collection<? extends Number> invoiceIds) {
+        return massProcess(invoiceIds, this::validateAndVentilate, STATUS_DRAFT);
+    }
+
+    @Override
+    public Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds) {
+        return massProcess(invoiceIds, this::ventilate, STATUS_VALIDATED);
+    }
+
+    private Pair<Integer, Integer> massProcess(Collection<? extends Number> invoiceIds, ThrowConsumer<Invoice> consumer,
+            int statusSelect) {
+        IntCounter doneCounter = new IntCounter();
+
+        int errorCount = ModelTool.apply(Invoice.class, invoiceIds, new ThrowConsumer<Invoice>() {
+            @Override
+            public void accept(Invoice invoice) throws Exception {
+                if (invoice.getStatusSelect() == statusSelect) {
+                    consumer.accept(invoice);
+                    doneCounter.increment();
+                }
+            }
+        });
+
+        return Pair.of(doneCounter.intValue(), errorCount);
+    }
+
+    private static class IntCounter extends Number {
+        private static final long serialVersionUID = -5434353935712805399L;
+        private int count = 0;
+
+        public void increment() {
+            ++count;
+        }
+
+        @Override
+        public int intValue() {
+            return count;
+        }
+
+        @Override
+        public long longValue() {
+            return Long.valueOf(count);
+        }
+
+        @Override
+        public float floatValue() {
+            return Float.valueOf(count);
+        }
+
+        @Override
+        public double doubleValue() {
+            return Double.valueOf(count);
+        }
+    }
+
 }
-
-
-
-

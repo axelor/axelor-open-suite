@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -245,5 +248,29 @@ public interface InvoiceService {
 	 *        OR {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_PURCHASE}
 	 */
 	int getPurchaseTypeOrSaleType(Invoice invoice);
+
+    /**
+     * Mass validate the given collection of invoice IDs.
+     * 
+     * @param invoiceIds
+     * @return pair of done/anomaly counts
+     */
+    Pair<Integer, Integer> massValidate(Collection<? extends Number> invoiceIds);
+
+    /**
+     * Mass validate and ventilate the given collection of invoice IDs.
+     * 
+     * @param invoiceIds
+     * @return pair of done/anomaly counts
+     */
+    Pair<Integer, Integer> massValidateAndVentilate(Collection<? extends Number> invoiceIds);
+
+    /**
+     * Mass ventilate the given collection of invoice IDs.
+     * 
+     * @param invoiceIds
+     * @return pair of done/anomaly counts
+     */
+    Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
 
 }

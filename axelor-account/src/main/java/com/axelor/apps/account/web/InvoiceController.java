@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +53,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
-import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -332,27 +331,15 @@ public class InvoiceController {
                 return;
             }
 
-            ThrowConsumer<Invoice> consumer;
+            Pair<Integer, Integer> massCount;
 
             if (Beans.get(AppAccountService.class).getAppInvoice().getIsVentilationSkipped()) {
-                consumer = invoiceService::validateAndVentilate;
+                massCount = invoiceService.massValidateAndVentilate(ids);
             } else {
-                consumer = invoiceService::validate;
+                massCount = invoiceService.massValidate(ids);
             }
 
-            IntCounter doneCounter = new IntCounter();
-
-            int errorCount = ModelTool.apply(Invoice.class, ids, new ThrowConsumer<Invoice>() {
-                @Override
-                public void accept(Invoice invoice) throws Exception {
-                    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT) {
-                        consumer.accept(invoice);
-                        doneCounter.increment();
-                    }
-                }
-            });
-
-            String message = buildMassMessage(doneCounter.intValue(), errorCount);
+            String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
             response.setFlash(message);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
@@ -371,19 +358,9 @@ public class InvoiceController {
                 return;
             }
 
-            IntCounter doneCounter = new IntCounter();
+            Pair<Integer, Integer> massCount = invoiceService.massVentilate(ids);
 
-            int errorCount = ModelTool.apply(Invoice.class, ids, new ThrowConsumer<Invoice>() {
-                @Override
-                public void accept(Invoice invoice) throws Exception {
-                    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED) {
-                        invoiceService.ventilate(invoice);
-                        doneCounter.increment();
-                    }
-                }
-            });
-
-            String message = buildMassMessage(doneCounter.intValue(), errorCount);
+            String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
             response.setFlash(message);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
@@ -739,34 +716,5 @@ public class InvoiceController {
 			TraceBackService.trace(response, e);
 		}
 	}
-
-    private static class IntCounter extends Number {
-        private static final long serialVersionUID = -5434353935712805399L;
-        private int count = 0;
-
-        public void increment() {
-            ++count;
-        }
-
-        @Override
-        public int intValue() {
-            return count;
-        }
-
-        @Override
-        public long longValue() {
-            return Long.valueOf(count);
-        }
-
-        @Override
-        public float floatValue() {
-            return Float.valueOf(count);
-        }
-
-        @Override
-        public double doubleValue() {
-            return Double.valueOf(count);
-        }
-    }
 
 }
