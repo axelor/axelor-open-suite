@@ -50,11 +50,15 @@ public class ProductBaseRepository extends ProductRepository{
 
 	@Override
 	public Product save(Product product){
-        Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
         product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
 
-        translationService.updateFormatedValueTranslations(oldProduct.getFullName(), FULL_NAME_FORMAT,
-                product.getCode(), product.getName());
+        if (product.getId() != null) {
+            Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
+            translationService.updateFormatedValueTranslations(oldProduct.getFullName(), FULL_NAME_FORMAT,
+                    product.getCode(), product.getName());
+        } else {
+            translationService.createFormatedValueTranslations(FULL_NAME_FORMAT, product.getCode(), product.getName());
+        }
 
 		product = super.save(product);
 		if(product.getBarCode() == null && product.getSerialNumber()!=null  &&  appBaseService.getAppBase().getActivateBarCodeGeneration() && product.getBarcodeTypeConfig()!=null) {
