@@ -17,13 +17,13 @@
             <field name="productName"/>
             <field name="qty" onChange="action-method-contract-line-compute-total" readonlyIf="isConsumptionLine"/>
             <field name="price" onChange="action-method-contract-line-compute-total"/>
-            <field name="taxLine" onChange="action-method-contract-line-compute-total"/>
-            <field name="unit"/>
+            <field name="taxLine" onChange="action-method-contract-line-compute-total" canEdit="false"/>
+            <field name="unit" canEdit="false"/>
             <field name="exTaxTotal" readonly="true"/>
             <field name="inTaxTotal" readonly="true"/>
             <field name="isConsumptionLine" onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
             <field name="isInvoiced" readonly="true" showIf="isInvoiced" />
-            <field name="description" colSpan="12"/>
+            <field name="description" colSpan="12" widget="html"/>
             <field name="contractVersion" hidden="true"/>
         </panel>
     </form>
@@ -50,12 +50,12 @@
             <field name="productName"/>
             <field name="qty" onChange="action-method-contract-line-compute-total" readonlyIf="isConsumptionLine"/>
             <field name="price" onChange="action-method-contract-line-compute-total"/>
-            <field name="taxLine" onChange="action-method-contract-line-compute-total"/>
-            <field name="unit"/>
+            <field name="taxLine" onChange="action-method-contract-line-compute-total" canEdit="false"/>
+            <field name="unit" canEdit="false"/>
             <field name="exTaxTotal" readonly="true"/>
             <field name="inTaxTotal" readonly="true"/>
             <field name="isInvoiced" readonly="true" showIf="isInvoiced" />
-            <field name="description" colSpan="12"/>
+            <field name="description" colSpan="12" widget="html"/>
         </panel>
     </form>
 
