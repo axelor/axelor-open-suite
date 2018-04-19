@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Cash Management"
 	description "Axelor Cash Management Module"
-
-	removable true
 }
 
 dependencies {

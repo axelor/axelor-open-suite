@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Supply Chain"
 	description "Axelor Supply Chain Module"
-
-	removable true
 }
 
 dependencies {

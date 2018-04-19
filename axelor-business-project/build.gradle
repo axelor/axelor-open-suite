@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Business Project"
 	description "Axelor Business Project Module"
-
-	removable true
 }
 
 dependencies {
