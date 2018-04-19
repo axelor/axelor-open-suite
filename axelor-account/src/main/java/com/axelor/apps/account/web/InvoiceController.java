@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -319,7 +320,9 @@ public class InvoiceController {
         return sb.toString();
     }
 
-    public void massValidation(ActionRequest request, ActionResponse response) {
+    private void massProcess(ActionRequest request, ActionResponse response,
+            Function<Collection<? extends Number>, Pair<Integer, Integer>> function) {
+
         try {
             @SuppressWarnings("unchecked")
             List<Number> ids = (List<Number>) request.getContext().get("_ids");
@@ -329,13 +332,7 @@ public class InvoiceController {
                 return;
             }
 
-            Pair<Integer, Integer> massCount;
-
-            if (Beans.get(AppAccountService.class).getAppInvoice().getIsVentilationSkipped()) {
-                massCount = invoiceService.massValidateAndVentilate(ids);
-            } else {
-                massCount = invoiceService.massValidate(ids);
-            }
+            Pair<Integer, Integer> massCount = function.apply(ids);
 
             String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
             response.setFlash(message);
@@ -346,24 +343,27 @@ public class InvoiceController {
         }
     }
 
-    public void massVentilation(ActionRequest request, ActionResponse response) {
+    public void massValidation(ActionRequest request, ActionResponse response) {
         try {
-            @SuppressWarnings("unchecked")
-            List<Number> ids = (List<Number>) request.getContext().get("_ids");
-
-            if (ObjectUtils.isEmpty(ids)) {
-                response.setError(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
-                return;
+            Function<Collection<? extends Number>, Pair<Integer, Integer>> function;
+            
+            if (Beans.get(AppAccountService.class).getAppInvoice().getIsVentilationSkipped()) {
+                function = invoiceService::massValidateAndVentilate;
+            } else {
+                function = invoiceService::massValidate;
             }
-
-            Pair<Integer, Integer> massCount = invoiceService.massVentilate(ids);
-
-            String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
-            response.setFlash(message);
+            
+            massProcess(request, response, function);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
-        } finally {
-            response.setReload(true);
+        }
+    }
+
+    public void massVentilation(ActionRequest request, ActionResponse response) {
+        try {
+            massProcess(request, response, invoiceService::massVentilate);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
         }
     }
 
