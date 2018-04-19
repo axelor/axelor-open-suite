@@ -30,6 +30,7 @@ public interface IExceptionMessage {
 	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correctly configured (%s)" /*)*/;
 
 	static final String RECORD_UNSAVED = /*$$(*/ "Unsaved record" /*)*/;
+    static final String RECORD_NONE_SELECTED = /*$$(*/ "Please select at least one record." /*)*/;
 
 	/**
 	 * Currency service and controller

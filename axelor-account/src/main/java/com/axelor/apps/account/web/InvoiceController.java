@@ -17,6 +17,19 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -25,6 +38,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.BankDetails;
@@ -58,16 +72,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nullable;
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Singleton
 public class InvoiceController {
@@ -114,7 +118,7 @@ public class InvoiceController {
 		invoice = invoiceRepo.find(invoice.getId());
 
 		try{
-			invoiceService.validate(invoice, true);
+			invoiceService.validate(invoice);
 			response.setReload(true);
 		}
 		catch(Exception e)  {
@@ -157,8 +161,7 @@ public class InvoiceController {
 		invoice = invoiceRepo.find(invoice.getId());
 
 		try {
-            invoiceService.validate(invoice, true);
-			invoiceService.ventilate(invoice);
+            invoiceService.validateAndVentilate(invoice);
 			response.setReload(true);
 		} catch(Exception e) {
 			TraceBackService.trace(response, e);
@@ -303,64 +306,67 @@ public class InvoiceController {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	public void massValidation(ActionRequest request, ActionResponse response) {
+    private String buildMassMessage(int doneCount, int errorCount) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format(
+                I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
+                        com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL, doneCount),
+                doneCount));
+        sb.append(" ");
+        sb.append(String.format(
+                I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                        com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL, errorCount),
+                errorCount));
+        return sb.toString();
+    }
 
-		List<Integer> listSelectedInvoice = (List<Integer>) request.getContext().get("_ids");
-		if(listSelectedInvoice != null){
-			Invoice invoice = null;
-			int count = 1;
-			for(Integer invoiceId : listSelectedInvoice){
-				invoice = invoiceRepo.find(invoiceId.longValue());
-				if (invoice.getStatusSelect() != InvoiceRepository.STATUS_DRAFT){
-					continue;
-				}else{
-					try {
-						invoiceService.validate(invoice);
-					} catch (Exception e) {
-						TraceBackService.trace(e);
-					} finally{
-						if (count%10 == 0){
-							JPA.clear();
-						}
-						count ++;
-					}
-				}
-			}
-		}
-		response.setReload(true);
+    private void massProcess(ActionRequest request, ActionResponse response,
+            Function<Collection<? extends Number>, Pair<Integer, Integer>> function) {
 
-	}
+        try {
+            @SuppressWarnings("unchecked")
+            List<Number> ids = (List<Number>) request.getContext().get("_ids");
 
-	@SuppressWarnings("unchecked")
-	public void massVentilation(ActionRequest request, ActionResponse response) {
+            if (ObjectUtils.isEmpty(ids)) {
+                response.setError(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
+                return;
+            }
 
-		List<Integer> listSelectedInvoice = (List<Integer>) request.getContext().get("_ids");
-		if(listSelectedInvoice != null){
-			Invoice invoice = null;
-			int count = 1;
-			for(Integer invoiceId : listSelectedInvoice){
-				invoice = invoiceRepo.find(invoiceId.longValue());
-				if (invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED){
-					continue;
-				}else{
-					try {
-						invoiceService.ventilate(invoice);
-					} catch (Exception e) {
-						TraceBackService.trace(e);
-					} finally{
-						if (count%10 == 0){
-							JPA.clear();
-						}
-						count ++;
-					}
-				}
-			}
-		}
-		response.setReload(true);
+            Pair<Integer, Integer> massCount = function.apply(ids);
 
-	}
-	
+            String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
+            response.setFlash(message);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        } finally {
+            response.setReload(true);
+        }
+    }
+
+    public void massValidation(ActionRequest request, ActionResponse response) {
+        try {
+            Function<Collection<? extends Number>, Pair<Integer, Integer>> function;
+            
+            if (Beans.get(AppAccountService.class).getAppInvoice().getIsVentilationSkipped()) {
+                function = invoiceService::massValidateAndVentilate;
+            } else {
+                function = invoiceService::massValidate;
+            }
+            
+            massProcess(request, response, function);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
+    public void massVentilation(ActionRequest request, ActionResponse response) {
+        try {
+            massProcess(request, response, invoiceService::massVentilate);
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
+        }
+    }
+
 	//Generate single invoice from several
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void mergeInvoice(ActionRequest request, ActionResponse response)  {
@@ -708,4 +714,5 @@ public class InvoiceController {
 			TraceBackService.trace(response, e);
 		}
 	}
+
 }
