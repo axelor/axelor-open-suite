@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -148,28 +149,6 @@ public interface InvoiceService {
 	
 	public void generateBudgetDistribution(Invoice invoice);
 	
-	/**
-	 * Print an invoice
-	 * 
-	 * @param invoice the invoice to print
-	 * @param toAttach whatever to attache the invoice to the object
-	 * 
-	 * @return ReportSettings
-	 * 
-	 * @throws AxelorException
-	 */
-	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException;
-	
-	/**
-	 * Print a list of invoices in the same output
-	 * 
-	 * @param ids the list of invoices ids
-	 * 
-	 * @return ReportSettings
-	 * 
-	 * @throws AxelorException
-	 */
-	public ReportSettings printInvoices(List<Long> ids) throws AxelorException;
 
 	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
 			Partner partner, Partner contactPartner, PriceList priceList,

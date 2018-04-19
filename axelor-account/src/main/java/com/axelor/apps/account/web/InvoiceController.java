@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -280,9 +281,11 @@ public class InvoiceController {
 	@SuppressWarnings("unchecked")
 	public void showInvoice(ActionRequest request, ActionResponse response) {
 		Context context = request.getContext();
-		ReportSettings reportSetting;
+		String fileLink;
+		String title;
 
 		try {
+			InvoicePrintService invoicePrintService = Beans.get(InvoicePrintService.class);
 			if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
 				List<Long> ids = Lists.transform((List) request.getContext().get("_ids"), new Function<Object, Long>() {
 					@Nullable
@@ -291,15 +294,17 @@ public class InvoiceController {
 						return Long.parseLong(input.toString());
 					}
 				});
-				reportSetting = invoiceService.printInvoices(ids);
+				fileLink = invoicePrintService.printInvoices(ids);
+				title = I18n.get("Invoices");
 			} else if (context.get("id") != null) {
-				reportSetting = invoiceService.printInvoice(request.getContext().asType(Invoice.class), false);
+				fileLink = invoicePrintService.printInvoice(request.getContext().asType(Invoice.class), false).getFileLink();
+				title = I18n.get("Invoice");
 			} else {
 				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
 			}
 			response.setView(ActionView
-					.define(reportSetting.getOutputName())
-					.add("html", reportSetting.getFileLink()).map());
+					.define(title)
+					.add("html", fileLink).map());
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}

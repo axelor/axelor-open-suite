@@ -26,13 +26,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -44,7 +42,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -52,6 +49,7 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -64,8 +62,6 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
@@ -73,7 +69,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -258,7 +253,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		invoiceRepo.save(invoice);
 		
 		if(appAccountService.getAppAccount().getPrintReportOnVentilation()){
-			printInvoice(invoice, true);
+			Beans.get(InvoicePrintService.class).printInvoice(invoice, true);
 		}
 		
 	}
@@ -418,55 +413,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 			invoiceLine.setInvoice(invoice);
 		}
 	}
-
-	@Override
-	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException {
-		if (invoice.getPrintingSettings() == null) {
-			throw new AxelorException(IException.MISSING_FIELD,
-					String.format(I18n.get(IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS), invoice.getInvoiceId()),
-					invoice
-            );
-		}
-		String locale = ReportSettings.getPrintingLocale(invoice.getPartner());
-		
-		String title = I18n.get("Invoice");
-		if(invoice.getInvoiceId() != null) { title += " " + invoice.getInvoiceId(); }
-		
-		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
-		if (toAttach) { reportSetting.toAttach(invoice); }
-		
-		return reportSetting.addParam("InvoiceId", invoice.getId().toString())
-				.addParam("Locale", locale)
-				.addParam("InvoicesCopy", invoice.getInvoicesCopySelect())
-				.generate();
-	}
-	
-	@Override
-	public ReportSettings printInvoices(List<Long> ids) throws AxelorException {
-		List<Invoice> invoiceList = invoiceRepo.all()
-				.filter("self.id IN (" +
-						ids.stream().map(Object::toString).collect(Collectors.joining(",")) +
-						") AND self.printingSettings IS NULL")
-				.fetch();
-		if (!invoiceList.isEmpty()) {
-		    String exceptionMessage = String.format(I18n.get(IExceptionMessage.INVOICES_MISSING_PRINTING_SETTINGS),
-					"<ul>" + invoiceList.stream()
-									.map(Invoice::getInvoiceId)
-									.collect(Collectors.joining("</li><li>", "<li>", "</li>"))
-							+ "<ul>");
-		    throw new AxelorException(IException.MISSING_FIELD, exceptionMessage);
-		}
-		
-		String title = I18n.get("Invoices");
-		
-		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");	
-		return reportSetting.addParam("InvoiceId", Joiner.on(",").join(ids))
-				.addParam("Locale", Beans.get(AppBaseService.class).getDefaultPartnerLanguageCode())
-				.addParam("InvoicesCopy", 0)
-				.generate();
-	}
-	
-	
 
 	/**
 	 * Méthode permettant de récupérer la facture depuis une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
