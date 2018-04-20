@@ -78,10 +78,10 @@ public class ITranslation {
     public static final String PACKAGING_LIST_CUSTOMER_NAME = /*$$(*/ "Customer name:" /*)*/;
     public static final String PACKAGING_LIST_ITEM = /*$$(*/ "Item" /*)*/;
     public static final String PACKAGING_LIST_ITEM_DESCRIPTION = /*$$(*/ "Item description" /*)*/;
-    public static final String PACKAGING_LIST_PARCEL_LINE_FORMAT = /*$$(*/ "Parcel No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross weight ({2}): <strong>{3}</strong>" /*)*/;
-    public static final String PACKAGING_LIST_PALLET_LINE_FORMAT = /*$$(*/ "Pallet No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross weight ({2}): <strong>{3}</strong>" /*)*/;
+    public static final String PACKAGING_LIST_PARCEL_LINE_FORMAT = /*$$(*/ "Parcel No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>" /*)*/;
+    public static final String PACKAGING_LIST_PALLET_LINE_FORMAT = /*$$(*/ "Pallet No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>" /*)*/;
     public static final String PACKAGING_LIST_DETAIL_LINE_FORMAT = /*$$(*/ "Stock move No. {0} / Ref. No. {1}" /*)*/;
-    public static final String PACKAGING_LIST_TOTAL_NET_WEIGHT = /*$$(*/ "Total net weight" /*)*/;
-    public static final String PACKAGING_LIST_TOTAL_FORMAT = /*$$(*/ "Number of parcels/pallets: {0} - Total gross weight ({1}): {2}" /*)*/;
+    public static final String PACKAGING_LIST_TOTAL_NET_MASS = /*$$(*/ "Total net mass" /*)*/;
+    public static final String PACKAGING_LIST_TOTAL_FORMAT = /*$$(*/ "Number of parcels/pallets: {0} - Total gross mass ({1}): {2}" /*)*/;
 
 }
