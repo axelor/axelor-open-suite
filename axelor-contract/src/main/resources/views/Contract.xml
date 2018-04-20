@@ -80,7 +80,7 @@
                         <field name="supposedEndDate" hidden="true" showIf="statusSelect &lt;= 2" colSpan="3"/>
                     </editor>
                 </field>
-                <field name="firstPeriodEndDate" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentVersion.isPeriodicInvoicing" colSpan="3" requiredIf="$get('currentVersion.isPeriodicInvoicing')"/>
+                <field name="firstPeriodEndDate" readonlyIf="statusSelect > 2" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentVersion.isPeriodicInvoicing" colSpan="3" requiredIf="$get('currentVersion.isPeriodicInvoicing')"/>
             </panel>
             <panel title="Content">
                 <panel name="contractLineListPanel" colSpan="12" hidden="true" showIf="isInvoicingManagement">
@@ -105,7 +105,7 @@
                 <field name="invoicePeriodStartDate" showIf="currentVersion.isPeriodicInvoicing" colSpan="4"/>
                 <field name="invoicePeriodEndDate" showIf="currentVersion.isPeriodicInvoicing" colSpan="4"/>
                 <field name="invoicingDate" colSpan="4"/>
-                <button name="invoicingBtn" title="Invoicing" showIf="id &amp;&amp; currentVersion.statusSelect == 3" onClick="save,com.axelor.apps.contract.web.ContractController:invoicing"/>
+                <button name="invoicingBtn" title="Invoicing" showIf="id &amp;&amp; currentVersion.statusSelect == 3" onClick="save,action-contract-method-invoicing"/>
                 <panel-dashlet readonly="false" colSpan="12" height="350" action="action-contract-view-invoicing"/>
             </panel>
             <panel if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Reconductions" hidden="true" showIf="currentVersion.statusSelect == 3 &amp;&amp; (renewalNumber > 0 || currentVersion.isTacitRenewal)" colSpan="12">
@@ -331,6 +331,10 @@
 
     <action-method name="action-method-contract-change-product">
         <call class="com.axelor.apps.contract.web.ContractController" method="changeProduct"/>
+    </action-method>
+
+    <action-method name="action-contract-method-invoicing">
+        <call class="com.axelor.apps.contract.web.ContractController" method="invoicing"/>
     </action-method>
 
 </object-views>

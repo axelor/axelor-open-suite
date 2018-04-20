@@ -244,56 +244,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 				return super.createInvoiceHeader();
 			}
 		};
-		
 		Invoice invoice = invoiceGenerator.generate();
-
-		if (contract.getEndDate() == null || contract.getEndDate().isAfter(appBaseService.getTodayDate())) {
-			invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_INVOICE);
-		} else {
-		    invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
-		}
-		invoice.setContract(contract);
-		invoice.setInvoiceDate(contract.getInvoicingDate());
-
 		InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
 		invoiceRepository.save(invoice);
 
-		ContractVersion version = null;
-		
-		Map <ConsumptionLine, ContractLine> linesFromOlderVersionsMp = Maps.newHashMap();
-
-		for (ConsumptionLine consumptionLine : contract.getCurrentVersion().getConsumptionLineList()) {
-			
-			if (consumptionLine.getIsInvoiced()) { continue; }
-			
-			 version = getVersionSpecificVersion( contract, consumptionLine.getConsumptionLineDate() );
-
-			if (version == null) {
-				consumptionLine.setIsError(true);
-			} else {
-				ContractLine linkedContractLine = null;
-				for (ContractLine contractLine : version.getContractLineList()) {
-					if (contractLine.getProduct().equals(consumptionLine.getProduct()) && contractLine.getProductName().equals(consumptionLine.getReference())) {
-						linkedContractLine = contractLine;
-						break;
-					}
-				}
-				
-				if (linkedContractLine == null) {
-					consumptionLine.setIsError(true);
-				} else {
-					linkedContractLine.setQty(linkedContractLine.getQty().add(consumptionLine.getQty()));
-					BigDecimal taxRate = BigDecimal.ZERO;
-					if (linkedContractLine.getTaxLine() != null)  {  taxRate = linkedContractLine.getTaxLine().getValue();  }
-					linkedContractLine.setExTaxTotal( linkedContractLine.getQty().multiply(linkedContractLine.getPrice()).setScale(2, RoundingMode.HALF_EVEN) );
-					linkedContractLine.setInTaxTotal( linkedContractLine.getExTaxTotal().add(linkedContractLine.getExTaxTotal().multiply(taxRate) ) );
-					consumptionLine.setContractLine(linkedContractLine);
-					if (!isInVersion(linkedContractLine, contract.getCurrentVersion())) {
-						linesFromOlderVersionsMp.put(consumptionLine, linkedContractLine);
-					}
-				}
-			 }
-		}
+		Map<ConsumptionLine, ContractLine> linesFromOlderVersionsMp = computeConsumptionLine(contract);
 
 		List<ContractLine> contractLines = new ArrayList<>();
 		contractLines.addAll(contract
@@ -339,6 +294,48 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		}
 
 		return invoiceRepository.save(invoice);
+	}
+
+	@Transactional(rollbackOn = {Exception.class})
+	protected Map<ConsumptionLine, ContractLine> computeConsumptionLine(Contract contract) {
+		Map <ConsumptionLine, ContractLine> linesFromOlderVersionsMp = Maps.newHashMap();
+
+		ContractVersion version;
+
+		for (ConsumptionLine consumptionLine : contract.getCurrentVersion().getConsumptionLineList()) {
+
+			if (consumptionLine.getIsInvoiced()) { continue; }
+
+			version = getVersionSpecificVersion( contract, consumptionLine.getConsumptionLineDate() );
+
+			if (version == null) {
+				consumptionLine.setIsError(true);
+			} else {
+				ContractLine linkedContractLine = null;
+				for (ContractLine contractLine : version.getContractLineList()) {
+					if (contractLine.getProduct().equals(consumptionLine.getProduct()) && contractLine.getProductName().equals(consumptionLine.getReference())) {
+						linkedContractLine = contractLine;
+						break;
+					}
+				}
+
+				if (linkedContractLine == null) {
+					consumptionLine.setIsError(true);
+				} else {
+					linkedContractLine.setQty(linkedContractLine.getQty().add(consumptionLine.getQty()));
+					BigDecimal taxRate = BigDecimal.ZERO;
+					if (linkedContractLine.getTaxLine() != null)  {  taxRate = linkedContractLine.getTaxLine().getValue();  }
+					linkedContractLine.setExTaxTotal( linkedContractLine.getQty().multiply(linkedContractLine.getPrice()).setScale(2, RoundingMode.HALF_EVEN) );
+					linkedContractLine.setInTaxTotal( linkedContractLine.getExTaxTotal().add(linkedContractLine.getExTaxTotal().multiply(taxRate) ) );
+					consumptionLine.setContractLine(linkedContractLine);
+					if (!isInVersion(linkedContractLine, contract.getCurrentVersion())) {
+						linesFromOlderVersionsMp.put(consumptionLine, linkedContractLine);
+					}
+				}
+			}
+		}
+
+		return linesFromOlderVersionsMp;
 	}
 
 	protected InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
