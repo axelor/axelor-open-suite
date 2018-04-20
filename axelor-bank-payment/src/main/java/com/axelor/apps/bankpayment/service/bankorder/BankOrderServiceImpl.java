@@ -43,11 +43,13 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -64,6 +66,8 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -711,6 +715,78 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (ebicsUser != null) {
       User signatoryUser = ebicsUser.getAssociatedUser();
       Beans.get(MailFollowerRepository.class).follow(bankOrder, signatoryUser);
+    }
+  }
+
+  @Override
+  public void resetReceivers(BankOrder bankOrder) {
+    if (ObjectUtils.isEmpty(bankOrder.getBankOrderLineList())) {
+      return;
+    }
+
+    resetPartners(bankOrder);
+    resetBankDetails(bankOrder);
+  }
+
+  private void resetPartners(BankOrder bankOrder) {
+    if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
+      for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+        bankOrderLine.setPartner(null);
+      }
+
+      return;
+    }
+
+    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+      bankOrderLine.setReceiverCompany(null);
+      Partner partner = bankOrderLine.getPartner();
+
+      if (partner == null) {
+        continue;
+      }
+
+      boolean keep;
+
+      switch (bankOrder.getPartnerTypeSelect()) {
+        case BankOrderRepository.PARTNER_TYPE_SUPPLIER:
+          keep = partner.getIsSupplier();
+          break;
+        case BankOrderRepository.PARTNER_TYPE_EMPLOYEE:
+          keep = partner.getIsEmployee();
+          break;
+        case BankOrderRepository.PARTNER_TYPE_CUSTOMER:
+          keep = partner.getIsCustomer();
+          break;
+        default:
+          keep = false;
+      }
+
+      if (!keep) {
+        bankOrderLine.setPartner(null);
+      }
+    }
+  }
+
+  private void resetBankDetails(BankOrder bankOrder) {
+    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+      if (bankOrderLine.getReceiverBankDetails() == null) {
+        continue;
+      }
+
+      Collection<BankDetails> bankDetailsCollection;
+
+      if (bankOrderLine.getReceiverCompany() != null) {
+        bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsSet();
+      } else if (bankOrderLine.getPartner() != null) {
+        bankDetailsCollection = bankOrderLine.getPartner().getBankDetailsList();
+      } else {
+        bankDetailsCollection = Collections.emptyList();
+      }
+
+      if (ObjectUtils.isEmpty(bankDetailsCollection)
+          || !bankDetailsCollection.contains(bankOrderLine.getReceiverBankDetails())) {
+        bankOrderLine.setReceiverBankDetails(null);
+      }
     }
   }
 }

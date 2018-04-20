@@ -220,4 +220,14 @@ public class BankOrderController {
     BankDetails bankDetails = bankOrderService.getDefaultBankDetails(bankOrder);
     response.setValue("senderBankDetails", bankDetails);
   }
+
+  public void resetReceivers(ActionRequest request, ActionResponse response) {
+    try {
+      BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+      bankOrderService.resetReceivers(bankOrder);
+      response.setValue("bankOrderLineList", bankOrder.getBankOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

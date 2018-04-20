@@ -82,4 +82,6 @@ public interface BankOrderService {
       BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);
 
   public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrder bankOrder);
+
+  public void resetReceivers(BankOrder bankOrder);
 }

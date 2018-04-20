@@ -96,7 +96,7 @@
 	    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
 	    		<field name="paymentMode" css="label-bold bold" colSpan="6" canView="false" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
 	    		<field name="bankOrderFileFormat" form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid" canView="false" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
-	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
+	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-group-partner-type-select-change" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
 		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        </panel>
 	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
@@ -129,7 +129,7 @@
 	   
 		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect">
 			<field name="senderCompany" canEdit="false" canView="false" grid-view="company-grid" form-view="company-form" required="true" onChange="action-bank-order-group-sender-company-change"/>
-			<field name="senderBankDetails" canEdit="false" grid-view="bank-details-grid" form-view="bank-details-form" required="true" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
+			<field name="senderBankDetails" canEdit="false" grid-view="bank-details-bank-order-company-grid" form-view="bank-details-form" required="true" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 			
 			<panel hidden="true" hideIf="isMultiCurrency" >
 				<field name="bankOrderTotalAmount" colSpan="6" readonly="true"/>
@@ -152,7 +152,10 @@
 						<field name="receiverCompany" canEdit="false" form-view="company-form" grid-view="company-grid" css="label-bold bold" onChange="action-bank-order-line-group-receiver-company-change,action-bank-order-line-record-receiver-bank-details-onchange"/>
 						<field name="partner" canView="false" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-method-fill-bank-details,action-bank-order-line-record-receiver-bank-details-onchange"/>
 					</panel>
-					<field name="receiverBankDetails" canView="false" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-receiver-bank-details-onchange"/>
+                    <panel colSpan="6" itemSpan="12">
+                        <field name="receiverBankDetails" showIf="receiverCompany" canView="false" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-receiver-bank-details-onchange" form-view="bank-details-form" grid-view="bank-details-bank-order-company-grid"/>
+    					<field name="receiverBankDetails" showIf="!receiverCompany" canView="false" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-receiver-bank-details-onchange" form-view="bank-details-form" grid-view="bank-details-bank-order-grid"/>
+                    </panel>
 					<field name="bankOrderAmount" colSpan="4" min="0.00" required="true" onChange="action-bank-order-line-method-compute-company-currency-amount"/>
 					<panel stacked="true" colSpan="2" itemSpan="12">
 						<field name="bankOrder.bankOrderCurrency" canView="false" hidden="true"/>
@@ -241,7 +244,7 @@
 				<field name="bankOrderTotalAmount" colSpan="4"/>
 				<field name="bankOrderCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="2"/>
 				<field name="senderCompany" canEdit="false" grid-view="company-grid" form-view="company-form" colSpan="6" onChange="action-bank-order-group-sender-company-change"/>
-				<field name="senderBankDetails" canView="false" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
+				<field name="senderBankDetails" canView="false" grid-view="bank-details-bank-order-company-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 				<field name="orderTypeSelect" hidden="true"/>
 			</panel>
 	        <panel colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
@@ -332,7 +335,12 @@
 		<action name="action-bank-order-record-update-bankorder-currency"/>
 		<action name="action-bank-order-method-fill-bankdetails"/>
 	</action-group>
-	
+
+    <action-group name="action-bank-order-group-partner-type-select-change">
+        <action name="action-bank-order-attrs-show-partner-or-receiver-company"/>
+        <action name="action-bank-order-method-reset-receivers"/>
+    </action-group>
+
 		<!-- Actions Attributes -->
 
 	<action-attrs name="action-bank-order-attrs-on-load">
@@ -483,6 +491,10 @@
 	<action-method name="action-bank-order-method-fill-bankdetails">
 		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="fillBankDetails"/>
 	</action-method>
+
+    <action-method name="action-bank-order-method-reset-receivers">
+        <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="resetReceivers"/>
+    </action-method>
 
 	<!-- BANK ORDER LINES ACTIONS -->
 
