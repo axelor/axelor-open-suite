@@ -17,8 +17,20 @@
  */
 package com.axelor.apps.tool;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+import javax.persistence.Column;
+
+import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -70,6 +82,80 @@ public final class ModelTool {
         }
 
         return errorCount;
+    }
+
+    /**
+     * Get unique constraint errors.
+     * 
+     * @param model
+     * @param messages
+     * @return
+     */
+    public static Map<String, String> getUniqueErrors(Model model, Map<String, String> messages) {
+        Map<String, String> errors = new HashMap<>();
+        Collection<Field> fields = ModelTool.checkUniqueFields(model);
+
+        for (Field field : fields) {
+            String message = messages.getOrDefault(field.getName(), IExceptionMessage.RECORD_UNIQUE_FIELD);
+            errors.put(field.getName(), message);
+        }
+
+        return errors;
+    }
+
+    /**
+     * Get unique constraint errors.
+     * 
+     * @param model
+     * @return
+     */
+    public static Map<String, String> getUniqueErrors(Model model) {
+        return getUniqueErrors(model, Collections.emptyMap());
+    }
+
+    /**
+     * Get set of fields affected by unique constraint error.
+     * 
+     * @param model
+     * @return
+     */
+    private static Set<Field> checkUniqueFields(Model model) {
+        Set<Field> errors = new HashSet<>();
+        Class<? extends Model> modelClass = EntityHelper.getEntityClass(model);
+
+        for (Field field : modelClass.getDeclaredFields()) {
+            Column column = field.getAnnotation(Column.class);
+
+            if (column == null || !column.unique()) {
+                continue;
+            }
+
+            String filter = String.format("self.%s = :value", field.getName());
+            String getterName = fieldNameToGetter(field.getName());
+
+            try {
+                Method getter = modelClass.getMethod(getterName);
+                Object value = getter.invoke(model);
+                Model existing = JPA.all(modelClass).filter(filter).bind("value", value).fetchOne();
+
+                if (existing != null && !existing.getId().equals(model.getId())) {
+                    errors.add(field);
+                }
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e) {
+                TraceBackService.trace(e);
+            }
+        }
+
+        return errors;
+    }
+
+    private static String fieldNameToGetter(String name) {
+        return "get" + capitalize(name);
+    }
+
+    private static String capitalize(String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
 }

@@ -43,5 +43,6 @@ public interface IExceptionMessage {
 	 */
 	static final String TEMPLATE_MAKER_1 = /*$$(*/  "No such template"  /*)*/;
 	static final String TEMPLATE_MAKER_2 = /*$$(*/  "Templating can not be empty"  /*)*/;
-	
+
+	static final String RECORD_UNIQUE_FIELD = /*$$(*/ "This field needs to be unique." /*)*/;
 }
