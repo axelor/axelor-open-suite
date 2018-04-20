@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -53,7 +54,7 @@ import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.IExceptionMessage;
-import com.axelor.apps.contract.supplychain.service.InvoiceGeneratorContract;
+import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -65,24 +66,28 @@ import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class ContractServiceImpl extends ContractRepository implements ContractService {
+public class ContractServiceImpl extends ContractRepository
+		implements ContractService {
 
-    protected AppBaseService appBaseService;
+	protected AppBaseService appBaseService;
 	protected ContractVersionService versionService;
 	protected DurationService durationService;
 	protected ContractLineRepository contractLineRepo;
 	protected ConsumptionLineRepository consumptionLineRepo;
 
 	@Inject
-	public ContractServiceImpl(AppBaseService appBaseService, ContractVersionService versionService, DurationService durationService,
-							   ContractLineRepository contractLineRepo, ConsumptionLineRepository consumptionLineRepo) {
-		this.appBaseService = appBaseService;
+	public ContractServiceImpl(AppBaseService appBaseService,
+            ContractVersionService versionService,
+            DurationService durationService,
+            ContractLineRepository contractLineRepo,
+            ConsumptionLineRepository consumptionLineRepo) {
+	    this.appBaseService = appBaseService;
 		this.versionService = versionService;
 		this.durationService = durationService;
 		this.contractLineRepo = contractLineRepo;
 		this.consumptionLineRepo = consumptionLineRepo;
 	}
-	
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void activeContract(Contract contract, LocalDate date) {
@@ -93,7 +98,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 	}
 
 	@Override
-	//@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void waitingCurrentVersion(Contract contract, LocalDate date) {
 		ContractVersion currentVersion = contract.getCurrentVersion();
 		versionService.waiting(currentVersion, date);
@@ -101,13 +105,15 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
+	public Invoice ongoingCurrentVersion(Contract contract, LocalDate date)
+			throws AxelorException {
 		ContractVersion currentVersion = contract.getCurrentVersion();
 		
 		Invoice invoice = null;
 
 		if (currentVersion.getIsWithEngagement() &&
-				contract.getStatusSelect() != ContractRepository.ACTIVE_CONTRACT || currentVersion.getEngagementStartFromVersion()) {
+				contract.getStatusSelect() != ContractRepository.ACTIVE_CONTRACT
+				|| currentVersion.getEngagementStartFromVersion()) {
 			contract.setEngagementStartDate(date);
 		}
 
@@ -118,15 +124,37 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 		versionService.ongoing(currentVersion, date);
 
 		contract.setVersionNumber(contract.getVersionNumber() + 1);
-		
-		if (contract.getCurrentVersion().getAutomaticInvoicing() && contract.getCurrentVersion().getInvoicingMoment() == 2 ){
+
+		if (contract.getCurrentVersion().getAutomaticInvoicing()
+				&& contract.getCurrentVersion().getInvoicingMoment() == 2 ) {
 			contract.setInvoicingDate(appBaseService.getTodayDate());
 			invoice = invoicingContract(contract);
 		}
 
-		save(contract);
-		
+		computeInvoicePeriod(contract);
+
 		return invoice;
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Contract computeInvoicePeriod(Contract contract) {
+		ContractVersion version = contract.getCurrentVersion();
+
+		if (contract.getIsInvoicingManagement()
+				&& version.getIsPeriodicInvoicing()) {
+			contract.setInvoicePeriodStartDate(version.getActivationDate());
+			if (contract.getVersionNumber() == 0) {
+				contract.setInvoicePeriodEndDate(
+						contract.getFirstPeriodEndDate());
+			} else {
+				contract.setInvoicePeriodEndDate(
+						durationService.computeDuration(
+								version.getInvoicingFrequency(),
+								version.getActivationDate()));
+			}
+		}
+		return contract;
 	}
 
 	@Override
@@ -140,7 +168,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void activeNextVersion(Contract contract, LocalDate date) throws AxelorException {
+	public void activeNextVersion(Contract contract, LocalDate date)
+			throws AxelorException {
 		ContractVersion currentVersion = contract.getCurrentVersion();
 
 		// Terminate currentVersion
@@ -178,37 +207,53 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 	}
 
 	@Override
-	public void checkCanTerminateContract(Contract contract) throws AxelorException {
-		if (contract.getTerminatedDate() == null){
-		    throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_TERMINATE_DATE));
+	public void checkCanTerminateContract(Contract contract)
+			throws AxelorException {
+		if (contract.getTerminatedDate() == null) {
+			throw new AxelorException(IException.MISSING_FIELD,
+					I18n.get(IExceptionMessage
+							.CONTRACT_MISSING_TERMINATE_DATE));
+		}
+		ContractVersion version = contract.getCurrentVersion();
+
+		if (contract.getTerminatedDate().isBefore(version.getActivationDate())){
+			throw new AxelorException(IException.FUNCTIONNAL,
+					I18n.get(IExceptionMessage
+							.CONTRACT_UNVALIDE_TERMINATE_DATE));
 		}
 
-		if (contract.getTerminatedDate().isBefore(contract.getCurrentVersion().getActivationDate())) {
-			throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
-		}
-
-		if ( contract.getCurrentVersion().getIsWithEngagement() ){
-			if (contract.getEngagementStartDate() == null){
-			    throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
+		if (version.getIsWithEngagement()) {
+			if (contract.getEngagementStartDate() == null) {
+				throw new AxelorException(IException.MISSING_FIELD,
+						I18n.get(IExceptionMessage
+								.CONTRACT_MISSING_ENGAGEMENT_DATE));
 			}
 			if (contract.getTerminatedDate().isBefore(
-					durationService.computeDuration(contract.getCurrentVersion().getEngagementDuration(),contract.getEngagementStartDate())
-			)){
-				throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED));
+					durationService.computeDuration(
+							version.getEngagementDuration(),
+							contract.getEngagementStartDate()))) {
+				throw new AxelorException(IException.FUNCTIONNAL,
+						I18n.get(IExceptionMessage
+								.CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED));
 			}
 		}
 
-		if (contract.getCurrentVersion().getIsWithPriorNotice() &&
+		if (version.getIsWithPriorNotice() &&
 				contract.getTerminatedDate().isBefore(
-						durationService.computeDuration(contract.getCurrentVersion().getPriorNoticeDuration(), Beans.get(AppBaseService.class).getTodayDate())
-				)){
-			throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
+						durationService.computeDuration(
+								version.getPriorNoticeDuration(),
+								Beans.get(AppBaseService.class).getTodayDate())
+				)) {
+			throw new AxelorException(IException.FUNCTIONNAL,
+					I18n.get(IExceptionMessage
+							.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
 		}
 	}
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void terminateContract(Contract contract, Boolean isManual, LocalDate date) throws AxelorException {
+	public void terminateContract(Contract contract, Boolean isManual,
+				LocalDate date) throws AxelorException {
 		ContractVersion currentVersion = contract.getCurrentVersion();
 
 		if (isManual) {
@@ -217,14 +262,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 			contract.setTerminatedDate(date);
 			contract.setTerminatedBy(AuthUtils.getUser());
 		} else {
-			if (currentVersion.getIsTacitRenewal() && !currentVersion.getDoNotRenew()) {
+			if (currentVersion.getIsTacitRenewal()
+					&& !currentVersion.getDoNotRenew()) {
 				renewContract(contract, date);
 				return;
 			}
 		}
 
-		if (contract.getTerminatedDate().isBefore(appBaseService.getTodayDate()) ||
-				contract.getTerminatedDate().equals(appBaseService.getTodayDate())){
+		if (contract.getTerminatedDate().isBefore(appBaseService.getTodayDate())
+				|| contract.getTerminatedDate().equals(
+						appBaseService.getTodayDate())) {
 			versionService.terminate(currentVersion, date);
 			contract.setEndDate(date);
 			contract.setStatusSelect(CLOSED_CONTRACT);
@@ -238,12 +285,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice invoicingContract(Contract contract) throws AxelorException {
-		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract) {
-			@Override
-			public Invoice generate() throws AxelorException {
-				return super.createInvoiceHeader();
-			}
-		};
+		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
 		Invoice invoice = invoiceGenerator.generate();
 		InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
 		invoiceRepository.save(invoice);
@@ -302,7 +344,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
 		ContractVersion version;
 
-		for (ConsumptionLine consumptionLine : contract.getCurrentVersion().getConsumptionLineList()) {
+		for (ConsumptionLine consumptionLine : contract.getConsumptionLineList()) {
 
 			if (consumptionLine.getIsInvoiced()) { continue; }
 
@@ -328,7 +370,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 					linkedContractLine.setExTaxTotal( linkedContractLine.getQty().multiply(linkedContractLine.getPrice()).setScale(2, RoundingMode.HALF_EVEN) );
 					linkedContractLine.setInTaxTotal( linkedContractLine.getExTaxTotal().add(linkedContractLine.getExTaxTotal().multiply(taxRate) ) );
 					consumptionLine.setContractLine(linkedContractLine);
-					if (!isInVersion(linkedContractLine, contract.getCurrentVersion())) {
+					if (isInVersion(linkedContractLine, contract.getCurrentVersion())) {
 						linesFromOlderVersionsMp.put(consumptionLine, linkedContractLine);
 					}
 				}
@@ -480,18 +522,17 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 	
 	
 	public ContractVersion getVersionSpecificVersion(Contract contract, LocalDate date){
-		
 		for (ContractVersion version : contract.getVersionHistory()) {
-			
-			if (version.getActivationDate() == null || version.getEndDate() == null) { continue; }
-			
-			if ( date.isAfter( version.getActivationDate() )  && date.isBefore(version.getEndDate())){
+			if (version.getActivationDate() == null
+					|| version.getEndDate() == null) {
+				continue;
+			}
+			if (date.isAfter(version.getActivationDate())
+					&& date.isBefore(version.getEndDate())) {
 				return version;
 			}
 		}
-		
-		return null;
-		
+		return contract.getCurrentVersion();
 	}
 	
 	public boolean isInVersion(ContractLine contractLine, ContractVersion version){

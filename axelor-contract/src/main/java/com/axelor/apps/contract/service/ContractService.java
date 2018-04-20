@@ -129,4 +129,6 @@ public interface ContractService {
 	 */
 	@Transactional
 	Contract createContractFromTemplate(ContractTemplate template) ;
+
+	Contract computeInvoicePeriod(Contract contract);
 }

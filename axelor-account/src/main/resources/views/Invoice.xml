@@ -195,10 +195,11 @@
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
         </panel>
 
-		<panel name="subscriptionPanel" title="Subscription period" showIf="operationSubTypeSelect == 6">
-        	<field name="subscriptionFromDate" />
-        	<field name="subscriptionToDate" />
-        </panel>
+		<panel name="subscriptionPanel" title="Subscription period"
+			   showIf="[6, 7].includes(operationSubTypeSelect)">
+			<field name="subscriptionFromDate" />
+			<field name="subscriptionToDate" />
+		</panel>
 
 		<panel-tabs hideIf="partner == null">
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">

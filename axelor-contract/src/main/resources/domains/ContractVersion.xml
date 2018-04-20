@@ -45,7 +45,6 @@
 		<one-to-one name="contractNext" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="nextVersion" copy="false"/>
 
         <one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content" mappedBy="contractVersion"/>
-		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumptions"/>
 
 		<string name="fullName" namecolumn="true">
 			<![CDATA[
