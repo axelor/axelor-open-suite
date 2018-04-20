@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -58,11 +60,13 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -177,7 +181,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 		return companyCurrencyTotalAmount;
 	}
 
-	public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException {
+	@Override
+    public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException {
 		bankOrder.setArithmeticTotal(this.computeBankOrderTotalAmount(bankOrder));
 
 		if (!bankOrder.getIsMultiCurrency()) {
@@ -278,7 +283,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
+	@Override
+    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void validate(BankOrder bankOrder) throws AxelorException {
 
 		bankOrder.setValidationDateTime(new LocalDateTime());
@@ -289,7 +295,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 	
-	public void realize(BankOrder bankOrder) throws AxelorException {
+	@Override
+    public void realize(BankOrder bankOrder) throws AxelorException {
 
 		if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
 			throw new AxelorException(I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT), IException.MISSING_FIELD);
@@ -384,7 +391,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 	}
 
-	@Transactional
+	@Override
+    @Transactional
 	public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails) {
 		EbicsPartner ebicsPartner = Beans.get(EbicsPartnerRepository.class).all()
 				.filter("? MEMBER OF self.bankDetailsSet", bankDetails).fetchOne();
@@ -484,7 +492,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 		}
 	}
 
-	public boolean checkBankDetailsTypeCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat) {
+	@Override
+    public boolean checkBankDetailsTypeCompatible(BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat) {
 		// filter on the bank details identifier type from the bank order file
 		// format
 		String acceptedIdentifiers = bankOrderFileFormat.getBankDetailsTypeSelect();
@@ -502,7 +511,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 		return true;
 	}
 
-	public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails,
+	@Override
+    public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails,
 			BankOrder bankOrder) {
 		// filter on the currency if it is set in file format
 		if (bankOrder.getBankOrderCurrency() != null) {
@@ -514,7 +524,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 		return true;
 	}
 
-	public File generateFile(BankOrder bankOrder)
+	@Override
+    public File generateFile(BankOrder bankOrder)
 			throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
 
 		if (bankOrder.getBankOrderLineList() == null || bankOrder.getBankOrderLineList().isEmpty()) {
@@ -630,4 +641,77 @@ public class BankOrderServiceImpl implements BankOrderService {
 			Beans.get(MailFollowerRepository.class).follow(bankOrder, signatoryUser);
 		}
 	}
+
+    @Override
+    public void resetReceivers(BankOrder bankOrder) {
+        if (ObjectUtils.isEmpty(bankOrder.getBankOrderLineList())) {
+            return;
+        }
+
+        resetPartners(bankOrder);
+        resetBankDetails(bankOrder);
+    }
+
+    private void resetPartners(BankOrder bankOrder) {
+        if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
+            for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+                bankOrderLine.setPartner(null);
+            }
+
+            return;
+        }
+
+        for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+            bankOrderLine.setReceiverCompany(null);
+            Partner partner = bankOrderLine.getPartner();
+
+            if (partner == null) {
+                continue;
+            }
+
+            boolean keep;
+
+            switch (bankOrder.getPartnerTypeSelect()) {
+            case BankOrderRepository.PARTNER_TYPE_SUPPLIER:
+                keep = partner.getIsSupplier();
+                break;
+            case BankOrderRepository.PARTNER_TYPE_EMPLOYEE:
+                keep = partner.getIsEmployee();
+                break;
+            case BankOrderRepository.PARTNER_TYPE_CUSTOMER:
+                keep = partner.getIsCustomer();
+                break;
+            default:
+                keep = false;
+            }
+
+            if (!keep) {
+                bankOrderLine.setPartner(null);
+            }
+        }
+    }
+
+    private void resetBankDetails(BankOrder bankOrder) {
+        for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+            if (bankOrderLine.getReceiverBankDetails() == null) {
+                continue;
+            }
+
+            Collection<BankDetails> bankDetailsCollection;
+
+            if (bankOrderLine.getReceiverCompany() != null) {
+                bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsSet();
+            } else if (bankOrderLine.getPartner() != null) {
+                bankDetailsCollection = bankOrderLine.getPartner().getBankDetailsList();
+            } else {
+                bankDetailsCollection = Collections.emptyList();
+            }
+
+            if (ObjectUtils.isEmpty(bankDetailsCollection)
+                    || !bankDetailsCollection.contains(bankOrderLine.getReceiverBankDetails())) {
+                bankOrderLine.setReceiverBankDetails(null);
+            }
+        }
+    }
+
 }

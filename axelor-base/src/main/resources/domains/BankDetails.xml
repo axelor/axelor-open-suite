@@ -39,6 +39,9 @@
                                            .concat(accountNbr)
                                            .concat(bbanKey);
                 }
+                if (!(code == null || code.isEmpty())) {
+                    str = str.concat(" - ").concat(code);
+                }
             }
             return str;
         ]]>

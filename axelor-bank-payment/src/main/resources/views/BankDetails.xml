@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+
+	<grid name="bank-details-bank-order-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
+		<field name="ownerName"/>
+		<field name="bankAddress"/>
+		<field name="iban"/>
+		<field name="bank.code"/>
+	</grid>
+
+    <grid name="bank-details-bank-order-company-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
+        <field name="ownerName"/>
+        <field name="bankAddress"/>
+        <field name="iban"/>
+        <field name="code"/>
+        <field name="bank.code"/>
+    </grid>
+
+</object-views>
