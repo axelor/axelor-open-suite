@@ -54,7 +54,6 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -297,7 +296,7 @@ public class InvoiceController {
 				fileLink = invoicePrintService.printInvoices(ids);
 				title = I18n.get("Invoices");
 			} else if (context.get("id") != null) {
-				fileLink = invoicePrintService.printInvoice(request.getContext().asType(Invoice.class), false).getFileLink();
+				fileLink = invoicePrintService.printInvoice(request.getContext().asType(Invoice.class)).getFileLink();
 				title = I18n.get("Invoice");
 			} else {
 				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));

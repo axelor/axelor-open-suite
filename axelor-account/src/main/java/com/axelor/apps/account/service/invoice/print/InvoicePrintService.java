@@ -28,14 +28,22 @@ import com.axelor.exception.AxelorException;
 public interface InvoicePrintService {
 
     /**
+     * Print an invoice, then save the generated file
+     * in this invoice.
+     *
+     * @param invoice an invoice.
+     * @throws AxelorException
+     */
+    void printAndAttach(Invoice invoice) throws AxelorException;
+
+    /**
      * Print an invoice.
      *
      * @param invoice  the invoice to print
-     * @param toAttach whether we attach the invoice to the object
      * @return the report settings to generate the file
      * @throws AxelorException
      */
-    ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException;
+    ReportSettings printInvoice(Invoice invoice) throws AxelorException;
 
     /**
      * Print a list of invoices in the same output.
@@ -54,4 +62,14 @@ public interface InvoicePrintService {
      * @return a file with the invoice as PDF.
      */
     File getPrintedInvoice(Invoice invoice) throws AxelorException;
+
+
+    /**
+     * Prepare report settings for one invoice.
+     *
+     * @param invoice an invoice
+     * @return the report settings to print the given invoice
+     * @throws AxelorException
+     */
+    ReportSettings prepareReportSettings(Invoice invoice) throws AxelorException;
 }

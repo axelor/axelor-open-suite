@@ -253,7 +253,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		invoiceRepo.save(invoice);
 		
 		if(appAccountService.getAppAccount().getPrintReportOnVentilation()){
-			Beans.get(InvoicePrintService.class).printInvoice(invoice, true);
+			Beans.get(InvoicePrintService.class).printAndAttach(invoice);
 		}
 		
 	}

@@ -18,11 +18,16 @@
 package com.axelor.apps.account.service.invoice.print;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
@@ -35,35 +40,34 @@ import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 
 public class InvoicePrintServiceImpl implements InvoicePrintService {
 
+    private static final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+
     @Override
-    public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException {
-        if (invoice.getPrintingSettings() == null) {
-            throw new AxelorException(IException.MISSING_FIELD,
-                    String.format(I18n.get(IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS), invoice.getInvoiceId()),
-                    invoice
-            );
-        }
-        String locale = ReportSettings.getPrintingLocale(invoice.getPartner());
+    public void printAndAttach(Invoice invoice) throws AxelorException {
+        ReportSettings reportSettings = prepareReportSettings(invoice);
 
-        String title = I18n.get("Invoice");
-        if (invoice.getInvoiceId() != null) {
-            title += " " + invoice.getInvoiceId();
-        }
+        reportSettings.toAttach(invoice);
+        File file = reportSettings.generate().getFile();
 
-        ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
-        if (toAttach) {
-            reportSetting.toAttach(invoice);
+        MetaFiles metaFiles = Beans.get(MetaFiles.class);
+        try {
+            invoice.setPrintedPDF(metaFiles.upload(file));
+        } catch (IOException e) {
+            logger.error(e.getLocalizedMessage());
+            TraceBackService.trace(e);
         }
+    }
 
-        return reportSetting.addParam("InvoiceId", invoice.getId().toString())
-                .addParam("Locale", locale)
-                .addParam("InvoicesCopy", invoice.getInvoicesCopySelect())
-                .generate();
+    @Override
+    public ReportSettings printInvoice(Invoice invoice) throws AxelorException {
+        return prepareReportSettings(invoice).generate();
     }
 
     @Override
@@ -83,15 +87,33 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     }
 
 
-    /**
-     * Get the printed invoice from
-     *
-     * @param invoice
-     * @return a String with the correct file link.
-     */
     @Override
     public File getPrintedInvoice(Invoice invoice) throws AxelorException {
-        return printInvoice(invoice, false).getFile();
+        return printInvoice(invoice).getFile();
     }
 
+    @Override
+    public ReportSettings prepareReportSettings(Invoice invoice) throws AxelorException {
+
+        if (invoice.getPrintingSettings() == null) {
+            throw new AxelorException(IException.MISSING_FIELD,
+                    String.format(I18n.get(
+                            IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
+                            invoice.getInvoiceId()),
+                    invoice
+            );
+        }
+        String locale = ReportSettings.getPrintingLocale(invoice.getPartner());
+
+        String title = I18n.get("Invoice");
+        if (invoice.getInvoiceId() != null) {
+            title += " " + invoice.getInvoiceId();
+        }
+
+        ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
+
+        return reportSetting.addParam("InvoiceId", invoice.getId().toString())
+                .addParam("Locale", locale)
+                .addParam("InvoicesCopy", invoice.getInvoicesCopySelect());
+    }
 }
