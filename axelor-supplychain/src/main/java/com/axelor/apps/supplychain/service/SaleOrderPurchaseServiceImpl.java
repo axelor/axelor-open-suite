@@ -26,6 +26,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -123,7 +124,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				supplierPartner);
 
 		Integer atiChoice =  Beans.get(PurchaseConfigService.class).getPurchaseConfig(saleOrder.getCompany()).getPurchaseOrderInAtiSelect();
-		if(atiChoice == 2 || atiChoice == 4){
+		if(atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS || atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT){ // ATI_ALWAYS = 2, ATI_DEFAULT = 4
 			purchaseOrder.setInAti(true);
 		}
 		else{
