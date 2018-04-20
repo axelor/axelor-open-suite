@@ -267,7 +267,7 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">21</property>
-                        <property name="name">gross_weight</property>
+                        <property name="name">gross_mass</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
@@ -402,8 +402,8 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">21</property>
-                    <property name="name">gross_weight</property>
-                    <property name="nativeName">gross_weight</property>
+                    <property name="name">gross_mass</property>
+                    <property name="nativeName">gross_mass</property>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
@@ -417,7 +417,7 @@ AuthUserCreate.full_name as "createdBy",
 StockMove.num_of_packages,
 StockMove.tracking_number,
 StockMove.num_of_palettes,
-StockMove.gross_weight
+StockMove.gross_mass
 from stock_stock_move as StockMove
 left outer join base_company as Company on (StockMove.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -1091,9 +1091,9 @@ where StockMove.id in (@INJECTID) AND StockLocationLine.product = Product.id]]><
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">gross_weight</property>
-                    <text-property name="displayName">gross_weight</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["gross_weight"]</expression>
+                    <property name="name">gross_mass</property>
+                    <text-property name="displayName">gross_mass</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["gross_mass"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
@@ -1454,7 +1454,7 @@ row._outer["purchase_order_seq"]
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'StockMove.grossWeight'</value>
+                                                                <value type="javascript">'StockMove.grossMass'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1474,7 +1474,7 @@ row._outer["purchase_order_seq"]
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF>row._outer["gross_weight"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF>row._outer["gross_mass"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>

@@ -176,7 +176,7 @@
 
                 <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
                 <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
-                <field name="grossWeight" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+                <field name="grossMass" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
 
                 <field name="saleOrder.specificPackage" readonly="true" colSpan="4"/>
                 <panel stacked="true" colSpan="8">

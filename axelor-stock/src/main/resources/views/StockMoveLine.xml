@@ -30,8 +30,8 @@
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"
             width="70px"/>
-        <field name="netWeight"
-            onChange="action-stock-move-line-group-net-weight-onchange"
+        <field name="netMass"
+            onChange="action-stock-move-line-group-net-mass-onchange"
             width="100px"/>
         <field name="trackingNumber"
             form-view="tracking-number-stock-move-line-form"
@@ -53,8 +53,8 @@
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-    	    <field name="netWeight" onChange="action-stock-move-line-group-net-weight-onchange" />
-	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight"/>
+    	    <field name="netMass" onChange="action-stock-move-line-group-net-mass-onchange" />
+	        <field name="totalNetMass" readonly="true" showIf="totalNetMass"/>
 	        <field name="trackingNumber" canNew="true" onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 	        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
 	        <field name="description" colSpan="12" widget="html" />
@@ -139,8 +139,8 @@
 	        <field name="unitPriceUntaxed"/>
        		<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="netWeight" readonly="true" showIf="netWeight != 0" onChange="action-stock-move-line-group-net-weight-onchange" />
-	        <field name="totalNetWeight" readonly="true" showIf="totalNetWeight != 0"/>
+            <field name="netMass" readonly="true" showIf="netMass != 0" onChange="action-stock-move-line-group-net-mass-onchange" />
+	        <field name="totalNetMass" readonly="true" showIf="totalNetMass != 0"/>
 	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
 	        <field name="description" colSpan="12" widget="html" />
@@ -241,10 +241,10 @@
 
     <action-group name="action-stock-move-line-group-real-qty-onchange">
         <action name="action-stock-move-line-compute-price"/>
-        <action name="action-stock-move-line-record-total-net-weight"/>
+        <action name="action-stock-move-line-record-total-net-mass"/>
     </action-group>
 
-    <action-group name="action-stock-move-line-group-net-weight-onchange">
+    <action-group name="action-stock-move-line-group-net-mass-onchange">
         <action name="action-stock-move-line-group-real-qty-onchange"/>
     </action-group>
 
@@ -264,8 +264,8 @@
 		<field name="productTypeSelect" expr="eval: product?.productTypeSelect"/>
 	</action-record>
 
-    <action-record name="action-stock-move-line-record-total-net-weight" model="com.axelor.apps.stock.db.StockMoveLine">
-        <field name="totalNetWeight" expr="eval: netWeight * realQty"/>
+    <action-record name="action-stock-move-line-record-total-net-mass" model="com.axelor.apps.stock.db.StockMoveLine">
+        <field name="totalNetMass" expr="eval: netMass * realQty"/>
     </action-record>
 
 	<action-attrs name="action-stock-move-line-attrs-product-domain">

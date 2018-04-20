@@ -27,7 +27,7 @@
 		  </panel>
 	  </panel>
 	  <panel name="customsInformation" title="Customs">
-	  	<field name="customsWeightUnit" domain="self.unitTypeSelect = 1"/>
+	  	<field name="customsMassUnit" domain="self.unitTypeSelect = 1"/>
 	  </panel>
       <panel title="Logistical forms">
         <field name="realizeStockMovesUponParcelPalletCollection" />
