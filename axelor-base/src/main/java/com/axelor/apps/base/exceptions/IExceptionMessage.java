@@ -255,4 +255,8 @@ public interface IExceptionMessage {
 	public static final String WEEKLY_PLANNING_3 = /*$$(*/ "Invalid times %s afternoon" /*)*/;
 	public static final String WEEKLY_PLANNING_4 = /*$$(*/ "Some times are null and should not on %s" /*)*/;
 
+    /*
+     * User service
+     */
+    String USER_CODE_ALREADY_EXISTS = /*$$(*/ "A user with this login already exists." /*)*/;
 }
