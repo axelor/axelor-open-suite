@@ -44,26 +44,30 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.google.inject.Inject;
+import com.axelor.meta.db.MetaFile;
+import com.google.inject.persist.Transactional;
 
 public class InvoicePrintServiceImpl implements InvoicePrintService {
 
     private static final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
     @Override
-    public void printAndAttach(Invoice invoice) throws AxelorException {
+    public MetaFile printAndAttach(Invoice invoice) throws AxelorException {
         ReportSettings reportSettings = prepareReportSettings(invoice);
+        MetaFile metaFile = null;
 
         reportSettings.toAttach(invoice);
         File file = reportSettings.generate().getFile();
 
         MetaFiles metaFiles = Beans.get(MetaFiles.class);
         try {
-            invoice.setPrintedPDF(metaFiles.upload(file));
+            metaFile = metaFiles.upload(file);
+            invoice.setPrintedPDF(metaFile);
         } catch (IOException e) {
             logger.error(e.getLocalizedMessage());
             TraceBackService.trace(e);
         }
+        return metaFile;
     }
 
     @Override
@@ -89,13 +93,23 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
 
     @Override
+    @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
     public File getPrintedInvoice(Invoice invoice) throws AxelorException {
-        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-                && invoice.getPrintedPDF() != null) {
-            Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
+        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+            Path path = null;
+            if (invoice.getPrintedPDF() != null) {
+                path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
+            }
+            if (path == null) {
+                // if the invoice is ventilated and is missing a printing,
+                // we generate and save it.
+                path = MetaFiles.getPath(printAndAttach(invoice));
+            }
+
             if (path != null) {
                 return path.toFile();
             }
+
         }
         return printInvoice(invoice).getFile();
     }

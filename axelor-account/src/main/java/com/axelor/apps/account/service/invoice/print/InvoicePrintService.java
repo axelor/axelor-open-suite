@@ -24,6 +24,7 @@ import java.util.List;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
 
 public interface InvoicePrintService {
 
@@ -31,10 +32,11 @@ public interface InvoicePrintService {
      * Print an invoice, then save the generated file
      * in this invoice.
      *
-     * @param invoice an invoice.
+     * @param invoice an invoice
+     * @return a metafile of the invoice printing.
      * @throws AxelorException
      */
-    void printAndAttach(Invoice invoice) throws AxelorException;
+    MetaFile printAndAttach(Invoice invoice) throws AxelorException;
 
     /**
      * Print an invoice.
