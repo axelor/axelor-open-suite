@@ -18,10 +18,9 @@
 package com.axelor.apps.account.service.invoice.print;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -44,6 +44,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.google.inject.Inject;
 
 public class InvoicePrintServiceImpl implements InvoicePrintService {
 
@@ -89,6 +90,13 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
     @Override
     public File getPrintedInvoice(Invoice invoice) throws AxelorException {
+        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+                && invoice.getPrintedPDF() != null) {
+            Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
+            if (path != null) {
+                return path.toFile();
+            }
+        }
         return printInvoice(invoice).getFile();
     }
 

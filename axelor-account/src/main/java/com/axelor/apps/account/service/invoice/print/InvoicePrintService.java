@@ -39,7 +39,7 @@ public interface InvoicePrintService {
     /**
      * Print an invoice.
      *
-     * @param invoice  the invoice to print
+     * @param invoice the invoice to print
      * @return the report settings to generate the file
      * @throws AxelorException
      */
@@ -56,7 +56,8 @@ public interface InvoicePrintService {
 
 
     /**
-     * Print an invoice.
+     * Take the stored report on the invoice, if the invoice
+     * is ventilated and the file is available, else print it.
      *
      * @param invoice an invoice.
      * @return a file with the invoice as PDF.
