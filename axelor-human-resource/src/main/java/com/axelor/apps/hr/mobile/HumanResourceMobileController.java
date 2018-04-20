@@ -15,23 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 package com.axelor.apps.hr.mobile;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeVehicle;
 import com.axelor.apps.hr.db.Expense;
@@ -55,8 +58,8 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -66,11 +69,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 
 public class HumanResourceMobileController {
-
+	
 	/**
 	 * This method is used in mobile application.
 	 * It was in ExpenseController
@@ -109,8 +111,8 @@ public class HumanResourceMobileController {
 			expenseLine.setToCity(request.getData().get("locationTo").toString());
 			expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
-			expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
-			expenseLine.setProject(Beans.get(ProjectRepository.class).find(new Long(request.getData().get("projectTask").toString())));
+			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
+			expenseLine.setProjectTask(Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("projectTask").toString())));
 
 			HRConfigService hrConfigService = Beans.get(HRConfigService.class);
 			HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
@@ -222,32 +224,30 @@ public class HumanResourceMobileController {
 	@Transactional
 	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
 		User user = AuthUtils.getUser();
-		Map<String, Object> requestData = request.getData();
-		Project project = Beans.get(ProjectRepository.class).find(new Long(requestData.get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(requestData.get("expenseType").toString()));
+		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
+		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
 		if (user != null) {
 			Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
 			ExpenseLine expenseLine = new ExpenseLine();
-			expenseLine.setExpenseDate(LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
-			expenseLine.setComments(requestData.get("comments").toString());
+			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
+			expenseLine.setComments(request.getData().get("comments").toString());
 			expenseLine.setExpenseProduct(product);
-			expenseLine.setProject(project);
+			expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
+			expenseLine.setProjectTask(projectTask);
 			expenseLine.setUser(user);
-			expenseLine.setTotalAmount(new BigDecimal(requestData.get("unTaxTotal").toString()));
-			expenseLine.setTotalTax(new BigDecimal(requestData.get("taxTotal").toString()));
-			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
-			expenseLine.setToInvoice(new Boolean(requestData.get("toInvoice").toString()));
-			String justification  = (String) requestData.get("justification");
-			if (!Strings.isNullOrEmpty(justification)) {
-				expenseLine.setJustification(Base64.getDecoder().decode(justification));
+			expenseLine.setUntaxedAmount(new BigDecimal(request.getData().get("amountWithoutVat").toString()));
+			expenseLine.setTotalTax(new BigDecimal(request.getData().get("vatAmount").toString()));
+			expenseLine.setTotalAmount(expenseLine.getUntaxedAmount().add(expenseLine.getTotalTax()));
+
+			Object justificationObject = request.getData().get("justification");
+			if(justificationObject != null){
+				expenseLine.setJustification(justificationObject.toString().getBytes());
 			}
 			expense.addGeneralExpenseLineListItem(expenseLine);
 
 			Beans.get(ExpenseRepository.class).save(expense);
-			HashMap<String, Object> data = new HashMap<>();
-			data.put("id", expenseLine.getId());
-			response.setData(data);
-			response.setTotal(1);
+
+			response.setValue("id", expenseLine.getId());
 		}
 	}
 
@@ -312,25 +312,21 @@ public class HumanResourceMobileController {
 	public void insertTSLine(ActionRequest request, ActionResponse response){
 
 		User user = AuthUtils.getUser();
-		Project project = Beans.get(ProjectRepository.class).find(new Long(request.getData().get("project").toString()));
+		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
-		LocalDate date = LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
+		LocalDate date = new LocalDate(request.getData().get("date").toString());
 		TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
 		TimesheetService timesheetService = Beans.get(TimesheetService.class);
-
 		if(user != null){
 			Timesheet timesheet = timesheetRepository.all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
 			if(timesheet == null){
 				timesheet = timesheetService.createTimesheet(user, date, date);
 			}
-			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-			TimesheetLine line = timesheetService.createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
-
+			BigDecimal minutes = new BigDecimal(Minutes.minutesBetween(new LocalTime(0,0), new LocalTime(request.getData().get("duration").toString())).getMinutes());
+			TimesheetLine timesheetLine = timesheetService.createTimesheetLine(projectTask, product, user, date, timesheet, minutes, request.getData().get("comments").toString());
 			timesheetRepository.save(timesheet);
-			response.setTotal(1);
-			HashMap<String, Object> data = new HashMap<>();
-			data.put("id", line.getId());
-			response.setData(data);
+
+			response.setValue("id", timesheetLine.getId());
 		}
 	}
 
@@ -359,14 +355,10 @@ public class HumanResourceMobileController {
 	 */
 	@Transactional
 	public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException{
-		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 		User user = AuthUtils.getUser();
-		Map<String, Object> requestData = request.getData();
-		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(requestData.get("leaveReason").toString()));
-		if (user.getEmployee() == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), user.getName());
-		}
-		if (user != null && leaveReason != null) {
+		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(request.getData().get("leaveReason").toString()));
+
+		if(user != null && leaveReason != null){
 			LeaveRequest leave = new LeaveRequest();
 			leave.setUser(user);
 			Company company = null;
@@ -376,29 +368,20 @@ public class HumanResourceMobileController {
 			}
 			leave.setCompany(company);
 			LeaveLine leaveLine = Beans.get(LeaveLineRepository.class).all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
-			if (leaveLine == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), user.getEmployee().getName(), leaveReason.getLeaveReason());
+			if(leaveLine == null){
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_LINE),user.getEmployee().getName(), leaveReason.getLeaveReason()), IException.CONFIGURATION_ERROR);
 			}
 			leave.setLeaveLine(leaveLine);
-			leave.setRequestDate(appBaseService.getTodayDate());
-			if (requestData.get("fromDate") != null) {
-				leave.setFromDate(LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
-			}
-			leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
-			if (requestData.get("toDate") != null) {
-				leave.setToDate(LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE));
-			}
-			leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
+			leave.setRequestDate(Beans.get(GeneralService.class).getTodayDate());
+			leave.setFromDate(new LocalDate(request.getData().get("fromDate").toString()));
+			leave.setStartOnSelect(new Integer(request.getData().get("startOn").toString()));
+			leave.setToDate(new LocalDate(request.getData().get("toDate").toString()));
+			leave.setEndOnSelect(new Integer(request.getData().get("endOn").toString()));
 			leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
 			leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-			if (requestData.get("comments") != null) {
-				leave.setComments(requestData.get("comments").toString());
+			if(request.getData().get("comment") != null){
+				leave.setComments(request.getData().get("comment").toString());
 			}
-			leave = Beans.get(LeaveRequestRepository.class).save(leave);
-			response.setTotal(1);
-			HashMap<String, Object> data = new HashMap<String, Object>();
-			data.put("id", leave.getId());
-			response.setData(data);
 			Beans.get(LeaveRequestRepository.class).save(leave);
 
 			response.setValue("id", leave.getId());
@@ -433,7 +416,6 @@ public class HumanResourceMobileController {
 				dataList.add(map);
 			}
 			response.setData(dataList);
-			response.setTotal(dataList.size());
 		}
 		catch(Exception e){
 			response.setStatus(-1);
@@ -469,7 +451,6 @@ public class HumanResourceMobileController {
 				dataList.add(map);
 			}
 			response.setData(dataList);
-			response.setTotal(dataList.size());
 		} catch (Exception e) {
 			response.setStatus(-1);
 			response.setError(e.getMessage());
