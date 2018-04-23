@@ -296,7 +296,7 @@ public class InvoiceController {
 				fileLink = invoicePrintService.printInvoices(ids);
 				title = I18n.get("Invoices");
 			} else if (context.get("id") != null) {
-				fileLink = invoicePrintService.printInvoice(request.getContext().asType(Invoice.class)).getFileLink();
+				fileLink = invoicePrintService.printInvoice(request.getContext().asType(Invoice.class));
 				title = I18n.get("Invoice");
 			} else {
 				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));

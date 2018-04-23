@@ -24,9 +24,41 @@ import java.util.List;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaFile;
 
+/**
+ * Interface of the service managing the printing of invoices.
+ */
 public interface InvoicePrintService {
+
+
+    /**
+     * Print an invoice with the desired number of copies
+     * and return the file link.
+     *
+     * @param invoice the invoice to print
+     * @return the file link to the printed invoice.
+     * @throws AxelorException
+     */
+    String printInvoice(Invoice invoice) throws AxelorException, IOException;
+
+    /**
+     * Print the invoice with the desired number of copies and return the file.
+     *
+     * @param invoice
+     * @return the generated file.
+     * @throws AxelorException
+     * @throws IOException
+     */
+    File printCopiesToFile(Invoice invoice) throws AxelorException, IOException;
+
+    /**
+     * Take the stored report on the invoice, if the invoice
+     * is ventilated and the file is available, else print it.
+     *
+     * @param invoice an invoice.
+     * @return a file with the invoice as PDF.
+     */
+    File getPrintedInvoice(Invoice invoice) throws AxelorException;
 
     /**
      * Print an invoice, then save the generated file
@@ -36,16 +68,7 @@ public interface InvoicePrintService {
      * @return a metafile of the invoice printing.
      * @throws AxelorException
      */
-    MetaFile printAndAttach(Invoice invoice) throws AxelorException;
-
-    /**
-     * Print an invoice.
-     *
-     * @param invoice the invoice to print
-     * @return the report settings to generate the file
-     * @throws AxelorException
-     */
-    ReportSettings printInvoice(Invoice invoice) throws AxelorException;
+    File printAndSave(Invoice invoice) throws AxelorException;
 
     /**
      * Print a list of invoices in the same output.
@@ -56,15 +79,6 @@ public interface InvoicePrintService {
      */
     String printInvoices(List<Long> ids) throws IOException;
 
-
-    /**
-     * Take the stored report on the invoice, if the invoice
-     * is ventilated and the file is available, else print it.
-     *
-     * @param invoice an invoice.
-     * @return a file with the invoice as PDF.
-     */
-    File getPrintedInvoice(Invoice invoice) throws AxelorException;
 
 
     /**

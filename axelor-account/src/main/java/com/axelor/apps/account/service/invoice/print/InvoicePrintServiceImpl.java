@@ -19,14 +19,10 @@ package com.axelor.apps.account.service.invoice.print;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
@@ -40,39 +36,63 @@ import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
 
+/**
+ * Implementation of the service printing invoices.
+ */
 public class InvoicePrintServiceImpl implements InvoicePrintService {
 
-    private static final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+    @Override
+    public String printInvoice(Invoice invoice) throws AxelorException, IOException {
+        String fileName = getInvoiceFilesName(false);
+        return PdfTool.getFileLinkFromPdfFile(printCopiesToFile(invoice), fileName);
+    }
 
     @Override
-    public MetaFile printAndAttach(Invoice invoice) throws AxelorException {
+    public File printCopiesToFile(Invoice invoice) throws AxelorException, IOException {
+        File file = getPrintedInvoice(invoice);
+        int copyNumber = invoice.getInvoicesCopySelect();
+        return PdfTool.printCopiesToFile(file, copyNumber);
+    }
+
+    @Override
+    @Transactional(rollbackOn = {AxelorException.class, IOException.class, RuntimeException.class})
+    public File getPrintedInvoice(Invoice invoice) throws AxelorException {
+        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+                && invoice.getPrintedPDF() != null) {
+            Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
+            return path.toFile();
+        }
+
+        // if the invoice is not ventilated or missing a printing,
+        // we generate and save it.
+        return printAndSave(invoice);
+    }
+
+    public File printAndSave(Invoice invoice) throws AxelorException {
+
         ReportSettings reportSettings = prepareReportSettings(invoice);
-        MetaFile metaFile = null;
+        MetaFile metaFile;
 
         reportSettings.toAttach(invoice);
         File file = reportSettings.generate().getFile();
 
-        MetaFiles metaFiles = Beans.get(MetaFiles.class);
         try {
+            MetaFiles metaFiles = Beans.get(MetaFiles.class);
             metaFile = metaFiles.upload(file);
             invoice.setPrintedPDF(metaFile);
+            return MetaFiles.getPath(metaFile).toFile();
         } catch (IOException e) {
-            logger.error(e.getLocalizedMessage());
-            TraceBackService.trace(e);
+            throw new AxelorException(IException.TECHNICAL,
+                    I18n.get(IExceptionMessage.INVOICE_PRINTING_IO_ERROR)
+                            + " "
+                            + e.getLocalizedMessage());
         }
-        return metaFile;
-    }
-
-    @Override
-    public ReportSettings printInvoice(Invoice invoice) throws AxelorException {
-        return prepareReportSettings(invoice).generate();
     }
 
     @Override
@@ -81,38 +101,13 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         ModelTool.apply(Invoice.class, ids, new ThrowConsumer<Invoice>() {
             @Override
             public void accept(Invoice invoice) throws Exception {
-                printedInvoices.add(getPrintedInvoice(invoice));
+                printedInvoices.add(printCopiesToFile(invoice));
             }
         });
-        String fileName = I18n.get("Invoices") + " - "
-                + Beans.get(AppBaseService.class).getTodayDate()
-                .format(DateTimeFormatter.BASIC_ISO_DATE)
-                + ".pdf";
-        return PdfTool.mergePdf(printedInvoices, fileName);
+        String fileName = getInvoiceFilesName(true);
+        return PdfTool.mergePdfToFileLink(printedInvoices, fileName);
     }
 
-
-    @Override
-    @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-    public File getPrintedInvoice(Invoice invoice) throws AxelorException {
-        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-            Path path = null;
-            if (invoice.getPrintedPDF() != null) {
-                path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
-            }
-            if (path == null) {
-                // if the invoice is ventilated and is missing a printing,
-                // we generate and save it.
-                path = MetaFiles.getPath(printAndAttach(invoice));
-            }
-
-            if (path != null) {
-                return path.toFile();
-            }
-
-        }
-        return printInvoice(invoice).getFile();
-    }
 
     @Override
     public ReportSettings prepareReportSettings(Invoice invoice) throws AxelorException {
@@ -137,5 +132,18 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         return reportSetting.addParam("InvoiceId", invoice.getId().toString())
                 .addParam("Locale", locale)
                 .addParam("InvoicesCopy", invoice.getInvoicesCopySelect());
+    }
+
+    /**
+     * Return the name for the printed invoice.
+     * @param plural if there is one or multiple invoices.
+     */
+    protected String getInvoiceFilesName(boolean plural) {
+
+        return I18n.get(plural ? "Invoices" : "Invoice")
+                + " - "
+                + Beans.get(AppBaseService.class).getTodayDate()
+                .format(DateTimeFormatter.BASIC_ISO_DATE)
+                + ".pdf";
     }
 }
