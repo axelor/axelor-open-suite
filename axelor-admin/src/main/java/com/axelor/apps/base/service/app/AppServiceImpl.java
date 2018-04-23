@@ -487,7 +487,7 @@ public class AppServiceImpl implements AppService {
 		
 		for (App app : apps) {
 			app = installApp(app, language);
-			if (importDemo) {
+			if (importDemo != null && importDemo) {
 				importDataDemo(app);
 			}
 		}
