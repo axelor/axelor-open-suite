@@ -124,7 +124,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				supplierPartner);
 
 		Integer atiChoice =  Beans.get(PurchaseConfigService.class).getPurchaseConfig(saleOrder.getCompany()).getPurchaseOrderInAtiSelect();
-		if(atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS || atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT){ // ATI_ALWAYS = 2, ATI_DEFAULT = 4
+		if(atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS || atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT){
 			purchaseOrder.setInAti(true);
 		}
 		else{
