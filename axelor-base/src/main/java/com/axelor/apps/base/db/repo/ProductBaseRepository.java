@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -93,6 +94,14 @@ public class ProductBaseRepository extends ProductRepository{
 		
 		Product copy = super.copy(product, deep);
 		copy.setBarCode(null);
+		try {
+			if (product.getPicture() != null) {
+				File file = MetaFiles.getPath(product.getPicture()).toFile();
+				copy.setPicture(metaFiles.upload(file));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return copy;
 		
