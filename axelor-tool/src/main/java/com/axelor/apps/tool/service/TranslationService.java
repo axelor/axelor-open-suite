@@ -15,22 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.db;
+package com.axelor.apps.tool.service;
 
-import java.util.HashMap;
-import java.util.Map;
+public interface TranslationService {
+    /**
+     * Update formated value translations.
+     * 
+     * @param oldKey
+     * @param format
+     * @param args
+     */
+    void updateFormatedValueTranslations(String oldKey, String format, Object... args);
 
-/**
- * Interface of Partner object. Enum all static variable of object.
- * 
- */
-@Deprecated
-public interface IPartner {
+    /**
+     * Create formated value translations.
+     * 
+     * @param format
+     * @param args
+     */
+    void createFormatedValueTranslations(String format, Object... args);
 
-	/**
-	 * Static partner type select
-	 */
-
-	static final int PARTNER_TYPE_SELECT_ENTERPRISE = 1;
-	static final int PARTNER_TYPE_SELECT_INDIVIDUAL = 2;
+    /**
+     * Remove value translations.
+     * 
+     * @param key
+     */
+    void removeValueTranslations(String key);
 }

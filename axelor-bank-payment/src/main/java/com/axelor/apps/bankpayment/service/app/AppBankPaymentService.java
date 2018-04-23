@@ -15,27 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.db;
+package com.axelor.apps.bankpayment.service.app;
 
-/**
- * Interface of Lead object. Enum all static variable of object.
- * 
- * @author dubaux
- * 
- */
-@Deprecated
-public interface ILead {
+import com.axelor.apps.base.db.AppBankPayment;
+import com.axelor.apps.base.service.app.AppBaseService;
 
-
-	/**
-	 * Static status select
-	 */
-
-	static final int STATUS_NEW = 1;
-	static final int STATUS_ASSIGNED = 2;
-	static final int STATUS_IN_PROCESS = 3;
-	static final int STATUS_CONVERTED = 4;
-	static final int STATUS_RECYCLED = 5;
-	static final int STATUS_DEAD = 6;
+public interface AppBankPaymentService extends AppBaseService {
+	
+	public AppBankPayment getAppBankPayment();
+	
+	public void generateBankPaymentConfigurations();
 	
 }

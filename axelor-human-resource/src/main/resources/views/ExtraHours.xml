@@ -27,16 +27,18 @@
 	<form name="extra-hours-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" cols="12" width="large"
 	    onNew="action-group-extra-hours-onnew"
 	    onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project" canNew="false" canCopy="false">
-		<panel title="Status">
-			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>			
+		<panel>
+			<panel colSpan="9">
+				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
+			</panel>
+			<panel name="actions" itemSpan="12" colSpan="3">
+				<button name="confirmButton" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+				<button name="validateButton" hidden="true" onClick="action-extra-hours-group-validate" title="Validate"/>
+				<button name="refuseButton" hidden="true" onClick="action-extra-hours-group-refuse" title="Refuse"/>
+				<button name="cancelButton" onClick="action-extra-hours-method-cancel,save,action-extra-hours-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+				<button name="draftButton" onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+			</panel>
 		</panel>
-	    <panel sidebar="true" name="actions" title="Actions" stacked="true">
-	    	<button name="confirmButton" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-	    	<button name="validateButton" onClick="action-extra-hours-group-validate" title="Validate"/>
-	    	<button name="refuseButton" onClick="action-extra-hours-group-refuse" title="Refuse"/>
-			<button name="cancelButton" onClick="action-extra-hours-method-cancel,save,action-extra-hours-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-close"/>
-	    	<button name="draftButton" onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
-	    </panel>
 		<panel name="head">
 			<field name="sentDate" colSpan="4"/>
 			<field name="company" canEdit="false" colSpan="4" form-view="company-form" grid-view="company-grid"/>

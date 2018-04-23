@@ -42,13 +42,14 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class BankOrderCreateServiceHr extends BankOrderCreateService {
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
-	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
-			BankOrderLineService bankOrderLineService, InvoiceService invoiceService) {
-		super(bankOrderRepo, bankOrderService, bankOrderLineService, invoiceService);
-	}
+    private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    @Inject
+    public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
+            BankOrderLineService bankOrderLineService, InvoiceService invoiceService) {
+        super(bankOrderRepo, bankOrderService, bankOrderLineService, invoiceService);
+    }
 
 	/**
 	 * Method to create a bank order for an expense

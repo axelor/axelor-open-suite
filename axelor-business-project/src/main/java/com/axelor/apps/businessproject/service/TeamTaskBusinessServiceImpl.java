@@ -19,14 +19,14 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
-import com.axelor.apps.project.service.TeamTaskServiceImpl;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.service.TeamTaskServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 
-public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl {
+public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl implements TeamTaskBusinessService {
 
     private PriceListLineRepository priceListLineRepository;
 
@@ -37,7 +37,7 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl {
 
     @Override
     public TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo) {
-        TeamTask task = super.create(saleOrderLine, project, assignedTo);
+        TeamTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
         task.setProduct(saleOrderLine.getProduct());
         task.setUnit(saleOrderLine.getUnit());
         task.setCurrency(project.getClientPartner().getCurrency());
@@ -53,4 +53,5 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl {
         task.setQuantity(saleOrderLine.getQty());
         return task;
     }
+
 }

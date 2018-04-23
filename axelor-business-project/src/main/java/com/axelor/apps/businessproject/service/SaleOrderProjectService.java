@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
@@ -24,7 +27,6 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.GenProjTypePerOrderLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -38,23 +40,20 @@ import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SaleOrderProjectService {
 
 	private ProjectBusinessService projectBusinessService;
 	private SaleOrderLineRepository saleOrderLineRepository;
 	private TeamTaskRepository teamTaskRepository;
-	private TeamTaskService teamTaskService;
+	private TeamTaskBusinessService teamTaskBusinessService;
 
 	@Inject
 	public SaleOrderProjectService(ProjectBusinessService projectBusinessService, SaleOrderLineRepository saleOrderLineRepository,
-								   TeamTaskRepository teamTaskRepository, TeamTaskService teamTaskService) {
+								   TeamTaskRepository teamTaskRepository, TeamTaskBusinessService teamTaskService) {
 	    this.projectBusinessService = projectBusinessService;
 	    this.saleOrderLineRepository = saleOrderLineRepository;
 	    this.teamTaskRepository = teamTaskRepository;
-	    this.teamTaskService = teamTaskService;
+	    this.teamTaskBusinessService = teamTaskService;
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -116,7 +115,7 @@ public class SaleOrderProjectService {
 		for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 			Product product = saleOrderLine.getProduct();
 			if(ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE){
-			    TeamTask task = teamTaskService.create(saleOrderLine, saleOrder.getProject(), saleOrder.getProject().getAssignedTo());
+			    TeamTask task = teamTaskBusinessService.create(saleOrderLine, saleOrder.getProject(), saleOrder.getProject().getAssignedTo());
 			    teamTaskRepository.save(task);
 				tasks.add(task);
 			}

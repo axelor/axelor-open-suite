@@ -38,7 +38,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
-import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -55,7 +55,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	protected MoveService moveService;
 	protected PaymentModeService paymentModeService;
 	protected AccountingSituationService accountingSituationService;
-	protected AccountConfigBankPaymentService accountConfigBankPaymentService;
+	protected BankPaymentConfigService bankPaymentConfigService;
 
 	protected PaymentMode paymentMode;
 	protected Company senderCompany;
@@ -70,16 +70,16 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 	protected boolean isMultiCurrency;
 	protected boolean isDebit;
 
-	@Inject
-	public BankOrderMoveServiceImpl(MoveService moveService, PaymentModeService paymentModeService,
-			AccountingSituationService accountingSituationService, AccountConfigBankPaymentService accountConfigBankPaymentService)  {
+    @Inject
+    public BankOrderMoveServiceImpl(MoveService moveService, PaymentModeService paymentModeService,
+            AccountingSituationService accountingSituationService, BankPaymentConfigService bankPaymentConfigService) {
 
-		this.moveService = moveService;
-		this.paymentModeService = paymentModeService;
-		this.accountingSituationService = accountingSituationService;
-		this.accountConfigBankPaymentService = accountConfigBankPaymentService;
+        this.moveService = moveService;
+        this.paymentModeService = paymentModeService;
+        this.accountingSituationService = accountingSituationService;
+        this.bankPaymentConfigService = bankPaymentConfigService;
 
-	}
+    }
 
 
 	@Override
@@ -204,9 +204,9 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 
 		case BankOrderRepository.PARTNER_TYPE_COMPANY :
 			if(receiverCompany.equals(senderCompany))  {
-				return accountConfigBankPaymentService.getInternalBankToBankAccount(accountConfigBankPaymentService.getAccountConfig(moveCompany));
+				return bankPaymentConfigService.getInternalBankToBankAccount(bankPaymentConfigService.getBankPaymentConfig(moveCompany));
 			} else {
-				return accountConfigBankPaymentService.getExternalBankToBankAccount(accountConfigBankPaymentService.getAccountConfig(moveCompany));
+				return bankPaymentConfigService.getExternalBankToBankAccount(bankPaymentConfigService.getBankPaymentConfig(moveCompany));
 			}
 
 		default:

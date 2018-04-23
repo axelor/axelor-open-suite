@@ -41,14 +41,14 @@ public class UserServiceImpl implements UserService  {
 	
 	public static String DEFAULT_LOCALE = "en";
 
-	
 	/**
 	 * Method that return the current connected user
 	 * 
 	 * @return user
 	 * 		the current connected user
 	 */
-	public User getUser() {
+	@Override
+    public User getUser() {
 		User user = null;
 		try{
 			user = AuthUtils.getUser();
@@ -66,7 +66,8 @@ public class UserServiceImpl implements UserService  {
 	 * @return user
 	 * 		the id of current connected user
 	 */
-	public Long getUserId() {
+	@Override
+    public Long getUserId() {
 		
 		final User user = this.getUser();
 	
@@ -81,7 +82,8 @@ public class UserServiceImpl implements UserService  {
 	 * @return Company
 	 * 		the active company
 	 */
-	public Company getUserActiveCompany() {
+	@Override
+    public Company getUserActiveCompany() {
 		
 		User user = getUser();
 		
@@ -96,7 +98,8 @@ public class UserServiceImpl implements UserService  {
 	 * @return Company
 	 * 		the active company id
 	 */
-	public Long getUserActiveCompanyId() {
+	@Override
+    public Long getUserActiveCompanyId() {
 		
 		final Company company = this.getUserActiveCompany();
 		
@@ -111,7 +114,8 @@ public class UserServiceImpl implements UserService  {
 	 * @return Team
 	 * 		the active team
 	 */
-	public MetaFile getUserActiveCompanyLogo() {
+	@Override
+    public MetaFile getUserActiveCompanyLogo() {
 
 		final Company company = this.getUserActiveCompany();
 		
@@ -127,7 +131,8 @@ public class UserServiceImpl implements UserService  {
 	 * @return Team
 	 * 		the active team
 	 */
-	public Team getUserActiveTeam() {
+	@Override
+    public Team getUserActiveTeam() {
 		
 		final User user = getUser();
 		
@@ -142,7 +147,8 @@ public class UserServiceImpl implements UserService  {
 	 * @return Team
 	 * 		the active team id
 	 */
-	public Long getUserActiveTeamId() {
+	@Override
+    public Long getUserActiveTeamId() {
 		
 		final Team team = this.getUserActiveTeam();
 		
@@ -157,7 +163,8 @@ public class UserServiceImpl implements UserService  {
 	 * @return Partner
 	 * 		the user partner
 	 */
-	public Partner getUserPartner() {
+	@Override
+    public Partner getUserPartner() {
 		
 		final User user = getUser();
 
@@ -166,7 +173,8 @@ public class UserServiceImpl implements UserService  {
 		return user.getPartner();
 	}
 
-	@Transactional
+	@Override
+    @Transactional
 	public void createPartner(User user) {
 		Partner partner = new Partner();
 		partner.setPartnerTypeSelect(2);
@@ -181,7 +189,8 @@ public class UserServiceImpl implements UserService  {
 		userRepo.save(user);
 	}
 	
-	public String getLanguage()  {
+	@Override
+    public String getLanguage()  {
 		
 		User user = getUser();
 		if (user != null && !Strings.isNullOrEmpty(user.getLanguage())) {
@@ -190,5 +199,6 @@ public class UserServiceImpl implements UserService  {
 		return DEFAULT_LOCALE;
 		
 	}
+
 }
  

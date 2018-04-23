@@ -72,7 +72,7 @@
         <field name="purchaseOrder.statusSelect" hidden="true"/>
     </grid>
 
-    <form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" readonlyIf="true" canEdit="false">
+    <form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" onLoad="action-group-purchase-purchase-orderline-onload" readonlyIf="true" canEdit="false">
         <panel-include view="purchase-order-line-form"/>
     </form>
 
@@ -243,6 +243,8 @@
 	<action-attrs name="action-purchase-order-attrs-hide-ati">
 		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval: purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
+		<attribute name="hidden" for="inTaxTotal" expr="eval: !purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
 	</action-attrs>
 
 	<action-attrs if-module="axelor-business-project" name="action-purchase-order-line-attrs-title-project">

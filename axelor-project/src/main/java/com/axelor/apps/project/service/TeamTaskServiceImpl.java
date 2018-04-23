@@ -20,7 +20,6 @@ package com.axelor.apps.project.service;
 import java.time.LocalDate;
 
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 
@@ -38,8 +37,4 @@ public class TeamTaskServiceImpl implements TeamTaskService {
         return task;
     }
 
-    @Override
-    public TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo) {
-        return create(saleOrderLine.getFullName() + "_task", project, assignedTo);
-    }
 }

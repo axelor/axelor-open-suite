@@ -364,10 +364,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String realize(StockMove stockMove, boolean check) throws AxelorException {
+	public String realize(StockMove stockMove, boolean checkOngoingInventoryFlag) throws AxelorException {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 
-		if (check) {
+		if (checkOngoingInventoryFlag) {
 			checkOngoingInventory(stockMove);
 		}
 
@@ -532,7 +532,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 	}
 
-	private boolean checkWeightsRequired(StockMove stockMove) {
+    @Override
+	public boolean checkWeightsRequired(StockMove stockMove) {
 		Address fromAddress = getFromAddress(stockMove);
 		Address toAddress = getToAddress(stockMove);
 

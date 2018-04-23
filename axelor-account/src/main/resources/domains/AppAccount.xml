@@ -16,8 +16,6 @@
 		
 		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
 		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
-		
-		<boolean name="manageDirectDebitPayment" title="Manage direct debit payment" default="false" />
 
 		<boolean name="manageFactors" />
 

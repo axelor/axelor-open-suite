@@ -47,21 +47,23 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 		this.accountConfigService = accountConfigService;
 		this.accountingSituationRepo = accountingSituationRepo;
 	}
-	
+
+	@Override
 	public boolean checkAccountingSituationList(List<AccountingSituation> accountingSituationList, Company company) {
 
-		if(accountingSituationList != null)  { 
+		if(accountingSituationList != null)  {
 			for(AccountingSituation accountingSituation : accountingSituationList) {
-	
-				if(accountingSituation.getCompany().equals(company))  { 
+
+				if(accountingSituation.getCompany().equals(company))  {
 					return true;
 				}
 			}
 		}
-	
+
 		return false;
 	}
 
+	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public List<AccountingSituation> createAccountingSituation(Partner partner) throws AxelorException {
 		Set<Company> companySet = partner.getCompanySet();
@@ -76,7 +78,8 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 
 		return partner.getAccountingSituationList();
 	}
-	
+
+	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException {
 		AccountingSituation accountingSituation = new AccountingSituation();
@@ -112,6 +115,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 	}
 
 
+	@Override
 	public AccountingSituation getAccountingSituation(Partner partner, Company company)  {
 		if (partner == null || partner.getAccountingSituationList() == null) {
 			return null;
@@ -125,7 +129,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 
 		return null;
 	}
-	
+
 	/**
 	 * Creates the domain for the bank details in Accounting Situation
 	 * @param accountingSituation
@@ -133,6 +137,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 	 *                         false if the field is companyOutBankDetails
 	 * @return the domain of the bank details field
 	 */
+	@Override
 	public String createDomainForBankDetails(AccountingSituation accountingSituation, boolean isInBankDetails) {
 		String domain = "";
 		List<BankDetails> authorizedBankDetails;
@@ -210,4 +215,13 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
 		return account;
 	}
 
+	@Override
+	public BankDetails getCompanySalesBankDetails(Company company, Partner partner) {
+		AccountingSituation situation = getAccountingSituation(partner, company);
+		if(situation.getCompanyInBankDetails() != null && situation.getCompanyInBankDetails().getActive()) {
+			return situation.getCompanyInBankDetails();
+		}
+
+		return company.getDefaultBankDetails();
+	}
 }

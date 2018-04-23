@@ -1,0 +1,8 @@
+"importId";"externalReference";"supplierPartner.importId";"contactPartner.importId";"buyerUser.importId";"currency.code";"creationDate";"statusSelect";"company.importId";"stockLocation.id";"deliveryDate";"orderDate";"paymentMode.importId";"paymentCondition.importId";"invoice.importId";"printingSettings.importId"
+1;"SO012434";170;171;14;"USD";"TODAY[-4M]";4;1;1;"TODAY[-4M+15d]";"TODAY[-4M+7d]";15;5;;1
+2;"SO012520";170;171;14;"USD";"TODAY[-3M]";4;1;1;"TODAY[-3M+15d]";"TODAY[-3M]";15;2;;1
+3;"SO4562";148;149;14;"USD";"TODAY[-3M]";4;1;1;"TODAY[-3M+15d]";"TODAY[-3M+7d]";15;2;;1
+4;"SE_005124";152;153;14;"USD";"TODAY[-2M]";4;1;1;"TODAY[-2M+15d]";"TODAY[-2M+7d]";15;3;;1
+5;"V00021457";70;71;14;"EUR";"TODAY[-2M+15d]";4;1;1;"TODAY[-1M]";"TODAY[-1M-5d]";15;2;;1
+6;"SO4603";148;148;8;"USD";"TODAY[-1M]";4;1;1;"TODAY[-15d]";"TODAY[-1M+7d]";15;5;;1
+7;"SO012680";170;171;8;"USD";"TODAY[-15d]";3;1;1;"TODAY";"TODAY[-15d]";15;5;;1

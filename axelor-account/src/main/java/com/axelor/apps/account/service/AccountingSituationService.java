@@ -21,13 +21,14 @@ import java.util.List;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 
 
 public interface AccountingSituationService	{
-	
+
 	boolean checkAccountingSituationList(List<AccountingSituation> accountingSituationList, Company company);
 	List<AccountingSituation> createAccountingSituation(Partner partner) throws AxelorException;
 	AccountingSituation getAccountingSituation(Partner partner, Company company);
@@ -37,29 +38,37 @@ public interface AccountingSituationService	{
 
 	/**
 	 * Get customer account from accounting situation or account config.
-	 * 
+	 *
 	 * @param partner
 	 * @param company
 	 * @return
 	 */
 	Account getCustomerAccount(Partner partner, Company company) throws AxelorException;
-	
+
 	/**
 	 * Get supplier account from accounting situation or account config.
-	 * 
+	 *
 	 * @param partner
 	 * @param company
 	 * @return
 	 */
 	Account getSupplierAccount(Partner partner, Company company) throws AxelorException;
-	
+
 	/**
 	 * Get employee account from accounting situation or account config.
-	 * 
+	 *
 	 * @param partner
 	 * @param company
 	 * @return
 	 */
 	Account getEmployeeAccount(Partner partner, Company company) throws AxelorException;
+
+	/**
+	 * Return bank details for sales to <code>partner</code> (took from SaleOrder.xml).
+	 * @param company
+	 * @param partner
+	 * @return
+	 */
+	BankDetails getCompanySalesBankDetails(Company company, Partner partner);
 
 }

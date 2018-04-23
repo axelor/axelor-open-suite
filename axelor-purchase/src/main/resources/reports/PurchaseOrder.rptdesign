@@ -1620,6 +1620,12 @@ left outer join account_tax_line as TaxLine on (POLineTax.tax_line = TaxLine.id)
                                     <property name="verticalAlign">middle</property>
                                     <image id="3419">
                                         <property name="height">70px</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <structure name="toc"/>
                                         <property name="source">file</property>
                                         <property name="proportionalScale">true</property>

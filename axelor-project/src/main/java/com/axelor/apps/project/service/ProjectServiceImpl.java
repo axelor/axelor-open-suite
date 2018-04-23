@@ -30,9 +30,6 @@ import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -40,7 +37,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.Team;
 import com.axelor.team.db.TeamTask;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -203,11 +199,4 @@ public class ProjectServiceImpl implements ProjectService {
 		
 	}
 
-	@Override
-	@Transactional
-	public SaleOrder generateQuotation(Project project) throws AxelorException {
-		SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
-		order.setClientPartner(project.getClientPartner());
-		return Beans.get(SaleOrderRepository.class).save(order);
-	}
 }

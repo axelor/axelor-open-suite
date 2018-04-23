@@ -195,32 +195,14 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 	
 	
 	public Map<String,Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)  {
-		
+
 		PriceList priceList = invoice.getPriceList();
-		BigDecimal discountAmount = BigDecimal.ZERO;
-		Map<String, Object> discounts = null;
-		
-		int computeMethodDiscountSelect = appAccountService.getAppBase().getComputeMethodDiscountSelect();
-
-		if(priceList != null)  {
-			int discountTypeSelect = 0;
-			
-			PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
-			if(priceListLine!=null){
-				discountTypeSelect = priceListLine.getTypeSelect();
-			}
-
-			discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-			discountAmount = (BigDecimal) discounts.get("discountAmount");
-			
-			if((computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE) 
-					|| computeMethodDiscountSelect == AppBaseRepository.INCLUDE_DISCOUNT)  {
-				discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount));
-
-			}
+		if (priceList == null) {
+			return null;
 		}
 
-		return discounts;
+		PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
+		return priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
 	}
 	
 	

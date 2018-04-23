@@ -20,7 +20,7 @@
 	
     <form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form" >
         <menubar>
-	        <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+	        <menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Schedule Event" action="save,action-partner-view-schedule-event" readonlyIf="id == null" if="__config__.app.isApp('crm')"/>
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" if="__config__.app.isApp('crm')"/>
 	            <item title="Create order" action="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1" if-module="axelor-sale" if="__config__.app.isApp('sale')" />

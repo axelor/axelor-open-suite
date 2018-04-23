@@ -1,19 +1,18 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../version.gradle"
+
 apply {
-	version = "5.0.0-SNAPSHOT"
+	version = absVersion
 }
 
 axelor {
-	title "Axelor :: Project"
+	title "Axelor Project"
 	description "Axelor Project Module"
-
-	removable true
 }
 
 dependencies {
 	compile project(":modules:axelor-base")
-	compile project(":modules:axelor-sale")
 }
 
 task copyWebapp(type: Copy) {

@@ -39,36 +39,36 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowServiceImpl {
-	
+
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
+
 	protected SaleOrderStockService saleOrderStockService;
 	protected SaleOrderPurchaseService saleOrderPurchaseService;
 	protected AppSupplychain appSupplychain;
 	protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
 	@Inject
-	public SaleOrderWorkflowServiceSupplychainImpl(SequenceService sequenceService, PartnerRepository partnerRepo, 
+	public SaleOrderWorkflowServiceSupplychainImpl(SequenceService sequenceService, PartnerRepository partnerRepo,
 			SaleOrderRepository saleOrderRepo, AppSaleService appSaleService, UserService userService,
-			SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService, 
+			SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService,
 			AppSupplychainService appSupplychainService, AccountingSituationSupplychainService accountingSituationSupplychainService) {
-		
+
 		super(sequenceService, partnerRepo, saleOrderRepo, appSaleService, userService);
-		
+
 		this.saleOrderStockService = saleOrderStockService;
 		this.saleOrderPurchaseService = saleOrderPurchaseService;
 		this.appSupplychain = appSupplychainService.getAppSupplychain();
 		this.accountingSituationSupplychainService = accountingSituationSupplychainService;
 
 	}
-	
-	
+
+
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
+	@Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+	public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException  {
 
 		super.confirmSaleOrder(saleOrder);
-		
+
 		if(appSupplychain.getPurchaseOrderGenerationAuto())  {
 			saleOrderPurchaseService.createPurchaseOrders(saleOrder);
 		}
@@ -86,7 +86,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 	}
 
 	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	@Transactional
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
 		super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
 		try {
@@ -95,11 +95,11 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 			e.printStackTrace();
 		}
 	}
-	
+
 
 	@Override
-    @Transactional(rollbackOn = { AxelorException.class, Exception.class }, ignore = {BlockedSaleOrderException.class })
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception {
+    @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class}, ignore = {BlockedSaleOrderException.class })
+	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 		accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
 		super.finalizeSaleOrder(saleOrder);
 		int intercoSaleCreatingStatus = Beans.get(AppSupplychainService.class)

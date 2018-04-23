@@ -30,6 +30,7 @@ public interface IExceptionMessage {
 	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correctly configured (%s)" /*)*/;
 
 	static final String RECORD_UNSAVED = /*$$(*/ "Unsaved record" /*)*/;
+    static final String RECORD_NONE_SELECTED = /*$$(*/ "Please select at least one record." /*)*/;
 
 	/**
 	 * Currency service and controller
@@ -254,4 +255,8 @@ public interface IExceptionMessage {
 	public static final String WEEKLY_PLANNING_3 = /*$$(*/ "Invalid times %s afternoon" /*)*/;
 	public static final String WEEKLY_PLANNING_4 = /*$$(*/ "Some times are null and should not on %s" /*)*/;
 
+    /*
+     * User service
+     */
+    String USER_CODE_ALREADY_EXISTS = /*$$(*/ "A user with this login already exists." /*)*/;
 }

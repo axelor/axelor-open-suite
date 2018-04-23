@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.apps.project.service.ProjectService;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -59,20 +57,6 @@ public class ProjectController {
 				.context("_planningIds", projectPlannings.stream().map(it->it.getId()).collect(Collectors.toList()))
 				.map());
 				
-	}
-
-	public void generateQuotation(ActionRequest request, ActionResponse response) {
-		Project project = request.getContext().asType(Project.class);
-		try {
-			SaleOrder order = Beans.get(ProjectService.class).generateQuotation(project);
-			response.setView(ActionView
-					.define("Sale Order")
-					.model(SaleOrder.class.getName())
-					.add("form", "sale-order-form")
-					.context("_showRecord", String.valueOf(order.getId())).map());
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
 	}
 
 	public void importMembers(ActionRequest request, ActionResponse response) {

@@ -1,9 +1,11 @@
 "key","message","comment","context"
 "An error occurs while opening the connection. Please verify the following URL : %s.","Une erreur est survenue pendant la connexion. Veuillez verifier l'URL suivant: %s.",,
 "Can not opening the connection to a empty URL.","Impossible d'établir la connexion avec un URL vide.",,
+"Cannot find record #%s",,,
 "No such template","Modèle non trouvé",,
 "Templating can not be empty","Le modèle ne peut pas être vide",,
-"The given function cannot be null.","La fonction donnée ne peut-être nul.",,
-"The given ids list cannot be null.","La liste d'ids donnée ne peut-être nul.",,
+"The collection of IDs cannot be null.",,,
+"The consumer cannot be null.",,,
+"This field needs to be unique.","Ce champ doit être unique.",,
 "Url %s is malformed.","l'url %s est malformé",,
 "Years in 360 days","L'année en 360 jours",,

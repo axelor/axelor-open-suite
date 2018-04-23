@@ -7,6 +7,7 @@
 	<entity name="AppPurchase" lang="java" cachable="true" extends="App">
 		<boolean name="managePurchaseOrderVersion" title="Manage purchase order versions" default="false"/>
 		<boolean name="managePurchasesUnits" title="Manage purchases unit on products"/>
+        <boolean name="manageMultiplePurchaseQuantity" title="Manage multiple purchase quantity"/>
 	</entity>
 
 </domain-models>

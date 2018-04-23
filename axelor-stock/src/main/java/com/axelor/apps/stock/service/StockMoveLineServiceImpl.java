@@ -58,11 +58,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	private TrackingNumberService trackingNumberService;
 
 	protected AppBaseService appBaseService;
+	protected StockMoveService stockMoveService;
 
 	@Inject
-	public StockMoveLineServiceImpl(TrackingNumberService trackingNumberService, AppBaseService appBaseService) {
+	public StockMoveLineServiceImpl(TrackingNumberService trackingNumberService, AppBaseService appBaseService, StockMoveService stockMoveService) {
 		this.trackingNumberService = trackingNumberService;
 		this.appBaseService = appBaseService;
+		this.stockMoveService = stockMoveService;
 	}
 
 	/**
@@ -189,12 +191,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 	 * @throws AxelorException
 	 */
 	@Override
-	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) {
+	public StockMoveLine createStockMoveLine(Product product, String  productName, String description, BigDecimal quantity, BigDecimal unitPriceUntaxed, BigDecimal unitPriceTaxed, Unit unit, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
-		if (stockMove != null) {
-			stockMove.addStockMoveLineListItem(stockMoveLine);
-		}
 		stockMoveLine.setProduct(product);
 		stockMoveLine.setProductName(productName);
 		stockMoveLine.setDescription(description);
@@ -204,6 +203,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setTrackingNumber(trackingNumber);
+
+		if (stockMove != null) {
+			stockMove.addStockMoveLineListItem(stockMoveLine);
+			stockMoveLine.setNetWeight(this.computeNetWeight(stockMoveLine, stockMove.getCompany()));
+		} else {
+			stockMoveLine.setNetWeight(this.computeNetWeight(stockMoveLine, null));
+		}
+
+		stockMoveLine.setTotalNetWeight(stockMoveLine.getRealQty().multiply(stockMoveLine.getNetWeight()));
 
 		if (product != null) {
 			stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
@@ -511,7 +519,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 
 	@Override
-	public StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList) {
+	public StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList) throws AxelorException {
 		if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
 			return null;
 		}
@@ -537,7 +545,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		}
 
 		return createStockMoveLine(product, productName, description, quantity, unitPriceUntaxed, unitPriceTaxed, unit,
-				stockMove, trackingNumber);
+					stockMove, trackingNumber);
 	}
 
 	@Override
@@ -617,19 +625,41 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
             stockMoveLine.setProductModel(product.getParentProduct());
         }
 
-        BigDecimal netWeight;
-
-        if (company != null && company.getStockConfig() != null
-                && company.getStockConfig().getCustomsWeightUnit() != null) {
-            Unit startUnit = product.getWeightUnit();
-            Unit endUnit = company.getStockConfig().getCustomsWeightUnit();
-            netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
-                    product.getNetWeight(), product);
-        } else {
-            netWeight = BigDecimal.ZERO;
-        }
-
+        BigDecimal netWeight = this.computeNetWeight(stockMoveLine, company);
         stockMoveLine.setNetWeight(netWeight);
     }
 
+    public BigDecimal computeNetWeight(StockMoveLine stockMoveLine, Company company) throws AxelorException {
+
+    	BigDecimal netWeight = null;
+    	Product product = stockMoveLine.getProduct();
+    	Unit startUnit = null;
+    	Unit endUnit = null;
+
+        if(!product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+        	return netWeight;
+        }
+
+        startUnit = product.getWeightUnit();
+        if(startUnit == null) {
+            StockMove stockMove = stockMoveLine.getStockMove();
+
+            if (stockMove != null && !stockMoveService.checkWeightsRequired(stockMove)) {
+                return product.getNetWeight();
+            }
+
+            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_PRODUCT_WEIGHT_UNIT), product.getName());
+        }
+
+		if (company != null && company.getStockConfig() != null
+				&& company.getStockConfig().getCustomsWeightUnit() != null) {
+			endUnit = company.getStockConfig().getCustomsWeightUnit();
+		} else {
+			endUnit = startUnit;
+		}
+
+        netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
+                    product.getNetWeight(), product);
+        return netWeight;
+    }
 }

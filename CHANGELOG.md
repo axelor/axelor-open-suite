@@ -1,9 +1,17 @@
 # Changelog
 
-## [Unreleased 5.x]
+## [Unreleased 5.0.0-rc2]
+
+## Improvements
+- sale order: Allow user to manually define a legal note that will be put on edited orders.
+- sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
+
+## Bug Fixes
+
+
+
+## [5.0.0-rc1] - 2018-04-16
 ## Features
-- New Inventory view
-- New StockMove view
 - New currency conversion API (ECB)
 - Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
 - Create sale order from partner and contact
@@ -21,19 +29,16 @@
 - New subscription feature.
 - Add support to dynamically set the number of decimal digit of BOM quantities
 - If there is no template defined for the object, generate an empty draft message for MESSAGE : wizard
-- Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Manage waste rate in bill of material and take it into account on cost sheet
 - Partial manuf order realization
 - Add a wizard to select a cancel reason and cancel a Stock move.
 - Add button to open tasks and task kanban view in project module
 - Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
 - New user option to allow notifications to be sent by email on desired entities.
-- Add validation date in Inventory
-- Remove teams app module.
-- Add the number of components on Bill of material form view.
 - Add grid for easily regenerating and resending messages that were not sent.
 - Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order. 
 - Add multiple default stock locations (receipt, fixup, component, finished products) in stock config instead of a single default stock location.
+- Product sales and production configurator
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -67,6 +72,12 @@
 - Rename "durationStored" to "hoursDuration" and "visibleDuration" to "duration".
 - Add "show partner" button in lead form.
 - Merge invoicing project sale order wizard with invoicing sale order wizard.
+- New Inventory view
+- New StockMove view
+- Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
+- Add validation date in Inventory
+- Add the number of components on Bill of material form view.
+
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -83,6 +94,7 @@
 - Fix manufacturing order stock move generation in unusual case.
 - Fix default supplier in purchase order generation from sale order.
 - Stock location is no more required if supplychain module is not enabled
+- Compute the sale price and min sale price on purchase order line only if the product is saleable
 
 
 ## [Unreleased 4.x]
@@ -402,8 +414,10 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-[Unreleased 5.x]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...dev
+
+[Unreleased 5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...dev
+[5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
 [4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
