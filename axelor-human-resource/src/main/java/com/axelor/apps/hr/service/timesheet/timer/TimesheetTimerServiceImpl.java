@@ -21,7 +21,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
-import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +33,7 @@ import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -70,9 +70,9 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	@Transactional(rollbackOn = {Exception.class})
 	public void calculateDuration(TSTimer timer){
 		long currentDuration = timer.getDuration();
-		Duration duration = computeDuration(timer.getTimerStartDateT(), appBaseService.getTodayDateTime().toLocalDateTime());
-		BigDecimal secondes = BigDecimal.valueOf((getDuration(duration) + currentDuration));
-		timer.setDuration(secondes.longValue());
+		Duration duration = DurationTool.computeDuration(timer.getTimerStartDateT(), appBaseService.getTodayDateTime().toLocalDateTime());
+		long secondes = DurationTool.getSecondsDuration(duration) + currentDuration;
+		timer.setDuration(secondes);
 	}
 
 	@Transactional(rollbackOn = {Exception.class})
@@ -100,17 +100,5 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	
 	public TSTimer getCurrentTSTimer(){
 		return Beans.get(TSTimerRepository.class).all().filter("self.user = ?1",AuthUtils.getUser()).fetchOne();
-	}
-	
-	private Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
-
-		return Duration.between(startDateTime, endDateTime);
-
-	}
-
-	private int getDuration(Duration duration)  {
-
-		return new Integer(new Long(duration.getSeconds()).toString());
-
 	}
 }
