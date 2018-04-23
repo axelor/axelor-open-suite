@@ -422,24 +422,44 @@ public class HumanResourceMobileController {
 	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason"
 	 * } }
 	 */
-	public void getLeaveReason(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<>();
-		try{
-			List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
-			for (LeaveReason leaveReason : leaveReasonList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("name", leaveReason.getLeaveReason());
-				map.put("id", leaveReason.getId().toString());
-				dataList.add(map);
-			}
-			response.setData(dataList);
-			response.setTotal(dataList.size());
-		}
-		catch(Exception e){
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
-	}
+    public void getLeaveReason(ActionRequest request, ActionResponse response) {
+        try {
+            User user = AuthUtils.getUser();
+
+            List<Map<String, String>> dataList = new ArrayList<>();
+
+            if (user == null || user.getEmployee() == null) {
+                List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
+
+                for (LeaveReason leaveReason : leaveReasonList) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("name", leaveReason.getLeaveReason());
+                    map.put("id", leaveReason.getId().toString());
+                    dataList.add(map);
+                }
+            } else if (user.getEmployee() != null) {
+                List<LeaveLine> leaveLineList = Beans.get(LeaveLineRepository.class).all()
+                        .filter("self.employee = ?1", user.getEmployee()).order("name").fetch();
+
+                String tmpName = "";
+                for (LeaveLine leaveLine : leaveLineList) {
+                    String name = leaveLine.getName();
+                    if (tmpName != name) {
+                        Map<String, String> map = new HashMap<>();
+                        map.put("name", leaveLine.getName());
+                        map.put("id", leaveLine.getLeaveReason().getId().toString());
+                        dataList.add(map);
+                    }
+                    tmpName = name;
+                }
+            }
+            response.setData(dataList);
+            response.setTotal(dataList.size());
+        } catch (Exception e) {
+            response.setStatus(-1);
+            response.setError(e.getMessage());
+        }
+    }
 
 	/*
 	 * This method is used in mobile application.
