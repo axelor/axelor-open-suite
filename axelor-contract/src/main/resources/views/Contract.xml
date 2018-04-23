@@ -91,7 +91,10 @@
                         <field name="supposedEndDate" hidden="true" showIf="statusSelect &lt;= 2" colSpan="3"/>
                     </editor>
                 </field>
-                <field name="firstPeriodEndDate" readonlyIf="statusSelect > 2" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentVersion.isPeriodicInvoicing" colSpan="3" requiredIf="$get('currentVersion.isPeriodicInvoicing')"/>
+                <field name="firstPeriodEndDate" readonlyIf="statusSelect >= 2"
+                       hidden="true" showIf="isInvoicingManagement &amp;&amp;
+                       currentVersion.isPeriodicInvoicing" colSpan="3"
+                       requiredIf="$get('currentVersion.isPeriodicInvoicing')"/>
             </panel>
             <panel title="Content">
                 <panel name="contractLineListPanel" colSpan="12" hidden="true" showIf="isInvoicingManagement">

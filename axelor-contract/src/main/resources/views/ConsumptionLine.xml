@@ -5,14 +5,15 @@
 	http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="consumption-line-grid" title="Consumption Lines"
-          model="com.axelor.apps.contract.db.ConsumptionLine">
+          model="com.axelor.apps.contract.db.ConsumptionLine"
+          orderBy="lineDate">
         <hilite if="isError" background="danger"/>
         <hilite if="isInvoiced" background="success"/>
-        <field name="lineDate" />
-        <field name="reference" />
-        <field name="product" />
+        <field name="lineDate"/>
+        <field name="reference"/>
+        <field name="product"/>
         <field name="qty"/>
-        <field name="unit" />
+        <field name="unit"/>
         <field name="isInvoiced" hidden="true"/>
         <field name="isError" hidden="true"/>
     </grid>
