@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+              http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
+    <grid name="contract-grid" title="Contracts"
+          model="com.axelor.apps.contract.db.Contract">
         <field name="contractId"/>
         <field name="name"/>
         <field name="targetType"/>
@@ -12,14 +15,22 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract" width="large" onNew="action-contract-record-default" onLoad="action-contract-group-on-load" readonlyIf="statusSelect == 3">
+    <form name="contract-form" title="Contract" width="large"
+          model="com.axelor.apps.contract.db.Contract"
+          onNew="action-contract-record-default"
+          onLoad="action-contract-group-on-load"
+          onSave="action-contract-method-is-valid"
+          readonlyIf="statusSelect == 3">
         <toolbar>
-            <button name="printContractBtn" title="Print" hidden="true" icon="fa-print" onClick="notImplementedYet"/>
+            <button name="printContractBtn" title="Print" hidden="true"
+                    icon="fa-print" onClick="notImplementedYet"/>
         </toolbar>
         <panel>
             <panel colSpan="9">
-                <field name="currentVersion.statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-                <field name="statusSelect" showTitle="false" readonly="true" colSpan="12">
+                <field name="currentVersion.statusSelect" showTitle="false"
+                       readonly="true" colSpan="12" widget="NavSelect"/>
+                <field name="statusSelect" showTitle="false" readonly="true"
+                       colSpan="12">
                     <viewer depends="contractId,versionNumber"><![CDATA[
 			<h3>
             <span x-translate>Contract</span><span ng-show="record.contractId"> - {{ record.contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ record.versionNumber }}</span></span>
@@ -335,6 +346,11 @@
 
     <action-method name="action-contract-method-invoicing">
         <call class="com.axelor.apps.contract.web.ContractController" method="invoicing"/>
+    </action-method>
+
+    <action-method name="action-contract-method-is-valid">
+        <call class="com.axelor.apps.contract.web.ContractController"
+              method="isValid"/>
     </action-method>
 
 </object-views>

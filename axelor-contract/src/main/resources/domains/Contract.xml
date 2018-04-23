@@ -4,7 +4,7 @@
 
 	<module name="contract" package="com.axelor.apps.contract.db" />
 
-	<entity name="Contract">
+	<entity name="Contract" repository="abstract">
 
 		<integer name="targetType" title="Type" selection="contract.target.type.select" default="1" required="true"/>
 		<integer name="periodNumber" title="Number of finished periods" default="0"/>

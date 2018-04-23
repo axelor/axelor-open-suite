@@ -20,9 +20,12 @@ package com.axelor.apps.contract.service;
 import java.time.LocalDate;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Multimap;
 import com.google.inject.persist.Transactional;
 
 public interface ContractService {
@@ -131,4 +134,21 @@ public interface ContractService {
 	Contract createContractFromTemplate(ContractTemplate template) ;
 
 	Contract computeInvoicePeriod(Contract contract);
+
+	/**
+	 * Check if contract is valid, throws exceptions instead.
+	 * @param contract to be check.
+	 * @throws AxelorException if the contract is invalid.
+	 */
+	void isValid(Contract contract) throws AxelorException;
+
+	/**
+	 * Take each consumption line and convert it to contract line
+	 * if a associate consumption contract line is present in contract.
+	 * @param contract contain consumption and contract lines.
+	 * @return Multimap of consumption lines successfully converted to
+	 * contract lines.
+	 */
+	Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines
+			(Contract contract);
 }

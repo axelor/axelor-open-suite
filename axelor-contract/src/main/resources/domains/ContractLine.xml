@@ -36,7 +36,10 @@
 		<boolean name="isInvoiced" title="Is invoiced" />
 
         <many-to-one name="contractVersion" ref="com.axelor.apps.contract.db.ContractVersion"/>
-		
+
+		<finder-method name="findOneBy"
+					   using="contractVersion, product, productName,
+					   isConsumptionLine"/>
 	</entity>
 
 </domain-models>

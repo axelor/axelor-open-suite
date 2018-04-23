@@ -38,7 +38,7 @@ public class ContractLineController {
 			return;
 		}
 
-		contractLine = contractLineService.computeTotal(contractLine, product);
+		contractLine = contractLineService.computeTotal(contractLine);
 		response.setValues(contractLine);
 	}
 }

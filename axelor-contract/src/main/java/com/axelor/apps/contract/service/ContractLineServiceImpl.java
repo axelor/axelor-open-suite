@@ -23,8 +23,8 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     @Inject
     public ContractLineServiceImpl(AppBaseService appBaseService,
-                                   AccountManagementService accountManagementService,
-                                   CurrencyService currencyService) {
+            AccountManagementService accountManagementService,
+            CurrencyService currencyService) {
         this.appBaseService = appBaseService;
         this.accountManagementService = accountManagementService;
         this.currencyService = currencyService;
@@ -67,7 +67,8 @@ public class ContractLineServiceImpl implements ContractLineService {
                 "empty for compute contract line price.");
 
         // TODO: maybe put tax computing in another method
-        contractLine.setFiscalPosition(contract.getPartner().getFiscalPosition());
+        contractLine.setFiscalPosition(
+                contract.getPartner().getFiscalPosition());
 
         TaxLine taxLine = accountManagementService.getTaxLine(
                 appBaseService.getTodayDate(), product, contract.getCompany(),
@@ -91,14 +92,15 @@ public class ContractLineServiceImpl implements ContractLineService {
     }
 
     @Override
-    public ContractLine fillAndCompute(ContractLine contractLine, Contract contract, Product product) throws AxelorException {
+    public ContractLine fillAndCompute(ContractLine contractLine,
+            Contract contract, Product product) throws AxelorException {
         contractLine = fill(contractLine, product);
         contractLine = compute(contractLine, contract, product);
         return contractLine;
     }
 
     @Override
-    public ContractLine computeTotal(ContractLine contractLine, Product product) {
+    public ContractLine computeTotal(ContractLine contractLine) {
         BigDecimal taxRate = BigDecimal.ZERO;
 
         if(contractLine.getTaxLine() != null) {

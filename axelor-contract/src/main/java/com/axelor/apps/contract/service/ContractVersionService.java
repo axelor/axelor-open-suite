@@ -54,7 +54,8 @@ public interface ContractVersionService {
 	 * @param date of activation.
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	void ongoing(ContractVersion version, LocalDate date) throws AxelorException;
+	void ongoing(ContractVersion version, LocalDate date)
+			throws AxelorException;
 
 	/**
 	 * Terminate version at the today date.
@@ -78,4 +79,25 @@ public interface ContractVersionService {
 	 * @return the copy a contract's actual version.
 	 */
 	ContractVersion newDraft(Contract contract);
+
+	default ContractVersion getContractVersion(Contract contract,
+											   LocalDate date) {
+		if (contract.getVersionHistory().isEmpty()) {
+			return contract.getCurrentVersion();
+		}
+		for (ContractVersion version : contract.getVersionHistory()) {
+			if (version.getActivationDate() == null
+					|| version.getEndDate() == null) {
+				continue;
+			}
+			if ((date.isEqual(version.getActivationDate())
+					|| date.isAfter(version.getActivationDate()))
+					&& (version.getEndDate() == null
+                        || (version.getEndDate() != null
+                            && date.isBefore(version.getEndDate())))) {
+				return version;
+			}
+		}
+		return null;
+	}
 }

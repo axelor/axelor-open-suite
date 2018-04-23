@@ -18,12 +18,10 @@
 package com.axelor.apps.contract.service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -39,7 +37,6 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -60,7 +57,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Maps;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
@@ -71,18 +67,22 @@ public class ContractServiceImpl extends ContractRepository
 
 	protected AppBaseService appBaseService;
 	protected ContractVersionService versionService;
+	protected ContractLineService contractLineService;
 	protected DurationService durationService;
+
 	protected ContractLineRepository contractLineRepo;
 	protected ConsumptionLineRepository consumptionLineRepo;
 
 	@Inject
 	public ContractServiceImpl(AppBaseService appBaseService,
             ContractVersionService versionService,
+            ContractLineService contractLineService,
             DurationService durationService,
             ContractLineRepository contractLineRepo,
             ConsumptionLineRepository consumptionLineRepo) {
 	    this.appBaseService = appBaseService;
 		this.versionService = versionService;
+		this.contractLineService = contractLineService;
 		this.durationService = durationService;
 		this.contractLineRepo = contractLineRepo;
 		this.consumptionLineRepo = consumptionLineRepo;
@@ -155,6 +155,34 @@ public class ContractServiceImpl extends ContractRepository
 			}
 		}
 		return contract;
+	}
+
+	@Override
+	public void isValid(Contract contract) throws AxelorException {
+		if (contract.getId() == null) {
+			return;
+		}
+		invoicedConsumptionLinesPresent(contract);
+	}
+
+	protected void invoicedConsumptionLinesPresent(Contract contract)
+			throws AxelorException {
+		Contract origin = find(contract.getId());
+		List<ConsumptionLine> lineInvoiced = origin
+				.getConsumptionLineList()
+				.stream()
+				.filter(ConsumptionLine::getIsInvoiced)
+				.collect(Collectors.toList());
+		for (ConsumptionLine line : contract.getConsumptionLineList()) {
+			if (lineInvoiced.contains(line)) {
+				lineInvoiced.remove(line);
+			}
+		}
+		if (!lineInvoiced.isEmpty()) {
+			throw new AxelorException(IException.FUNCTIONNAL, I18n.get("You " +
+					"cannot remove a consumption line whose has been already " +
+					"invoiced."));
+		}
 	}
 
 	@Override
@@ -290,8 +318,6 @@ public class ContractServiceImpl extends ContractRepository
 		InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
 		invoiceRepository.save(invoice);
 
-		Map<ConsumptionLine, ContractLine> linesFromOlderVersionsMp = computeConsumptionLine(contract);
-
 		List<ContractLine> contractLines = new ArrayList<>();
 		contractLines.addAll(contract
 				.getCurrentVersion()
@@ -314,23 +340,19 @@ public class ContractServiceImpl extends ContractRepository
 			}
 		}
 
-		Multimap<ContractLine, ConsumptionLine> multiMap = HashMultimap.create();
-		for (Entry<ConsumptionLine, ContractLine> entry : linesFromOlderVersionsMp.entrySet()) {
-		  multiMap.put(entry.getValue(), entry.getKey());
+		Multimap<ContractLine, ConsumptionLine> consLines
+				= mergeConsumptionLines(contract);
+		for (Entry<ContractLine, Collection<ConsumptionLine>> entries
+				: consLines.asMap().entrySet()) {
+			ContractLine line = entries.getKey();
+			InvoiceLine invoiceLine = generate(invoice, line);
+			entries.getValue().stream()
+					.peek(cons -> cons.setInvoiceLine(invoiceLine))
+					.forEach(cons -> cons.setIsInvoiced(true));
+			line.setQty(BigDecimal.ZERO);
+			contractLineService.computeTotal(line);
 		}
 
-		for (Entry<ContractLine, Collection<ConsumptionLine>> entry : multiMap.asMap().entrySet()) {
-			ContractLine line = entry.getKey();
-			InvoiceLine invoiceLine = new InvoiceLine();
-
-			generate(invoice, line);
-
-			for (ConsumptionLine consLine : entry.getValue()) {
-				consLine.setInvoiceLine(invoiceLine);
-				consLine.setIsInvoiced(true);
-				consumptionLineRepo.save(consLine);
-			}
-		}
 		if (invoice.getInvoiceLineList() != null && !invoice.getInvoiceLineList().isEmpty()){
 			Beans.get(InvoiceServiceImpl.class).compute(invoice);
 		}
@@ -338,46 +360,35 @@ public class ContractServiceImpl extends ContractRepository
 		return invoiceRepository.save(invoice);
 	}
 
-	@Transactional(rollbackOn = {Exception.class})
-	protected Map<ConsumptionLine, ContractLine> computeConsumptionLine(Contract contract) {
-		Map <ConsumptionLine, ContractLine> linesFromOlderVersionsMp = Maps.newHashMap();
+	@Override
+	public Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines
+			(Contract contract) {
+		Multimap<ContractLine, ConsumptionLine> mergedLines = HashMultimap
+				.create();
 
-		ContractVersion version;
-
-		for (ConsumptionLine consumptionLine : contract.getConsumptionLineList()) {
-
-			if (consumptionLine.getIsInvoiced()) { continue; }
-
-			version = getVersionSpecificVersion( contract, consumptionLine.getConsumptionLineDate() );
-
-			if (version == null) {
-				consumptionLine.setIsError(true);
-			} else {
-				ContractLine linkedContractLine = null;
-				for (ContractLine contractLine : version.getContractLineList()) {
-					if (contractLine.getProduct().equals(consumptionLine.getProduct()) && contractLine.getProductName().equals(consumptionLine.getReference())) {
-						linkedContractLine = contractLine;
-						break;
+		contract.getConsumptionLineList().stream()
+				.filter(c -> !c.getIsInvoiced())
+				.forEach(line -> {
+					ContractVersion version = versionService
+							.getContractVersion(contract,
+									line.getLineDate());
+					if (version == null) {
+						line.setIsError(true);
+					} else {
+						ContractLine matchLine = contractLineRepo.findOneBy(version,
+								line.getProduct(), line.getReference(), true);
+						if (matchLine == null) {
+							line.setIsError(true);
+						} else {
+							matchLine.setQty(matchLine.getQty().add(line.getQty()));
+							contractLineService.computeTotal(matchLine);
+							line.setIsError(false);
+							line.setContractLine(matchLine);
+							mergedLines.put(matchLine, line);
+						}
 					}
-				}
-
-				if (linkedContractLine == null) {
-					consumptionLine.setIsError(true);
-				} else {
-					linkedContractLine.setQty(linkedContractLine.getQty().add(consumptionLine.getQty()));
-					BigDecimal taxRate = BigDecimal.ZERO;
-					if (linkedContractLine.getTaxLine() != null)  {  taxRate = linkedContractLine.getTaxLine().getValue();  }
-					linkedContractLine.setExTaxTotal( linkedContractLine.getQty().multiply(linkedContractLine.getPrice()).setScale(2, RoundingMode.HALF_EVEN) );
-					linkedContractLine.setInTaxTotal( linkedContractLine.getExTaxTotal().add(linkedContractLine.getExTaxTotal().multiply(taxRate) ) );
-					consumptionLine.setContractLine(linkedContractLine);
-					if (isInVersion(linkedContractLine, contract.getCurrentVersion())) {
-						linesFromOlderVersionsMp.put(consumptionLine, linkedContractLine);
-					}
-				}
-			}
-		}
-
-		return linesFromOlderVersionsMp;
+				});
+	    return mergedLines;
 	}
 
 	protected InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
@@ -397,15 +408,20 @@ public class ContractServiceImpl extends ContractRepository
 
 		InvoiceLine invoiceLine = invoiceLineGenerator.creates().get(0);
 
-		FiscalPositionServiceAccountImpl fiscalPositionService = Beans.get(FiscalPositionServiceAccountImpl.class);
+		FiscalPositionServiceAccountImpl fiscalPositionService
+				= Beans.get(FiscalPositionServiceAccountImpl.class);
 		FiscalPosition fiscalPosition = line.getFiscalPosition();
 		Account currentAccount = invoiceLine.getAccount();
-		Account replacedAccount = fiscalPositionService.getAccount(fiscalPosition, currentAccount);
+		Account replacedAccount = fiscalPositionService
+				.getAccount(fiscalPosition, currentAccount);
 
-		boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
+		boolean isPurchase = Beans.get(InvoiceLineService.class)
+				.isPurchase(invoice);
 
 		TaxLine taxLine = Beans.get(AccountManagementService.class)
-				.getTaxLine(appBaseService.getTodayDate(), invoiceLine.getProduct(), invoice.getCompany(), fiscalPosition, isPurchase);
+				.getTaxLine(appBaseService.getTodayDate(),
+						invoiceLine.getProduct(), invoice.getCompany(),
+						fiscalPosition, isPurchase);
 
 		invoiceLine.setTaxLine(taxLine);
 		invoiceLine.setAccount(replacedAccount);
@@ -519,22 +535,7 @@ public class ContractServiceImpl extends ContractRepository
 		
 		return save(contract);
 	}
-	
-	
-	public ContractVersion getVersionSpecificVersion(Contract contract, LocalDate date){
-		for (ContractVersion version : contract.getVersionHistory()) {
-			if (version.getActivationDate() == null
-					|| version.getEndDate() == null) {
-				continue;
-			}
-			if (date.isAfter(version.getActivationDate())
-					&& date.isBefore(version.getEndDate())) {
-				return version;
-			}
-		}
-		return contract.getCurrentVersion();
-	}
-	
+
 	public boolean isInVersion(ContractLine contractLine, ContractVersion version){
 		
 		for (ContractLine line : version.getContractLineList()) {

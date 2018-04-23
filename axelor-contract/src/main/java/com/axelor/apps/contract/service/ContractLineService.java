@@ -44,8 +44,7 @@ public interface ContractLineService {
     /**
      * Compute ex and in tax total for ContractLine.
      * @param contractLine to compute ex/in tax total.
-     * @param product to get information about computing.
      * @return ContractLine with ex/in tax total computed.
      */
-    ContractLine computeTotal(ContractLine contractLine, Product product);
+    ContractLine computeTotal(ContractLine contractLine);
 }

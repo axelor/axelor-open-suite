@@ -17,24 +17,24 @@
  */
 package com.axelor.apps.contract.db.repo;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.contract.db.Contract;
-import com.axelor.db.JpaRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
-import javax.persistence.PersistenceException;
-
-public class ContractManagementRepository extends ContractRepository {
+public class ContractRepository extends AbstractContractRepository {
 
 	@Override
 	public Contract save(Contract contract) {
 		try {
 			if (contract.getContractId() == null) {
-				contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetType()));
+				contract.setContractId(computeSeq(contract.getCompany(),
+						contract.getTargetType()));
 			}
 			return super.save(contract);
 		} catch (Exception e) {
@@ -44,9 +44,13 @@ public class ContractManagementRepository extends ContractRepository {
 
 	public String computeSeq(Company company, int type) {
 		try {
-			String seq = Beans.get(SequenceService.class).getSequenceNumber(type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE, company);
+			String seq = Beans.get(SequenceService.class)
+					.getSequenceNumber(type == 1 ? CUSTOMER_CONTRACT_SEQUENCE
+							: SUPPLIER_CONTRACT_SEQUENCE, company);
 			if (seq == null) {
-				throw new AxelorException(String.format(I18n.get("The company %s doesn't have any configured sequence for contracts"), company.getName()),
+				throw new AxelorException(String.format(I18n.get("The company" +
+						"%s doesn't have any configured sequence for" +
+						"contracts"), company.getName()),
 						IException.CONFIGURATION_ERROR);
 			}
 			return seq;

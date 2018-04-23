@@ -34,6 +34,7 @@ import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.db.JPA;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -186,5 +187,15 @@ public class ContractController {
 
 	private LocalDate getTodayDate() {
 		return Beans.get(AppBaseService.class).getTodayDate();
+	}
+
+	public void isValid(ActionRequest request, ActionResponse response) {
+		Contract contract = request.getContext().asType(Contract.class);
+
+		try {
+			Beans.get(ContractService.class).isValid(contract);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+		}
 	}
 }
