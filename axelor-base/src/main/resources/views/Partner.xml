@@ -627,7 +627,7 @@
 		<action name="action-partner-account-attrs-hide-supplier-account"/>
 		<action name="action-partner-account-attrs-hide-customer-account"/>
 		<action name="action-partner-account-attrs-hide-employee-account"/>
-		<action name="action-partner-record-set-balance"/>
+		<action name="action-partner-record-set-balance" if="__config__.app.isApp('account')"/>
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
