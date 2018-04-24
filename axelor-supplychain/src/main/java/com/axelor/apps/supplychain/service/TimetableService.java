@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -155,4 +156,17 @@ public class TimetableService {
 		}
 		return null;
 	}
+
+  public void computeProductInformation(Timetable timetable) throws AxelorException {
+    Product product = timetable.getProduct();
+
+    String productName = product.getName();
+
+    Unit unit = product.getSalesUnit();
+    if(unit == null)
+      unit = product.getUnit();
+
+    timetable.setProductName(productName);
+    timetable.setUnit(unit);
+  }
 }
