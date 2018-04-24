@@ -49,6 +49,9 @@ public class ProductBaseRepository extends ProductRepository{
 
     protected static final String FULL_NAME_FORMAT = "[%s] %s";
 
+    @Inject
+    protected BarcodeGeneratorService barcodeGeneratorService;
+    
 	@Override
 	public Product save(Product product){
         product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
@@ -62,10 +65,17 @@ public class ProductBaseRepository extends ProductRepository{
         }
 
 		product = super.save(product);
-		if(product.getBarCode() == null && product.getSerialNumber()!=null  &&  appBaseService.getAppBase().getActivateBarCodeGeneration() && product.getBarcodeTypeConfig()!=null) {
+		if(product.getBarCode() == null &&  appBaseService.getAppBase().getActivateBarCodeGeneration()) {
 			try {
 				boolean addPadding=false;
-				InputStream inStream = BarcodeGeneratorService.createBarCode(product.getSerialNumber(), product.getBarcodeTypeConfig(), addPadding);
+				InputStream inStream;
+				if (!appBaseService.getAppBase().getEditProductBarcodeType()) {
+					inStream = barcodeGeneratorService.createBarCode(product.getSerialNumber(),
+							appBaseService.getAppBase().getBarcodeTypeConfig(), addPadding);
+				} else {
+					inStream = barcodeGeneratorService.createBarCode(product.getSerialNumber(),
+							product.getBarcodeTypeConfig(), addPadding);
+				}
 				if (inStream != null) {
 			    	MetaFile barcodeFile =  metaFiles.upload(inStream, String.format("ProductBarCode%d.png", product.getId()));
 					product.setBarCode(barcodeFile);
