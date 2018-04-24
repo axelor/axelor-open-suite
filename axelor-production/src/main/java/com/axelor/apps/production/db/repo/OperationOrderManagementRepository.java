@@ -22,8 +22,6 @@ import java.io.InputStream;
 
 import javax.validation.ValidationException;
 
-import com.axelor.apps.base.db.AppProduction;
-import com.axelor.apps.base.db.repo.AppProductionRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -39,7 +37,7 @@ public class OperationOrderManagementRepository extends OperationOrderRepository
 	private MetaFiles metaFiles;
 	
 	@Inject
-	private AppProductionRepository appProductionRepo;
+	protected BarcodeGeneratorService barcodeGeneratorService;
 	
 	@Inject
 	protected AppProductionService appProductionService;
@@ -47,13 +45,13 @@ public class OperationOrderManagementRepository extends OperationOrderRepository
 	@Override
 	public OperationOrder save(OperationOrder entity){
 		
-		if(entity.getBarCode() == null && appProductionService.getAppProduction().getBarcodeTypeConfig() != null) {
+		if(entity.getBarCode() == null) {
 			entity = super.save(entity);
 			try {
-				AppProduction appProduction = appProductionRepo.all().fetchOne();
 				String stringId=entity.getId().toString();
 				boolean addPadding=true;
-				InputStream inStream = BarcodeGeneratorService.createBarCode(stringId, appProduction.getBarcodeTypeConfig(), addPadding);
+				InputStream inStream = barcodeGeneratorService.createBarCode(stringId,
+						appProductionService.getAppProduction().getBarcodeTypeConfig(), addPadding);
 				if (inStream != null) {
 			    	MetaFile barcodeFile =  metaFiles.upload(inStream, String.format("OppOrderBarcode%d.png", entity.getId()));
 			    	entity.setBarCode(barcodeFile);

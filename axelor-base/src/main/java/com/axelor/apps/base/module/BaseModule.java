@@ -53,6 +53,8 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.BankService;
 import com.axelor.apps.base.service.BankServiceImpl;
+import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DurationService;
@@ -134,6 +136,7 @@ public class BaseModule extends AxelorModule {
         bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
         bind(ICalendarEventRepository.class).to(ICalendarEventManagementRepository.class);
         bind(ProductMultipleQtyService.class).to(ProductMultipleQtyServiceImpl.class);
+        bind(BarcodeGeneratorService.class).to(BarcodeGeneratorServiceImpl.class);
         PartnerAddressRepository.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
     }
 }

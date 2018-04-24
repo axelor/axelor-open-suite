@@ -242,6 +242,9 @@ public interface IExceptionMessage {
 	static final public String BARCODE_GENERATOR_4 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Alphabets must be in uppercase only" /*)*/;
 	static final public String BARCODE_GENERATOR_5 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Its length limit must be greater than %d and less than %d" /*)*/;
 	static final public String BARCODE_GENERATOR_6 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.It must be alphanumeric" /*)*/;
+	static final public String BARCODE_GENERATOR_7 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Its Length must be %d" /*)*/;
+	static final public String BARCODE_GENERATOR_8 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets" /*)*/;
+	static final public String BARCODE_GENERATOR_9 =  /*$$(*/ "Barcode format not supported" /*)*/;
 
     public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
     public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/ "Google Maps API key is missing in configuration." /*)*/;;
