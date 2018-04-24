@@ -16,9 +16,10 @@
         	<field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 			<field name="isFree" colSpan="3"/>
-	        <field name="typeSelect"/>
-	        <field name="paymentTime" colSpan="3"/>
-	        <field name="daySelect" colSpan="3" showIf="typeSelect == 4"/>
+	        <field name="typeSelect" colSpan="6"/>
+	        <field name="paymentTime" colSpan="6"/>	        
+	        <field name="periodTypeSelect" colSpan="6"></field>
+	        <field name="daySelect" colSpan="6" showIf="typeSelect == 4"/>
         </panel>
     </form>
     

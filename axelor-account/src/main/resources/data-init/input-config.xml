@@ -57,8 +57,7 @@
 	
 <!-- 	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" /> -->
 	
-    <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" />
-	
+    <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" call="com.axelor.csv.script.ImportAccountChart:importAccountChart" />
 	   
 <!--     <input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
 <!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->

@@ -1,6 +1,9 @@
 # Changelog
 
-## [Unreleased 5.0.0-rc2]
+## [Unreleased 5.1]
+## Features
+
+## Improvements
 
 ## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
@@ -8,6 +11,10 @@
 
 ## Bug Fixes
 
+
+## [Unreleased 5.0.0-rc2]
+
+## Bug Fixes
 
 
 ## [5.0.0-rc1] - 2018-04-16
@@ -415,6 +422,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[Unreleased 5.1]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
 [Unreleased 5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...dev
 [5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
 [Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
