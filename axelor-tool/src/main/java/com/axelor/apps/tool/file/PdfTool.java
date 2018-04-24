@@ -31,7 +31,9 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.meta.MetaFiles;
+import com.google.common.base.Preconditions;
 
 public final class PdfTool {
 
@@ -90,15 +92,16 @@ public final class PdfTool {
 
     /**
      * Allows to get a PDF with multiple copies.
-     * @param file  the PDF to copy
-     * @param copyNumber  the number of copies
-     * @return a new file with the number of asked copies else.
-     * @throws IOException
+     *
+     * @param file       the PDF to copy
+     * @param copyNumber the number of copies
+     * @return a new file with the number of asked copies.
+     * @throws IllegalArgumentException if copy number is inferior or equal to 0.
+     * @throws IOException              if mergePdf fails to write the new file.
      */
     public static File printCopiesToFile(File file, int copyNumber) throws IOException {
-        if (copyNumber < 1){
-            copyNumber = 1;
-        }
+        Preconditions.checkArgument(copyNumber > 0,
+                IExceptionMessage.BAD_COPY_NUMBER_ARGUMENT);
         List<File> invoicePrintingToMerge =
                 Collections.nCopies(copyNumber, file);
         return mergePdf(invoicePrintingToMerge);
