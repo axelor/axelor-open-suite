@@ -133,7 +133,7 @@ public interface ContractService {
 	@Transactional
 	Contract createContractFromTemplate(ContractTemplate template) ;
 
-	Contract computeInvoicePeriod(Contract contract);
+	Contract computeInvoiceDates(Contract contract);
 
 	/**
 	 * Check if contract is valid, throws exceptions instead.

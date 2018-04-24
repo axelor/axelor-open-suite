@@ -18,12 +18,16 @@
 package com.axelor.apps.contract.service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FiscalPosition;
@@ -124,34 +128,52 @@ public class ContractServiceImpl extends ContractRepository
 		versionService.ongoing(currentVersion, date);
 
 		contract.setVersionNumber(contract.getVersionNumber() + 1);
-
-		if (contract.getCurrentVersion().getAutomaticInvoicing()
-				&& contract.getCurrentVersion().getInvoicingMoment() == 2 ) {
-			contract.setInvoicingDate(appBaseService.getTodayDate());
-			invoice = invoicingContract(contract);
-		}
-
-		computeInvoicePeriod(contract);
-
-		return invoice;
-	}
-
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Contract computeInvoicePeriod(Contract contract) {
-		ContractVersion version = contract.getCurrentVersion();
-
-		if (contract.getIsInvoicingManagement()
-				&& version.getIsPeriodicInvoicing()) {
-			contract.setInvoicePeriodStartDate(version.getActivationDate());
+		if (currentVersion.getIsPeriodicInvoicing()) {
+			contract.setInvoicePeriodStartDate(currentVersion.getActivationDate());
 			if (contract.getVersionNumber() == 0) {
 				contract.setInvoicePeriodEndDate(
 						contract.getFirstPeriodEndDate());
 			} else {
 				contract.setInvoicePeriodEndDate(
 						durationService.computeDuration(
-								version.getInvoicingFrequency(),
-								version.getActivationDate()));
+								currentVersion.getInvoicingFrequency(),
+								currentVersion.getActivationDate()));
+			}
+		}
+		if (contract.getCurrentVersion().getAutomaticInvoicing()) {
+			invoice = invoicingContract(contract);
+		}
+
+		return invoice;
+	}
+
+	@Override
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Contract computeInvoiceDates(Contract contract) {
+		ContractVersion version = contract.getCurrentVersion();
+		if (version.getIsPeriodicInvoicing()) {
+			contract.setInvoicePeriodStartDate(contract
+					.getInvoicePeriodEndDate().plusDays(1));
+			contract.setInvoicePeriodEndDate(
+					durationService.computeDuration(
+							version.getInvoicingFrequency(),
+							contract.getInvoicePeriodStartDate())
+                    .minusDays(1));
+		}
+
+		if (version.getAutomaticInvoicing()) {
+			switch (version.getInvoicingMoment()) {
+				case 1:
+					contract.setInvoicingDate(
+							contract.getInvoicePeriodEndDate());
+					break;
+				case 2:
+					contract.setInvoicingDate(
+							contract.getInvoicePeriodStartDate());
+					break;
+				default:
+					contract.setInvoicingDate(
+							appBaseService.getTodayDate());
 			}
 		}
 		return contract;
@@ -162,10 +184,11 @@ public class ContractServiceImpl extends ContractRepository
 		if (contract.getId() == null) {
 			return;
 		}
-		invoicedConsumptionLinesPresent(contract);
+		checkInvoicedConsumptionLines(contract);
+		checkInvoicedAdditionalContractLine(contract);
 	}
 
-	protected void invoicedConsumptionLinesPresent(Contract contract)
+	protected void checkInvoicedConsumptionLines(Contract contract)
 			throws AxelorException {
 		Contract origin = find(contract.getId());
 		List<ConsumptionLine> lineInvoiced = origin
@@ -182,6 +205,27 @@ public class ContractServiceImpl extends ContractRepository
 			throw new AxelorException(IException.FUNCTIONNAL, I18n.get("You " +
 					"cannot remove a consumption line whose has been already " +
 					"invoiced."));
+		}
+	}
+
+	protected void checkInvoicedAdditionalContractLine(Contract contract)
+			throws AxelorException {
+		Contract origin = find(contract.getId());
+		List<ContractLine> lineInvoiced = origin
+				.getAdditionalBenefitContractLineList()
+				.stream()
+				.filter(ContractLine::getIsInvoiced)
+				.collect(Collectors.toList());
+		for (ContractLine line
+				: contract.getAdditionalBenefitContractLineList()) {
+			if (lineInvoiced.contains(line)) {
+				lineInvoiced.remove(line);
+			}
+		}
+		if (!lineInvoiced.isEmpty()) {
+			throw new AxelorException(IException.FUNCTIONNAL, I18n.get("You " +
+					"cannot remove a additional line whose has been already" +
+					" invoiced."));
 		}
 	}
 
@@ -353,9 +397,12 @@ public class ContractServiceImpl extends ContractRepository
 			contractLineService.computeTotal(line);
 		}
 
-		if (invoice.getInvoiceLineList() != null && !invoice.getInvoiceLineList().isEmpty()){
+		if (invoice.getInvoiceLineList() != null
+				&& !invoice.getInvoiceLineList().isEmpty()){
 			Beans.get(InvoiceServiceImpl.class).compute(invoice);
 		}
+
+		computeInvoiceDates(contract);
 
 		return invoiceRepository.save(invoice);
 	}
@@ -366,36 +413,53 @@ public class ContractServiceImpl extends ContractRepository
 		Multimap<ContractLine, ConsumptionLine> mergedLines = HashMultimap
 				.create();
 
-		contract.getConsumptionLineList().stream()
-				.filter(c -> !c.getIsInvoiced())
-				.forEach(line -> {
-					ContractVersion version = versionService
-							.getContractVersion(contract,
-									line.getLineDate());
-					if (version == null) {
-						line.setIsError(true);
-					} else {
-						ContractLine matchLine = contractLineRepo.findOneBy(version,
-								line.getProduct(), line.getReference(), true);
-						if (matchLine == null) {
-							line.setIsError(true);
-						} else {
-							matchLine.setQty(matchLine.getQty().add(line.getQty()));
-							contractLineService.computeTotal(matchLine);
-							line.setIsError(false);
-							line.setContractLine(matchLine);
-							mergedLines.put(matchLine, line);
-						}
-					}
-				});
-	    return mergedLines;
+		Stream<ConsumptionLine> lineStream = contract.getConsumptionLineList()
+				.stream()
+				.filter(c -> !c.getIsInvoiced());
+
+		if (contract.getCurrentVersion().getIsConsumptionBeforeEndDate()) {
+			lineStream = lineStream.filter(line -> line.getLineDate().isBefore(
+					contract.getInvoicePeriodEndDate()));
+		}
+
+		lineStream.forEach(line -> {
+
+			ContractVersion version = contract.getCurrentVersion();
+			/*
+			if (version.getIsProratedInvoice()
+					&& version.getIsVersionProratedInvoice()) {
+				version = versionService
+						.getContractVersion(contract,
+								line.getLineDate());
+			}*/
+
+			if (version == null) {
+				line.setIsError(true);
+			} else {
+				ContractLine matchLine = contractLineRepo.findOneBy(version,
+						line.getProduct(), line.getReference(), true);
+				if (matchLine == null) {
+					line.setIsError(true);
+				} else {
+					matchLine.setQty(matchLine.getQty().add(line.getQty()));
+					contractLineService.computeTotal(matchLine);
+					line.setIsError(false);
+					line.setContractLine(matchLine);
+					mergedLines.put(matchLine, line);
+				}
+			}
+		});
+		return mergedLines;
 	}
 
 	protected InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, line.getProduct(), line.getProductName(),
-				line.getPrice(), null, line.getDescription(), line.getQty(), line.getUnit(),
-				line.getTaxLine(), InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO,
-				PriceListLineRepository.AMOUNT_TYPE_NONE, line.getExTaxTotal(), line.getInTaxTotal(), false) {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(
+				invoice, line.getProduct(), line.getProductName(),
+				line.getPrice(), null, line.getDescription(),
+				line.getQty(), line.getUnit(), line.getTaxLine(),
+				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO,
+				PriceListLineRepository.AMOUNT_TYPE_NONE, line.getExTaxTotal(),
+				line.getInTaxTotal(), false) {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				InvoiceLine invoiceLine = this.createInvoiceLine();

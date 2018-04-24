@@ -87,6 +87,7 @@ public class ContractController {
 		try  {
 			Invoice invoice = Beans.get(ContractService.class)
 					.invoicingContract(contract);
+			response.setReload(true);
 			response.setView ( ActionView.define( I18n.get("Invoice") )
 					.model(Invoice.class.getName())
 					.add("form", "invoice-form")
