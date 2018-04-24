@@ -353,6 +353,7 @@
 
 	           		 	<dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
 	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
+                      <dd ng-if="record.statusSelect == 3" class="hilite-info-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
 	           		</dl> 
            	      </span>]]>
 				</viewer>
