@@ -9,6 +9,7 @@
 - All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
+- Improve multiple invoices printing.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
