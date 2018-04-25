@@ -7,6 +7,7 @@
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
 - When we generate a message (using a template or not) from the wizrad, open the form view in edit mode directly and close automatically the wizard.
 - All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
+- Barcode generator code formatting.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
