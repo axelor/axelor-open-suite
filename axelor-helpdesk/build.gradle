@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Helpdesk"
 	description "Axelor Helpdesk Module"
-
-	removable true
 }
 
 dependencies {

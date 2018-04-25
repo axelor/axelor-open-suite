@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
@@ -51,6 +52,9 @@ public class ConvertLeadWizardService {
 	@Inject
 	private CountryRepository countryRepo;
 
+	@Inject
+	private AppBaseService appBaseService;
+
 	/**
 	 * Create a partner from a lead
 	 * @param lead
@@ -66,7 +70,9 @@ public class ConvertLeadWizardService {
 
 		this.setEmailAddress(partner);
 
-		partner.setPartnerSeq(leadService.getSequence());
+		if (appBaseService.getAppBase().getGeneratePartnerSequence()) {
+	        partner.setPartnerSeq(leadService.getSequence());
+		}
 
 		partnerService.setPartnerFullName(partner);
 

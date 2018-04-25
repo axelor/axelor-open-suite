@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Supplier Management"
 	description "Axelor Supplier Management Module"
-
-	removable true
 }
 
 dependencies {

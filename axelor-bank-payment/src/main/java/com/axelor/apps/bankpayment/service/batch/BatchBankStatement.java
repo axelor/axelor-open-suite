@@ -112,7 +112,7 @@ public class BatchBankStatement extends AbstractBatch {
         sb.append(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_REPORT));
         sb.append(" ");
         sb.append(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR, batch.getDone()),
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL, batch.getDone()),
                 batch.getDone()));
         sb.append(" ");
         sb.append(String

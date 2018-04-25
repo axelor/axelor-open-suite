@@ -42,6 +42,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -85,7 +86,7 @@ public class OperationOrderWorkflowService {
 		operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
 
 		operationOrder.setPlannedDuration(
-				this.getDuration(
+				DurationTool.getSecondsDuration(
 						Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
 				));
 
@@ -115,7 +116,7 @@ public class OperationOrderWorkflowService {
 		operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
 
 		operationOrder.setPlannedDuration(
-				this.getDuration(
+				DurationTool.getSecondsDuration(
 						Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
 				));
 
@@ -303,7 +304,7 @@ public class OperationOrderWorkflowService {
 		duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
 
 		if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
-			long durationLong = getDuration(computeRealDuration(operationOrder));
+			long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
 			operationOrder.setRealDuration(durationLong);
 			Machine machine = operationOrder.getWorkCenter().getMachine();
 			if (machine != null) {
@@ -376,24 +377,17 @@ public class OperationOrderWorkflowService {
 		Long duration;
 
 		if(operationOrder.getPlannedStartDateT() != null && operationOrder.getPlannedEndDateT() != null) {
-			duration = this.getDuration(
+			duration = DurationTool.getSecondsDuration(
 					Duration.between(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
 			);
 			operationOrder.setPlannedDuration(duration);
 		}
 
-		duration = getDuration(computeRealDuration(operationOrder));
+		duration = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
 		operationOrder.setRealDuration(duration);
 
 		return operationOrder;
 	}
-
-	public long getDuration(Duration duration)  {
-
-		return duration.getSeconds();
-
-	}
-
 
 	public LocalDateTime computePlannedEndDateT(OperationOrder operationOrder)  {
 

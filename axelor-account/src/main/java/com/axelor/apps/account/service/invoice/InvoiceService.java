@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -71,9 +74,7 @@ public interface InvoiceService {
 	 * 
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice compute(final Invoice invoice) throws AxelorException;
-	
+    public Invoice compute(final Invoice invoice) throws AxelorException;	
 	
 	/**
 	 * Validate an invoice.
@@ -82,11 +83,7 @@ public interface InvoiceService {
 	 * @param compute
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice, boolean compute) throws AxelorException;
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice) throws AxelorException;
+    public void validate(Invoice invoice) throws AxelorException;
 
 	/**
 	 * Ventilation comptable d'une facture.
@@ -97,10 +94,17 @@ public interface InvoiceService {
 	 * 
 	 * @throws AxelorException
 	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void ventilate( Invoice invoice ) throws AxelorException;
+    public void ventilate(Invoice invoice) throws AxelorException;
 
-	/**
+    /**
+     * Validate and ventilate an invoice.
+     * 
+     * @param invoice
+     * @throws AxelorException
+     */
+    void validateAndVentilate(Invoice invoice) throws AxelorException;
+
+    /**
 	 * Annuler une facture.
 	 * (Transaction)
 	 * 
@@ -244,5 +248,29 @@ public interface InvoiceService {
 	 *        OR {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_PURCHASE}
 	 */
 	int getPurchaseTypeOrSaleType(Invoice invoice);
+
+    /**
+     * Mass validate the given collection of invoice IDs.
+     * 
+     * @param invoiceIds
+     * @return pair of done/anomaly counts
+     */
+    Pair<Integer, Integer> massValidate(Collection<? extends Number> invoiceIds);
+
+    /**
+     * Mass validate and ventilate the given collection of invoice IDs.
+     * 
+     * @param invoiceIds
+     * @return pair of done/anomaly counts
+     */
+    Pair<Integer, Integer> massValidateAndVentilate(Collection<? extends Number> invoiceIds);
+
+    /**
+     * Mass ventilate the given collection of invoice IDs.
+     * 
+     * @param invoiceIds
+     * @return pair of done/anomaly counts
+     */
+    Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
 
 }
