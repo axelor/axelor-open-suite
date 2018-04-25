@@ -7,7 +7,7 @@
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
 
 ## Bug Fixes
-
+- invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
 
 
 ## [5.0.0-rc1] - 2018-04-16
