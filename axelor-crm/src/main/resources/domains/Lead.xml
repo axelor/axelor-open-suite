@@ -75,7 +75,6 @@
 	    <![CDATA[
 	    String companyName =  enterpriseName;
 	    if(companyName != null && fullName != null) companyName = companyName + ", " + fullName;
-	    else if(fullName != null) companyName = fullName;
 	    return companyName;
 	    ]]>
     </string>
