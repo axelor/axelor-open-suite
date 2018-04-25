@@ -5,10 +5,15 @@
 ## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
+- When we generate a message (using a template or not) from the wizrad, open the form view in edit mode directly and close automatically the wizard.
+- All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
 - Barcode generator code formatting.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
+- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
+- Compute the duration according to the start date and time and end date and time for ticket.
+- Fix same image when duplicating products.
 
 
 ## [5.0.0-rc1] - 2018-04-16
