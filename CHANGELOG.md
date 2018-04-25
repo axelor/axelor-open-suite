@@ -4,15 +4,18 @@
 ## Features
 
 ## Improvements
+
+## Bug Fixes
+
+
+## [Unreleased 5.0.0-rc2]
+
+## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
-
-## [Unreleased 5.0.0-rc2]
-
-## Bug Fixes
 
 
 ## [5.0.0-rc1] - 2018-04-16
