@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Preconditions;
 
@@ -101,7 +102,7 @@ public final class PdfTool {
      */
     public static File printCopiesToFile(File file, int copyNumber) throws IOException {
         Preconditions.checkArgument(copyNumber > 0,
-                IExceptionMessage.BAD_COPY_NUMBER_ARGUMENT);
+                I18n.get(IExceptionMessage.BAD_COPY_NUMBER_ARGUMENT));
         List<File> invoicePrintingToMerge =
                 Collections.nCopies(copyNumber, file);
         return mergePdf(invoicePrintingToMerge);

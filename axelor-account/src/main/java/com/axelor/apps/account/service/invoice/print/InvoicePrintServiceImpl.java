@@ -130,8 +130,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
 
         return reportSetting.addParam("InvoiceId", invoice.getId())
-                .addParam("Locale", locale)
-                .addParam("InvoicesCopy", invoice.getInvoicesCopySelect());
+                .addParam("Locale", locale);
     }
 
     /**
