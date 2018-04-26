@@ -607,12 +607,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			AdvancedExportLine advancedExportLine = advancedExportLineRepo.find(Long.parseLong(fieldLine.get("id").toString()));
 			
 			MetaTranslation metaTranslation = metaTranslationRepo.all().filter("self.key = ?1 and self.language = ?2",advancedExportLine.getTitle(), language).fetchOne();
-			if (metaTranslation != null) {
-				if (!metaTranslation.getMessage().equals("")) {
-					headerCell = new PdfPCell(new Phrase(metaTranslation.getMessage(), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
-				} else {
-					headerCell = new PdfPCell(new Phrase(advancedExportLine.getTitle(), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
-				}
+			if (metaTranslation != null && !metaTranslation.getMessage().equals("")) {
+			    headerCell = new PdfPCell(new Phrase(metaTranslation.getMessage(), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
 			} else {
 				headerCell = new PdfPCell(new Phrase(advancedExportLine.getTitle(), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
 			}
@@ -636,7 +632,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			Arrays.sort(allColIndices);
 			
 			for(Integer colIndex: allColIndices) {
-				String colName = "Col_" + String.valueOf(colIndex);
+				String colName = "Col_" + colIndex;
 				Object value = field.get(colName);
 				if (value == null) {
 					cell = new PdfPCell(new Phrase(null, font));
@@ -690,12 +686,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			Cell headerCell = headerRow.createCell(colHeaderNum++);
 			
 			MetaTranslation metaTranslation = metaTranslationRepo.all().filter("self.key = ?1 and self.language = ?2",advancedExportLine.getTitle(), language).fetchOne();
-			if (metaTranslation != null) {
-				if (!metaTranslation.getMessage().equals("")) {
-					headerCell.setCellValue(metaTranslation.getMessage());
-				} else {
-					headerCell.setCellValue(advancedExportLine.getTitle());
-				}
+			if (metaTranslation != null && !metaTranslation.getMessage().equals("")) {
+			    headerCell.setCellValue(metaTranslation.getMessage());
 			} else {
 				headerCell.setCellValue(advancedExportLine.getTitle());
 			}
@@ -715,7 +707,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			int colNum = 0;
 
 			for (Integer colIndex : allColIndices) {
-				String colName = "Col_" + String.valueOf(colIndex);
+				String colName = "Col_" + colIndex;
 				Object value = field.get(colName);
 				Cell cell = row.createCell(colNum++);
 				if (value == null)
@@ -755,41 +747,50 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			List<Map<String, Object>> advancedExportLines) throws IOException {
 		
 		File csvFile = File.createTempFile("Export", ".csv");
-		CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile, true), ';');
-		String[] totalCols = new String[advancedExportLines.size()];
-		int i = 0;
-		
-		for (Map<String, Object> fieldLine : advancedExportLines) {
-			AdvancedExportLine advancedExportLine = advancedExportLineRepo.find(Long.parseLong(fieldLine.get("id").toString()));
-			totalCols[i++] = advancedExportLine.getTargetField();
-		}
-		csvWriter.writeNext(totalCols);
-		
-		i = 0;
-		for (Map<String, Object> field : allFieldDataList) {
-			String[] allCols = field.keySet().toArray(new String[field.size()]);
-			Integer[] allColIndices = new Integer[allCols.length];
-			
-			for (int j = 0; j < allCols.length; j++) {
-				String col = allCols[j];
-				allColIndices[j] = Integer.parseInt(col.replace("Col_", ""));
-			}
-			Arrays.sort(allColIndices);
-			
-			for(Integer colIndex: allColIndices) {
-				String colName = "Col_" + String.valueOf(colIndex);
-				Object value = field.get(colName);
-				if (value == null || value == "") {
-					totalCols[i++] = null;
-				} else {
-					totalCols[i++] = value.toString();
-				}
-			}
-			csvWriter.writeNext(totalCols);
-			i = 0;
-		}
-		csvWriter.close();
-		
+        try (CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile, true), ';')) {
+            String[] totalCols = new String[advancedExportLines.size()];
+            int i = 0;
+
+            for (Map<String, Object> fieldLine : advancedExportLines) {
+                AdvancedExportLine advancedExportLine = advancedExportLineRepo
+                        .find(Long.parseLong(fieldLine.get("id").toString()));
+
+                String cellValue = "";
+                MetaTranslation metaTranslation = metaTranslationRepo.all().filter("self.key = ?1 and self.language = ?2",advancedExportLine.getTitle(), language).fetchOne();
+                if (metaTranslation != null && !metaTranslation.getMessage().equals("")) {
+                        cellValue = metaTranslation.getMessage();
+                } else {
+                    cellValue = advancedExportLine.getTitle();
+                }
+                totalCols[i++] = cellValue;
+            }
+            csvWriter.writeNext(totalCols);
+
+            i = 0;
+            for (Map<String, Object> field : allFieldDataList) {
+                String[] allCols = field.keySet().toArray(new String[field.size()]);
+                Integer[] allColIndices = new Integer[allCols.length];
+
+                for (int j = 0; j < allCols.length; j++) {
+                    String col = allCols[j];
+                    allColIndices[j] = Integer.parseInt(col.replace("Col_", ""));
+                }
+                Arrays.sort(allColIndices);
+
+                for (Integer colIndex : allColIndices) {
+                    String colName = "Col_" + colIndex;
+                    Object value = field.get(colName);
+                    if (value == null || value == "") {
+                        totalCols[i++] = null;
+                    } else {
+                        totalCols[i++] = value.toString();
+                    }
+                }
+                csvWriter.writeNext(totalCols);
+                i = 0;
+            }
+        }
+
 		return exportCSVFile(exportFile, metaModel, csvFile);
 	}
 	
