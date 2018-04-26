@@ -1,8 +1,3 @@
 "importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
 1;"partner";"Numéro identifiant tiers";4;13;"T";;1;0
-107;"debitReject";"Rejet des prélèvements";1;6;"PRLREJ%YY";;1;1
-108;"doubtfulCustomer";"Passage en créance douteuse";1;6;"CREDOU%YY";;1;1
 206;"product";"Produit";1;12;"PR";;1;0
-207;"expense";"N° de note de frais";1;8;"NF%YY%FM";;1;1
-169;"subrogationRelease";"Quittance subrogative";1;4;"QS%YY%FM";;1;1
-170;"depositSlip";"Bordereau de remise";1;4;"BR%YY%FM";;1;1

@@ -32,8 +32,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
@@ -139,7 +139,7 @@ public class AccountClearanceService{
 
 		accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
 		accountClearance.setDateTime(appBaseService.getTodayDateTime());
-		accountClearance.setName(sequenceService.getSequenceNumber(IAdministration.ACCOUNT_CLEARANCE, company));
+		accountClearance.setName(sequenceService.getSequenceNumber(SequenceRepository.ACCOUNT_CLEARANCE, company));
 		accountClearanceRepo.save(accountClearance);
 	}
 
@@ -217,7 +217,7 @@ public class AccountClearanceService{
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
-		if(!sequenceService.hasSequence(IAdministration.ACCOUNT_CLEARANCE, company)) {
+		if(!sequenceService.hasSequence(SequenceRepository.ACCOUNT_CLEARANCE, company)) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 

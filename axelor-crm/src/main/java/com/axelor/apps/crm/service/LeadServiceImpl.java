@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.Map;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
@@ -131,7 +131,7 @@ public class LeadServiceImpl implements LeadService {
 	 */
 	public String getSequence() throws AxelorException {
 
-		String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
+		String seq = sequenceService.getSequenceNumber(SequenceRepository.PARTNER);
 		if (seq == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
 		}

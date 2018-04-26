@@ -27,7 +27,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
@@ -226,21 +226,21 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 		int accountingReportTypeSelect = accountingReport.getTypeSelect();
 
 		if(accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000) {
-			String seq = sequenceService.getSequenceNumber(IAdministration.ACCOUNTING_REPORT, accountingReport.getCompany());
+			String seq = sequenceService.getSequenceNumber(SequenceRepository.ACCOUNTING_REPORT, accountingReport.getCompany());
 			if (seq == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}
 			return seq;
 		}
 		else if(accountingReportTypeSelect >= 1000 && accountingReportTypeSelect < 2000 ) {
-			String seq = sequenceService.getSequenceNumber(IAdministration.MOVE_LINE_EXPORT, accountingReport.getCompany());
+			String seq = sequenceService.getSequenceNumber(SequenceRepository.MOVE_LINE_EXPORT, accountingReport.getCompany());
 			if (seq == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_2), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}
 			return seq;
 		}
 		else if(accountingReportTypeSelect >= 2000 && accountingReportTypeSelect < 3000 ){
-			String seq = sequenceService.getSequenceNumber(IAdministration.ANALYTIC_REPORT, accountingReport.getCompany());
+			String seq = sequenceService.getSequenceNumber(SequenceRepository.ANALYTIC_REPORT, accountingReport.getCompany());
 			if (seq == null) {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}

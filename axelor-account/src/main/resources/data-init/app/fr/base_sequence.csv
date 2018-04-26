@@ -60,10 +60,7 @@
 160;"saleInterface";"Interface vente";1;6;"INTVEN%YY";;1;1
 161;"treasuryInterface";"Interface trésorerie";1;6;"INTTRE%YY";;1;1
 162;"reconcile";"Réconciliation comptable";1;5;"RECON%YY%M";;1;1
-163;"bankOrder";"SEPA Credit Transfers";1;7;"SCT%YY%FM";;1;1
-164;"bankOrder";"SEPA Direct Debits";1;7;"SDD%YY%FM";;1;1
-165;"bankOrder";"International Credit Transfers";1;7;"ICT%YY%FM";;1;1
-166;"bankOrder";"International Direct Debits";1;7;"IDD%YY%FM";;1;1
-167;"bankOrder";"International Treasury Transfers";1;6;"ITT%YY%FM";;1;1
-168;"bankOrder";"SEPA Treasury Transfers";1;6;"STT%YY%FM";;1;1
 171;"analyticReport";"Rapport Analytique";1;10;"ANAREP_%YY_";;1;1
+170;"depositSlip";"Bordereau de remise";1;4;"BR%YY%FM";;1;1
+169;"subrogationRelease";"Quittance subrogative";1;4;"QS%YY%FM";;1;1
+107;"debitReject";"Rejet des prélèvements";1;6;"PRLREJ%YY";;1;1

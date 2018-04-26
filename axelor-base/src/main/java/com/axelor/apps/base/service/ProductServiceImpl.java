@@ -20,7 +20,6 @@ package com.axelor.apps.base.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
@@ -29,6 +28,7 @@ import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -68,7 +68,7 @@ public class ProductServiceImpl implements ProductService  {
 	}
 
 	public String getSequence() throws AxelorException {
-		String seq = sequenceService.getSequenceNumber(IAdministration.PRODUCT);
+		String seq = sequenceService.getSequenceNumber(SequenceRepository.PRODUCT);
 
 		if (seq == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCT_NO_SEQUENCE));

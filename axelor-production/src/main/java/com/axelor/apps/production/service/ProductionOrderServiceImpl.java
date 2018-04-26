@@ -24,8 +24,8 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -62,7 +62,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 	
 	public String getProductionOrderSeq() throws AxelorException  {
 		
-		String seq = sequenceService.getSequenceNumber(IAdministration.PRODUCTION_ORDER);
+		String seq = sequenceService.getSequenceNumber(SequenceRepository.PRODUCTION_ORDER);
 		
 		if (seq == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_SEQ));
