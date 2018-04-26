@@ -29,8 +29,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
@@ -178,7 +178,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
 	 */
 	@Override
 	public String getPaymentScheduleSequence(Company company) throws AxelorException  {
-		String seq = sequenceService.getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, company);
+		String seq = sequenceService.getSequenceNumber(SequenceRepository.PAYMENT_SCHEDULE, company);
 		if(seq == null)  {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5), AppAccountServiceImpl.EXCEPTION,company.getName());
 		}

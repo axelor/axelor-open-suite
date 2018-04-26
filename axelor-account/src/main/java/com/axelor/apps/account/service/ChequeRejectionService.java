@@ -35,8 +35,8 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -170,7 +170,7 @@ public class ChequeRejectionService {
 	 */
 	public void setSequence(ChequeRejection chequeRejection) throws AxelorException  {
 
-		String seq = sequenceService.getSequenceNumber(IAdministration.CHEQUE_REJECT, chequeRejection.getCompany());
+		String seq = sequenceService.getSequenceNumber(SequenceRepository.CHEQUE_REJECT, chequeRejection.getCompany());
 
 		if (seq == null) {
 			throw new AxelorException(chequeRejection, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHECK_REJECTION_1), AppAccountServiceImpl.EXCEPTION,chequeRejection.getCompany().getName());
