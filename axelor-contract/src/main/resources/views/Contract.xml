@@ -97,6 +97,7 @@
                        requiredIf="$get('currentVersion.isPeriodicInvoicing')"/>
             </panel>
             <panel title="Content">
+                <label css="label-bold font-red" title="You need to save your contract for add lines." hidden="true" showIf="isInvoicingManagement &amp;&amp; !id"/>
                 <panel name="contractLineListPanel" colSpan="12" hidden="true" showIf="isInvoicingManagement">
                     <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false" readonlyIf="currentVersion.statusSelect > 2 || !id">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
@@ -104,8 +105,8 @@
                         </editor>
                     </field>
                 </panel>
-                <field name="consumptionLineList" showIf="isConsumptionManagement" colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid"/>
-                <field name="additionalBenefitContractLineList" showIf="isAdditionaBenefitManagement" colSpan="12" form-view="additional-contract-line-form" grid-view="additional-contract-line-grid"/>
+                <field name="consumptionLineList" showIf="isConsumptionManagement" colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid" readonlyIf="!id"/>
+                <field name="additionalBenefitContractLineList" showIf="isAdditionaBenefitManagement" colSpan="12" form-view="additional-contract-line-form" grid-view="additional-contract-line-grid" readonlyIf="!id"/>
                 <panel name="currentVersionDescription" colSpan="12">
                     <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
@@ -184,7 +185,7 @@
                                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
                                     <field name="invoicingFrequency" colSpan="4" requiredIf="isPeriodicInvoicing" canEdit="false"/>
                                     <field name="isTimeProratedInvoice" colSpan="4"/>
-                                    <field name="isVersionProratedInvoice" showIf="isTimeProratedInvoice" colSpan="4"/>
+                                    <field name="isVersionProratedInvoice" colSpan="4"/>
                                 </panel>
                             </editor>
                         </field>

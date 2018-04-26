@@ -21,6 +21,7 @@ import java.time.LocalDate;
 
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
@@ -83,18 +84,19 @@ public interface ContractVersionService {
 	default ContractVersion getContractVersion(Contract contract,
 											   LocalDate date) {
 		if (contract.getVersionHistory().isEmpty()) {
-			return contract.getCurrentVersion();
+			ContractVersion version = contract.getCurrentVersion();
+			if (DateTool.isBetween(version.getActivationDate(),
+					version.getEndDate(), date)) {
+				return version;
+			}
 		}
 		for (ContractVersion version : contract.getVersionHistory()) {
 			if (version.getActivationDate() == null
 					|| version.getEndDate() == null) {
 				continue;
 			}
-			if ((date.isEqual(version.getActivationDate())
-					|| date.isAfter(version.getActivationDate()))
-					&& (version.getEndDate() == null
-                        || (version.getEndDate() != null
-                            && date.isBefore(version.getEndDate())))) {
+			if (DateTool.isBetween(version.getActivationDate(),
+					version.getEndDate(), date)) {
 				return version;
 			}
 		}

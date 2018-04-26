@@ -128,17 +128,12 @@ public class ContractServiceImpl extends ContractRepository
 		versionService.ongoing(currentVersion, date);
 
 		contract.setVersionNumber(contract.getVersionNumber() + 1);
-		if (currentVersion.getIsPeriodicInvoicing()) {
-			contract.setInvoicePeriodStartDate(currentVersion.getActivationDate());
-			if (contract.getVersionNumber() == 0) {
-				contract.setInvoicePeriodEndDate(
-						contract.getFirstPeriodEndDate());
-			} else {
-				contract.setInvoicePeriodEndDate(
-						durationService.computeDuration(
-								currentVersion.getInvoicingFrequency(),
-								currentVersion.getActivationDate()));
-			}
+		if (currentVersion.getIsPeriodicInvoicing()
+				&& contract.getVersionNumber() == 0) {
+			contract.setInvoicePeriodStartDate(
+					currentVersion.getActivationDate());
+			contract.setInvoicePeriodEndDate(
+					contract.getFirstPeriodEndDate());
 		}
 		if (contract.getCurrentVersion().getAutomaticInvoicing()) {
 			invoice = invoicingContract(contract);
@@ -423,15 +418,12 @@ public class ContractServiceImpl extends ContractRepository
 		}
 
 		lineStream.forEach(line -> {
-
 			ContractVersion version = contract.getCurrentVersion();
-			/*
-			if (version.getIsProratedInvoice()
-					&& version.getIsVersionProratedInvoice()) {
-				version = versionService
-						.getContractVersion(contract,
-								line.getLineDate());
-			}*/
+
+			if (version.getIsVersionProratedInvoice()) {
+				version = versionService.getContractVersion(contract,
+						line.getLineDate());
+			}
 
 			if (version == null) {
 				line.setIsError(true);
