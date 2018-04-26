@@ -112,6 +112,7 @@ public interface IExceptionMessage {
 	 */
 	static final public String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 	static final public String BASE_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
+	static final public String BASE_BATCH_CODE_NOT_FOUND = /*$$(*/ "Mail batch with code %s has not been configured." /*)*/;
 
 	/**
 	 * Product service

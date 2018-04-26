@@ -64,7 +64,7 @@ public class MailBatchController{
 				response.setFlash(batch.getComments());
 			response.setReload(true);
 		} else {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
+			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BASE_BATCH_CODE_NOT_FOUND), MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
 		}
 	}
 }
