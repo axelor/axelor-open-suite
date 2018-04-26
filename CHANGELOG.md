@@ -85,6 +85,10 @@
 - Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Add validation date in Inventory
 - Add the number of components on Bill of material form view.
+- Change open fullscreen timesheet editor from tab to popup, for update of lines o2m on close. 
+- Browser reload on install and uninstall of the app.  
+- Add base app install check on base module's menus.
+- Improved TeamTask gantt view to support upgraded gantt view with colored user per task. 
 
 
 ## Bug Fixes
@@ -103,6 +107,11 @@
 - Fix default supplier in purchase order generation from sale order.
 - Stock location is no more required if supplychain module is not enabled
 - Compute the sale price and min sale price on purchase order line only if the product is saleable
+- Fix bulk install without demo data error. 
+- Fix language of parent app on child app installation. Now it will install all parent (if not installed) with child app's language. 
+- Fix timesheet and project planning editor according to changes in related models and fields. 
+- Fix custom model form view with latest from adk.
+- Fix resource management from project, removed unwanted menus and views related to it. 
 
 
 ## [Unreleased 4.x]
