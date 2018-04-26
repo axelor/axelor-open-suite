@@ -16,6 +16,7 @@
 - Compute the duration according to the start date and time and end date and time for ticket.
 - Fix same image when duplicating products.
 - invoice: fix bank address on birt template
+- Fix BASE DEMO DATA import error
 
 
 ## [5.0.0-rc1] - 2018-04-16

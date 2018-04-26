@@ -1,4 +1,4 @@
-"id";"code";"name";"navigation";"permissions";"technicalStaff";"roles";"isClient";"isSupplier";"menus"
+"importId";"code";"name";"navigation";"permissions";"technicalStaff";"roles";"isClient";"isSupplier";"menus_set"
 1;"admins";"ADMINS";;;"true";;"false";"false";
 2;"users";"Users";;;"false";;"false";"false";
 3;"BPM";"BPM";;;"false";;"false";"false";
