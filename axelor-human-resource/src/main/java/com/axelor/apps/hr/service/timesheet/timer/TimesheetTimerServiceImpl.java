@@ -32,9 +32,13 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -53,21 +57,25 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 		this.timesheetService = timesheetService;
 	}
 	
-	@Transactional(rollbackOn = {Exception.class})
+	@Transactional
 	public void pause(TSTimer timer){
 		timer.setStatusSelect(TSTimerRepository.STATUS_PAUSE);
 		calculateDuration(timer);
 	}
 	
-	@Transactional(rollbackOn = {Exception.class})
-	public void stop(TSTimer timer) {
+	@Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+	public void stop(TSTimer timer) throws AxelorException {
 		timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
 		calculateDuration(timer);
-		if(timer.getDuration() > 59)
+		if(timer.getDuration() > 59) {
 			generateTimesheetLine(timer);
+		} else {
+			throw new AxelorException(IException.FUNCTIONNAL,
+					I18n.get(IExceptionMessage.NO_TIMESHEET_CREATED), timer);
+		}
 	}
 	
-	@Transactional(rollbackOn = {Exception.class})
+	@Transactional
 	public void calculateDuration(TSTimer timer){
 		long currentDuration = timer.getDuration();
 		Duration duration = DurationTool.computeDuration(timer.getTimerStartDateT(), appBaseService.getTodayDateTime().toLocalDateTime());
@@ -75,7 +83,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 		timer.setDuration(secondes);
 	}
 
-	@Transactional(rollbackOn = {Exception.class})
+	@Transactional
 	public TimesheetLine generateTimesheetLine(TSTimer timer) {
 		
 		BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());

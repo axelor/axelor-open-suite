@@ -355,8 +355,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Override
     public Timesheet getCurrentOrCreateTimesheet(){
 		Timesheet timesheet = getCurrentTimesheet();
-		if(timesheet == null)
+		if(timesheet == null) {
 			timesheet = createTimesheet(AuthUtils.getUser(), appHumanResourceService.getTodayDateTime().toLocalDate(), null);
+		}
 		return timesheet;
 	}
 	
