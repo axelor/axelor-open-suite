@@ -7,7 +7,7 @@
        <field name="estimatedDate" readonlyIf="invoice"/>
        <field name="amount" readonlyIf="invoice"/>
        <field name="comments" readonlyIf="invoice"/>
-       <field name="product" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <field name="product" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" onChange="action-timetable-record-product-onchange"/>
        <field name="productName" required="true" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        <field name="unit" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        <field name="qty" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
@@ -32,5 +32,10 @@
 	 <action-method name="action-timetable-method-generate-invoice">
 	 	<call class="com.axelor.apps.supplychain.web.TimetableController" method="generateInvoice"/>
 	 </action-method>
+
+    <action-record name="action-timetable-record-product-onchange" model="com.axelor.apps.supplychain.db.Timetable">
+      <field name="productName" expr="eval: product.name"/>
+      <field name="unit" expr="eval: product.unit"/>
+    </action-record>
 
 </object-views>
