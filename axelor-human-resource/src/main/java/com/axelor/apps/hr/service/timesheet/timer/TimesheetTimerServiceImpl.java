@@ -33,6 +33,7 @@ import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
@@ -40,23 +41,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	protected AppBaseService appBaseService;
-	protected TimesheetService timesheetService;
-	
-	@Inject 
-	public TimesheetTimerServiceImpl(AppBaseService appBaseService, TimesheetService timesheetService){
-		
-		this.appBaseService = appBaseService;
-		this.timesheetService = timesheetService;
-	}
-	
+
 	@Transactional
 	public void pause(TSTimer timer){
 		timer.setStatusSelect(TSTimerRepository.STATUS_PAUSE);
@@ -78,7 +68,8 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	@Transactional
 	public void calculateDuration(TSTimer timer){
 		long currentDuration = timer.getDuration();
-		Duration duration = DurationTool.computeDuration(timer.getTimerStartDateT(), appBaseService.getTodayDateTime().toLocalDateTime());
+		Duration duration = DurationTool.computeDuration(timer.getTimerStartDateT(),
+				Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
 		long secondes = DurationTool.getSecondsDuration(duration) + currentDuration;
 		timer.setDuration(secondes);
 	}
@@ -87,8 +78,12 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 	public TimesheetLine generateTimesheetLine(TSTimer timer) {
 		
 		BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
-		Timesheet timesheet = timesheetService.getCurrentOrCreateTimesheet();
-		TimesheetLine timesheetLine = timesheetService.createTimesheetLine(timer.getProject(), timer.getProduct(), timer.getUser(), timer.getStartDateTime().toLocalDate(), timesheet, durationHours, timer.getComments());
+		Timesheet timesheet = Beans.get(TimesheetService.class)
+				.getCurrentOrCreateTimesheet();
+		TimesheetLine timesheetLine = Beans.get(TimesheetLineService.class)
+				.createTimesheetLine(timer.getProject(), timer.getProduct(),
+						timer.getUser(), timer.getStartDateTime().toLocalDate(),
+						timesheet, durationHours, timer.getComments());
 		
 		Beans.get(TimesheetRepository.class).save(timesheet);
 		Beans.get(TimesheetLineRepository.class).save(timesheetLine);

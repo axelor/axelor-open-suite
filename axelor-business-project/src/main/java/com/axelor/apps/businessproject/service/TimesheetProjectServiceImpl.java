@@ -41,9 +41,11 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
 public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 
+	@Inject
 	public TimesheetProjectServiceImpl(PriceListService priceListService, AppHumanResourceService appHumanResourceService, HRConfigService hrConfigService, TemplateMessageService templateMessageService, ProjectRepository projectRepo, UserRepository userRepo, UserHrService userHrService, TimesheetLineService timesheetLineService) {
 		super(priceListService, appHumanResourceService, hrConfigService, templateMessageService, projectRepo, userRepo, userHrService, timesheetLineService);
 	}
@@ -118,15 +120,4 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
 		return invoiceLineList;
 
 	}
-	
-	@Override
-	public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
-		TimesheetLine timesheetLine = super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
-		
-		if(project != null && (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED || (project.getParentProject() != null && project.getParentProject().getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED)))
-				timesheetLine.setToInvoice(true);
-		
-		return timesheetLine;
-	}
-
 }
