@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.tool.ModelTool;
-import com.axelor.auth.AuthService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
@@ -62,7 +61,7 @@ public class UserController {
 		 }
 	}
 	
-    public void validate(ActionRequest request, ActionResponse response) {
+    public void checkUniqueErrors(ActionRequest request, ActionResponse response) {
         try {
             User user = request.getContext().asType(User.class);
             Map<String, String> errors = ModelTool.getUniqueErrors(user, UNIQUE_MESSAGES);
@@ -72,7 +71,6 @@ public class UserController {
                 return;
             }
 
-            Beans.get(AuthService.class).validate(request, response);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
