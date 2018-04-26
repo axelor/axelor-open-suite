@@ -23,4 +23,6 @@ public interface IExceptionMessage {
 	String CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED = /*$$(*/ "Engagement duration is not fulfilled." /*)*/;
 	String CONTRACT_PRIOR_DURATION_NOT_RESPECTED = /*$$(*/ "Prior notice duration is not respected." /*)*/;
 	String CONTRACT_UNVALIDE_TERMINATE_DATE = /*$$(*/ "You cannot terminate a contract before version activation date." /*)*/;
+	String CONTRACT_CANT_REMOVE_INVOICED_LINE = /*$$(*/ "You cannot remove a line which has been already invoiced." /*)*/;
+	String CONTRACT_EMPTY_PRODUCT = /*$$*/ "The product for fill the line can't be empty." /*)*/;
 }

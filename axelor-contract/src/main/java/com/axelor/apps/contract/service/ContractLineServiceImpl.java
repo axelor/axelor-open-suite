@@ -10,13 +10,13 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 public class ContractLineServiceImpl implements ContractLineService {
-
     protected AppBaseService appBaseService;
     protected AccountManagementService accountManagementService;
     protected CurrencyService currencyService;
@@ -47,6 +47,8 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     @Override
     public ContractLine fill(ContractLine contractLine, Product product) {
+        Preconditions.checkNotNull(product,
+                I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
         contractLine.setProductName(product.getName());
         if (product.getSalesUnit() != null) {
             contractLine.setUnit(product.getSalesUnit());

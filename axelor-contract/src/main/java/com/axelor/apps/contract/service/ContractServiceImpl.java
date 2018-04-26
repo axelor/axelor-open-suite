@@ -202,9 +202,9 @@ public class ContractServiceImpl extends ContractRepository
 			}
 		}
 		if (!lineInvoiced.isEmpty()) {
-			throw new AxelorException(IException.FUNCTIONNAL, I18n.get("You " +
-					"cannot remove a consumption line whose has been already " +
-					"invoiced."));
+			throw new AxelorException(IException.FUNCTIONNAL,
+					I18n.get(IExceptionMessage
+							.CONTRACT_CANT_REMOVE_INVOICED_LINE));
 		}
 	}
 
@@ -223,9 +223,9 @@ public class ContractServiceImpl extends ContractRepository
 			}
 		}
 		if (!lineInvoiced.isEmpty()) {
-			throw new AxelorException(IException.FUNCTIONNAL, I18n.get("You " +
-					"cannot remove a additional line whose has been already" +
-					" invoiced."));
+			throw new AxelorException(IException.FUNCTIONNAL,
+					I18n.get(IExceptionMessage
+							.CONTRACT_CANT_REMOVE_INVOICED_LINE));
 		}
 	}
 
