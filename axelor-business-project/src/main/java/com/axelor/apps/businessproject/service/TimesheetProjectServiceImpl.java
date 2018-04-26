@@ -28,15 +28,26 @@ import java.time.format.DateTimeFormatter;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
+import com.axelor.apps.hr.service.user.UserHrService;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 
 public class TimesheetProjectServiceImpl extends TimesheetServiceImpl{
+
+	public TimesheetProjectServiceImpl(PriceListService priceListService, AppHumanResourceService appHumanResourceService, HRConfigService hrConfigService, TemplateMessageService templateMessageService, ProjectRepository projectRepo, UserRepository userRepo, UserHrService userHrService, TimesheetLineService timesheetLineService) {
+		super(priceListService, appHumanResourceService, hrConfigService, templateMessageService, projectRepo, userRepo, userHrService, timesheetLineService);
+	}
+
 	@Override
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException  {
 
