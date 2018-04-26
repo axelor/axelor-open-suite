@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.contract.web;
 
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.inject.Beans;
@@ -30,15 +29,13 @@ public class ContractLineController {
 
 	public void computeTotal(ActionRequest request, ActionResponse response) {
 		ContractLine contractLine = request.getContext().asType(ContractLine.class);
-		Product product = contractLine.getProduct();
-
 		ContractLineService contractLineService = Beans.get(ContractLineService.class);
-		if(product == null) {
-			response.setValues(contractLineService.reset(contractLine));
-			return;
-		}
 
-		contractLine = contractLineService.computeTotal(contractLine);
-		response.setValues(contractLine);
+		try {
+			contractLine = contractLineService.computeTotal(contractLine);
+			response.setValues(contractLine);
+		} catch (Exception e) {
+		    response.setValues(contractLineService.reset(contractLine));
+		}
 	}
 }

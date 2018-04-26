@@ -20,10 +20,12 @@ package com.axelor.apps.tool;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +34,7 @@ import javax.persistence.Column;
 import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -165,4 +168,20 @@ public final class ModelTool {
 		return Mapper.toBean(klass, map);
 	}
 
+    /**
+     * Copy the content of a list with repository copy method.
+     * @param repo Repository to use for copy model.
+     * @param src The source list to copy.
+     * @param deep Copy all deep reference.
+     * @param <T> The list model.
+     * @return A new list with the content of src list.
+     */
+	public static <T extends Model> List<T> copy(JpaRepository<T> repo, List<T> src, boolean deep) {
+        List<T> dest = new ArrayList<>();
+        for (T obj: src) {
+            T cpy = repo.copy(obj, deep);
+            dest.add(cpy);
+        }
+        return dest;
+    }
 }

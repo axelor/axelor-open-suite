@@ -1,12 +1,12 @@
 package com.axelor.apps.contract.db.repo;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.tool.ModelTool;
+import com.axelor.inject.Beans;
 
 public class ContractVersionRepository extends AbstractContractVersionRepository {
 
@@ -41,9 +41,9 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
 
         newVersion.setDoNotRenew(currentVersion.getDoNotRenew());
 
-        List<ContractLine> lineList = new ArrayList<>();
-        Collections.copy(currentVersion.getContractLineList(), lineList);
-        newVersion.setContractLineList(lineList);
+        ContractLineRepository repository = Beans.get(ContractLineRepository.class);
+        List<ContractLine> lines= ModelTool.copy(repository, currentVersion.getContractLineList(), false);
+        newVersion.setContractLineList(lines);
 
         return newVersion;
     }

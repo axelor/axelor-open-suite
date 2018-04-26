@@ -98,7 +98,7 @@
             </panel>
             <panel title="Content">
                 <panel name="contractLineListPanel" colSpan="12" hidden="true" showIf="isInvoicingManagement">
-                    <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false" readonlyIf="currentVersion.statusSelect > 2">
+                    <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false" readonlyIf="currentVersion.statusSelect > 2 || !id">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
                             <field name="contractLineList" showTitle="false" colSpan="12" form-view="contract-line-form" grid-view="contract-line-grid"/>
                         </editor>
@@ -285,6 +285,7 @@
             <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
             <field name="description" widget="html"/>
             <field name="attachment" widget="binary-link"/>
+            <field name="contractLineList" showTitle="false" colSpan="12" form-view="contract-line-form" grid-view="contract-line-grid"/>
         </panel>
     </form>
 
