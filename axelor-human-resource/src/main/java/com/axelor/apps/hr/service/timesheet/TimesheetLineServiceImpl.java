@@ -36,6 +36,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
@@ -136,6 +137,14 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         timesheetLine.setProject(project);
         timesheetLine.setUser(user);
         timesheetLine.setHoursDuration(hours);
+        try {
+            timesheetLine.setDuration(
+                    computeHoursDuration(timesheet, hours, false)
+            );
+        } catch (AxelorException e) {
+            log.error(e.getLocalizedMessage());
+            TraceBackService.trace(e);
+        }
         timesheet.addTimesheetLineListItem(timesheetLine);
 
         return timesheetLine;
