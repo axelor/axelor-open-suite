@@ -158,7 +158,7 @@
 "Termination",,,
 "Termination demand date",,,
 "The company%s doesn't have any configured sequence forcontracts",,,
-"The product for fill the consumption line can't be empty or null.",,,
+"The product can't be empty.",,,
 "To closed",,,
 "Total A.T.I.",,,
 "Total W.T.",,,

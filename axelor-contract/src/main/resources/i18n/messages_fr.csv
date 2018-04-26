@@ -158,7 +158,7 @@
 "Termination","Clôture",,
 "Termination demand date","Date de demande de résiliation",,
 "The company%s doesn't have any configured sequence forcontracts","L'entreprise %s n'a aucune séquence de configurer pour les contrats",,
-"The product for fill the consumption line can't be empty or null.","Le produit pour remplir la ligne de consommation ne peut-être vide.",,
+"The product can't be empty.","Le produit ne peut pas être nul.",,
 "To closed","A clôturer",,
 "Total A.T.I.","Total T.T.C",,
 "Total W.T.","Total HT",,

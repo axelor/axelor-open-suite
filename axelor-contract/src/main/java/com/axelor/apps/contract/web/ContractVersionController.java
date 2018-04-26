@@ -121,7 +121,6 @@ public class ContractVersionController {
 			response.setValues(contractLine);
 		}
 		catch (Exception e)  {
-			TraceBackService.trace(response, e);
 			response.setValues(contractLineService.reset(contractLine));
 		}
 	}
