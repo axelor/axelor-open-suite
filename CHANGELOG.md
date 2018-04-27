@@ -8,6 +8,7 @@
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
 - timesheet: Hide create button on if timsheet editor is disabled from configuration.
+- Add en to fr translation in Barcode type configuration
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
