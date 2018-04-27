@@ -34,6 +34,7 @@
             </panel>
             <panel colSpan="3" stacked="true">
                 <panel stacked="true">
+                    <button name="cancelBtn" title="Cancel" onClick="action.contract.view.contract,close" hidden="true" showIf="!id"/>
                     <button name="showBtn" title="Show contract" onClick="action.contract.view.contract,close" showIf="id"/>
                     <button name="waitingBtn" title="Waiting" onClick="save,action-contract-version-method-waiting" showIf="id &amp;&amp; statusSelect == 1"/>
                     <button name="ongoingBtn" title="Ongoing" onClick="save,action-contract-version-method-active,close" showIf="id &amp;&amp; statusSelect == 2"/>

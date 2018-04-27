@@ -123,7 +123,6 @@ public class ContractController {
 			TraceBackService.trace(response, e);
 		}
 	}
-	
 
 	public void deleteNextVersion(ActionRequest request, ActionResponse response) {
 		final Contract contract = JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
