@@ -13,7 +13,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-apply-applicaton-mode">
+    onNew="action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.apps.base.web.UserController:checkUniqueErrors" onLoad="action-user-apply-applicaton-mode">
     	<panel name="main" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
@@ -55,7 +55,7 @@
     
     
     <form name="user-preferences-form" id="base-user-preferences-form" title="Preferences" model="com.axelor.auth.db.User" 
-        onSave="com.axelor.apps.base.web.UserController:validate">
+        onSave="com.axelor.apps.base.web.UserController:checkUniqueErrors">
 		<panel name="userPreferences" title="User preferences" itemSpan="12">
 			<field name="image" showTitle="false"/>
 			<field name="language"/>

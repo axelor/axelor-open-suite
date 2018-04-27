@@ -5,22 +5,21 @@
 ## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
-- When we generate a message (using a template or not) from the wizrad, open the form view in edit mode directly and close automatically the wizard.
-- All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
 - timesheet: Hide create button on if timsheet editor is disabled from configuration.
+- Menus permissions adapted to v5 for demoCRM and demoERP users
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
-- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
-- Compute the duration according to the start date and time and end date and time for ticket.
-- Fix same image when duplicating products.
 - invoice: fix bank address on birt template
 - Fix BASE DEMO DATA import error
 - Fix custom buttons imported with studio demo data. It will be only displayed if related app is installed.
-- Custom model editor: Fix duplicating field property for relational json fields. 
+- Custom model editor: Fix duplicating field property for relational json fields.
+- timesheet-editor: Fix user value update on timesheet line.
+- Fix Indicator generator language type field in fr demo data import
 - Menu "Product variant attributes" displayed only if the boolean "manageProductVariants" is true in Base app
+
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
@@ -93,6 +92,9 @@
 - Browser reload on install and uninstall of the app.  
 - Add base app install check on base module's menus.
 - Improved TeamTask gantt view to support upgraded gantt view with colored user per task. 
+- When we generate a message (using a template or not) from the wizrad, open the form view in edit mode directly and close automatically the wizard.
+- All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
+- Upgrade : save user-form and user-preference-form.
 
 
 ## Bug Fixes
@@ -116,6 +118,9 @@
 - Fix timesheet and project planning editor according to changes in related models and fields. 
 - Fix custom model form view with latest from adk.
 - Fix resource management from project, removed unwanted menus and views related to it. 
+- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
+- Compute the duration according to the start date and time and end date and time for ticket.
+- Fix same image when duplicating products.
 
 
 ## [Unreleased 4.x]
