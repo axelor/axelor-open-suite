@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1]
 ## Features
+- Production: billOfMaterial set the BOM as default on product (button and viewer)
 
 ## Improvements
 

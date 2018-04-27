@@ -19,11 +19,10 @@ package com.axelor.apps.production.web;
 
 import java.util.List;
 
-import com.google.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
@@ -33,13 +32,16 @@ import com.axelor.apps.production.service.CostSheetService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
 @Singleton
 public class BillOfMaterialController {
@@ -166,4 +168,22 @@ public class BillOfMaterialController {
 				.map());
 				
 	}
+
+    @Transactional
+    public void setDefaultBillOfMaterial(Product product, BillOfMaterial billOfMaterial) {
+        product.setDefaultBillOfMaterial(billOfMaterial);
+    }
+
+    public void setDefaultBillOfMaterial(ActionRequest request, ActionResponse response) {
+        try {
+            BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+            billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
+
+            setDefaultBillOfMaterial(billOfMaterial.getProduct(), billOfMaterial);
+
+            response.setReload(true);
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+        }
+    }
 }
