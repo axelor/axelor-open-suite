@@ -18,6 +18,7 @@
 - Custom model editor: Fix duplicating field property for relational json fields.
 - timesheet-editor: Fix user value update on timesheet line.
 - Fix Indicator generator language type field in fr demo data import
+- Menu "Product variant attributes" displayed only if the boolean "manageProductVariants" is true in Base app
 
 
 ## [5.0.0-rc1] - 2018-04-16
