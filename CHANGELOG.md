@@ -14,7 +14,8 @@
 - invoice: fix bank address on birt template
 - Fix BASE DEMO DATA import error
 - Fix custom buttons imported with studio demo data. It will be only displayed if related app is installed.
-- Custom model editor: Fix duplicating field property for relational json fields. 
+- Custom model editor: Fix duplicating field property for relational json fields.
+- timesheet-editor: Fix user value update on timesheet line.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
