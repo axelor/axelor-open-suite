@@ -17,7 +17,7 @@
 - Fix same image when duplicating products.
 - invoice: fix bank address on birt template
 - Fix BASE DEMO DATA import error
-
+- Fix custom buttons imported with studio demo data. It will be only displayed if related app is installed. 
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
