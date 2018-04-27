@@ -20,7 +20,8 @@
 - Fix BASE DEMO DATA import error
 - Fix custom buttons imported with studio demo data. It will be only displayed if related app is installed.
 - Custom model editor: Fix duplicating field property for relational json fields. 
-
+- Fix Indicator generator language type field in fr demo data import
+ 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
 - New currency conversion API (ECB)
