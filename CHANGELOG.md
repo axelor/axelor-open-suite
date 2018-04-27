@@ -10,6 +10,7 @@
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
 - timesheet: Hide create button on if timsheet editor is disabled from configuration.
+- Fiscal Position interface reworked and moved from Account to Base module
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
