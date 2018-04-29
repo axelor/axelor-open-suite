@@ -8,7 +8,6 @@
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
 - timesheet: Hide create button on if timsheet editor is disabled from configuration.
-- Menus permissions adapted to v5 for demoCRM and demoERP users
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -19,6 +18,8 @@
 - timesheet-editor: Fix user value update on timesheet line.
 - Fix Indicator generator language type field in fr demo data import
 - Menu "Product variant attributes" displayed only if the boolean "manageProductVariants" is true in Base app
+- Menus permissions adapted to v5 for demoCRM and demoERP users
+- Fiscal Position interface reworked and moved from Account to Base module
 
 
 ## [5.0.0-rc1] - 2018-04-16
