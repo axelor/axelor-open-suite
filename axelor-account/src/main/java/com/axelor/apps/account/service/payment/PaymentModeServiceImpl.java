@@ -118,6 +118,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 	 */
 	public List<BankDetails> getCompatibleBankDetailsList(PaymentMode paymentMode, Company company){
 		List<BankDetails> bankDetailsList = new ArrayList<BankDetails>();
+		if(paymentMode == null) { return bankDetailsList; }
 		List<AccountManagement> accountManagementList = paymentMode.getAccountManagementList();
 		if(accountManagementList == null) { return bankDetailsList; }
 		for (AccountManagement accountManagement : accountManagementList) {
