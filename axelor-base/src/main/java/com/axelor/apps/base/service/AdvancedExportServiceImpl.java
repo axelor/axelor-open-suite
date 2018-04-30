@@ -30,7 +30,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import com.google.inject.Inject;
 import javax.persistence.Query;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -48,19 +47,19 @@ import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSelect;
-import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
-import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
+import com.google.inject.Inject;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -93,16 +92,13 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 	@Inject
 	private MetaFiles metaFiles;
 	
-	@Inject
-	private MetaTranslationRepository metaTranslationRepo;
-	
-	private LinkedHashSet<String> joinFieldSet = new LinkedHashSet<String>();
+	private LinkedHashSet<String> joinFieldSet = new LinkedHashSet<>();
 	
 	private List<String> selectJoinFieldList = new ArrayList<>();
 	
-	private LinkedHashSet<String> selectionJoinFieldSet = new LinkedHashSet<String>();
+	private LinkedHashSet<String> selectionJoinFieldSet = new LinkedHashSet<>();
 	
-	private LinkedHashSet<String> selectionRelationalJoinFieldSet = new LinkedHashSet<String>();
+	private LinkedHashSet<String> selectionRelationalJoinFieldSet = new LinkedHashSet<>();
 	
 	private String language = "";
 	
@@ -132,36 +128,19 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 	@Override
 	public String getTargetField(Context context, MetaField metaField, String targetField, MetaModel parentMetaModel) {
 		
-		if (metaField.getRelationship() == null) {
-			
-			targetField = (String) context.get("targetField");
-			String[] splitField = targetField.split("\\.");
-			
-			MetaField metaField2 = this.checkLastMetaField(splitField, 0, parentMetaModel, metaField);
-			
-			if (metaField2.getRelationship() != null) {
-				targetField += "." + metaField.getName();
-				return targetField;
-				
-			} else {
-				return targetField.replace(splitField[splitField.length - 1], metaField.getName());
-			}
-			
-		} else {
-			
-			targetField = (String) context.get("targetField");
-			String[] splitField = targetField.split("\\.");
-			
-			MetaField metaField2 = this.checkLastMetaField(splitField, 0, parentMetaModel, metaField);
-			
-			if (metaField2.getRelationship() != null) {
-				targetField += "." + metaField.getName();
-				return targetField;
-				
-			} else {
-				return targetField.replace(splitField[splitField.length - 1], metaField.getName());
-			}
-		}
+        targetField = (String) context.get("targetField");
+        String[] splitField = targetField.split("\\.");
+
+        MetaField metaField2 = this.checkLastMetaField(splitField, 0, parentMetaModel, metaField);
+
+        if (metaField2.getRelationship() != null) {
+            targetField += "." + metaField.getName();
+            return targetField;
+
+        } else {
+            return targetField.replace(splitField[splitField.length - 1], metaField.getName());
+        }
+
 	}
 	
 	private MetaField checkLastMetaField(String[] splitField, int i, MetaModel parentMetaModel, MetaField metaField) {
@@ -218,14 +197,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
 			int cnt = this.getExportData(splitField, 0, metaModel);
 
-			if (joinFieldSet.size() > 0 && (!selectNormalField.equals("") || selectNormalField.indexOf(0) == '.')) {
+			if (!joinFieldSet.isEmpty() && (!selectNormalField.equals("") || selectNormalField.indexOf(0) == '.')) {
 				selectJoinFieldList.add(temp + selectNormalField + " AS " + ("Col_" + (col)));
 			}
 
-			if (!selectSelectionField.equals("") && selectionJoinFieldSet.size() > 0) {
+			if (!selectSelectionField.equals("") && !selectionJoinFieldSet.isEmpty()) {
 				selectionFieldList.add(selectSelectionField + " AS " + ("Col_" + (col)));
 				
-			} else if (!selectSelectionField.equals("") && selectionRelationalJoinFieldSet.size() > 0) {
+			} else if (!selectSelectionField.equals("") && !selectionRelationalJoinFieldSet.isEmpty()) {
 				selectionFieldList.add(selectSelectionField + " AS " + ("Col_" + (col)));
 				
 			} else if (cnt == 0 && selectSelectionField.equals("") && !selectNormalField.equals("")) {
@@ -238,7 +217,6 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			selectNormalField = "";
 			selectSelectionField = "";
 			temp = "";
-			cnt = 0;
 			counter2 = 0;
 			counter3 = 0;
 			nbrField++;
@@ -255,7 +233,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		params = null;
 		criteria = getCriteria(metaModel, criteria);
 		
-		if (orderByColumns.size() > 0)
+		if (!orderByColumns.isEmpty())
 			orderByCol = " ORDER BY " + String.join(",", orderByColumns);
 		
 		return this.createQuery(metaModel, selectField, joinField, selectJoinField, selectionField,
@@ -518,7 +496,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 				if (i != 0) {
 					for (int j = 0; j <= i; j++) {
 						if (j == 0) {
-							if (nbrField > 0 && joinFieldSet.size() > 0) {
+							if (nbrField > 0 && !joinFieldSet.isEmpty()) {
 								joinFieldSet.add("LEFT JOIN self." + splitField[j] + " " + splitField[j]);
 								temp = splitField[j];
 							} else {
@@ -533,7 +511,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 						}
 					}
 				} else {
-					if (nbrField > 0 && joinFieldSet.size() > 0) {
+					if (nbrField > 0 && !joinFieldSet.isEmpty()) {
 						if (!joinFieldSet.contains("self." + splitField[i] + " " + splitField[i])) {
 							joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + splitField[i]);
 							temp = splitField[i];
@@ -606,12 +584,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			
 			AdvancedExportLine advancedExportLine = advancedExportLineRepo.find(Long.parseLong(fieldLine.get("id").toString()));
 			
-			MetaTranslation metaTranslation = metaTranslationRepo.all().filter("self.key = ?1 and self.language = ?2",advancedExportLine.getTitle(), language).fetchOne();
-			if (metaTranslation != null && !metaTranslation.getMessage().equals("")) {
-			    headerCell = new PdfPCell(new Phrase(metaTranslation.getMessage(), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
-			} else {
-				headerCell = new PdfPCell(new Phrase(advancedExportLine.getTitle(), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
-			}
+			headerCell = new PdfPCell(new Phrase(I18n.get(advancedExportLine.getTitle()), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
 			
 			headerCell.setBackgroundColor(BaseColor.GRAY);
 			headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -648,7 +621,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		return exportPDFFile(exportFile, metaModel, file);
 	}
 	
-	private MetaFile exportPDFFile(MetaFile inputFile, MetaModel metaModel, File file) throws DocumentException, IOException {
+	private MetaFile exportPDFFile(MetaFile inputFile, MetaModel metaModel, File file) throws IOException {
 		
 		String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy HH:mm:ss"));
 		String fileName = metaModel.getName() + "-" + date + ".pdf";
@@ -685,12 +658,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			
 			Cell headerCell = headerRow.createCell(colHeaderNum++);
 			
-			MetaTranslation metaTranslation = metaTranslationRepo.all().filter("self.key = ?1 and self.language = ?2",advancedExportLine.getTitle(), language).fetchOne();
-			if (metaTranslation != null && !metaTranslation.getMessage().equals("")) {
-			    headerCell.setCellValue(metaTranslation.getMessage());
-			} else {
-				headerCell.setCellValue(advancedExportLine.getTitle());
-			}
+			headerCell.setCellValue(I18n.get(advancedExportLine.getTitle()));
 		}
 		
 		for (Map<String, Object> field : allFieldDataList) {
@@ -755,14 +723,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
                 AdvancedExportLine advancedExportLine = advancedExportLineRepo
                         .find(Long.parseLong(fieldLine.get("id").toString()));
 
-                String cellValue = "";
-                MetaTranslation metaTranslation = metaTranslationRepo.all().filter("self.key = ?1 and self.language = ?2",advancedExportLine.getTitle(), language).fetchOne();
-                if (metaTranslation != null && !metaTranslation.getMessage().equals("")) {
-                        cellValue = metaTranslation.getMessage();
-                } else {
-                    cellValue = advancedExportLine.getTitle();
-                }
-                totalCols[i++] = cellValue;
+                totalCols[i++] = I18n.get(advancedExportLine.getTitle());
             }
             csvWriter.writeNext(totalCols);
 

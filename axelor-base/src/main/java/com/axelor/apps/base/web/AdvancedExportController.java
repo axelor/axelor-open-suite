@@ -25,13 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.AdvancedExportLineRepository;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -54,6 +53,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.itextpdf.text.DocumentException;
 import com.mysql.jdbc.StringUtils;
@@ -185,7 +185,7 @@ public class AdvancedExportController {
 		
 		List<Map<String, Object>> advancedExportLines = (List<Map<String, Object>>) request.getData().get("advancedExportLineList");
 		
-		if (advancedExportLines != null && advancedExportLines.size() > 0) {
+		if (advancedExportLines != null && !advancedExportLines.isEmpty()) {
 			MetaModel metaModel = metaModelRepo.find(Long.parseLong(((Map) request.getData().get("metaModel")).get("id").toString()));
 			allDataList = advancedExportService.showAdvancedExportData(advancedExportLines, metaModel, criteria);
 			response.setData(allDataList);
@@ -194,7 +194,7 @@ public class AdvancedExportController {
 
 	public void advancedExportPDF(ActionRequest request, ActionResponse response)  {
 	    try {
-            advancedExportFile(request, response, "PDF");
+            advancedExportFile(request, response, IAdministration.PDF);
         } catch (DocumentException | ClassNotFoundException | IOException | AxelorException e) {
             TraceBackService.trace(e);
         }
@@ -202,7 +202,7 @@ public class AdvancedExportController {
 
 	public void advancedExportExcel(ActionRequest request, ActionResponse response) {
 	    try {
-            advancedExportFile(request, response, "EXCEL");
+            advancedExportFile(request, response, IAdministration.XLS);
         } catch (DocumentException | ClassNotFoundException | IOException | AxelorException e) {
             TraceBackService.trace(e);
         }
@@ -210,7 +210,7 @@ public class AdvancedExportController {
 
 	public void advancedExportCSV(ActionRequest request, ActionResponse response) {
         try {
-            advancedExportFile(request, response, "CSV");
+            advancedExportFile(request, response, IAdministration.CSV);
         } catch (DocumentException | ClassNotFoundException | IOException | AxelorException e) {
             TraceBackService.trace(e);
         }
@@ -244,13 +244,13 @@ public class AdvancedExportController {
                 MetaModel metaModel = (MetaModel) request.getContext().get("metaModel");
                 allDataList = advancedExportService.showAdvancedExportData(advancedExportLineList, metaModel, criteria);
 
-                if(fileType.contentEquals("PDF")){
+                if(fileType.contentEquals(IAdministration.PDF)){
                     exportFile = advancedExportService.advancedExportPDF(exportFile, advancedExportLineList, allDataList, metaModel);
                 }
-                else if(fileType.contentEquals("EXCEL")){
+                else if(fileType.contentEquals(IAdministration.XLS)){
                     exportFile = advancedExportService.advancedExportExcel(exportFile, metaModel, allDataList, advancedExportLineList);
                 }
-                else if(fileType.contentEquals("CSV")){
+                else if(fileType.contentEquals(IAdministration.CSV)){
                     exportFile = advancedExportService.advancedExportCSV(exportFile, metaModel, allDataList, advancedExportLineList);
                 }
                 else {
@@ -320,7 +320,7 @@ public class AdvancedExportController {
 		List<AdvancedExportLine> advancedExportLines = advancedExportLineRepo.all().filter("self.advancedExport.id = :advancedExportId").bind("advancedExportId", advancedExport.getId()).fetch();
 		Collections.sort(advancedExportLines, (line1, line2) -> line1.getSequence() - line2.getSequence());
 		
-		if (advancedExportLines.size() > 0) {
+		if (!advancedExportLines.isEmpty()) {
 			
 			for (AdvancedExportLine advancedExportLine : advancedExportLines) {
 				Map<String, Object> fieldMap = new HashMap<>();
@@ -328,7 +328,7 @@ public class AdvancedExportController {
 				advancedExportLineList.add(fieldMap);
 			}
 			
-			if (advancedExportLineList.size() > 0) {
+			if (!advancedExportLineList.isEmpty()) {
 				
 				MetaModel metaModel = metaModelRepo.find(Long.valueOf(((Map)request.getContext().get("_metaModel")).get("id").toString()));
 				allDataList = advancedExportService.showAdvancedExportData(advancedExportLineList, metaModel, criteria);
