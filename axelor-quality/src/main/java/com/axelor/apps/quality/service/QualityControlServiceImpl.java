@@ -35,12 +35,12 @@ public class QualityControlServiceImpl  implements QualityControlService {
 	 * Copy control point model to control point and set it to the quality control.
 	 * @param qualityControl Set control point model to control point of this object.
 	 * @throws AxelorException
-	 * 
+	 *
 	 */
 	@Override
 	@Transactional
-	public void preFillOperations(QualityControl qualityControl) throws AxelorException {
-		
+	public void preFillOperations(QualityControl qualityControl) {
+
 		if (qualityControl.getQualityProcess() != null) {
 			QualityProcess process = qualityControl.getQualityProcess();
 
