@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.crm.web;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import com.axelor.apps.base.db.AppBase;
@@ -35,7 +34,6 @@ import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -140,14 +138,10 @@ public class ConvertLeadWizardController {
 		response.setCanClose(true);
 	}
 	
-	public void setConvertLeadIntoContact(ActionRequest request, ActionResponse response) { 
-		Context context = request.getContext();
-		Lead lead;
-		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
-			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		} else {
-			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
-		}
+	public void setConvertLeadIntoContact(ActionRequest request, ActionResponse response) throws AxelorException { 
+		
+		Lead lead = findLead(request);
+		
 		AppBase appBase = appBaseService.getAppBase();
 		response.setAttr("isContact", "value", false);
 		response.setAttr("firstName", "value", lead.getFirstName());
@@ -165,15 +159,12 @@ public class ConvertLeadWizardController {
 		response.setAttr("jobTitle", "value", lead.getJobTitle());
 		response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
 	}
-	
-	public void setConvertLeadIntoPartner(ActionRequest request, ActionResponse response) { 
-		Context context = request.getContext();
-		Lead lead;
-		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
-			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		} else {
-			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
-		}
+
+	public void setConvertLeadIntoPartner(ActionRequest request, ActionResponse response) throws AxelorException { 
+		
+		
+		Lead lead = findLead(request);
+		
 		AppBase appBase = appBaseService.getAppBase();
 		response.setAttr("isContact", "value", false);
 		response.setAttr("name", "value", lead.getEnterpriseName());
@@ -192,61 +183,44 @@ public class ConvertLeadWizardController {
 		response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
 	}
 	
-	public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response) { 
-        try {
-            Context context = request.getContext();
-            Lead lead;
-            if (context.getParent() != null
-                    && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
-                lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-            } else {
-                lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
-            }
+	public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response) throws AxelorException { 
+		
+    	Lead lead = findLead(request);
 
-            if (lead == null) {
-                throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.CONVERT_LEAD_MISSING));
-            }
-            AppBase appBase = appBaseService.getAppBase();
-            response.setAttr("lead", "value", lead);
-            response.setAttr("amount", "value", lead.getEstimatedBudget());
-            response.setAttr("description", "value", lead.getDescription());
-            response.setAttr("source", "value", lead.getSource());
-            response.setAttr("user", "value", lead.getUser());
-            response.setAttr("team", "value", lead.getTeam());
-            response.setAttr("salesStageSelect", "value", "1");
-            response.setAttr("webSite", "value", lead.getWebSite());
-            response.setAttr("source", "value", lead.getSource());
-            response.setAttr("department", "value", lead.getDepartment());
-            response.setAttr("team", "value", lead.getTeam());
-            response.setAttr("isCustomer", "value", true);
-            response.setAttr("partnerTypeSelect", "value", "1");
-            response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
+        AppBase appBase = appBaseService.getAppBase();
+        response.setAttr("lead", "value", lead);
+        response.setAttr("amount", "value", lead.getEstimatedBudget());
+        response.setAttr("description", "value", lead.getDescription());
+        response.setAttr("source", "value", lead.getSource());
+        response.setAttr("user", "value", lead.getUser());
+        response.setAttr("team", "value", lead.getTeam());
+        response.setAttr("salesStageSelect", "value", "1");
+        response.setAttr("webSite", "value", lead.getWebSite());
+        response.setAttr("source", "value", lead.getSource());
+        response.setAttr("department", "value", lead.getDepartment());
+        response.setAttr("team", "value", lead.getTeam());
+        response.setAttr("isCustomer", "value", true);
+        response.setAttr("partnerTypeSelect", "value", "1");
+        response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
 
-            Company company = null;
+        Company company = null;
 
-            if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
-                company = lead.getUser().getActiveCompany();
-            } else if (companyRepo.all().count() == 1) {
-                company = companyRepo.all().fetchOne();
-            }
+        if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
+            company = lead.getUser().getActiveCompany();
+        } else if (companyRepo.all().count() == 1) {
+            company = companyRepo.all().fetchOne();
+        }
 
-            if (company != null) {
-                response.setAttr("company", "value", company);
-                response.setAttr("currency", "value", company.getCurrency());
-            }
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-		}
+        if (company != null) {
+            response.setAttr("company", "value", company);
+            response.setAttr("currency", "value", company.getCurrency());
+        }
 	}
 	
-	public void setConvertLeadWizardAddress(ActionRequest request, ActionResponse response) { 
-		Context context = request.getContext();
-		Lead lead;
-		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
-			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		} else {
-			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
-		}
+	public void setDefaults(ActionRequest request, ActionResponse response) throws AxelorException { 
+		
+		Lead lead = findLead(request);
+		
 		response.setAttr("$primaryAddress", "value", lead.getPrimaryAddress());
 		response.setAttr("$primaryCity", "value", lead.getPrimaryCity());
 		response.setAttr("$primaryState", "value", lead.getPrimaryState());
@@ -257,62 +231,73 @@ public class ConvertLeadWizardController {
 		response.setAttr("$otherState", "value", lead.getOtherState());
 		response.setAttr("$otherPostalCode", "value", lead.getOtherPostalCode());
 		response.setAttr("$otherCountry", "value", lead.getOtherCountry());
+		response.setAttr("$hasConvertIntoPartner", "value", true);
 	}
 	
-	public void setConvertLeadCallEvent(ActionRequest request, ActionResponse response) { 
-		Context context = request.getContext();
-		Lead lead;
-		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
-			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		} else {
-			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
-		}
-		response.setAttr("typeSelect", "value", "1");
+	public void setConvertLeadCallEvent(ActionRequest request, ActionResponse response) throws AxelorException { 
+		
+		Lead lead = findLead(request);
+		
+		response.setAttr("typeSelect", "value", 1);
 		response.setAttr("lead", "value", lead);
 		response.setAttr("description", "value", lead.getDescription());
 		response.setAttr("user", "value", lead.getUser());
 		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("statusSelect", "value", "1");
-		response.setAttr("startDateTime", "value", LocalDateTime.now());
+		response.setAttr("statusSelect", "value", 1);
+		response.setAttr("startDateTime", "value", appBaseService.getTodayDateTime());
 		response.setAttr("duration", "value", 0);
-		response.setAttr("callTypeSelect", "value", "2");
+		response.setAttr("callTypeSelect", "value", 2);
 	}
 	
-	public void setConvertLeadMeetingEvent(ActionRequest request, ActionResponse response) { 
-		Context context = request.getContext();
-		Lead lead;
-		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
-			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		} else {
-			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
-		}
-		response.setAttr("typeSelect", "value", "2");
+	public void setConvertLeadMeetingEvent(ActionRequest request, ActionResponse response) throws AxelorException { 
+		
+		Lead lead = findLead(request);
+		
+		response.setAttr("typeSelect", "value", 2);
 		response.setAttr("lead", "value", lead);
 		response.setAttr("description", "value", lead.getDescription());
 		response.setAttr("user", "value", lead.getUser());
 		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("statusSelect", "value", "1");
-		response.setAttr("startDateTime", "value", LocalDateTime.now());
+		response.setAttr("statusSelect", "value", 1);
+		response.setAttr("startDateTime", "value", appBaseService.getTodayDateTime());
 		response.setAttr("duration", "value", 0);
 	}
 
-	public void setConvertLeadTaskEvent(ActionRequest request, ActionResponse response) { 
-		Context context = request.getContext();
-		Lead lead;
-		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
-			lead = leadRepo.find(Long.parseLong(((Map) context.getParent().get("_lead")).get("id").toString()));
-		} else {
-			lead = leadRepo.find(Long.parseLong(((Map) context.get("_lead")).get("id").toString()));
-		}
-		response.setAttr("typeSelect", "value", "3");
+	public void setConvertLeadTaskEvent(ActionRequest request, ActionResponse response) throws AxelorException { 
+		
+		Lead lead = findLead(request);
+		
+		response.setAttr("typeSelect", "value", 3);
 		response.setAttr("lead", "value", lead);
 		response.setAttr("description", "value", lead.getDescription());
 		response.setAttr("user", "value", lead.getUser());
 		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("statusSelect", "value", "11");
-		response.setAttr("startDateTime", "value", LocalDateTime.now());
+		response.setAttr("statusSelect", "value", 11);
+		response.setAttr("startDateTime", "value", appBaseService.getTodayDateTime());
 		response.setAttr("progressSelect", "value", 0);
 		response.setAttr("duration", "value", 0);
+	}
+	
+	private Lead findLead(ActionRequest request) throws AxelorException {
+		
+		Context context = request.getContext();
+		
+		Lead lead = null;
+		
+		if (context.getParent() != null && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+			context = context.getParent();
+		}
+		
+		Map leadMap = (Map) context.get("_lead");
+		if (leadMap != null && leadMap.get("id") != null) {
+			lead = leadRepo.find(Long.parseLong(leadMap.get("id").toString()));
+		}
+		
+		if (lead == null) {
+            throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.CONVERT_LEAD_MISSING));
+        }
+		
+		return lead;
 	}
 
 }

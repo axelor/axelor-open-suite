@@ -11,6 +11,7 @@
 - Add en to fr translation in Barcode type configuration
 - Mail Account: If the boolean "isValid" is true, allow user to disabled it 
 - Product: If purchase module is not installed, hide boolean "Define the shipping coef by partner" and "Shipping Coef."
+- Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab.  
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -24,6 +25,7 @@
 - Menus permissions adapted to v5 for demoCRM and demoERP users
 - Fiscal Position interface reworked and moved from Account to Base module
 - Fix empty partner list from batch report.
+- Convert Lead: Fix type,call type and lead field of converted events. 
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features

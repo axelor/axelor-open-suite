@@ -3,23 +3,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-	<form name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" width="large" onNew="action-convert-lead-wizard-address,action-record-convert-lead-wizard-set-is-prospect" canSave="false">
+	<form name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" width="large" onNew="action-convert-lead-wizard-method-set-defaults" canSave="false">
 	  	<toolbar>
 		    <button name="validate" title="Validate" onClick="action-convert-lead-condition-check-fields,action-convert-lead-validate-confirm-validate-lead,action-lead-method-convert-lead"/>
 	  	</toolbar>
 	  	<panel name="main" >
-		    <field name="$hasConvertIntoProspect" title="Convert into Prospect ?" widget="Boolean"/>
-		    <field name="$selectProspectPartner" title="Or Select Prospect" widget="ManyToOne" domain="self.isProspect = 'true'" form-view="partner-form" grid-view="partner-grid" target="com.axelor.apps.base.db.Partner"/>
-		    <field name="$hasConvertIntoContact" title="Convert into Contact ?" widget="Boolean"/>
-		    <field name="$selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" target="com.axelor.apps.base.db.Partner"/>
 		    <field name="$hasConvertIntoPartner" title="Convert into Partner ?" widget="Boolean"/>
 		    <field name="$selectPartner" title="Or Select Partner" widget="ManyToOne" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid" target="com.axelor.apps.base.db.Partner"/>
-		   	<field name="$hasConvertIntoOpportunity" title="Create into Opportunity ?" widget="Boolean"/>
+		    <field name="$hasConvertIntoContact" title="Convert into Contact ?" widget="Boolean"/>
+		    <field name="$selectContactPartner" title="Or Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" target="com.axelor.apps.base.db.Partner"/>
+		    <field name="$hasConvertIntoOpportunity" title="Create into Opportunity ?" widget="Boolean"/>
 	     	<field name="$hasConvertIntoCall" title="Log a call ?" widget="Boolean"/>
 		    <field name="$hasConvertIntoMeeting" title="Schedule a meeting ?" widget="Boolean"/>
 		    <field name="$hasConvertIntoTask" title="Create a task ?" widget="Boolean"/>
 	 	</panel>
-	 	<panel-tabs showIf="$hasConvertIntoContact || $hasConvertIntoPartner || $hasConvertIntoOpportunity || $hasConvertIntoCall || $hasConvertIntoMeeting || $hasConvertIntoTask || $hasConvertIntoProspect">
+	 	<panel-tabs showIf="$hasConvertIntoContact || $hasConvertIntoPartner || $hasConvertIntoOpportunity || $hasConvertIntoCall || $hasConvertIntoMeeting || $hasConvertIntoTask">
 			<panel name="convertIntoContact" title="Convert into Contact" showIf="$hasConvertIntoContact">
 				<field name="$contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-contact" >
@@ -38,12 +36,12 @@
                         <field name="source" hidden="true"/>
 					</editor>
 				</field>
-						<label title="Address"/>
-						<field name="$primaryAddress" placeholder="Address" showTitle="false" type="string" colSpan="12"/>
-						<field name="$primaryCity" placeholder="City" showTitle="false" type="string" colSpan="4"/>
-						<field name="$primaryState" placeholder="State" showTitle="false" type="string" colSpan="4"/>
-						<field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string" colSpan="4"/>
-						<field colSpan="12" name="$primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+				<label title="Address"/>
+				<field name="$primaryAddress" placeholder="Address" showTitle="false" type="string" colSpan="12"/>
+				<field name="$primaryCity" placeholder="City" showTitle="false" type="string" colSpan="4"/>
+				<field name="$primaryState" placeholder="State" showTitle="false" type="string" colSpan="4"/>
+				<field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string" colSpan="4"/>
+				<field colSpan="12" name="$primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 				<field name="$contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-contact">
 						<label title="Notes"/>
@@ -69,8 +67,9 @@
 						<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
 						
 						<label title="Informations" colSpan="12"/>
-		      			<field name="isCustomer" showTitle="true" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
-		      			<field name="isSupplier" showTitle="true" hideIf="partnerTypeSelect == 2 || isContact"/>
+						<field name="isProspect" showTitle="true" colSpan="4" hideIf="partnerTypeSelect == 2 || isContact" onChange="action-partner-attrs-unset-customer"/>
+		      			<field name="isCustomer" showTitle="true" colSpan="4" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)" onChange="action-partner-attrs-unset-prospect"/>
+		      			<field name="isSupplier" showTitle="true" colSpan="4" hideIf="partnerTypeSelect == 2 || isContact"/>
 		      			
 		    			<label title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12"/>
 				        <field name="partnerCategory" widget="SuggestBox" hideIf="partnerTypeSelect == 2" form-view="partner-category-form" grid-view="partner-category-grid"/>
@@ -84,20 +83,18 @@
                         <field name="source" hidden="true"/>
                     </editor>
 				</field>
-					    
-					    <label title="Invoicing Address" colSpan="12"/>
-					    <field name="$primaryAddress" placeholder="Address" showTitle="false" type="string"/>
-					    <field name="$primaryCity" placeholder="City" showTitle="false" type="string"/>
-					    <field name="$primaryState" placeholder="State" showTitle="false" type="string"/>
-					    <field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
-					    <field name="$primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
-					    <label title="Delivery Address" colSpan="12"/>
-				        <field name="$otherAddress" placeholder="Address" showTitle="false" type="string"/>
-				        <field name="$otherCity"  placeholder="City" showTitle="false" type="string"/>
-				        <field name="$otherState" placeholder="State" showTitle="false" type="string"/>
-				        <field name="$otherPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
-				        <field name="$otherCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
-	   			
+			    <label title="Invoicing Address" colSpan="12"/>
+			    <field name="$primaryAddress" placeholder="Address" showTitle="false" type="string"/>
+			    <field name="$primaryCity" placeholder="City" showTitle="false" type="string"/>
+			    <field name="$primaryState" placeholder="State" showTitle="false" type="string"/>
+			    <field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
+			    <field name="$primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+			    <label title="Delivery Address" colSpan="12"/>
+		        <field name="$otherAddress" placeholder="Address" showTitle="false" type="string"/>
+		        <field name="$otherCity"  placeholder="City" showTitle="false" type="string"/>
+		        <field name="$otherState" placeholder="State" showTitle="false" type="string"/>
+		        <field name="$otherPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
+		        <field name="$otherCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 	   			<field name="$partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-partner">
 	   					<label title="Contact" colSpan="12"/>
@@ -120,46 +117,6 @@
                         <field name="source" hidden="true"/>
 					</editor>
 				</field>
-			</panel>
-			<panel name="convertIntoProspect" title="Convert into Prospect" showIf="$hasConvertIntoProspect" onTabSelect="action-partner-attrs-change-name">
-				<field name="$prospectPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="partner-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
-					<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-partner">
-						<label title="Personal" colSpan="12"/>
-						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
-					    <field name="partnerTypeSelect" showTitle="false" onChange="action-group-crm-convlead-partnertype-onchange"/>
-						<field name="titleSelect"  showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
-						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
-						<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
-						
-						<label title="Informations" colSpan="12"/>
-		      			<field name="isProspect" showTitle="true" hideIf="partnerTypeSelect == 2"/>
-		      			
-		    			<label title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12"/>
-				        <field name="partnerCategory" widget="SuggestBox" hideIf="partnerTypeSelect == 2" form-view="partner-category-form" grid-view="partner-category-grid"/>
-				        <field name="industrySector" widget="SuggestBox" hideIf="partnerTypeSelect == 2"/>
-				        <field name="department" hideIf="partnerTypeSelect == 2" form-view="department-form" grid-view="department-grid"/>
-				        <field name="saleTurnover" hideIf="partnerTypeSelect == 2"/>
-				        <field name="nbrEmployees" hideIf="partnerTypeSelect == 2"/>
-				        <field name="registrationCode" hideIf="partnerTypeSelect == 2"/>
-				        <field name="taxNbr" hideIf="partnerTypeSelect == 2"/>
-				        <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1" form-view="partner-form" grid-view="partner-grid"/>
-					    <field name="source" hidden="true"/>
-                    </editor>
-				</field>
-					    
-					    <label title="Invoicing Address" colSpan="12"/>
-					    <field name="$primaryAddress" placeholder="Address" showTitle="false" type="string"/>
-					    <field name="$primaryCity" placeholder="City" showTitle="false" type="string"/>
-					    <field name="$primaryState" placeholder="State" showTitle="false" type="string"/>
-					    <field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
-					    <field name="$primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
-					    <label title="Delivery Address" colSpan="12"/>
-				        <field name="$otherAddress" placeholder="Address" showTitle="false" type="string"/>
-				        <field name="$otherCity"  placeholder="City" showTitle="false" type="string"/>
-				        <field name="$otherState" placeholder="State" showTitle="false" type="string"/>
-				        <field name="$otherPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
-				        <field name="$otherCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
-	   			
 			</panel>
 			<panel name="createIntoOpportunity" title="Create into Opportunity" showIf="$hasConvertIntoOpportunity">
 				<field name="$opportunity" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="opportunity-lead-converted-form" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one">
@@ -185,14 +142,7 @@
 				        <field name="worstCase" colSpan="3"/>
 					    <label title="Description" css="label-bold"/>
 						<field name="description" showTitle="false" colSpan="12" widget="TEXT" />
-					    <label title="Dates" css="label-bold"/>
-					    <spacer/>
-					    <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time" colSpan="4"/>
-					    <field name="duration" widget="duration" onChange="action-event-method-compute-from-duration" colSpan="4" x-big="true"/>
-					    <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time" colSpan="4"/>
-					    <label title="Assigned to" css="label-bold"/>
-					    <spacer/>
-					    <field name="user" colSpan="4" canNew="false" canEdit="false" canView="false"/>
+					    <field name="user" showTitle="true" canNew="false" canEdit="false" canView="false"  colSpan="4"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain" colSpan="4"/>
 					    <field name="company" widget="SuggestBox" colSpan="4"/>
                         <field name="lead" hidden="true"/>
@@ -220,6 +170,8 @@
 					    <spacer/>
 					    <field name="user" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain"/>
+					    <field name="typeSelect" hidden="true" />
+					    <field name="lead" hidden="true"/>
 					</editor>
 				</field>
 			</panel>
@@ -243,6 +195,8 @@
 					    <spacer/>
 					    <field name="user" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain"/>
+					    <field name="typeSelect" hidden="true" />
+					    <field name="lead" hidden="true"/>
 					</editor>
 				</field>
 			</panel>
@@ -267,6 +221,8 @@
 					    <spacer/>
 					    <field name="user" canNew="false" canEdit="false" canView="false"/>
 					    <field name="team" onSelect="action-event-attrs-team-domain"/>
+					    <field name="typeSelect" hidden="true" />
+					    <field name="lead" hidden="true"/>
 					</editor>
 				</field>
 			</panel>
@@ -285,8 +241,8 @@
     	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadIntoOpportunity"/>
     </action-method>
 
-    <action-method name="action-convert-lead-wizard-address">
-    	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadWizardAddress"/>
+    <action-method name="action-convert-lead-wizard-method-set-defaults">
+    	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setDefaults"/>
     </action-method>
 
     <action-method name="action-convert-lead-wizard-default-call-event">
@@ -301,10 +257,6 @@
     	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadTaskEvent"/>
     </action-method>
     
-     <action-record name="action-record-convert-lead-wizard-set-is-prospect" model="com.axelor.apps.base.db.Wizard">
-    	<field name="$hasConvertIntoProspect" expr="eval: true"/>
-    </action-record>
-    
     <action-condition name="action-convert-lead-condition-check-fields">
     	<check field="opportunity.name" error="Opportunity name must be defined." if="hasConvertIntoOpportunity &amp;&amp; !opportunity.name"/>
     </action-condition>
@@ -313,19 +265,6 @@
        <alert message="Are you sure to convert lead ?"/>
     </action-validate>
 
-<!-- 	<action-record name="action-convert-lead-wizard-address" model="com.axelor.apps.base.db.Wizard"> -->
-<!-- 	    <field name="$primaryAddress" expr="eval: _lead.primaryAddress"/> -->
-<!--     	<field name="$primaryCity" expr="eval: _lead.primaryCity"/> -->
-<!--     	<field name="$primaryState" expr="eval: _lead.primaryState"/> -->
-<!--     	<field name="$primaryPostalCode" expr="eval: _lead.primaryPostalCode"/> -->
-<!--     	<field name="$primaryCountry" expr="eval: _lead.primaryCountry"/> -->
-<!--     	<field name="$otherAddress" expr="eval: _lead.otherAddress"/> -->
-<!--     	<field name="$otherCity" expr="eval: _lead.otherCity"/> -->
-<!--     	<field name="$otherState" expr="eval: _lead.otherState"/> -->
-<!--     	<field name="$otherPostalCode" expr="eval: _lead.otherPostalCode"/> -->
-<!--     	<field name="$otherCountry" expr="eval: _lead.otherCountry"/> -->
-<!-- 	</action-record> -->
-	
 	<form name="contact-lead-converted-form" title="Contact" model="com.axelor.apps.base.db.Partner"
 		onNew="action-partner-contact-record-default"
 		onLoad="action-convert-lead-wizard-attrs-default-contact-address,action-partner-attrs-change-name" >
@@ -399,9 +338,9 @@
 		<panel-tabs>
 		  <panel  name="informations" title="Informations">
 		    <panel hideIf="isContact" colSpan="12" >
-		      <field name="isCustomer" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
-		      <field name="isSupplier" hideIf="partnerTypeSelect == 2 || isContact"/>
-		      <field name="isProspect"/>
+  				<field name="isProspect" showTitle="true" colSpan="4" hideIf="partnerTypeSelect == 2 || isContact" onChange="action-partner-attrs-unset-customer"/>
+      			<field name="isCustomer" showTitle="true" colSpan="4" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)" onChange="action-partner-attrs-unset-prospect"/>
+      			<field name="isSupplier" showTitle="true" colSpan="4" hideIf="partnerTypeSelect == 2 || isContact"/>
 		    </panel>
 		    <panel name="partnerDetails" title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="12">
 		        <field name="partnerCategory" widget="SuggestBox"/>
@@ -460,19 +399,6 @@
     	<field name="otherCountry" expr="action:action-country-record-find-other-country-by-id" if="_lead.otherCountry"/>
     </action-record>
     
-    
-<!--     <action-attrs name="action-convert-lead-wizard-attrs-default-partner"> -->
-<!-- 	    <attribute for="primaryAddress" name="value" expr="eval: _parent._lead.primaryAddress"/> -->
-<!--     	<attribute for="primaryCity" name="value" expr="eval: _parent._lead.primaryCity"/> -->
-<!--     	<attribute for="primaryState" name="value" expr="eval: _parent._lead.primaryState"/> -->
-<!--     	<attribute for="primaryPostalCode" name="value" expr="eval: _parent._lead.primaryPostalCode"/> -->
-<!--     	<attribute for="primaryCountry" name="value" expr="eval: _parent._lead.primaryCountry"/> -->
-<!--     	<attribute for="otherAddress" name="value" expr="eval: _parent._lead.otherAddress"/> -->
-<!--     	<attribute for="otherCity" name="value" expr="eval: _parent._lead.otherCity"/> -->
-<!--     	<attribute for="otherState" name="value" expr="eval: _parent._lead.otherState"/> -->
-<!--     	<attribute for="otherPostalCode" name="value" expr="eval: _parent._lead.otherPostalCode"/> -->
-<!--     	<attribute for="otherCountry" name="value" expr="eval: _parent._lead.otherCountry"/> -->
-<!-- 	</action-attrs> -->
 
     <action-record name="action-convert-lead-wizard-attrs-default-contact-address" model="com.axelor.apps.base.db.Partner">
 		<field name="primaryAddress" expr="eval: _lead.primaryAddress"/>
@@ -482,13 +408,6 @@
     	<field name="primaryCountry" expr="action:action-country-record-find-primary-country-by-id" if="_lead.primaryCountry"/>
     </action-record>
     
-<!--     <action-attrs name="action-convert-lead-wizard-attrs-default-contact"> -->
-<!-- 	    <attribute for="primaryAddress" name="value" expr="eval: _parent._lead.primaryAddress"/> -->
-<!--     	<attribute for="primaryCity" name="value" expr="eval: _parent._lead.primaryCity"/> -->
-<!--     	<attribute for="primaryState" name="value" expr="eval: _parent._lead.primaryState"/> -->
-<!--     	<attribute for="primaryPostalCode" name="value" expr="eval: _parent._lead.primaryPostalCode"/> -->
-<!--     	<attribute for="primaryCountry" name="value" expr="eval: _parent._lead.primaryCountry"/> -->
-<!-- 	</action-attrs> -->
 
     <action-record name="action-country-record-find-primary-country-by-id"
     	model="com.axelor.apps.base.db.Country"
@@ -536,7 +455,7 @@
 	</form>
 
 	
-	<form   name="call-lead-converted-form" title="Call" model="com.axelor.apps.crm.db.Event">
+	<form name="call-lead-converted-form" title="Call" model="com.axelor.apps.crm.db.Event">
 	  <panel name="informations" title="Informations">
 	    <field name="subject"/>
 	    <field name="callTypeSelect"/>
@@ -557,7 +476,7 @@
 	  </panel>
 	</form>
 
-	<form   name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event">
+	<form name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event">
 	  <panel name="informations" title="Informations">
 	    <field name="subject"  />
 	    <field name="statusSelect"/>
@@ -578,7 +497,7 @@
 	  </panel>
 	</form>
 
-	<form   name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event">
+	<form name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event">
 	  <panel name="informations" title="Informations">
 	    <field name="subject" />
 	    <field name="statusSelect"/>
