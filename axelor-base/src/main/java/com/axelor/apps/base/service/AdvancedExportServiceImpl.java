@@ -30,7 +30,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-
 import javax.persistence.Query;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -466,36 +465,29 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 					selectNormalField = "";
 				}
 				if (i != 0) {
-					for (int j = 0; j <= i; j++) {
-						alias = isKeyword(splitField, j);
-						if (j == 0) {
-							if (nbrField > 0 && !joinFieldSet.isEmpty()) {
-								joinFieldSet.add("LEFT JOIN self." + splitField[j] + " " + alias);
-								temp = alias;
-							} else {
-								joinFieldSet.add("self." + splitField[j] + " " + alias);
-								temp = alias;
-							}
-						} else {
-							if (!temp.equals(splitField[i])) {
-								joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + alias);
-								temp = alias;
-							}
-						}
-					}
+                    alias = isKeyword(splitField, 0);
+                    if (nbrField > 0 && !joinFieldSet.isEmpty()) {
+                        joinFieldSet.add("LEFT JOIN ");
+                    }
+                    joinFieldSet.add("self." + splitField[0] + " " + alias);
+                    temp = alias;
+
+                    for (int j = 1; j <= i; j++) {
+                        alias = isKeyword(splitField, j);
+                        if (!temp.equals(splitField[i])) {
+                            joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + alias);
+                            temp = alias;
+                        }
+                    }
 				} else {
 					alias = isKeyword(splitField, i);
-					if (nbrField > 0 && !joinFieldSet.isEmpty()) {
-						if (!joinFieldSet.contains("self." + splitField[i] + " " + alias)) {
-							joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + alias);
-							temp = alias;
-						} else {
-							temp = alias;
-						}
+					if (nbrField > 0 && !joinFieldSet.isEmpty() &&
+					        !joinFieldSet.contains("self." + splitField[i] + " " + alias)) {
+					    joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + alias);
 					} else {
 						joinFieldSet.add("self." + splitField[i] + " " + alias);
-						temp = alias;
 					}
+					temp = alias;
 				}
 					
 			} else {
@@ -504,32 +496,23 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 				
 				if (isSelectionField) {
 					if (i == 0) {
-						
-						selectSelectionField = "";
-						if (language.equals("fr")) {
-							selectSelectionField += ("mt_"+(mt)) + ".message";
-							
-						} else {
-							selectSelectionField += ("msi_"+(msi)) + ".title";
-						}
-					} else {
-						
-						if (language.equals("fr")) {
-							selectSelectionField += ("mt_"+(mt)) + ".message";
-							
-						} else {
-							selectSelectionField += ("msi_"+(msi)) + ".title";
-						}
+                        selectSelectionField = "";
 					}
+                    if (language.equals("fr")) {
+                        selectSelectionField += ("mt_" + (mt)) + ".message";
+
+                    } else {
+                        selectSelectionField += ("msi_" + (msi)) + ".title";
+                    }
+
 					isSelectionField = false;
 				} else {
 
 					if (i == 0) {
 						selectNormalField = "";
-						selectNormalField += "self." + splitField[i];
-					} else {
-						selectNormalField += "." + splitField[i];
+						selectNormalField += "self";
 					}
+                    selectNormalField += "." + splitField[i];
 				}
 			}
 			getExportData(splitField, i+1, subMetaModel);
