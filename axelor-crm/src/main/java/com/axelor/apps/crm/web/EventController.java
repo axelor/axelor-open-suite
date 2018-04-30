@@ -180,7 +180,7 @@ public class EventController {
 				lead.setStatusSelect(LeadRepository.LEAD_STATUS_ASSIGNED);
 			leadService.saveLead(lead);
 		}
-		else if(!((List)request.getContext().get("_ids")).isEmpty()){
+		else if(((List)request.getContext().get("_ids")) != null){
 			for(Lead lead : leadRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				lead.setUser(AuthUtils.getUser());
 				if(lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW)
