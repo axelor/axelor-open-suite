@@ -80,6 +80,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	
 	public void computeSeq(SaleOrder saleOrder){
 		try{
+		    if (saleOrder.getId() == null) {
+		        saleOrder = super.save(saleOrder);
+		    }
             if (Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()) && !saleOrder.getTemplate()) {
                 if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT) {
                     saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
