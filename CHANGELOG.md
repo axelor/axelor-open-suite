@@ -24,6 +24,7 @@
 - Menus permissions adapted to v5 for demoCRM and demoERP users
 - Fiscal Position interface reworked and moved from Account to Base module
 - Fix empty partner list from batch report.
+- Fix duplicate object wizard translation.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
