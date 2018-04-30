@@ -11,6 +11,7 @@
 - Add en to fr translation in Barcode type configuration
 - Mail Account: If the boolean "isValid" is true, allow user to disabled it 
 - Product: If purchase module is not installed, hide boolean "Define the shipping coef by partner" and "Shipping Coef."
+- Message Template: Import demo data per module (or per app).
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.

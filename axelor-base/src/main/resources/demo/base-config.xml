@@ -52,8 +52,6 @@
 		<bind to="language" search="self.code = :languageCode"/>
 	</input>
     
-    <input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.importId = :importId"/>
-    
 	<input file="base_team.csv" separator=";" type="com.axelor.team.db.Team" search="self.importId = :importId">
 		<bind column="members" to="members" search="self.code in :members" eval="members.split('\\|') as List" />
 	</input>
