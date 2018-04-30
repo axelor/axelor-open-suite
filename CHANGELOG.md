@@ -23,7 +23,7 @@
 - Menu "Product variant attributes" displayed only if the boolean "manageProductVariants" is true in Base app
 - Menus permissions adapted to v5 for demoCRM and demoERP users
 - Fiscal Position interface reworked and moved from Account to Base module
-
+- Fix empty partner list from batch report.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
