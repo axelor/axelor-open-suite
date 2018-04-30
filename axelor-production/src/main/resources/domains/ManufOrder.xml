@@ -45,6 +45,7 @@
   	
  	<datetime name="realStartDateT" title="Real start date"/>
   	<datetime name="realEndDateT" title="Real end date"/>
+  	<decimal name="endTimeDifference" title="Time difference (Minutes)"/>
     
     <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock moves in" mappedBy="inManufOrder"/>
     <one-to-many name="outStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock moves out" mappedBy="outManufOrder"/>
