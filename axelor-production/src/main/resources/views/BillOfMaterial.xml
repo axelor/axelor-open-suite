@@ -34,13 +34,13 @@
             <field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
             <button name="setDefaultBOMOnProduct"
-                title="Set default bill of material on product"
-                onClick="save,action-bill-of-material-method-set-default-bill-of-material-on-product"
+                title="Define as default bill of material of product"
+                onClick="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
                 colSpan="4"
                 hideIf="product.defaultBillOfMaterial.id == id"/>
             <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
             <field name="$defaultBOMOnProduct" showTitle="false" colSpan="3">
-                <viewer>
+                <viewer depends="$defaultBOMOnProduct, product.defaultBillOfMaterial">
                     <![CDATA[
                         <h4 class="text-right">
                             <span class="label label-default" style="background-color: #009900; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.product.defaultBillOfMaterial.id == record.id" x-translate>Default Bill of material</span>
@@ -187,8 +187,8 @@
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="openBomTree" />
     </action-method>
 
-    <action-method name="action-bill-of-material-method-set-default-bill-of-material-on-product">
-        <call class="com.axelor.apps.production.web.BillOfMaterialController" method="setDefaultBillOfMaterial"/>
+    <action-method name="action-bill-of-material-method-set-bill-of-material-as-default-on-product">
+        <call class="com.axelor.apps.production.web.BillOfMaterialController" method="setBillOfMaterialAsDefault"/>
     </action-method>
 
     <action-attrs name="action-bill-of-material-attrs-price-and-qty-digits">

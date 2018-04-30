@@ -22,7 +22,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
@@ -41,7 +40,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 
 @Singleton
 public class BillOfMaterialController {
@@ -169,17 +167,12 @@ public class BillOfMaterialController {
 				
 	}
 
-    @Transactional
-    public void setDefaultBillOfMaterial(Product product, BillOfMaterial billOfMaterial) {
-        product.setDefaultBillOfMaterial(billOfMaterial);
-    }
-
-    public void setDefaultBillOfMaterial(ActionRequest request, ActionResponse response) {
+    public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {
         try {
             BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
             billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
 
-            setDefaultBillOfMaterial(billOfMaterial.getProduct(), billOfMaterial);
+            billOfMaterialService.setBillOfMaterialAsDefault(billOfMaterial);
 
             response.setReload(true);
         } catch (Exception e) {

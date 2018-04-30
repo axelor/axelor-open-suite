@@ -42,7 +42,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -102,7 +101,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
 	}
 
-	@Transactional
+	@Override
+    @Transactional
 	public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial){
 		
 		BillOfMaterial copy = billOfMaterialRepo.copy(billOfMaterial, true);
@@ -239,5 +239,11 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 		}
 		
 	}
+
+    @Override
+    @Transactional
+    public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) {
+	    billOfMaterial.getProduct().setDefaultBillOfMaterial(billOfMaterial);
+    }
 
 }
