@@ -43,6 +43,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeVehicleRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowParamRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
@@ -110,7 +111,7 @@ public class HumanResourceMobileController {
 			expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
 			expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
-			expenseLine.setProject(Beans.get(ProjectRepository.class).find(new Long(request.getData().get("projectTask").toString())));
+			expenseLine.setProject(Beans.get(ProjectRepository.class).find(Long.valueOf(request.getData().get("projectTask").toString())));
 
 			HRConfigService hrConfigService = Beans.get(HRConfigService.class);
 			HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
@@ -122,7 +123,7 @@ public class HumanResourceMobileController {
 				KilometricAllowParamRepository kilometricAllowParamRepo = Beans.get(KilometricAllowParamRepository.class);
 
 				expenseLine.setKilometricAllowParam(kilometricAllowParamRepo
-						.find(new Long(request.getData().get("kilometricAllowParam").toString())));
+						.find(Long.valueOf(request.getData().get("kilometricAllowParam").toString())));
 
 				expenseLine.setTotalAmount(
 						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
@@ -208,7 +209,7 @@ public class HumanResourceMobileController {
 	 *
 	 * payload:
 	 * { "data": {
-	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertExpenseLine",
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine",
 	 * 		"project": 2,
 	 * 		"expenseProduct": 10,
 	 * 		"date": "2018-02-22",
@@ -216,18 +217,26 @@ public class HumanResourceMobileController {
 	 * 		"toInvoice": "no",
 	 * 		"amountWithoutVat": 1,
 	 *	 	"vatAmount": 2,
-	 *		"justification": 0
+	 *		"justification": 0,
+	 *      "id": 2
 	 * } }
 	 */
 	@Transactional
-	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
+	public void insertOrUpdateExpenseLine(ActionRequest request, ActionResponse response) {
 		User user = AuthUtils.getUser();
 		Map<String, Object> requestData = request.getData();
-		Project project = Beans.get(ProjectRepository.class).find(new Long(requestData.get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(requestData.get("expenseType").toString()));
+		Project project = Beans.get(ProjectRepository.class).find(Long.valueOf(requestData.get("project").toString()));
+		Product product = Beans.get(ProductRepository.class).find(Long.valueOf(requestData.get("expenseType").toString()));
 		if (user != null) {
-			Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
-			ExpenseLine expenseLine = new ExpenseLine();
+            Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
+
+            ExpenseLine expenseLine;
+            Object idO = requestData.get("id");
+            if (idO != null) {
+                expenseLine = Beans.get(ExpenseLineRepository.class).find(Long.valueOf(idO.toString()));
+            } else {
+                expenseLine = new ExpenseLine();
+            }
 			expenseLine.setExpenseDate(LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
 			expenseLine.setComments(requestData.get("comments").toString());
 			expenseLine.setExpenseProduct(product);
@@ -238,6 +247,7 @@ public class HumanResourceMobileController {
 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
 			expenseLine.setToInvoice(new Boolean(requestData.get("toInvoice").toString()));
 			String justification  = (String) requestData.get("justification");
+
 			if (!Strings.isNullOrEmpty(justification)) {
 				expenseLine.setJustification(Base64.getDecoder().decode(justification));
 			}
@@ -312,8 +322,8 @@ public class HumanResourceMobileController {
 	public void insertTSLine(ActionRequest request, ActionResponse response){
 
 		User user = AuthUtils.getUser();
-		Project project = Beans.get(ProjectRepository.class).find(new Long(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
+		Project project = Beans.get(ProjectRepository.class).find(Long.valueOf(request.getData().get("project").toString()));
+		Product product = Beans.get(ProductRepository.class).find(Long.valueOf(request.getData().get("activity").toString()));
 		LocalDate date = LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
 		TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
 		TimesheetService timesheetService = Beans.get(TimesheetService.class);
@@ -362,7 +372,7 @@ public class HumanResourceMobileController {
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 		User user = AuthUtils.getUser();
 		Map<String, Object> requestData = request.getData();
-		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(requestData.get("leaveReason").toString()));
+		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(Long.valueOf(requestData.get("leaveReason").toString()));
 		if (user.getEmployee() == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), user.getName());
 		}
