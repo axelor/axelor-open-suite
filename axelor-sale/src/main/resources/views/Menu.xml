@@ -66,6 +66,7 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
+        <context name="todayDate" expr="eval: __config__.app.getTodayDate()"/>
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="25"
@@ -83,6 +84,7 @@
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
 		<context name="status" expr="3"/>
+        <context name="todayDate" expr="eval: __config__.app.getTodayDate()"/>
 	</action-view>
 	
 	<menuitem title="Historical" name="sc-root-sale-historical" parent="sc-root-sale" order="30"/>
