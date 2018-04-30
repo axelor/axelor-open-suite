@@ -8,6 +8,9 @@
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
 - timesheet: Hide create button on if timsheet editor is disabled from configuration.
+- Add en to fr translation in Barcode type configuration
+- Mail Account: If the boolean "isValid" is true, allow user to disabled it 
+- Product: If purchase module is not installed, hide boolean "Define the shipping coef by partner" and "Shipping Coef."
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
