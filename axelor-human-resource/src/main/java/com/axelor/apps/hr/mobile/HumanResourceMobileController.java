@@ -448,6 +448,7 @@ public class HumanResourceMobileController {
                         Map<String, String> map = new HashMap<>();
                         map.put("name", leaveLine.getName());
                         map.put("id", leaveLine.getLeaveReason().getId().toString());
+                        map.put("quantity", leaveLine.getQuantity().toString());
                         dataList.add(map);
                     }
                     tmpName = name;
