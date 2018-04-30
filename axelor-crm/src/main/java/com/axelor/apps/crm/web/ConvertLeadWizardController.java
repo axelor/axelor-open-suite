@@ -20,14 +20,10 @@ package com.axelor.apps.crm.web;
 import java.util.Map;
 
 import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
@@ -35,7 +31,6 @@ import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -55,10 +50,10 @@ public class ConvertLeadWizardController {
 	private PartnerRepository partnerRepo;
 	
 	@Inject
-	private CompanyRepository companyRepo;
+	private AppBaseService appBaseService;
 	
 	@Inject
-	private AppBaseService appBaseService;
+	private LeadService leadService;
 
 	@SuppressWarnings("unchecked")
 	public void convertLead(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -68,16 +63,28 @@ public class ConvertLeadWizardController {
 		Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
 
 		Lead lead = leadRepo.find(((Integer)leadContext.get("id")).longValue());
-
+		
 		Partner partner = null;
 		Partner contactPartner = null;
-		Partner prospectPartner = null;
-		Opportunity opportunity = null;
-		Event callEvent = null;
-		Event meetingEvent = null;
-		Event taskEvent = null;
+		
+		Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
+		Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
 
-		if(context.get("hasConvertIntoContact") != null && (Boolean) context.get("hasConvertIntoContact")) {
+
+		if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
+			
+			partner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("partner"),
+															convertLeadWizardService.createPrimaryAddress(context),
+															convertLeadWizardService.createOtherAddress(context));
+			//TODO check all required fields...
+		}
+		else  if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
+			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
+			partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
+		}
+		
+		if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER 
+				|| leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT) {
 
 			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"),
 																	convertLeadWizardService.createPrimaryAddress(context),
@@ -85,136 +92,17 @@ public class ConvertLeadWizardController {
 			contactPartner.setIsContact(true);
 			//TODO check all required fields...
 		}
-		else  if(context.get("selectContact") != null) {
+		else  if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER 
+				&& leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT) {
 			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
 			contactPartner = partnerRepo.find(((Integer) selectContactContext.get("id")).longValue());
 		}
-
-		if(context.get("hasConvertIntoPartner") != null && (Boolean) context.get("hasConvertIntoPartner")) {
-			
-			partner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("partner"),
-															convertLeadWizardService.createPrimaryAddress(context),
-															convertLeadWizardService.createOtherAddress(context));
-			//TODO check all required fields...
-		}
-		else  if(context.get("selectPartner") != null) {
-			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
-			partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
-		}
 		
-		if(context.get("hasConvertIntoProspect") != null && (Boolean) context.get("hasConvertIntoProspect")) {
-
-			prospectPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("prospectPartner"),
-																	convertLeadWizardService.createPrimaryAddress(context),
-																	convertLeadWizardService.createOtherAddress(context));
-			prospectPartner.setIsProspect(true);
-			//TODO check all required fields...
-		}
-		else  if(context.get("selectProspectPartner") != null) {
-			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectProspectPartner");
-			prospectPartner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
-		}
-
-		if(context.get("hasConvertIntoOpportunity") != null && (Boolean) context.get("hasConvertIntoOpportunity")) {
-			opportunity = convertLeadWizardService.createOpportunity((Map<String, Object>) context.get("opportunity"));
-			//TODO check all required fields...
-		}
-		if(context.get("hasConvertIntoCall") != null && (Boolean) context.get("hasConvertIntoCall")) {
-			callEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("callEvent"));
-			//TODO check all required fields...
-		}
-		if(context.get("hasConvertIntoMeeting") != null && (Boolean) context.get("hasConvertIntoMeeting")) {
-			meetingEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("meetingEvent"));
-			//TODO check all required fields...
-		}
-		if(context.get("hasConvertIntoTask") != null && (Boolean) context.get("hasConvertIntoTask")) {
-			taskEvent = convertLeadWizardService.createEvent((Map<String, Object>)context.get("taskEvent"));
-			//TODO check all required fields...
-		}
 		
-		Beans.get(LeadService.class).convertLead(lead, partner, prospectPartner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);
+		leadService.convertLead(lead, partner, contactPartner);
 
 		response.setFlash(I18n.get(IExceptionMessage.CONVERT_LEAD_1));
 		response.setCanClose(true);
-	}
-	
-	public void setConvertLeadIntoContact(ActionRequest request, ActionResponse response) throws AxelorException { 
-		
-		Lead lead = findLead(request);
-		
-		AppBase appBase = appBaseService.getAppBase();
-		response.setAttr("isContact", "value", false);
-		response.setAttr("firstName", "value", lead.getFirstName());
-		response.setAttr("name", "value", lead.getName());
-		response.setAttr("titleSelect", "value", lead.getTitleSelect());
-		response.setAttr("emailAddress", "value", lead.getEmailAddress());
-		response.setAttr("fax", "value", lead.getFax());
-		response.setAttr("mobilePhone", "value", lead.getMobilePhone());
-		response.setAttr("fixedPhone", "value", lead.getFixedPhone());
-		response.setAttr("webSite", "value", lead.getWebSite());
-		response.setAttr("source", "value", lead.getSource());
-		response.setAttr("department", "value", lead.getDepartment());
-		response.setAttr("user", "value", lead.getUser());
-		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("jobTitle", "value", lead.getJobTitle());
-		response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
-	}
-
-	public void setConvertLeadIntoPartner(ActionRequest request, ActionResponse response) throws AxelorException { 
-		
-		
-		Lead lead = findLead(request);
-		
-		AppBase appBase = appBaseService.getAppBase();
-		response.setAttr("isContact", "value", false);
-		response.setAttr("name", "value", lead.getEnterpriseName());
-		response.setAttr("industrySector", "value", lead.getIndustrySector());
-		response.setAttr("titleSelect", "value", lead.getTitleSelect());
-		response.setAttr("emailAddress", "value", lead.getEmailAddress());
-		response.setAttr("fax", "value", lead.getFax());
-		response.setAttr("mobilePhone", "value", lead.getMobilePhone());
-		response.setAttr("fixedPhone", "value", lead.getFixedPhone());
-		response.setAttr("webSite", "value", lead.getWebSite());
-		response.setAttr("source", "value", lead.getSource());
-		response.setAttr("department", "value", lead.getDepartment());
-		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("isProspect", "value", true);
-		response.setAttr("partnerTypeSelect", "value", "1");
-		response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
-	}
-	
-	public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response) throws AxelorException { 
-		
-    	Lead lead = findLead(request);
-
-        AppBase appBase = appBaseService.getAppBase();
-        response.setAttr("lead", "value", lead);
-        response.setAttr("amount", "value", lead.getEstimatedBudget());
-        response.setAttr("description", "value", lead.getDescription());
-        response.setAttr("source", "value", lead.getSource());
-        response.setAttr("user", "value", lead.getUser());
-        response.setAttr("team", "value", lead.getTeam());
-        response.setAttr("salesStageSelect", "value", "1");
-        response.setAttr("webSite", "value", lead.getWebSite());
-        response.setAttr("source", "value", lead.getSource());
-        response.setAttr("department", "value", lead.getDepartment());
-        response.setAttr("team", "value", lead.getTeam());
-        response.setAttr("isCustomer", "value", true);
-        response.setAttr("partnerTypeSelect", "value", "1");
-        response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
-
-        Company company = null;
-
-        if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
-            company = lead.getUser().getActiveCompany();
-        } else if (companyRepo.all().count() == 1) {
-            company = companyRepo.all().fetchOne();
-        }
-
-        if (company != null) {
-            response.setAttr("company", "value", company);
-            response.setAttr("currency", "value", company.getCurrency());
-        }
 	}
 	
 	public void setDefaults(ActionRequest request, ActionResponse response) throws AxelorException { 
@@ -231,52 +119,54 @@ public class ConvertLeadWizardController {
 		response.setAttr("$otherState", "value", lead.getOtherState());
 		response.setAttr("$otherPostalCode", "value", lead.getOtherPostalCode());
 		response.setAttr("$otherCountry", "value", lead.getOtherCountry());
-		response.setAttr("$hasConvertIntoPartner", "value", true);
+		response.setAttr("$contactAddress", "value", lead.getPrimaryAddress());
+		response.setAttr("$contactCity", "value", lead.getPrimaryCity());
+		response.setAttr("$contactState", "value", lead.getPrimaryState());
+		response.setAttr("$contactPostalCode", "value", lead.getPrimaryPostalCode());
+		response.setAttr("$contactCountry", "value", lead.getPrimaryCountry());
+		response.setAttr("leadToPartnerSelect", "value", 0);
+		response.setAttr("leadToContactSelect", "value", 0);
 	}
 	
-	public void setConvertLeadCallEvent(ActionRequest request, ActionResponse response) throws AxelorException { 
+	public void setPartnerDefaults(ActionRequest request, ActionResponse response) throws AxelorException { 
 		
 		Lead lead = findLead(request);
 		
-		response.setAttr("typeSelect", "value", 1);
-		response.setAttr("lead", "value", lead);
-		response.setAttr("description", "value", lead.getDescription());
-		response.setAttr("user", "value", lead.getUser());
+		AppBase appBase = appBaseService.getAppBase();
+		response.setAttr("name", "value", lead.getEnterpriseName());
+		response.setAttr("industrySector", "value", lead.getIndustrySector());
+		response.setAttr("titleSelect", "value", lead.getTitleSelect());
+		response.setAttr("emailAddress", "value", lead.getEmailAddress());
+		response.setAttr("fax", "value", lead.getFax());
+		response.setAttr("mobilePhone", "value", lead.getMobilePhone());
+		response.setAttr("fixedPhone", "value", lead.getFixedPhone());
+		response.setAttr("webSite", "value", lead.getWebSite());
+		response.setAttr("source", "value", lead.getSource());
+		response.setAttr("department", "value", lead.getDepartment());
 		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("statusSelect", "value", 1);
-		response.setAttr("startDateTime", "value", appBaseService.getTodayDateTime());
-		response.setAttr("duration", "value", 0);
-		response.setAttr("callTypeSelect", "value", 2);
+		response.setAttr("user", "value", lead.getUser());
+		response.setAttr("isProspect", "value", true);
+		response.setAttr("partnerTypeSelect", "value", "1");
+		response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
 	}
 	
-	public void setConvertLeadMeetingEvent(ActionRequest request, ActionResponse response) throws AxelorException { 
+	
+	public void setContactDefaults(ActionRequest request, ActionResponse response) throws AxelorException { 
 		
 		Lead lead = findLead(request);
 		
-		response.setAttr("typeSelect", "value", 2);
-		response.setAttr("lead", "value", lead);
-		response.setAttr("description", "value", lead.getDescription());
+		response.setAttr("firstName", "value", lead.getFirstName());
+		response.setAttr("name", "value", lead.getName());
+		response.setAttr("titleSelect", "value", lead.getTitleSelect());
+		response.setAttr("emailAddress", "value", lead.getEmailAddress());
+		response.setAttr("fax", "value", lead.getFax());
+		response.setAttr("mobilePhone", "value", lead.getMobilePhone());
+		response.setAttr("fixedPhone", "value", lead.getFixedPhone());
 		response.setAttr("user", "value", lead.getUser());
 		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("statusSelect", "value", 1);
-		response.setAttr("startDateTime", "value", appBaseService.getTodayDateTime());
-		response.setAttr("duration", "value", 0);
+		response.setAttr("jobTitle", "value", lead.getJobTitle());
 	}
 
-	public void setConvertLeadTaskEvent(ActionRequest request, ActionResponse response) throws AxelorException { 
-		
-		Lead lead = findLead(request);
-		
-		response.setAttr("typeSelect", "value", 3);
-		response.setAttr("lead", "value", lead);
-		response.setAttr("description", "value", lead.getDescription());
-		response.setAttr("user", "value", lead.getUser());
-		response.setAttr("team", "value", lead.getTeam());
-		response.setAttr("statusSelect", "value", 11);
-		response.setAttr("startDateTime", "value", appBaseService.getTodayDateTime());
-		response.setAttr("progressSelect", "value", 0);
-		response.setAttr("duration", "value", 0);
-	}
 	
 	private Lead findLead(ActionRequest request) throws AxelorException {
 		

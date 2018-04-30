@@ -72,47 +72,30 @@ public class LeadServiceImpl implements LeadService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public Lead convertLead(Lead lead, Partner partner, Partner prospectPartner, Partner contactPartner,
-			Opportunity opportunity, Event callEvent, Event meetingEvent, Event taskEvent) throws AxelorException {
-
-		// lead.setEvent(meeting);
-		// lead.setCall(call);
-		// lead.setOpportunity(opportunity);
-		// lead.setContactPartner(contact);
-
+	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner) throws AxelorException {
+		
 		if (partner != null && contactPartner != null) {
+			contactPartner = partnerRepo.save(contactPartner);
 			if (partner.getContactPartnerSet() == null) {
 				partner.setContactPartnerSet(new HashSet<Partner>());
 			}
 			partner.getContactPartnerSet().add(contactPartner);
 			contactPartner.setMainPartner(partner);
 		}
-
-		if (opportunity != null && partner != null) {
-			opportunity.setPartner(partner);
-		}
-
 		if (partner != null) {
 			lead.setPartner(partner);
-			partnerRepo.save(partner);
+			partner = partnerRepo.save(partner);
 		}
-		if (prospectPartner != null) {
-			partnerRepo.save(prospectPartner);
+		
+		for (Event event : lead.getEventList()) {
+			event.setPartner(partner);
+			event.setContactPartner(contactPartner);
+			eventRepo.save(event);
 		}
-		if (contactPartner != null) {
-			partnerRepo.save(contactPartner);
-		}
-		if (opportunity != null) {
+		
+		for (Opportunity opportunity : lead.getOpportunitiesList()) {
+			opportunity.setPartner(partner);
 			opportunityRepo.save(opportunity);
-		}
-		if (callEvent != null) {
-			eventRepo.save(callEvent);
-		}
-		if (meetingEvent != null) {
-			eventRepo.save(meetingEvent);
-		}
-		if (taskEvent != null) {
-			eventRepo.save(taskEvent);
 		}
 
 		lead.setPartner(partner);

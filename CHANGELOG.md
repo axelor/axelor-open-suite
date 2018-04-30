@@ -11,7 +11,8 @@
 - Add en to fr translation in Barcode type configuration
 - Mail Account: If the boolean "isValid" is true, allow user to disabled it 
 - Product: If purchase module is not installed, hide boolean "Define the shipping coef by partner" and "Shipping Coef."
-- Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab.  
+- Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab. 
+- Convert Lead: Removed opportunity and events conversion. Just partner and contact created from lead with events and opportunity linked.   
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
