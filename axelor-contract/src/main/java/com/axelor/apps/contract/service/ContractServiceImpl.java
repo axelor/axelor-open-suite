@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.contract.service;
 
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -28,6 +31,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FiscalPosition;
@@ -41,6 +47,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -56,6 +63,7 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
+import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -66,8 +74,13 @@ import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+import net.fortuna.ical4j.model.Dur;
+
 public class ContractServiceImpl extends ContractRepository
 		implements ContractService {
+
+	private static final Logger LOG = LoggerFactory
+			.getLogger(MethodHandles.lookup().lookupClass() );
 
 	protected AppBaseService appBaseService;
 	protected ContractVersionService versionService;
@@ -352,28 +365,36 @@ public class ContractServiceImpl extends ContractRepository
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice invoicingContract(Contract contract) throws AxelorException {
-		InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
-		Invoice invoice = invoiceGenerator.generate();
-		InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
-		invoiceRepository.save(invoice);
+        InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
+        Invoice invoice = invoiceGenerator.generate();
+        InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
+        invoiceRepository.save(invoice);
 
-		List<ContractLine> contractLines = new ArrayList<>();
-		contractLines.addAll(contract
-				.getCurrentVersion()
-				.getContractLineList()
-				.stream()
-				.filter(contractLine -> !contractLine.getIsConsumptionLine())
-				.collect(Collectors.toList()));
-
-		contractLines.addAll(contract
-				.getAdditionalBenefitContractLineList()
+        List<ContractLine> contractLines = new ArrayList<>();
+        contractLines.addAll(contract
+                .getCurrentVersion()
+                .getContractLineList()
                 .stream()
-				.filter(contractLine -> !contractLine.getIsInvoiced())
+                .filter(contractLine -> !contractLine.getIsConsumptionLine())
+                .collect(Collectors.toList()));
+
+        contractLines.addAll(contract
+                .getAdditionalBenefitContractLineList()
+                .stream()
+                .filter(contractLine -> !contractLine.getIsInvoiced())
                 .peek(contractLine -> contractLine.setIsInvoiced(true))
-				.collect(Collectors.toList()));
+                .collect(Collectors.toList()));
+
+        BigDecimal ratio = BigDecimal.ONE;
+        if (contract.getCurrentVersion().getIsTimeProratedInvoice()) {
+            ratio = durationService.overflowRatio(
+                    contract.getInvoicePeriodStartDate(),
+                    contract.getInvoicePeriodEndDate(),
+                    contract.getCurrentVersion().getInvoicingFrequency());
+        }
 
 		for (ContractLine line: contractLines) {
-			generate(invoice, line);
+			generate(invoice, line, ratio);
 			if (line.getIsInvoiced()) {
 				contractLineRepo.save(line);
 			}
@@ -384,7 +405,7 @@ public class ContractServiceImpl extends ContractRepository
 		for (Entry<ContractLine, Collection<ConsumptionLine>> entries
 				: consLines.asMap().entrySet()) {
 			ContractLine line = entries.getKey();
-			InvoiceLine invoiceLine = generate(invoice, line);
+			InvoiceLine invoiceLine = generate(invoice, line, ratio);
 			entries.getValue().stream()
 					.peek(cons -> cons.setInvoiceLine(invoiceLine))
 					.forEach(cons -> cons.setIsInvoiced(true));
@@ -420,11 +441,6 @@ public class ContractServiceImpl extends ContractRepository
 		lineStream.forEach(line -> {
 			ContractVersion version = contract.getCurrentVersion();
 
-			if (version.getIsVersionProratedInvoice()) {
-				version = versionService.getContractVersion(contract,
-						line.getLineDate());
-			}
-
 			if (version == null) {
 				line.setIsError(true);
 			} else {
@@ -444,10 +460,15 @@ public class ContractServiceImpl extends ContractRepository
 		return mergedLines;
 	}
 
-	protected InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
+	public InvoiceLine generate(Invoice invoice, ContractLine line, BigDecimal ratio) throws AxelorException {
+		BigDecimal price = line.getPrice();
+		if (ratio != null) {
+		    price = price.multiply(ratio);
+		}
+
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(
 				invoice, line.getProduct(), line.getProductName(),
-				line.getPrice(), null, line.getDescription(),
+				price, null, line.getDescription(),
 				line.getQty(), line.getUnit(), line.getTaxLine(),
 				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO,
 				PriceListLineRepository.AMOUNT_TYPE_NONE, line.getExTaxTotal(),
@@ -529,7 +550,8 @@ public class ContractServiceImpl extends ContractRepository
 				ACTIVE_CONTRACT, ContractVersionRepository.ONGOING_VERSION, date).fetch();
 	}
 	
-	
+
+	// TODO: Move to ContractTemplateService
 	@Transactional
 	public Contract createContractFromTemplate(ContractTemplate template){
 		

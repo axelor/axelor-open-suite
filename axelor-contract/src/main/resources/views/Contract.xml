@@ -185,7 +185,7 @@
                                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
                                     <field name="invoicingFrequency" colSpan="4" requiredIf="isPeriodicInvoicing" canEdit="false"/>
                                     <field name="isTimeProratedInvoice" colSpan="4"/>
-                                    <field name="isVersionProratedInvoice" colSpan="4"/>
+                                    <field name="isVersionProratedInvoice" colSpan="4" hidden="true" showIf="isTimeProratedInvoice"/>
                                 </panel>
                             </editor>
                         </field>

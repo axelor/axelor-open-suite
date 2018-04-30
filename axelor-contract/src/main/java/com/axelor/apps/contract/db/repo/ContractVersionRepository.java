@@ -45,6 +45,9 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
         List<ContractLine> lines= ModelTool.copy(repository, currentVersion.getContractLineList(), false);
         newVersion.setContractLineList(lines);
 
+        newVersion.setIsTimeProratedInvoice(currentVersion.getIsTimeProratedInvoice());
+        newVersion.setIsVersionProratedInvoice(currentVersion.getIsVersionProratedInvoice());
+
         return newVersion;
     }
 }

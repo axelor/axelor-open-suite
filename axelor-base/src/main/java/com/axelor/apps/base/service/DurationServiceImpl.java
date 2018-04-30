@@ -18,10 +18,9 @@
 package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
-
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
+import java.math.MathContext;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
@@ -29,32 +28,35 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class DurationServiceImpl implements DurationService  {
-	
-	
-	public LocalDate computeDuration(Duration duration, LocalDate date)  {
-		
-		if(duration == null)  {  return date;  }
-			
-		switch (duration.getTypeSelect()) {
-		
-		case DurationRepository.TYPE_MONTH:
-			
-			return date.plusMonths(duration.getValue());
-			
-		case DurationRepository.TYPE_DAY:
-			
-			return date.plusDays(duration.getValue());
 
-		default:
-			
-			return date;
+	private static final BigDecimal DAYS_IN_MONTH = BigDecimal.valueOf(30);
+
+	@Override
+	public LocalDate computeDuration(Duration duration, LocalDate date) {
+		if(duration == null) { return date; }
+		switch (duration.getTypeSelect()) {
+			case DurationRepository.TYPE_MONTH:
+				return date.plusMonths(duration.getValue());
+			case DurationRepository.TYPE_DAY:
+				return date.plusDays(duration.getValue());
+			default:
+				return date;
 		}
-		
-		
 	}
-	
-	public BigDecimal computeDurationInDays(ZonedDateTime startDate, ZonedDateTime endDate){
-		return new BigDecimal(ChronoUnit.DAYS.between(startDate, endDate));
+
+	@Override
+	public BigDecimal overflowRatio(LocalDate start, LocalDate end, Duration duration) {
+		if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
+			end = end.plus(1, ChronoUnit.DAYS);
+		}
+		LocalDate theoryEnd = computeDuration(duration, start);
+		long restMonths = ChronoUnit.MONTHS.between(theoryEnd, end);
+		if (restMonths > 0) {
+			theoryEnd = theoryEnd.plus(restMonths, ChronoUnit.MONTHS);
+		}
+		BigDecimal restDays = new BigDecimal(ChronoUnit.DAYS.between(theoryEnd, end));
+
+		return BigDecimal.ONE.add(BigDecimal.valueOf(restMonths)).add(restDays.divide(DAYS_IN_MONTH, MathContext.DECIMAL32));
 	}
-	
+
 }

@@ -83,13 +83,6 @@ public interface ContractVersionService {
 
 	default ContractVersion getContractVersion(Contract contract,
 											   LocalDate date) {
-		if (contract.getVersionHistory().isEmpty()) {
-			ContractVersion version = contract.getCurrentVersion();
-			if (DateTool.isBetween(version.getActivationDate(),
-					version.getEndDate(), date)) {
-				return version;
-			}
-		}
 		for (ContractVersion version : contract.getVersionHistory()) {
 			if (version.getActivationDate() == null
 					|| version.getEndDate() == null) {
@@ -99,6 +92,11 @@ public interface ContractVersionService {
 					version.getEndDate(), date)) {
 				return version;
 			}
+		}
+		ContractVersion version = contract.getCurrentVersion();
+		if (DateTool.isBetween(version.getActivationDate(),
+				version.getEndDate(), date)) {
+			return version;
 		}
 		return null;
 	}
