@@ -30,7 +30,7 @@ public class QualityControlServiceImpl  implements QualityControlService {
 
 	@Inject
 	ControlPointRepository controlPointRepo;
-	
+
 	/**
 	 * Copy control point model to control point and set it to the quality control.
 	 * @param qualityControl Set control point model to control point of this object.
@@ -43,9 +43,9 @@ public class QualityControlServiceImpl  implements QualityControlService {
 		
 		if (qualityControl.getQualityProcess() != null) {
 			QualityProcess process = qualityControl.getQualityProcess();
-			
+
 			if (process != null && process.getControlPointModelList() != null) {
-				qualityControl.getControlPointList().clear();
+				qualityControl.clearControlPointList();
 				for(ControlPointModel model : process.getControlPointModelList() ) {
 					ControlPoint point = new ControlPoint();
 					point.setStatusSelect(1);
@@ -68,5 +68,5 @@ public class QualityControlServiceImpl  implements QualityControlService {
 			}
 		}
 	}
-		
+
 }
