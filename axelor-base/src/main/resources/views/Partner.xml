@@ -20,12 +20,16 @@
 	</grid>
 
 	<grid name="partner-customer-grid" title="Customers" model="com.axelor.apps.base.db.Partner" orderBy="name">
-		<toolbar>
-			<button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
-			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook"/>
-			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
-		</toolbar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="PhoneBook" action="action-print-phonebook"/>
+                <item title="Company phoneBook" action="action-print-company-phonebook"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="Check Duplicate" action="action-general-check-duplicate-records"/>
+                <item title="Replace Duplicate" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+            </menu>
+        </menubar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -36,12 +40,16 @@
 	</grid>
 
 	<grid name="partner-supplier-grid" title="Suppliers" model="com.axelor.apps.base.db.Partner" orderBy="name">
-		<toolbar>
-			<button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
-			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook"/>
-			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
-		</toolbar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="PhoneBook" action="action-print-phonebook"/>
+                <item title="Company phoneBook" action="action-print-company-phonebook"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="Check Duplicate" action="action-general-check-duplicate-records"/>
+                <item title="Replace Duplicate" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+            </menu>
+        </menubar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -474,13 +482,6 @@
 	</form>
 
 	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners" css="rect-image">
-		<toolbar>
-			<button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
-            <button name="printCompanyPhoneBook" title="Company phoneBook"
-                icon="fa-print" onClick="action-print-company-phonebook"
-                if="__config__.app.isApp('employee')"/>
-			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-		</toolbar>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
