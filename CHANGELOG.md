@@ -67,6 +67,7 @@
 - Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Add validation date in Inventory
 - Add the number of components on Bill of material form view.
+- Use services to get company bank details for better maintenability.
 
 
 ## Bug Fixes
