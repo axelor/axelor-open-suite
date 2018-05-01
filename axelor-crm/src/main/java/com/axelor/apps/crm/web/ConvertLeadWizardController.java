@@ -20,7 +20,9 @@ package com.axelor.apps.crm.web;
 import java.util.Map;
 
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Lead;
@@ -31,6 +33,7 @@ import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -203,8 +206,42 @@ public class ConvertLeadWizardController {
 		response.setAttr("team", "value", lead.getTeam());
 		response.setAttr("jobTitle", "value", lead.getJobTitle());
 	}
-	
-	
+
+    public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response) throws AxelorException {
+
+        Lead lead = findLead(request);
+
+        AppBase appBase = appBaseService.getAppBase();
+        response.setAttr("lead", "value", lead);
+        response.setAttr("amount", "value", lead.getEstimatedBudget());
+        response.setAttr("description", "value", lead.getDescription());
+        response.setAttr("source", "value", lead.getSource());
+        response.setAttr("user", "value", lead.getUser());
+        response.setAttr("team", "value", lead.getTeam());
+        response.setAttr("salesStageSelect", "value", "1");
+        response.setAttr("webSite", "value", lead.getWebSite());
+        response.setAttr("source", "value", lead.getSource());
+        response.setAttr("department", "value", lead.getDepartment());
+        response.setAttr("team", "value", lead.getTeam());
+        response.setAttr("isCustomer", "value", true);
+        response.setAttr("partnerTypeSelect", "value", "1");
+        response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
+
+        Company company = null;
+        CompanyRepository companyRepo = Beans.get(CompanyRepository.class);
+
+        if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
+            company = lead.getUser().getActiveCompany();
+        } else if (companyRepo.all().count() == 1) {
+            company = companyRepo.all().fetchOne();
+        }
+
+        if (company != null) {
+            response.setAttr("company", "value", company);
+            response.setAttr("currency", "value", company.getCurrency());
+        }
+    }
+
 	protected Lead findLead(ActionRequest request) throws AxelorException {
 		
 		Context context = request.getContext();
