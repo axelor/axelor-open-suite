@@ -31,6 +31,7 @@ import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -83,26 +84,53 @@ public class ConvertLeadWizardController {
 			partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
 		}
 		
-		if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER 
-				|| leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT) {
-
-			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"),
-																	convertLeadWizardService.createPrimaryAddress(context),
-																	convertLeadWizardService.createOtherAddress(context));
-			contactPartner.setIsContact(true);
-			//TODO check all required fields...
-		}
-		else  if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER 
-				&& leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT) {
-			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
-			contactPartner = partnerRepo.find(((Integer) selectContactContext.get("id")).longValue());
+		if (partner != null) {
+			if((leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER 
+					|| leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT) 
+					&&  partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+	
+				contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"),
+																		convertLeadWizardService.createPrimaryAddress(context),
+																		convertLeadWizardService.createOtherAddress(context));
+				contactPartner.setIsContact(true);
+				//TODO check all required fields...
+			}
+			else  if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER 
+					&& leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT
+					&& partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+				Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
+				contactPartner = partnerRepo.find(((Integer) selectContactContext.get("id")).longValue());
+			}
 		}
 		
+		try {
+			lead = leadService.convertLead(lead, partner, contactPartner);
+		} catch(Exception e) {
+			
+		}
 		
-		leadService.convertLead(lead, partner, contactPartner);
+		if (lead.getPartner() == null) {
+			throw new AxelorException(IException.TECHNICAL, I18n.get(I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR)));
+		}
+		
+		partner = lead.getPartner();
+		String form = "partner-customer-form";
+		String grid = "partner-customer-grid";
+		
+		if (partner.getIsSupplier() && !partner.getIsCustomer() && !partner.getIsProspect()) {
+			form = "partner-supplier-form";
+			grid = "partner-supplier-grid";
+		}
 
 		response.setFlash(I18n.get(IExceptionMessage.CONVERT_LEAD_1));
 		response.setCanClose(true);
+		response.setView(ActionView.define(I18n.get(IExceptionMessage.CONVERT_LEAD_1))
+					.model(Partner.class.getName())
+					.add("form", form)
+					.add("grid", grid)
+					.context("_showRecord", partner.getId())
+					.map());
+					
 	}
 	
 	public void setDefaults(ActionRequest request, ActionResponse response) throws AxelorException { 
@@ -151,6 +179,15 @@ public class ConvertLeadWizardController {
 	}
 	
 	
+	public void setIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException { 
+		
+		Lead lead = findLead(request);
+		
+		response.setAttr("firstName", "value", lead.getFirstName());
+		response.setAttr("name", "value", lead.getName());
+	}
+	
+	
 	public void setContactDefaults(ActionRequest request, ActionResponse response) throws AxelorException { 
 		
 		Lead lead = findLead(request);
@@ -166,7 +203,7 @@ public class ConvertLeadWizardController {
 		response.setAttr("team", "value", lead.getTeam());
 		response.setAttr("jobTitle", "value", lead.getJobTitle());
 	}
-
+	
 	
 	private Lead findLead(ActionRequest request) throws AxelorException {
 		
