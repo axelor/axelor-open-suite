@@ -19,12 +19,13 @@
 	      onLoad="action-quality-control-attrs-hide-quality-control-on-grid,,action-attrs-quality-control-load">
 		<panel title="Status">
 			<field name="$_allowPerControlControlPoints" hidden="true"/>
+			<field name="qualityProcess.product" hidden="true"/>
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 		</panel>
 		<panel>
 			<field name="reference"/>
-			<field name="product"/>
-			<field name="qualityProcess"/>
+			<field name="product" readonlyIf="qualityProcess.product != null"/>
+			<field name="qualityProcess" onChange="action-quality-control-record-process-dependencies"/>
 			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
 			<field name="startDate"/>
@@ -95,6 +96,10 @@
 		<field name="statusSelect" expr="eval: 6"/>
 	</action-record>
 
+	<action-record name="action-quality-control-record-process-dependencies" model="com.axelor.apps.quality.db.QualityControl">
+		<field name="product" expr="__repo__(QualityProcess).find(qualityProcess.id).getProduct()"/>
+	</action-record>
+
 	<action-method name="action-quality-control-method-open-control-points">
 		<call class="com.axelor.apps.quality.web.QualityControlController" method="openControlPoints"/>
 	</action-method>
@@ -111,5 +116,5 @@
 			<domain>self.team.id = :_myActiveTeamId</domain>
 		</filter>
 	</search-filters>
-	
+
 </object-views>
