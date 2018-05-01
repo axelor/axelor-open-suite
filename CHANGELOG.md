@@ -32,6 +32,7 @@
 - Fiscal Position interface reworked and moved from Account to Base module
 - Fix empty partner list from batch report.
 - Convert Lead: Fix type,call type and lead field of converted events. 
+- Advanced Export: Fix export every fields of model.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
