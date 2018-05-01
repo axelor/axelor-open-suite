@@ -205,7 +205,7 @@ public class ConvertLeadWizardController {
 	}
 	
 	
-	private Lead findLead(ActionRequest request) throws AxelorException {
+	protected Lead findLead(ActionRequest request) throws AxelorException {
 		
 		Context context = request.getContext();
 		
