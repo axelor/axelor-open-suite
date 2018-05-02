@@ -67,19 +67,6 @@
 	        		<field name="emergencyContact" colSpan="4"/>
 	        		<field name="emergencyNumber" colSpan="4" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-employee-method-normalize-emergencyNumber"/>
 	        	</panel>
-     			<panel name="contractualInfo" title="Contractual Info." colSpan="12">
-        			<field name="dateOfHire" colSpan="4"/>
-        			<field name="seniorityDate" colSpan="4"/>
-        			<field name="profitSharingBeneficiary" colSpan="4"/>
-         			<field name="mainEmploymentContract" colSpan="4" domain="self.employee.id = :id">
-						<editor x-viewer="true">
-							<field name="payCompany"/>
-							<field name="executiveStatusSelect"/>
-							<field name="employment"/>
-						</editor>
-					</field>
-        			<field name="bonusCoef" colSpan="4" />
-      			</panel>
       			<panel name="rhInfo" title="HR Info." colSpan="12">
         			<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
         			<field name="managerUser" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
@@ -94,6 +81,19 @@
       			</panel>
 	       	</panel>
             <panel title="Employment contracts">
+              <panel name="contractualInfo" title="Contractual Info." colSpan="12">
+                <field name="dateOfHire" colSpan="4"/>
+                <field name="seniorityDate" colSpan="4"/>
+                <field name="profitSharingBeneficiary" colSpan="4"/>
+                <field name="mainEmploymentContract" colSpan="4" domain="self.employee.id = :id">
+                  <editor x-viewer="true">
+                    <field name="payCompany"/>
+                    <field name="executiveStatusSelect"/>
+                    <field name="employment"/>
+                  </editor>
+                </field>
+                <field name="bonusCoef" colSpan="4" />
+              </panel>
 				<field name="hourlyRate" colSpan="4"/>
 				<field name="weeklyWorkHours" colSpan="4"/>
 				<field name="dailyWorkHours" colSpan="4"/>
@@ -102,6 +102,11 @@
 				<field name="employmentContractList" colSpan="12"
 				   grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
 			</panel>
+      <panel title="Leave List" if="__config__.app.isApp('leave')">
+        <field name="leaveLineList" grid-view="leave-line-grid"
+        form-view="leave-line-form" colSpan="12"/>
+        <field name="negativeValueLeave" colSpan="4"/>
+      </panel>
 			<panel name="timesheets" title="Timesheets"
 				   if="__config__.app.isApp('timesheet')">
 				<field name="timeLoggingPreferenceSelect" colSpan="3"/>
@@ -148,11 +153,6 @@
 						   colSpan="12" readonly="true"
 						   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getEmployeeBonus()"/>
 	       	<panel-include view="talent-employee-form" if-module="axelor-talent"/>
-            <panel title="Leave List" if="__config__.app.isApp('leave')">
-				<field name="leaveLineList" grid-view="leave-line-grid"
-				form-view="leave-line-form" colSpan="12"/>
-				<field name="negativeValueLeave" colSpan="4"/>
-			</panel>
         </panel-tabs>
 	</form>
 	
