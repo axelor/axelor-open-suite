@@ -461,14 +461,15 @@ public class ContractServiceImpl extends ContractRepository
 	}
 
 	public InvoiceLine generate(Invoice invoice, ContractLine line, BigDecimal ratio) throws AxelorException {
-		BigDecimal price = line.getPrice();
+		// TODO: Put this code in ContractServiceInvoiceImpl
 		if (ratio != null) {
-		    price = price.multiply(ratio);
+			line.setPrice(line.getPrice().multiply(ratio));
+			line = this.contractLineService.computeTotal(line);
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(
 				invoice, line.getProduct(), line.getProductName(),
-				price, null, line.getDescription(),
+				line.getPrice(), null, line.getDescription(),
 				line.getQty(), line.getUnit(), line.getTaxLine(),
 				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO,
 				PriceListLineRepository.AMOUNT_TYPE_NONE, line.getExTaxTotal(),
