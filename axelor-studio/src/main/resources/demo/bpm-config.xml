@@ -37,7 +37,7 @@
 			</bind>
 		</bind>
 		
-		<bind node="json-field" type="com.axelor.meta.db.MetaJsonField">
+		<bind node="json-field" type="com.axelor.meta.db.MetaJsonField" call="com.axelor.studio.service.ImportService:importMetaJsonField">
 			<bind node="@name" to="name" />
 			<bind node="@title" to="title" />
 			<bind node="@type" to="type" />

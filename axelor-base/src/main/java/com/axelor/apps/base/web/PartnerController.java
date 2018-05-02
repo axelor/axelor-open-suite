@@ -36,11 +36,11 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -85,7 +85,7 @@ public class PartnerController {
 		Partner partner = request.getContext().asType(Partner.class);
 		partner = partnerRepo.find(partner.getId());
 		if(partner.getPartnerSeq() ==  null) {
-			String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER);
+			String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
 			if (seq == null)
 				throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
 			else
@@ -103,7 +103,7 @@ public class PartnerController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void showPartnerInfo(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void showEnvelope(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
 
 		String name = I18n.get("Partner")+" "+partner.getPartnerSeq();

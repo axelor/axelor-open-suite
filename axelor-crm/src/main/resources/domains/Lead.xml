@@ -87,6 +87,12 @@
     	public static final int LEAD_STATUS_CONVERTED = 4;
     	public static final int LEAD_STATUS_LOST = 5;
     	public static final int LEAD_STATUS_RECYCLED = 6;
+    	
+    	public static final int CONVERT_LEAD_CREATE_PARTNER = 1;
+    	public static final int CONVERT_LEAD_SELECT_PARTNER = 2;
+    	public static final int CONVERT_LEAD_CREATE_CONTACT = 1;
+    	public static final int CONVERT_LEAD_SELECT_CONTACT = 2;
+    	
     ]]>
     </extra-code>
 

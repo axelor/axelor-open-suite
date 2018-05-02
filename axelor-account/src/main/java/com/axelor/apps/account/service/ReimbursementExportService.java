@@ -34,10 +34,10 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -236,7 +236,7 @@ public class ReimbursementExportService {
 		accountConfigService.getReimbursementJournal(accountConfig);
 		accountConfigService.getReimbursementExportFolderPath(accountConfig);
 
-		if(!sequenceService.hasSequence(IAdministration.REIMBOURSEMENT, company)) {
+		if(!sequenceService.hasSequence(SequenceRepository.REIMBOURSEMENT, company)) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.REIMBURSEMENT_1), AppAccountServiceImpl.EXCEPTION,company.getName());
 		}
 
@@ -273,7 +273,7 @@ public class ReimbursementExportService {
 
 		reimbursement.setBankDetails(bankDetails);
 
-		reimbursement.setRef(sequenceService.getSequenceNumber(IAdministration.REIMBOURSEMENT, company));
+		reimbursement.setRef(sequenceService.getSequenceNumber(SequenceRepository.REIMBOURSEMENT, company));
 
 		return reimbursement;
 	}

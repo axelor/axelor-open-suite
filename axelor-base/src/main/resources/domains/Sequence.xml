@@ -26,6 +26,14 @@
     <index columns="code,company" name="idx_sequence_code_company"/>
     <finder-method name="find" using="code,company"/>
     
+     <extra-code><![CDATA[
+        
+        //SEQUENCE SELECT
+        public static final String PARTNER = "partner";
+        public static final String PRODUCT = "product";
+        
+     ]]></extra-code>
+    
   </entity>
 
 </domain-models>

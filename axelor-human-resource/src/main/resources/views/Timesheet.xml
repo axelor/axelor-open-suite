@@ -88,7 +88,7 @@
 			<panel>
 				<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date"/>
 				<field name="toDate" onChange="action-timesheet-validate-toDate"/>
-				<button name="create" title="Create" colSpan="2" hideIf="id" onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
+				<button name="create" title="Create" colSpan="2" hideIf="id" if="__config__.app.getApp('timesheet').getTimesheetEditor()"  onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
 			</panel>
 		</panel>
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">

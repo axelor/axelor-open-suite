@@ -21,11 +21,12 @@ import java.math.BigDecimal;
 
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.exception.AxelorException;
 
 public interface TimesheetTimerService {
 
 	public void pause(TSTimer timer);
-	public void stop(TSTimer timer);
+	public void stop(TSTimer timer) throws AxelorException;
 	public void calculateDuration(TSTimer timer);
 	public TimesheetLine generateTimesheetLine(TSTimer timer);
 	public TSTimer getCurrentTSTimer();

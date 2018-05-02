@@ -31,13 +31,13 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
@@ -213,7 +213,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 	@Override
 	public String getSequence(Company company) throws AxelorException  {
-		String seq = sequenceService.getSequenceNumber(IAdministration.PURCHASE_ORDER, company);
+		String seq = sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_ORDER, company);
 		if (seq == null) {
 			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());
 		}

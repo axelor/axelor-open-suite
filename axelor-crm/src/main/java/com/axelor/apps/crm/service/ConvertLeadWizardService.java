@@ -27,9 +27,7 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
-import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -172,38 +170,6 @@ public class ConvertLeadWizardService {
 		return emailAddress;
 	}
 
-	/**
-	 * Create an opportunity from a lead
-	 * @param lead
-	 * @return
-	 * @throws AxelorException
-	 */
-	public Opportunity createOpportunity(Map<String, Object> context) throws AxelorException  {
-
-		Mapper mapper = Mapper.of(Opportunity.class);
-		Opportunity opportunity = Mapper.toBean(Opportunity.class, null);
-
-		opportunity = (Opportunity) convertWizardService.createObject(context, opportunity, mapper);
-
-		return opportunity;
-	}
-
-
-	/**
-	 * Create an event from a lead (Call, Task or Meeting)
-	 * @param lead
-	 * @return
-	 * @throws AxelorException
-	 */
-	public Event createEvent(Map<String, Object> context) throws AxelorException  {
-
-		Mapper mapper = Mapper.of(Event.class);
-		Event event = Mapper.toBean(Event.class, null);
-
-		event = (Event) convertWizardService.createObject(context, event, mapper);
-
-		return event;
-	}
 
 
 }
