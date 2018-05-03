@@ -16,6 +16,7 @@
 - Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab. 
 - Convert Lead: Removed opportunity and events conversion. Just partner and contact created from lead with events and opportunity linked.   
 - Current user password should be required when updating user password 
+- Use simple event and opportunity grid in partner,contact and lead without containing partner,contact and lead fields inside event and opportunity grid.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
