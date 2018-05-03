@@ -618,7 +618,6 @@
     <!-- invoice-account  -->
     <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<field name="invoiceId"/>
-		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="operationTypeSelect"/>
 		<field name="operationSubTypeSelect"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />

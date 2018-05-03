@@ -22,7 +22,7 @@
     <many-to-one name="directDebitManagement" ref="com.axelor.apps.account.db.DirectDebitManagement" title="Direct debit management"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject move line"/>
     <many-to-one name="advanceOrPaymentMove" ref="com.axelor.apps.account.db.Move" title="Advance/Payment move"/>
-    <boolean name="fromReject" title="From reject schedule line" default="false"/>
+    <boolean name="fromReject" title="From rejection" default="false"/>
     <decimal name="amountRejected" title="Amount rejected"/> 
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
     
