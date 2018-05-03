@@ -53,7 +53,7 @@ public class CalendarConfigurationService {
 		Group group = calendarConfiguration.getCalendarGroup();
 
 		MetaAction metaAction = this.createMetaAction("action." + subName, title);
-		MetaMenu metaMenu = this.createMetaMenu(menuName, title, metaAction);
+		MetaMenu metaMenu = this.createMetaMenu(menuName, title, metaAction, calendarConfiguration.getParentMenu());
 		Beans.get(MetaMenuRepository.class).save(metaMenu);
 
 		Role role = new Role();
@@ -101,13 +101,14 @@ public class CalendarConfigurationService {
 		roleRepository.remove(role);
 	}
 
-	public MetaMenu createMetaMenu(String name, String title, MetaAction metaAction) {
+	public MetaMenu createMetaMenu(String name, String title, MetaAction metaAction, MetaMenu parentMenu) {
 
 		MetaMenu metaMenu = new MetaMenu();
 		metaMenu.setName(name);
 		metaMenu.setAction(metaAction);
 		metaMenu.setModule("axelor-base");
 		metaMenu.setTitle(title);
+		metaMenu.setParent(parentMenu);
 
 		return metaMenu;
 	}

@@ -13,6 +13,7 @@
     <many-to-one name="calendarGroup" ref="com.axelor.auth.db.Group" title="Group"/>
     <many-to-many name="calendarSet" ref="com.axelor.apps.base.db.ICalendar" title="Calendars"/>
     <many-to-one name="role" ref="com.axelor.auth.db.Role" title="Role"/>
+    <many-to-one name="parentMenu" ref="com.axelor.meta.db.MetaMenu"/>
   </entity>
 
 </domain-models>
