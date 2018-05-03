@@ -12,6 +12,7 @@
         <field name="company"/>
         <field name="partner"/>
         <field name="startDate"/>
+        <field name="supposedEndDate"/>
         <field name="statusSelect"/>
     </grid>
 
