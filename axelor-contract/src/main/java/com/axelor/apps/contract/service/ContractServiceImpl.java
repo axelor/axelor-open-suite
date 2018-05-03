@@ -19,12 +19,7 @@ package com.axelor.apps.contract.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +42,6 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -63,7 +57,6 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
-import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -73,8 +66,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import net.fortuna.ical4j.model.Dur;
 
 public class ContractServiceImpl extends ContractRepository
 		implements ContractService {
@@ -462,18 +453,19 @@ public class ContractServiceImpl extends ContractRepository
 
 	public InvoiceLine generate(Invoice invoice, ContractLine line, BigDecimal ratio) throws AxelorException {
 		// TODO: Put this code in ContractServiceInvoiceImpl
+        ContractLine tmp = contractLineRepo.copy(line, false);
 		if (ratio != null) {
-			line.setPrice(line.getPrice().multiply(ratio));
-			line = this.contractLineService.computeTotal(line);
+			tmp.setPrice(line.getPrice().multiply(ratio));
+			tmp = this.contractLineService.computeTotal(tmp);
 		}
 
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(
-				invoice, line.getProduct(), line.getProductName(),
-				line.getPrice(), null, line.getDescription(),
-				line.getQty(), line.getUnit(), line.getTaxLine(),
+				invoice, tmp.getProduct(), tmp.getProductName(),
+				tmp.getPrice(), null, tmp.getDescription(),
+				tmp.getQty(), tmp.getUnit(), tmp.getTaxLine(),
 				InvoiceLineGenerator.DEFAULT_SEQUENCE, BigDecimal.ZERO,
-				PriceListLineRepository.AMOUNT_TYPE_NONE, line.getExTaxTotal(),
-				line.getInTaxTotal(), false) {
+				PriceListLineRepository.AMOUNT_TYPE_NONE, tmp.getExTaxTotal(),
+				tmp.getInTaxTotal(), false) {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				InvoiceLine invoiceLine = this.createInvoiceLine();
