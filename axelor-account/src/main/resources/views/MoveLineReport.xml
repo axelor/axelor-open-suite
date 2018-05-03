@@ -95,7 +95,7 @@
 			<field name="typeSelect" onChange="action-group-account-moveline-report-typeselect-onchange" selection="move.line.report.type.select.export"/>
 			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-move-line-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
 			<field name="year" hideIf="typeSelect != 1000" onChange="action-move-line-report-record-period-dates" onSelect="action-move-line-report-attrs-year-domain" requiredIf="typeSelect == 1000" grid-view="year-account-grid" form-view="year-account-form" />
-			<field name="period" canEdit="false" onChange="action-group-account-moveline-report-period-onchange" onSelect="action-move-line-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false"/>
+			<field name="period" canEdit="false" onChange="action-group-account-moveline-report-period-onchange" onSelect="action-move-line-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false" requiredIf="typeSelect != 1000"/>
 			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" readonlyIf="typeSelect == 1000 &amp;&amp; period != null "/>
 			<field name="dateTo" readonlyIf="typeSelect == 1000 &amp;&amp; period != null "/>
 			<field name="journal" form-view="journal-form" grid-view="journal-grid" hideIf="typeSelect == 1000"/>

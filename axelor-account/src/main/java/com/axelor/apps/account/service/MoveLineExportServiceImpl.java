@@ -862,7 +862,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String moveLineQueryStr = "";
 		moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
-		moveLineQueryStr += String.format(" AND self.move.period.year = %s", moveLineReport.getYear().getId());
+		if(moveLineReport.getYear() != null){
+			moveLineQueryStr += String.format(" AND self.move.period.year = %s", moveLineReport.getYear().getId());
+		}
 		
 		if(moveLineReport.getPeriod() != null)	{
 			moveLineQueryStr += String.format(" AND self.move.period = %s", moveLineReport.getPeriod().getId());
@@ -1350,7 +1352,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String setFileName(MoveLineReport moveLineReport) throws AxelorException, IOException{
+	public String setFileName(MoveLineReport moveLineReport) throws AxelorException {
 		Company company =moveLineReport.getCompany();
 		Partner partner = company.getPartner();
 		
@@ -1361,8 +1363,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			fileName += moveLineReport.getDateTo().toString(DATE_FORMAT_YYYYMMDD);
 		}else if(moveLineReport.getPeriod() != null){
 			fileName += moveLineReport.getPeriod().getToDate().toString(DATE_FORMAT_YYYYMMDD);
-		}else {
+		}else if(moveLineReport.getYear() != null){
 			fileName += moveLineReport.getYear().getToDate().toString(DATE_FORMAT_YYYYMMDD);
+		}
+		else {
+			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL), IException.NO_VALUE);
 		}
 		fileName +=".csv";
 
