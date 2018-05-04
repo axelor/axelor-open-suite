@@ -19,6 +19,7 @@
 - Replaced default grid by simple grid of event and opportunity in partner,contact and lead form. Simple grid does not contains partner,contact and lead field.
 - Convert Lead: Fix translation and default values. 
 - Advanced export wizard : Automatically download the export file on "Export" button and close the wizard.
+- Message Template: Import demo data per module (or per app).
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
