@@ -659,6 +659,7 @@ Also, improve the sale order line grid and form views.
 ## [Unreleased 4.x]
 - Accounting export, fix problem on export FEC
 - Fiscal Position interface reworked and moved from Account to Base module
+- Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
 
 ## [4.2.3] - 2018-02-28
 4.1.3 with axelor-process-studio modules
