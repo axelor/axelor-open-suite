@@ -18,6 +18,7 @@
 - Current user password should be required when updating user password 
 - Replaced default grid by simple grid of event and opportunity in partner,contact and lead form. Simple grid does not contains partner,contact and lead field.
 - Convert Lead: Fix translation and default values. 
+- Advanced export wizard : Automatically download the export file on "Export" button and close the wizard.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
