@@ -16,6 +16,7 @@
 - Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab. 
 - Convert Lead: Removed opportunity and events conversion. Just partner and contact created from lead with events and opportunity linked.   
 - Current user password should be required when updating user password 
+- Replaced default grid by simple grid of event and opportunity in partner,contact and lead form. Simple grid does not contains partner,contact and lead field.
 - Convert Lead: Fix translation and default values. 
 
 ## Bug Fixes
