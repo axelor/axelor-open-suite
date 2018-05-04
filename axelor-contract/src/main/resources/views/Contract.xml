@@ -54,17 +54,19 @@
                                 <field name="createdOn"/>
                                 <field name="createdBy"/>
                             </panel>
-                            <panel readonly="true" hidden="true" showIf="statusSelect >= 3" colSpan="6">
-                                <field name="activatedBy" colSpan="4"/>
-                                <field name="activationDate" colSpan="4"/>
-                                <panel colSpan="4">
-                                    <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
-                                    <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
+                            <panel colSpan="6">
+                                <panel hideIf="statusSelect >= 3" colSpan="12">
+                                    <field name="supposedActivationDate"/>
+                                    <field name="supposedEndDate"/>
                                 </panel>
-                            </panel>
-                            <panel colspan="6" hideIf="statusSelect >= 3">
-                                <field name="supposedActivationDate"/>
-                                <field name="supposedEndDate"/>
+                                <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
+                                    <field name="activatedBy" colSpan="4"/>
+                                    <field name="activationDate" colSpan="4"/>
+                                    <panel colSpan="4">
+                                        <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
+                                        <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
+                                    </panel>
+                                </panel>
                             </panel>
                         </editor>
                     </field>
