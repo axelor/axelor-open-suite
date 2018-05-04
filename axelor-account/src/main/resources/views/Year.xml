@@ -12,15 +12,15 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="statusSelect"/>
     </grid>
-    
-    <form onSave="action-year-check-date" onLoad="action-attrs-account-year-read-only-dates" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
+
+    <form onSave="action-year-check-date" onNew="action-year-account-record-new" name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year">
 		<panel name="main" readonlyIf="statusSelect == 2">
 			<field name="name"/>
 			<field name="code" colSpan="3"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
 			<panel name="dates" title="Dates" colSpan="12">
-				<field name="fromDate" colSpan="3"/>
-				<field name="toDate" colSpan="3"/>
+				<field name="fromDate" colSpan="3" readonlyIf="periodList.length > 0"/>
+				<field name="toDate" colSpan="3" readonlyIf="periodList.length > 0"/>
 				<field name="reportedBalanceDate" colSpan="3"/>
 			</panel>
 		</panel>
@@ -49,15 +49,9 @@
     	<action name="save"/>
     	<action name="action-year-validate-generate-period"/>
     	<action name="action-method-account-year-generate-periods"/>
-		<action name="action-attrs-account-year-read-only-dates"/>
     	<action name="save"/>
     </action-group>
 
-	<action-attrs name="action-attrs-account-year-read-only-dates">
-		<attribute for="fromDate" name="readonly" expr="true" if="!periodList?.isEmpty()"/>
-		<attribute for="toDate" name="readonly" expr="true" if="!periodList?.isEmpty()"/>
-	</action-attrs>
-    
     <action-method name="action-method-account-year-generate-periods">
     	<call class="com.axelor.apps.account.web.YearController" method="generatePeriods"/>
     </action-method>
