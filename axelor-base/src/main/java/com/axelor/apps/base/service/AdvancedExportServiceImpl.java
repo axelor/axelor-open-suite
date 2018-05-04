@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportLineRepository;
+import com.axelor.apps.tool.NammingTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
@@ -205,6 +206,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		List<String> orderByColumns = new ArrayList<>();
 		selectJoinFieldList.clear();
 		joinFieldSet.clear();
+		selectionJoinFieldSet.clear();
+		selectionRelationalJoinFieldSet.clear();
 		counter = 0;
 		
 		language = AuthUtils.getUser().getLanguage();
@@ -473,40 +476,43 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			MetaModel subMetaModel = metaModelRepo.all()
 					.filter("self.name = ?1", relationalField.getTypeName()).fetchOne();
 			
-			if (!relationalField.getPackageName().startsWith("java")) {
+			if (relationalField.getPackageName() != null && !relationalField.getPackageName().startsWith("java")) {
 				
+				String alias = "";
 				counter++;
 				if (counter2 != 0 || counter3 != 0) {
 					selectNormalField = "";
 				}
 				if (i != 0) {
 					for (int j = 0; j <= i; j++) {
+						alias = isKeyword(splitField, j);
 						if (j == 0) {
 							if (nbrField > 0 && joinFieldSet.size() > 0) {
-								joinFieldSet.add("LEFT JOIN self." + splitField[j] + " " + splitField[j]);
-								temp = splitField[j];
+								joinFieldSet.add("LEFT JOIN self." + splitField[j] + " " + alias);
+								temp = alias;
 							} else {
-								joinFieldSet.add("self." + splitField[j] + " " + splitField[j]);
-								temp = splitField[j];
+								joinFieldSet.add("self." + splitField[j] + " " + alias);
+								temp = alias;
 							}
 						} else {
 							if (!temp.equals(splitField[i])) {
-								joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + splitField[j]);
-								temp = splitField[j];
+								joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + alias);
+								temp = alias;
 							}
 						}
 					}
 				} else {
+					alias = isKeyword(splitField, i);
 					if (nbrField > 0 && joinFieldSet.size() > 0) {
-						if (!joinFieldSet.contains("self." + splitField[i] + " " + splitField[i])) {
-							joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + splitField[i]);
-							temp = splitField[i];
+						if (!joinFieldSet.contains("self." + splitField[i] + " " + alias)) {
+							joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + alias);
+							temp = alias;
 						} else {
-							temp = splitField[i];
+							temp = alias;
 						}
 					} else {
-						joinFieldSet.add("self." + splitField[i] + " " + splitField[i]);
-						temp = splitField[i];
+						joinFieldSet.add("self." + splitField[i] + " " + alias);
+						temp = alias;
 					}
 				}
 					
@@ -547,6 +553,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			getExportData(splitField, i+1, subMetaModel);
 		}
 		return counter;
+	}
+	
+	private String isKeyword(String[] fieldNames, int ind) {
+
+		if (NammingTool.isKeyword(fieldNames[ind])) {
+			return fieldNames[ind] + "_id";
+		}
+		return fieldNames[ind];
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
