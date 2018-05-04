@@ -95,7 +95,7 @@
 			<field name="typeSelect" onChange="action-group-account-accounting-report-typeselect-onchange" selection="accounting.report.type.select.export"/>
 			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-accounting-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
 			<field name="year" hideIf="!$contains([1000, 1010], typeSelect)" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="$contains([1000, 1010], typeSelect)" grid-view="year-account-grid" form-view="year-account-form" />
-			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false"/>
+			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" requiredIf="!$contains([1000, 1010], typeSelect)" form-view="period-form" grid-view="period-grid" canView="false"/>
 			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="dateTo" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="journal" form-view="journal-form" grid-view="journal-grid" hideIf="$contains([1000, 1010], typeSelect)"/>

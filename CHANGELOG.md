@@ -154,6 +154,7 @@
 - On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
 - On Invoice payment, fix NPE by requiring paymentMode
 - Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
+- Accounting export, fix problem on export FEC
 
 ## [4.1.2] - 2018-02-05
 ### Improvements

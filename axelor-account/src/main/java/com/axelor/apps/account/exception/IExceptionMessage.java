@@ -102,6 +102,7 @@ public interface IExceptionMessage {
 	static final String MOVE_LINE_EXPORT_2 = /*$$(*/ "%s : Error : You must configure a credit note interface sequence for the company %s" /*)*/ ;
 	static final String MOVE_LINE_EXPORT_3 = /*$$(*/ "%s : Error : You must configure a treasury interface sequence for the company %s" /*)*/ ;
 	static final String MOVE_LINE_EXPORT_4 = /*$$(*/ "%s : Error : You must configure a purchase interface sequence for the company %s" /*)*/ ;
+	static final String MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL = /*$$(*/ "Year or period or date is null, you must set a period." /*)*/ ;
 
 	/**
 	 * Accounting report service and controller
