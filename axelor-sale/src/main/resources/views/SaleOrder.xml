@@ -822,10 +822,10 @@
     </action-group>
 
     <action-group name="action-sale-order-line-change-group">
-    	<action name="save" if="saleOrderLineList.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
+    	<action name="save" if="saleOrderLineList?.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
-    	<action name="save" if="saleOrderLineList.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
+    	<action name="save" if="saleOrderLineList?.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
     </action-group>
 
 	<action-group name="action-sale-order-group-client-partner-change">

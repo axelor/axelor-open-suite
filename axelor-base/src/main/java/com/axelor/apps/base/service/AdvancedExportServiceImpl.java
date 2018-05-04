@@ -430,7 +430,6 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		MetaSelect metaSelect = metaSelectRepo.findByName(mapper.getProperty(fieldName[i]).getSelection());
 		
 		if (metaSelect != null) {
-			MetaField metaField = metaFieldRepo.all().filter("self.name = ?1 AND self.metaModel = ?2", fieldName[i], metaModel).fetchOne();
 			isSelectionField = true;
 			msi++;
 			mt++;
@@ -439,64 +438,29 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 				
 				if (language.equals("fr")) {
 					
-					if (metaField.getTypeName().equals("String")) {
+					selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST("
+							+ temp + "." + fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND "
+							+ ("msi_" + (msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
+							+ ("mt_" + (mt)) + " ON " + ("msi_" + (msi)) + ".title = " + ("mt_" + (mt)) + ".key AND "
+							+ ("mt_"+(mt)) + ".language = \'" + language + "\'");
 						
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp
-								+ "." + fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-						
-					} else {
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp
-								+ "." + fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-					}
 				} else {
-					if (metaField.getTypeName().equals("String")) {
-						
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp + "."
-								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-						
-					} else {
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp + "."
-								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-					}
+					selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST("
+							+ temp + "." + fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND "
+							+ ("msi_" + (msi)) + ".select = " + metaSelect.getId());
 				}
 			} else {
 				if (language.equals("fr")) {
 					
-					if (metaField.getTypeName().equals("String")) {
+					selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST(self."
+							+ fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND " + ("msi_" + (msi))
+							+ ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation " + ("mt_" + (mt))
+							+ " ON " + ("msi_" + (msi)) + ".title = " + ("mt_" + (mt)) + ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
 						
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-						
-					} else {
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-					}
 				} else {
-					if (metaField.getTypeName().equals("String")) {
-						
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-						
-					} else {
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-					}
+					selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST(self."
+							+ fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND " + ("msi_" + (msi))
+							+ ".select = " + metaSelect.getId());
 				}
 			}
 		}
