@@ -16,7 +16,8 @@
 - Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab. 
 - Convert Lead: Removed opportunity and events conversion. Just partner and contact created from lead with events and opportunity linked.   
 - Current user password should be required when updating user password 
-- Use simple event and opportunity grid in partner,contact and lead without containing partner,contact and lead fields inside event and opportunity grid.
+- Replaced default grid by simple grid of event and opportunity in partner,contact and lead form. Simple grid does not contains partner,contact and lead field.
+- Convert Lead: Fix translation and default values. 
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -33,7 +34,10 @@
 - Menus permissions adapted to v5 for demoCRM and demoERP users
 - Fiscal Position interface reworked and moved from Account to Base module
 - Fix empty partner list from batch report.
+- Fix duplicate object wizard translation.
 - Convert Lead: Fix type,call type and lead field of converted events. 
+- Advanced Export: Fix export every fields of model.
+- Advanced export : Fix input issue of selection field for export.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features

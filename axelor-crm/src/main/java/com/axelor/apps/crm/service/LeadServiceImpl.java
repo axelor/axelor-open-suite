@@ -83,8 +83,8 @@ public class LeadServiceImpl implements LeadService {
 			contactPartner.setMainPartner(partner);
 		}
 		if (partner != null) {
-			lead.setPartner(partner);
 			partner = partnerRepo.save(partner);
+			lead.setPartner(partner);
 		}
 		
 		for (Event event : lead.getEventList()) {
@@ -97,12 +97,10 @@ public class LeadServiceImpl implements LeadService {
 			opportunity.setPartner(partner);
 			opportunityRepo.save(opportunity);
 		}
-
-		lead.setPartner(partner);
+		
 		lead.setStatusSelect(LeadRepository.LEAD_STATUS_CONVERTED);
-		leadRepo.save(lead);
-
-		return lead;
+		
+		return leadRepo.save(lead);
 
 	}
 
