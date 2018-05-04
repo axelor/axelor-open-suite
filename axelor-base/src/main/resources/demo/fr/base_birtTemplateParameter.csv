@@ -88,7 +88,7 @@
 87;27;"PurchaseOrderId";"$PurchaseOrder.id$";"string"
 88;28;"__locale";"fr_FR";"string"
 89;28;"Locale";"fr";"string"
-90;28;"SaleOrderId";"$SaleOrder.id$";"string"
+90;28;"SaleOrderId";"$SaleOrder.id$";"decimal"
 91;29;"__locale";"fr_FR";"string"
 92;29;"Locale";"fr";"string"
 93;29;"StockLocationId";"$StockLocation.id$";"string"

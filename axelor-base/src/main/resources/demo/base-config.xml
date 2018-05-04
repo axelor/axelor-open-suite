@@ -88,7 +88,7 @@
 	
 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory" search="self.importId = :importId"  />
 	
-	<input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration" />
+	<input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration" search="self.importId = :importId"/>
 	
 	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" call="com.axelor.csv.script.ImportPartner:importPartner">

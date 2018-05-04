@@ -302,5 +302,9 @@
 	<action-method name="action-show-opportunities-on-map-page">
 	  <call method="showOpportunitiesOnMap" class="com.axelor.apps.crm.web.OpportunityController"/>
 	</action-method>
-	
+
+    <action-method name="action-opportunity-record-from-lead">
+        <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadIntoOpportunity"/>
+    </action-method>
+
 </object-views>
