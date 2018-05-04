@@ -37,6 +37,7 @@
 - Convert Lead: Fix type,call type and lead field of converted events. 
 - Advanced Export: Fix export every fields of model.
 - Advanced export : Fix input issue of selection field for export.
+- Fix Advanced export object and wizard translation.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features

@@ -21,7 +21,7 @@
      	<panel>
      		<button name="exportPDF" title="Export PDF" icon="fa-reply" colSpan="3" onClick="save,action-export-pdf-method,save"/>
     		<button name="exportExcel" title="Export Excel" icon="fa-reply" colSpan="3" onClick="save,action-export-excel-method,save"/>
-    		<button name="exportCSV" title="Export CSV" icon="fa-reply" colSpan="3" onClick="save,action-export-csv-method,save"/>
+    		<button name="exportCSV" title="advanced.export.button.export.csv" icon="fa-reply" colSpan="3" onClick="save,action-export-csv-method,save"/>
     		<field name="advancedExportFile" readonly="true" colSpan="3" widget="binary-link"/>
      		<button name="viewData" hidden="true" title="View Data" colSpan="3" onClick="action-record-show-field-data,save,action-attr-view-data-button-change-title"/>
      	</panel>
