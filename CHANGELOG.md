@@ -33,6 +33,7 @@
 - Menus permissions adapted to v5 for demoCRM and demoERP users
 - Fiscal Position interface reworked and moved from Account to Base module
 - Fix empty partner list from batch report.
+- Fix duplicate object wizard translation.
 - Convert Lead: Fix type,call type and lead field of converted events. 
 - Advanced Export: Fix export every fields of model.
 - Advanced export : Fix input issue of selection field for export.
