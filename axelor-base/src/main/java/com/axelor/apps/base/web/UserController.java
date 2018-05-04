@@ -61,7 +61,7 @@ public class UserController {
 		 }
 	}
 	
-    public void checkUniqueErrors(ActionRequest request, ActionResponse response) {
+    public void validate(ActionRequest request, ActionResponse response) {
         try {
             User user = request.getContext().asType(User.class);
             Map<String, String> errors = ModelTool.getUniqueErrors(user, UNIQUE_MESSAGES);
