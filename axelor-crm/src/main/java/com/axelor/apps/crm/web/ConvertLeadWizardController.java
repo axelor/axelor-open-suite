@@ -32,6 +32,7 @@ import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -68,13 +69,33 @@ public class ConvertLeadWizardController {
 
 		Lead lead = leadRepo.find(((Integer)leadContext.get("id")).longValue());
 		
-		Partner partner = null;
+		Partner partner = createPartnerData(context);
 		Partner contactPartner = null;
 		
+		if (partner != null) {
+			contactPartner = createContactData(context, partner);
+		}
+		
+		try {
+			lead = leadService.convertLead(lead, partner, contactPartner);
+		} catch(Exception e) {
+			TraceBackService.trace(e);
+		}
+		
+		if (lead.getPartner() == null) {
+			throw new AxelorException(IException.TECHNICAL, I18n.get(I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR)));
+		}
+		
+		openPartner(response, lead);
+					
+	}
+
+	private Partner createPartnerData(Context context)
+			throws AxelorException {
+		
 		Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
-		Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
-
-
+		Partner partner = null;
+		
 		if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
 			
 			partner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("partner"),
@@ -87,36 +108,41 @@ public class ConvertLeadWizardController {
 			partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
 		}
 		
-		if (partner != null) {
-			if((leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER 
-					|| leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT) 
-					&&  partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+		return partner;
+	}
 	
-				contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"),
-																		convertLeadWizardService.createPrimaryAddress(context),
-																		convertLeadWizardService.createOtherAddress(context));
-				contactPartner.setIsContact(true);
-				//TODO check all required fields...
-			}
-			else  if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER 
-					&& leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT
-					&& partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
-				Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
-				contactPartner = partnerRepo.find(((Integer) selectContactContext.get("id")).longValue());
-			}
+	private Partner createContactData(Context context, Partner partner) throws AxelorException {
+		
+		Partner contactPartner = null;
+		
+		Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
+		
+		if (leadToContactSelect == null) {
+			return null;
 		}
 		
-		try {
-			lead = leadService.convertLead(lead, partner, contactPartner);
-		} catch(Exception e) {
-			
+		if(leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT
+				&& partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+
+			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"),
+																	convertLeadWizardService.createPrimaryAddress(context),
+																	convertLeadWizardService.createOtherAddress(context));
+			contactPartner.setIsContact(true);
+			//TODO check all required fields...
+		}
+		else  if(leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT
+				&& partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
+			contactPartner = partnerRepo.find(((Integer) selectContactContext.get("id")).longValue());
 		}
 		
-		if (lead.getPartner() == null) {
-			throw new AxelorException(IException.TECHNICAL, I18n.get(I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR)));
-		}
+		return contactPartner;
+	}
+	
+	
+	private void openPartner(ActionResponse response, Lead lead) {
 		
-		partner = lead.getPartner();
+		Partner partner = lead.getPartner();
 		String form = "partner-customer-form";
 		String grid = "partner-customer-grid";
 		
@@ -133,7 +159,6 @@ public class ConvertLeadWizardController {
 					.add("grid", grid)
 					.context("_showRecord", partner.getId())
 					.map());
-					
 	}
 	
 	public void setDefaults(ActionRequest request, ActionResponse response) throws AxelorException { 
@@ -155,8 +180,8 @@ public class ConvertLeadWizardController {
 		response.setAttr("$contactState", "value", lead.getPrimaryState());
 		response.setAttr("$contactPostalCode", "value", lead.getPrimaryPostalCode());
 		response.setAttr("$contactCountry", "value", lead.getPrimaryCountry());
-		response.setAttr("leadToPartnerSelect", "value", 0);
-		response.setAttr("leadToContactSelect", "value", 0);
+		response.setAttr("$leadToPartnerSelect", "value", 1);
+		response.setAttr("$leadToContactSelect", "value", 1);
 	}
 	
 	public void setPartnerDefaults(ActionRequest request, ActionResponse response) throws AxelorException { 
