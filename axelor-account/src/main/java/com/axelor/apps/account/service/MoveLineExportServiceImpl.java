@@ -939,7 +939,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 		}
 
         if(administration){
-            moveLineQueryStr += String.format(" AND self.move.ignoreInAccountingOk = false");
+            moveLineQueryStr += " AND self.move.ignoreInAccountingOk = false";
         }
 
 		List<MoveLine> moveLineList = moveLineRepo.all().filter("self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED).order("date").order("name").fetch();
@@ -955,7 +955,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 				items[0] = journal.getCode();
 				items[1] = journal.getName();
 				items[2] = moveLine.getName();
-				items[3] = moveLine.getDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+				items[3] = moveLine.getDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
 				items[4] = moveLine.getAccount().getCode();
 				items[5] = moveLine.getAccount().getName();
 				items[6] = "";
@@ -966,34 +966,34 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 					items[7] = partner.getFullName();
 				}
 				items[8] = moveLine.getOrigin();
-				items[9] = moveLine.getDate().format(DateTimeFormatter.ofPattern("YYYYMMdd")); // Pour le moment on va utiliser la date des lignes d'écriture.
+				items[9] = moveLine.getDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des lignes d'écriture.
 				items[10]= moveLine.getDescription();
 				items[11]= moveLine.getDebit().toString();
 				items[12]= moveLine.getCredit().toString();
 				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
-					List<String> ReconcileSeqList = new ArrayList<String>();
-					List<String> ReconcileDateList = new ArrayList<String>();
+					List<String> reconcileSeqList = new ArrayList<>();
+					List<String> reconcileDateList = new ArrayList<>();
 
 					for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
-						ReconcileSeqList.add(reconcile.getReconcileSeq());
-						ReconcileDateList.add(reconcile.getReconciliationDate().format(DateTimeFormatter.ofPattern("YYYYMMdd")));
+						reconcileSeqList.add(reconcile.getReconcileSeq());
+						reconcileDateList.add(reconcile.getReconciliationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)));
 					}
-					items[13] = StringUtils.join(ReconcileSeqList, "; ");
-					items[14]= StringUtils.join(ReconcileDateList, "; ");
+					items[13] = StringUtils.join(reconcileSeqList, "; ");
+					items[14] = StringUtils.join(reconcileDateList, "; ");
 				}
 				else{
-					List<String> ReconcileSeqList = new ArrayList<String>();
-					List<String> ReconcileDateList = new ArrayList<String>();
+					List<String> reconcileSeqList = new ArrayList<>();
+					List<String> reconcileDateList = new ArrayList<>();
 					for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
 						if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
-							ReconcileSeqList.add(reconcile.getReconcileSeq());
-							ReconcileDateList.add(reconcile.getReconciliationDate().format(DateTimeFormatter.ofPattern("YYYYMMdd")));
+							reconcileSeqList.add(reconcile.getReconcileSeq());
+							reconcileDateList.add(reconcile.getReconciliationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)));
 						}
 					}
-					items[13] = StringUtils.join(ReconcileSeqList, "; ");
-					items[14]= StringUtils.join(ReconcileDateList, "; ");
+					items[13] = StringUtils.join(reconcileSeqList, "; ");
+					items[14] = StringUtils.join(reconcileDateList, "; ");
 				}
-				items[15]= move.getValidationDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+				items[15]= move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
 				items[16]= moveLine.getCurrencyAmount().toString();
 				if(move.getCurrency() != null){
 					items[17]= move.getCurrency().getCode();
