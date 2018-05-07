@@ -99,7 +99,7 @@
 		<many-to-one name="barCode" title="Barcode"
 			ref="com.axelor.meta.db.MetaFile" />
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
-		<string name="fullName" title="Full name" namecolumn="true" />
+		<string name="fullName" title="Full name" namecolumn="true" translatable="true" />
 
 
 		<many-to-one name="weightUnit" ref="com.axelor.apps.base.db.Unit"

@@ -30,6 +30,7 @@ public interface IExceptionMessage {
 	static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/ "Impossible to generate report, url toward Birt viewer is not correctly configured (%s)" /*)*/;
 
 	static final String RECORD_UNSAVED = /*$$(*/ "Unsaved record" /*)*/;
+    static final String RECORD_NONE_SELECTED = /*$$(*/ "Please select at least one record." /*)*/;
 
 	/**
 	 * Currency service and controller
@@ -241,6 +242,9 @@ public interface IExceptionMessage {
 	static final public String BARCODE_GENERATOR_4 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Alphabets must be in uppercase only" /*)*/;
 	static final public String BARCODE_GENERATOR_5 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Its length limit must be greater than %d and less than %d" /*)*/;
 	static final public String BARCODE_GENERATOR_6 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.It must be alphanumeric" /*)*/;
+	static final public String BARCODE_GENERATOR_7 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.Its Length must be %d" /*)*/;
+	static final public String BARCODE_GENERATOR_8 =  /*$$(*/ "Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets" /*)*/;
+	static final public String BARCODE_GENERATOR_9 =  /*$$(*/ "Barcode format not supported" /*)*/;
 
     public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
     public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/ "Google Maps API key is missing in configuration." /*)*/;;
@@ -254,4 +258,8 @@ public interface IExceptionMessage {
 	public static final String WEEKLY_PLANNING_3 = /*$$(*/ "Invalid times %s afternoon" /*)*/;
 	public static final String WEEKLY_PLANNING_4 = /*$$(*/ "Some times are null and should not on %s" /*)*/;
 
+    /*
+     * User service
+     */
+    String USER_CODE_ALREADY_EXISTS = /*$$(*/ "A user with this login already exists." /*)*/;
 }

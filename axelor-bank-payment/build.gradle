@@ -9,7 +9,6 @@ apply {
 axelor {
 	title "Axelor Bank Payment"
 	description "Axelor Bank Payment Module"
-	removable true
 }
 
 configurations {

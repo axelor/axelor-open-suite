@@ -19,25 +19,67 @@ package com.axelor.apps.message.service;
 
 import static com.axelor.common.StringUtils.isBlank;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.inject.Singleton;
+import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.auth.AuditableRunner;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
+import com.axelor.mail.MailAccount;
+import com.axelor.mail.MailBuilder;
+import com.axelor.mail.MailException;
+import com.axelor.mail.MailReader;
+import com.axelor.mail.MailSender;
+import com.axelor.mail.db.MailMessage;
+import com.axelor.mail.db.repo.MailMessageRepository;
+import com.axelor.mail.service.MailService;
 import com.axelor.mail.service.MailServiceImpl;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaAttachment;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 
 @Singleton
 public class MailServiceMessageImpl extends MailServiceImpl{
+	
+	private Logger log = LoggerFactory.getLogger(MailService.class);
+	
+	private ExecutorService executor = Executors.newCachedThreadPool();
+	
+	private MailSender sender = null;
+	
+	private MailReader reader = null;
+	
+	private EmailAccount senderAccount = null;
+	
+	private EmailAccount readerAccount = null;
+	
+	@Inject
+	private MailAccountService mailAccountService;
 	
 	@Override
 	public Model resolve(String email) {
@@ -85,4 +127,142 @@ public class MailServiceMessageImpl extends MailServiceImpl{
 
 		return addresses;
 	}
+	
+	@Override
+	public void fetch() throws MailException {
+		
+		final EmailAccount emailAccount = mailAccountService.getDefaultReader();
+		if (emailAccount == null) {
+			super.fetch();
+		}
+		
+		else {
+			final MailReader reader = getMailReader(emailAccount);
+			if (reader == null) {
+				return;
+			}
+			final AuditableRunner runner = Beans.get(AuditableRunner.class);
+			runner.run(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						fetch(reader);
+					} catch (Exception e) {
+						log.error("Unable to fetch messages", e);
+					}
+				}
+			});
+		}
+	}
+	
+	@Override
+	public void send(final MailMessage message) throws MailException {
+		final EmailAccount emailAccount = mailAccountService.getDefaultSender();
+		if (emailAccount == null) {
+			super.send(message);
+			return;
+		}
+		
+		Preconditions.checkNotNull(message, "mail message can't be null");
+		
+		final Model related = findEntity(message);
+		final MailSender sender = getMailSender(emailAccount);
+		if (sender == null) {
+			return;
+		}
+
+		final Set<String> recipients = recipients(message, related);
+		if (recipients.isEmpty()) {
+			return;
+		}
+
+		final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
+		final MailBuilder builder = sender.compose().subject(getSubject(message, related));
+
+		for (String recipient : recipients) {
+			builder.to(recipient);
+		}
+
+		for (MetaAttachment attachment : messages.findAttachments(message)) {
+			final Path filePath = MetaFiles.getPath(attachment.getMetaFile());
+			final File file = filePath.toFile();
+			builder.attach(file.getName(), file.toString());
+		}
+
+		final MimeMessage email;
+		try {
+			builder.html(template(message, related));
+			email = builder.build(message.getMessageId());
+			final Set<String> references = new LinkedHashSet<>();
+			if (message.getParent() != null) {
+				references.add(message.getParent().getMessageId());
+			}
+			if (message.getRoot() != null) {
+				references.add(message.getRoot().getMessageId());
+			}
+			if (!references.isEmpty()) {
+				email.setHeader("X-References", Joiner.on(" ").skipNulls().join(references));
+			}
+		} catch (MessagingException | IOException e) {
+			throw new MailException(e);
+		}
+
+		// send email using a separate process to void thread blocking
+		executor.submit(new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				send(sender, email);
+				return true;
+			}
+		});
+	}
+
+	private MailSender getMailSender(EmailAccount emailAccount) {
+		
+		if (senderAccount == null) {
+			senderAccount = emailAccount;
+			sender = null;
+		}
+		else if (senderAccount.getId() != emailAccount.getId()) {
+			senderAccount = emailAccount;
+			sender = null;
+		}
+		else if (senderAccount.getVersion() != emailAccount.getVersion() ) {
+			senderAccount = emailAccount;
+			sender = null;
+		}
+ 		
+		if (sender == null) {
+			MailAccount mailAccount = mailAccountService.getMailAccount(emailAccount);
+			sender = new MailSender(mailAccount);
+		}
+		
+		return sender;
+	}
+
+	private MailReader getMailReader(EmailAccount emailAccount) {
+		
+		if (readerAccount == null) {
+			readerAccount = emailAccount;
+			reader = null;
+		}
+		else if (readerAccount.getId() != emailAccount.getId()) {
+			readerAccount = emailAccount;
+			reader = null;
+		}
+		else if (readerAccount.getVersion() != emailAccount.getVersion() ) {
+			readerAccount = emailAccount;
+			reader = null;
+		}
+		
+		if (reader == null) {
+			MailAccount mailAccount = mailAccountService.getMailAccount(emailAccount);
+			reader = new MailReader(mailAccount);
+		}
+		
+		return reader;
+	}
+	
+
+	
 }

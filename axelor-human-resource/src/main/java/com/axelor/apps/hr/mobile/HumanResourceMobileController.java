@@ -55,6 +55,7 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -205,20 +206,19 @@ public class HumanResourceMobileController {
 	 * Content-Type: application/json
 	 *
 	 * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertExpenseLine
-	 * fields: project, expenseProduct, date, comments, toInvoice, amountWithoutVat, vatAmount, justification
+	 * fields: project, expenseType, date, comments, toInvoice, unTaxTotal, taxTotal, justification
 	 *
 	 * payload:
 	 * { "data": {
-	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine",
+	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertExpenseLine",
 	 * 		"project": 2,
-	 * 		"expenseProduct": 10,
+	 * 		"expenseType": 10,
 	 * 		"date": "2018-02-22",
 	 * 		"comments": "No",
 	 * 		"toInvoice": "no",
-	 * 		"amountWithoutVat": 1,
-	 *	 	"vatAmount": 2,
-	 *		"justification": 0,
-	 *      "id": 2
+	 * 		"unTaxTotal": 100,
+	 *	 	"taxTotal": 2,
+	 *		"justification": "no"
 	 * } }
 	 */
 	@Transactional
@@ -228,7 +228,8 @@ public class HumanResourceMobileController {
 		Project project = Beans.get(ProjectRepository.class).find(Long.valueOf(requestData.get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(Long.valueOf(requestData.get("expenseType").toString()));
 		if (user != null) {
-            Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
+                    ExpenseService expenseService = Beans.get(ExpenseService.class);    
+	Expense expense = expenseService.getOrCreateExpense(user);
 
             ExpenseLine expenseLine;
             Object idO = requestData.get("id");
@@ -252,6 +253,7 @@ public class HumanResourceMobileController {
 				expenseLine.setJustification(Base64.getDecoder().decode(justification));
 			}
 			expense.addGeneralExpenseLineListItem(expenseLine);
+            expense = expenseService.compute(expense);
 
 			Beans.get(ExpenseRepository.class).save(expense);
 			HashMap<String, Object> data = new HashMap<>();
@@ -318,31 +320,41 @@ public class HumanResourceMobileController {
 	 * 		"comments": "no"
 	 * } }
 	 */
-	@Transactional
-	public void insertTSLine(ActionRequest request, ActionResponse response){
+    @Transactional
+    public void insertTSLine(ActionRequest request, ActionResponse response) { // insert TimesheetLine
+        try {
+            User user = AuthUtils.getUser();
+            Project project = Beans.get(ProjectRepository.class).find(new Long(request.getData().get("project").toString()));
+            Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("activity").toString()));
+            LocalDate date = LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
+            TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
+            TimesheetService timesheetService = Beans.get(TimesheetService.class);
+            TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
 
-		User user = AuthUtils.getUser();
-		Project project = Beans.get(ProjectRepository.class).find(Long.valueOf(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(Long.valueOf(request.getData().get("activity").toString()));
-		LocalDate date = LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
-		TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
-		TimesheetService timesheetService = Beans.get(TimesheetService.class);
+            if (user != null) {
+                Timesheet timesheet = timesheetRepository.all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
+                if (timesheet == null) {
+                    timesheet = timesheetService.createTimesheet(user, date, date);
+                }
+                BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
+                TimesheetLine line = timesheetLineService.createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
 
-		if(user != null){
-			Timesheet timesheet = timesheetRepository.all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
-			if(timesheet == null){
-				timesheet = timesheetService.createTimesheet(user, date, date);
-			}
-			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-			TimesheetLine line = timesheetService.createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
+                // convert hours to what is defined in timeLoggingPreferenceSelect
+                BigDecimal duration = timesheetLineService.computeHoursDuration(timesheet, hours, false);
+                line.setDuration(duration);
 
-			timesheetRepository.save(timesheet);
-			response.setTotal(1);
-			HashMap<String, Object> data = new HashMap<>();
-			data.put("id", line.getId());
-			response.setData(data);
-		}
-	}
+                timesheet.addTimesheetLineListItem(line);
+
+                timesheetRepository.save(timesheet);
+                response.setTotal(1);
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("id", line.getId());
+                response.setData(data);
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(e);
+        }
+    }
 
 	/*
 	 * This method is used in mobile application.

@@ -15,9 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
+
 package com.axelor.apps.tool.exception;
 
 /**
@@ -43,5 +41,11 @@ public interface IExceptionMessage {
 	 */
 	static final String TEMPLATE_MAKER_1 = /*$$(*/  "No such template"  /*)*/;
 	static final String TEMPLATE_MAKER_2 = /*$$(*/  "Templating can not be empty"  /*)*/;
-	
+
+	static final String RECORD_UNIQUE_FIELD = /*$$(*/ "This field needs to be unique." /*)*/;
+
+	/**
+	 * Pdf Tool
+	 */
+	static final String BAD_COPY_NUMBER_ARGUMENT = /*$$(*/  "The parameter copyNumber should be superior to 0."  /*)*/;
 }

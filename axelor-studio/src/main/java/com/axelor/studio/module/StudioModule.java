@@ -18,12 +18,14 @@
 package com.axelor.studio.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.studio.db.repo.ActionBuilderRepo;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.AppBuilderRepo;
 import com.axelor.studio.db.repo.AppBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
+import com.axelor.studio.db.repo.MetaJsonFieldRepo;
 import com.axelor.studio.db.repo.StudioWkfRepository;
 import com.axelor.studio.db.repo.ChartBuilderRepo;
 import com.axelor.studio.db.repo.ChartBuilderRepository;
@@ -41,6 +43,7 @@ public class StudioModule extends AxelorModule {
 		bind(MenuBuilderRepository.class).to(MenuBuilderRepo.class);
 		bind(DashboardBuilderRepository.class).to(DashboardBuilderRepo.class);
 		bind(AppBuilderRepository.class).to(AppBuilderRepo.class);
+		bind(MetaJsonFieldRepository.class).to(MetaJsonFieldRepo.class);
 	}
 
 }

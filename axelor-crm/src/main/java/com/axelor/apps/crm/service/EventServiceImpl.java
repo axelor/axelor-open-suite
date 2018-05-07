@@ -73,26 +73,6 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
-		return Duration.between(startDateTime, endDateTime);
-	}
-
-	@Override
-	public int getDuration(Duration duration)  {
-		return new Integer(Long.toString(duration.getSeconds()));
-	}
-
-	@Override
-	public LocalDateTime computeStartDateTime(int duration, LocalDateTime endDateTime)  {
-		return endDateTime.minusSeconds(duration);
-	}
-
-	@Override
-	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, int duration)  {
-		return startDateTime.plusSeconds(duration);
-	}
-
-	@Override
 	@Transactional
 	public void saveEvent(Event event){
 		eventRepo.save(event);

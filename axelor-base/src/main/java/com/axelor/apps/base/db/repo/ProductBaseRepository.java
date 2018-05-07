@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,6 +28,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -42,17 +44,38 @@ public class ProductBaseRepository extends ProductRepository{
 	@Inject
 	protected AppBaseService appBaseService;
 
-	
+	@Inject
+    protected TranslationService translationService;
+
+    protected static final String FULL_NAME_FORMAT = "[%s] %s";
+
+    @Inject
+    protected BarcodeGeneratorService barcodeGeneratorService;
+    
 	@Override
 	public Product save(Product product){
-		
-		product.setFullName("["+product.getCode()+"] "+product.getName());
-		
+        product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
+
+        if (product.getId() != null) {
+            Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
+            translationService.updateFormatedValueTranslations(oldProduct.getFullName(), FULL_NAME_FORMAT,
+                    product.getCode(), product.getName());
+        } else {
+            translationService.createFormatedValueTranslations(FULL_NAME_FORMAT, product.getCode(), product.getName());
+        }
+
 		product = super.save(product);
-		if(product.getBarCode() == null && product.getSerialNumber()!=null  &&  appBaseService.getAppBase().getActivateBarCodeGeneration() && product.getBarcodeTypeConfig()!=null) {
+		if(product.getBarCode() == null &&  appBaseService.getAppBase().getActivateBarCodeGeneration()) {
 			try {
 				boolean addPadding=false;
-				InputStream inStream = BarcodeGeneratorService.createBarCode(product.getSerialNumber(), product.getBarcodeTypeConfig(), addPadding);
+				InputStream inStream;
+				if (!appBaseService.getAppBase().getEditProductBarcodeType()) {
+					inStream = barcodeGeneratorService.createBarCode(product.getSerialNumber(),
+							appBaseService.getAppBase().getBarcodeTypeConfig(), addPadding);
+				} else {
+					inStream = barcodeGeneratorService.createBarCode(product.getSerialNumber(),
+							product.getBarcodeTypeConfig(), addPadding);
+				}
 				if (inStream != null) {
 			    	MetaFile barcodeFile =  metaFiles.upload(inStream, String.format("ProductBarCode%d.png", product.getId()));
 					product.setBarCode(barcodeFile);
@@ -81,6 +104,14 @@ public class ProductBaseRepository extends ProductRepository{
 		
 		Product copy = super.copy(product, deep);
 		copy.setBarCode(null);
+		try {
+			if (product.getPicture() != null) {
+				File file = MetaFiles.getPath(product.getPicture()).toFile();
+				copy.setPicture(metaFiles.upload(file));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return copy;
 		

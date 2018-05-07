@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportLineRepository;
+import com.axelor.apps.tool.NammingTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
@@ -205,6 +206,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		List<String> orderByColumns = new ArrayList<>();
 		selectJoinFieldList.clear();
 		joinFieldSet.clear();
+		selectionJoinFieldSet.clear();
+		selectionRelationalJoinFieldSet.clear();
 		counter = 0;
 		
 		language = AuthUtils.getUser().getLanguage();
@@ -427,7 +430,6 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		MetaSelect metaSelect = metaSelectRepo.findByName(mapper.getProperty(fieldName[i]).getSelection());
 		
 		if (metaSelect != null) {
-			MetaField metaField = metaFieldRepo.all().filter("self.name = ?1 AND self.metaModel = ?2", fieldName[i], metaModel).fetchOne();
 			isSelectionField = true;
 			msi++;
 			mt++;
@@ -436,64 +438,29 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 				
 				if (language.equals("fr")) {
 					
-					if (metaField.getTypeName().equals("String")) {
+					selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST("
+							+ temp + "." + fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND "
+							+ ("msi_" + (msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
+							+ ("mt_" + (mt)) + " ON " + ("msi_" + (msi)) + ".title = " + ("mt_" + (mt)) + ".key AND "
+							+ ("mt_"+(mt)) + ".language = \'" + language + "\'");
 						
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp
-								+ "." + fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-						
-					} else {
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp
-								+ "." + fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-					}
 				} else {
-					if (metaField.getTypeName().equals("String")) {
-						
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp + "."
-								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-						
-					} else {
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp + "."
-								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-					}
+					selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST("
+							+ temp + "." + fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND "
+							+ ("msi_" + (msi)) + ".select = " + metaSelect.getId());
 				}
 			} else {
 				if (language.equals("fr")) {
 					
-					if (metaField.getTypeName().equals("String")) {
+					selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST(self."
+							+ fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND " + ("msi_" + (msi))
+							+ ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation " + ("mt_" + (mt))
+							+ " ON " + ("msi_" + (msi)) + ".title = " + ("mt_" + (mt)) + ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
 						
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-						
-					} else {
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-					}
 				} else {
-					if (metaField.getTypeName().equals("String")) {
-						
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-						
-					} else {
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-					}
+					selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST(self."
+							+ fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND " + ("msi_" + (msi))
+							+ ".select = " + metaSelect.getId());
 				}
 			}
 		}
@@ -509,40 +476,43 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			MetaModel subMetaModel = metaModelRepo.all()
 					.filter("self.name = ?1", relationalField.getTypeName()).fetchOne();
 			
-			if (!relationalField.getPackageName().startsWith("java")) {
+			if (relationalField.getPackageName() != null && !relationalField.getPackageName().startsWith("java")) {
 				
+				String alias = "";
 				counter++;
 				if (counter2 != 0 || counter3 != 0) {
 					selectNormalField = "";
 				}
 				if (i != 0) {
 					for (int j = 0; j <= i; j++) {
+						alias = isKeyword(splitField, j);
 						if (j == 0) {
 							if (nbrField > 0 && joinFieldSet.size() > 0) {
-								joinFieldSet.add("LEFT JOIN self." + splitField[j] + " " + splitField[j]);
-								temp = splitField[j];
+								joinFieldSet.add("LEFT JOIN self." + splitField[j] + " " + alias);
+								temp = alias;
 							} else {
-								joinFieldSet.add("self." + splitField[j] + " " + splitField[j]);
-								temp = splitField[j];
+								joinFieldSet.add("self." + splitField[j] + " " + alias);
+								temp = alias;
 							}
 						} else {
 							if (!temp.equals(splitField[i])) {
-								joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + splitField[j]);
-								temp = splitField[j];
+								joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + alias);
+								temp = alias;
 							}
 						}
 					}
 				} else {
+					alias = isKeyword(splitField, i);
 					if (nbrField > 0 && joinFieldSet.size() > 0) {
-						if (!joinFieldSet.contains("self." + splitField[i] + " " + splitField[i])) {
-							joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + splitField[i]);
-							temp = splitField[i];
+						if (!joinFieldSet.contains("self." + splitField[i] + " " + alias)) {
+							joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + alias);
+							temp = alias;
 						} else {
-							temp = splitField[i];
+							temp = alias;
 						}
 					} else {
-						joinFieldSet.add("self." + splitField[i] + " " + splitField[i]);
-						temp = splitField[i];
+						joinFieldSet.add("self." + splitField[i] + " " + alias);
+						temp = alias;
 					}
 				}
 					
@@ -583,6 +553,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			getExportData(splitField, i+1, subMetaModel);
 		}
 		return counter;
+	}
+	
+	private String isKeyword(String[] fieldNames, int ind) {
+
+		if (NammingTool.isKeyword(fieldNames[ind])) {
+			return fieldNames[ind] + "_id";
+		}
+		return fieldNames[ind];
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })

@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Client Portal"
 	description "Axelor Client Portal Module"
-
-	removable true
 }
 
 dependencies {

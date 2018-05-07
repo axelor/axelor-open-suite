@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Account"
 	description "Axelor Account Module"
-
-	removable true
 }
 
 

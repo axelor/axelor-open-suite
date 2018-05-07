@@ -193,7 +193,7 @@ public class AdvancedExportController {
 	public void advancedExportPDF(ActionRequest request, ActionResponse response) throws DocumentException, IOException, ClassNotFoundException {
 		
 		AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
-		MetaFile exportFile = advancedExport.getAdvancedExportFile();
+		MetaFile exportFile = null;
 		String criteria = ""; 
 		if (request.getContext().get("_contextCriteria") != null)
 			criteria = request.getContext().get("_contextCriteria").toString();
@@ -222,14 +222,15 @@ public class AdvancedExportController {
 		} else {
 			response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_1));
 		}
-		response.setValue("advancedExportFile", exportFile);
+		
+		downloadExportFile(response, exportFile);
 	}
 	
 	@SuppressWarnings({ "rawtypes" })
 	public void advancedExportExcel(ActionRequest request, ActionResponse response) throws IOException, ClassNotFoundException {
 		
 		AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
-		MetaFile exportFile = advancedExport.getAdvancedExportFile();
+		MetaFile exportFile = null;
 		String criteria = ""; 
 		if (request.getContext().get("_contextCriteria") != null)
 			criteria = request.getContext().get("_contextCriteria").toString();
@@ -258,7 +259,8 @@ public class AdvancedExportController {
 		} else {
 			response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_1));
 		}
-		response.setValue("advancedExportFile", exportFile);
+		
+		downloadExportFile(response, exportFile);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -292,6 +294,7 @@ public class AdvancedExportController {
 			response.setView(ActionView.define(I18n.get("Advanced export"))
 				.model(AdvancedExport.class.getName())
 				.add("form", "advanced-export-wizard-form")
+				.param("popup", "true")
 				.param("show-toolbar", "false")
 				.param("show-confirm", "false")
 				.context("_metaModel", metaModel)
@@ -303,7 +306,7 @@ public class AdvancedExportController {
 	public void advancedExportCSV(ActionRequest request, ActionResponse response) throws ClassNotFoundException, IOException {
 		
 		AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
-		MetaFile exportFile = advancedExport.getAdvancedExportFile();
+		MetaFile exportFile = null;
 		String criteria = ""; 
 		if (request.getContext().get("_contextCriteria") != null)
 			criteria = request.getContext().get("_contextCriteria").toString();
@@ -332,7 +335,8 @@ public class AdvancedExportController {
 		} else {
 			response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_1));
 		}
-		response.setValue("advancedExportFile", exportFile);
+		
+		downloadExportFile(response, exportFile);
 	}
 	
 	public void generateExportFile(ActionRequest request, ActionResponse response) throws ClassNotFoundException, IOException, DocumentException {
@@ -341,7 +345,7 @@ public class AdvancedExportController {
 			return;
 		
 		AdvancedExport advancedExport = advancedExportRepo.find(Long.valueOf(((Map)request.getContext().get("_xAdvancedExport")).get("id").toString()));
-		MetaFile exportFile = advancedExport.getAdvancedExportFile();
+		MetaFile exportFile = null;
 		int exportFormatSelect = Integer.parseInt(request.getContext().get("exportFormatSelect").toString());
 		String criteria = null; 
 		if (request.getContext().get("_criteria") != null)
@@ -376,6 +380,17 @@ public class AdvancedExportController {
 		} else {
 			response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_1));
 		}
-		response.setValue("_xAdvancedExportFile", exportFile);
+		
+		downloadExportFile(response, exportFile);
+	}
+	
+	private void downloadExportFile(ActionResponse response, MetaFile exportFile) {
+				
+		if (exportFile != null) {
+			response.setView(ActionView.define(I18n.get("Export file"))
+					.model(AdvancedExport.class.getName())
+					.add("html", "ws/rest/com.axelor.meta.db.MetaFile/"+exportFile.getId()+"/content/download?v="+exportFile.getVersion())
+					.param("download", "true").map());
+		}
 	}
 }

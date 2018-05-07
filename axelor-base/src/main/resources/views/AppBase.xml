@@ -36,6 +36,7 @@
 		    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>
      			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="editProductBarcodeType==false"/>
 				</panel>
+                <field name="generatePartnerSequence" widget="boolean-switch"/>
 				<field name="generateProductSequence" widget="boolean-switch"/>
 				<field name="manageProductVariants" widget="boolean-switch"/>
 				<field name="manageMultiBanks" widget="boolean-switch"/>

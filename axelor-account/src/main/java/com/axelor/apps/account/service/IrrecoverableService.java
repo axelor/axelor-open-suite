@@ -49,8 +49,8 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -884,7 +884,7 @@ public class IrrecoverableService{
 
 	public String getSequence(Company company) throws AxelorException  {
 
-		String seq = sequenceService.getSequenceNumber(IAdministration.IRRECOVERABLE, company);
+		String seq = sequenceService.getSequenceNumber(SequenceRepository.IRRECOVERABLE, company);
 		if(seq == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IRRECOVERABLE_4), AppAccountServiceImpl.EXCEPTION,company.getName());
 		}

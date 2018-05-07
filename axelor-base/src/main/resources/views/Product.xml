@@ -81,7 +81,7 @@
 		      	</panel>
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6"/>
-			        <field name="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" hideIf="isShippingCostsProduct"/>
+			        <field name="isPack" if="__config__.app.getApp('sale')?.getProductPackMgt()" hideIf="isShippingCostsProduct"/>
 			        <field name="expense" hidden="true"/>
       			</panel>
       			<panel name="Barcode" readonlyIf="barCode != null" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" title="Barcode" colSpan="12">
@@ -102,10 +102,10 @@
                         hideIf="isShippingCostsProduct"/>
 					<panel name="units" title="Units" colSpan="6">
 						<field name="unit" canEdit="false" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
-						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
-						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
+						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
+						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"/>
 					</panel>
-					<panel title="Configurator" colSpan="12" showIf="configurator" if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableConfigurator()">
+					<panel title="Configurator" colSpan="12" showIf="configurator" if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getEnableConfigurator()">
 						<field name="configurator" showTitle="false" form-view="configurator-form" grid-view="configurator-grid" readonly="true"/>
 					</panel>
 				</panel>
@@ -116,7 +116,7 @@
 			      	</panel>
 			        <field name="isPrototype" showIf="productTypeSelect =='storable'"/>
 		        	<field name="versionSelect" colSpan="12"/>
-                    <panel title="Multiple quantities" colSpan="12" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getManageMultipleSaleQuantity()">
+                    <panel title="Multiple quantities" colSpan="12" if="__config__.app.getApp('sale')?.getManageMultipleSaleQuantity()">
 						<field name="allowToForceSaleQty"/>
 						<panel-related field="saleProductMultipleQtyList" grid-view="product-multiple-qty-grid" form-view="product-multiple-qty-form" colSpan="12" editable="true"/>
 					</panel>
@@ -135,7 +135,7 @@
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
-                    <panel title="Multiple quantities" colSpan="12" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageMultiplePurchaseQuantity()">
+                    <panel title="Multiple quantities" colSpan="12" if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()">
 						<field name="allowToForcePurchaseQty"/>
 						<panel-related field="purchaseProductMultipleQtyList" grid-view="product-multiple-qty-grid" form-view="product-multiple-qty-form" colSpan="12" editable="true"/>
 					</panel>
@@ -144,13 +144,13 @@
 			        <field name="costPrice" colSpan="6" readonlyIf="costTypeSelect != 1" onChange="action-product-record-compute-sale-price"/>
 			        <field name="costTypeSelect" colSpan="6" onChange="action-product-group-cost-type-select-onchange"/>
 			        <field name="managPriceCoef" colSpan="12" onChange="action-product-record-compute-sale-price"/>
-					<field name="shippingCoef" onChange="action-product-group-cost-type-select-onchange" showIf="!defShipCoefByPartner"/>
-					<field name="defShipCoefByPartner" onChange="action-product-method-supplier-catalog-coeff"/>
+					<field name="shippingCoef" onChange="action-product-group-cost-type-select-onchange" showIf="!defShipCoefByPartner" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+					<field name="defShipCoefByPartner" onChange="action-product-method-supplier-catalog-coeff" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	      		</panel>
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	    	</panel>
-            <panel name="accounting" title="Accounting" if="__config__.app.isApp('account')">
+            <panel name="accounting" title="Accounting">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
                 <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
                 <panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
@@ -252,7 +252,7 @@
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
   			</panel>
-  			<panel-related field="packLines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
+  			<panel-related field="packLines" showIf="isPack" if="__config__.app.getApp('sale')?.getProductPackMgt()" />
   		</panel-tabs>
   		<panel>
   			<field name="attrs" colSpan="12" />
@@ -487,8 +487,8 @@
 	
     <action-attrs name="action-product-attrs-title-unit" if-module="axelor-stock">
         <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Unit')"/>
-        <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.app.getApp('sale').getManageSalesUnits()"/>
-        <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.app.getApp('purchase').getManagePurchasesUnits()"/>
+        <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
+        <attribute name="title" for="unit" expr="eval: com.axelor.i18n.I18n.get('Stock Unit')" if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"/>
     </action-attrs>
 
     <action-record name="action-product-record-tick-checkbox-purchasable"

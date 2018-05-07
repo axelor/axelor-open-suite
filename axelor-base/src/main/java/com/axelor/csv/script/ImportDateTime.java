@@ -38,13 +38,13 @@ public class ImportDateTime {
 		if(!Strings.isNullOrEmpty(year)){
 			Matcher matcher = patternYear.matcher(year);
 			if(matcher.find()){
-				Integer years = Integer.parseInt(matcher.group());
+				Long years = Long.parseLong(matcher.group());
 				if(year.startsWith("+"))
 					datetime = datetime.plusYears(years);
 				else if(year.startsWith("-"))
 					datetime = datetime.minusYears(years);
 				else
-					datetime = datetime.withYear(years);
+					datetime = datetime.withYear(years.intValue());
 			}
 		}
 		return datetime;
@@ -54,13 +54,13 @@ public class ImportDateTime {
 		if(!Strings.isNullOrEmpty(month)){
 			Matcher matcher = patternMonth.matcher(month);
 			if(matcher.find()){
-				Integer months = Integer.parseInt(matcher.group());
+				Long months = Long.parseLong(matcher.group());
 				if(month.startsWith("+"))
 					datetime = datetime.plusMonths(months);
 				else if(month.startsWith("-"))
 					datetime = datetime.minusMonths(months);
 				else
-					datetime = datetime.withMonth(months);
+					datetime = datetime.withMonth(months.intValue());
 			}
 		}
 		return datetime;
@@ -70,16 +70,16 @@ public class ImportDateTime {
 		if(!Strings.isNullOrEmpty(day)){
 			Matcher matcher = patternMonth.matcher(day);
 			if(matcher.find()){
-				Integer days = Integer.parseInt(matcher.group());
+				Long days = Long.parseLong(matcher.group());
 				if(day.startsWith("+"))
 					datetime = datetime.plusDays(days);
 				else if(day.startsWith("-"))
 					datetime = datetime.minusDays(days);
 				else {
 					if (days > datetime.toLocalDate().lengthOfMonth()) {
-						days = datetime.toLocalDate().lengthOfMonth();
+						days = Long.valueOf(datetime.toLocalDate().lengthOfMonth());
 					}
-					datetime = datetime.withDayOfMonth(days);
+					datetime = datetime.withDayOfMonth(days.intValue());
 				}
 			}
 		}
@@ -90,13 +90,13 @@ public class ImportDateTime {
 		if(!Strings.isNullOrEmpty(hour)){
 			Matcher matcher = patternMonth.matcher(hour);
 			if(matcher.find()){
-				Integer hours = Integer.parseInt(matcher.group());
+				Long hours = Long.parseLong(matcher.group());
 				if(hour.startsWith("+"))
 					datetime = datetime.plusHours(hours);
 				else if(hour.startsWith("-"))
 					datetime = datetime.minusHours(hours);
 				else
-					datetime = datetime.withHour(hours);
+					datetime = datetime.withHour(hours.intValue());
 			}
 		}
 		return datetime;
@@ -106,13 +106,13 @@ public class ImportDateTime {
 		if(!Strings.isNullOrEmpty(minute)){
 			Matcher matcher = patternMonth.matcher(minute);
 			if(matcher.find()){
-				Integer minutes = Integer.parseInt(matcher.group());
+				Long minutes = Long.parseLong(matcher.group());
 				if(minute.startsWith("+"))
 					datetime = datetime.plusMinutes(minutes);
 				else if(minute.startsWith("-"))
 					datetime = datetime.minusMinutes(minutes);
 				else
-					datetime = datetime.withMinute(minutes);
+					datetime = datetime.withMinute(minutes.intValue());
 			}
 		}
 		return datetime;
@@ -122,13 +122,13 @@ public class ImportDateTime {
 		if(!Strings.isNullOrEmpty(second)){
 			Matcher matcher = patternMonth.matcher(second);
 			if(matcher.find()){
-				Integer seconds = Integer.parseInt(matcher.group());
+				Long seconds = Long.parseLong(matcher.group());
 				if(second.startsWith("+"))
 					datetime = datetime.plusSeconds(seconds);
 				else if(second.startsWith("-"))
 					datetime = datetime.minusSeconds(seconds);
 				else
-					datetime = datetime.withSecond(seconds);
+					datetime = datetime.withSecond(seconds.intValue());
 			}
 		}
 		return datetime;
