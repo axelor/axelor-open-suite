@@ -53,7 +53,7 @@ public class CalendarConfigurationService {
 		Group group = calendarConfiguration.getCalendarGroup();
 
 		MetaAction metaAction = this.createMetaAction("action." + subName, title);
-		MetaMenu metaMenu = this.createMetaMenu(menuName, title, metaAction, calendarConfiguration.getParentMenu());
+		MetaMenu metaMenu = this.createMetaMenu(menuName, title, metaAction, calendarConfiguration.getParentMetaMenu());
 		Beans.get(MetaMenuRepository.class).save(metaMenu);
 
 		Role role = new Role();
