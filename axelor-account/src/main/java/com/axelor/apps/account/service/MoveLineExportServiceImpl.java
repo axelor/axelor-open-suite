@@ -851,7 +851,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 	* @throws IOException
 	*/
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect1000(MoveLineReport moveLineReport, boolean administration) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1000(MoveLineReport moveLineReport, boolean administration, boolean replay) throws AxelorException, IOException {
 		
 		log.info("In Export type 1000 service : ");
 		List<String[]> allMoveLineData = new ArrayList<>();
@@ -862,7 +862,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String moveLineQueryStr = "";
 		moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
-		moveLineQueryStr += String.format(" AND self.move.period.year = %s", moveLineReport.getYear().getId());
+		if(moveLineReport.getYear() != null){
+			moveLineQueryStr += String.format(" AND self.move.period.year = %s", moveLineReport.getYear().getId());
+		}
 		
 		if(moveLineReport.getPeriod() != null)	{
 			moveLineQueryStr += String.format(" AND self.move.period = %s", moveLineReport.getPeriod().getId());
@@ -879,13 +881,19 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());
 		}
 		
-		if(administration){
-			moveLineQueryStr += "AND self.move.ignoreInAccountingOk = false";
+		moveLineQueryStr += " AND self.move.ignoreInAccountingOk = false";
+
+		if(!administration){
+			moveLineQueryStr += " AND self.move.journal.notExportOk = false";
+			if (replay) {
+				moveLineQueryStr += String.format(
+						" AND self.move.accountingOk = true AND self.move.moveLineReport.id = %s",
+						moveLineReport.getId());
+			} else {
+				moveLineQueryStr += " AND self.move.accountingOk = false";
+			}
 		}
-		else{
-			moveLineQueryStr += "AND self.move.ignoreInAccountingOk = false AND self.move.accountingOk = false "
-					+ "AND self.move.journal.notExportOk = false";
-		}
+
 		List<MoveLine> moveLineList = moveLineRepo.all().filter("self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED).order("date").order("name").fetch();
 		if(!moveLineList.isEmpty()) {
 			List<Move> moveList = new ArrayList<>();
@@ -1289,11 +1297,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			break;
 
 		case MoveLineReportRepository.EXPORT_ADMINISTRATION:
-			this.exportMoveLineTypeSelect1000(moveLineReport, true);
+			this.exportMoveLineTypeSelect1000(moveLineReport, true, false);
 			break;
 			
 		case MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
-			this.exportMoveLineTypeSelect1000(moveLineReport, false);
+			this.exportMoveLineTypeSelect1000(moveLineReport, false, false);
 			break;
 			
 		default:
@@ -1315,6 +1323,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 				break;
 			case MoveLineReportRepository.EXPORT_PURCHASES:
 				this.exportMoveLineTypeSelect1009(moveLineReport, true);
+				break;
+			case MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
+				this.exportMoveLineTypeSelect1000(moveLineReport, false, true);
 				break;
 			default:
 				break;
@@ -1350,7 +1361,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String setFileName(MoveLineReport moveLineReport) throws AxelorException, IOException{
+	public String setFileName(MoveLineReport moveLineReport) throws AxelorException {
 		Company company =moveLineReport.getCompany();
 		Partner partner = company.getPartner();
 		
@@ -1361,8 +1372,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			fileName += moveLineReport.getDateTo().toString(DATE_FORMAT_YYYYMMDD);
 		}else if(moveLineReport.getPeriod() != null){
 			fileName += moveLineReport.getPeriod().getToDate().toString(DATE_FORMAT_YYYYMMDD);
-		}else {
+		}else if(moveLineReport.getYear() != null){
 			fileName += moveLineReport.getYear().getToDate().toString(DATE_FORMAT_YYYYMMDD);
+		}
+		else {
+			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL), IException.NO_VALUE);
 		}
 		fileName +=".csv";
 
