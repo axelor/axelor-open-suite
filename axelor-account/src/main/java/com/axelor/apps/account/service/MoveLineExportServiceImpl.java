@@ -881,13 +881,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());
 		}
 		
-		if(administration){
-			moveLineQueryStr += "AND self.move.ignoreInAccountingOk = false";
+		moveLineQueryStr += " AND self.move.ignoreInAccountingOk = false";
+
+		if(!administration){
+			moveLineQueryStr += " AND self.move.accountingOk = false AND self.move.journal.notExportOk = false";
 		}
-		else{
-			moveLineQueryStr += "AND self.move.ignoreInAccountingOk = false AND self.move.accountingOk = false "
-					+ "AND self.move.journal.notExportOk = false";
-		}
+
 		List<MoveLine> moveLineList = moveLineRepo.all().filter("self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED).order("date").order("name").fetch();
 		if(!moveLineList.isEmpty()) {
 			List<Move> moveList = new ArrayList<>();
