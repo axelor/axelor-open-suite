@@ -36,7 +36,6 @@
 
 			// SYNCHRONISATION SELECT
 			public static final String ICAL_ONLY = "ICalEvent";
-			public static final String CRM_SYNCHRO = "Event";
 	  ]]>
       </extra-code>
       
