@@ -4,13 +4,21 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
-    	<toolbar>
-    		<button name="grabLeads" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
-    		<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
-<!--     		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> -->
-    		<button name="checkDuplicate" title="Check duplicate" onClick="action-general-check-duplicate-records"/>
-    		<button name="importLeads" title="Import leads" onClick="action-crm-method-lead-import-leads" /> 
-    	</toolbar>
+      <!--
+      <toolbar>
+        <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" />
+      </toolbar>
+      -->
+      <menubar>
+        <menu title="Reports" icon="fa-files-o">
+          <item title="Print" action="action-crm-lead-method-print"/>
+        </menu>
+        <menu title="Tools" icon="fa-wrench">
+          <item title="Assign to me" action="com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+          <item title="Check duplicate" action="action-general-check-duplicate-records"/>
+          <item title="Import leads" action="action-crm-method-lead-import-leads"/>
+        </menu>
+      </menubar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
@@ -125,7 +133,7 @@
 
 			<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 5" itemSpan="12">
 				<panel-related colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid"/>
-				<panel-related colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-grid"/>
+				<panel-related colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid"/>
 				<panel-dashlet action="action-lead-view-emails"/>
 				<panel-dashlet if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns"/>
 			</panel>

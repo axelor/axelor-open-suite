@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <form name="mail-account-form" id="base-mail-account-form" title="Mail account" model="com.axelor.apps.message.db.EmailAccount"
-    	onNew="action-mail-account-default-record" onSave="action-method-mail-account-validate-password">
+    	onNew="action-mail-account-default-record" onSave="action-mail-account-method-check-default-mail-account,action-method-mail-account-validate-password">
     	<panel name="informations" title="Informations" >
             <field name="name" />
-			<field name="isDefault" onChange="action-mail-account-validate-is-default" />
+			<field name="isDefault" />
         	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>
         </panel>
         <panel name="configPanel" title="Configurations" readonlyIf="isValid">

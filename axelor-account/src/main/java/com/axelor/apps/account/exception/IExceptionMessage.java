@@ -575,4 +575,5 @@ public interface IExceptionMessage {
      */
     String INVOICE_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on invoice %s." /*)*/;
 	String INVOICES_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on following invoices: %s" /*)*/;
+	String INVOICE_PRINTING_IO_ERROR = /*$$(*/  "Error on uploading printed invoice:"  /*)*/;
 }

@@ -6,6 +6,7 @@
 "Templating can not be empty",,,
 "The collection of IDs cannot be null.",,,
 "The consumer cannot be null.",,,
+"The parameter copyNumber should be superior to 0.",,,
 "This field needs to be unique.",,,
 "Url %s is malformed.",,,
 "Years in 360 days",,,

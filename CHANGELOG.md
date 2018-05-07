@@ -5,16 +5,31 @@
 ## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
+- When we generate a message (using a template or not) from the wizrad, open the form view in edit mode directly and close automatically the wizard.
+- All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
+- Improve multiple invoices printing.
 - timesheet: Hide create button on if timsheet editor is disabled from configuration.
 - Add en to fr translation in Barcode type configuration
 - Mail Account: If the boolean "isValid" is true, allow user to disabled it 
 - Product: If purchase module is not installed, hide boolean "Define the shipping coef by partner" and "Shipping Coef."
 - Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab.  
+- Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab. 
+- Convert Lead: Removed opportunity and events conversion. Just partner and contact created from lead with events and opportunity linked.   
+- Current user password should be required when updating user password 
+- Replaced default grid by simple grid of event and opportunity in partner,contact and lead form. Simple grid does not contains partner,contact and lead field.
+- Convert Lead: Fix translation and default values. 
+- Advanced export wizard : Automatically download the export file on "Export" button and close the wizard.
+- Message Template: Import demo data per module (or per app).
+- Email Service: Default 'EmailAccount' will be used for adk mailing services or stream messages.
+- Product form: Remove account app check from accounting tab to display account management o2m. 
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
+- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
+- Compute the duration according to the start date and time and end date and time for ticket.
+- Fix same image when duplicating products.
 - invoice: fix bank address on birt template
 - Fix BASE DEMO DATA import error
 - Fix custom buttons imported with studio demo data. It will be only displayed if related app is installed.
@@ -25,7 +40,12 @@
 - Menus permissions adapted to v5 for demoCRM and demoERP users
 - Fiscal Position interface reworked and moved from Account to Base module
 - Fix empty partner list from batch report.
+- Fix duplicate object wizard translation.
 - Convert Lead: Fix type,call type and lead field of converted events. 
+- Advanced Export: Fix export every fields of model.
+- Advanced export : Fix input issue of selection field for export.
+- Fix Advanced export object and wizard translation.
+- Rename 'Replace duplicate' to 'Merge duplicated' and add translation.
 - Advanced export, add translation in CSV export + code improvement
 
 
@@ -58,6 +78,7 @@
 - Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order. 
 - Add multiple default stock locations (receipt, fixup, component, finished products) in stock config instead of a single default stock location.
 - Product sales and production configurator
+- Add a monitoring on time differences on manufacturing orders.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
