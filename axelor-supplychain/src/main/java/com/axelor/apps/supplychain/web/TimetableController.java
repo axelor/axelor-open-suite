@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -71,4 +72,31 @@ public class TimetableController {
 				.context("_showRecord", invoice.getId().toString())
 				.map());
 	}
+
+  /**
+   * Called by the timetable grid and form.
+   * Update all fields when the product is changed.
+   * @param request
+   * @param response
+  */
+  public void getProductInformation(ActionRequest request, ActionResponse response) throws AxelorException{
+
+    Context context = request.getContext();
+
+    Timetable timetable = context.asType(Timetable.class);
+
+    Product product = timetable.getProduct();
+
+    if(product != null) {
+      try {
+        timetableService.computeProductInformation(timetable);
+
+        response.setValue("productName", timetable.getProductName());
+        response.setValue("unit", timetable.getUnit());
+      }
+      catch(Exception e)  {
+        response.setFlash(e.getMessage());
+      }
+    }
+  }
 }

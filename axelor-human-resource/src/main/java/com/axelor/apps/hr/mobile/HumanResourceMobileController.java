@@ -43,6 +43,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeVehicleRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowParamRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
@@ -111,7 +112,7 @@ public class HumanResourceMobileController {
 			expenseLine.setKilometricTypeSelect(new Integer(request.getData().get("allowanceTypeSelect").toString()));
 			expenseLine.setComments(request.getData().get("comments").toString());
 			expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
-			expenseLine.setProject(Beans.get(ProjectRepository.class).find(new Long(request.getData().get("projectTask").toString())));
+			expenseLine.setProject(Beans.get(ProjectRepository.class).find(Long.valueOf(request.getData().get("projectTask").toString())));
 
 			HRConfigService hrConfigService = Beans.get(HRConfigService.class);
 			HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
@@ -123,7 +124,7 @@ public class HumanResourceMobileController {
 				KilometricAllowParamRepository kilometricAllowParamRepo = Beans.get(KilometricAllowParamRepository.class);
 
 				expenseLine.setKilometricAllowParam(kilometricAllowParamRepo
-						.find(new Long(request.getData().get("kilometricAllowParam").toString())));
+						.find(Long.valueOf(request.getData().get("kilometricAllowParam").toString())));
 
 				expenseLine.setTotalAmount(
 						Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
@@ -221,15 +222,22 @@ public class HumanResourceMobileController {
 	 * } }
 	 */
 	@Transactional
-	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
+	public void insertOrUpdateExpenseLine(ActionRequest request, ActionResponse response) {
 		User user = AuthUtils.getUser();
 		Map<String, Object> requestData = request.getData();
-		Project project = Beans.get(ProjectRepository.class).find(new Long(requestData.get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(requestData.get("expenseType").toString()));
+		Project project = Beans.get(ProjectRepository.class).find(Long.valueOf(requestData.get("project").toString()));
+		Product product = Beans.get(ProductRepository.class).find(Long.valueOf(requestData.get("expenseType").toString()));
 		if (user != null) {
             ExpenseService expenseService = Beans.get(ExpenseService.class);
             Expense expense = expenseService.getOrCreateExpense(user);
-			ExpenseLine expenseLine = new ExpenseLine();
+
+            ExpenseLine expenseLine;
+            Object idO = requestData.get("id");
+            if (idO != null) {
+                expenseLine = Beans.get(ExpenseLineRepository.class).find(Long.valueOf(idO.toString()));
+            } else {
+                expenseLine = new ExpenseLine();
+            }
 			expenseLine.setExpenseDate(LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
 			expenseLine.setComments(requestData.get("comments").toString());
 			expenseLine.setExpenseProduct(product);
@@ -240,6 +248,7 @@ public class HumanResourceMobileController {
 			expenseLine.setUntaxedAmount(expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
 			expenseLine.setToInvoice(new Boolean(requestData.get("toInvoice").toString()));
 			String justification  = (String) requestData.get("justification");
+
 			if (!Strings.isNullOrEmpty(justification)) {
 				expenseLine.setJustification(Base64.getDecoder().decode(justification));
 			}
@@ -307,7 +316,7 @@ public class HumanResourceMobileController {
 	 * 		"project": 1,
 	 * 		"activity": 2,
 	 * 		"date": "2018-02-22",
-	 * 		"duration": 7,
+	 * 		"duration": 10,
 	 * 		"comments": "no"
 	 * } }
 	 */
@@ -328,7 +337,7 @@ public class HumanResourceMobileController {
                     timesheet = timesheetService.createTimesheet(user, date, date);
                 }
                 BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-                TimesheetLine line = timesheetService.createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
+                TimesheetLine line = timesheetLineService.createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
 
                 // convert hours to what is defined in timeLoggingPreferenceSelect
                 BigDecimal duration = timesheetLineService.computeHoursDuration(timesheet, hours, false);
@@ -375,7 +384,7 @@ public class HumanResourceMobileController {
 		AppBaseService appBaseService = Beans.get(AppBaseService.class);
 		User user = AuthUtils.getUser();
 		Map<String, Object> requestData = request.getData();
-		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(new Long(requestData.get("leaveReason").toString()));
+		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(Long.valueOf(requestData.get("leaveReason").toString()));
 		if (user.getEmployee() == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), user.getName());
 		}
@@ -435,24 +444,45 @@ public class HumanResourceMobileController {
 	 * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason"
 	 * } }
 	 */
-	public void getLeaveReason(ActionRequest request, ActionResponse response){
-		List<Map<String,String>> dataList = new ArrayList<>();
-		try{
-			List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
-			for (LeaveReason leaveReason : leaveReasonList) {
-				Map<String, String> map = new HashMap<>();
-				map.put("name", leaveReason.getLeaveReason());
-				map.put("id", leaveReason.getId().toString());
-				dataList.add(map);
-			}
-			response.setData(dataList);
-			response.setTotal(dataList.size());
-		}
-		catch(Exception e){
-			response.setStatus(-1);
-			response.setError(e.getMessage());
-		}
-	}
+    public void getLeaveReason(ActionRequest request, ActionResponse response) {
+        try {
+            User user = AuthUtils.getUser();
+
+            List<Map<String, String>> dataList = new ArrayList<>();
+
+            if (user == null || user.getEmployee() == null) {
+                List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
+
+                for (LeaveReason leaveReason : leaveReasonList) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("name", leaveReason.getLeaveReason());
+                    map.put("id", leaveReason.getId().toString());
+                    dataList.add(map);
+                }
+            } else if (user.getEmployee() != null) {
+                List<LeaveLine> leaveLineList = Beans.get(LeaveLineRepository.class).all()
+                        .filter("self.employee = ?1", user.getEmployee()).order("name").fetch();
+
+                String tmpName = "";
+                for (LeaveLine leaveLine : leaveLineList) {
+                    String name = leaveLine.getName();
+                    if (tmpName != name) {
+                        Map<String, String> map = new HashMap<>();
+                        map.put("name", leaveLine.getName());
+                        map.put("id", leaveLine.getLeaveReason().getId().toString());
+                        map.put("quantity", leaveLine.getQuantity().toString());
+                        dataList.add(map);
+                    }
+                    tmpName = name;
+                }
+            }
+            response.setData(dataList);
+            response.setTotal(dataList.size());
+        } catch (Exception e) {
+            response.setStatus(-1);
+            response.setError(e.getMessage());
+        }
+    }
 
 	/*
 	 * This method is used in mobile application.
@@ -474,7 +504,10 @@ public class HumanResourceMobileController {
 	public void getExpensesTypes(ActionRequest request, ActionResponse response) {
 		List<Map<String, String>> dataList = new ArrayList<>();
 		try {
-			List<Product> productList = Beans.get(ProductRepository.class).all().filter("self.expense = true").fetch();
+			List<Product> productList =
+					Beans.get(ProductRepository.class).all().
+					filter("self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false").
+					fetch();
 			for (Product product : productList) {
 				Map<String, String> map = new HashMap<>();
 				map.put("name", product.getName());

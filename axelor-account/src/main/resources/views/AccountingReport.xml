@@ -95,7 +95,7 @@
 			<field name="typeSelect" onChange="action-group-account-accounting-report-typeselect-onchange" selection="accounting.report.type.select.export"/>
 			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-accounting-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
 			<field name="year" hideIf="!$contains([1000, 1010], typeSelect)" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="$contains([1000, 1010], typeSelect)" grid-view="year-account-grid" form-view="year-account-form" />
-			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false"/>
+			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" requiredIf="!$contains([1000, 1010], typeSelect)" form-view="period-form" grid-view="period-grid" canView="false"/>
 			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="dateTo" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="journal" form-view="journal-form" grid-view="journal-grid" hideIf="$contains([1000, 1010], typeSelect)"/>
@@ -105,8 +105,8 @@
 			<field name="statusSelect"/>
 			<button name="search" title="Search" showIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="save,action-accounting-report-method-search-move-line,save"/>
 			<button name="export" title="Export" showIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="action-group-account-accounting-report-export-click"/>
-			<button name="showMoveExported" title="Exported moves" hideIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="save,action-accounting-report-method-show-move-exported"/>
-			<button name="replayExport" title="Run export again" hideIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="save,action-accounting-report-method-replay-export"/>
+			<button name="showMoveExported" title="Exported moves" hideIf="statusSelect != 2 || $contains([1000, 1010], typeSelect)" onClick="save,action-accounting-report-method-show-move-exported"/>
+			<button name="replayExport" title="Run export again" hideIf="statusSelect != 2 || $contains([1000, 1010], typeSelect)" onClick="save,action-accounting-report-method-replay-export"/>
 		</panel>
 		
 		<panel sidebar="true" name="balance" title="Balance">
