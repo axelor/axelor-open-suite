@@ -887,7 +887,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			moveLineQueryStr += " AND self.move.journal.notExportOk = false";
 			if (replay) {
 				moveLineQueryStr += String.format(
-						" AND self.move.accountingOk = true AND self.move.moveLineReport = %s",
+						" AND self.move.accountingOk = true AND self.move.moveLineReport.id = %s",
 						moveLineReport.getId());
 			} else {
 				moveLineQueryStr += " AND self.move.accountingOk = false";
