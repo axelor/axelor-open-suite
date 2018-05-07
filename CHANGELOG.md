@@ -26,6 +26,7 @@
 - Add an advanced synchronization feature for event synchronization with external calendars.
 - Add a monitoring on time differences on manufacturing orders.
 - Renamed all reference to weight by mass.
+- Refactor invoice payment list display in invoice-form and invoice-client-form views
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -48,6 +49,7 @@
 - Advanced export : Fix input issue of selection field for export.
 - Fix Advanced export object and wizard translation.
 - Rename 'Replace duplicate' to 'Merge duplicated' and add translation.
+- Fix pending payment display in Invoice payment total view
 
 
 ## [5.0.0-rc1] - 2018-04-16
