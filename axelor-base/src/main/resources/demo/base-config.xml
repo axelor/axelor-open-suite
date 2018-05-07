@@ -110,7 +110,9 @@
 	<!-- A BESOIN DE PARTNER -->
 	<input file="base_bank.csv" separator=";" type="com.axelor.apps.base.db.Bank"/>
 	
-	<input file="base_bankAddress.csv" separator=";" type="com.axelor.apps.base.db.BankAddress"/>
+    <input file="base_bankAddress.csv" separator=";" type="com.axelor.apps.base.db.BankAddress" search="self.importId = :importId">
+        <bind to="fullAddress" eval="call:com.axelor.apps.base.service.BankAddressService:computeFullAddress(null, address, null)" />
+    </input>
 	
 	<input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails" >
 		<bind to="partner" column="partner_importId" search="self.importId =:partner_importId" update="true" />
