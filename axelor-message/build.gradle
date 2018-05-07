@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Message"
 	description "Axelor Message Module"
-
-	removable false
 }
 
 dependencies {

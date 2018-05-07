@@ -88,9 +88,7 @@
 			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
 			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
 			<field name="computedAttendeeList" hidden="true"/>
-			<panel colSpan="12" hideIf="typeSelect == 1">
-				<field name="description" widget="html" colSpan="12"/>
-			</panel>
+            <field name="description" widget="html" colSpan="12"/>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
 		</panel>
@@ -113,7 +111,7 @@
 		</panel>
 
 		<panel sidebar="true" title="Attributes" name="meetingAttributes">
-			<field name="typeSelect" domain="self.value IN ('0','1','2','3')"/>
+			<field name="typeSelect" domain="self.value IN ('0','1','2','3')" onChange="action-event-record-reset-status-select"/>
 			<field name="callTypeSelect"  showIf="typeSelect == 1" />
 			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid" />
 			<field name="prioritySelect" showIf="typeSelect == 3"/>
@@ -374,6 +372,10 @@
 		<field name="subjectTeam" expr="eval: com.axelor.i18n.I18n.get('Available')" if="visibilitySelect == 2 &amp;&amp; disponibilitySelect == 2"/>
 	</action-record>
 
+    <action-record name="action-event-record-reset-status-select" model="com.axelor.apps.crm.db.Event">
+        <field name="statusSelect" expr="eval: 1" if="typeSelect != 3 &amp;&amp; statusSelect > 9"/>
+        <field name="statusSelect" expr="eval: 11" if="typeSelect == 3 &amp;&amp; statusSelect &lt;= 9"/>
+    </action-record>
 	
 <!-- 	ACTION METHOD -->
 

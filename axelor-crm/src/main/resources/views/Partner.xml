@@ -62,7 +62,7 @@
     <!--     PORTLET -->
     
     <action-view name="action-partner-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
@@ -70,7 +70,7 @@
 	</action-view>
 	
 	<action-view name="action-contact-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>(self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
@@ -78,7 +78,7 @@
 	</action-view>
 	
 	<action-view name="action-partner-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
@@ -86,7 +86,7 @@
 	</action-view>
 	
 	<action-view name="action-contact-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>(self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>

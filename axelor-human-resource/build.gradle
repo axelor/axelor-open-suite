@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Human Resource"
 	description "Axelor Human Resource Module"
-
-	removable true
 }
 
 dependencies {

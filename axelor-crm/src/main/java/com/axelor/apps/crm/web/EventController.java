@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -40,6 +39,8 @@ import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.apps.tool.date.DateTool;
+import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -74,11 +75,11 @@ public class EventController {
 
 		if(event.getStartDateTime() != null) {
 			if(event.getDuration() != null && event.getDuration() != 0) {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
+				response.setValue("endDateTime", DateTool.plusSeconds(event.getStartDateTime(), event.getDuration()));
 			}
 			else if(event.getEndDateTime() != null && event.getEndDateTime().isAfter(event.getStartDateTime())) {
-				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-				response.setValue("duration", eventService.getDuration(duration));
+				Duration duration =  DurationTool.computeDuration(event.getStartDateTime(), event.getEndDateTime());
+				response.setValue("duration", DurationTool.getSecondsDuration(duration));
 			}
 		}
 	}
@@ -91,11 +92,11 @@ public class EventController {
 
 		if(event.getEndDateTime() != null) {
 			if(event.getStartDateTime() != null && event.getStartDateTime().isBefore(event.getEndDateTime())) {
-				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-				response.setValue("duration", eventService.getDuration(duration));
+				Duration duration =  DurationTool.computeDuration(event.getStartDateTime(), event.getEndDateTime());
+				response.setValue("duration", DurationTool.getSecondsDuration(duration));
 			}
 			else if(event.getDuration() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
+				response.setValue("startDateTime", DateTool.minusSeconds(event.getEndDateTime(), event.getDuration()));
 			}
 		}
 	}
@@ -108,10 +109,10 @@ public class EventController {
 
 		if(event.getDuration() != null)  {
 			if(event.getStartDateTime() != null)  {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
+				response.setValue("endDateTime", DateTool.plusSeconds(event.getStartDateTime(), event.getDuration()));
 			}
 			else if(event.getEndDateTime() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
+				response.setValue("startDateTime", DateTool.minusSeconds(event.getEndDateTime(), event.getDuration()));
 			}
 		}
 	}
@@ -124,8 +125,8 @@ public class EventController {
 		LOG.debug("event : {}", event);
 
 		if(event.getStartDateTime() != null && event.getEndDateTime() != null) {
-			Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-			response.setValue("duration", eventService.getDuration(duration));
+			Duration duration =  DurationTool.computeDuration(event.getStartDateTime(), event.getEndDateTime());
+			response.setValue("duration", DurationTool.getSecondsDuration(duration));
 		}
 	}
 
@@ -175,15 +176,15 @@ public class EventController {
 		if(request.getContext().get("id") != null){
 			Lead lead = leadRepo.find((Long)request.getContext().get("id"));
 			lead.setUser(AuthUtils.getUser());
-			if(lead.getStatusSelect() == ILead.STATUS_NEW)
-				lead.setStatusSelect(ILead.STATUS_ASSIGNED);
+			if(lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW)
+				lead.setStatusSelect(LeadRepository.LEAD_STATUS_ASSIGNED);
 			leadService.saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
 			for(Lead lead : leadRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				lead.setUser(AuthUtils.getUser());
-				if(lead.getStatusSelect() == ILead.STATUS_NEW)
-					lead.setStatusSelect(ILead.STATUS_ASSIGNED);
+				if(lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW)
+					lead.setStatusSelect(LeadRepository.LEAD_STATUS_ASSIGNED);
 				leadService.saveLead(lead);
 			}
 		}

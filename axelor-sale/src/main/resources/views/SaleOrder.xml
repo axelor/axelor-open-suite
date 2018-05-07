@@ -822,10 +822,10 @@
     </action-group>
 
     <action-group name="action-sale-order-line-change-group">
-    	<action name="save" if="saleOrderLineList.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
+    	<action name="save" if="saleOrderLineList?.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
-    	<action name="save" if="saleOrderLineList.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
+    	<action name="save" if="saleOrderLineList?.find{it->it.subLineList.find{t->t.saleOrder == null} != null} != null" />
     </action-group>
 
 	<action-group name="action-sale-order-group-client-partner-change">
@@ -982,11 +982,11 @@
     </action-record>
 
     <action-record name="action-sale-order-record-partner" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="paymentCondition" expr="eval: clientPartner?.paymentCondition" if="clientPartner?.paymentCondition != null"/>
-    	<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="clientPartner?.paymentCondition == null"/>
+    	<field name="paymentCondition" expr="eval: clientPartner?.paymentCondition" if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition != null"/>
+    	<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition == null"/>
  		<field name="currency" expr="eval: clientPartner?.currency"/>
-		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="clientPartner?.inPaymentMode != null"/>
-		<field name="paymentMode" expr="eval: company?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
+		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.inPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: company?.accountConfig?.inPaymentMode" if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.inPaymentMode == null"/>
 		<field name="mainInvoicingAddress" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>

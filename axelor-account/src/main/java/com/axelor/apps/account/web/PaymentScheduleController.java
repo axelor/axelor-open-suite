@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.PaymentScheduleService;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -77,7 +77,7 @@ public class PaymentScheduleController {
 
             if (Strings.isNullOrEmpty(paymentSchedule.getPaymentScheduleSeq())) {
 
-                String num = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PAYMENT_SCHEDULE,
+                String num = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PAYMENT_SCHEDULE,
                         paymentSchedule.getCompany());
 
                 if (Strings.isNullOrEmpty(num)) {

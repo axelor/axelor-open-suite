@@ -37,12 +37,12 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -128,21 +128,21 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		switch (stockMoveType) {
 			case StockMoveRepository.TYPE_INTERNAL:
-				ref = sequenceService.getSequenceNumber(IAdministration.INTERNAL, company);
+				ref = sequenceService.getSequenceNumber(SequenceRepository.INTERNAL, company);
 				if (ref == null) {
 					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_1), company.getName());
 				}
 				break;
 
 			case StockMoveRepository.TYPE_INCOMING:
-				ref = sequenceService.getSequenceNumber(IAdministration.INCOMING, company);
+				ref = sequenceService.getSequenceNumber(SequenceRepository.INCOMING, company);
 				if (ref == null) {
 					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_2), company.getName());
 				}
 				break;
 
 			case StockMoveRepository.TYPE_OUTGOING:
-				ref = sequenceService.getSequenceNumber(IAdministration.OUTGOING, company);
+				ref = sequenceService.getSequenceNumber(SequenceRepository.OUTGOING, company);
 				if (ref == null) {
 					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_3), company.getName());
 				}

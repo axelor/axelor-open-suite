@@ -55,45 +55,4 @@ public interface IAdministration {
 	static final int YES = 1;
 	static final int NO = 0;
 
-	/**
-	 * Static select in Sequence
-	 */
-
-	// TYPE
-	static final String INVENTORY = "inventory";
-	static final String PARTNER = "partner";
-	static final String MOVE = "move";
-	static final String TERM_INVOICE = "termInvoice";
-	static final String INVOICE = "invoice";
-	static final String PAYMENT_SCHEDULE = "paymentSchedule";
-	static final String PAYMENT_VOUCHER = "paymentVoucher";
-	static final String PAYMENT_VOUCHER_RECEIPT_NUMBER = "paymentVoucherReceiptNo";
-	static final String DEBIT = "debit";
-	static final String ACCOUNTING_REPORT = "accountingReport";
-	static final String REIMBOURSEMENT = "reimbursement";
-	static final String ACCOUNT_CLEARANCE = "accountClearance";
-	static final String IRRECOVERABLE = "irrecoverable";
-	static final String CHEQUE_REJECT = "chequeReject";
-	static final String SALES_INTERFACE = "saleInterface";
-	static final String REFUND_INTERFACE = "refundInterface";
-	static final String TREASURY_INTERFACE = "treasuryInterface";
-	static final String PURCHASE_INTERFACE = "purchaseInterface";
-	static final String MOVE_LINE_EXPORT = "moveLineExport";
-	static final String SALES_ORDER = "saleOrder";
-	static final String PURCHASE_ORDER = "purchaseOrder";
-	static final String INTERNAL = "intStockMove";
-	static final String OUTGOING = "outStockMove";
-	static final String INCOMING = "inStockMove";
-	static final String PRODUCT_TRACKING_NUMBER = "productTrackingNumber";
-	static final String PRODUCTION_ORDER = "productionOrder";
-	static final String MANUF_ORDER = "manufOrder";
-	static final String RECONCILE = "reconcile";
-	static final String PRODUCT = "product";
-	static final String DEPOSIT_SLIP = "depositSlip";
-	static final String QUALITY_ALERT = "qualityAlert";
-	static final String QUALITY_CONTROL = "qualityControl";
-	static final String TICKET = "ticket";
-	static final String ANALYTIC_REPORT = "analyticReport";
-
-	
 }

@@ -18,8 +18,13 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.project.db.Project;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 
 public interface TimesheetLineService {
@@ -49,5 +54,17 @@ public interface TimesheetLineService {
      */
     BigDecimal computeHoursDuration(String timePref, BigDecimal duration, BigDecimal dailyWorkHrs, boolean toHours) throws AxelorException;
 
-
+    /**
+     * Create a timesheet line.
+     *
+     * @param project
+     * @param product
+     * @param user
+     * @param date
+     * @param timesheet
+     * @param hours
+     * @param comments
+     * @return the created timesheet line.
+     */
+    TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments);
 }

@@ -43,4 +43,9 @@ public class DurationTool{
 		return duration.toMinutes();
 	}
 	
+	public static long getSecondsDuration(Duration duration) {
+		
+		return duration.getSeconds();
+	}
+	
 }

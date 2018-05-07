@@ -9,6 +9,4 @@ apply {
 axelor {
 	title "Axelor Exception"
 	description "Axelor Exception Module"
-
-	removable false
 }

@@ -34,4 +34,10 @@
 	<selection name="base.blocking.select" id="purchase.blocking.select">
 		<option value="6">Purchase blocking</option>
 	</selection>
+	
+	<selection name="sequence.generic.code.select" id="purchase.sequence.generic.code.select">
+		<option value="purchaseOrder">Purchase order</option>
+		
+	</selection>
+	
 </object-views>

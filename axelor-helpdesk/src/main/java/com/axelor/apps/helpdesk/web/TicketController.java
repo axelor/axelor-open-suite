@@ -17,18 +17,21 @@
  */
 package com.axelor.apps.helpdesk.web;
 
+import java.time.Duration;
 import java.util.List;
 
 import com.google.inject.Inject;
-
+import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.service.TicketServiceImpl;
+import com.axelor.apps.tool.date.DateTool;
+import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TicketController {
-
+	
 	@Inject
 	private TicketServiceImpl ticketService;
 
@@ -45,5 +48,68 @@ public class TicketController {
 		ticketService.assignToMeTicket(id, ids);
 
 		response.setReload(true);
+	}
+	
+	/**
+	 * Compute duration or endDateTime from startDateTime
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
+		
+		Ticket ticket = request.getContext().asType(Ticket.class);
+		
+		if (ticket.getStartDateT() != null) {
+			if (ticket.getDuration() != null && ticket.getDuration() != 0) {
+				response.setValue("endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
+				
+			} else if (ticket.getEndDateT() != null && ticket.getEndDateT().isAfter(ticket.getStartDateT())) {
+				Duration duration = DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
+				response.setValue("duration", DurationTool.getSecondsDuration(duration));
+			}
+		}
+	}
+	
+	/**
+	 * Compute startDateTime or endDateTime from duration
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void computeFromDuration(ActionRequest request, ActionResponse response) {
+		
+		Ticket ticket = request.getContext().asType(Ticket.class);
+		
+		if (ticket.getDuration() != null) {
+			if (ticket.getStartDateT() != null) {
+				response.setValue("endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
+				
+			} else if (ticket.getEndDateT() != null) {
+				response.setValue("startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+			}
+		}
+	}
+	
+	/**
+	 * Compute duration or startDateTime from endDateTime
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	public void computeFromEndDateTime(ActionRequest request, ActionResponse response) {
+		
+		Ticket ticket = request.getContext().asType(Ticket.class);
+				
+		if (ticket.getEndDateT() != null) {
+			
+			if (ticket.getStartDateT() != null && ticket.getStartDateT().isBefore(ticket.getEndDateT())) {
+				Duration duration = DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
+				response.setValue("duration", DurationTool.getSecondsDuration(duration));
+				
+			} else if (ticket.getDuration() != null) {
+				response.setValue("startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+			}
+		}
 	}
 }

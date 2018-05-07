@@ -7,7 +7,7 @@
     canEdit="false" canDelete="false" canNew="false" canSave="false">
     	<field name="id" />
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
-		<field name="duration" />
+		<field name="duration" widget="duration" x-big="true"/>
 		<field name="startDate" />
 		<field name="endDate" />
 		<field name="done" />
@@ -18,7 +18,7 @@
     canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false" width="large">
 		<panel name="main">
 		    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
-		    <field name="duration"/>
+		    <field name="duration" widget="duration" x-big="true"/>
 		    <field name="startDate" required="true"/>
 		    <field name="endDate"/>
 		    <field name="done"/>
@@ -85,7 +85,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
-		<context name="batch" expr="eval: id"/>
+		<context name="batch" expr="eval: __self__"/>
 	</action-view>
 	
 	<action-view name="action-batch-show-reimbursement" title="Reimbursements"
@@ -93,7 +93,7 @@
 		<view type="grid" name="reimbursement-grid"/>
 		<view type="form" name="reimbursement-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
-		<context name="batch" expr="eval: id"/>
+		<context name="batch" expr="eval: __self__"/>
 	</action-view>
 	
 	<action-view name="action-batch-show-payment-schedule-line" title="Schedule lines"
@@ -101,7 +101,7 @@
 		<view type="grid" name="payment-schedule-line-grid"/>
 		<view type="form" name="payment-schedule-line-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
-		<context name="batch" expr="eval: id"/>
+		<context name="batch" expr="eval: __self__"/>
 	</action-view>
 
 
@@ -110,7 +110,7 @@
 		<view type="grid" name="payment-voucher-grid"/>
 		<view type="form" name="payment-voucher-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
-		<context name="batch" expr="eval: id"/>
+		<context name="batch" expr="eval: __self__"/>
 	</action-view>
 	
 	<action-view name="action-batch-show-partner" title="Partners"
@@ -118,7 +118,7 @@
 		<view type="grid" name="partner-grid"/>
 		<view type="form" name="partner-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
-		<context name="batch" expr="eval: id"/>
+		<context name="batch" expr="eval: __self__"/>
 	</action-view>
 	
 	<action-view name="action-batch-show-accounting-situation" title="Accounting situations"
@@ -126,7 +126,7 @@
 		<view type="grid" name="accounting-situation-grid"/>
 		<view type="form" name="accounting-situation-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
-		<context name="batch" expr="eval: id"/>
+		<context name="batch" expr="eval: __self__"/>
 	</action-view>
 	
 	<action-view name="action-batch-show-accounting-report" title="Move exports"
@@ -134,7 +134,7 @@
 		<view type="grid" name="accounting-report-export-grid"/>
 		<view type="form" name="accounting-report-export-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
-		<context name="batch" expr="eval: id"/>
+		<context name="batch" expr="eval: __self__"/>
 	</action-view>
 
 	<action-view name="action-batch-show-ebics-certificates" title="Ebics certificate"
@@ -143,7 +143,7 @@
 		<view type="form" name="ebics-certificate-form"/>
 		<view-param name="show-toolbar" value="false"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
-		<context name="batch" expr="eval: id"/>
+		<context name="batch" expr="eval: __self__"/>
 	</action-view>
 
 </object-views>

@@ -20,18 +20,23 @@ package com.axelor.apps.hr.service.timesheet;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
@@ -58,12 +63,16 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
             log.debug("Employee: {}", employee);
 
+            timePref = timesheet.getTimeLoggingPreferenceSelect();
+
             if (employee != null) {
                 dailyWorkHrs = employee.getDailyWorkHours();
+                if (timePref == null) {
+                    timePref = employee.getTimeLoggingPreferenceSelect();
+                }
             } else {
                 dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
             }
-            timePref = timesheet.getTimeLoggingPreferenceSelect();
         } else {
             timePref = appBaseService.getAppBase().getTimeLoggingPreferenceSelect();
             dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
@@ -116,5 +125,32 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
             default:
                 return duration;
         }
+    }
+
+    @Override
+    public TimesheetLine createTimesheetLine(Project project, Product product,
+                                             User user, LocalDate date,
+                                             Timesheet timesheet,
+                                             BigDecimal hours, String comments) {
+
+        TimesheetLine timesheetLine = new TimesheetLine();
+
+        timesheetLine.setDate(date);
+        timesheetLine.setComments(comments);
+        timesheetLine.setProduct(product);
+        timesheetLine.setProject(project);
+        timesheetLine.setUser(user);
+        timesheetLine.setHoursDuration(hours);
+        try {
+            timesheetLine.setDuration(
+                    computeHoursDuration(timesheet, hours, false)
+            );
+        } catch (AxelorException e) {
+            log.error(e.getLocalizedMessage());
+            TraceBackService.trace(e);
+        }
+        timesheet.addTimesheetLineListItem(timesheetLine);
+
+        return timesheetLine;
     }
 }

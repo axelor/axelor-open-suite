@@ -12,6 +12,8 @@
 		<bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)" column="fromDate"/>
 		<bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)" column="toDate"/>
 	</input>
+	
+	<input file="base_leaveTemplate.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.importId = :importId"/>
 
 </csv-inputs>
 

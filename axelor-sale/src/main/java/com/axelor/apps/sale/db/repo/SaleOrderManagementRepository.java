@@ -68,12 +68,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	@Override
 	public SaleOrder save(SaleOrder saleOrder) {
 		try {
-		    saleOrder = super.save(saleOrder);
 			computeSeq(saleOrder);
 			computeFullName(saleOrder);
 			computeSubMargin(saleOrder);
 			Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
-			return saleOrder;
+            return super.save(saleOrder);
 		} catch (Exception e) {
 			throw new PersistenceException(e.getLocalizedMessage());
 		}
@@ -81,6 +80,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 	
 	public void computeSeq(SaleOrder saleOrder){
 		try{
+		    if (saleOrder.getId() == null) {
+		        saleOrder = super.save(saleOrder);
+		    }
             if (Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()) && !saleOrder.getTemplate()) {
                 if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT) {
                     saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));

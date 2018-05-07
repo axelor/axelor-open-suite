@@ -334,6 +334,7 @@ public class PaymentVoucherLoadService {
         paymentVoucher.setCurrency(invoice.getCurrency());
         paymentVoucher.clearPayVoucherDueElementList();
         paymentVoucher.clearPayVoucherElementToPayList();
+        paymentVoucher.setCompany(invoice.getCompany());
         BankDetails companyBankDetails;
 
         if (invoice.getCompanyBankDetails() != null) {

@@ -270,7 +270,7 @@
 	
     <menuitem name="referential-conf-product-variant-attr"
         parent="referential-conf"
-        title="Products variant attributes" action="referential.conf.product.variant.attr" order="190"/>
+        title="Products variant attributes" action="referential.conf.product.variant.attr" order="190" if="__config__.app.getApp('base').manageProductVariants"/>
 
     <action-view name="referential.conf.product.variant.attr"
         title="Product variant attributes"

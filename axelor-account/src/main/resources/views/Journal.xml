@@ -8,8 +8,6 @@
 		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="journalType"/>
         <field name="exportCode"/>
-        <field name="excessPaymentOk"/>
-        <field name="editReceiptOk"/>
         <field name="notExportOk"/>
         <field name="statusSelect"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
