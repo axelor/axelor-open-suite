@@ -105,8 +105,8 @@
 			<field name="statusSelect"/>
 			<button name="search" title="Search" showIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="save,action-accounting-report-method-search-move-line,save"/>
 			<button name="export" title="Export" showIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="action-group-account-accounting-report-export-click"/>
-			<button name="showMoveExported" title="Exported moves" hideIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="save,action-accounting-report-method-show-move-exported"/>
-			<button name="replayExport" title="Run export again" hideIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="save,action-accounting-report-method-replay-export"/>
+			<button name="showMoveExported" title="Exported moves" hideIf="statusSelect != 2 || $contains([1000, 1010], typeSelect)" onClick="save,action-accounting-report-method-show-move-exported"/>
+			<button name="replayExport" title="Run export again" hideIf="statusSelect != 2 || $contains([1000, 1010], typeSelect)" onClick="save,action-accounting-report-method-replay-export"/>
 		</panel>
 		
 		<panel sidebar="true" name="balance" title="Balance">
