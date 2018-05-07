@@ -41,7 +41,7 @@ public class CalendarService extends ICalendarService{
 	
 	@Inject
 	private EventRepository eventRepo;
-	
+
 	@Inject
 	private ICalendarRepository icalRepo;
 	
@@ -86,8 +86,7 @@ public class CalendarService extends ICalendarService{
 		Team team = user.getActiveTeam();
 		Set<User> followedUsers = user.getFollowersCalUserSet();
 		List<Long> calendarIdlist = new ArrayList<Long>();
-		followedUsers.add(user);
-		
+
 		for (User userIt : followedUsers) {
 			for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
 				if((user.equals(calendarManagement.getUser())) || (team != null && team.equals(calendarManagement.getTeam()))){
@@ -96,7 +95,8 @@ public class CalendarService extends ICalendarService{
 				}
 			}
 		}	
-
+		List<ICalendar> icalList = icalRepo.all().filter("self.user.id = ?1",user.getId()).fetch();
+		calendarIdlist.addAll(Lists.transform(icalList, it->it.getId()));
 		return calendarIdlist;
 	}
 }

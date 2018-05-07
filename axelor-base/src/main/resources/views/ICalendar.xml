@@ -26,6 +26,7 @@
 		  <field name="isSslConnection" onChange="action-calendar-record-set-port"/>
 		  <field name="port"/>
 		  <field name="isValid" readonly="true"/>
+		  <field name="synchronizationSelect"/>
 		</panel>
 		<panel name="credentials" title="Credentials">
 		  <field name="login"/>

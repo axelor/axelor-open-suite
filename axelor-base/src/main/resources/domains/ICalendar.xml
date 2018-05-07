@@ -16,6 +16,7 @@
 	  <string name="login" title="Login"/>
 	  <string name="password" title="Password"/>
 	  <integer name="typeSelect" title="Type" selection="icrm.calendar.type.select"/>
+	  <string name="synchronizationSelect" title="Advanced synchronization" selection="icrm.calendar.synchronization.select"/>
 	  <boolean name="isSslConnection" title="SSL ?"/>
 	  <integer name="port" title="Port"  default="80" />
 	  <boolean name="isValid" title="Valid"/>
@@ -30,8 +31,11 @@
 			public static final int GCAL = 3;
 			public static final int ZIMBRA = 4;
 			public static final int KMS = 5;
-			public  static final int CGP = 6;
+			public static final int CGP = 6;
 			public static final int CHANDLER = 7;
+
+			// SYNCHRONISATION SELECT
+			public static final String ICAL_ONLY = "ICalEvent";
 	  ]]>
       </extra-code>
       

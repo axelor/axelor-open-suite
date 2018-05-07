@@ -23,6 +23,8 @@
 - Message Template: Import demo data per module (or per app).
 - Email Service: Default 'EmailAccount' will be used for adk mailing services or stream messages.
 - Product form: Remove account app check from accounting tab to display account management o2m. 
+- Add an advanced synchronization feature for event synchronization with external calendars.
+- Add a monitoring on time differences on manufacturing orders.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -45,6 +47,7 @@
 - Advanced export : Fix input issue of selection field for export.
 - Fix Advanced export object and wizard translation.
 - Rename 'Replace duplicate' to 'Merge duplicated' and add translation.
+
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
@@ -75,7 +78,6 @@
 - Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order. 
 - Add multiple default stock locations (receipt, fixup, component, finished products) in stock config instead of a single default stock location.
 - Product sales and production configurator
-- Add a monitoring on time differences on manufacturing orders.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
