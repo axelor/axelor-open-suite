@@ -389,7 +389,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
 		stockMove.setRealDate(appBaseService.getTodayDate());
-		resetWeights(stockMove);
+		resetMasses(stockMove);
 
 		try {
 			if (stockMove.getIsWithBackorder() || stockMove.getIsWithReturnSurplus()) {
@@ -406,7 +406,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				}
 			}
 		} finally {
-			computeWeights(stockMove);
+			computeMasses(stockMove);
 			stockMoveRepo.save(stockMove);
 		}
 		
@@ -476,7 +476,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 	}
 
-	private void resetWeights(StockMove stockMove) {
+	private void resetMasses(StockMove stockMove) {
 		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
 		
 		if (stockMoveLineList == null) {
@@ -484,16 +484,16 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
-			stockMoveLine.setTotalNetWeight(null);
+			stockMoveLine.setTotalNetMass(null);
 		}
 	}
 
-	private void computeWeights(StockMove stockMove) throws AxelorException {
-		boolean weightsRequired = checkWeightsRequired(stockMove);
+	private void computeMasses(StockMove stockMove) throws AxelorException {
+		boolean massesRequired = checkMassesRequired(stockMove);
 		StockConfig stockConfig = stockMove.getCompany().getStockConfig();
-		Unit endUnit = stockConfig != null ? stockConfig.getCustomsWeightUnit() : null;
+		Unit endUnit = stockConfig != null ? stockConfig.getCustomsMassUnit() : null;
 
-		if (weightsRequired && endUnit == null) {
+		if (massesRequired && endUnit == null) {
 			throw new AxelorException(stockMove, IException.NO_VALUE, I18n.get(IExceptionMessage.STOCK_MOVE_17));
 		}
 		
@@ -512,28 +512,28 @@ public class StockMoveServiceImpl implements StockMoveService {
 				continue;
 			}
 
-            BigDecimal netWeight = stockMoveLine.getNetWeight();
+            BigDecimal netMass = stockMoveLine.getNetMass();
 
-            if (netWeight.signum() == 0) {
-                Unit startUnit = product.getWeightUnit();
+            if (netMass.signum() == 0) {
+                Unit startUnit = product.getMassUnit();
 
                 if (startUnit != null) {
-                    netWeight = unitConversionService.convert(startUnit, endUnit, product.getNetWeight());
-                    stockMoveLine.setNetWeight(netWeight);
+                    netMass = unitConversionService.convert(startUnit, endUnit, product.getNetMass());
+                    stockMoveLine.setNetMass(netMass);
                 }
             }
 
-			if (netWeight.signum() != 0) {
-				BigDecimal totalNetWeight = netWeight.multiply(stockMoveLine.getRealQty());
-				stockMoveLine.setTotalNetWeight(totalNetWeight);
-			} else if (weightsRequired) {
+			if (netMass.signum() != 0) {
+				BigDecimal totalNetMass = netMass.multiply(stockMoveLine.getRealQty());
+				stockMoveLine.setTotalNetMass(totalNetMass);
+			} else if (massesRequired) {
 				throw new AxelorException(stockMove, IException.NO_VALUE, I18n.get(IExceptionMessage.STOCK_MOVE_18));
 			}
 		}
 	}
 
     @Override
-	public boolean checkWeightsRequired(StockMove stockMove) {
+	public boolean checkMassesRequired(StockMove stockMove) {
 		Address fromAddress = getFromAddress(stockMove);
 		Address toAddress = getToAddress(stockMove);
 

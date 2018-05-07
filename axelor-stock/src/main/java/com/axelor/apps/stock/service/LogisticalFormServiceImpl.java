@@ -364,7 +364,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         logisticalFormLine.setStockMoveLine(stockMoveLine);
         logisticalFormLine.setQty(qty);
         logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
-        logisticalFormLine.setUnitNetWeight(stockMoveLine.getNetWeight());
+        logisticalFormLine.setUnitNetMass(stockMoveLine.getNetMass());
         addLogisticalFormLineListItem(logisticalForm, logisticalFormLine);
     }
 
@@ -432,8 +432,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     @Override
     public void computeTotals(LogisticalForm logisticalForm) throws LogisticalFormError {
-        BigDecimal totalNetWeight = BigDecimal.ZERO;
-        BigDecimal totalGrossWeight = BigDecimal.ZERO;
+        BigDecimal totalNetMass = BigDecimal.ZERO;
+        BigDecimal totalGrossMass = BigDecimal.ZERO;
         BigDecimal totalVolume = BigDecimal.ZERO;
 
         if (logisticalForm.getLogisticalFormLineList() != null) {
@@ -444,23 +444,23 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
                 StockMoveLine stockMoveLine = logisticalFormLine.getStockMoveLine();
 
                 if (logisticalFormLine.getTypeSelect() != LogisticalFormLineRepository.TYPE_DETAIL) {
-                    if (logisticalFormLine.getGrossWeight() != null) {
-                        totalGrossWeight = totalGrossWeight.add(logisticalFormLine.getGrossWeight());
+                    if (logisticalFormLine.getGrossMass() != null) {
+                        totalGrossMass = totalGrossMass.add(logisticalFormLine.getGrossMass());
                     }
 
                     totalVolume = totalVolume
                             .add(logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper));
                 } else if (stockMoveLine != null) {
-                    totalNetWeight = totalNetWeight
-                            .add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetWeight()));
+                    totalNetMass = totalNetMass
+                            .add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetMass()));
                 }
 
             }
         }
 
         totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 10, RoundingMode.HALF_UP);
-        logisticalForm.setTotalNetWeight(totalNetWeight);
-        logisticalForm.setTotalGrossWeight(totalGrossWeight);
+        logisticalForm.setTotalNetMass(totalNetMass);
+        logisticalForm.setTotalGrossMass(totalGrossMass);
         logisticalForm.setTotalVolume(totalVolume);
     }
 

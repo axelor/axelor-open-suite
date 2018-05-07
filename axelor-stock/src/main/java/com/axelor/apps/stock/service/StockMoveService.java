@@ -226,11 +226,11 @@ public interface StockMoveService {
 
 
     /**
-     * Check whether weight information is required.
+     * Check whether mass information is required.
      * 
      * @param stockMove
      * @return
      */
-    boolean checkWeightsRequired(StockMove stockMove);
+    boolean checkMassesRequired(StockMove stockMove);
 
 }

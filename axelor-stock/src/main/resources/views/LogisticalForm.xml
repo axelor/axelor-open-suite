@@ -53,8 +53,8 @@
                     grid-view="partner-grid" canEdit="false" />
                 <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 <field name="tracking" />
-                <field name="totalGrossWeight" colSpan="3" />
-                <field name="totalNetWeight" colSpan="3" />
+                <field name="totalGrossMass" colSpan="3" />
+                <field name="totalNetMass" colSpan="3" />
                 <field name="totalVolume" colSpan="6" />
                 <field name="internalDeliveryComment" />
                 <field name="externalDeliveryComment" />
@@ -82,13 +82,13 @@
     <action-group name="action-logistical-form-carrier-validated">
         <action name="action-logistical-form-save" />
         <action name="save" />
-        <action name="action-logistical-form-validate-weight" />
+        <action name="action-logistical-form-validate-mass" />
         <action name="action-logistical-form-record-change-status" />
         <action name="save" />
     </action-group>
 
-    <action-validate name="action-logistical-form-validate-weight">
-        <error message="The total net weight is higher than the total gross weight." if="totalNetWeight > totalGrossWeight" />
+    <action-validate name="action-logistical-form-validate-mass">
+        <error message="The total net mass is higher than the total gross mass." if="totalNetMass > totalGrossMass" />
     </action-validate>
 
     <action-record name="action-logistical-form-company-change" model="com.axelor.apps.stock.db.LogisticalForm">

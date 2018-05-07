@@ -54,7 +54,7 @@ public interface ITranslation {
 	public static final String STOCK_MOVE_DATE = /*$$(*/ "StockMove.date"; /*)*/
 	public static final String STOCK_MOVE_REFERENCE = /*$$(*/ "StockMove.reference"; /*)*/
 	public static final String STOCK_MOVE_PURCHASE_ORDER = /*$$(*/ "StockMove.purchaseOrder"; /*)*/
-	public static final String STOCK_MOVE_WEIGHT = /*$$(*/ "StockMove.weight"; /*)*/
+	public static final String STOCK_MOVE_MASS = /*$$(*/ "StockMove.mass"; /*)*/
 	public static final String STOCK_MOVE_CUSTOMER = /*$$(*/ "StockMove.customer"; /*)*/
 	public static final String STOCK_MOVE_MOVE_PREPARED_BY = /*$$(*/ "StockMove.movePreparedBy"; /*)*/
 	public static final String STOCK_MOVE_STOCK_PREPARED_BY = /*$$(*/ "StockMove.stockPreparedBy"; /*)*/
@@ -67,7 +67,7 @@ public interface ITranslation {
 	public static final String STOCK_MOVE_PRODUCT = /*$$(*/ "StockMove.product"; /*)*/
 	public static final String STOCK_MOVE_PACKAGE = /*$$(*/ "StockMove.numOfPackages"; /*)*/
 	public static final String STOCK_MOVE_PALETTES = /*$$(*/ "StockMove.numOfPalettes"; /*)*/
-	public static final String STOCK_MOVE_GROSS_WEIGHT = /*$$(*/ "StockMove.grossWeight"; /*)*/
+	public static final String STOCK_MOVE_GROSS_MASS = /*$$(*/ "StockMove.grossMass"; /*)*/
 	public static final String STOCK_MOVE_DESCRIPTION = /*$$(*/ "StockMove.description"; /*)*/
 	public static final String STOCK_MOVE_ISPM = /*$$(*/ "StockMove.ispm"; /*)*/
 

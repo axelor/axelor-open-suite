@@ -35,7 +35,7 @@
     <string name="trackingNumber" title="Tracking Number"/>
     <integer name="numOfPackages" title="Number Of Packages"/>
     <integer name="numOfPalettes" title="Number Of Palettes"/>
-    <decimal name="grossWeight" title="Gross Weight"/>
+    <decimal name="grossMass" title="Gross Mass"/>
     
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2"/>
     

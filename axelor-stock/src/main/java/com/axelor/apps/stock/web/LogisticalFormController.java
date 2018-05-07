@@ -64,8 +64,8 @@ public class LogisticalFormController {
         try {
             LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
             Beans.get(LogisticalFormService.class).computeTotals(logisticalForm);
-            response.setValue("totalNetWeight", logisticalForm.getTotalNetWeight());
-            response.setValue("totalGrossWeight", logisticalForm.getTotalGrossWeight());
+            response.setValue("totalNetMass", logisticalForm.getTotalNetMass());
+            response.setValue("totalGrossMass", logisticalForm.getTotalGrossMass());
             response.setValue("totalVolume", logisticalForm.getTotalVolume());
         } catch (LogisticalFormError e) {
             response.setError(e.getLocalizedMessage());

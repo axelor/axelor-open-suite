@@ -11,9 +11,9 @@
         <many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine" />
         <decimal name="qty" nullable="true" />
         <integer name="parcelPalletNumber" title="Parcel/pallet number" nullable="true" />
-        <decimal name="grossWeight" nullable="true" precision="19" scale="2" />
+        <decimal name="grossMass" nullable="true" precision="19" scale="2" />
         <string name="dimensions" title="Dimensions (cm)" nullable="true" />
-        <decimal name="unitNetWeight" readonly="true" nullable="true" /> <!-- Workaround to be nullable in grid -->
+        <decimal name="unitNetMass" readonly="true" nullable="true" /> <!-- Workaround to be nullable in grid -->
 
         <unique-constraint columns="typeSelect,parcelPalletNumber,logisticalForm" />
 

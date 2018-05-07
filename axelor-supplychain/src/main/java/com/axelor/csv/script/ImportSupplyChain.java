@@ -102,8 +102,8 @@ public class ImportSupplyChain {
 		try{
 			for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLineList()) {
 				Product product = line.getProduct();
-				if (product.getWeightUnit() == null) {
-					product.setWeightUnit(stockConfigService.getStockConfig(purchaseOrder.getCompany()).getCustomsWeightUnit());
+				if (product.getMassUnit() == null) {
+					product.setMassUnit(stockConfigService.getStockConfig(purchaseOrder.getCompany()).getCustomsMassUnit());
 				}
 			}
 			
@@ -150,8 +150,8 @@ public class ImportSupplyChain {
 		try{
 			for(SaleOrderLine line : saleOrder.getSaleOrderLineList()) {
 				Product product = line.getProduct();
-				if (product.getWeightUnit() == null) {
-					product.setWeightUnit(stockConfigService.getStockConfig(saleOrder.getCompany()).getCustomsWeightUnit());
+				if (product.getMassUnit() == null) {
+					product.setMassUnit(stockConfigService.getStockConfig(saleOrder.getCompany()).getCustomsMassUnit());
 				}
 			}
 			if(saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED){

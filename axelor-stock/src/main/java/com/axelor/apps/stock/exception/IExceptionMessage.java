@@ -72,8 +72,8 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_14 = /*$$(*/ "No move lines to split" /*)*/;
 	static final String STOCK_MOVE_15 = /*$$(*/ "Please select lines to split" /*)*/;
 	static final String STOCK_MOVE_16 = /*$$(*/ "Please enter a valid split quantity" /*)*/;
-	static final String STOCK_MOVE_17 = /*$$(*/ "Must set weight unit in stock configuration for customs." /*)*/;
-	static final String STOCK_MOVE_18 = /*$$(*/ "All storable products must have net weight and weight unit information for customs." /*)*/;
+	static final String STOCK_MOVE_17 = /*$$(*/ "Must set mass unit in stock configuration for customs." /*)*/;
+	static final String STOCK_MOVE_18 = /*$$(*/ "All storable products must have net mass and mass unit information for customs." /*)*/;
 	static final String STOCK_MOVE_19 = /*$$(*/ "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
 	static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/ "No new stock move was generated" /*)*/;
 	static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/ "An incoming partial stock move has been generated (%s)" /*)*/;
@@ -114,7 +114,7 @@ public interface IExceptionMessage {
 	static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
 			/*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
 	static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
-	static final String MISSING_PRODUCT_WEIGHT_UNIT = /*$$(*/ "Please configure weight units for this product packaging : %s" /*)*/ ;
+	static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/ "Please configure mass units for this product packaging : %s" /*)*/ ;
 
 	/**
 	 * Partner Product Quality Rating Service

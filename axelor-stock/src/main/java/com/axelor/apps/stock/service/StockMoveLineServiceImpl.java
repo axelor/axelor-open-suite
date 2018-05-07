@@ -206,12 +206,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		if (stockMove != null) {
 			stockMove.addStockMoveLineListItem(stockMoveLine);
-			stockMoveLine.setNetWeight(this.computeNetWeight(stockMoveLine, stockMove.getCompany()));
+			stockMoveLine.setNetMass(this.computeNetMass(stockMoveLine, stockMove.getCompany()));
 		} else {
-			stockMoveLine.setNetWeight(this.computeNetWeight(stockMoveLine, null));
+			stockMoveLine.setNetMass(this.computeNetMass(stockMoveLine, null));
 		}
 
-		stockMoveLine.setTotalNetWeight(stockMoveLine.getRealQty().multiply(stockMoveLine.getNetWeight()));
+		stockMoveLine.setTotalNetMass(stockMoveLine.getRealQty().multiply(stockMoveLine.getNetMass()));
 
 		if (product != null) {
 			stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
@@ -625,41 +625,41 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
             stockMoveLine.setProductModel(product.getParentProduct());
         }
 
-        BigDecimal netWeight = this.computeNetWeight(stockMoveLine, company);
-        stockMoveLine.setNetWeight(netWeight);
+        BigDecimal netMass = this.computeNetMass(stockMoveLine, company);
+        stockMoveLine.setNetMass(netMass);
     }
 
-    public BigDecimal computeNetWeight(StockMoveLine stockMoveLine, Company company) throws AxelorException {
+    public BigDecimal computeNetMass(StockMoveLine stockMoveLine, Company company) throws AxelorException {
 
-    	BigDecimal netWeight = null;
+    	BigDecimal netMass = null;
     	Product product = stockMoveLine.getProduct();
     	Unit startUnit = null;
     	Unit endUnit = null;
 
         if(!product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-        	return netWeight;
+        	return netMass;
         }
 
-        startUnit = product.getWeightUnit();
+        startUnit = product.getMassUnit();
         if(startUnit == null) {
             StockMove stockMove = stockMoveLine.getStockMove();
 
-            if (stockMove != null && !stockMoveService.checkWeightsRequired(stockMove)) {
-                return product.getNetWeight();
+            if (stockMove != null && !stockMoveService.checkMassesRequired(stockMove)) {
+                return product.getNetMass();
             }
 
-            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_PRODUCT_WEIGHT_UNIT), product.getName());
+            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_PRODUCT_MASS_UNIT), product.getName());
         }
 
 		if (company != null && company.getStockConfig() != null
-				&& company.getStockConfig().getCustomsWeightUnit() != null) {
-			endUnit = company.getStockConfig().getCustomsWeightUnit();
+				&& company.getStockConfig().getCustomsMassUnit() != null) {
+			endUnit = company.getStockConfig().getCustomsMassUnit();
 		} else {
 			endUnit = startUnit;
 		}
 
-        netWeight = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
-                    product.getNetWeight(), product);
-        return netWeight;
+        netMass = Beans.get(UnitConversionService.class).convertWithProduct(startUnit, endUnit,
+                    product.getNetMass(), product);
+        return netMass;
     }
 }
