@@ -50,6 +50,7 @@
 - Fix Advanced export object and wizard translation.
 - Rename 'Replace duplicate' to 'Merge duplicated' and add translation.
 - Fix pending payment display in Invoice payment total view
+- Advanced export, add translation in CSV export + code improvement
 - Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
 
 

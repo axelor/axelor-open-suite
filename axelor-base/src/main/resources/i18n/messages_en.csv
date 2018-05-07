@@ -1183,6 +1183,7 @@
 "The end date has to be greater than or equal to the start date.",,,
 "The end date is before the begin date.",,,
 "The entered IBAN code is not valid . <br> Either the code doesn't respect the norm, or the format you have entered is not correct. It has to be without any blank space, as the following : <br> FR0000000000000000000000000",,,
+"The file type is unknown.",,,
 "The following address is invalid. Please use '+' button to create a new one :",,,
 "The from date is incorrect",,,
 "The line cannot be imported (import : %s)",,,
