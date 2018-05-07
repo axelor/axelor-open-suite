@@ -73,6 +73,7 @@
 - Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order. 
 - Add multiple default stock locations (receipt, fixup, component, finished products) in stock config instead of a single default stock location.
 - Product sales and production configurator
+- Add a monitoring on time differences on manufacturing orders.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
