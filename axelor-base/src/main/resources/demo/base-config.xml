@@ -14,8 +14,14 @@
     <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" search="self.code = :code">
       <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
       <bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+    </input> 
+     
+     <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" search="self.code = :code">
+      <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+      <bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+      <bind column="menus_set" to="menus" search="self.name in :menus_set" eval="menus_set.split('\\|') as List"/>
     </input>
-    
+
 	<input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile" search="self.fileName = :fileName"/>
     
     
@@ -82,7 +88,7 @@
 	
 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory" search="self.importId = :importId"  />
 	
-	<input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration" />
+	<input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration" search="self.importId = :importId"/>
 	
 	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" call="com.axelor.csv.script.ImportPartner:importPartner">

@@ -21,8 +21,8 @@ import javax.persistence.PersistenceException;
 
 import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -50,7 +50,7 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
 
     private void setDepositNumber(DepositSlip entity) throws AxelorException {
         SequenceService sequenceService = Beans.get(SequenceService.class);
-        String depositNumber = sequenceService.getSequenceNumber(IAdministration.DEPOSIT_SLIP, entity.getCompany());
+        String depositNumber = sequenceService.getSequenceNumber(SequenceRepository.DEPOSIT_SLIP, entity.getCompany());
 
         if (Strings.isNullOrEmpty(depositNumber)) {
             throw new AxelorException(Sequence.class, IException.NO_VALUE,

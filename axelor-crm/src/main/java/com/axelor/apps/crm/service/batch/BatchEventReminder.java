@@ -33,7 +33,6 @@ import com.axelor.apps.crm.db.IEventReminder;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
-import com.axelor.apps.crm.service.EventReminderService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
@@ -55,9 +54,9 @@ public class BatchEventReminder extends BatchStrategy {
 	private EventRepository eventRepo;
 	
 	@Inject
-	public BatchEventReminder(EventReminderService eventReminderService, MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
+	public BatchEventReminder(MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 
-		super(eventReminderService, messageServiceCrmImpl, mailAccountService);
+		super(messageServiceCrmImpl, mailAccountService);
 	}
 
 

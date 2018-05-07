@@ -62,9 +62,10 @@
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
 			<field name="singleTab" widget="inline-checkbox"/>
 			<field name="change" title="Change password?" widget="inline-checkbox"/>
-			<panel showIf="change">
-				<field name="newPassword" title="Password" placeholder="new password" widget="password" requiredIf="change" validIf="(!change) || (newPassword.length &gt;= 4 &amp;&amp; confirm == newPassword)"/>
-				<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
+			<panel showIf="change" itemSpan="12">
+				<field name="oldPassword" title="Current password" placeholder="current password" widget="password" requiredIf="change" />
+				<field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change" validIf="(!change) || (newPassword.length >= 4 &amp;&amp; chkPassword === newPassword)"/>
+				<field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password"/>
 			</panel>
 			<field name="email"/>
 			<field name="theme" widget="theme-select"/>

@@ -31,6 +31,7 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.repo.MetaFileRepository;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.AppBuilder;
@@ -53,6 +54,9 @@ public class ImportService {
 	
 	@Inject
 	private MetaJsonModelRepository metaJsonModelRepo;
+	
+	@Inject
+	private MetaJsonFieldRepository metaJsonFieldRepo;
 	
 	@Inject
 	private DashboardBuilderRepository dashboardBuilderRepo;
@@ -80,6 +84,13 @@ public class ImportService {
 		assert bean instanceof MetaJsonModel;
 		
 		return metaJsonModelRepo.save((MetaJsonModel) bean) ;
+	}
+	
+	public Object importMetaJsonField(Object bean, Map<String,Object> values) {
+		
+		assert bean instanceof MetaJsonField;
+		
+		return metaJsonFieldRepo.save((MetaJsonField) bean) ;
 	}
 	
 	public Object importChartBuilder(Object bean, Map<String,Object> values) throws JAXBException, AxelorException {

@@ -255,6 +255,16 @@ public class DateTool{
 		
 	}
 	
+	public static LocalDateTime plusSeconds(LocalDateTime datetime, long duration) {
+		
+		return datetime.plusSeconds(duration);
+	}
+	
+	public static LocalDateTime minusSeconds(LocalDateTime datetime, long duration) {
+		
+		return datetime.minusSeconds(duration);
+	}
+	
 	/**
 	 * Procédure permettant de tester si aujourd'hui nous sommes dans une période particulière
 	 * 

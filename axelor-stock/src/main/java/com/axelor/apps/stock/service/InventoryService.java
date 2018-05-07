@@ -44,6 +44,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
@@ -129,7 +130,7 @@ public class InventoryService {
 
 	public String getInventorySequence(Company company) throws AxelorException   {
 
-		String ref = sequenceService.getSequenceNumber(IAdministration.INVENTORY, company);
+		String ref = sequenceService.getSequenceNumber(SequenceRepository.INVENTORY, company);
 		if (ref == null)
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_2)+" "+company.getName());
 

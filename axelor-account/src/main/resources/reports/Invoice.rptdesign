@@ -312,7 +312,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">bank_address</property>
-                    <property name="analysis">measure</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">bank_address</text-property>
                     <text-property name="heading">bank_address</text-property>
                 </structure>
@@ -529,7 +529,7 @@
                     <structure>
                         <property name="position">24</property>
                         <property name="name">bank_address</property>
-                        <property name="dataType">decimal</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">25</property>
@@ -753,7 +753,7 @@
                     <property name="position">24</property>
                     <property name="name">bank_address</property>
                     <property name="nativeName">bank_address</property>
-                    <property name="dataType">decimal</property>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="position">25</property>
@@ -869,7 +869,7 @@
 	Company.name as "companyName", 
 	BankDetail.iban, 
 	Bank.code as "bic",
-	BankDetail.bank_address, 
+	BankAddress.address as "bank_address",
 	Invoice.note,
 	Invoice.specific_notes, 
 	Invoice.internal_reference, 
@@ -892,6 +892,7 @@ left outer join base_partner as ContactPartner on (Invoice.contact_partner = Con
 left outer join account_payment_condition as PaymentCondition on (Invoice.payment_condition = PaymentCondition.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join base_bank_details as BankDetail on (Invoice.company_bank_details = BankDetail.id)
+left outer join base_bank_address as BankAddress on (BankDetail.bank_address = BankAddress.id)
 left outer join base_printing_settings as PrintingSettings on (Invoice.printing_settings = PrintingSettings.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)
@@ -2401,12 +2402,6 @@ group by AdvanceInvoice.id]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">bank_address_1</property>
-                    <text-property name="displayName">bank_address</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["bank_address"]</expression>
-                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="name">termsAndConditions</property>
@@ -4864,7 +4859,6 @@ row["partnerFirstName"]
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["ClientBox"] == null || row["ClientBox"] == "" || (row["operation_type_select"] != 3 &amp;&amp; row["operation_type_select"] != 4)</expression>
-
                                     </structure>
                                 </list-property>
                                 <cell id="5125">
@@ -5033,7 +5027,7 @@ row["partnerFirstName"]
                     <property name="name">bank_address</property>
                     <text-property name="displayName">bank_address</text-property>
                     <expression name="expression" type="javascript">dataSetRow["bank_address"]</expression>
-                    <property name="dataType">decimal</property>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">note</property>

@@ -120,5 +120,15 @@
 	<selection name="meta.schedule.batch.service.select" id="crm.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.crm.service.batch.CrmBatchService">com.axelor.apps.crm.service.batch.CrmBatchService</option>
 	</selection>
+	
+	<selection name="crm.convert.lead.wizard.lead.to.partner.select">
+		<option value="1">Create partner</option>
+		<option value="2">Select partner</option>
+	</selection>
+	
+	<selection name="crm.convert.lead.wizard.lead.to.contact.select">
+		<option value="1">Create contact</option>
+		<option value="2">Select contact</option>
+	</selection>
 
 </object-views>

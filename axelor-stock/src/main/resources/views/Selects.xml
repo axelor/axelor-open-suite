@@ -92,5 +92,14 @@
         <option value="2">Pallet</option>
         <option value="3">Detail</option>
     </selection>
+    
+    <selection name="sequence.generic.code.select" id="stock.sequence.generic.code.select">
+    	<option value="intStockMove">Internal stock move</option>
+		<option value="outStockMove">Delivery stock move</option>
+		<option value="inStockMove">Receipt stock move</option>
+		<option value="inventory">Inventory</option>
+		<option value="productTrackingNumber">Product tracking number</option>
+		<option value="logisticalForm">Logistical form</option>
+	</selection>	
 
 </object-views>
