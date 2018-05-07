@@ -19,6 +19,8 @@ package com.axelor.apps.contract.service;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,6 +76,8 @@ public class ContractServiceImpl extends ContractRepository
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(MethodHandles.lookup().lookupClass() );
+	// TODO: put this var in another place
+	private static final int QTY_SCALE = 2;
 
 	protected AppBaseService appBaseService;
 	protected ContractVersionService versionService;
@@ -141,7 +145,9 @@ public class ContractServiceImpl extends ContractRepository
 			contract.setInvoicePeriodEndDate(
 					contract.getFirstPeriodEndDate());
 		}
-		if (contract.getCurrentVersion().getAutomaticInvoicing()) {
+		if (contract.getCurrentVersion().getAutomaticInvoicing()
+				&& contract.getCurrentVersion().getInvoicingMoment()
+				== ContractVersionRepository.BEGIN_INVOICING_MOMENT) {
 			invoice = invoicingContract(contract);
 		}
 
@@ -379,8 +385,9 @@ public class ContractServiceImpl extends ContractRepository
 		// Compute all classic contract lines
 		for (ContractVersion version: getVersions(contract)) {
 			BigDecimal ratio = BigDecimal.ONE;
-			if (isFullProrated(contract)) {
-				if (!DateTool.isProrata(contract.getInvoicePeriodStartDate(),
+			if (contract.getCurrentVersion().getIsTimeProratedInvoice()) {
+				if (isFullProrated(contract) && !DateTool.isProrata(
+						contract.getInvoicePeriodStartDate(),
 						contract.getInvoicePeriodEndDate(),
 						version.getActivationDate(),
 						version.getEndDate())) {
@@ -405,7 +412,8 @@ public class ContractServiceImpl extends ContractRepository
 
 			for (ContractLine line: lines) {
 				ContractLine tmp = contractLineRepo.copy(line, false);
-				tmp.setPrice(line.getPrice().multiply(ratio));
+				tmp.setQty(tmp.getQty().multiply(ratio)
+						.setScale(QTY_SCALE, RoundingMode.HALF_UP));
 				tmp = this.contractLineService.computeTotal(tmp);
 				generate(invoice, tmp);
 			}
@@ -626,17 +634,6 @@ public class ContractServiceImpl extends ContractRepository
 		contract.setCurrentVersion(version);
 		
 		return save(contract);
-	}
-
-	public boolean isInVersion(ContractLine contractLine, ContractVersion version){
-		
-		for (ContractLine line : version.getContractLineList()) {
-			
-			if (line.getId().compareTo( contractLine.getId() ) == 0){
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Override

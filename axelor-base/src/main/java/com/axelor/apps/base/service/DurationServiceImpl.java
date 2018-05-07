@@ -19,6 +19,7 @@ package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -53,19 +54,20 @@ public class DurationServiceImpl implements DurationService  {
 		Preconditions.checkNotNull(end, I18n.get("You can't compute a" +
 				" duration ratio without end date."));
 		if (duration == null) { return BigDecimal.ONE; }
-		if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
-			end = end.plus(1, ChronoUnit.DAYS);
-		}
-		LocalDate theoryEnd = computeDuration(duration, start);
-		long restMonths = ChronoUnit.MONTHS.between(theoryEnd, end);
-		if (restMonths > 0) {
-			theoryEnd = theoryEnd.plus(restMonths, ChronoUnit.MONTHS);
-		}
-		BigDecimal restDays = new BigDecimal(
-				ChronoUnit.DAYS.between(theoryEnd,end));
+		end = end.plus(1, ChronoUnit.DAYS);
 
-		return BigDecimal.ONE.add(BigDecimal.valueOf(restMonths))
-				.add(restDays.divide(DAYS_IN_MONTH, MathContext.DECIMAL32));
+		if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
+			long months = ChronoUnit.MONTHS.between(start, end);
+			LocalDate theoryEnd = start.plusMonths(months);
+			long restDays = ChronoUnit.DAYS.between(theoryEnd, end);
+			long daysInMonth = ChronoUnit.DAYS.between(theoryEnd, theoryEnd.plusMonths(1));
+			return BigDecimal.valueOf(months)
+					.add(BigDecimal.valueOf(restDays).divide(BigDecimal.valueOf(daysInMonth), MathContext.DECIMAL32))
+					.divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+		} else {
+		    long restDays = ChronoUnit.DAYS.between(start, end);
+		    return BigDecimal.valueOf(restDays).divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+		}
 	}
 
 }

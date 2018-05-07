@@ -70,7 +70,7 @@
                             </panel>
                         </editor>
                     </field>
-                    <field name="firstPeriodEndDate" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentVersion.isPeriodicInvoicing" readonlyIf="statusSelect >= 2" colSpan="3" requiredIf="$get('currentVersion.isPeriodicInvoicing')"/>
+                    <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentVersion.isPeriodicInvoicing" readonlyIf="statusSelect >= 2" colSpan="3" requiredIf="$get('currentVersion.isPeriodicInvoicing')"/>
                 </panel>
             </panel>
             <panel colSpan="3" stacked="true">
@@ -205,7 +205,7 @@
                         <panel title="Engagement">
                             <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
                             <field name="engagementDuration" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
-                            <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement"/>
+                            <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement" widget="boolean-switch"/>
                         </panel>
                         <panel title="Prior notice">
                             <field name="isWithPriorNotice" widget="boolean-switch"/>

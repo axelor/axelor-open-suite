@@ -65,6 +65,9 @@
             public static final int WAITING_VERSION = 2;
             public static final int ONGOING_VERSION = 3;
             public static final int TERMINATED_VERSION = 4;
+
+            public static final int END_INVOICING_MOMENT = 1;
+            public static final int BEGIN_INVOICING_MOMENT = 2;
 		]]></extra-code>
 
 	</entity>
