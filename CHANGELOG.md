@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1]
 ## Features
+- Production: billOfMaterial set the BOM as default on product (button and viewer)
 - MARKETING CAMPAIGN : Generate event to the team and salesman in charge depending of the partner or leads.
 
 ## Improvements

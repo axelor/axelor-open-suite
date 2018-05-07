@@ -31,8 +31,23 @@
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product AND self.company = :company"/>
 			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
-			<field name="qty" colSpan="3"/>
+            <field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+            <button name="setDefaultBOMOnProduct"
+                title="Define as default bill of material of product"
+                onClick="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
+                colSpan="4"
+                hideIf="product.defaultBillOfMaterial.id == id"/>
+            <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
+            <field name="$defaultBOMOnProduct" showTitle="false" colSpan="3">
+                <viewer depends="$defaultBOMOnProduct, product.defaultBillOfMaterial">
+                    <![CDATA[
+                        <h4 class="text-right">
+                            <span class="label label-default" style="background-color: #009900; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.product.defaultBillOfMaterial.id == record.id" x-translate>Default Bill of material</span>
+                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.product.defaultBillOfMaterial.id != record.id" x-translate>Alternative Bill of material</span>
+                        </h4>
+                ]]></viewer>
+            </field>
 		</panel>
 
 		<panel-tabs>
@@ -139,12 +154,11 @@
      <action-record name="action-bill-of-material-record-name" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="name" expr="eval: product.name + ' - ' + qty + unit.name + ' - ' + id" if="name == null"/>
     </action-record>
-    
+
     <action-record name="action-bill-of-material-record-count-number-of-components" model="com.axelor.apps.production.db.BillOfMaterial">
   		<field name="$numberOfComponents" expr="eval: billOfMaterialSet.size()"/>
 	</action-record>
-    
-    
+
     <action-method name="action-bill-of-material-method-compute-cost-price">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeCostPrice"/>
     </action-method>
@@ -171,6 +185,10 @@
 
     <action-method name="action-bill-of-material-method-open-bom-tree">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="openBomTree" />
+    </action-method>
+
+    <action-method name="action-bill-of-material-method-set-bill-of-material-as-default-on-product">
+        <call class="com.axelor.apps.production.web.BillOfMaterialController" method="setBillOfMaterialAsDefault"/>
     </action-method>
 
     <action-attrs name="action-bill-of-material-attrs-price-and-qty-digits">
