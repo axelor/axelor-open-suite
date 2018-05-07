@@ -16,7 +16,7 @@
 	  <string name="login" title="Login"/>
 	  <string name="password" title="Password"/>
 	  <integer name="typeSelect" title="Type" selection="icrm.calendar.type.select"/>
-	  <string name="synchronizationSelect" title="Synchronization" selection="icrm.calendar.synchronization.select"/>
+	  <string name="synchronizationSelect" title="Advanced synchronization" selection="icrm.calendar.synchronization.select"/>
 	  <boolean name="isSslConnection" title="SSL ?"/>
 	  <integer name="port" title="Port"  default="80" />
 	  <boolean name="isValid" title="Valid"/>
@@ -35,8 +35,8 @@
 			public static final int CHANDLER = 7;
 
 			// SYNCHRONISATION SELECT
-			public static final String NO_SYNCHRO = "NoSynchro";
-			public static final String SYNCHRO_CRM = "Event";
+			public static final String ICAL_ONLY = "ICalEvent";
+			public static final String CRM_SYNCHRO = "Event";
 	  ]]>
       </extra-code>
       

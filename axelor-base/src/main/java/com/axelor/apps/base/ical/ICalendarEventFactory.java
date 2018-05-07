@@ -14,7 +14,7 @@ public class ICalendarEventFactory {
 	private static final Map<String, Supplier<ICalendarEvent>> map = new HashMap<>();
 
 	static {
-		map.put(ICalendarRepository.NO_SYNCHRO, ICalendarEvent::new);
+		map.put(ICalendarRepository.ICAL_ONLY, ICalendarEvent::new);
 	}
 
 	public static ICalendarEvent getNewIcalEvent(ICalendar calendar) {

@@ -51,6 +51,6 @@ public class CrmModule extends AxelorModule {
         bind(EventService.class).to(EventServiceImpl.class);
         bind(CrmBatchRepository.class).to(CrmBatchCrmRepository.class);
         bind(LeadService.class).to(LeadServiceImpl.class);
-        ICalendarEventFactory.register(ICalendarRepository.SYNCHRO_CRM, Event::new);
+        ICalendarEventFactory.register(ICalendarRepository.CRM_SYNCHRO, Event::new);
     }
 }
