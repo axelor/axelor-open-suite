@@ -9,6 +9,7 @@
 - All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
+- Improve multiple invoices printing.
 - timesheet: Hide create button on if timsheet editor is disabled from configuration.
 - Add en to fr translation in Barcode type configuration
 - Mail Account: If the boolean "isValid" is true, allow user to disabled it 

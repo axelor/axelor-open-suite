@@ -79,6 +79,8 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationService;
@@ -134,6 +136,8 @@ public class AccountModule extends AxelorModule {
         bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
 
         bind(InvoiceService.class).to(InvoiceServiceImpl.class);
+
+        bind(InvoicePrintService.class).to(InvoicePrintServiceImpl.class);
 
         bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
         
