@@ -32,6 +32,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,8 +42,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Query;
+
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
+
+import com.axelor.apps.base.db.ICalendar;
+import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.ICalendarRepository;
+import com.axelor.apps.base.db.repo.ICalendarUserRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.service.MailAccountService;
+import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 import net.fortuna.ical4j.connector.FailedOperationException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
@@ -82,31 +109,6 @@ import net.fortuna.ical4j.util.InetAddressHostInfo;
 import net.fortuna.ical4j.util.SimpleHostInfo;
 import net.fortuna.ical4j.util.UidGenerator;
 import net.fortuna.ical4j.util.Uris;
-
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-
-import com.axelor.apps.base.db.ICalendar;
-import com.axelor.apps.base.db.ICalendarEvent;
-import com.axelor.apps.base.db.ICalendarUser;
-import com.axelor.apps.base.db.repo.ICalendarEventRepository;
-import com.axelor.apps.base.db.repo.ICalendarRepository;
-import com.axelor.apps.base.db.repo.ICalendarUserRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.service.MailAccountService;
-import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 /**
  * Provides calendars utilities.
@@ -295,7 +297,7 @@ public class ICalendarService {
 		}
 		return null;
 	}
-	
+
 	@Transactional
 	protected ICalendarEvent findOrCreateEvent(VEvent vEvent, ICalendar calendar) {
 
@@ -305,7 +307,7 @@ public class ICalendarService {
 
 		ICalendarEvent event = iEventRepo.findByUid(uid);
 		if (event == null) {
-			event = new ICalendarEvent();
+			event = ICalendarEventFactory.getNewIcalEvent(calendar);
 			event.setUid(uid);
 			event.setCalendar(calendar);
 		}
@@ -365,10 +367,9 @@ public class ICalendarService {
 			}
 		}
 		iEventRepo.save(event);
-		
 		return event;
 	}
-	
+
 	public ICalendarUser findOrCreateUser(User user) {
 		String email = null;
 		if (user.getPartner() != null && user.getPartner().getEmailAddress() != null
@@ -763,8 +764,9 @@ public class ICalendarService {
 		List<ICalendarEvent> oldEvents = getICalendarEvents(calendar);
 		for (VEvent item : localEvents) {
 			ICalendarEvent iEvent = findOrCreateEvent(item, calendar);
-			if (oldEvents.contains(iEvent))
+			if (oldEvents.contains(iEvent)) {
 				oldEvents.remove(iEvent);
+			}
 		}
 		removeOldEvents(oldEvents);
 
