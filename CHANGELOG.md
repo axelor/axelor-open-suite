@@ -25,7 +25,6 @@
 - Product form: Remove account app check from accounting tab to display account management o2m. 
 - Add an advanced synchronization feature for event synchronization with external calendars.
 - Add a monitoring on time differences on manufacturing orders.
-- Renamed all reference to weight by mass.
 - Refactor invoice payment list display in invoice-form and invoice-client-form views
 
 ## Bug Fixes
