@@ -25,7 +25,7 @@
 - Product form: Remove account app check from accounting tab to display account management o2m. 
 - Add an advanced synchronization feature for event synchronization with external calendars.
 - Add a monitoring on time differences on manufacturing orders.
-- Refactor invoicePaymentList field in invoice-form and invoice-client-form views
+- Refactor invoice payment list display in invoice-form and invoice-client-form views
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
