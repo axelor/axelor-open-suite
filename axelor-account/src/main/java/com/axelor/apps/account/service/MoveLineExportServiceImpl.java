@@ -851,7 +851,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 	* @throws IOException
 	*/
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void exportMoveLineTypeSelect1000(MoveLineReport moveLineReport, boolean administration) throws AxelorException, IOException {
+	public void exportMoveLineTypeSelect1000(MoveLineReport moveLineReport, boolean administration, boolean replay) throws AxelorException, IOException {
 		
 		log.info("In Export type 1000 service : ");
 		List<String[]> allMoveLineData = new ArrayList<>();
@@ -884,7 +884,14 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 		moveLineQueryStr += " AND self.move.ignoreInAccountingOk = false";
 
 		if(!administration){
-			moveLineQueryStr += " AND self.move.accountingOk = false AND self.move.journal.notExportOk = false";
+			moveLineQueryStr += " AND self.move.journal.notExportOk = false";
+			if (replay) {
+				moveLineQueryStr += String.format(
+						" AND self.move.accountingOk = true AND self.move.moveLineReport = %s",
+						moveLineReport.getId());
+			} else {
+				moveLineQueryStr += " AND self.move.accountingOk = false";
+			}
 		}
 
 		List<MoveLine> moveLineList = moveLineRepo.all().filter("self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED).order("date").order("name").fetch();
@@ -1290,11 +1297,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			break;
 
 		case MoveLineReportRepository.EXPORT_ADMINISTRATION:
-			this.exportMoveLineTypeSelect1000(moveLineReport, true);
+			this.exportMoveLineTypeSelect1000(moveLineReport, true, false);
 			break;
 			
 		case MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
-			this.exportMoveLineTypeSelect1000(moveLineReport, false);
+			this.exportMoveLineTypeSelect1000(moveLineReport, false, false);
 			break;
 			
 		default:
@@ -1316,6 +1323,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 				break;
 			case MoveLineReportRepository.EXPORT_PURCHASES:
 				this.exportMoveLineTypeSelect1009(moveLineReport, true);
+				break;
+			case MoveLineReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
+				this.exportMoveLineTypeSelect1000(moveLineReport, false, true);
 				break;
 			default:
 				break;
