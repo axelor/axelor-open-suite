@@ -377,7 +377,6 @@
 
 	<selection name="icrm.calendar.synchronization.select">
 		<option value="ICalEvent">ICal events only</option>
-		<option value="Event">CRM events</option>
 	</selection>
 
 	<selection name="base.birt.template.parameter.type.select">
