@@ -20,6 +20,7 @@
 - Convert Lead: Fix translation and default values. 
 - Advanced export wizard : Automatically download the export file on "Export" button and close the wizard.
 - Message Template: Import demo data per module (or per app).
+- Email Service: Default 'EmailAccount' will be used for adk mailing services or stream messages.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
