@@ -24,6 +24,8 @@ import java.time.temporal.ChronoUnit;
 
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
+import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -45,7 +47,12 @@ public class DurationServiceImpl implements DurationService  {
 	}
 
 	@Override
-	public BigDecimal overflowRatio(LocalDate start, LocalDate end, Duration duration) {
+	public BigDecimal computeRatio(LocalDate start, LocalDate end, Duration duration) {
+		Preconditions.checkNotNull(start,I18n.get("You can't compute a" +
+				" duration ratio without start date."));
+		Preconditions.checkNotNull(end, I18n.get("You can't compute a" +
+				" duration ratio without end date."));
+		if (duration == null) { return BigDecimal.ONE; }
 		if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
 			end = end.plus(1, ChronoUnit.DAYS);
 		}
@@ -54,9 +61,11 @@ public class DurationServiceImpl implements DurationService  {
 		if (restMonths > 0) {
 			theoryEnd = theoryEnd.plus(restMonths, ChronoUnit.MONTHS);
 		}
-		BigDecimal restDays = new BigDecimal(ChronoUnit.DAYS.between(theoryEnd, end));
+		BigDecimal restDays = new BigDecimal(
+				ChronoUnit.DAYS.between(theoryEnd,end));
 
-		return BigDecimal.ONE.add(BigDecimal.valueOf(restMonths)).add(restDays.divide(DAYS_IN_MONTH, MathContext.DECIMAL32));
+		return BigDecimal.ONE.add(BigDecimal.valueOf(restMonths))
+				.add(restDays.divide(DAYS_IN_MONTH, MathContext.DECIMAL32));
 	}
 
 }

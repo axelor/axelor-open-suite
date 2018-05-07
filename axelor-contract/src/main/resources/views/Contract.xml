@@ -50,10 +50,6 @@
                 <panel title="Current version" colSpan="12">
                     <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                            <panel showIf="id" colSpan="6">
-                                <field name="createdOn"/>
-                                <field name="createdBy"/>
-                            </panel>
                             <panel colSpan="6">
                                 <panel hideIf="statusSelect >= 3" colSpan="12">
                                     <field name="supposedActivationDate"/>
@@ -67,6 +63,10 @@
                                         <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
                                     </panel>
                                 </panel>
+                            </panel>
+                            <panel showIf="id" colSpan="6">
+                                <field name="createdOn"/>
+                                <field name="createdBy"/>
                             </panel>
                         </editor>
                     </field>

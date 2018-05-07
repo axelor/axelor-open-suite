@@ -24,6 +24,6 @@ import com.axelor.apps.base.db.Duration;
 
 public interface DurationService {
 	LocalDate computeDuration(Duration duration, LocalDate date);
-	BigDecimal overflowRatio(LocalDate start, LocalDate end, Duration duration);
+	BigDecimal computeRatio(LocalDate start, LocalDate end, Duration duration);
 }
 

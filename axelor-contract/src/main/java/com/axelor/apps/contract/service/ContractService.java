@@ -18,12 +18,15 @@
 package com.axelor.apps.contract.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.exception.AxelorException;
 import com.google.common.collect.Multimap;
 import com.google.inject.persist.Transactional;
@@ -133,7 +136,7 @@ public interface ContractService {
 	@Transactional
 	Contract createContractFromTemplate(ContractTemplate template) ;
 
-	Contract computeInvoiceDates(Contract contract);
+	Contract increaseInvoiceDates(Contract contract);
 
 	/**
 	 * Check if contract is valid, throws exceptions instead.
@@ -151,4 +154,21 @@ public interface ContractService {
 	 */
 	Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines
 			(Contract contract);
+
+	default List<ContractVersion> getVersions(Contract contract) {
+	    List<ContractVersion> versions = contract.getVersionHistory();
+	    if (versions == null) {
+	    	versions = new ArrayList<>();
+		}
+		if (contract.getCurrentVersion() != null) {
+			versions.add(contract.getCurrentVersion());
+		}
+	    return versions;
+	}
+
+	default boolean isFullProrated(Contract contract) {
+		return contract.getCurrentVersion() != null
+				&& (contract.getCurrentVersion().getIsTimeProratedInvoice()
+				&& contract.getCurrentVersion().getIsVersionProratedInvoice());
+	}
 }
