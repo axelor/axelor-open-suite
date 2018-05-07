@@ -23,7 +23,6 @@
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
-- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
 - Compute the duration according to the start date and time and end date and time for ticket.
 - Fix same image when duplicating products.
 - invoice: fix bank address on birt template
@@ -131,6 +130,7 @@
 - Fix default supplier in purchase order generation from sale order.
 - Stock location is no more required if supplychain module is not enabled
 - Compute the sale price and min sale price on purchase order line only if the product is saleable
+- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
 - Fix bulk install without demo data error. 
 - Fix language of parent app on child app installation. Now it will install all parent (if not installed) with child app's language. 
 - Fix timesheet and project planning editor according to changes in related models and fields. 
