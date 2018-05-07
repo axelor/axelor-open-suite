@@ -1,0 +1,16 @@
+"name";"metaModel.name";"language.importId";"target";"birtTemplate.name";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"Envoi Devis Client";"SaleOrder";2;;;;"true";;"Votre Devis N° $SaleOrder.saleOrderSeq$";"<p>Bonjour,</p> 
+
+<p>Suite à nos précédents échanges, je vous prie de bien vouloir trouver ci-joint le devis $SaleOrder.saleOrderSeq$.</p>
+
+<p>Je reste à votre disposition pour des informations complémentaires sur ce devis.</p>
+";"$SaleOrder.clientPartner.emailAddress.address$";;;2
+"Sale order";"SaleOrder";1;;;;"true";;"Quote N° $SaleOrder.saleOrderSeq$";"<p>Good morning,</p> 
+
+<p>Following our conversations, please find attached our quote $SaleOrder.saleOrderSeq$.</p>
+
+<p>Please do not hesitate to contact me for any further explanation regarding the quote.</p>
+
+<p>Best regards<br/>
+$SaleOrder.user.partner.firstName$ $SaleOrder.user.partner.name$</p>
+";"$SaleOrder.clientPartner.emailAddress.address$";;;2

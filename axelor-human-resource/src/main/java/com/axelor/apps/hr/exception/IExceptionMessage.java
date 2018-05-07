@@ -124,4 +124,9 @@ public interface IExceptionMessage {
 	 * Kilometric service
 	 */
 	static final String KILOMETRIC_ALLOWANCE_RATE_MISSING = /*$$(*/ "The kilometric allowance rate corresponding to the kilometric allow param %s and the company %s is missing" /*)*/;
+
+	/**
+	 * TsTimer Service
+	 */
+	String NO_TIMESHEET_CREATED = /*$$(*/ "No timesheet line has been created because the duration is less than 1 minute" /*)*/;
 }

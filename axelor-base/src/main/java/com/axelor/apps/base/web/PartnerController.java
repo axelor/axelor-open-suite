@@ -103,7 +103,7 @@ public class PartnerController {
 	 * @throws BirtException 
 	 * @throws IOException 
 	 */
-	public void showPartnerInfo(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void showEnvelope(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
 
 		String name = I18n.get("Partner")+" "+partner.getPartnerSeq();

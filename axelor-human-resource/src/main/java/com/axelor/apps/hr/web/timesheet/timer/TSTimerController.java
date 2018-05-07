@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web.timesheet.timer;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -80,23 +81,29 @@ public class TSTimerController{
 	
 	
 	public void pause(ActionRequest request, ActionResponse response){
-		TSTimer timerView = request.getContext().asType(TSTimer.class);
-		TSTimer timer = TsTimerRepo.find(timerView.getId());
-		
-		tsTimerService.pause(timer);
-		
-		response.setReload(true);
+		try {
+			TSTimer timerView = request.getContext().asType(TSTimer.class);
+			TSTimer timer = TsTimerRepo.find(timerView.getId());
+
+			tsTimerService.pause(timer);
+
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 	public void stop(ActionRequest request, ActionResponse response){
-		TSTimer timerView = request.getContext().asType(TSTimer.class);
-		TSTimer timer = TsTimerRepo.find(timerView.getId());
-		
-		tsTimerService.stop(timer);
-		
-		if(timer.getDuration() < 60)
-			response.setFlash(I18n.get("No timesheet line has been created because the duration is less than 1 minute"));
-		response.setReload(true);
+		try {
+			TSTimer timerView = request.getContext().asType(TSTimer.class);
+			TSTimer timer = TsTimerRepo.find(timerView.getId());
+
+			tsTimerService.stop(timer);
+
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 	
 }

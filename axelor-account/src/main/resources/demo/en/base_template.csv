@@ -1,0 +1,21 @@
+"name";"metaModel.name";"language.importId";"target";"birtTemplate.name";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"Facture Client";"Invoice";2;;;;"true";;"Votre facture N° $Invoice$";"<p>Bonjour,</p>
+
+<p>Vous trouverez ci-joint la facture N° $Facture.invoiceId$.</p>
+
+<p>Nous vous remercions pour votre fidélité et nous espérons que vous avez été pleinement satisfait.</p>
+
+<p>En espérant que vous nous renouvellerez votre confiance, </p>
+
+<p>Cordialement<br/>
+L'équipe Axelor</p>
+
+";"$Invoice.partner.emailAddress.address$";;;2
+"Customer Invoice";"Invoice";1;;;;"true";;"Invoice N° $Invoice.invoiceId$";"<p>Good morning,</p> 
+
+<p>Please find attached the invoice N° $Invoice.invoiceId$.</p>
+
+<p>We are glad to count you as one of our customers and we hope you have been completely satisfied with our products and services.</p>
+
+<p>Best regards<br/>
+Axelor Team</p>";"$Invoice.partner.emailAddress.address$";;;2

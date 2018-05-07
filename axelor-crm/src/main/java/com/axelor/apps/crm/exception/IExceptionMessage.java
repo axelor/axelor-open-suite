@@ -55,6 +55,7 @@ public interface IExceptionMessage {
 	 */
 	static final String CONVERT_LEAD_1 = /*$$(*/ "Lead converted" /*)*/;
     static final String CONVERT_LEAD_MISSING = /*$$(*/ "Parent lead is missing." /*)*/;
+    static final String CONVERT_LEAD_ERROR = /*$$(*/ "Error in lead conversion" /*)*/;
 
 	/**
 	 * Event controller

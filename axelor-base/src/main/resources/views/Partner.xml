@@ -8,7 +8,7 @@
 			<button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
 			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-			<button name="replaceDuplicate" title="Replace Duplicate" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 			<button name="advancedExport" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
 		<field name="fullName"/>
@@ -24,7 +24,7 @@
 			<button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
 			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-			<button name="replaceDuplicate" title="Replace Duplicate" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
@@ -40,7 +40,7 @@
 			<button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
 			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-			<button name="replaceDuplicate" title="Replace Duplicate" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
@@ -54,7 +54,7 @@
 	<grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
 		<toolbar>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-			<button name="replaceDuplicate" title="Replace Duplicate" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
@@ -103,7 +103,7 @@
         </toolbar>
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-				<item title="Envelope" action="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
+				<item title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
 				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isCustomer == true"  if-module="axelor-account"/>
 			</menu>
 		</menubar>
@@ -143,7 +143,7 @@
 							<field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 						</editor>
 					</field>
-					<button name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" hideIf="!$readonly()"/>
+					<button if="__config__.app.isApp('account')" name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" hideIf="!$readonly()"/>
 					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
 				<field name="isProspect"  colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly()" onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
@@ -374,7 +374,7 @@
 		</toolbar>
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-				<item title="Print Informations" action="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
+				<item title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
 				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
 			</menu>
 		</menubar>
@@ -557,7 +557,7 @@
 		  onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" onSave="save,action-partner-method-set-user-partner">
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-				<item title="Print Informations" action="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
+				<item title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
 				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
 			</menu>
 		</menubar>
@@ -650,8 +650,8 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="checkPartnerName"/>
 	</action-method>
 
-	<action-method name="action-partner-method-show-partner-info">
-		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
+	<action-method name="action-partner-method-show-envelope">
+		<call class="com.axelor.apps.base.web.PartnerController" method="showEnvelope"/>
 	</action-method>
 
 	<action-method name="action-partner-method-set-social-network-url">

@@ -25,6 +25,7 @@
 			<field name="timesheetLine" grid-view="timesheet-line-timesheet-project-grid" form-view="timesheet-line-timesheet-project-form" hideIf="timesheetLine == null" colOffset="3"/>
 			<field name="comments" colSpan="12"/>
 			<field name="timerStartDateT" hidden="true"/>
+			<field name="statusSelect" hidden="true"/>
 		</panel>
 		<panel sidebar="true" name="actions" title="Actions" stacked="true">
 			<button name="start" title="Start" onClick="action-ts-timer-record-start,save" hideIf="statusSelect == 1 || statusSelect == 3" hidden="true" readonlyIf="product == null" icon="fa-play" css="btn-success"/>

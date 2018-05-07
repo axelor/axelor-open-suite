@@ -1,0 +1,16 @@
+"name";"metaModel.name";"language.importId";"target";"birtTemplate.name";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"Demande de prix";"PurchaseOrder";2;;;;"true";;"Demande de cotation N° $PurchaseOrder.PurchaseOrderSeq$";"<p>Bonjour, </p>
+
+<p>Vous trouverez ci-joint notre demande de cotation N° $PurchaseOrder.PurchaseOrderSeq$.</p>
+
+<p>Merci de nous indiquer pour chaque produit le délai de livraison et les conditions de paiements.</p>
+";"$PurchaseOrder.contactPartner.emailAddress.address$";;;2
+"Price inquiry";"PurchaseOrder";1;;;;"true";;"Request for quotation N° $PurchaseOrder.PurchaseOrderSeq$";"<p>Good morning,</p>
+
+<p>Please find attached our request for quotation N° $PurchaseOrder.PurchaseOrderSeq$.</p>
+
+<p>Can you please indicate to us for each product the expected delivery date and if some products are subjected to special discounts.</p>
+
+<p>Best regards<br/>
+$PurchaseOrder.buyerUser.partner.firstName$ $PurchaseOrder.buyerUser.partner.name$</p>
+";"$PurchaseOrder.contactPartner.emailAddress.address$";;;2
