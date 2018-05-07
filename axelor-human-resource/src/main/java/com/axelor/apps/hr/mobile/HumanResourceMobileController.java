@@ -228,8 +228,8 @@ public class HumanResourceMobileController {
 		Project project = Beans.get(ProjectRepository.class).find(Long.valueOf(requestData.get("project").toString()));
 		Product product = Beans.get(ProductRepository.class).find(Long.valueOf(requestData.get("expenseType").toString()));
 		if (user != null) {
-                    ExpenseService expenseService = Beans.get(ExpenseService.class);    
-	Expense expense = expenseService.getOrCreateExpense(user);
+            ExpenseService expenseService = Beans.get(ExpenseService.class);
+            Expense expense = expenseService.getOrCreateExpense(user);
 
             ExpenseLine expenseLine;
             Object idO = requestData.get("id");
