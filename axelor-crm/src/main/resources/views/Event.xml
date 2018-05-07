@@ -88,9 +88,7 @@
 			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
 			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
 			<field name="computedAttendeeList" hidden="true"/>
-			<panel colSpan="12" hideIf="typeSelect == 1">
-				<field name="description" widget="html" colSpan="12"/>
-			</panel>
+            <field name="description" widget="html" colSpan="12"/>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 			<field name="subjectTeam" hidden="true"/>
 		</panel>

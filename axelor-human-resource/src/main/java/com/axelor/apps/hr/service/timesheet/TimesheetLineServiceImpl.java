@@ -63,12 +63,16 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
             log.debug("Employee: {}", employee);
 
+            timePref = timesheet.getTimeLoggingPreferenceSelect();
+
             if (employee != null) {
                 dailyWorkHrs = employee.getDailyWorkHours();
+                if (timePref == null) {
+                    timePref = employee.getTimeLoggingPreferenceSelect();
+                }
             } else {
                 dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();
             }
-            timePref = timesheet.getTimeLoggingPreferenceSelect();
         } else {
             timePref = appBaseService.getAppBase().getTimeLoggingPreferenceSelect();
             dailyWorkHrs = appBaseService.getAppBase().getDailyWorkHours();

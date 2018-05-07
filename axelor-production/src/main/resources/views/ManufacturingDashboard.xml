@@ -10,7 +10,7 @@
 		<dashlet action="manufacturing.dashboard.hr.assigned.manuf.orders" canSearch="true" height="350"/>
 		<dashlet action="dashlet.wastes.by.product" height="350"/>
 		<dashlet action="manufacturing.dashboard.wasted.products" canSearch="true" height="350" colSpan="12"/>
-		
+		<dashlet action="manufacturing.dashboard.time.tracking" canSearch="true" height="350" colSpan="12"/>
 	</dashboard>
 
 	<action-view name="manufacturing.dashboard.upcoming.production.orders" title="All Upcoming Manufacturing Orders"
@@ -54,7 +54,12 @@
 		<view type="chart" name="chart.wastes.by.product"/>
 	</action-view>
 	
-	
+	<action-view name="manufacturing.dashboard.time.tracking" title="Time difference per manufacturing order"
+		model="com.axelor.apps.production.db.ManufOrder">
+		<view type="grid" name="manuf-order-time-tracking-grid"/>
+		<view type="form" name="manuf-order-form"/>
+		<domain>self.statusSelect = 6</domain>
+	</action-view>
 
 </object-views>
 

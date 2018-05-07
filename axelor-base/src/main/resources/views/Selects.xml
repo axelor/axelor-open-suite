@@ -6,8 +6,7 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="grade.0.up.to.10.select">
-		<option value="0">0</option>
+	<selection name="grade.1.up.to.10.select">
 		<option value="1">1</option>
 		<option value="2">2</option>
 		<option value="3">3</option>

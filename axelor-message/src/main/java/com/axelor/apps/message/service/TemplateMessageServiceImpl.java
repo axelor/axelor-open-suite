@@ -232,7 +232,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	
 	protected EmailAccount getMailAccount()  {
 		
-		EmailAccount mailAccount = Beans.get(MailAccountService.class).getDefaultMailAccount(EmailAccountRepository.SERVER_TYPE_SMTP);
+		EmailAccount mailAccount = Beans.get(MailAccountService.class).getDefaultSender();
 		
 		if ( mailAccount != null ) {
 			log.debug( "Email account ::: {}", mailAccount );

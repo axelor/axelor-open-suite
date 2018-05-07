@@ -40,6 +40,7 @@ public class CalendarConfigurationController {
                     .find(calendarConfiguration.getId());
 
             calendarConfigurationService.createEntryMenu(calendarConfiguration);
+            response.setReload(true);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
@@ -52,6 +53,7 @@ public class CalendarConfigurationController {
                     .find(calendarConfiguration.getId());
 
             calendarConfigurationService.deleteEntryMenu(calendarConfiguration);
+            response.setReload(true);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
         }
