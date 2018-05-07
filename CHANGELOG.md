@@ -14,7 +14,6 @@
 - Add en to fr translation in Barcode type configuration
 - Mail Account: If the boolean "isValid" is true, allow user to disabled it 
 - Product: If purchase module is not installed, hide boolean "Define the shipping coef by partner" and "Shipping Coef."
-- Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab.  
 - Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab. 
 - Convert Lead: Removed opportunity and events conversion. Just partner and contact created from lead with events and opportunity linked.   
 - Current user password should be required when updating user password 
@@ -24,6 +23,10 @@
 - Message Template: Import demo data per module (or per app).
 - Email Service: Default 'EmailAccount' will be used for adk mailing services or stream messages.
 - Product form: Remove account app check from accounting tab to display account management o2m. 
+- Add an advanced synchronization feature for event synchronization with external calendars.
+- Add a monitoring on time differences on manufacturing orders.
+- Renamed all reference to weight by mass.
+- Refactor invoice payment list display in invoice-form and invoice-client-form views
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -46,6 +49,7 @@
 - Advanced export : Fix input issue of selection field for export.
 - Fix Advanced export object and wizard translation.
 - Rename 'Replace duplicate' to 'Merge duplicated' and add translation.
+- Fix pending payment display in Invoice payment total view
 - Advanced export, add translation in CSV export + code improvement
 
 
@@ -78,7 +82,6 @@
 - Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order. 
 - Add multiple default stock locations (receipt, fixup, component, finished products) in stock config instead of a single default stock location.
 - Product sales and production configurator
-- Add a monitoring on time differences on manufacturing orders.
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -121,9 +124,6 @@
 - Browser reload on install and uninstall of the app.  
 - Add base app install check on base module's menus.
 - Improved TeamTask gantt view to support upgraded gantt view with colored user per task. 
-- When we generate a message (using a template or not) from the wizrad, open the form view in edit mode directly and close automatically the wizard.
-- All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
-- Upgrade : save user-form and user-preference-form.
 
 
 ## Bug Fixes
@@ -147,9 +147,6 @@
 - Fix timesheet and project planning editor according to changes in related models and fields. 
 - Fix custom model form view with latest from adk.
 - Fix resource management from project, removed unwanted menus and views related to it. 
-- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
-- Compute the duration according to the start date and time and end date and time for ticket.
-- Fix same image when duplicating products.
 
 
 ## [Unreleased 4.x]

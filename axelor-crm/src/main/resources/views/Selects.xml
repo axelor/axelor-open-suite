@@ -131,4 +131,8 @@
 		<option value="2">Select existing contact</option>
 	</selection>
 
+	<selection name="icrm.calendar.synchronization.select">
+		<option value="Event">CRM events</option>
+	</selection>
+
 </object-views>

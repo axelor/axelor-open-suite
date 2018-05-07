@@ -374,6 +374,10 @@
 		<option value="4">Leave</option>
 	</selection>
 
+	<selection name="icrm.calendar.synchronization.select">
+		<option value="ICalEvent">ICal events only</option>
+	</selection>
+
 	<selection name="base.birt.template.parameter.type.select">
 		<option value="string">String</option>
 		<option value="float">Float</option>
