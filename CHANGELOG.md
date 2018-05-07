@@ -41,6 +41,7 @@
 - Advanced Export: Fix export every fields of model.
 - Advanced export : Fix input issue of selection field for export.
 - Fix Advanced export object and wizard translation.
+- Rename 'Replace duplicate' to 'Merge duplicated' and add translation.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
