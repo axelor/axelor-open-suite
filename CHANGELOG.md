@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1]
 ## Features
+- MARKETING CAMPAIGN : Generate event to the team and salesman in charge depending of the partner or leads.
 
 ## Improvements
 
