@@ -17,38 +17,19 @@
  */
 package com.axelor.apps.crm.service;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-
-import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
-import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 
-import net.fortuna.ical4j.model.ValidationException;
-
 public interface EventService {
-    Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime);
-
-    int getDuration(Duration duration);
-
-    LocalDateTime computeStartDateTime(int duration, LocalDateTime endDateTime);
-
-    LocalDateTime computeEndDateTime(LocalDateTime startDateTime, int duration);
 
     void saveEvent(Event event);
-
 
     Event createEvent(LocalDateTime fromDateTime, LocalDateTime toDateTime, User user, String description, int type, String subject);
 

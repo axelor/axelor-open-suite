@@ -60,7 +60,6 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -85,30 +84,40 @@ import com.google.inject.persist.Transactional;
  */
 public class TimesheetServiceImpl implements TimesheetService{
 
-	@Inject
-	protected EmployeeService employeeService;
-
-	@Inject
 	protected PriceListService priceListService;
 
-	@Inject
 	protected AppHumanResourceService appHumanResourceService;
 
-	@Inject
 	protected HRConfigService  hrConfigService;
 	
-	@Inject
 	protected TemplateMessageService  templateMessageService;
 
-	@Inject
 	protected ProjectRepository projectRepo;
 
-	@Inject
 	protected UserRepository userRepo;
 
-	@Inject
 	protected UserHrService userHrService;
 
+	protected TimesheetLineService timesheetLineService;
+
+	@Inject
+	public TimesheetServiceImpl(PriceListService priceListService,
+								AppHumanResourceService appHumanResourceService,
+								HRConfigService hrConfigService,
+								TemplateMessageService templateMessageService,
+								ProjectRepository projectRepo,
+								UserRepository userRepo,
+								UserHrService userHrService,
+								TimesheetLineService timesheetLineService) {
+		this.priceListService = priceListService;
+		this.appHumanResourceService = appHumanResourceService;
+		this.hrConfigService = hrConfigService;
+		this.templateMessageService = templateMessageService;
+		this.projectRepo = projectRepo;
+		this.userRepo = userRepo;
+		this.userHrService = userHrService;
+		this.timesheetLineService = timesheetLineService;
+	}
 
 	@Override
 	@Transactional(rollbackOn={Exception.class})
@@ -315,7 +324,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				}
 				
 				if(noLeave && noPublicHoliday){
-					TimesheetLine timesheetLine = createTimesheetLine(project,
+					TimesheetLine timesheetLine = timesheetLineService.createTimesheetLine(project,
 							product, user, fromDate, timesheet,
 							timesheetLineService.computeHoursDuration(timesheet,
 									logTime, true),
@@ -355,8 +364,9 @@ public class TimesheetServiceImpl implements TimesheetService{
 	@Override
     public Timesheet getCurrentOrCreateTimesheet(){
 		Timesheet timesheet = getCurrentTimesheet();
-		if(timesheet == null)
+		if(timesheet == null) {
 			timesheet = createTimesheet(AuthUtils.getUser(), appHumanResourceService.getTodayDateTime().toLocalDate(), null);
+		}
 		return timesheet;
 	}
 	
@@ -376,21 +386,6 @@ public class TimesheetServiceImpl implements TimesheetService{
 		timesheet.setFullName(computeFullName(timesheet));
 		
 		return timesheet;
-	}
-	
-	@Override
-    public TimesheetLine createTimesheetLine(Project project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
-		TimesheetLine timesheetLine = new TimesheetLine();
-		
-		timesheetLine.setDate(date);
-		timesheetLine.setComments(comments);
-		timesheetLine.setProduct(product);
-		timesheetLine.setProject(project);
-		timesheetLine.setUser(user);
-		timesheetLine.setHoursDuration(hours);
-		timesheet.addTimesheetLineListItem(timesheetLine);
-		
-		return timesheetLine;
 	}
 
 	@Override
@@ -646,7 +641,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 				+ "and self.statusSelect != 3", user.getId()).fetch();
 
 		for (Project project : projects) {
-			TimesheetLine line = createTimesheetLine(project, product, user, timesheet.getFromDate(), timesheet, new BigDecimal(0), null);
+			TimesheetLine line = timesheetLineService.createTimesheetLine(project, product, user, timesheet.getFromDate(), timesheet, new BigDecimal(0), null);
 			lines.add(Mapper.toMap(line));
 		}
 

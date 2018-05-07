@@ -207,9 +207,9 @@ public abstract class AbstractBatch {
 
 	}
 
-	private Integer getDuring() {
+	private Long getDuring() {
 
-		return new Integer(new Long(ChronoUnit.MINUTES.between(batch.getStartDate(), batch.getEndDate())).toString());
+		return ChronoUnit.MINUTES.between(batch.getStartDate(), batch.getEndDate());
 
 	}
 

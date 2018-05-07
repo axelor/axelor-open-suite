@@ -98,6 +98,13 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
 	 */
 	@Override
 	public void _populateSaleOrder(SaleOrder saleOrder) throws AxelorException {
+	    if (saleOrder.getSaleOrderLineList() == null) {
+	        saleOrder.setSaleOrderLineList(new ArrayList<>());
+	    }
+
+	    if (saleOrder.getSaleOrderLineTaxList() == null) {
+            saleOrder.setSaleOrderLineTaxList(new ArrayList<>());
+        }
 
 		logger.debug("Peupler un devis => lignes de devis: {} ", new Object[] { saleOrder.getSaleOrderLineList().size() });
 

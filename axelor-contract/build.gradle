@@ -9,8 +9,6 @@ apply {
 axelor { 
 	title "Axelor Contract"
 	description "Axelor Contract Module"
-
-	removable true
 }
 
 dependencies {

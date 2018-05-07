@@ -32,9 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -260,7 +260,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 	@Override
 	public String getManufOrderSeq() throws AxelorException  {
 
-		String seq = sequenceService.getSequenceNumber(IAdministration.MANUF_ORDER);
+		String seq = sequenceService.getSequenceNumber(SequenceRepository.MANUF_ORDER);
 
 		if (seq == null) {
 			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MANUF_ORDER_SEQ));

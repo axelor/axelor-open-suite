@@ -9,8 +9,6 @@ apply {
 axelor {
 	title "Axelor Quality"
 	description "Axelor Quality Module"
-
-	removable true
 }
 
 dependencies {

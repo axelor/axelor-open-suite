@@ -24,7 +24,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -75,7 +75,7 @@ public class PaymentVoucherSequenceService  {
 
 	public String getReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)  {
 
-		return sequenceService.getSequenceNumber(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company);
+		return sequenceService.getSequenceNumber(SequenceRepository.PAYMENT_VOUCHER_RECEIPT_NUMBER, company);
 
 	}
 
@@ -84,7 +84,7 @@ public class PaymentVoucherSequenceService  {
 
 		Company company = paymentVoucher.getCompany();
 
-		if(!sequenceService.hasSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company))  {
+		if(!sequenceService.hasSequence(SequenceRepository.PAYMENT_VOUCHER_RECEIPT_NUMBER, company))  {
 			throw new AxelorException(paymentVoucher, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_SEQUENCE_1), AppAccountServiceImpl.EXCEPTION,company.getName());
 		}
 

@@ -24,8 +24,8 @@ import com.google.inject.Inject;
 
 import com.axelor.apps.base.db.AppHelpdesk;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.repo.AppHelpdeskRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -67,7 +67,7 @@ public class TicketServiceImpl implements TicketService {
 	public void computeSeq(Ticket ticket) {
 
 		if (Strings.isNullOrEmpty(ticket.getTicketSeq())) {
-			String ticketSeq = sequenceService.getSequenceNumber(IAdministration.TICKET, null);
+			String ticketSeq = sequenceService.getSequenceNumber(SequenceRepository.TICKET, null);
 			ticket.setTicketSeq(ticketSeq);
 		}
 	}

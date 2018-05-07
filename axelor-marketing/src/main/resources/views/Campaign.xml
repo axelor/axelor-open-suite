@@ -57,7 +57,7 @@
 	  </panel-tabs>
 	</form>
 	
-	<kanban name="campaign-kanban" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" columnBy="stageSelect" sequenceBy="stageSelect" draggable="true" limit="10">
+	<kanban name="campaign-kanban" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" columnBy="stageSelect" sequenceBy="sequence" draggable="true" limit="10">
 	  <field name="name"/>
 	  <field name="campaignType" />
 	  <hilite color="danger" if="stageSelect &lt;= 1"/>

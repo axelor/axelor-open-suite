@@ -29,10 +29,12 @@ import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServic
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessServiceImpl;
+import com.axelor.apps.businessproject.service.TimesheetLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.TeamTaskServiceImpl;
@@ -48,6 +50,7 @@ public class BusinessProjectModule extends AxelorModule {
         bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceProjectServiceImpl.class);
         bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceProjectServiceImpl.class);
         bind(TimesheetServiceImpl.class).to(TimesheetProjectServiceImpl.class);
+        bind(TimesheetLineServiceImpl.class).to(TimesheetLineProjectServiceImpl.class);
         bind(ExpenseServiceImpl.class).to(ExpenseServiceProjectImpl.class);
         bind(ProjectServiceImpl.class).to(ProjectBusinessServiceImpl.class);
         bind(ProjectBusinessService.class).to(ProjectBusinessServiceImpl.class);

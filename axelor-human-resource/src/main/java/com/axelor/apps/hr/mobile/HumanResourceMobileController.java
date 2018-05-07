@@ -54,6 +54,7 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -317,6 +318,7 @@ public class HumanResourceMobileController {
 		LocalDate date = LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
 		TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
 		TimesheetService timesheetService = Beans.get(TimesheetService.class);
+		TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
 
 		if(user != null){
 			Timesheet timesheet = timesheetRepository.all().filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId()).order("-id").fetchOne();
@@ -324,7 +326,7 @@ public class HumanResourceMobileController {
 				timesheet = timesheetService.createTimesheet(user, date, date);
 			}
 			BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-			TimesheetLine line = timesheetService.createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
+			TimesheetLine line = timesheetLineService.createTimesheetLine(project, product, user, date, timesheet, hours, request.getData().get("comments").toString());
 
 			timesheetRepository.save(timesheet);
 			response.setTotal(1);
