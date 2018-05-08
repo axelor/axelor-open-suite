@@ -52,6 +52,7 @@
 - Fix pending payment display in Invoice payment total view
 - Advanced export, add translation in CSV export + code improvement
 - Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
+- Fix Forecasts : problem when including opportunities
 
 
 ## [5.0.0-rc1] - 2018-04-16
