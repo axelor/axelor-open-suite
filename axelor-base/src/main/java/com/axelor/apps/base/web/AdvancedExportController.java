@@ -220,7 +220,7 @@ public class AdvancedExportController {
             throws ClassNotFoundException, IOException, DocumentException, AxelorException {
 
         AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
-        MetaFile exportFile = advancedExport.getAdvancedExportFile();
+        MetaFile exportFile = null;
         String criteria = "";
         if (request.getContext().get("_contextCriteria") != null)
             criteria = request.getContext().get("_contextCriteria").toString();
