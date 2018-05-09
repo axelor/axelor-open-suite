@@ -32,8 +32,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class DurationServiceImpl implements DurationService  {
 
-	private static final BigDecimal DAYS_IN_MONTH = BigDecimal.valueOf(30);
-
 	@Override
 	public LocalDate computeDuration(Duration duration, LocalDate date) {
 		if(duration == null) { return date; }
@@ -60,13 +58,20 @@ public class DurationServiceImpl implements DurationService  {
 			long months = ChronoUnit.MONTHS.between(start, end);
 			LocalDate theoryEnd = start.plusMonths(months);
 			long restDays = ChronoUnit.DAYS.between(theoryEnd, end);
-			long daysInMonth = ChronoUnit.DAYS.between(theoryEnd, theoryEnd.plusMonths(1));
+			long daysInMonth = ChronoUnit
+					.DAYS
+					.between(theoryEnd, theoryEnd.plusMonths(1));
 			return BigDecimal.valueOf(months)
-					.add(BigDecimal.valueOf(restDays).divide(BigDecimal.valueOf(daysInMonth), MathContext.DECIMAL32))
-					.divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+					.add(BigDecimal.valueOf(restDays)
+							.divide(BigDecimal.valueOf(daysInMonth),
+									MathContext.DECIMAL32))
+					.divide(BigDecimal.valueOf(duration.getValue()),
+							MathContext.DECIMAL32);
 		} else {
-		    long restDays = ChronoUnit.DAYS.between(start, end);
-		    return BigDecimal.valueOf(restDays).divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+			long restDays = ChronoUnit.DAYS.between(start, end);
+			return BigDecimal.valueOf(restDays)
+					.divide(BigDecimal.valueOf(duration.getValue()),
+							MathContext.DECIMAL32);
 		}
 	}
 
