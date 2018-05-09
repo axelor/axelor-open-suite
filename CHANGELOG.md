@@ -1,5 +1,65 @@
 # Changelog
 
+## [5.0.0-rc2]
+## Improvements
+- sale order: Allow user to manually define a legal note that will be put on edited orders.
+- sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
+- When we generate a message (using a template or not) from the wizrad, open the form view in edit mode directly and close automatically the wizard.
+- All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
+- Barcode generator code formatting.
+- Split sequences per module and remove unwanted sequences
+- Improve multiple invoices printing.
+- timesheet: Hide create button on if timsheet editor is disabled from configuration.
+- Add en to fr translation in Barcode type configuration
+- Mail Account: If the boolean "isValid" is true, allow user to disabled it 
+- Product: If purchase module is not installed, hide boolean "Define the shipping coef by partner" and "Shipping Coef."
+- Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab. 
+- Convert Lead: Removed opportunity and events conversion. Just partner and contact created from lead with events and opportunity linked.   
+- Current user password should be required when updating user password 
+- Replaced default grid by simple grid of event and opportunity in partner,contact and lead form. Simple grid does not contains partner,contact and lead field.
+- Convert Lead: Fix translation and default values. 
+- Advanced export wizard : Automatically download the export file on "Export" button and close the wizard.
+- Message Template: Import demo data per module (or per app).
+- Email Service: Default 'EmailAccount' will be used for adk mailing services or stream messages.
+- Product form: Remove account app check from accounting tab to display account management o2m. 
+- Add an advanced synchronization feature for event synchronization with external calendars.
+- Add a monitoring on time differences on manufacturing orders.
+- Renamed all reference to weight by mass.
+- Refactor invoice payment list display in invoice-form and invoice-client-form views
+- Improved sale order status label.
+- Timesheet editor: No group by on project when unique product is used. 
+
+## Bug Fixes
+- invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
+- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
+- Compute the duration according to the start date and time and end date and time for ticket.
+- Fix same image when duplicating products.
+- invoice: fix bank address on birt template
+- Fix BASE DEMO DATA import error
+- Fix custom buttons imported with studio demo data. It will be only displayed if related app is installed.
+- Custom model editor: Fix duplicating field property for relational json fields.
+- timesheet-editor: Fix user value update on timesheet line.
+- Fix Indicator generator language type field in fr demo data import
+- Menu "Product variant attributes" displayed only if the boolean "manageProductVariants" is true in Base app
+- Menus permissions adapted to v5 for demoCRM and demoERP users
+- Fiscal Position interface reworked and moved from Account to Base module
+- Fix empty partner list from batch report.
+- Fix duplicate object wizard translation.
+- Convert Lead: Fix type,call type and lead field of converted events. 
+- Advanced Export: Fix export every fields of model.
+- Advanced export : Fix input issue of selection field for export.
+- Fix Advanced export object and wizard translation.
+- Rename 'Replace duplicate' to 'Merge duplicated' and add translation.
+- Fix pending payment display in Invoice payment total view
+- Advanced export, add translation in CSV export + code improvement
+- Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
+- Fix Forecasts : problem when including opportunities
+- Fix default email account check for user. 
+- Fix timesheet timer not computing durations.
+- Fix sale order line form for 'title' type. 
+- Timesheet editor: Fix blank editor, duration calcuation method, wrong total on group by.
+
+
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
 - New currency conversion API (ECB)
@@ -67,7 +127,11 @@
 - Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Add validation date in Inventory
 - Add the number of components on Bill of material form view.
-
+- Use services to get company bank details for better maintenability.
+- Change open fullscreen timesheet editor from tab to popup, for update of lines o2m on close.
+- Browser reload on install and uninstall of the app.
+- Add base app install check on base module's menus.
+- Improved TeamTask gantt view to support upgraded gantt view with colored user per task.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -85,6 +149,11 @@
 - Fix default supplier in purchase order generation from sale order.
 - Stock location is no more required if supplychain module is not enabled
 - Compute the sale price and min sale price on purchase order line only if the product is saleable
+- Fix bulk install without demo data error. 
+- Fix language of parent app on child app installation. Now it will install all parent (if not installed) with child app's language. 
+- Fix timesheet and project planning editor according to changes in related models and fields. 
+- Fix custom model form view with latest from adk.
+- Fix resource management from project, removed unwanted menus and views related to it. 
 
 
 ## [Unreleased 4.x]
@@ -111,6 +180,7 @@
 - On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
 - On Invoice payment, fix NPE by requiring paymentMode
 - Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
+- Accounting export, fix problem on export FEC
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
@@ -404,6 +474,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+[5.0.0-rc2]: https://github.com/axelor/abs-webapp/compare/v5.0.0-rc1...v5.0.0-rc2
 [5.0.0-rc1]: https://github.com/axelor/abs-webapp/compare/4.2-dev...v5.0.0-rc1
 [Unreleased 4.x]: https://github.com/axelor/abs-webapp/compare/v4.2.3...4.2-dev
 [4.2.3]: https://github.com/axelor/abs-webapp/compare/v4.1.3...v4.2.3
