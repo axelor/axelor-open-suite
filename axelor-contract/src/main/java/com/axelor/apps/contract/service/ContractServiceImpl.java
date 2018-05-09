@@ -579,9 +579,11 @@ public class ContractServiceImpl extends ContractRepository
 		
 		Contract contract = new Contract();
 		
-		if (template.getAdditionalBenefitList() != null && !template.getAdditionalBenefitList().isEmpty()){
-			
-			for (ContractLine line : template.getAdditionalBenefitList()) {
+		if (template.getAdditionalBenefitContractLineList() != null
+				&& !template.getAdditionalBenefitContractLineList().isEmpty()) {
+
+			for (ContractLine line
+					: template.getAdditionalBenefitContractLineList()) {
 				
 				ContractLine newLine = contractLineRepo.copy(line, false);
 				contractLineRepo.save(newLine);

@@ -40,7 +40,7 @@
 		<many-to-one name="engagementDuration" title="Engagement duration" ref="com.axelor.apps.base.db.Duration" />
 		<many-to-one name="priorNoticeDuration" title="Prior notice duration" ref="com.axelor.apps.base.db.Duration" />
 
-		<one-to-many name="additionalBenefitList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
+		<one-to-many name="additionalBenefitContractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
 		<one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content"/>
 
 	</entity>
