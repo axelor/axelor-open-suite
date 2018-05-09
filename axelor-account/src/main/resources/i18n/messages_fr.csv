@@ -212,7 +212,7 @@
 "Accounting batch","Batch de comptabilité",,
 "Accounting batches","Batchs de comptabilité",,
 "Accounting configuration","Configuration comptable",,
-"Accounting configuration is missing for Product: %s (company: %s)","La configuration comptable est manquante pour le produit :%s (société :%s).",,
+"Accounting configuration is missing for Product: %s (company: %s)","La configuration comptable est manquante pour le produit : %s (société : %s).",,
 "Accounting details","Informations comptables",,
 "Accounting export","Export comptable",,
 "Accounting exports","Exports comptables",,
