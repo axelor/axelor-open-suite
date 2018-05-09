@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -238,6 +238,12 @@
                     <text-property name="displayName">generated_meta_file_name</text-property>
                     <text-property name="heading">generated_meta_file_name</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">bank</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">bank</text-property>
+                    <text-property name="heading">bank</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -317,6 +323,11 @@
                     <structure>
                         <property name="position">13</property>
                         <property name="name">generated_meta_file_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">bank</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -414,6 +425,13 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">bank</property>
+                    <property name="nativeName">bank</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
 bankOrder.status_select,
@@ -444,13 +462,15 @@ bankDetails.full_name AS bank_details,
 bankOrder.bank_order_total_amount as "amount",
 bankOrder.sender_reference,
 bankOrder.sender_label,
-meta_file.file_name as "generated_meta_file_name"
+meta_file.file_name as "generated_meta_file_name",
+Bank.bank_name as bank
 
 FROM bankpayment_bank_order bankOrder
 LEFT JOIN account_payment_mode paymentMode ON paymentMode.id =  bankOrder.payment_mode
 LEFT JOIN base_company company ON company.id = bankOrder.sender_company
 LEFT JOIN base_currency currency ON currency.id = bankOrder.bank_order_currency
-LEFT JOIN base_bank_details bankDetails ON bankDetails.id = bankOrder.sender_bank_details  
+LEFT JOIN base_bank_details bankDetails ON bankDetails.id = bankOrder.sender_bank_details
+LEFT JOIN base_bank Bank ON bankDetails.bank = Bank.id
 LEFT JOIN meta_file ON meta_file.id = bankOrder.generated_meta_file
 WHERE bankOrder.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -751,6 +771,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">bank</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">bank</text-property>
+                    <text-property name="heading">bank</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -825,6 +851,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">12</property>
                         <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">bank</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -915,6 +946,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">bank</property>
+                    <property name="nativeName">bank</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
 bankOrderLine.bank_order_amount as "amount",
@@ -926,9 +964,10 @@ bankOrderLine.receiver_reference,
 bankOrderLine.receiver_label,
 company.name AS company_name,
 partner.full_name AS partner_name,
-bankDetails.iban AS bank_details,
+bankDetails.full_name AS bank_details,
 interbank.name,
-currency.code AS currency
+currency.code AS currency,
+Bank.bank_name AS bank
 
 FROM bankpayment_bank_order_line bankOrderLine
 LEFT JOIN account_interbank_code_line interbank ON interbank.id = bankOrderLine.interbank_code_line
@@ -937,6 +976,7 @@ LEFT JOIN base_partner partner ON partner.id = bankOrderLine.partner
 LEFT JOIN base_bank_details bankDetails ON bankDetails.id = bankOrderLine.receiver_bank_details
 LEFT JOIN bankpayment_bank_order bankOrder ON bankOrder.id = bankOrderLine.bank_order
 LEFT JOIN base_currency currency ON currency.id = bankOrder.bank_order_currency
+LEFT JOIN base_bank Bank ON bankDetails.bank = Bank.id
 WHERE bankOrderLine.bank_order = ?
 ORDER BY bankOrderLine.sequence]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1183,6 +1223,13 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                     <text-property name="displayName">generated_meta_file_name</text-property>
                     <expression name="expression" type="javascript">dataSetRow["generated_meta_file_name"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">bank</property>
+                    <text-property name="displayName">bank</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["bank"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="3343">
@@ -1598,6 +1645,49 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                 </cell>
                 <cell id="4068"/>
                 <cell id="4069">
+                    <text id="4251">
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">right</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Bank'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]  == "" ? row["message_key"] : row["translation"]</VALUE-OF>  :</B>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4070">
+                    <text id="4252">
+                        <property name="marginTop">1pt</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["bank"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="4057">
+                <property name="height">0.2in</property>
+                <cell id="4058">
                     <text id="4084">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">right</property>
@@ -1628,7 +1718,10 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]  == "" ? row["message_key"] : row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4070">
+                <cell id="4059">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="textAlign">left</property>
                     <text id="4092">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
@@ -1637,10 +1730,8 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["bank_details"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-            </row>
-            <row id="4057">
-                <property name="height">0.2in</property>
-                <cell id="4058">
+                <cell id="4061"/>
+                <cell id="4062">
                     <text id="4082">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">right</property>
@@ -1671,10 +1762,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]  == "" ? row["message_key"] : row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4059">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <property name="textAlign">left</property>
+                <cell id="4063">
                     <text id="4089">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
@@ -1683,9 +1771,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["amount"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF>  <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4061"/>
-                <cell id="4062"/>
-                <cell id="4063"/>
             </row>
             <row id="4071">
                 <property name="height">0.2in</property>
@@ -1925,28 +2010,70 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">bank</property>
+                    <text-property name="displayName">bank</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["bank"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4155">
-                <property name="width">7cm</property>
+                <property name="width">10%</property>
             </column>
             <column id="4174">
-                <property name="width">4cm</property>
+                <property name="width">15%</property>
+            </column>
+            <column id="4248">
+                <property name="width">15%</property>
             </column>
             <column id="4156">
-                <property name="width">30%</property>
+                <property name="width">25%</property>
             </column>
             <column id="4157">
-                <property name="width">3.5cm</property>
+                <property name="width">15%</property>
             </column>
             <column id="4158">
-                <property name="width">3cm</property>
+                <property name="width">10%</property>
             </column>
             <column id="4159">
-                <property name="width">3cm</property>
+                <property name="width">10%</property>
             </column>
             <header>
                 <row id="4131">
                     <cell id="4132">
+                        <property name="textAlign">left</property>
+                        <text id="4175">
+                            <property name="marginLeft">2pt</property>
+                            <property name="textAlign">left</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'Sequence'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]  == "" ? row["message_key"] : row["translation"]</VALUE-OF>  :</B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4170">
                         <property name="textAlign">left</property>
                         <text id="4160">
                             <property name="marginLeft">2pt</property>
@@ -1978,9 +2105,9 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                             <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]  == "" ? row["message_key"] : row["translation"]</VALUE-OF>  :</B>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4170">
+                    <cell id="4246">
                         <property name="textAlign">left</property>
-                        <text id="4175">
+                        <text id="4249">
                             <property name="marginLeft">2pt</property>
                             <property name="textAlign">left</property>
                             <property name="dataSet">TranslateDS</property>
@@ -1988,7 +2115,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'Sequence'</value>
+                                        <value type="javascript">'Bank'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2144,6 +2271,17 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                 <row id="4137">
                     <cell id="4138">
                         <property name="textAlign">left</property>
+                        <text id="4176">
+                            <property name="marginTop">1pt</property>
+                            <property name="marginLeft">2pt</property>
+                            <property name="textAlign">left</property>
+                            <property name="dataSet">BankOrderLineDS</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row._outer["sequence"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4171">
+                        <property name="textAlign">left</property>
                         <text id="4165">
                             <property name="marginTop">1pt</property>
                             <property name="marginLeft">2pt</property>
@@ -2152,15 +2290,14 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                             <text-property name="content"><![CDATA[<VALUE-OF>row["partner_name"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4171">
+                    <cell id="4247">
                         <property name="textAlign">left</property>
-                        <text id="4176">
+                        <text id="4250">
                             <property name="marginTop">1pt</property>
                             <property name="marginLeft">2pt</property>
                             <property name="textAlign">left</property>
-                            <property name="dataSet">BankOrderLineDS</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row._outer["sequence"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["bank"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4139">
@@ -2206,49 +2343,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         </text>
                     </cell>
                 </row>
-                <row id="4143">
-                    <cell id="4144">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4172">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4145">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4146">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4147">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4148">
-                        <property name="textAlign">left</property>
-                    </cell>
-                </row>
             </detail>
-            <footer>
-                <row id="4149">
-                    <cell id="4150">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4173">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4151">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4152">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4153">
-                        <property name="textAlign">left</property>
-                    </cell>
-                    <cell id="4154">
-                        <property name="textAlign">left</property>
-                    </cell>
-                </row>
-            </footer>
         </table>
     </body>
 </report>
