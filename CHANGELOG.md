@@ -27,6 +27,8 @@
 - Add a monitoring on time differences on manufacturing orders.
 - Renamed all reference to weight by mass.
 - Refactor invoice payment list display in invoice-form and invoice-client-form views
+- Improved sale order status label.
+- Timesheet editor: No group by on project when unique product is used. 
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -50,7 +52,13 @@
 - Fix Advanced export object and wizard translation.
 - Rename 'Replace duplicate' to 'Merge duplicated' and add translation.
 - Fix pending payment display in Invoice payment total view
-
+- Advanced export, add translation in CSV export + code improvement
+- Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
+- Fix Forecasts : problem when including opportunities
+- Fix default email account check for user. 
+- Fix timesheet timer not computing durations.
+- Fix sale order line form for 'title' type. 
+- Timesheet editor: Fix blank editor, duration calcuation method, wrong total on group by.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
@@ -172,6 +180,7 @@
 - On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
 - On Invoice payment, fix NPE by requiring paymentMode
 - Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
+- Accounting export, fix problem on export FEC
 
 ## [4.1.2] - 2018-02-05
 ### Improvements

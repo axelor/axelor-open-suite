@@ -89,10 +89,10 @@
 	
 	<menuitem title="Historical" name="sc-root-sale-historical" parent="sc-root-sale" order="30"/>
 	
-	<menuitem title="Finished orders" name="sc-historical-finished-sale-orders" parent="sc-root-sale-historical"
-			action="sc.hist.finished.sale.orders"/>
+	<menuitem title="Completed orders" name="sc-historical-completed-sale-orders" parent="sc-root-sale-historical"
+			action="sc.hist.completed.sale.orders" order="5" />
 			
-	<action-view name="sc.hist.finished.sale.orders" title="Finished orders"
+	<action-view name="sc.hist.completed.sale.orders" title="Completed orders" 
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
@@ -108,7 +108,7 @@
 	</action-view>
 	
 	<menuitem title="Canceled orders" name="sc-historical-canceled-sale-orders" parent="sc-root-sale-historical"
-			action="sc.hist.canceled.sale.orders"/>
+			action="sc.hist.canceled.sale.orders" order="10"/>
 			
 	<action-view name="sc.hist.canceled.sale.orders" title="Canceled orders"
 		model="com.axelor.apps.sale.db.SaleOrder">

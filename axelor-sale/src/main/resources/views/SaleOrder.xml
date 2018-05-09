@@ -315,8 +315,8 @@
 	  </panel>
 
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">
-	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize"/>
-        <button name="finishManuallySaleOrder" title="Finish manually sale order" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" showIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-finish"/>
+	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize-quotation"/>
+        <button name="completeManuallySaleOrder" title="Complete manually sale order" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" showIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
         <button name="editOrder" title="Edit order" if="__config__.app.getApp('sale').allowPendingOrderModification" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
         <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>
@@ -655,10 +655,10 @@
 				  </div>
 					<div class="span4 pull-right">
 						<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-						<span ng-show="record.statusSelect == 1" x-translate>Draft</span>
-						<span ng-show="record.statusSelect == 2" x-translate>Finalized</span>
+						<span ng-show="record.statusSelect == 1" x-translate>Draft quotation</span>
+						<span ng-show="record.statusSelect == 2" x-translate>Finalized quotation</span>
 						<span ng-show="record.statusSelect == 3" x-translate>Order confirmed</span>
-						<span ng-show="record.statusSelect == 4" x-translate>Finished</span>
+						<span ng-show="record.statusSelect == 4" x-translate>Order completed</span>
 						<span ng-show="record.statusSelect == 5" x-translate>Canceled</span>
 					</div>
 			  </div>
@@ -716,10 +716,10 @@
 				  </div>
 					<div class="span4 pull-right">
 						<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-						<span ng-show="record.statusSelect == 1" x-translate>Draft</span>
-						<span ng-show="record.statusSelect == 2" x-translate>Finalize</span>
+						<span ng-show="record.statusSelect == 1" x-translate>Draft quotation</span>
+						<span ng-show="record.statusSelect == 2" x-translate>Finalized quotation</span>
 						<span ng-show="record.statusSelect == 3" x-translate>Order confirmed</span>
-						<span ng-show="record.statusSelect == 4" x-translate>Finished</span>
+						<span ng-show="record.statusSelect == 4" x-translate>Order completed</span>
 						<span ng-show="record.statusSelect == 5" x-translate>Canceled</span>
 					</div>
 			  </div>
@@ -869,12 +869,12 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateAmountToBeSpreadOverTheTimetable"/>
 	</action-method>
 
-    <action-method name="action-sale-order-method-finalize">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="finalizeSaleOrder"/>
+    <action-method name="action-sale-order-method-finalize-quotation">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="finalizeQuotation"/>
 	</action-method>
 
-    <action-method name="action-sale-order-method-finish">
-        <call class="com.axelor.apps.sale.web.SaleOrderController" method="finishSaleOrder"/>
+    <action-method name="action-sale-order-method-complete-sale-order">
+        <call class="com.axelor.apps.sale.web.SaleOrderController" method="completeSaleOrder"/>
     </action-method>
 
 	<action-method name="action-sale-order-method-merge-sale">
@@ -1040,7 +1040,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-set-client-partner-domain">
- 		<attribute name="domain" for="clientPartner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false and self.isCustomer = true&quot;"/>
+ 		<attribute name="domain" for="clientPartner" expr="eval:&quot;self.id != ${company.partner?.id} AND self.isContact = false and self.isCustomer = true&quot;"/>
  	</action-attrs>
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">

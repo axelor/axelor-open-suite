@@ -101,7 +101,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	@Transactional
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
 		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
-		q.setParameter(1, SaleOrderRepository.STATUS_CONFIRMED);
+		q.setParameter(1, SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 		q.setParameter(2, saleOrder.getClientPartner());
 		if((long) q.getSingleResult() == 1)  {
 			saleOrder.getClientPartner().setIsCustomer(false);
@@ -119,7 +119,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
     @Override
     @Transactional(rollbackOn = { AxelorException.class, RuntimeException.class }, ignore = { BlockedSaleOrderException.class })
-    public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
 	    Partner partner = saleOrder.getClientPartner();
 
 	    Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
@@ -133,7 +133,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
             }
         }
 
-        saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED);
+        saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
         if (appSaleService.getAppSale().getManageSaleOrderVersion()) {
             this.saveSaleOrderPDFAsAttachment(saleOrder);
         }
@@ -146,7 +146,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
 	public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException  {
-		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_CONFIRMED);
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 		saleOrder.setConfirmationDate(appSaleService.getTodayDate());
 		saleOrder.setConfirmedByUser(userService.getUser());
 
@@ -156,8 +156,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-	public void finishSaleOrder(SaleOrder saleOrder) throws AxelorException {
-		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINISHED);
+	public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
 
 		saleOrderRepo.save(saleOrder);
 	}

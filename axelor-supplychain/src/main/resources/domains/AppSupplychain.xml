@@ -17,7 +17,7 @@
 		<boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery" default="false"/>
 		<boolean name="terminatePurchaseOrderOnReceipt" title="Terminate purchase order on Receipt" default="false"/>
 		
-        <boolean name="allowFinishManuallySaleOrder" title="Allow finish manually sale order"/>
+        <boolean name="allowCompleteManuallySaleOrder" title="Allow complete manually sale order"/>
 
 		<boolean name="purchaseOrderGenerationAuto" title="Generate purchase orders automatically" default="false"/>
 

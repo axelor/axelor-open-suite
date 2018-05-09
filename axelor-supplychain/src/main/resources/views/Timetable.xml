@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="timetable-grid" title="Timetables" model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate" editable="true">
-       <field name="estimatedDate" readonlyIf="invoice"/>
-       <field name="amount" readonlyIf="invoice"/>
-       <field name="comments" readonlyIf="invoice"/>
-       <field name="product" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
-       <field name="productName" required="true" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <field name="estimatedDate" readonlyIf="invoice" required="true"/>
+       <field name="amount" readonlyIf="invoice" required="true"/>
+       <field name="product" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" onChange="action-timetable-method-get-product-information"/>
+       <field name="productName" required="true" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" width="200%"/>
        <field name="unit" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
-       <field name="qty" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <field name="qty" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" required="true"/>
+       <field name="comments" readonlyIf="invoice" width="300%"/>
        <button name="generateInvoice" readonlyIf="!id || invoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
         <field name="invoice" hidden="true"/>
     </grid>
@@ -19,7 +19,7 @@
 	 	<panel name="main" readonlyIf="invoice">
 			<field name="estimatedDate" colSpan="4"/>
       		<field name="amount" colSpan="4"/>
-      		<field name="product" canEdit="false" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+      		<field name="product" canEdit="false" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" onChange="action-timetable-method-get-product-information"/>
        		<field name="productName" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        		<field name="unit" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        		<field name="qty" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
@@ -32,5 +32,9 @@
 	 <action-method name="action-timetable-method-generate-invoice">
 	 	<call class="com.axelor.apps.supplychain.web.TimetableController" method="generateInvoice"/>
 	 </action-method>
+
+    <action-method name="action-timetable-method-get-product-information">
+      <call class="com.axelor.apps.supplychain.web.TimetableController" method="getProductInformation"/>
+    </action-method>
 
 </object-views>

@@ -46,10 +46,11 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 	@Override
 	public void checkDefaultMailAccount(EmailAccount mailAccount) throws AxelorException {
 		
-		if ( appBaseService.getAppBase().getEmailAccountByUser() && mailAccount.getIsDefault()) {
+		if ( appBaseService.getAppBase().getEmailAccountByUser() 
+				&& mailAccount.getIsDefault() && mailAccount.getUser() != null) {
 			String query = "self.user = ?1 AND self.isDefault = true";
 			List<Object> params = Lists.newArrayList();
-			params.add(userService.getUser());
+			params.add(mailAccount.getUser());
 			if(mailAccount.getId() != null){
 				query += " AND self.id != ?2";
 				params.add(mailAccount.getId());
@@ -74,8 +75,10 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
 			}
 		}
-
-		super.checkDefaultMailAccount( mailAccount);
+		
+		else {
+			super.checkDefaultMailAccount( mailAccount);
+		}
 
 	}
 
@@ -98,7 +101,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 		if ( appBaseService.getAppBase().getEmailAccountByUser() ) {
 			return mailAccountRepo.all()
 					.filter("self.user = ?1 AND self.isDefault = true"
-							+ " AND (self.serverTypeSelect = ?2 OR self.serverTypeSelect ?3)",
+							+ " AND (self.serverTypeSelect = ?2 OR self.serverTypeSelect = ?3)",
 					userService.getUser(),
 					EmailAccountRepository.SERVER_TYPE_IMAP,
 					EmailAccountRepository.SERVER_TYPE_POP).fetchOne();

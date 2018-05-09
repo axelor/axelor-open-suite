@@ -503,7 +503,7 @@ public class MrpServiceImpl implements MrpService  {
 		List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
 		if (statusList.isEmpty()) {
-			statusList.add(SaleOrderRepository.STATUS_CONFIRMED);
+			statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 		}
 
 		List<SaleOrderLine> saleOrderLineList = new ArrayList<>();

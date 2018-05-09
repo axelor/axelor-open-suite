@@ -14,7 +14,7 @@
     	onSave="action-mail-account-method-check-default-mail-account">
     	<panel name="informations" title="Informations">
             <field name="name"/>
-			<field name="isDefault"/>
+			<field name="isDefault" onChange="action-mail-account-method-check-default-mail-account"/>
         	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>
         </panel>
         <panel name="configPanel" title="Configurations" readonlyIf="isValid">

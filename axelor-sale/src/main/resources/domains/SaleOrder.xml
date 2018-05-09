@@ -120,10 +120,10 @@
     <extra-code>
    		<![CDATA[
             // STATUS   
-			public static final int STATUS_DRAFT = 1;
-			public static final int STATUS_FINALIZED = 2;
-			public static final int STATUS_CONFIRMED = 3;
-			public static final int STATUS_FINISHED = 4;
+			public static final int STATUS_DRAFT_QUOTATION = 1;
+			public static final int STATUS_FINALIZED_QUOTATION = 2;
+			public static final int STATUS_ORDER_CONFIRMED = 3;
+			public static final int STATUS_ORDER_COMPLETED = 4;
 			public static final int STATUS_CANCELED = 5;
    		]]>
    	</extra-code>
@@ -136,10 +136,10 @@
       <field name="confirmationDate" on="UPDATE"/>
       <field name="inTaxTotal" />
       <message if="true" on="CREATE">Sale order created</message>
-      <message if="statusSelect == 1" tag="important">Draft</message>
-      <message if="statusSelect == 2" tag="info">Finalize</message>
+      <message if="statusSelect == 1" tag="important">Draft quotation</message>
+      <message if="statusSelect == 2" tag="info">Finalized quotation</message>
       <message if="statusSelect == 3" tag="success">Order confirmed</message>
-      <message if="statusSelect == 4" tag="success">Finished</message>
+      <message if="statusSelect == 4" tag="success">Order completed</message>
       <message if="statusSelect == 5" tag="warning">Canceled</message>
     </track>
     

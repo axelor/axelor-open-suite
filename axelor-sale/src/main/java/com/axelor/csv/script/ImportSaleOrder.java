@@ -55,7 +55,7 @@ public class ImportSaleOrder {
         if (saleOrder.getStatusSelect() == 1) {
         	saleOrder.setSaleOrderSeq(sequenceService.getDraftSequenceNumber(saleOrder));
         } else {
-        		saleOrderWorkflowService.finalizeSaleOrder(saleOrder);
+        		saleOrderWorkflowService.finalizeQuotation(saleOrder);
         }
        
         return saleOrder;

@@ -166,7 +166,7 @@ public class AccountingReportController {
 
 			logger.debug("Type selected : {}" , accountingReport.getTypeSelect());
 
-			if((accountingReport.getTypeSelect() >= AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY 
+			if((accountingReport.getTypeSelect() >= AccountingReportRepository.EXPORT_ADMINISTRATION
 					&& accountingReport.getTypeSelect() < AccountingReportRepository.REPORT_ANALYTIC_BALANCE )) {
 				
 				MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);

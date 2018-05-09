@@ -65,7 +65,12 @@ public class MailAccountController {
 	public void checkDefaultMailAccount(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		EmailAccount account = request.getContext().asType(EmailAccount.class);
-		mailAccountService.checkDefaultMailAccount(account);
+		try {
+			mailAccountService.checkDefaultMailAccount(account);
+		} catch(AxelorException e) {
+			response.setAttr("isDefault", "value", false);
+			response.setFlash(e.getMessage());
+		}
 	
 	}
 	

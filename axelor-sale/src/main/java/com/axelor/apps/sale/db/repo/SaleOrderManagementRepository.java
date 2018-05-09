@@ -40,7 +40,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 		List<SaleOrderLine> saleOrderLines = copy.getSaleOrderLineList();
 
-		copy.setStatusSelect(SaleOrderRepository.STATUS_DRAFT);
+		copy.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
 		copy.setSaleOrderSeq(null);
 		copy.clearBatchSet();
 		copy.setImportId(null);
@@ -84,7 +84,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 		        saleOrder = super.save(saleOrder);
 		    }
             if (Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()) && !saleOrder.getTemplate()) {
-                if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT) {
+                if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
                     saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
                 }
             }
