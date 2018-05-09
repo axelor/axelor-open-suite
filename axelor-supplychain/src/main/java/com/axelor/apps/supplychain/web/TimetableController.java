@@ -50,7 +50,7 @@ public class TimetableController {
 		Context parentContext = request.getContext().getParent();
 		if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
 		    SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
-		    if (saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_CONFIRMED) {
+		    if (saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
 		        response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_SALE_ORDER_NOT_CONFIRMED));
 		        return;
 			}

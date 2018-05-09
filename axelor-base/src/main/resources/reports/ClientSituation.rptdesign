@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -5552,12 +5552,14 @@ row["first_name"]
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>if(row["status_select"] == "1"){
-"Draft"
+"Draft quotation"
 }else if(row["status_select"] == "2"){
-"Confirmed"
+"Finalized quotation"
 }else if(row["status_select"] == "3"){
-"Validated"
+"Order confirmed"
 }else if(row["status_select"] == "4"){
+"Order completed"
+}else if(row["status_select"] == "5"){
 "Canceled"
 }</VALUE-OF>]]></text-property>
                         </text>

@@ -176,12 +176,12 @@ public class SaleOrderController {
 
 	}
 
-	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) {
+	public void finalizeQuotation(ActionRequest request, ActionResponse response) {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
 		try {
-			Beans.get(SaleOrderWorkflowService.class).finalizeSaleOrder(saleOrder);
+			Beans.get(SaleOrderWorkflowService.class).finalizeQuotation(saleOrder);
 		} catch (Exception e) {
 		    TraceBackService.trace(response, e);
 		}
@@ -189,12 +189,12 @@ public class SaleOrderController {
 		response.setReload(true);
 	}
 
-	public void finishSaleOrder(ActionRequest request, ActionResponse response) {
+	public void completeSaleOrder(ActionRequest request, ActionResponse response) {
 		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 		saleOrder = saleOrderRepo.find(saleOrder.getId());
 
 		try {
-            Beans.get(SaleOrderWorkflowServiceImpl.class).finishSaleOrder(saleOrder);
+            Beans.get(SaleOrderWorkflowServiceImpl.class).completeSaleOrder(saleOrder);
 		} catch (Exception e) {
 		    TraceBackService.trace(response, e);
 		}

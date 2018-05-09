@@ -95,8 +95,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Override
     @Transactional(rollbackOn = { Exception.class, AxelorException.class })
 	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
-	    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINISHED) {
-	        throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SALES_ORDER_FINISHED));
+	    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_COMPLETED) {
+	        throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SALES_ORDER_COMPLETED));
 	    }
 
 		saleOrder.setOrderBeingEdited(true);

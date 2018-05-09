@@ -34,7 +34,7 @@ public interface IExceptionMessage {
 	 * Sales Order Service Impl
 	 */
 	static final String SALES_ORDER_1 = /*$$(*/ "The company %s doesn't have any configured sequence for sale orders" /*)*/ ;
-	static final String SALES_ORDER_FINISHED = /*$$(*/ "This sale order is finished." /*)*/ ;
+	static final String SALES_ORDER_COMPLETED = /*$$(*/ "This sale order is completed." /*)*/ ;
 
 	/**
 	 * Sale Config Service

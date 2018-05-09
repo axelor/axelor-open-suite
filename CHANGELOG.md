@@ -27,6 +27,7 @@
 - Add a monitoring on time differences on manufacturing orders.
 - Renamed all reference to weight by mass.
 - Refactor invoice payment list display in invoice-form and invoice-client-form views
+- Improved sale order status label.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
