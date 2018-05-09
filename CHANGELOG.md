@@ -28,6 +28,7 @@
 - Renamed all reference to weight by mass.
 - Refactor invoice payment list display in invoice-form and invoice-client-form views
 - Improved sale order status label.
+- Timesheet editor: No group by on project when unique product is used. 
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -57,6 +58,7 @@
 - Fix default email account check for user. 
 - Fix timesheet timer not computing durations.
 - Fix sale order line form for 'title' type. 
+- Timesheet editor: Fix blank editor, duration calcuation method, wrong total on group by.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
