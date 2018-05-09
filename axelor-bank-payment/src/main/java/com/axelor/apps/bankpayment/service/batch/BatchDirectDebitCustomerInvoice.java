@@ -35,6 +35,9 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -73,6 +76,11 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 			filterList.add("self.company = :company");
 			bindingList.add(Pair.of("company", (Object) accountingBatch.getCompany()));
 		}
+
+		filterList.add(
+			"NOT IN (SELECT DISTINCT partner FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE partner = self.invoice.partner and blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
+		bindingList.add(Pair.of("blockingSelect", BlockingRepository.DEBIT_BLOCKING));
+		bindingList.add(Pair.of("blockingToDate", Beans.get(AppBaseService.class).getTodayDate()));
 
 		if (accountingBatch.getBankDetails() != null) {
 			Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());

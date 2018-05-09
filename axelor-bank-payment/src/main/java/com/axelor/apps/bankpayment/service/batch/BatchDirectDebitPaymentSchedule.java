@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,7 @@ import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
@@ -123,6 +125,11 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
             queryBuilder.add("self.paymentSchedule.company IS NULL OR self.paymentSchedule.company = :company");
             queryBuilder.bind("company", accountingBatch.getCompany());
         }
+
+        queryBuilder.add(
+                "NOT IN (SELECT DISTINCT partner FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE partner = self.invoice.partner and blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
+        queryBuilder.bind("blockingSelect", BlockingRepository.DEBIT_BLOCKING);
+        queryBuilder.bind("blockingToDate", Beans.get(AppBaseService.class).getTodayDate());
 
         if (accountingBatch.getBankDetails() != null) {
             Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());

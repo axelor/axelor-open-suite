@@ -37,12 +37,16 @@ import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class BatchReimbursementExport extends BatchStrategy {
@@ -142,9 +146,11 @@ public class BatchReimbursementExport extends BatchStrategy {
 	
 	public void runCreateReimbursementExport(Company company)  {
 		
-		List<Reimbursement> reimbursementList = (List<Reimbursement>) reimbursementRepo.all().filter("self.statusSelect != ?1 AND self.statusSelect != ?2 AND self.company = ?3", 
+		List<Reimbursement> reimbursementList = (List<Reimbursement>) reimbursementRepo.all()
+				.filter("self.statusSelect != ?1 AND self.statusSelect != ?2 AND self.company = ?3 "
+						+ "AND self.partner.id NOT IN (" + Beans.get(BlockingService.class).listOfBlockedPartner(company, BlockingRepository.REIMBURSEMENT_BLOCKING) + " )",
 				ReimbursementRepository.STATUS_REIMBURSED, ReimbursementRepository.STATUS_CANCELED, company).fetch();
-		
+
 		int i=0;
 
 		for(Reimbursement reimbursement : reimbursementList)  {
@@ -153,8 +159,8 @@ public class BatchReimbursementExport extends BatchStrategy {
 			
 			updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
 		}
-		
-		List<Partner> partnerList = (List<Partner>) partnerRepository.all().filter("?1 IN self.companySet = ?1", company).fetch();
+
+		List<Partner> partnerList = Lists.transform(reimbursementList, Reimbursement::getPartner);
 		
 		for(Partner partner : partnerList)  {
 			
@@ -163,23 +169,20 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 				log.debug("Tiers n° {}", partner.getName());
 				
-				if(reimbursementExportService.canBeReimbursed(partner, companyRepo.find(company.getId())))  {
+				List<MoveLine> moveLineList = (List<MoveLine>) moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' " +
+						"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
+						"self.reimbursementStatusSelect = ?4 ",
+						MoveRepository.STATUS_VALIDATED, partnerRepository.find(partner.getId()), companyRepo.find(company.getId()), MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
 				
-					List<MoveLine> moveLineList = (List<MoveLine>) moveLineRepo.all().filter("self.account.useForPartnerBalance = 'true' " +
-							"AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
-							"self.reimbursementStatusSelect = ?4 ",
-							MoveRepository.STATUS_VALIDATED, partnerRepository.find(partner.getId()), companyRepo.find(company.getId()), MoveLineRepository.REIMBURSEMENT_STATUS_NULL).fetch();
-					
-					log.debug("Liste des trop perçus : {}", moveLineList);
-					
-					if(moveLineList != null && moveLineList.size() != 0)  {
-						
-						Reimbursement reimbursement = reimbursementExportService.runCreateReimbursement(moveLineList, companyRepo.find(company.getId()), partnerRepository.find(partner.getId()));
-						if(reimbursement != null)  {
-							updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
-							this.totalAmount = this.totalAmount.add(reimbursementRepo.find(reimbursement.getId()).getAmountToReimburse());
-							i++;
-						}
+				log.debug("Liste des trop perçus : {}", moveLineList);
+
+				if(moveLineList != null && !moveLineList.isEmpty())  {
+
+					Reimbursement reimbursement = reimbursementExportService.runCreateReimbursement(moveLineList, companyRepo.find(company.getId()), partnerRepository.find(partner.getId()));
+					if(reimbursement != null)  {
+						updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
+						this.totalAmount = this.totalAmount.add(reimbursementRepo.find(reimbursement.getId()).getAmountToReimburse());
+						i++;
 					}
 				}
 			} catch (AxelorException e) {
@@ -220,7 +223,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		
 		// On récupère les remboursement à rembourser
 		List<Reimbursement> reimbursementList = (List<Reimbursement>) reimbursementRepo.all()
-				.filter("self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0", company, ReimbursementRepository.STATUS_VALIDATED).fetch();
+				.filter("self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0 AND self.partner", company, ReimbursementRepository.STATUS_VALIDATED).fetch();
 		
 		List<Reimbursement> reimbursementToExport = new ArrayList<Reimbursement>();
 		
