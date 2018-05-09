@@ -47,7 +47,6 @@
 		<field name="debitBlockingOk" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"/>
 		<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"/>
 		<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-		<field name="fromReject" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  if-module="axelor-bank-payment" />
 		<field name="statusSelect" />
 	</grid>
 
@@ -65,7 +64,11 @@
 			<field name="rejectMoveLine"  if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-line-form" grid-view="move-line-grid"/>
 			<field name="advanceOrPaymentMove" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-form" grid-view="move-grid"/>
 			<field name="advanceMoveLine" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="fromReject" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" />
+      <field name="fromReject" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" readonly="true" showTitle="false">
+        <viewer><![CDATA[
+          <span class="label label-warning" x-translate ng-show="record.fromReject">From rejection</span>
+        ]]></viewer>
+      </field>
 			<field name="statusSelect" readonly="true" />
 		</panel>
 		
