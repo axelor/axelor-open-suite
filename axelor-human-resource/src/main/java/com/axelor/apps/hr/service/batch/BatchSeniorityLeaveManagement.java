@@ -103,7 +103,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 		super.start();
 		
 		if (batch.getHrBatch().getDayNumber() == null || batch.getHrBatch().getDayNumber() == BigDecimal.ZERO || batch.getHrBatch().getLeaveReason() == null)
-			TraceBackService.trace(new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_CATEGORY_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
+			TraceBackService.trace(new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
 		total = 0;
 		noValueAnomaly = 0;
 		confAnomaly = 0;

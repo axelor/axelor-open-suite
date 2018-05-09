@@ -79,7 +79,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 		super.start();
 		
 		if (batch.getHrBatch().getDayNumber() == null || batch.getHrBatch().getDayNumber().compareTo(BigDecimal.ZERO) == 0 || batch.getHrBatch().getLeaveReason() == null) {
-			TraceBackService.trace(new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_CATEGORY_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
+			TraceBackService.trace(new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
 		}
 		total = 0;
 		noValueAnomaly = 0;
