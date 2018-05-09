@@ -35,7 +35,7 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -101,7 +101,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         switch (timePref) {
             case EmployeeRepository.TIME_PREFERENCE_DAYS:
                 if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
-                    throw new AxelorException(IException.CONFIGURATION_ERROR,
+                    throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                             I18n.get(IExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
                 }
                 return duration.multiply(dailyWorkHrs);
@@ -116,7 +116,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         switch (timePref) {
             case EmployeeRepository.TIME_PREFERENCE_DAYS:
                 if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
-                    throw new AxelorException(IException.CONFIGURATION_ERROR,
+                    throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                             I18n.get(IExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
                 }
                 return duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_UP);

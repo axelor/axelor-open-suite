@@ -32,7 +32,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
@@ -43,7 +43,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     @Transactional(rollbackOn = { AxelorException.class, Exception.class })
     public void loadPayments(DepositSlip depositSlip) throws AxelorException {
         if (depositSlip.getPublicationDate() != null) {
-            throw new AxelorException(depositSlip, IException.CONFIGURATION_ERROR,
+            throw new AxelorException(depositSlip, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                     I18n.get(IExceptionMessage.DEPOSIT_SLIP_ALREADY_PUBLISHED));
         }
 
@@ -79,7 +79,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
             name = I18n.get("Cash deposit slip");
             break;
         default:
-            throw new AxelorException(depositSlip, IException.CONFIGURATION_ERROR,
+            throw new AxelorException(depositSlip, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                     IExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
         }
 
@@ -93,7 +93,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         case PaymentModeRepository.TYPE_CASH:
             return IReport.CASH_DEPOSIT_SLIP;
         default:
-            throw new AxelorException(depositSlip, IException.CONFIGURATION_ERROR,
+            throw new AxelorException(depositSlip, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                     IExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
         }
     }

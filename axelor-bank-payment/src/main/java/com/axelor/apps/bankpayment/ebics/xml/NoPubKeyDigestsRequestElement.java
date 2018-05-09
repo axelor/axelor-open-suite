@@ -38,7 +38,7 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 
 /**
  * The <code>NoPubKeyDigestsRequestElement</code> is the root element
@@ -68,7 +68,7 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     try {
     	return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-    	throw new AxelorException(e.getCause(), IException.TECHNICAL, e.getMessage());
+    	throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_TECHNICAL, e.getMessage());
     }
   }
 

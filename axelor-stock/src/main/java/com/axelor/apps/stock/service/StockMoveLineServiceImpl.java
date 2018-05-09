@@ -45,7 +45,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -156,7 +156,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		StockMove stockMove = stockMoveLine.getStockMove();
 
 		if (qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
 		}
 		while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
 
@@ -167,7 +167,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 			generateTrakingNumberCounter++;
 
 			if (generateTrakingNumberCounter == 1000) {
-			    throw new AxelorException(IException.TECHNICAL, I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
+			    throw new AxelorException(TraceBackRepository.TYPE_TECHNICAL, I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
 			}
 		}
 		if (stockMoveLine.getTrackingNumber() == null) {
@@ -387,7 +387,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		//check the conformity
 		if (stockMoveLine.getConformitySelect() <= StockMoveLineRepository.CONFORMITY_NONE) {
-		    throw new AxelorException(stockMoveLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY), product.getName());
+		    throw new AxelorException(stockMoveLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY), product.getName());
 		}
 	}
 
@@ -409,7 +409,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 		}
 		if (!productsWithErrors.isEmpty()) {
 			String productsWithErrorStr = productsWithErrors.stream().collect(Collectors.joining(", "));
-			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY), productsWithErrorStr);
+			throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY), productsWithErrorStr);
 		}
     }
 
@@ -440,7 +440,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
 
 		if (!errorList.isEmpty()) {
 			String errorStr = errorList.stream().collect(Collectors.joining(", "));
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS), errorStr);
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS), errorStr);
 		}
 	}
 
@@ -648,7 +648,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService  {
                 return product.getNetWeight();
             }
 
-            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_PRODUCT_WEIGHT_UNIT), product.getName());
+            throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MISSING_PRODUCT_WEIGHT_UNIT), product.getName());
         }
 
 		if (company != null && company.getStockConfig() != null

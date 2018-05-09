@@ -29,7 +29,7 @@ import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -78,7 +78,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 			InputStream bindFileInputStream = this.getClass().getResourceAsStream("/import-configs/"+typeSelect+"-config.xml");
 			
 			if (bindFileInputStream == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_3));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_3));
 			}
 			
 			FileOutputStream outputStream = new FileOutputStream(configFile);

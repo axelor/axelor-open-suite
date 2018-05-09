@@ -41,7 +41,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -98,7 +98,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 			StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 			CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
 			if (cancelReason == null) {
-				throw new AxelorException(appSupplychain, IException.CONFIGURATION_ERROR, IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
+				throw new AxelorException(appSupplychain, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
 			}
 			for (StockMove stockMove : stockMoves) {
 			    stockMoveService.cancel(stockMove, cancelReason);
@@ -117,7 +117,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
             if (saleOrderLine.getDeliveryState() > SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED
                     && saleOrderView.getSaleOrderLineList() == null
                     || !saleOrderView.getSaleOrderLineList().contains(saleOrderLine)) {
-                throw new AxelorException(saleOrderView, IException.INCONSISTENCY,
+                throw new AxelorException(saleOrderView, TraceBackRepository.CATEGORY_INCONSISTENCY,
                         I18n.get(IExceptionMessage.SO_CANT_REMOVED_DELIVERED_LINE), saleOrderLine.getFullName());
 
             }

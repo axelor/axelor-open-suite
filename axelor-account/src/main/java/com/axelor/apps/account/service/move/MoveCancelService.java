@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -55,14 +55,14 @@ public class MoveCancelService {
 		for(MoveLine moveLine : move.getMoveLineList())  {
 			
 			if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0)  {
-				throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_CANCEL_1));
+				throw new AxelorException(move, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_CANCEL_1));
 			}
 			
 		}
 
 		Period period = Beans.get(PeriodService.class).getPeriod(move.getDate(), move.getCompany());
 		if(period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_CANCEL_2));
+			throw new AxelorException(move, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_CANCEL_2));
 		}
 
 		try{
@@ -78,7 +78,7 @@ public class MoveCancelService {
 		}
 		catch(Exception e)  {
 
-			throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_CANCEL_3));
+			throw new AxelorException(move, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_CANCEL_3));
 
 		}
 

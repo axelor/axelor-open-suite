@@ -44,7 +44,7 @@ import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -90,7 +90,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
 		String seq = sequenceService.getSequenceNumber(SequenceRepository.SALES_ORDER, company);
 		if (seq == null) {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName());
+			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName());
 		}
 		return seq;
 	}
@@ -166,7 +166,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
 		if (saleOrder.getPrintingSettings() == null) {
-			throw new AxelorException(IException.MISSING_FIELD,
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD,
 					String.format(I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS), saleOrder.getSaleOrderSeq()),
 					saleOrder
 			);

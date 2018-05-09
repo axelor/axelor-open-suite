@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -51,7 +51,7 @@ public class ReconcileSequenceService {
 		SequenceService sequenceService = Beans.get(SequenceService.class);
 		String seq = sequenceService.getSequenceNumber(SequenceRepository.RECONCILE, reconcile.getDebitMoveLine().getMove().getCompany());
 		if (seq == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECONCILE_6), AppAccountServiceImpl.EXCEPTION, AuthUtils.getUser().getActiveCompany().getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECONCILE_6), AppAccountServiceImpl.EXCEPTION, AuthUtils.getUser().getActiveCompany().getName());
 		}
 		return seq;
 	}

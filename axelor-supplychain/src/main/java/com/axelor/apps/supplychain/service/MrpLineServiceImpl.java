@@ -52,7 +52,7 @@ import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -105,7 +105,7 @@ public class MrpLineServiceImpl implements MrpLineService  {
 		Partner supplierPartner = product.getDefaultSupplierPartner();
 
 		if (supplierPartner == null) {  
-			throw new AxelorException(mrpLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_LINE_1), product.getFullName()); 
+			throw new AxelorException(mrpLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_LINE_1), product.getFullName()); 
 		}
 
 		Company company = stockLocation.getCompany();

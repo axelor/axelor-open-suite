@@ -61,6 +61,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -102,7 +103,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 		super.start();
 		
 		if (batch.getHrBatch().getDayNumber() == null || batch.getHrBatch().getDayNumber() == BigDecimal.ZERO || batch.getHrBatch().getLeaveReason() == null)
-			TraceBackService.trace(new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
+			TraceBackService.trace(new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_CATEGORY_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
 		total = 0;
 		noValueAnomaly = 0;
 		confAnomaly = 0;
@@ -143,8 +144,8 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 			catch(AxelorException e){
 				TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
 				incrementAnomaly();
-				if (e.getCategory() == IException.NO_VALUE ){ noValueAnomaly ++; }
-				if (e.getCategory() == IException.CONFIGURATION_ERROR ){ confAnomaly ++; }
+				if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE ){ noValueAnomaly ++; }
+				if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR ){ confAnomaly ++; }
 			}
 			finally {
 				total ++;
@@ -174,10 +175,10 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 		}
 		
 		if (count == 0) {
-			throw new AxelorException(employee, IException.NO_VALUE, I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason());
+			throw new AxelorException(employee, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason());
 		}
 		if (count > 1) {
-			throw new AxelorException(employee, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason());
+			throw new AxelorException(employee, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT), employee.getName(), batch.getHrBatch().getLeaveReason().getLeaveReason());
 		}
 		if (count == 1) {
 			

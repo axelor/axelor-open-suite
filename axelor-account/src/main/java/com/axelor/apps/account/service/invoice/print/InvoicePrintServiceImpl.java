@@ -35,7 +35,7 @@ import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -88,7 +88,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
             invoice.setPrintedPDF(metaFile);
             return MetaFiles.getPath(metaFile).toFile();
         } catch (IOException e) {
-            throw new AxelorException(IException.TECHNICAL,
+            throw new AxelorException(TraceBackRepository.TYPE_TECHNICAL,
                     I18n.get(IExceptionMessage.INVOICE_PRINTING_IO_ERROR)
                             + " "
                             + e.getLocalizedMessage());
@@ -113,7 +113,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     public ReportSettings prepareReportSettings(Invoice invoice) throws AxelorException {
 
         if (invoice.getPrintingSettings() == null) {
-            throw new AxelorException(IException.MISSING_FIELD,
+            throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD,
                     String.format(I18n.get(
                             IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
                             invoice.getInvoiceId()),

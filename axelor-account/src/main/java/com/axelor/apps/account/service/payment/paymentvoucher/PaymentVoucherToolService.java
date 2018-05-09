@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class PaymentVoucherToolService  {
@@ -56,7 +56,7 @@ public class PaymentVoucherToolService  {
 			break;
 		
 		default:
-			throw new AxelorException(paymentVoucher, IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef());
+			throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef());
 		}	
 		
 		return isDebitToPay;
@@ -95,7 +95,7 @@ public class PaymentVoucherToolService  {
 			break;
 		
 		default:
-			throw new AxelorException(paymentVoucher, IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef());
+			throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef());
 		}	
 		
 		return isPurchase;

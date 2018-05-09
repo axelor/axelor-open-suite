@@ -39,7 +39,7 @@ import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -160,7 +160,7 @@ public class PayerQualityService {
 	public void payerQualityProcess() throws AxelorException  {
 		List<PayerQualityConfigLine> payerQualityConfigLineList = appAccountService.getAppAccount().getPayerQualityConfigLineList();
 		if(payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYER_QUALITY_1), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYER_QUALITY_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		List<Partner> partnerList = this.getPartnerList();

@@ -44,7 +44,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
@@ -210,7 +210,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
 			}
 
 		default:
-			throw new AxelorException(accountingSituation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(accountingSituation, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING), AppAccountServiceImpl.EXCEPTION);
 		}
 
 	}

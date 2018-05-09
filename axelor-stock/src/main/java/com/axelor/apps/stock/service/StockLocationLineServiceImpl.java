@@ -34,7 +34,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -122,7 +122,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 		}
 
 		if (baseQty.add(qty).compareTo(stockRules.getMaxQty()) > 0) {
-			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_3),
+			throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_3),
 					stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
 		}
 	}
@@ -149,7 +149,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 	@Override
 	public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine) throws AxelorException  {
 		if (!isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0 && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
+			throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
 		
 		} else if (isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0 
 				&& ((stockLocationLine.getStockLocation() != null && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
@@ -160,7 +160,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 				trackingNumber = stockLocationLine.getTrackingNumber().getTrackingNumberSeq();
 			}
 			
-			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_2), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode(), trackingNumber);
+			throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_2), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode(), trackingNumber);
 		}
 	}
 
@@ -169,7 +169,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 		StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
 
 	    if(stockLocationLine != null && stockLocationLine.getCurrentQty().compareTo(qty) < 0) {
-			throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
+			throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
 		}
 	}
 

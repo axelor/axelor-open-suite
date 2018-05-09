@@ -58,7 +58,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -263,7 +263,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		String seq = sequenceService.getSequenceNumber(SequenceRepository.MANUF_ORDER);
 
 		if (seq == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MANUF_ORDER_SEQ));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MANUF_ORDER_SEQ));
 		}
 
 		return seq;
@@ -299,7 +299,7 @@ public class ManufOrderServiceImpl implements  ManufOrderService  {
 		}
 
 		if (billOfMaterial == null) {
-			throw new AxelorException(product, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode());
+			throw new AxelorException(product, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode());
 		}
 		
 		return billOfMaterial;

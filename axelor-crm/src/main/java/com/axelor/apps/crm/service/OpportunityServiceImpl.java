@@ -26,7 +26,7 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -51,7 +51,7 @@ public class OpportunityServiceImpl implements OpportunityService {
 	public Partner createClientFromLead(Opportunity opportunity) throws AxelorException{
 		Lead lead = opportunity.getLead();
 		if (lead == null) {
-			throw new AxelorException(opportunity, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAD_PARTNER));
+			throw new AxelorException(opportunity, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAD_PARTNER));
 		}
 
 		String name = lead.getCompanyName();

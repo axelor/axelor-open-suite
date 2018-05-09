@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 import java.lang.invoke.MethodHandles;
@@ -79,7 +79,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 	@Override
 	public void generateAccountManagementException(Product product, Company company) throws AxelorException  {
 		
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT), product.getCode(), company.getName());
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT), product.getCode(), company.getName());
 	
 	}
 	

@@ -30,7 +30,7 @@ import com.axelor.apps.suppliermanagement.db.IPurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -51,7 +51,7 @@ public class PurchaseOrderSupplierLineService {
 		Partner supplierPartner = purchaseOrderSupplierLine.getSupplierPartner();
 		Company company = purchaseOrderLine.getPurchaseOrder().getCompany();
 		if (Beans.get(BlockingService.class).getBlocking(supplierPartner, company, BlockingRepository.PURCHASE_BLOCKING) != null) {
-		    throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.SUPPLIER_BLOCKED), supplierPartner);
+		    throw new AxelorException(TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.SUPPLIER_BLOCKED), supplierPartner);
 		}
 		purchaseOrderLine.setSupplierPartner(supplierPartner);
 		

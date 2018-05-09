@@ -27,7 +27,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -67,7 +67,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                     ? priceList.getApplicationBeginDate()
                     : LocalDate.MIN;
             if (beginDate.compareTo(previousEndDate) < 0) {
-                throw new AxelorException(IException.INCONSISTENCY,
+                throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY,
                         String.format(
                                 I18n.get(IExceptionMessage.PARTNER_PRICE_LIST_DATE_INCONSISTENT),
                                 previousTitle,

@@ -51,7 +51,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -116,7 +116,7 @@ public class PaymentVoucherConfirmService  {
 		paymentVoucherControlService.checkPaymentVoucherField(paymentVoucher, company, paymentModeAccount, journal);
 
 		if (paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0 && !journal.getExcessPaymentOk()) {
-			throw new AxelorException(paymentVoucher, IException.INCONSISTENCY, I18n.get(IExceptionMessage.PAYBOX_3), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PAYBOX_3), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		if (paymentVoucher.getPayboxPaidOk()) {

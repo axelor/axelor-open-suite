@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.db.JpaRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
@@ -58,7 +58,7 @@ public class ContractRepository extends JpaRepository<Contract> {
 			String seq = Beans.get(SequenceService.class).getSequenceNumber(type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE, company);
 			if (seq == null) {
 				throw new AxelorException(String.format(I18n.get("The company %s doesn't have any configured sequence for contracts"), company.getName()),
-						IException.CONFIGURATION_ERROR);
+						TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
 			}
 			return seq;
 		} catch (Exception e) {

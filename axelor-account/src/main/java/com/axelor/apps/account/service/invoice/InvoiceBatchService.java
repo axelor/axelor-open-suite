@@ -26,7 +26,7 @@ import com.axelor.apps.account.service.invoice.generator.batch.BatchVentilation;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -67,10 +67,10 @@ public class InvoiceBatchService {
 				batch = wkf(invoiceBatch);
 				break;
 			default:
-				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), invoiceBatch.getActionSelect(), batchCode);
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), invoiceBatch.getActionSelect(), batchCode);
 			}
 		} else {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode);
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), batchCode);
 		}
 		
 		return batch;
@@ -87,7 +87,7 @@ public class InvoiceBatchService {
 		} else if (invoiceBatch.getToStatusSelect().equals(InvoiceRepository.STATUS_VENTILATED)) { 
 			strategy = Beans.get(BatchVentilation.class);
 		} else {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.INVOICE_BATCH_1), invoiceBatch.getToStatusSelect(), invoiceBatch.getCode());
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.INVOICE_BATCH_1), invoiceBatch.getToStatusSelect(), invoiceBatch.getCode());
 		}
 
 		return strategy.run(invoiceBatch);

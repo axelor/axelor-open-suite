@@ -62,7 +62,7 @@ import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -120,7 +120,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
         PaymentScheduleLine paymentScheduleLine = getPaymentScheduleLineDoneListQuery(batch).fetchOne();
 
         if (paymentScheduleLine == null) {
-            throw new AxelorException(batch, IException.CONFIGURATION_ERROR,
+            throw new AxelorException(batch, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                     I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_NO_PROCESSED_PAYMENT_SCHEDULE_LINES));
         }
 
@@ -132,7 +132,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
         case PaymentScheduleRepository.TYPE_MONTHLY:
             return createBankOrderFromMonthlyPaymentScheduleLines(batch);
         default:
-            throw new AxelorException(paymentSchedule, IException.CONFIGURATION_ERROR,
+            throw new AxelorException(paymentSchedule, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                     I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE));
         }
     }
@@ -161,7 +161,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
         }
 
         if (bankOrderList.isEmpty()) {
-            throw new AxelorException(batch, IException.INCONSISTENCY,
+            throw new AxelorException(batch, TraceBackRepository.CATEGORY_INCONSISTENCY,
                     I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
         }
 
@@ -204,7 +204,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
             invoicePaymentValidateService.validate(invoicePayment, true);
 
             if (invoicePayment.getBankOrder() == null) {
-                throw new AxelorException(invoicePayment, IException.INCONSISTENCY,
+                throw new AxelorException(invoicePayment, TraceBackRepository.CATEGORY_INCONSISTENCY,
                         I18n.get("Failed to create bank order from invoice payment"));
             }
 

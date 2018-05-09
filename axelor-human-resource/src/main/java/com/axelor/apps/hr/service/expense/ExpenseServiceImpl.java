@@ -78,7 +78,7 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -230,11 +230,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 	public void validate(Expense expense) throws AxelorException {
 
 		if (expense.getUser().getEmployee() == null) {
-			throw new AxelorException(expense,IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getFullName());
+			throw new AxelorException(expense,TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getFullName());
 		}
 
 		if (expense.getPeriod() == null) {
-			throw new AxelorException(expense,IException.MISSING_FIELD, I18n.get(IExceptionMessage.EXPENSE_MISSING_PERIOD));
+			throw new AxelorException(expense,TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.EXPENSE_MISSING_PERIOD));
 		}
 
 		if (expense.getKilometricExpenseLineList() != null && !expense.getKilometricExpenseLineList().isEmpty()) {
@@ -329,7 +329,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(expense.getCompany());
 
 		if (expense.getUser().getPartner() == null) {
-			throw new AxelorException(expense, IException.CONFIGURATION_ERROR, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.USER_PARTNER), expense.getUser().getName());
+			throw new AxelorException(expense, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.USER_PARTNER), expense.getUser().getName());
 		}
 
 		Move move = moveService.getMoveCreateService().createMove(accountConfigService.getExpenseJournal(accountConfig), accountConfig.getCompany(), null, expense.getUser().getPartner(), moveDate, expense.getUser().getPartner().getInPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
@@ -353,7 +353,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 			account = accountManagementService.getProductAccount(accountManagement, true);
 
 			if (account == null) {
-				throw new AxelorException(expense, IException.CONFIGURATION_ERROR, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.MOVE_LINE_4), expenseLineId, expense.getCompany().getName());
+				throw new AxelorException(expense, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.MOVE_LINE_4), expenseLineId, expense.getCompany().getName());
 			}
 
 			exTaxTotal = expenseLine.getUntaxedAmount();
@@ -405,7 +405,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 			expense.setVentilated(false);
 			expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
 		} catch (Exception e) {
-			throw new AxelorException(e, expense, IException.CONFIGURATION_ERROR, I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE));
+			throw new AxelorException(e, expense, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(com.axelor.apps.hr.exception.IExceptionMessage.EXPENSE_CANCEL_MOVE));
 		}
 
 		expenseRepository.save(expense);
@@ -438,7 +438,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 			paymentMode = expense.getUser().getPartner().getOutPaymentMode();
 
 			if (paymentMode == null) {
-				throw new AxelorException(expense, IException.MISSING_FIELD, I18n.get(IExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE));
+				throw new AxelorException(expense, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.EXPENSE_MISSING_PAYMENT_MODE));
 			}
 			expense.setPaymentMode(paymentMode);
 		}
@@ -472,7 +472,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         if (bankOrder != null) {
             if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
-                throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.EXPENSE_PAYMENT_CANCEL));
+                throw new AxelorException(TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.EXPENSE_PAYMENT_CANCEL));
             } else {
                 Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
 			}
@@ -624,7 +624,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 			}
 		}
 
-		throw new AxelorException(expense, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), expense.getCompany().getName());
+		throw new AxelorException(expense, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.HR_CONFIG_NO_EXPENSE_SEQUENCE), expense.getCompany().getName());
 	}
 
 	@Override
@@ -689,7 +689,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		LocalDate expenseDate = expenseLine.getExpenseDate();
 
 		if (expenseDate == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED)),IException.MISSING_FIELD);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED)),TraceBackRepository.CATEGORY_MISSING_FIELD);
 		}
 
 		for (EmployeeVehicle vehicle : vehicleList) {

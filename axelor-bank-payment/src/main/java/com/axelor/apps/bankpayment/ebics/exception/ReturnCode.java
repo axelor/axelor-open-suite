@@ -18,7 +18,7 @@
 package com.axelor.apps.bankpayment.ebics.exception;
 
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 
@@ -51,7 +51,7 @@ public class ReturnCode  {
    */
   
   public void throwException() throws AxelorException {
-    throw new AxelorException(IException.FUNCTIONNAL, I18n.get(text));
+    throw new AxelorException(TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(text));
   }
 
   /**

@@ -29,6 +29,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -54,10 +55,10 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
 			} catch (AxelorException e) {
 				TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
 				incrementAnomaly();
-				if (e.getCategory() == IException.NO_VALUE) {
+				if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
 					noValueAnomaly++;
 				}
-				if (e.getCategory() == IException.CONFIGURATION_ERROR) {
+				if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) {
 					confAnomaly++;
 				}
 			} finally {

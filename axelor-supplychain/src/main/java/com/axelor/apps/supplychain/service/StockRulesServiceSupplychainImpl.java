@@ -44,7 +44,7 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -97,7 +97,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 					Message message = templateMessageService.generateMessage(stockRules, template);
 					messageRepo.save(message);
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
-					throw new AxelorException(e, IException.TECHNICAL);
+					throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
 				}
 			}
 			else if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {

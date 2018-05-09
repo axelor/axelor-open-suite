@@ -37,7 +37,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -100,7 +100,7 @@ public class MapService {
             }
         }
 
-        throw new AxelorException(appBaseService.getAppBase(), IException.NO_VALUE, I18n.get(IExceptionMessage.MAP_RESPONSE_ERROR), restResponse);
+        throw new AxelorException(appBaseService.getAppBase(), TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.MAP_RESPONSE_ERROR), restResponse);
 
 		/*
 		log.debug("restResponse = {}", restResponse)
@@ -371,7 +371,7 @@ public class MapService {
 
         if (response.getStatusCode() != HttpStatus.SC_OK) {
             String msg = String.format("%d: %s", response.getStatusCode(), response.getStatusMessage());
-            throw new AxelorException(appBase, IException.CONFIGURATION_ERROR, msg);
+            throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
         }
 
         JSONObject json = new JSONObject(response.getContentAsString());
@@ -380,7 +380,7 @@ public class MapService {
         if (!"OK".equalsIgnoreCase(status)) {
             String msg = json.has("error_message") ? String.format("%s: %s", status, json.getString("error_message"))
                     : status;
-            throw new AxelorException(appBase, IException.CONFIGURATION_ERROR, msg);
+            throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
         }
         
         return json;

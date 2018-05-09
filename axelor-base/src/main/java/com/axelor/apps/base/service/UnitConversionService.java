@@ -40,7 +40,7 @@ import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Preconditions;
@@ -86,7 +86,7 @@ public class UnitConversionService {
 	    try {
 	    	coeff = getCoefficient(unitConversionList, startUnit, endUnit, null);
 		} catch (Exception e) {
-	    	throw new AxelorException(e, IException.TECHNICAL);
+	    	throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
 		}
 	    return coeff;
 	}
@@ -110,7 +110,7 @@ public class UnitConversionService {
 	public BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
 
 		if (startUnit.equals(endUnit))
 			return value;
@@ -125,7 +125,7 @@ public class UnitConversionService {
 	public BigDecimal convertWithProduct(Unit startUnit, Unit endUnit, BigDecimal value, Product product) throws AxelorException {
 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
 
 		if (startUnit.equals(endUnit))
 			return value;
@@ -190,7 +190,7 @@ public class UnitConversionService {
 
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_1), startUnit.getName(), endUnit.getName());
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.UNIT_CONVERSION_1), startUnit.getName(), endUnit.getName());
 
 	}
 

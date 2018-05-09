@@ -67,7 +67,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -627,7 +627,7 @@ public class MrpServiceImpl implements MrpService  {
 			return mrpLineType;
 		}
 		
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE), elementSelect);
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE), elementSelect);
 		
 		//TODO get the right label in fact of integer value
 	
@@ -677,7 +677,7 @@ public class MrpServiceImpl implements MrpService  {
 		}
 
 		if (productSet.isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_NO_PRODUCT));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MRP_NO_PRODUCT));
 		}
 		
 		return productSet;

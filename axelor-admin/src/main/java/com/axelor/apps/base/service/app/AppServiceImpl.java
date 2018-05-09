@@ -48,7 +48,7 @@ import com.axelor.data.csv.CSVInput;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaModel;
@@ -98,7 +98,7 @@ public class AppServiceImpl implements AppService {
 		
 		String lang = getLanguage(app);
 		if (lang == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR,
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
 					I18n.get(IAppExceptionMessages.NO_LANGAUAGE_SELECTED));
 		}
 		
@@ -470,7 +470,7 @@ public class AppServiceImpl implements AppService {
 		List<App> children = getChildren(app, true);
 		if (!children.isEmpty()) {
 			List<String> childrenNames = getNames(children);
-			throw new AxelorException(IException.INCONSISTENCY, 
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, 
 					IAppExceptionMessages.APP_IN_USE, childrenNames);
 		}
 		

@@ -33,7 +33,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class AccountManagementServiceImpl implements  AccountManagementService{
@@ -71,7 +71,7 @@ public class AccountManagementServiceImpl implements  AccountManagementService{
 	
 	public void generateAccountManagementException(Product product, Company company) throws AxelorException  {
 		
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1), product.getCode(), company.getName());
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1), product.getCode(), company.getName());
 	
 	}
 	
@@ -140,7 +140,7 @@ public class AccountManagementServiceImpl implements  AccountManagementService{
 		
 		if(tax != null)  {  return tax;  }
 		
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3), product.getCode(), company.getName());
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3), product.getCode(), company.getName());
 			
 	}
 	
@@ -177,7 +177,7 @@ public class AccountManagementServiceImpl implements  AccountManagementService{
 			return taxLine;
 		}
 
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode());
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode());
 		
 	}
 	

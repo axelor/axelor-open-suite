@@ -39,6 +39,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.beust.jcommander.internal.Lists;
@@ -78,7 +79,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 		super.start();
 		
 		if (batch.getHrBatch().getDayNumber() == null || batch.getHrBatch().getDayNumber().compareTo(BigDecimal.ZERO) == 0 || batch.getHrBatch().getLeaveReason() == null) {
-			TraceBackService.trace(new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
+			TraceBackService.trace(new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_CATEGORY_MISSING_FIELD)), IException.LEAVE_MANAGEMENT, batch.getId());
 		}
 		total = 0;
 		noValueAnomaly = 0;
@@ -142,10 +143,10 @@ public class BatchLeaveManagement extends BatchStrategy {
 			catch(AxelorException e){
 				TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
 				incrementAnomaly();
-				if (e.getCategory() == IException.NO_VALUE ){
+				if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE ){
 					noValueAnomaly ++;
 				}
-				if (e.getCategory() == IException.CONFIGURATION_ERROR ){
+				if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR ){
 					confAnomaly ++;
 				}
 			}

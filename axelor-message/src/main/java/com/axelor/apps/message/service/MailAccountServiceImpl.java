@@ -53,7 +53,7 @@ import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.service.CipherService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.mail.ImapAccount;
 import com.axelor.mail.MailConstants;
@@ -113,7 +113,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 			
 			Long count = mailAccountRepo.all().filter(query, params.toArray()).count();
 			if (count > 0) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
 			}
 		}
 		
@@ -154,9 +154,9 @@ public class MailAccountServiceImpl implements MailAccountService {
 			}
 			
 		} catch ( AuthenticationFailedException e ) {
-			throw new AxelorException(e, mailAccount, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_1));
+			throw new AxelorException(e, mailAccount, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_1));
 		} catch ( NoSuchProviderException e ) {
-			throw new AxelorException(e, mailAccount, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_2));
+			throw new AxelorException(e, mailAccount, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_2));
 		}
 
 	}

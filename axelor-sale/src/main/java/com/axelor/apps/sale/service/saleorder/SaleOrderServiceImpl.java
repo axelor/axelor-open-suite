@@ -32,7 +32,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
@@ -61,7 +61,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException{
 
 		if (saleOrder.getPrintingSettings() == null) {
-			throw new AxelorException(IException.MISSING_FIELD,
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD,
 					String.format(I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS), saleOrder.getSaleOrderSeq()),
 					saleOrder
 			);
@@ -96,7 +96,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     @Transactional(rollbackOn = { Exception.class, AxelorException.class })
 	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
 	    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_COMPLETED) {
-	        throw new AxelorException(saleOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SALES_ORDER_COMPLETED));
+	        throw new AxelorException(saleOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.SALES_ORDER_COMPLETED));
 	    }
 
 		saleOrder.setOrderBeingEdited(true);

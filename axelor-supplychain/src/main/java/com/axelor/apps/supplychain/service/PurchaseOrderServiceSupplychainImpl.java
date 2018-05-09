@@ -67,7 +67,7 @@ import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
@@ -154,7 +154,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				startLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
 			}
 			if (startLocation == null) {
-				throw new AxelorException(purchaseOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());
+				throw new AxelorException(purchaseOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());
 			}
 
 			Partner supplierPartner = purchaseOrder.getSupplierPartner();
@@ -410,7 +410,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		// checking budget excess
 		if (bl != null) {
 			if (amount.add(bl.getAmountCommitted()).compareTo(bl.getAmountExpected()) > 0) {
-				throw new AxelorException(budget, IException.INCONSISTENCY, I18n.get(IExceptionMessage.PURCHASE_ORDER_2), budget.getCode());
+				throw new AxelorException(budget, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PURCHASE_ORDER_2), budget.getCode());
 			}
 		}
 	}

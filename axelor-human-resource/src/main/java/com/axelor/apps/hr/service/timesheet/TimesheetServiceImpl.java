@@ -70,7 +70,7 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -247,20 +247,20 @@ public class TimesheetServiceImpl implements TimesheetService{
 		Employee employee = user.getEmployee();
 		
 		if (fromGenerationDate == null) {
-			throw new AxelorException(timesheet, IException.MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE));
+			throw new AxelorException(timesheet, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE));
 		}
 		if (toGenerationDate == null) {
-			throw new AxelorException(timesheet, IException.MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_TO_DATE));
+			throw new AxelorException(timesheet, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_TO_DATE));
 		}
 		if (product == null) {
-			throw new AxelorException(timesheet, IException.MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
+			throw new AxelorException(timesheet, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
 		}
 		if (employee == null) {
-			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName());
+			throw new AxelorException(timesheet, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName());
 		}
 		WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
 		if (planning == null) {
-			throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),user.getName());
+			throw new AxelorException(timesheet, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),user.getName());
 		}
 		List<DayPlanning> dayPlanningList = planning.getWeekDays();
 
@@ -282,7 +282,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		EventsPlanning publicHolidayEventsPlanning = employee.getPublicHolidayEventsPlanning();
 		List<EventsPlanningLine> publicHolidayList;
         if (publicHolidayEventsPlanning == null) {
-            throw new AxelorException(timesheet, IException.CONFIGURATION_ERROR,
+            throw new AxelorException(timesheet, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                     I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING), user.getName());
         } else {
             publicHolidayList = employee.getPublicHolidayEventsPlanning().getEventsPlanningLineList();
@@ -462,7 +462,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 
 		int discountTypeSelect = 1;
 		if(product == null){
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
 		}
 		BigDecimal price = product.getSalePrice();
 		BigDecimal discountAmount = product.getCostPrice();
@@ -591,7 +591,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 		int count = 0;
 		
 		if (timesheet.getFromDate() == null) {
-			throw new AxelorException(timesheet, IException.MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE));
+			throw new AxelorException(timesheet, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE));
 		} else if (timesheet.getToDate() != null) {
 			if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
 				for (TimesheetLine timesheetLine : timesheetLineList) {
@@ -614,7 +614,7 @@ public class TimesheetServiceImpl implements TimesheetService{
 			}
 		}
 		if (!listId.isEmpty()) {
-			throw new AxelorException(timesheet, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT), Joiner.on(",").join(listId));
+			throw new AxelorException(timesheet, TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT), Joiner.on(",").join(listId));
 
 		}
 	}

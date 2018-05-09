@@ -31,7 +31,7 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -78,13 +78,13 @@ public class CurrencyService {
 			}
 	
 			if (currencyConversionLine == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_1), startCurrency.getName(), endCurrency.getName(), dateToConvert);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_1), startCurrency.getName(), endCurrency.getName(), dateToConvert);
 			}
 			
 			BigDecimal exchangeRate = currencyConversionLine.getExchangeRate();
 			
 			if (exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_2), startCurrency.getName(), endCurrency.getName(), dateToConvert);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_2), startCurrency.getName(), endCurrency.getName(), dateToConvert);
 			}
 	
 			return BigDecimal.ONE.divide(currencyConversionLine.getExchangeRate(), 10, RoundingMode.HALF_EVEN);

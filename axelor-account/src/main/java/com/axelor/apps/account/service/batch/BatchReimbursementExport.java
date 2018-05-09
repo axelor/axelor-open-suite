@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -104,7 +105,8 @@ public class BatchReimbursementExport extends BatchStrategy {
 			break;
 			
 		default:
-			TraceBackService.trace(new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1), batch.getAccountingBatch().getActionSelect()), IException.REIMBURSEMENT, batch.getId());
+			TraceBackService.trace(new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1), 
+			    batch.getAccountingBatch().getActionSelect()), IException.REIMBURSEMENT, batch.getId());
 			incrementAnomaly();
 			stop = true;
 		}
@@ -266,7 +268,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 			} catch (Exception e) {
 				
-				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e), IException.REIMBURSEMENT, batch.getId());
+				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e), TraceBackRepository.REIMBURSEMENT, batch.getId());
 				
 				incrementAnomaly();
 				

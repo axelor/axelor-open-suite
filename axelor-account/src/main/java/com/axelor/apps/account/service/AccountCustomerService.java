@@ -43,7 +43,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -328,7 +328,7 @@ public class AccountCustomerService {
 		Account customerAccount = accountingSituationService.getCustomerAccount(partner, company);
 
 		if (customerAccount == null) {
-			throw new AxelorException(partner, IException.MISSING_FIELD, I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1), AppBaseServiceImpl.EXCEPTION, company.getName());
+			throw new AxelorException(partner, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return customerAccount;
@@ -339,7 +339,7 @@ public class AccountCustomerService {
 		Account supplierAccount = accountingSituationService.getSupplierAccount(partner, company);
 
 		if (supplierAccount == null) {
-			throw new AxelorException(partner, IException.MISSING_FIELD, I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2), AppBaseServiceImpl.EXCEPTION, company.getName());
+			throw new AxelorException(partner, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return supplierAccount;

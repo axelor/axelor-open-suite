@@ -44,7 +44,7 @@ import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -222,7 +222,7 @@ public class EventController {
 		try{
 			Long eventId = (Long) request.getContext().get("id");
 			if(eventId == null)
-				throw new AxelorException(Event.class, IException.INCONSISTENCY, I18n.get(IExceptionMessage.EVENT_SAVED));
+				throw new AxelorException(Event.class, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.EVENT_SAVED));
 			Event event = eventRepo.find(eventId);
 
 			RecurrenceConfigurationRepository confRepo = Beans.get(RecurrenceConfigurationRepository.class);
@@ -310,19 +310,19 @@ public class EventController {
 		event.setRecurrenceConfiguration(conf);
 		event = eventRepo.save(event);
 		if(conf.getRecurrenceType() == null){
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_RECURRENCE_TYPE));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_RECURRENCE_TYPE));
 		}
 		
 		int recurrenceType = conf.getRecurrenceType();
 		
 		if(conf.getPeriodicity() == null){
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
 		}
 		
 		int periodicity = conf.getPeriodicity();
 		
 		if(periodicity < 1){
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
 		}
 		
 		boolean monday = conf.getMonday();
@@ -349,7 +349,7 @@ public class EventController {
 				}
 			}
 			if(daysMap.isEmpty()){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_DAYS_CHECKED));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_DAYS_CHECKED));
 			}
 		}
 		
@@ -361,25 +361,25 @@ public class EventController {
 		
 		if(endType == 1 ){
 			if(conf.getRepetitionsNumber() == null){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
 			}
 			
 			repetitionsNumber = conf.getRepetitionsNumber();
 			
 			if(repetitionsNumber < 1){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, IExceptionMessage.RECURRENCE_REPETITION_NUMBER);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.RECURRENCE_REPETITION_NUMBER);
 			}
 		}
 		LocalDate endDate = LocalDate.now();
 		if(endType == 2){
 			if(conf.getEndDate() == null){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
 			}
 			
 			endDate = conf.getEndDate();
 			
 			if(endDate.isBefore(event.getStartDateTime().toLocalDate()) && endDate.isEqual(event.getStartDateTime().toLocalDate())){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
 			}
 		}
 		switch (recurrenceType) {

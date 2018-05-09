@@ -27,7 +27,7 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.tool.template.TemplateMaker;
@@ -46,14 +46,14 @@ public class TemplateService {
 			return;
 		}
 		if(metaModel == null) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_1));
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_1));
 		}
 		
 		try {
 			this.validTarget(target, metaModel);
 		}
 		catch (Exception e) {
-			throw new AxelorException(e.getCause(), IException.INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_2));
+			throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_2));
 		}
 	}
 

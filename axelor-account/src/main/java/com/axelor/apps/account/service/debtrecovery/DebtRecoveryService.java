@@ -48,7 +48,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -351,7 +351,7 @@ public class DebtRecoveryService {
 				return this.createDebtRecovery(accountingSituation);
 			}
 		} else {
-			throw new AxelorException(accountingSituation, IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_1), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName());
+			throw new AxelorException(accountingSituation, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_1), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName());
 		}
 	}
 
@@ -416,14 +416,14 @@ public class DebtRecoveryService {
 					log.debug("date de référence : {} ",referenceDate);
 					debtRecovery.setReferenceDate(referenceDate);
 				} else {
-					throw new AxelorException(debtRecovery, IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_2), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName());
+					throw new AxelorException(debtRecovery, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_2), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName());
 				}
 				if (debtRecovery.getDebtRecoveryMethod() == null) {
 					if (debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery)!=null) {
 						debtRecovery.setDebtRecoveryMethod(debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery));
 						debtRecoverySessionService.debtRecoverySession(debtRecovery);
 					} else {
-						throw new AxelorException(debtRecovery, IException.CONFIGURATION_ERROR, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_3), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName());
+						throw new AxelorException(debtRecovery, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_3), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName());
 					}
 				} else {
 					debtRecoverySessionService.debtRecoverySession(debtRecovery);
@@ -437,7 +437,7 @@ public class DebtRecoveryService {
 				} else {
 					log.debug("Tiers {}, Société {} - Niveau de relance en attente ", partner.getName(), company.getName());
 					// TODO Alarm ?
-					TraceBackService.trace(new AxelorException(debtRecovery, IException.INCONSISTENCY, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_4), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()));
+					TraceBackService.trace(new AxelorException(debtRecovery, TraceBackRepository.CATEGORY_INCONSISTENCY, "%s :\n"+I18n.get("Partner")+" %s, "+I18n.get("Company")+" %s : "+I18n.get(IExceptionMessage.DEBT_RECOVERY_4), AppAccountServiceImpl.EXCEPTION, partner.getName(), company.getName()));
 				}
 			} else {
 				debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
