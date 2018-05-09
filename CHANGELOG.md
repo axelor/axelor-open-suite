@@ -127,10 +127,11 @@
 - Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Add validation date in Inventory
 - Add the number of components on Bill of material form view.
-- Change open fullscreen timesheet editor from tab to popup, for update of lines o2m on close. 
-- Browser reload on install and uninstall of the app.  
+- Use services to get company bank details for better maintenability.
+- Change open fullscreen timesheet editor from tab to popup, for update of lines o2m on close.
+- Browser reload on install and uninstall of the app.
 - Add base app install check on base module's menus.
-- Improved TeamTask gantt view to support upgraded gantt view with colored user per task. 
+- Improved TeamTask gantt view to support upgraded gantt view with colored user per task.
 
 
 ## Bug Fixes

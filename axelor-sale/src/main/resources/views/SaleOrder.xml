@@ -990,11 +990,7 @@
 		<field name="mainInvoicingAddress" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
-		<field name="companyBankDetails" expr="eval: null"/>
-		<field name="companyBankDetails" expr="eval: __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails"
-    		if="__config__.app.isApp('account') &amp;&amp; clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active"/>
-    	<field name="companyBankDetails" expr="eval: company?.defaultBankDetails"
-    		if="__config__.app.isApp('account') &amp;&amp; !(clientPartner != null &amp;&amp; __repo__(AccountingSituation).all().filter('self.company.id = ?1 AND self.partner.id = ?2', company?.id, clientPartner?.id).fetchOne()?.companyInBankDetails?.active) &amp;&amp; company?.defaultBankDetails?.active"/>
+		<field name="companyBankDetails" expr="call: com.axelor.apps.account.service.AccountingSituationService:getCompanySalesBankDetails(company, clientPartner)"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">
