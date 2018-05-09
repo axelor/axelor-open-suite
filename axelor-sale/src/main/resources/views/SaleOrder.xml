@@ -1040,7 +1040,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-set-client-partner-domain">
- 		<attribute name="domain" for="clientPartner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false and self.isCustomer = true&quot;"/>
+ 		<attribute name="domain" for="clientPartner" expr="eval:&quot;self.id != ${company.partner?.id} AND self.isContact = false and self.isCustomer = true&quot;"/>
  	</action-attrs>
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
