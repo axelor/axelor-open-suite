@@ -54,6 +54,7 @@
 - Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
 - Fix Forecasts : problem when including opportunities
 - Fix default email account check for user. 
+- Fix timesheet timer not computing durations.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
