@@ -48,14 +48,14 @@ public class ReportSettings {
 	
 	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	public static String FORMAT_PDF = "pdf";
-	public static String FORMAT_XLS = "xls";
-	public static String FORMAT_XLSX = "xlsx";
-	public static String FORMAT_DOC = "doc";
-	public static String FORMAT_DOCX = "docx";
-	public static String FORMAT_ODS = "ods";
-	public static String FORMAT_ODT = "odt";
-	public static String FORMAT_HTML = "html";
+	public static final String FORMAT_PDF = "pdf";
+	public static final String FORMAT_XLS = "xls";
+	public static final String FORMAT_XLSX = "xlsx";
+	public static final String FORMAT_DOC = "doc";
+	public static final String FORMAT_DOCX = "docx";
+	public static final String FORMAT_ODS = "ods";
+	public static final String FORMAT_ODT = "odt";
+	public static final String FORMAT_HTML = "html";
 
 	protected Map<String, Object> params = Maps.newHashMap();
 	
@@ -67,9 +67,9 @@ public class ReportSettings {
 	protected File output;
 
 	private boolean FLAG_ATTACH = false;
-    private static final String[] OUTPUT_NAME_SEARCH_LIST = new String[] { "*", "\"", "/", "\\", "?", "%", ":", "|",
+  private static final String[] OUTPUT_NAME_SEARCH_LIST = new String[] { "*", "\"", "/", "\\", "?", "%", ":", "|",
             "<", ">" };
-    private static final String[] OUTPUT_NAME_REPLACEMENT_LIST = new String[] { "#", "'", "_", "_", "_", "_", "_", "_",
+  private static final String[] OUTPUT_NAME_REPLACEMENT_LIST = new String[] { "#", "'", "_", "_", "_", "_", "_", "_",
             "_", "_" };
 
 	public ReportSettings(String rptdesign, String outputName)  {
@@ -247,8 +247,7 @@ public class ReportSettings {
 		
 		String useIntegratedEngine = appsSettings.get("axelor.report.use.embedded.engine", "true");
 		
-		if(useIntegratedEngine.equals("true"))  {  return true;  }
-		return false;
+		return "true".equals(useIntegratedEngine);
 		
 	}
 
@@ -260,8 +259,8 @@ public class ReportSettings {
 	 */
 	public static String getPrintingLocale(Partner partner) {
 
-	    if (partner != null) {
-	    	return Beans.get(PartnerService.class).getPartnerLanguageCode(partner);
+    if (partner != null) {
+    	return Beans.get(PartnerService.class).getPartnerLanguageCode(partner);
 		}
 		else {
 			return Beans.get(UserService.class).getLanguage();
