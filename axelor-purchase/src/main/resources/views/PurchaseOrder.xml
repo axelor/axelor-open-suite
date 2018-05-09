@@ -598,6 +598,11 @@
 	<action-method name="action-set-supplier-partner-domain">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="supplierPartnerDomain"/>
 	</action-method>
+	
+	<action-method name="action-purchase-order-method-fill-company-bank-details">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="fillCompanyBankDetails"/>
+	</action-method>
+	
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">
