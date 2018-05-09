@@ -59,6 +59,8 @@
 - Fix timesheet timer not computing durations.
 - Fix sale order line form for 'title' type. 
 - Timesheet editor: Fix blank editor, duration calcuation method, wrong total on group by.
+- Fix a bug in purchase order line where the discount amount was modified from an unit price change.
+- Add missing readonly on `priceDiscounted` in line forms.
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
