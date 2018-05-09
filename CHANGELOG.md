@@ -56,6 +56,7 @@
 - Fix Forecasts : problem when including opportunities
 - Fix default email account check for user. 
 - Fix timesheet timer not computing durations.
+- Fix sale order line form for 'title' type. 
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
