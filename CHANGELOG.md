@@ -6,6 +6,7 @@
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
+- Lead: Fix status on creation and on save.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
