@@ -3,6 +3,7 @@
 ## [Unreleased 5.0.0-rc3]
 
 ## Improvements
+- Sale order form : improve timetable and printing settings tabs.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.

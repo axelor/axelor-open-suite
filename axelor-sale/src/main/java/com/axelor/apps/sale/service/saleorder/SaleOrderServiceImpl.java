@@ -60,12 +60,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 	@Override
 	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException{
 
-		if (saleOrder.getPrintingSettings() == null) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD,
-					String.format(I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS), saleOrder.getSaleOrderSeq()),
-					saleOrder
-			);
-		}
         return ReportFactory.createReport(IReport.SALES_ORDER, name+"-${date}")
                 .addParam("Locale", language)
                 .addParam("SaleOrderId", saleOrder.getId())
