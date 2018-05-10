@@ -45,7 +45,7 @@
     		</panel>
     		<panel colSpan="5">
        			<button name="$totalVariants" title="Total variants" showIf="isModel" colSpan="4" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
-      			<panel showTitle="false" showIf="productTypeSelect == 'storable'" colSpan="8" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+      			<panel showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id" colSpan="8" if-module="axelor-stock" if="__config__.app.isApp('stock')">
        	 			<button name="$realQty" title="Real qty" colSpan="6" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
        	 			<button name="$futureQty" title="Future qty" colSpan="6" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
     	  			<field name="isModel" hidden="true"/>
