@@ -687,7 +687,7 @@
 		</template>
 	</cards>
 
-	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
+	<cards name="sale-order-quotation-cards" title="Sale quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<toolbar>
 			<button name="mergeQuotations" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
 			<button name="seeQuotationLines" title="See quotation lines" onClick="action-view-open-quotation-lines"/>
@@ -704,7 +704,7 @@
 		<field name="amountInvoiced" />
 		<template><![CDATA[
 		    <div class="span12">
-		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
+		    	<strong><span x-translate>Sale quotation</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
 		    	<a class="pull-right muted">{{ $fmt('orderDate') }}</a>
 	    	</div>
 			<div>

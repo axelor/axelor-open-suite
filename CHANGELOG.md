@@ -9,6 +9,7 @@
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
 - Lead: Fix status on creation and on save.
 - Fix timesheet editor duration, it will display duration in hours only. 
+- Fix sale order titles on card and stream messages.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

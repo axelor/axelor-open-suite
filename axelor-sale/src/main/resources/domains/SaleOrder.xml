@@ -135,7 +135,7 @@
       <field name="creationDate" on="CREATE" />
       <field name="confirmationDate" on="UPDATE"/>
       <field name="inTaxTotal" />
-      <message if="true" on="CREATE">Sale order created</message>
+      <message if="true" on="CREATE">Quotation/sale order created</message>
       <message if="statusSelect == 1" tag="important">Draft quotation</message>
       <message if="statusSelect == 2" tag="info">Finalized quotation</message>
       <message if="statusSelect == 3" tag="success">Order confirmed</message>
