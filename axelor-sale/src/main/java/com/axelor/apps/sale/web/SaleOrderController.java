@@ -142,10 +142,6 @@ public class SaleOrderController {
 	    try {
 			SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-			if (saleOrder.getPrintingSettings() == null) {
-
-			}
-
 			String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
 			SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);

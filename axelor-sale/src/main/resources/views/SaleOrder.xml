@@ -294,15 +294,13 @@
 	          <button name="generateProject" title="Generate Project/Business" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
 	          <button name="generateTypePerOrderLine" title="Generate Elements" if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-type-per-order-line,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
-		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" >
-			<field name="expectedRealisationDate" colSpan="12" width="50%"/>
-			<label title="OR"/>
+		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('sale').getTimetableInvoicing()" >
 			<field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
 			<panel-related field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable" if-module="axelor-supplychain"/>
 		</panel>
 
 		<panel-related field="advancePaymentList" colSpan="12" grid-view="advance-payment-grid" form-view="advance-payment-form" readonly="true" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" />
-        <panel name="printing" title="Printing">
+        <panel name="printing" title="Printing" if="__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()">
 			<field name="printingSettings" onSelect="action-sale-method-filter-printing-settings" canEdit="false"/>
             <field name="hideDiscount"/>
             <field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
@@ -353,6 +351,7 @@
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
 	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    </field>
+	    <field name="expectedRealisationDate" colSpan="6" if="__config__.app.isApp('supplychain')"/>
         <field name="cancelReason" hidden="true"/>
 		<field name="cancelReasonStr" title="Cancel Reason" readonly="true" colSpan="12" css="red" hidden="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null">
 			<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>

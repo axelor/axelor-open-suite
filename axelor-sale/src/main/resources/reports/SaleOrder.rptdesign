@@ -1161,6 +1161,7 @@ SaleOrder.number_of_periods,
 SaleOrder.subscription_text
 from sale_sale_order as SaleOrder
 left outer join base_company as Company on (SaleOrder.company = Company.id)
+left outer join base_app_sale as AppSale on true 
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
 left outer join base_partner as ContactPartner on (SaleOrder.contact_partner = ContactPartner.id)
@@ -1172,7 +1173,10 @@ left outer join base_address as DeliveryAddress on (SaleOrder.delivery_address =
 left outer join base_country as DeliveryCountry on (DeliveryAddress.addressl7country = DeliveryCountry.id)
 left outer join base_bank_details as BankDetail on (SaleOrder.company_bank_details = BankDetail.id)
 left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
-left outer join base_printing_settings as PrintingSettings on (SaleOrder.printing_settings = PrintingSettings.id)
+left outer join base_printing_settings as PrintingSettings on (SaleOrder.printing_settings = PrintingSettings.id AND 
+AppSale.printing_config_per_sale_order = true ) OR (Company.printing_settings = PrintingSettings.id 
+AND (AppSale.printing_config_per_sale_order = null OR AppSale.printing_config_per_sale_order = false 
+OR SaleOrder.printing_settings is null )) 
 left outer join auth_user as SalemanUser on (SaleOrder.saleman_user = SalemanUser.id) 
 left outer join base_partner as SalemanPartner on (SalemanUser.partner = SalemanPartner.id) 
 left outer join message_email_address as SalemanEmailAddress on (SalemanPartner.email_address = SalemanEmailAddress.id) 
