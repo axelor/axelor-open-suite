@@ -1,6 +1,12 @@
 # Changelog
 
-## [5.0.0-rc2]
+## [Unreleased 5.0.0-rc3]
+
+## Improvements
+
+## Bug Fixes
+
+## [5.0.0-rc2] - 2018-05-09
 ## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
