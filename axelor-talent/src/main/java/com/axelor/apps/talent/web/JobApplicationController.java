@@ -57,6 +57,7 @@ public class JobApplicationController {
 				.model(Employee.class.getName())
 				.add("grid", "employee-grid")
 				.add("form", "employee-form")
+				.param("search-filters", "employee-filters")
 				.context("_showRecord", employee.getId())
 				.map());
 		
