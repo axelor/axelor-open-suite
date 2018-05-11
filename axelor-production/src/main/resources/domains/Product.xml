@@ -20,10 +20,6 @@
 	   		]]>
 	   	</extra-code>
 
-  	<track>
-      <field name="costPrice"/>
-    </track>
-
   </entity>
 
 </domain-models>
