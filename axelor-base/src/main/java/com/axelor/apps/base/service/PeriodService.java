@@ -33,7 +33,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,7 +63,7 @@ public class PeriodService {
 	
 		Period period = this.getPeriod(date, company);
 		if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PERIOD_1), company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PERIOD_1), company.getName());
 		}
 		LOG.debug("Period : {}",period);	
 		return period;
@@ -81,7 +81,7 @@ public class PeriodService {
 		Period nextPeriod = periodRepo.all().filter("self.fromDate > ?1 AND self.year.company = ?2 AND self.statusSelect = ?3", period.getToDate(), period.getYear().getCompany(), PeriodRepository.STATUS_OPENED).fetchOne();
 		
 		if (nextPeriod == null || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(period, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PERIOD_1), period.getYear().getCompany().getName());
+			throw new AxelorException(period, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PERIOD_1), period.getYear().getCompany().getName());
 		}
 		LOG.debug("Next Period : {}",nextPeriod);	
 		return nextPeriod;
@@ -89,7 +89,7 @@ public class PeriodService {
 	
 	public void testOpenPeriod(Period period) throws AxelorException {
 		if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
-			throw new AxelorException(period, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PERIOD_2));
+			throw new AxelorException(period, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PERIOD_2));
 		}
 	}
 
@@ -163,7 +163,7 @@ public class PeriodService {
 					String.format(
 							I18n.get(IExceptionMessage.PAY_PERIOD_CLOSED), period.getName()
 					),
-					IException.FUNCTIONNAL,
+					TraceBackRepository.TYPE_FUNCTIONNAL,
 					period
 			);
 		}

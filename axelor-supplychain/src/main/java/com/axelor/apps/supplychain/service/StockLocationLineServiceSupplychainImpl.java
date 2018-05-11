@@ -28,7 +28,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.servlet.RequestScoped;
@@ -40,7 +40,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
     public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine) throws AxelorException {
         super.checkStockMin(stockLocationLine, isDetailLocationLine);
         if (!isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0 && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-            throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
+            throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
 
         } else if (isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
                 && ((stockLocationLine.getStockLocation() != null && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
@@ -51,7 +51,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
                 trackingNumber = stockLocationLine.getTrackingNumber().getTrackingNumberSeq();
             }
 
-            throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_2), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode(), trackingNumber);
+            throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_2), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode(), trackingNumber);
         }
     }
 
@@ -85,7 +85,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()) {
             StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
             if (stockLocationLine != null && stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty()).compareTo(qty) < 0) {
-                throw new AxelorException(stockLocationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
+                throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
             }
         }
     }

@@ -41,7 +41,7 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -115,7 +115,7 @@ public class ReimbursementImportService {
 		
 		Reimbursement reimbursement = reimbursementRepo.all().filter("UPPER(self.ref) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 		if (reimbursement == null) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.REIMBURSEMENT_3), refReject, company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.REIMBURSEMENT_3), refReject, company.getName());
 		}
 		
 		Partner partner = reimbursement.getPartner();

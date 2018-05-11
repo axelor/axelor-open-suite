@@ -62,7 +62,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -386,7 +386,7 @@ public class HumanResourceMobileController {
 		Map<String, Object> requestData = request.getData();
 		LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(Long.valueOf(requestData.get("leaveReason").toString()));
 		if (user.getEmployee() == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), user.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), user.getName());
 		}
 		if (user != null && leaveReason != null) {
 			LeaveRequest leave = new LeaveRequest();
@@ -399,7 +399,7 @@ public class HumanResourceMobileController {
 			leave.setCompany(company);
 			LeaveLine leaveLine = Beans.get(LeaveLineRepository.class).all().filter("self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason).fetchOne();
 			if (leaveLine == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), user.getEmployee().getName(), leaveReason.getLeaveReason());
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_LINE), user.getEmployee().getName(), leaveReason.getLeaveReason());
 			}
 			leave.setLeaveLine(leaveLine);
 			leave.setRequestDate(appBaseService.getTodayDate());

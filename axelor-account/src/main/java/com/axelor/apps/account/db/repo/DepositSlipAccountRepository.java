@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -53,7 +53,7 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
         String depositNumber = sequenceService.getSequenceNumber(SequenceRepository.DEPOSIT_SLIP, entity.getCompany());
 
         if (Strings.isNullOrEmpty(depositNumber)) {
-            throw new AxelorException(Sequence.class, IException.NO_VALUE,
+            throw new AxelorException(Sequence.class, TraceBackRepository.CATEGORY_NO_VALUE,
                     I18n.get(IExceptionMessage.DEPOSIT_SLIP_MISSING_SEQUENCE), entity.getCompany().getName());
         }
 

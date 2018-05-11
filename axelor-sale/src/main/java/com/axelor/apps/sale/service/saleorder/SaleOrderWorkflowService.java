@@ -35,7 +35,7 @@ public interface SaleOrderWorkflowService {
 
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
 
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException;
+	public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException;
 
 	public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
 

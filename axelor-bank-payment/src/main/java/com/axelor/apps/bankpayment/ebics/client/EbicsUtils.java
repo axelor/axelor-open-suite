@@ -45,7 +45,7 @@ import org.w3c.dom.traversal.NodeIterator;
 
 import com.axelor.app.AppSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 
@@ -71,7 +71,7 @@ public class EbicsUtils {
   public static byte[] zip(byte[] toZip) throws AxelorException {
 
     if (toZip == null) {
-      throw new AxelorException(IException.MISSING_FIELD, I18n.get("The input to be zipped cannot be null"));
+      throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get("The input to be zipped cannot be null"));
     }
 
     Deflater				compressor;
@@ -92,7 +92,7 @@ public class EbicsUtils {
     try {
       output.close();
     } catch (IOException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
     compressor.end();
 
@@ -122,7 +122,7 @@ public class EbicsUtils {
       secureRandom = SecureRandom.getInstance("SHA1PRNG");
       return secureRandom.generateSeed(16);
     } catch (NoSuchAlgorithmException e) {
-      throw new AxelorException(e.getCause(), IException.FUNCTIONNAL, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_FUNCTIONNAL, e.getMessage());
     }
   }
 
@@ -152,7 +152,7 @@ public class EbicsUtils {
       try {
 	count = decompressor.inflate(buf);
       } catch (DataFormatException e) {
-	throw new AxelorException(e.getCause(), IException.FUNCTIONNAL, e.getMessage());
+	throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_FUNCTIONNAL, e.getMessage());
       }
       output.write(buf, 0, count);
     }
@@ -160,7 +160,7 @@ public class EbicsUtils {
     try {
       output.close();
     } catch (IOException e) {
-      throw new AxelorException(e.getCause(), IException.FUNCTIONNAL, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_FUNCTIONNAL, e.getMessage());
     }
 
     decompressor.end();
@@ -213,7 +213,7 @@ public class EbicsUtils {
 
       return output.toByteArray();
     } catch (Exception e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -280,7 +280,7 @@ public class EbicsUtils {
       cipher.init(mode, keySpec, iv);
       return cipher.doFinal(input);
     } catch (GeneralSecurityException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -293,7 +293,7 @@ public class EbicsUtils {
     try {
       return new SimpleDateFormat( AppSettings.get().get("date.format") ).parse(date);
     } catch (Exception e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -304,7 +304,7 @@ public class EbicsUtils {
    */
   public static void checkHttpCode(int httpCode) throws AxelorException {
     if (httpCode != 200) {
-      throw new AxelorException(IException.FUNCTIONNAL, "http.code.error[Code:%s]", httpCode);
+      throw new AxelorException(TraceBackRepository.TYPE_FUNCTIONNAL, "http.code.error[Code:%s]", httpCode);
     }
   }
 }

@@ -27,7 +27,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
@@ -99,7 +99,7 @@ public class InvoiceToolService {
 			break;
 		
 		default:
-			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId());
+			throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId());
 		}	
 		
 		return isPurchase;
@@ -137,7 +137,7 @@ public class InvoiceToolService {
 			break;
 		
 		default:
-			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId());
+			throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId());
 		}	
 		
 		return isRefund;

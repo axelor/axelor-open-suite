@@ -21,7 +21,7 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -49,7 +49,7 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
         ScriptBindings defaultValueBindings = Beans.get(ConfiguratorCreatorService.class).getTestingValues(creator);
         Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
         if (result == null) {
-            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR), formula);
+            throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR), formula);
         }
 
 

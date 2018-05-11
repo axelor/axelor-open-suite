@@ -33,7 +33,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -85,10 +85,10 @@ public class DebtRecoveryActionService {
 	public void runAction(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
 
 		if (debtRecovery.getDebtRecoveryMethod() == null) {
-			throw new AxelorException(debtRecovery, IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
+			throw new AxelorException(debtRecovery, TraceBackRepository.CATEGORY_MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
 		}
 		if (debtRecovery.getDebtRecoveryMethodLine() == null) {
-			throw new AxelorException(debtRecovery, IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
+			throw new AxelorException(debtRecovery, TraceBackRepository.CATEGORY_MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
 		}
 
 		else  {
@@ -124,7 +124,7 @@ public class DebtRecoveryActionService {
 		Set<Template> templateSet = debtRecoveryMethodLine.getMessageTemplateSet();
 
 		if (templateSet == null || templateSet.isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3), AppAccountServiceImpl.EXCEPTION, partner.getName(), debtRecoveryMethodLine.getDebtRecoveryMethod().getName(), debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3), AppAccountServiceImpl.EXCEPTION, partner.getName(), debtRecoveryMethodLine.getDebtRecoveryMethod().getName(), debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
 		}
 
 		DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
@@ -162,11 +162,11 @@ public class DebtRecoveryActionService {
 
 		log.debug("Begin runManualAction service ...");
 		if (debtRecovery.getDebtRecoveryMethod() == null) {
-			throw new AxelorException(IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
 		}
 
 		if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
-			throw new AxelorException(IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
 		}
 		else  {
 

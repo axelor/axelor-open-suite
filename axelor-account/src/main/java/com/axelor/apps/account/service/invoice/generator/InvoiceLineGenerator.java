@@ -54,7 +54,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
@@ -256,7 +256,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		Currency companyCurrency = company.getCurrency();
 
 		if (companyCurrency == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2), company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2), company.getName());
 		}
 		
 		invoiceLine.setCompanyExTaxTotal(

@@ -31,7 +31,7 @@ import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -83,7 +83,7 @@ public class ConvertLeadWizardController {
 		}
 		
 		if (lead.getPartner() == null) {
-			throw new AxelorException(IException.TECHNICAL, I18n.get(I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR)));
+			throw new AxelorException(TraceBackRepository.TYPE_TECHNICAL, I18n.get(I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR)));
 		}
 		
 		openPartner(response, lead);
@@ -283,7 +283,7 @@ public class ConvertLeadWizardController {
 		}
 		
 		if (lead == null) {
-            throw new AxelorException(IException.NO_VALUE, I18n.get(IExceptionMessage.CONVERT_LEAD_MISSING));
+            throw new AxelorException(TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.CONVERT_LEAD_MISSING));
         }
 		
 		return lead;

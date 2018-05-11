@@ -34,7 +34,7 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -228,25 +228,25 @@ public class AccountingReportServiceImpl implements AccountingReportService  {
 		if(accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000) {
 			String seq = sequenceService.getSequenceNumber(SequenceRepository.ACCOUNTING_REPORT, accountingReport.getCompany());
 			if (seq == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}
 			return seq;
 		}
 		else if(accountingReportTypeSelect >= 1000 && accountingReportTypeSelect < 2000 ) {
 			String seq = sequenceService.getSequenceNumber(SequenceRepository.MOVE_LINE_EXPORT, accountingReport.getCompany());
 			if (seq == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_2), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_2), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}
 			return seq;
 		}
 		else if(accountingReportTypeSelect >= 2000 && accountingReportTypeSelect < 3000 ){
 			String seq = sequenceService.getSequenceNumber(SequenceRepository.ANALYTIC_REPORT, accountingReport.getCompany());
 			if (seq == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT), AppBaseServiceImpl.EXCEPTION, accountingReport.getCompany().getName());
 			}
 			return seq;
 		}
-		throw new AxelorException(accountingReport, IException.CONFIGURATION_ERROR,
+		throw new AxelorException(accountingReport, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
 				I18n.get(IExceptionMessage.ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE),
 				accountingReport.getTypeSelect());
 

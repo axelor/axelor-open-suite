@@ -50,7 +50,7 @@ import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -95,7 +95,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 		}
 		Company company = year.getCompany();
 		if (company == null)  {
-			throw new AxelorException(year, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.YEAR_1), AppAccountServiceImpl.EXCEPTION, year.getName());
+			throw new AxelorException(year, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.YEAR_1), AppAccountServiceImpl.EXCEPTION, year.getName());
 		}
 
 		Query q;

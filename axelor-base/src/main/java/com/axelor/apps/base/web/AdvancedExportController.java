@@ -40,7 +40,7 @@ import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
@@ -254,7 +254,7 @@ public class AdvancedExportController {
                     exportFile = advancedExportService.advancedExportCSV(exportFile, metaModel, allDataList, advancedExportLineList);
                 }
                 else {
-                    throw new AxelorException(IException.CONFIGURATION_ERROR, IExceptionMessage.ADVANCED_EXPORT_FILE_TYPE_UNKNOWN);
+                    throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.ADVANCED_EXPORT_FILE_TYPE_UNKNOWN);
                 }
             }
         } else {

@@ -41,7 +41,7 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -124,7 +124,7 @@ public class VentilateState extends WorkflowInvoice {
 						situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
 
 			if (account == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_5));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_5));
 			}
 
 			invoice.setPartnerAccount(account);
@@ -142,7 +142,7 @@ public class VentilateState extends WorkflowInvoice {
 		if(invoice.getInvoiceDate() == null)  {
 			invoice.setInvoiceDate(appAccountService.getTodayDate());
 		} else if (invoice.getInvoiceDate().isAfter(appAccountService.getTodayDate())) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE));
 		}
 
 		if(!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null)  {
@@ -184,12 +184,12 @@ public class VentilateState extends WorkflowInvoice {
 
 		if(invoiceRepo.all().filter(query, params.toArray()).count() > 0)  {
 			if(sequence.getMonthlyResetOk())  {
-				throw new AxelorException(sequence, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_2));
+				throw new AxelorException(sequence, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_2));
 			}
 			if(sequence.getYearlyResetOk())  {
-				throw new AxelorException(sequence, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_3));
+				throw new AxelorException(sequence, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_3));
 			}
-			throw new AxelorException(sequence, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_1));
+			throw new AxelorException(sequence, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_1));
 		}
 
 	}
@@ -242,7 +242,7 @@ public class VentilateState extends WorkflowInvoice {
 			return;
 		}
 
-		throw new AxelorException(invoice, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_4), invoice.getCompany().getName());
+		throw new AxelorException(invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.VENTILATE_STATE_4), invoice.getCompany().getName());
 
 	}
 
@@ -265,7 +265,7 @@ public class VentilateState extends WorkflowInvoice {
 			return accountConfigService.getCustRefSequence(accountConfig);
 
 		default:
-			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId());
+			throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId());
 		}
 
 	}

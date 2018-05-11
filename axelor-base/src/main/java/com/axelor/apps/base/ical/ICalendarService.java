@@ -60,7 +60,7 @@ import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -661,7 +661,7 @@ public class ICalendarService {
 					Beans.get(ICalendarRepository.class).save(calendar);
 				}
 			} else {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
 			}
 		} catch (Exception e) {
 			throw new ICalendarException(e);
@@ -856,7 +856,7 @@ public class ICalendarService {
 					cal = collection.getCalendar(uid);
 				}
 			} else {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
 			}
 		} catch (Exception e) {
 			throw new ICalendarException(e);
@@ -890,7 +890,7 @@ public class ICalendarService {
 							removeCalendar(collection,target.getUid().getValue());
 					}
 				} else {
-					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
+					throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
 				}
 			} catch (Exception e) {
 				throw new ICalendarException(e);

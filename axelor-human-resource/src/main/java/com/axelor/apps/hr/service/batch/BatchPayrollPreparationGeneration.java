@@ -38,6 +38,7 @@ import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -147,8 +148,8 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 			catch(AxelorException e){
 				TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
 				incrementAnomaly();
-				if (e.getCategory() == IException.NO_UNIQUE_KEY) { duplicateAnomaly ++; }
-				else if (e.getCategory() == IException.CONFIGURATION_ERROR) { configurationAnomaly ++; }
+				if (e.getCategory() == TraceBackRepository.CATEGORY_NO_UNIQUE_KEY) { duplicateAnomaly ++; }
+				else if (e.getCategory() == TraceBackRepository.CATEGORY_CONFIGURATION_ERROR) { configurationAnomaly ++; }
 			}
 			finally {
 				total ++;
@@ -164,7 +165,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 		List<PayrollPreparation> payrollPreparationList = payrollPreparationRepository.all().filter("self.period = ?1 AND self.employee = ?2 AND self.company = ?3", hrBatch.getPeriod(), employee, company).fetch();
 		log.debug("list : " + payrollPreparationList);
 		if (!payrollPreparationList.isEmpty()) {
-			throw new AxelorException(employee, IException.NO_UNIQUE_KEY, I18n.get(IExceptionMessage.PAYROLL_PREPARATION_DUPLICATE), employee.getName(), hrBatch.getCompany().getName(), hrBatch.getPeriod().getName());
+			throw new AxelorException(employee, TraceBackRepository.CATEGORY_NO_UNIQUE_KEY, I18n.get(IExceptionMessage.PAYROLL_PREPARATION_DUPLICATE), employee.getName(), hrBatch.getCompany().getName(), hrBatch.getPeriod().getName());
 		}
 		Company currentCompany = companyRepository.find(company.getId());
 		Period period = periodRepository.find(hrBatch.getPeriod().getId());

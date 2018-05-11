@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class CompanyConfigService {
@@ -32,7 +32,7 @@ public class CompanyConfigService {
 	public Currency getCompanyCurrency(Company company) throws AxelorException  {
 
 		if(company.getCurrency() == null) {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.COMPANY_CURRENCY), AppBaseServiceImpl.EXCEPTION, company.getName());
+			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.COMPANY_CURRENCY), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 		
 		return company.getCurrency();

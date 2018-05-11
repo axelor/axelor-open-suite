@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator.batch;
 
-import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-
-import java.lang.invoke.MethodHandles;
+import com.google.inject.Inject;
 
 public class BatchValidation extends BatchWkf {
 

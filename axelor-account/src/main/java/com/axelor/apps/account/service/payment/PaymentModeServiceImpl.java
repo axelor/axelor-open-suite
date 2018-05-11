@@ -29,7 +29,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 			return accountManagement.getCashAccount();
 		}
 
-		throw new AxelorException(paymentMode, IException.CONFIGURATION_ERROR, I18n.get("Company")+" : %s, "+I18n.get("Payment mode")+" : %s: "+I18n.get(IExceptionMessage.PAYMENT_MODE_1), company.getName(), paymentMode.getName());
+		throw new AxelorException(paymentMode, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("Company")+" : %s, "+I18n.get("Payment mode")+" : %s: "+I18n.get(IExceptionMessage.PAYMENT_MODE_1), company.getName(), paymentMode.getName());
 
 	}
 
@@ -95,7 +95,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company, bankDetails);
 		
 		if(accountManagement == null || accountManagement.getSequence() == null)  {
-			throw new AxelorException(paymentMode, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_MODE_2), AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName());
+			throw new AxelorException(paymentMode, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_MODE_2), AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName());
 		}
 
 		return accountManagement.getSequence();
@@ -107,7 +107,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 		AccountManagement accountManagement = this.getAccountManagement(paymentMode, company, bankDetails);
 		
 		if(accountManagement == null || accountManagement.getJournal() == null)  {
-			throw new AxelorException(paymentMode, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_MODE_3), AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName());
+			throw new AxelorException(paymentMode, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_MODE_3), AppAccountServiceImpl.EXCEPTION, company.getName(), paymentMode.getName());
 		}
 
 		return accountManagement.getJournal();

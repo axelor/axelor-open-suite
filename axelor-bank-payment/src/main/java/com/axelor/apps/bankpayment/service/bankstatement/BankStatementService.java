@@ -29,7 +29,7 @@ import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -48,12 +48,12 @@ public class BankStatementService {
 
         if (bankStatement.getBankStatementFile() == null) {
             throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE),
-                    IException.MISSING_FIELD);
+                    TraceBackRepository.CATEGORY_MISSING_FIELD);
         }
 
         if (bankStatement.getBankStatementFileFormat() == null) {
             throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT),
-                    IException.MISSING_FIELD);
+                    TraceBackRepository.CATEGORY_MISSING_FIELD);
         }
 
 		BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
@@ -70,7 +70,7 @@ public class BankStatementService {
         default:
         	if(alertIfFormatNotSupported)  {
         		throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
-        				IException.INCONSISTENCY);
+        				TraceBackRepository.CATEGORY_INCONSISTENCY);
         	}
         }
 
@@ -102,7 +102,7 @@ public class BankStatementService {
             break;
         default:
             throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
-                    IException.INCONSISTENCY);
+                    TraceBackRepository.CATEGORY_INCONSISTENCY);
         }
 
         return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")

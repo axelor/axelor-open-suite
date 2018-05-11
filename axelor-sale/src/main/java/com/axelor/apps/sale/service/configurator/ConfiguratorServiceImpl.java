@@ -32,7 +32,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -260,7 +260,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                 try {
                     mapper.set(model, manyToOneField.getName(), manyToOneDbValue);
                 } catch (Exception e) {
-                    throw new AxelorException(Configurator.class, IException.CONFIGURATION_ERROR, e.getMessage());
+                    throw new AxelorException(Configurator.class, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
                 }
             }
         }

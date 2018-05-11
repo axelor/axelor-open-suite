@@ -66,7 +66,7 @@ import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -242,7 +242,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 	public void ventilate( Invoice invoice ) throws AxelorException {
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 			if (!invoiceLine.getIsTitleLine() && invoiceLine.getAccount() == null) {
-				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.VENTILATE_STATE_6), invoiceLine.getProductName());
+				throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.VENTILATE_STATE_6), invoiceLine.getProductName());
 			}
 		}
 
@@ -610,7 +610,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             return bankDetails;
         }
 
-        throw new AxelorException(invoice, IException.MISSING_FIELD,
+        throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD,
                 I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING), partner.getName());
     }
 

@@ -59,7 +59,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
@@ -79,7 +79,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
         if (logisticalForm.getDeliverToCustomerPartner() != null
                 && !logisticalForm.getDeliverToCustomerPartner().equals(stockMove.getPartner())) {
-            throw new AxelorException(logisticalForm, IException.INCONSISTENCY,
+            throw new AxelorException(logisticalForm, TraceBackRepository.CATEGORY_INCONSISTENCY,
                     I18n.get(IExceptionMessage.LOGISTICAL_FORM_PARTNER_MISMATCH),
                     logisticalForm.getDeliverToCustomerPartner().getName());
         }
@@ -503,7 +503,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     @Override
     public List<Long> getIdList(StockMove stockMove) throws AxelorException {
         if (stockMove.getId() == null) {
-            throw new AxelorException(StockMove.class, IException.NO_VALUE,
+            throw new AxelorException(StockMove.class, TraceBackRepository.CATEGORY_NO_VALUE,
                     I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_UNSAVED));
         }
 
@@ -570,7 +570,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
             }
             break;
         default:
-            throw new AxelorException(logisticalForm, IException.CONFIGURATION_ERROR,
+            throw new AxelorException(logisticalForm, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                     I18n.get(IExceptionMessage.LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION));
         }
 

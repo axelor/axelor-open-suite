@@ -28,10 +28,9 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -68,7 +67,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
             try {
                 Beans.get(TemplateMessageService.class).generateAndSendMessage(invoice, invoice.getInvoiceMessageTemplate());
             } catch (Exception e) {
-                throw new AxelorException(IException.CONFIGURATION_ERROR, e.getMessage(), invoice);
+                throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), invoice);
             }
         }
     }
@@ -122,7 +121,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
                 .reduce(BigDecimal::add)
                 .get();
         if (totalPayments.compareTo(invoice.getInTaxTotal()) > 0) {
-            throw new AxelorException(invoice, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH));
+            throw new AxelorException(invoice, TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH));
         }
     }
 }

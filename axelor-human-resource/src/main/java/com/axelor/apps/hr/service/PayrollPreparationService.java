@@ -46,7 +46,7 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -130,7 +130,7 @@ public class PayrollPreparationService {
 		Employee employee = payrollPreparation.getEmployee();
 
 		if(employee.getWeeklyPlanning()== null){
-			throw new AxelorException(payrollPreparation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName());
+			throw new AxelorException(payrollPreparation, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),employee.getName());
 		}
 		
 		List<LeaveRequest> leaveRequestList = leaveRequestRepo.all().filter("self.statusSelect = ?4 AND self.user.employee = ?3 AND self.fromDate <= ?1 AND self.toDate >= ?2",toDate, fromDate,employee, LeaveRequestRepository.STATUS_VALIDATED).fetch();

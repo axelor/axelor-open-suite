@@ -32,7 +32,7 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -67,7 +67,7 @@ public class LunchVoucherAdvanceController {
 		
 		if (stock <= 0) {
 			response.setAlert(String.format(I18n.get(IExceptionMessage.LUNCH_VOUCHER_MIN_STOCK),company.getName(),
-					hrConfig.getMinStockLunchVoucher(), hrConfig.getAvailableStockLunchVoucher(), IException.INCONSISTENCY));
+					hrConfig.getMinStockLunchVoucher(), hrConfig.getAvailableStockLunchVoucher(), TraceBackRepository.CATEGORY_INCONSISTENCY));
 		}
 	}
 	

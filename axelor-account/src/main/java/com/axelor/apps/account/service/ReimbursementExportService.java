@@ -42,7 +42,7 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -237,7 +237,7 @@ public class ReimbursementExportService {
 		accountConfigService.getReimbursementExportFolderPath(accountConfig);
 
 		if(!sequenceService.hasSequence(SequenceRepository.REIMBOURSEMENT, company)) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.REIMBURSEMENT_1), AppAccountServiceImpl.EXCEPTION,company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.REIMBURSEMENT_1), AppAccountServiceImpl.EXCEPTION,company.getName());
 		}
 
 	}
@@ -325,7 +325,7 @@ public class ReimbursementExportService {
 		String exportFolderPath = accountConfigService.getReimbursementExportFolderPath(accountConfigService.getAccountConfig(company));
 
 		if (exportFolderPath == null) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.REIMBURSEMENT_2), company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.REIMBURSEMENT_2), company.getName());
 		}
 
 

@@ -1,7 +1,19 @@
 # Changelog
 
-## [Unreleased 5.0.0-rc2]
+## [Unreleased 5.0.0-rc3]
 
+## Improvements
+- Sale order form : improve timetable and printing settings tabs.
+
+## Bug Fixes
+- Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
+- Lead: Fix status on creation and on save.
+- Fix timesheet editor duration, it will display duration in hours only. 
+- Fix sale order titles on card and stream messages.
+- Fix custom model editor breaking changes due to adk updates.
+- Fix project planning editor breaking changes due to adk updates.
+
+## [5.0.0-rc2] - 2018-05-09
 ## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
@@ -28,10 +40,11 @@
 - Renamed all reference to weight by mass.
 - Refactor invoice payment list display in invoice-form and invoice-client-form views
 - Check partner blocking on invoicing, direct debit and reimbursement. 
+- Improved sale order status label.
+- Timesheet editor: No group by on project when unique product is used. 
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
-- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
 - Compute the duration according to the start date and time and end date and time for ticket.
 - Fix same image when duplicating products.
 - invoice: fix bank address on birt template
@@ -55,6 +68,10 @@
 - Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
 - Fix Forecasts : problem when including opportunities
 - Fix default email account check for user. 
+- Fix timesheet timer not computing durations.
+- Fix sale order line form for 'title' type. 
+- Timesheet editor: Fix blank editor, duration calcuation method, wrong total on group by.
+
 
 ## [5.0.0-rc1] - 2018-04-16
 ## Features
@@ -123,11 +140,11 @@
 - Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Add validation date in Inventory
 - Add the number of components on Bill of material form view.
-- Change open fullscreen timesheet editor from tab to popup, for update of lines o2m on close. 
-- Browser reload on install and uninstall of the app.  
+- Use services to get company bank details for better maintenability.
+- Change open fullscreen timesheet editor from tab to popup, for update of lines o2m on close.
+- Browser reload on install and uninstall of the app.
 - Add base app install check on base module's menus.
-- Improved TeamTask gantt view to support upgraded gantt view with colored user per task. 
-
+- Improved TeamTask gantt view to support upgraded gantt view with colored user per task.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
@@ -145,6 +162,7 @@
 - Fix default supplier in purchase order generation from sale order.
 - Stock location is no more required if supplychain module is not enabled
 - Compute the sale price and min sale price on purchase order line only if the product is saleable
+- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
 - Fix bulk install without demo data error. 
 - Fix language of parent app on child app installation. Now it will install all parent (if not installed) with child app's language. 
 - Fix timesheet and project planning editor according to changes in related models and fields. 
@@ -471,7 +489,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...dev
+[5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
 [5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
 [Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
 [4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3

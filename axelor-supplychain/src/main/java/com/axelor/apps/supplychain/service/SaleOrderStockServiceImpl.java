@@ -48,7 +48,7 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -83,13 +83,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
 	    Optional<StockMove> activeStockMove = findActiveStockMoveForSaleOrder(saleOrder);
 
         if (activeStockMove.isPresent()) {
-            throw new AxelorException(activeStockMove.get(), IException.CONFIGURATION_ERROR,
+            throw new AxelorException(activeStockMove.get(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                     I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS),
                     activeStockMove.get().getName(), saleOrder.getSaleOrderSeq());
         }
 
         if(saleOrder.getStockLocation() == null)  {
-    	   throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR,
+    	   throw new AxelorException(saleOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                    I18n.get(IExceptionMessage.SO_MISSING_STOCK_LOCATION), saleOrder.getSaleOrderSeq());
         }
         

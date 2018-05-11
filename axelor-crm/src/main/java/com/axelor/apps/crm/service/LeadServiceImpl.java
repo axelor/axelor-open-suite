@@ -38,7 +38,7 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -114,7 +114,7 @@ public class LeadServiceImpl implements LeadService {
 
 		String seq = sequenceService.getSequenceNumber(SequenceRepository.PARTNER);
 		if (seq == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
 		}
 		return seq;
 	}

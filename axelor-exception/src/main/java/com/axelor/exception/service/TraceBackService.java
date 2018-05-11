@@ -29,7 +29,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.db.TraceBack;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
@@ -81,11 +80,11 @@ public class TraceBackService {
 	}
 
 	private static TraceBack _create(Exception e, String origin, int categorySelect, long batchId) {
-		return _create(e, origin, IException.TECHNICAL, categorySelect, batchId);
+		return _create(e, origin, TraceBackRepository.TYPE_TECHNICAL, categorySelect, batchId);
 	}
 
 	private static TraceBack _create(AxelorException e, String origin, long batchId) {
-		TraceBack traceBack = _create(e, origin, IException.FUNCTIONNAL, e.getCategory(), batchId);
+		TraceBack traceBack = _create(e, origin, TraceBackRepository.TYPE_FUNCTIONNAL, e.getCategory(), batchId);
 
 		if (e.getRefClass() != null) {
 			traceBack.setRef(e.getRefClass().getName());

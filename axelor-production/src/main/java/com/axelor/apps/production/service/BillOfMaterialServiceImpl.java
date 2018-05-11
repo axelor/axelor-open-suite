@@ -39,7 +39,7 @@ import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -73,7 +73,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 		Product product = billOfMaterial.getProduct();
 
 		if (product.getCostTypeSelect() != ProductRepository.COST_TYPE_STANDARD) {
-		    throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
+		    throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
 		}
 
 		product.setCostPrice(billOfMaterial.getCostPrice().divide(billOfMaterial.getQty(), Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));

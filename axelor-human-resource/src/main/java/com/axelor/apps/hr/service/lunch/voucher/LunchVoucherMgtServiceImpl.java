@@ -24,7 +24,7 @@ import com.axelor.apps.hr.db.repo.*;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -68,10 +68,10 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 		Company company = lunchVoucherMgt.getCompany();
 		
 		if(company == null) {
-			throw new AxelorException(lunchVoucherMgt, IException.MISSING_FIELD, I18n.get("Please fill a company."));
+			throw new AxelorException(lunchVoucherMgt, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get("Please fill a company."));
 		}
 		if(lunchVoucherMgt.getLeavePeriod() == null) {
-			throw new AxelorException(lunchVoucherMgt, IException.MISSING_FIELD, I18n.get("Please fill a leave period."));
+			throw new AxelorException(lunchVoucherMgt, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get("Please fill a leave period."));
 		}
 		
 		HRConfig hrConfig = hrConfigService.getHRConfig(company);

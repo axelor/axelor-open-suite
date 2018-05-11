@@ -26,7 +26,7 @@ import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -72,7 +72,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 			Long count = mailAccountRepo.all().filter(query, params.toArray()).count();
 			
 			if (count > 0) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
 			}
 		}
 		

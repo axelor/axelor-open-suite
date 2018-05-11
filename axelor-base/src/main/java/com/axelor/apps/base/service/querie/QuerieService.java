@@ -29,7 +29,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
 import com.google.common.collect.Lists;
@@ -55,7 +55,7 @@ public class QuerieService {
 		String filter = querie.getQuery();
 	
 		if(filter == null || filter.isEmpty())  {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.QUERIE_1), querie.getId());
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.QUERIE_1), querie.getId());
 		}
 		
 		Class<?> klass = this.getClass(querie.getMetaModel());
@@ -69,7 +69,7 @@ public class QuerieService {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.QUERIE_2), querie.getId());
+			throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.QUERIE_2), querie.getId());
 		}
 		
 		return result;

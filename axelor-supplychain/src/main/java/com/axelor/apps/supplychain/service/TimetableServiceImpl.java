@@ -40,7 +40,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -52,7 +52,7 @@ public class TimetableServiceImpl implements TimetableService {
 	@Transactional
 	public Invoice generateInvoice(Timetable timetable) throws AxelorException{
 		if(Strings.isNullOrEmpty(timetable.getProductName())){
-			throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMETABLE_MISSING_PRODUCT_NAME));
+			throw new AxelorException(timetable, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMETABLE_MISSING_PRODUCT_NAME));
 		}
 		Invoice invoice = this.createInvoice(timetable);
 		Beans.get(InvoiceRepository.class).save(invoice);
@@ -67,7 +67,7 @@ public class TimetableServiceImpl implements TimetableService {
 		PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
 		if (saleOrder != null) {
 			if (saleOrder.getCurrency() == null) {
-				throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq());
+				throw new AxelorException(timetable, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq());
 			}
 			InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(saleOrder) {
 
@@ -85,7 +85,7 @@ public class TimetableServiceImpl implements TimetableService {
 		
 		if (purchaseOrder != null) {
 			if (purchaseOrder.getCurrency() == null) {
-				throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq());
+				throw new AxelorException(timetable, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq());
 			}
 			InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(purchaseOrder) {
 

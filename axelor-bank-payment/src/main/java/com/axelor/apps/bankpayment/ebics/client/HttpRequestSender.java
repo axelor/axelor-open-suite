@@ -56,7 +56,7 @@ import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 
@@ -95,7 +95,7 @@ public class HttpRequestSender {
     EbicsBank bank = session.getUser().getEbicsPartner().getEbicsBank();
     String url = bank.getUrl();
     if (url == null || !url.startsWith("http://") && !url.startsWith("https://")) {
-    	throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.EBICS_INVALID_BANK_URL));
+    	throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.EBICS_INVALID_BANK_URL));
     }
     
     if (bank.getProtocolSelect().equals("ssl")) {
@@ -131,7 +131,7 @@ public class HttpRequestSender {
 		response = new InputStreamContentFactory(responseHttp.getEntity().getContent());
 	} catch (IOException e) {
 		e.printStackTrace();
-		throw new AxelorException(e.getCause(), IException.MISSING_FIELD, I18n.get("Connection error: %s"), e.getMessage());
+		throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get("Connection error: %s"), e.getMessage());
 	}
 	
 	return retCode;
@@ -241,7 +241,7 @@ public class HttpRequestSender {
 	    client.getConnectionManager().getSchemeRegistry().register(https);
     } catch(Exception e) {
     	e.printStackTrace();
-    	throw new AxelorException(e.getCause(), IException.TECHNICAL, I18n.get("Error adding certificate"));
+    	throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_TECHNICAL, I18n.get("Error adding certificate"));
     }
 	
 	return client;

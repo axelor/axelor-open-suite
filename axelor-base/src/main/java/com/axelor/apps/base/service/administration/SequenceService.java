@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
@@ -269,7 +269,7 @@ public class SequenceService {
      */
     public String getDraftSequenceNumber(Model model) throws AxelorException {
         if (model.getId() == null) {
-            throw new AxelorException(model, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+            throw new AxelorException(model, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
         }
         return String.format("%s%d", DRAFT_PREFIX, model.getId());
     }
@@ -283,7 +283,7 @@ public class SequenceService {
      */
     public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
         if (model.getId() == null) {
-            throw new AxelorException(model, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+            throw new AxelorException(model, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
         }
         return String.format("%s%s", DRAFT_PREFIX,
                 StringTool.fillStringLeft(String.valueOf(model.getId()), '0', zeroPadding));

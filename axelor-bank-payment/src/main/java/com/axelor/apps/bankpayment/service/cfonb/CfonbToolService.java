@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 
@@ -47,7 +47,7 @@ public class CfonbToolService {
 	 */
 	public void testDigital(String value, String zone) throws AxelorException {
 		if(!StringTool.isDigital(value)) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT), zone, value);
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT), zone, value);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class CfonbToolService {
 	 */
 	public void testLength(String s, int size) throws AxelorException {
 		if(s.length() != size) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_TOOL_NB_OF_CHAR_PER_LINE), size);
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_TOOL_NB_OF_CHAR_PER_LINE), size);
 		}
 	}
 	
@@ -111,7 +111,7 @@ public class CfonbToolService {
 	public void checkFilled(String value, String numZone) throws AxelorException  {
 		
 		if(Strings.isNullOrEmpty(value))  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_TOOL_EMPTY_ZONE), numZone);
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_TOOL_EMPTY_ZONE), numZone);
 		}
 		
 		

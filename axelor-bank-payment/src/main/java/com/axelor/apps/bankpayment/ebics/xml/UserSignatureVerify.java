@@ -28,7 +28,7 @@ import com.axelor.apps.bankpayment.db.EbicsCertificate;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 /**
@@ -76,7 +76,7 @@ public class UserSignatureVerify  {
 			String message = I18n.get("Computed digest (SHA256) of the bank order file doesn't match with the digest extract from the signature") + " \n";
 			message += I18n.get("Computed digest (SHA256) of the bank order file :") + " " + comptedSha256Digest + "\n";
 			message += I18n.get("Original digest extracted from the signature :") + " " + originalDigestFromSignature;
-			throw new AxelorException(message, IException.INCONSISTENCY);
+			throw new AxelorException(message, TraceBackRepository.CATEGORY_INCONSISTENCY);
 
 		}
 		

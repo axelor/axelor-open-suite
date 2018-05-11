@@ -29,7 +29,7 @@ import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -70,7 +70,7 @@ public class MessageController {
 	public void sendMessages(ActionRequest request, ActionResponse response) {
 		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 		try {
-			if (idList == null) {throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));}
+			if (idList == null) {throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));}
 			int error = ModelTool.apply(Message.class, idList, model -> messageService.sendMessage((Message)model));
 			response.setFlash(String.format(I18n.get(IExceptionMessage.MESSAGES_SENT),
 					idList.size() - error, error));
@@ -84,7 +84,7 @@ public class MessageController {
 	public void regenerateMessages(ActionRequest request, ActionResponse response) {
 		List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 		try {
-			if (idList == null) {throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));}
+			if (idList == null) {throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));}
 			int error = ModelTool.apply(Message.class, idList, model -> messageService.regenerateMessage((Message)model));
 			response.setFlash(String.format(I18n.get(IExceptionMessage.MESSAGES_REGENERATED),
 					idList.size() - error, error));

@@ -44,7 +44,7 @@ import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -90,7 +90,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
 		String seq = sequenceService.getSequenceNumber(SequenceRepository.SALES_ORDER, company);
 		if (seq == null) {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName());
+			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALES_ORDER_1),company.getName());
 		}
 		return seq;
 	}
@@ -101,7 +101,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	@Transactional
 	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr){
 		Query q = JPA.em().createQuery("select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
-		q.setParameter(1, SaleOrderRepository.STATUS_CONFIRMED);
+		q.setParameter(1, SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 		q.setParameter(2, saleOrder.getClientPartner());
 		if((long) q.getSingleResult() == 1)  {
 			saleOrder.getClientPartner().setIsCustomer(false);
@@ -119,7 +119,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
     @Override
     @Transactional(rollbackOn = { AxelorException.class, RuntimeException.class }, ignore = { BlockedSaleOrderException.class })
-    public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
 	    Partner partner = saleOrder.getClientPartner();
 
 	    Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
@@ -133,7 +133,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
             }
         }
 
-        saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED);
+        saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
         if (appSaleService.getAppSale().getManageSaleOrderVersion()) {
             this.saveSaleOrderPDFAsAttachment(saleOrder);
         }
@@ -146,7 +146,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
 	public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException  {
-		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_CONFIRMED);
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 		saleOrder.setConfirmationDate(appSaleService.getTodayDate());
 		saleOrder.setConfirmedByUser(userService.getUser());
 
@@ -156,8 +156,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-	public void finishSaleOrder(SaleOrder saleOrder) throws AxelorException {
-		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINISHED);
+	public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
 
 		saleOrderRepo.save(saleOrder);
 	}
@@ -165,12 +165,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
 	@Override
 	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException  {
-		if (saleOrder.getPrintingSettings() == null) {
-			throw new AxelorException(IException.MISSING_FIELD,
-					String.format(I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS), saleOrder.getSaleOrderSeq()),
-					saleOrder
-			);
-		}
 		ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder)+"-${date}")
 				.addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
 				.addParam("SaleOrderId", saleOrder.getId())

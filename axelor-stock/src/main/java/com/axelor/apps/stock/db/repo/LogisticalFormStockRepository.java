@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -38,7 +38,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
 				String sequenceNumber = Beans.get(SequenceService.class).getSequenceNumber("logisticalForm",
 						logisticalForm.getCompany());
 				if (Strings.isNullOrEmpty(sequenceNumber)) {
-					throw new AxelorException(Sequence.class, IException.NO_VALUE,
+					throw new AxelorException(Sequence.class, TraceBackRepository.CATEGORY_NO_VALUE,
 							I18n.get(IExceptionMessage.LOGISTICAL_FORM_MISSING_SEQUENCE),
 							logisticalForm.getCompany().getName());
 				}

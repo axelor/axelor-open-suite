@@ -34,7 +34,7 @@ public interface IExceptionMessage {
 	 * Sales Order Service Impl
 	 */
 	static final String SALES_ORDER_1 = /*$$(*/ "The company %s doesn't have any configured sequence for sale orders" /*)*/ ;
-	static final String SALES_ORDER_FINISHED = /*$$(*/ "This sale order is finished." /*)*/ ;
+	static final String SALES_ORDER_COMPLETED = /*$$(*/ "This sale order is completed." /*)*/ ;
 
 	/**
 	 * Sale Config Service
@@ -66,10 +66,5 @@ public interface IExceptionMessage {
 	 */
 
 	static final String CONFIGURATOR_NOT_FOUND = /*$$(*/ "This product has no configurator." /*)*/;
-
-	/*
-	 * Invoice printing
-	 */
-	String SALE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on sale order %s." /*)*/;
 
 }

@@ -28,7 +28,7 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateServ
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -173,7 +173,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 							"<ul>" + Joiner.on("")
 									.join(Iterables.transform(bankDetailsWithoutCurrency, addLi)) + "<ul>"
 					),
-					IException.CONFIGURATION_ERROR,
+					TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
 					ebicsPartner);
 		}
 	}

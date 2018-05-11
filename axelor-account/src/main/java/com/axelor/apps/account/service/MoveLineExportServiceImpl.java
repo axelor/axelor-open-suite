@@ -63,7 +63,7 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -204,7 +204,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String exportNumber = sequenceService.getSequenceNumber(SequenceRepository.SALES_INTERFACE, company);
 		if(exportNumber == null)  {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_1), AppBaseServiceImpl.EXCEPTION, company.getName());
+			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_1), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return exportNumber;
@@ -216,7 +216,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String exportNumber = sequenceService.getSequenceNumber(SequenceRepository.REFUND_INTERFACE, company);
 		if(exportNumber == null)  {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_2), AppBaseServiceImpl.EXCEPTION, company.getName());
+			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_2), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return exportNumber;
@@ -228,7 +228,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String exportNumber = sequenceService.getSequenceNumber(SequenceRepository.TREASURY_INTERFACE, company);
 		if(exportNumber == null)  {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_3), AppBaseServiceImpl.EXCEPTION, company.getName());
+			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_3), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return exportNumber;
@@ -240,7 +240,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 
 		String exportNumber = sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_INTERFACE, company);
 		if(exportNumber == null)  {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_4), AppBaseServiceImpl.EXCEPTION, company.getName());
+			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_4), AppBaseServiceImpl.EXCEPTION, company.getName());
 		}
 
 		return exportNumber;
@@ -1440,7 +1440,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService{
 			fileName += accountingReport.getYear().getToDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
 		}
 		else {
-			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL), IException.NO_VALUE);
+			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL), TraceBackRepository.CATEGORY_NO_VALUE);
 		}
 		fileName +=".csv";
 

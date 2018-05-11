@@ -46,7 +46,7 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 
 
 public abstract class DefaultEbicsRootElement implements EbicsRootElement {
@@ -97,7 +97,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
       document = sxb.build(new InputStreamReader(new ByteArrayInputStream(toByteArray()), "UTF-8"));
       xmlOutputter.output(document, output);
     } catch (IOException | JDOMException e) {
-    	throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+    	throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
 
     return output.toByteArray();
@@ -199,7 +199,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
 	message += iter.next().getMessage();
       }
 
-      throw new AxelorException(IException.CONFIGURATION_ERROR, message);
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message);
     }
   }
 
@@ -213,7 +213,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
       out.flush();
       out.close();
     } catch (IOException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

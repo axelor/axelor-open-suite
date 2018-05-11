@@ -43,7 +43,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
@@ -77,7 +77,7 @@ public class SignedInfo extends DefaultEbicsRootElement {
     SignedInfoType		signedInfo;
 
     if (digest == null) {
-    	throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("digest value cannot be null"));
+    	throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("digest value cannot be null"));
     }
 
     transform = EbicsXmlFactory.createTransformType(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
@@ -153,7 +153,7 @@ public class SignedInfo extends DefaultEbicsRootElement {
       return Beans.get(EbicsUserService.class).authenticate(user, canonicalizer.canonicalizeSubtree(node));
     } catch(Exception e) {
       e.printStackTrace();
-      throw new AxelorException(e, IException.CONFIGURATION_ERROR);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
   }
 
