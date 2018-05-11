@@ -173,7 +173,7 @@ public interface IExceptionMessage {
 	static final public String ADDRESS_4 = /*$$(*/ "NA" /*)*/;
 	static final public String ADDRESS_5 = /*$$(*/ "<B>%s</B> not found" /*)*/;
 	static final public String ADDRESS_6 = /*$$(*/ "Feature currently not available with Open Street Maps." /*)*/;
-	static final public String ADDRESS_7 = /*$$(*/ "Current user's partner delivery address not set" /*)*/;
+	static final public String ADDRESS_7 = /*$$(*/ "Current user's active company address is not set" /*)*/;
 
 	/**
 	 * Bank details controller
