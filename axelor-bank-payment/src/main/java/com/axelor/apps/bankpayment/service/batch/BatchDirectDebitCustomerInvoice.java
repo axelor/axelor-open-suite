@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.service.batch;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -67,10 +68,10 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 		filterList.add("self.amountRemaining > 0");
 		filterList.add("self.hasPendingPayments = FALSE");
 
-		if (accountingBatch.getDueDate() != null) {
-			filterList.add("self.dueDate <= :dueDate");
-			bindingList.add(Pair.of("dueDate", (Object) accountingBatch.getDueDate()));
-		}
+		LocalDate dueDate = accountingBatch.getDueDate() != null ? accountingBatch.getDueDate()
+        		: Beans.get(AppBaseService.class).getTodayDate();
+		filterList.add("self.scheduleDate <= :dueDate");
+		bindingList.add(Pair.of("dueDate", (Object) dueDate));
 
 		if (accountingBatch.getCompany() != null) {
 			filterList.add("self.company = :company");
@@ -78,7 +79,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 		}
 
 		filterList.add(
-			"NOT IN (SELECT DISTINCT partner FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE partner = self.invoice.partner and blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
+			"self.partner.id NOT IN (SELECT DISTINCT partner.id FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE partner = self.partner and blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
 		bindingList.add(Pair.of("blockingSelect", BlockingRepository.DEBIT_BLOCKING));
 		bindingList.add(Pair.of("blockingToDate", Beans.get(AppBaseService.class).getTodayDate()));
 
