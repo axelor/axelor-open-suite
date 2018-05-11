@@ -67,7 +67,7 @@
 - Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Add validation date in Inventory
 - Add the number of components on Bill of material form view.
-- Use general configurations to determine the number of digits displayed in purchase order reports. 
+- Use general configurations to determine the number of digits displayed in purchase order, invoice and product catalog reports. 
 
 
 ## Bug Fixes
