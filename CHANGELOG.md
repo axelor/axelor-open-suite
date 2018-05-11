@@ -10,7 +10,8 @@
 - Lead: Fix status on creation and on save.
 - Fix timesheet editor duration, it will display duration in hours only. 
 - Fix sale order titles on card and stream messages.
-- Fix custom model editor breaking changes due to adk updates. 
+- Fix custom model editor breaking changes due to adk updates.
+- Fix project planning editor breaking changes due to adk updates.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
