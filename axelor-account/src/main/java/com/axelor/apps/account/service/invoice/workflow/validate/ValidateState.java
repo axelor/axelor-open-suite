@@ -23,21 +23,28 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+
+import javassist.bytecode.analysis.ControlFlow.Block;
 
 public class ValidateState extends WorkflowInvoice {
 
 	protected User user;
 
+	protected BlockingService blockingService;
+
 	public ValidateState() {
 		super();
 		this.user = AuthUtils.getUser();
-
+		this.blockingService = Beans.get(BlockingService.class);
 	}
 
 	public void init(Invoice invoice){
@@ -52,6 +59,9 @@ public class ValidateState extends WorkflowInvoice {
 			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
 		}
 
+		if(blockingService.getBlocking(invoice.getPartner(), invoice.getCompany(), BlockingRepository.INVOICING_BLOCKING) != null) {
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
+		}
 		invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
 		invoice.setValidatedByUser( user );
 

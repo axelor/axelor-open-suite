@@ -40,6 +40,7 @@
 - Add a monitoring on time differences on manufacturing orders.
 - Renamed all reference to weight by mass.
 - Refactor invoice payment list display in invoice-form and invoice-client-form views
+- Check partner blocking on invoicing, direct debit and reimbursement. 
 - Improved sale order status label.
 - Timesheet editor: No group by on project when unique product is used. 
 

@@ -50,9 +50,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -167,6 +170,9 @@ public abstract class InvoiceGenerator  {
 
 		if (partner == null) {
 			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), AppAccountServiceImpl.EXCEPTION);
+		}
+		if(Beans.get(BlockingService.class).getBlocking(partner, company, BlockingRepository.INVOICING_BLOCKING) != null) {
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
 		}
 		invoice.setPartner(partner);
 

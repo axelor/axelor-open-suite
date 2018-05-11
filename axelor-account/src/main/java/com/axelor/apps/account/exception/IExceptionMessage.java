@@ -447,6 +447,7 @@ public interface IExceptionMessage {
 	 * Validate state
 	 */
 	static final String INVOICE_VALIDATE_1 = /*$$(*/ "The payment mode is not in adequacy with the invoice type" /*)*/;
+	static final String INVOICE_VALIDATE_BLOCKING = /*$$(*/ "The partner is blocked for invoicing." /*)*/;
 
 	/**
 	 * Cancel state
