@@ -727,6 +727,30 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AppBaseDS" id="4509">
+            <list-property name="columnHints"/>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">nb_decimal_digit_for_unit_price</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">nb_decimal_digit_for_unit_price</property>
+                    <property name="nativeName">nb_decimal_digit_for_unit_price</property>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_unit_price
+from base_app_base]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <page-setup>
         <simple-master-page name="BlankMP" id="2">
@@ -1710,6 +1734,15 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                         <property name="marginTop">10pt</property>
                                         <property name="marginLeft">auto</property>
                                         <property name="width">6.677083333333333in</property>
+                                        <property name="dataSet">AppBaseDS</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">nb_decimal_digit_for_unit_price</property>
+                                                <text-property name="displayName">nb_decimal_digit_for_unit_price</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_unit_price"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                        </list-property>
                                         <structure name="toc"/>
                                         <column id="257">
                                             <property name="width">6.677083333333333in</property>
@@ -1724,7 +1757,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'value:'+row["ProductName"]</value>
+                                                                <value type="javascript">'value:'+row._outer._outer["ProductName"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1743,7 +1776,8 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["ProductName"]}</VALUE-OF></B>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer._outer._outer["ProductName"]}</VALUE-OF></B>
+]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -1775,7 +1809,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B> <VALUE-OF>row._outer._outer["ProductCode"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B> <VALUE-OF>row._outer._outer._outer["ProductCode"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -1808,7 +1842,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF format="HTML"> row["translation"]</VALUE-OF> : </B>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF format="HTML"> row["translation"]</VALUE-OF> : </B>]]></text-property>
                                                 </text>
                                                 <text id="4503">
                                                     <property name="fontSize">10.5pt</property>
@@ -1818,7 +1852,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'value:'+row["description"]</value>
+                                                                <value type="javascript">'value:'+row._outer._outer["description"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1840,8 +1874,8 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<div style=" width: 550px; word-wrap: break-word; ">
 <VALUE-OF>if(row["translation"] != null){row["translation"]}
-				else{ if(row._outer["description"] != null) { 
-					row._outer["description"]
+				else{ if(row._outer._outer._outer["description"] != null) { 
+					row._outer._outer._outer["description"]
 				 }}</VALUE-OF>
 </div>]]></text-property>
                                                 </text>
@@ -1878,8 +1912,13 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                             <property name="dataType">string</property>
                                                         </structure>
                                                     </list-property>
+                                                    <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
+  function(n) {
+    if (n < 0) throw new RangeError("Invalid count value");
+    return new Array(n + 1).join(this.toString());
+};]]></method>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer._outer["sale_price"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["currency"]</VALUE-OF> / <VALUE-OF>row._outer._outer["Unit"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>Formatter.format(row._outer._outer._outer["sale_price"], "#,##0." + "0".repeat(row._outer["nb_decimal_digit_for_unit_price"]))</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer._outer["currency"]</VALUE-OF> / <VALUE-OF>row._outer._outer._outer["Unit"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
