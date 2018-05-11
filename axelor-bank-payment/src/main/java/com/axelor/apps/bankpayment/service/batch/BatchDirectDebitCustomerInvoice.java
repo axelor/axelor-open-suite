@@ -70,7 +70,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 
 		LocalDate dueDate = accountingBatch.getDueDate() != null ? accountingBatch.getDueDate()
         		: Beans.get(AppBaseService.class).getTodayDate();
-		filterList.add("self.scheduleDate <= :dueDate");
+		filterList.add("self.dueDate <= :dueDate");
 		bindingList.add(Pair.of("dueDate", (Object) dueDate));
 
 		if (accountingBatch.getCompany() != null) {
@@ -79,7 +79,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 		}
 
 		filterList.add(
-			"self.partner.id NOT IN (SELECT DISTINCT partner.id FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE partner = self.partner and blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
+			"self.partner.id NOT IN (SELECT DISTINCT partner.id FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
 		bindingList.add(Pair.of("blockingSelect", BlockingRepository.DEBIT_BLOCKING));
 		bindingList.add(Pair.of("blockingToDate", Beans.get(AppBaseService.class).getTodayDate()));
 

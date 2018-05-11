@@ -127,7 +127,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
         }
 
         queryBuilder.add(
-                "self.paymentSchedule.partner.id NOT IN (SELECT DISTINCT partner.id FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE partner = self.paymentSchedule.partner and blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
+                "self.paymentSchedule.partner.id NOT IN (SELECT DISTINCT partner.id FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
         queryBuilder.bind("blockingSelect", BlockingRepository.DEBIT_BLOCKING);
         queryBuilder.bind("blockingToDate", Beans.get(AppBaseService.class).getTodayDate());
 

@@ -60,7 +60,7 @@ public class ValidateState extends WorkflowInvoice {
 		}
 
 		if(blockingService.getBlocking(invoice.getPartner(), invoice.getCompany(), BlockingRepository.INVOICING_BLOCKING) != null) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
 		}
 		invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
 		invoice.setValidatedByUser( user );

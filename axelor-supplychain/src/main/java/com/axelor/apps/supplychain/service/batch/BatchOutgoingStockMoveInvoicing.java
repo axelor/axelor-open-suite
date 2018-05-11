@@ -52,8 +52,8 @@ public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
 		List<Long> anomalyList = Lists.newArrayList(0L);
 		Query<StockMove> query = Beans.get(StockMoveRepository.class).all();
 		query.filter("self.statusSelect = :statusSelect AND self.saleOrder IS NOT NULL "
-				+ "AND (self.invoice IS NULL OR self.invoice.statusSelect = :invoiceStatusSelect)"
-				+ "AND self.id NOT IN (:anomalyList)"
+				+ "AND (self.invoice IS NULL OR self.invoice.statusSelect = :invoiceStatusSelect) "
+				+ "AND self.id NOT IN (:anomalyList) "
 				+ "AND self.partner.id NOT IN (" + Beans.get(BlockingService.class).listOfBlockedPartner(supplychainBatch.getCompany(), BlockingRepository.INVOICING_BLOCKING) + ")");
 
 		query.bind("statusSelect", StockMoveRepository.STATUS_REALIZED);
