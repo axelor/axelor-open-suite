@@ -707,12 +707,8 @@ public class InvoiceController {
 	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
 		try {
 			Invoice invoice = request.getContext().asType(Invoice.class);
-			Partner partner = invoice.getPartner();
-			if (partner == null) {
-				return;
-			}
 			int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
-			String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(partner, priceListTypeSelect);
+			String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(invoice.getPartner(), priceListTypeSelect);
 			response.setAttr("priceList", "domain", domain);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
