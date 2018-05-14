@@ -338,6 +338,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("productName", invoiceLine.getProduct().getName());
     productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
 
+    if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
+      productInformation.put("description", invoiceLine.getProduct().getDescription());
+    }
+
     // getting correct account for the product
     AccountManagement accountManagement =
         accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
