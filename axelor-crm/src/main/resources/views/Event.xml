@@ -111,9 +111,9 @@
 		</panel>
 
 		<panel sidebar="true" title="Attributes" name="meetingAttributes">
-			<field name="typeSelect" domain="self.value IN ('0','1','2','3')" onChange="action-event-record-reset-status-select"/>
+      <field name="typeSelect" domain="self.value IN ('0','1','2','3')" onChange="action-event-type-select-onchange-group"/>
+      <field name="eventCategory" domain="self.typeSelect = :typeSelect" />
 			<field name="callTypeSelect"  showIf="typeSelect == 1" />
-			<field name="meetingType" showIf="typeSelect == 2" widget="SuggestBox" form-view="meeting-type-form" grid-view="meeting-type-grid" />
 			<field name="prioritySelect" showIf="typeSelect == 3"/>
 			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 0" />
 			<field name="statusSelect" selection-in="[11, 12, 13, 14, 15]" hidden="true" showIf="typeSelect == 3"/>
@@ -261,6 +261,11 @@
     	<action name="action-event-record-event-from-sale-order" if="_saleOrder != null" />
     </action-group>
 
+    <action-group name="action-event-type-select-onchange-group">
+      <action name="action-event-record-reset-status-select"/>
+      <action name="action-event-record-reset-category"/>
+    </action-group>
+
     
 <!--     ACTION ATTRIBUTS -->
     
@@ -284,7 +289,8 @@
 
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
-    	<field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
+      <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
+      <field name="typeSelect" expr="0" if="_typeSelect == null"/>
     	<field name="callTypeSelect" expr="2" if="_typeSelect == '1'"/>
     	<field name="relatedToSelectId" expr="eval:_relatedToSelectId"/>
     	<field name="relatedToSelect" expr="eval:_relatedToSelect"/>
@@ -373,8 +379,12 @@
 	</action-record>
 
     <action-record name="action-event-record-reset-status-select" model="com.axelor.apps.crm.db.Event">
-        <field name="statusSelect" expr="eval: 1" if="typeSelect != 3 &amp;&amp; statusSelect > 9"/>
+        <field name="statusSelect" expr="eval: 1" if="typeSelect != 3 &amp;&amp; statusSelect &gt; 9"/>
         <field name="statusSelect" expr="eval: 11" if="typeSelect == 3 &amp;&amp; statusSelect &lt;= 9"/>
+    </action-record>
+
+    <action-record name="action-event-record-reset-category" model="com.axelor.apps.crm.db.Event">
+        <field name="eventCategory" expr="eval: null"/>
     </action-record>
 	
 <!-- 	ACTION METHOD -->

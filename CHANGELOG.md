@@ -8,6 +8,7 @@
 - Default configuration added for lead import. 
 - Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
 - Copy account type from account in analytic move line.
+- Remove Meeting categories and use now generic Event categories for every event types.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.

@@ -114,15 +114,6 @@
 		<view type="form" name="source-form"/>
 	</action-view>
 
-	<menuitem name="crm-conf-meeting-type" parent="crm-conf"
-		title="Meeting Types" action="crm.conf.meeting.type" />
-
-	<action-view name="crm.conf.meeting.type" title="Meeting Types"
-		model="com.axelor.apps.crm.db.MeetingType" >
-		<view type="grid" name="meeting-type-grid"/>
-		<view type="form" name="meeting-type-form"/>
-	</action-view>
-	
 	<menuitem name="crm-conf-category" parent="crm-conf"
 		title="Event Categories" action="crm.conf.event.category" />
 
