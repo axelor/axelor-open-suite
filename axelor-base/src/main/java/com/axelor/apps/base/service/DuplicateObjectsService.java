@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,12 +28,19 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
+import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.rpc.filter.Filter;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -43,6 +51,8 @@ public class DuplicateObjectsService {
 	
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
+	
+	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 	
 	@Transactional
 	public void removeDuplicate(List<Long> selectedIds, String modelName) {
@@ -129,12 +139,29 @@ public class DuplicateObjectsService {
 		return selectedObject;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public Filter getJpaSecurityFilter(MetaModel metaModel) {
+		
+		JpaSecurity jpaSecurity = Beans.get(JpaSecurity.class);
+		
+		try {
+			return jpaSecurity.getFilter(
+					JpaSecurity.CAN_READ,
+					(Class<? extends Model>) Class.forName(metaModel.getFullName()),
+					(Long) null);
+		} catch (ClassNotFoundException e) {
+			LOG.error(e.getMessage());
+		}
+		
+		return null;
+	}
+	
 	/*
 	 * find duplicate records
 	 */
-	public String findDuplicateRecords(List<String> fieldList, String object, String selectedRecored, String filter) {
+	public String findDuplicateRecords(List<String> fieldList, String object, String criteria) {
 
-		List<List<String>> allRecords = getAllRecords(fieldList, object, selectedRecored, filter);
+		List<List<String>> allRecords = getAllRecords(fieldList, object, criteria);
 
 		Map<String, List<String>> recordMap = new HashMap<String, List<String>>();
 
@@ -165,27 +192,16 @@ public class DuplicateObjectsService {
 	 * get all records for duplicate records
 	 */
 	@SuppressWarnings("unchecked")
-	private List<List<String>> getAllRecords(List<String> fieldList,String object,String selectedRecored,String filter){
+	private List<List<String>> getAllRecords(List<String> fieldList, String object, String criteria) {
 		
 		String query = "SELECT new List( CAST ( self.id AS string )";
 		
 		for(String field : fieldList) {
 			query += ", self." + field;
 		}
-		List<List<Object>> resultList = new ArrayList<>();
-		if(selectedRecored == null || selectedRecored.isEmpty()) {
-			if(filter.equals("null")) {
-				resultList = JPA.em().createQuery(query + ") FROM " + object + " self").getResultList();
-			} else {
-				resultList = JPA.em().createQuery(query + ") FROM " + object + " self WHERE " + filter).getResultList();
-			}
-		} else {
-			if(filter.equals("null")) {
-				resultList = JPA.em().createQuery(query + ") FROM " + object + " self where self.id in("+selectedRecored+")").getResultList();
-			} else {
-				resultList = JPA.em().createQuery(query + ") FROM " + object + " self where self.id in("+selectedRecored+") AND " + filter).getResultList();
-			}
-		}
+		
+		List<List<Object>> resultList = JPA.em()
+				.createQuery(query + ") FROM " + object + " self where self.id in (" + criteria + ")").getResultList();
 		
 		List<List<String>> records = new ArrayList<List<String>>();
 		
@@ -203,10 +219,8 @@ public class DuplicateObjectsService {
 					record.add(field.toString());
 				}
 			}
-			
 			records.add(record);
 		}
-		
 		return records;
 	}
 	

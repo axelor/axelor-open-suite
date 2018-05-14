@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,17 +32,25 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.DuplicateObjectsService;
+import com.axelor.common.Inflector;
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.mysql.jdbc.StringUtils;
+import com.axelor.rpc.filter.Filter;
+
 
 @Singleton
 public class DuplicateObjectsController {
@@ -53,6 +63,9 @@ public class DuplicateObjectsController {
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
 	
+	@Inject
+	private MetaModelRepository metaModelRepo;
+
 	public void removeDuplicate(ActionRequest request, ActionResponse response) {
 		List<Long> selectedIds = new ArrayList<>();
 		String originalId = ((Map)request.getContext().get("originalObject")).get("recordId").toString();
@@ -145,11 +158,11 @@ public class DuplicateObjectsController {
 	 * @param response
 	 */
 	@SuppressWarnings("unchecked")
-	public void showDuplicate(ActionRequest request, ActionResponse response){
-		
-		String model = (String)request.getContext().get("object");
+	public void showDuplicate(ActionRequest request, ActionResponse response) {
+
+		String model = (String) request.getContext().get("object");
 		List<String> fields = new ArrayList<String>();
-		
+
 		if (model == null) {
 			model = request.getModel();
 			String searchFields = (String) request.getContext().get("searchFields");
@@ -157,55 +170,102 @@ public class DuplicateObjectsController {
 				fields.addAll(Arrays.asList(searchFields.split(";")));
 			}
 		} else {
-			
+
 			if (request.getContext().get("fieldsSet") != null) {
-				List<HashMap<String, Object>> fieldsSet = (List<HashMap<String, Object>>) request.getContext().get("fieldsSet");
-				
+				List<HashMap<String, Object>> fieldsSet = (List<HashMap<String, Object>>) request.getContext()
+						.get("fieldsSet");
+
 				for (HashMap<String, Object> field : fieldsSet) {
 					MetaField metaField = metaFieldRepo.find(Long.parseLong(field.get("id").toString()));
 					fields.add(metaField.getName());
 				}
 			}
 		}
-		
+
 		LOG.debug("Duplicate record model: {}", model);
 
 		if (fields.size() > 0) {
-			
-			LOG.debug("Duplicate record joinList: {}", fields);
-			
-			String selectedRecored = String.valueOf((request.getContext().get("_ids")));
-			String filter = String.valueOf(request.getContext().get("_domain_"));
-			
-			if (selectedRecored.equals("null") || selectedRecored.isEmpty())
-				selectedRecored = null;
-			else
-				selectedRecored = selectedRecored.substring(1, selectedRecored.length() - 1);
 
-			String ids = duplicateObjectService.findDuplicateRecords(fields, model, selectedRecored, filter);
-			
-			if (ids.isEmpty())
-				response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
-			
-			else {
-				String domain = null;
-				if (filter.equals("null"))
-					domain = "self.id in (" + ids + ")";
-				else
-					domain = "self.id in (" + ids + ") And " + filter;
-				
-				response.setView(ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
-						  .model(model)
-						  .add("grid")
-						  .add("form")
-						  .domain(domain)
-						  .context("_domain", domain)
-						  .map());
-				
-				response.setCanClose(true);
+			LOG.debug("Duplicate record joinList: {}", fields);
+
+			String criteria = (String) (request.getContext().get("_criteria"));
+
+			if (criteria == null) {
+				if (request.getContext().get("_ids") != null) {
+					criteria = request.getContext().get("_ids").toString();
+				} else {
+					criteria = this.getCriteria(request);
+				}
+			}
+
+			if (criteria.equals("[]")) {
+				response.setError(I18n.get(IExceptionMessage.GENERAL_8));
+			} else {
+				criteria = criteria.substring(1, criteria.length() - 1);
+				String ids = duplicateObjectService.findDuplicateRecords(fields, model, criteria);
+				if (ids.isEmpty())
+					response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
+				else {
+					String domain = "self.id in (" + ids + ")";
+					Class<?> modelClass = JPA.model(model);
+					final Inflector inflector = Inflector.getInstance();
+					String viewName = inflector.dasherize(modelClass.getSimpleName());
+
+					response.setView(ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
+							.model(model)
+							.add("grid", String.format("%s-grid", viewName))
+							.add("form", String.format("%s-form", viewName))
+							.domain(domain).context("_domain", domain)
+							.map());
+
+					response.setCanClose(true);
+				}
 			}
 		} else
 			response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
 	}
-	
+
+	/**
+	 * call check duplicate wizard
+	 * 
+	 * @param request
+	 * @param response
+	 */
+	@SuppressWarnings("unchecked")
+	public void callCheckDuplicateWizard(ActionRequest request, ActionResponse response) {
+
+		LOG.debug("Call check duplicate wizard for model : {} ", request.getModel());
+
+		MetaModel metaModel = metaModelRepo.all().filter("self.fullName = ?", request.getModel()).fetchOne();
+		String criteria;
+
+		if (request.getContext().get("_ids") != null) {
+			criteria = request.getContext().get("_ids").toString();
+		} else {
+			criteria = this.getCriteria(request);
+		}
+		if (criteria.equals("[]")) {
+			response.setError(I18n.get(IExceptionMessage.GENERAL_8));
+		} else {
+			response.setView(ActionView.define("Check duplicate")
+					.model(Wizard.class.getName())
+					.add("form", "wizard-check-duplicate-form")
+					.param("popup", "true").param("show-toolbar", "false")
+					.param("width", "500")
+					.param("popup-save", "false")
+					.context("object", metaModel.getFullName())
+					.context("_criteria", criteria).map());
+		}
+	}
+
+	private String getCriteria(ActionRequest request) {
+		
+		MetaModel metaModel = metaModelRepo.all().filter("self.fullName = ?", request.getModel()).fetchOne();
+		Class<? extends Model> klass = (Class<? extends Model>) request.getBeanClass();
+		Filter filter = duplicateObjectService.getJpaSecurityFilter(metaModel);		
+		Stream<? extends Model> listObj = request.getCriteria().createQuery(klass, filter).fetchSteam();
+        
+		return listObj.map(it->it.getId()).collect(Collectors.toList()).toString();
+	}
+
 }

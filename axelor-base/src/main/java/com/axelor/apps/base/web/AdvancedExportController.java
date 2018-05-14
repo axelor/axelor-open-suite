@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.inject.Inject;
 
@@ -277,13 +279,9 @@ public class AdvancedExportController {
 
 			Class<? extends Model> klass = (Class<? extends Model>) request.getBeanClass();
 			Filter filter = advancedExportService.getJpaSecurityFilter(metaModel);
-			List<?> listObj = request.getCriteria().createQuery(klass, filter).fetch();
-			List<Long> listIds = new ArrayList<>();
-			
-			for (Object obj : listObj) {
-				listIds.add((Long) Mapper.of(obj.getClass()).get(obj, "id"));
-			}
-			criteria = listIds.toString();
+			Stream<? extends Model> listObj = request.getCriteria().createQuery(klass, filter).fetchSteam();
+            
+			criteria = listObj.map(it->it.getId()).collect(Collectors.toList()).toString();
 		}
 		
 		if (criteria.equals("[]"))
