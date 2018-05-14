@@ -20,7 +20,7 @@
 			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
 	    	<field name="fromDate" colSpan="3"/>
 	    	<field name="toDate" colSpan="3"/>
-	    	<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"/>
+        <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid" domain="self.typeSelect = 1"/>
 	    	<field name="allowExpenseCreation" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" />
     	</panel>
 		<panel-dashlet action="action-view-period-linked-adjusting-moves-dashlet" name="linkedAdjustingMoves"/>
