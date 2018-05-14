@@ -769,8 +769,14 @@ public class TimesheetServiceImpl implements TimesheetService {
     List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
 
     if (timesheetLines != null) {
+      BigDecimal periodTotalTemp;
       for (TimesheetLine timesheetLine : timesheetLines) {
-        periodTotal = periodTotal.add(timesheetLine.getHoursDuration());
+        if (timesheetLine != null) {
+          periodTotalTemp = timesheetLine.getHoursDuration();
+          if (periodTotalTemp != null) {
+            periodTotal = periodTotal.add(periodTotalTemp);
+          }
+        }
       }
     }
 
