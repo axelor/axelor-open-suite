@@ -39,15 +39,9 @@
 	     <context name="_modelName" expr="eval:_model"/>
 	</action-view>
 	
-	<action-view name="action-general-check-duplicate-records" title="Check duplicate" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="wizard-check-duplicate-form" />
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="width" value="500" />
-		<view-param name="popup" value="true" />  
-		<context name="object" expr="eval:_model"/>
-		<context name="_domain_" expr="eval:_domain"/>
-		<context name="_ids" expr="eval:_ids"/>
-	</action-view>
+	<action-method name="action-general-check-duplicate-records">
+		<call class="com.axelor.apps.base.web.DuplicateObjectsController" method="callCheckDuplicateWizard"/>
+	</action-method>
    
 	<action-method name="action-default-object-name">
 			<call class="com.axelor.apps.base.web.DuplicateObjectsController" method="defaultObjects"/>

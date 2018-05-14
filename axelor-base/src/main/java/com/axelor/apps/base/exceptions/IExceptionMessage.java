@@ -191,6 +191,7 @@ public interface IExceptionMessage {
 	static final public String GENERAL_5 = /*$$(*/ "Export Object" /*)*/;
 	static final public String GENERAL_6 = /*$$(*/ "Connection successful" /*)*/;
 	static final public String GENERAL_7 = /*$$(*/ "Error in Connection" /*)*/;
+	static final public String GENERAL_8 = /*$$(*/ "There is no records to check duplicate" /*)*/;
 
 	/**
 	 * Messsage controller

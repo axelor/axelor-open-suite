@@ -8,6 +8,7 @@
 ## Improvements
 
 ## Bug Fixes
+- Check duplicate : Apply manual filter before duplicate check and allow to open form view.
 
 
 ## [Unreleased 5.0.0-rc2]
