@@ -33,6 +33,7 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,14 +57,16 @@ public class MapRestCrm {
 	
 	@Inject
 	private AddressRepository addressRepo;
-	
+
+	private JsonNodeFactory factory = JsonNodeFactory.instance;
+
 	@Path("/lead")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getLeads() {
 
 		List<? extends Lead> leads = leadRepo.all().fetch();
-		JsonNodeFactory factory = JsonNodeFactory.instance;
+
 		ObjectNode mainNode = factory.objectNode();
 		ArrayNode arrayNode = factory.arrayNode();
 
@@ -119,51 +122,57 @@ public class MapRestCrm {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getOpportunities() {
 
-		List<? extends Opportunity> opportunities = opportunityRepo.all().fetch();
-		JsonNodeFactory factory = JsonNodeFactory.instance;
 		ObjectNode mainNode = factory.objectNode();
-		ArrayNode arrayNode = factory.arrayNode();
 
-		for (Opportunity opportunity : opportunities) {
-			
-			Partner partner = opportunity.getPartner();
-			if (partner == null) continue;
-			
-			ObjectNode objectNode = factory.objectNode();
-			
-			String currencyCode = "";
-			if (opportunity.getCurrency() != null) {
-				currencyCode = opportunity.getCurrency().getCode();
+		try {
+			List<? extends Opportunity> opportunities = opportunityRepo.all().fetch();
+
+			ArrayNode arrayNode = factory.arrayNode();
+
+			for (Opportunity opportunity : opportunities) {
+
+				Partner partner = opportunity.getPartner();
+				if (partner == null) continue;
+				
+				ObjectNode objectNode = factory.objectNode();
+				
+				String currencyCode = "";
+				if (opportunity.getCurrency() != null) {
+					currencyCode = opportunity.getCurrency().getCode();
+				}
+				
+				String amtLabel = "Amount";
+				if (!Strings.isNullOrEmpty(I18n.get("amount"))) {
+					amtLabel = I18n.get("amount");				
+				}
+				String amount = amtLabel + " : " +opportunity.getAmount() + " " + currencyCode;
+				
+	            objectNode.put("fullName", opportunity.getName() + "<br/>" + amount);
+				objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
+				
+				if (partner.getEmailAddress() != null) {
+					objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
+				}
+				
+				Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
+				if (address != null) {
+					String addressString = mapService.makeAddressString(address, objectNode);
+					addressRepo.save(address);
+					objectNode.put("address", addressString);							
+				}
+				
+				objectNode.put("pinColor", "pink");
+				objectNode.put("pinChar", "O");			
+				arrayNode.add(objectNode);	
 			}
-			
-			String amtLabel = "Amount";
-			if (!Strings.isNullOrEmpty(I18n.get("amount"))) {
-				amtLabel = I18n.get("amount");				
-			}
-			String amount = amtLabel + " : " +opportunity.getAmount() + " " + currencyCode;
-			
-            objectNode.put("fullName", opportunity.getName() + "<br/>" + amount);
-			objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
-			
-			if (partner.getEmailAddress() != null) {
-				objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
-			}
-			
-			Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
-			if (address != null) {
-				String addressString = mapService.makeAddressString(address, objectNode);
-				addressRepo.save(address);
-				objectNode.put("address", addressString);							
-			}
-			
-			objectNode.put("pinColor", "pink");
-			objectNode.put("pinChar", "O");			
-			arrayNode.add(objectNode);	
+
+			mainNode.put("status", 0);
+			mainNode.set("data", arrayNode);
+		} catch (Exception e) {
+			TraceBackService.trace(e);
+			mainNode.put("status", -1);
+			mainNode.put("errorMsg", e.getLocalizedMessage());
 		}
-		
-		mainNode.put("status", 0);
-		mainNode.set("data", arrayNode);
-		
 		return mainNode;
 	}	
 

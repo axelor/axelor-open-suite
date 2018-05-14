@@ -135,26 +135,22 @@ public class MapService {
 	//}
 	}
 
-	public HashMap<String,Object> getMapGoogle(String qString){
-		LOG.debug("Query string: {}",qString);
-		try {
-				JSONObject googleResponse = geocodeGoogle(qString);
-				LOG.debug("Google response: {}",googleResponse);
-				if(googleResponse != null){
-					HashMap<String,Object> result = new HashMap<String,Object>();
-					BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
-					BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
-					LOG.debug("URL:"+"map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
-					result.put("url","map/gmaps.html?key=" + getGoogleMapsApiKey()
-							+  "&x="+latitude+"&y="+longitude+"&z=18");
-					result.put("latitude", latitude);
-					result.put("longitude",longitude);
-					return result;
-				}
-
-		}catch(Exception e){
-			TraceBackService.trace(e);
+	public HashMap<String, Object> getMapGoogle(String qString) throws AxelorException, JSONException {
+		LOG.debug("Query string: {}", qString);
+		JSONObject googleResponse = geocodeGoogle(qString);
+		LOG.debug("Google response: {}", googleResponse);
+		if (googleResponse != null) {
+			HashMap<String, Object> result = new HashMap<String, Object>();
+			BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
+			BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
+			LOG.debug("URL:" + "map/gmaps.html?x=" + latitude + "&y=" + longitude + "&z=18");
+			result.put("url",
+					"map/gmaps.html?key=" + getGoogleMapsApiKey() + "&x=" + latitude + "&y=" + longitude + "&z=18");
+			result.put("latitude", latitude);
+			result.put("longitude", longitude);
+			return result;
 		}
+
 		return null;
 	}
 
@@ -212,7 +208,7 @@ public class MapService {
 		return null;
 	}
 
-	public HashMap<String,Object> getMap(String qString)  {
+	public HashMap<String,Object> getMap(String qString) throws AxelorException, JSONException  {
 		LOG.debug("qString = {}", qString);
 		
 		switch (appBaseService.getAppBase().getMapApiSelect()) {
@@ -259,8 +255,8 @@ public class MapService {
         }
     }
 
-	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
-			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon+"&key="+getGoogleMapsApiKey();
+	public String getDirectionUrl(String key, BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
+			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon+"&key="+key;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -301,7 +297,7 @@ public class MapService {
 		return null;
 	}
 
-	public String makeAddressString(Address address, ObjectNode objectNode) {
+	public String makeAddressString(Address address, ObjectNode objectNode) throws AxelorException, JSONException {
 
 		address = Beans.get(AddressService.class).checkLatLang(address,false);
 		BigDecimal latit = address.getLatit();

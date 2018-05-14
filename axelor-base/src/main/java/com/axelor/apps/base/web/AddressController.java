@@ -218,7 +218,6 @@ public class AddressController {
             } else {
                 response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5), address.getFullName()));
     		}
-    
     		response.setReload(true);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
@@ -227,6 +226,9 @@ public class AddressController {
 
 	public void viewDirection(ActionRequest request, ActionResponse response)  {
         try {
+        	MapService mapService = Beans.get(MapService.class);
+        	String key = mapService.getGoogleMapsApiKey();
+
         	Company company = AuthUtils.getUser().getActiveCompany();
         	if(company == null) {
         		response.setFlash(I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
@@ -262,7 +264,7 @@ public class AddressController {
     
     		Map<String,Object> mapView = new HashMap<String,Object>();
     		mapView.put("title", "Map");
-    		mapView.put("resource", Beans.get(MapService.class).getDirectionUrl(dLat, dLon, aLat, aLon));
+    		mapView.put("resource", mapService.getDirectionUrl(key, dLat, dLon, aLat, aLon));
     		mapView.put("viewType", "html");
     		response.setView(mapView);
     		response.setReload(true);
@@ -272,9 +274,17 @@ public class AddressController {
 	}
 
 	public void checkLatLang(ActionRequest request, ActionResponse response) {
-		Address address = request.getContext().asType(Address.class);
-		addressService.checkLatLang(address, true);
-		response.setReload(true);
+		try  {
+			Address address = request.getContext().asType(Address.class);
+			AppBase appBase = Beans.get(AppBase.class);
+			if(appBase.getMapApiSelect() == null || (appBase.getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE && appBase.getGoogleMapsApiKey() == null)) {
+				return;
+			}
+			addressService.checkLatLang(address, true);
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 
