@@ -13,6 +13,7 @@
 - Fix sale order titles on card and stream messages.
 - Fix custom model editor breaking changes due to adk updates.
 - Fix project planning editor breaking changes due to adk updates.
+- Invoice : allow add/remove lines only on draft state.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
