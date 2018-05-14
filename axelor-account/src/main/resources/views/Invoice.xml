@@ -202,7 +202,7 @@
 
 		<panel-tabs hideIf="partner == null">
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
@@ -439,7 +439,7 @@
 
 		<panel-tabs>
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-client-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-client-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 		</panel-tabs>
