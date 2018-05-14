@@ -16,6 +16,7 @@
 - Fix project planning editor breaking changes due to adk updates.
 - Invoice : allow add/remove lines only on draft state.
 - Timesheet editor: Remove line confirmation message translation fixed.
+- Invoice demo data : Fix import address string field.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
