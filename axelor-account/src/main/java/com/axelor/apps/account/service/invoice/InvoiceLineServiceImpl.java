@@ -291,6 +291,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("inTaxTotal", null);
     productInformation.put("companyInTaxTotal", null);
     productInformation.put("companyExTaxTotal", null);
+		if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
+			productInformation.put("description", null);
+		}
     return productInformation;
   }
 
