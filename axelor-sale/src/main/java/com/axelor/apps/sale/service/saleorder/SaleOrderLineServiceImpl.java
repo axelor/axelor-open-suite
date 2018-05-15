@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
@@ -56,6 +57,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected AppBaseService appBaseService;
 
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
+
+  @Inject protected AppSaleService appSaleService;
 
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -110,6 +113,30 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       }
     }
     saleOrderLine.setPrice(price);
+
+		if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
+			saleOrderLine.setDescription(product.getDescription());
+		}
+	}
+
+	@Override
+	public SaleOrderLine resetProductInformation(SaleOrderLine line) {
+		line.setTaxLine(null);
+		line.setTaxEquiv(null);
+		line.setProductName(null);
+		line.setUnit(null);
+		line.setCompanyCostPrice(null);
+		line.setDiscountAmount(null);
+		line.setDiscountTypeSelect(null);
+		line.setPrice(null);
+		line.setExTaxTotal(null);
+		line.setInTaxTotal(null);
+		line.setCompanyInTaxTotal(null);
+		line.setCompanyExTaxTotal(null);
+		if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
+			line.setDescription(null);
+		}
+		return line;
   }
 
   @Override

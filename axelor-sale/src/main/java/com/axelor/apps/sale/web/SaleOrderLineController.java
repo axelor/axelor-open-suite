@@ -92,74 +92,35 @@ public class SaleOrderLineController {
    * @param response
    */
   public void getProductInformation(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
-    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
-
-    Product product = saleOrderLine.getProduct();
-
-    if (saleOrder == null || product == null) {
-      this.resetProductInformation(response);
-      return;
-    }
-
     try {
-      saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder, true);
-      response.setValue("taxLine", saleOrderLine.getTaxLine());
-      response.setValue("taxEquiv", saleOrderLine.getTaxEquiv());
-      response.setValue("productName", saleOrderLine.getProductName());
-      response.setValue("saleSupplySelect", product.getSaleSupplySelect());
-      response.setValue("unit", saleOrderLineService.getSaleUnit(saleOrderLine));
-      response.setValue(
-          "companyCostPrice", saleOrderLineService.getCompanyCostPrice(saleOrder, saleOrderLine));
+      Context context = request.getContext();
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      Product product = saleOrderLine.getProduct();
 
-      if (saleOrderLine.getDiscountAmount() != null) {
-        response.setValue("discountAmount", saleOrderLine.getDiscountAmount());
+      if (saleOrder == null || product == null) {
+        resetProductInformation(response, saleOrderLine);
+        return;
       }
-      if (saleOrderLine.getDiscountTypeSelect() != null) {
-        response.setValue("discountTypeSelect", saleOrderLine.getDiscountTypeSelect());
-      }
-      response.setValue("price", saleOrderLine.getPrice());
 
-      if (saleOrderLine.getTaxLine() == null) {
-        String msg;
-
-        if (saleOrder.getCompany() != null) {
-          msg =
-              String.format(
-                  I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3),
-                  product.getCode(),
-                  saleOrder.getCompany().getName());
-        } else {
-          msg = String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode());
-        }
-
-        response.setFlash(msg);
+      try {
+        saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+        response.setValue("saleSupplySelect", product.getSaleSupplySelect());
+        response.setValues(saleOrderLine);
+      } catch (Exception e) {
+        resetProductInformation(response, saleOrderLine);
+        TraceBackService.trace(response, e);
       }
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
-      this.resetProductInformation(response);
+      TraceBackService.trace(response, e);
     }
   }
 
-  public void resetProductInformation(ActionResponse response) {
-
-    response.setValue("taxLine", null);
-    response.setValue("taxEquiv", null);
-    response.setValue("productName", null);
+  public void resetProductInformation(ActionResponse response,
+      SaleOrderLine line)  {
+    Beans.get(SaleOrderLineService.class).resetProductInformation(line);
     response.setValue("saleSupplySelect", null);
-    response.setValue("unit", null);
-    response.setValue("companyCostPrice", null);
-    response.setValue("discountAmount", null);
-    response.setValue("discountTypeSelect", null);
-    response.setValue("price", null);
-    response.setValue("exTaxTotal", null);
-    response.setValue("inTaxTotal", null);
-    response.setValue("companyInTaxTotal", null);
-    response.setValue("companyExTaxTotal", null);
+    response.setValues(line);
   }
 
   public void getTaxEquiv(ActionRequest request, ActionResponse response) {
@@ -282,12 +243,11 @@ public class SaleOrderLineController {
         for (PackLine packLine : product.getPackLines()) {
           SaleOrderLine subLine = new SaleOrderLine();
           Product subProduct = packLine.getProduct();
+
           subLine.setProduct(subProduct);
-          subLine.setProductName(subProduct.getName());
-          subLine.setPrice(subProduct.getSalePrice());
-          subLine.setUnit(saleOrderLineService.getSaleUnit(subLine));
+          saleOrderLineService.computeProductInformation(subLine, saleOrder);
           subLine.setQty(new BigDecimal(packLine.getQuantity()));
-          subLine.setCompanyCostPrice(saleOrderLineService.getCompanyCostPrice(saleOrder, subLine));
+
           TaxLine taxLine = saleOrderLineService.getTaxLine(saleOrder, subLine);
           subLine.setTaxLine(taxLine);
           saleOrderLineService.computeValues(saleOrder, subLine);
