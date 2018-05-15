@@ -2,8 +2,18 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <action-attrs name="action-expense-line-attrs-domain-project" id="business-project-action-expense-line-attrs-domain-project">
-		<attribute name="domain" for="project" expr="eval: &quot; self.imputable = true AND (${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id}) &quot;"/>
-	</action-attrs>
+  <grid name="expense-line-invoicing-project-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="user"/>
+    <field name="expenseProduct" canView="false" readonly="true"/>
+    <field name="expenseDate" readonly="true"/>
+    <field name="totalAmount" aggregate="sum" readonly="true"/>
+    <field name="totalTax" aggregate="sum" readonly="true"/>
+    <field name="expense.company.currency" />
+    <field name="comments" readonly="true"/>
+  </grid>
+
+  <action-attrs name="action-expense-line-attrs-domain-project" id="business-project-action-expense-line-attrs-domain-project">
+    <attribute name="domain" for="project" expr="eval: &quot; self.imputable = true AND (${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id}) &quot;"/>
+  </action-attrs>
 
 </object-views>

@@ -42,20 +42,6 @@
         <field name="saleMinPrice"  x-scale="2" aggregate="min"/>
         <field name="salePrice" hidden="true"/>
     </grid>
-    
-    <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="-purchaseOrder.orderDate" canMove="true">
-       	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
-       	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-    	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
-    	<field name="productName"/>
-        <field name="qty" aggregate="sum"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="price"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-	    <field name="inTaxTotal" aggregate="sum"/>
-		<field name="toInvoice"/>
-        <field name="invoiced"/>
-    </grid>
 
     <grid name="purchase-order-line-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
         <hilite if="$get('purchaseOrder.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
