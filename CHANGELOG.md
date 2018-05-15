@@ -2,6 +2,7 @@
 
 ## [Unreleased 4.x]
 - Accounting export, fix problem on export FEC
+- Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
 - Fiscal Position interface reworked and moved from Account to Base module
 
 ## [4.2.3] - 2018-02-28
