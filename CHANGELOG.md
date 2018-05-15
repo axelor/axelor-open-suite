@@ -6,6 +6,7 @@
 - Sale order form : improve timetable and printing settings tabs.
 - Employee : Removed social security number field in advanced search.
 - Default configuration added for lead import. 
+- Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
