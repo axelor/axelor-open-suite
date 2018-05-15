@@ -17,6 +17,7 @@
 - Fix project planning editor breaking changes due to adk updates.
 - Invoice : allow add/remove lines only on draft state.
 - Timesheet editor: Remove line confirmation message translation fixed.
+- Fix call to getInvoicingAddress of PartnerService in UMR form view.
 - Fix NPE and wrong domain set  on price list (SaleOrder/PurchaseOrder/Invoice).
 - Add missing translation for "Fullscreen Editor".
 - Invoice demo data : Fix import address string field.
