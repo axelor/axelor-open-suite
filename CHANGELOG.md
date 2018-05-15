@@ -656,6 +656,9 @@ Also, improve the sale order line grid and form views.
 - Fix resource management from project, removed unwanted menus and views related to it. 
 
 
+## [Unreleased 4.x]
+- Accounting export, fix problem on export FEC
+
 ## [4.2.3] - 2018-02-28
 4.1.3 with axelor-process-studio modules
 - Fiscal Position interface reworked and moved from Account to Base module
@@ -682,7 +685,6 @@ Also, improve the sale order line grid and form views.
 - On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
 - On Invoice payment, fix NPE by requiring paymentMode
 - Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
-- Accounting export, fix problem on export FEC
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
@@ -988,6 +990,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
 [5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
 [4.2.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.3...v4.2.3
 [4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
