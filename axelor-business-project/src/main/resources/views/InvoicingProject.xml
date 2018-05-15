@@ -39,7 +39,7 @@
 							   colSpan="12" canNew="false" canEdit="false"
 							   canSelect="false"
 							   form-view="sale-order-line-form"
-							   grid-view="sale-order-line-grid"
+							   grid-view="sale-order-line-invoicing-project-grid"
 							   showIf="saleOrderLineSet &amp;&amp; saleOrderLineSet.length &gt; 0"
 							   readonlyIf="invoice"/>
 				<panel-related title="Purchase" field="purchaseOrderLineSet"
@@ -47,7 +47,7 @@
 							   canSelect="false"
 							   grid-view="purchase-order-line-invoicing-project-grid"
 							   form-view="purchase-order-line-form"
-							   showIf="purchaseOrderLine &amp;&amp; purchaseOrderLine.length &gt; 0"
+							   showIf="purchaseOrderLineSet &amp;&amp; purchaseOrderLineSet.length &gt; 0"
 							   readonlyIf="invoice"/>
 				<panel-related title="Time spent" field="logTimesSet"
 							   colSpan="12" canNew="false" canEdit="false"
@@ -59,7 +59,7 @@
 				<panel-related title="Expenses" field="expenseLineSet"
 							   colSpan="12" canNew="false" canEdit="false"
 							   canSelect="false" form-view="expense-line-form"
-							   grid-view="expense-line-grid"
+							   grid-view="expense-line-invoicing-project-grid"
 							   showIf="expenseLineSet &amp;&amp; expenseLineSet.length &gt; 0"
 							   readonlyIf="invoice"/>
 
