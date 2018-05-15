@@ -249,10 +249,10 @@ public abstract class InvoiceGenerator  {
 		// Set Company bank details
 		if(companyBankDetails == null)  {
 			if(accountingSituation != null)  {
-				if(partner.getOutPaymentMode().equals(paymentMode)) {
+				if(paymentMode.equals(partner.getOutPaymentMode())) {
 					companyBankDetails = accountingSituation.getCompanyOutBankDetails();
 				}
-				else if (partner.getInPaymentMode().equals(paymentMode)) {
+				else if(paymentMode.equals(partner.getInPaymentMode())) {
 					companyBankDetails = accountingSituation.getCompanyInBankDetails();
 				}
 			}

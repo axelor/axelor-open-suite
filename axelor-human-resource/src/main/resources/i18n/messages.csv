@@ -791,8 +791,6 @@
 "You now have a negative amount of leave available for the reason %s",,,
 "amount",,,
 "com.axelor.apps.hr.service.batch.HrBatchService",,,
-"isAfter",,,
-"isBefore",,,
 "value:Employees Managment",,,
 "value:Expense Management",,,
 "value:Extra hours",,,

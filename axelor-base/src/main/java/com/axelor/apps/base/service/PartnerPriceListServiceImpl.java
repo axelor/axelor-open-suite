@@ -108,6 +108,9 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
     }
 
     public String getPriceListDomain(Partner partner, int priceListTypeSelect) {
+    	if (partner == null) {
+    		return "self.id IN (0)";
+    	}
         //get all non exclusive partner price lists
         List<PartnerPriceList> partnerPriceLists = Beans.get(PartnerPriceListRepository.class)
                 .all()
