@@ -279,6 +279,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                 PriceListLineRepository.AMOUNT_TYPE_NONE,
                 lineAmountToInvoice,
                 null,
+                false,
                 false) {
               @Override
               public List<InvoiceLine> creates() throws AxelorException {
@@ -516,7 +517,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             false,
             saleOrderLine,
             null,
-            null) {
+            null,
+            saleOrderLine.getIsSubLine()) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

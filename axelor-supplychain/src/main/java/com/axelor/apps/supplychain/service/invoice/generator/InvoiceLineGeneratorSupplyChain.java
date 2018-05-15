@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -32,7 +33,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -68,7 +68,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine) {
+      StockMoveLine stockMoveLine,
+      boolean isSubLine) {
     super(
         invoice,
         product,
@@ -84,7 +85,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         discountTypeSelect,
         exTaxTotal,
         inTaxTotal,
-        isTaxInvoice);
+        isTaxInvoice,
+        isSubLine);
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
@@ -101,10 +103,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine)
+      StockMoveLine stockMoveLine,
+      boolean isSubLine)
       throws AxelorException {
 
-    super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
+    super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, isSubLine);
 
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
@@ -116,9 +119,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.priceDiscounted = saleOrderLine.getPriceDiscounted();
       this.taxLine = saleOrderLine.getTaxLine();
       this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
-      this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
+      this.typeSelect = saleOrderLine.getTypeSelect();
     } else if (purchaseOrderLine != null) {
-      this.isTitleLine = purchaseOrderLine.getIsTitleLine();
+      if (purchaseOrderLine.getIsTitleLine()) {
+        this.typeSelect = InvoiceLineRepository.TYPE_TITLE;
+      }
       this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();

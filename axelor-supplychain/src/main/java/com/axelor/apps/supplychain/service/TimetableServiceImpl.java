@@ -149,7 +149,8 @@ public class TimetableServiceImpl implements TimetableService {
             false,
             this.findFirstSaleOrderLine(timetable),
             this.findFirstPurchaseOrderLine(timetable),
-            null) {
+            null,
+            false) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

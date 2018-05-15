@@ -69,6 +69,7 @@ public class ElementsToInvoiceService {
             PriceListLineRepository.AMOUNT_TYPE_NONE,
             elementsToInvoice.getSalePrice().multiply(elementsToInvoice.getQty()),
             null,
+            false,
             false) {
 
           @Override

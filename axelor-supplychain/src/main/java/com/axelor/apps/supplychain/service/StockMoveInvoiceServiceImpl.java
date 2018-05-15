@@ -749,7 +749,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             false,
             stockMoveLine.getSaleOrderLine(),
             stockMoveLine.getPurchaseOrderLine(),
-            stockMoveLine) {
+            stockMoveLine,
+            false) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 

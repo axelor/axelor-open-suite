@@ -24,6 +24,8 @@
 - Stock location line : add two buttons to see 'Planned' and 'Realized' stock move details for the current product and location.
 - Machine type added for the machine.
 - Selection added for priority of manufacturing order. 
+- Pack Price Select and Qty update from packLine to subLine.
+- Implement PackLine and SubLine for InvoiceLine and StockMoveLine.
  
 ## Improvements
 - Refactor TargetList and Campaign views to follow guidelines.
@@ -46,6 +48,8 @@
 - Project: Fix multiple bugs and improve views.
 - Bill of material: remove duplicate toolbar button of 'Generate new version'.
 - Event: Fix fill the "Guest" using email address when fill the partner or contact or lead.
+- Fix social network icons for employee
+- Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
 
 ## [Unreleased 5.0.4]
 ## Features

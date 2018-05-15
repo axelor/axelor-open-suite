@@ -619,6 +619,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               PriceListLineRepository.AMOUNT_TYPE_NONE,
               expenseLine.getUntaxedAmount(),
               expenseLine.getTotalAmount(),
+              false,
               false) {
 
             @Override
@@ -649,6 +650,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               PriceListLineRepository.AMOUNT_TYPE_NONE,
               expenseLine.getUntaxedAmount(),
               expenseLine.getTotalAmount(),
+              false,
               false) {
 
             @Override
