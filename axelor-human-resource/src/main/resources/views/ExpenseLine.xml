@@ -56,7 +56,7 @@
 			<field name="untaxedAmount" />
 			<field name="toInvoice"/>
 			<field name="invoiced" showIf="toInvoice"/>
-			<field name="justification"/>
+			<field name="justificationMetaFile" widget="binary-link"/>
 			<field name="comments" colSpan="12"/>
 			<field name="expense" hidden="true"/>
     		<field name="expense.companyCbSelect" hidden="true" />
