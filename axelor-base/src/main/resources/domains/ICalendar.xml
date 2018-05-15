@@ -16,11 +16,11 @@
 	  <string name="login" title="Login"/>
 	  <string name="password" title="Password"/>
 	  <integer name="typeSelect" title="Type" selection="icrm.calendar.type.select"/>
-	  <string name="synchronizationSelect" title="Advanced synchronization" selection="icrm.calendar.synchronization.select"/>
-	  <boolean name="isSslConnection" title="SSL ?"/>
+	  <string name="synchronizationSelect" title="Advanced synchronization" selection="icalendar.synchronization.select"/>
+	  <boolean name="isSslConnection" title="SSL"/>
 	  <integer name="port" title="Port"  default="80" />
 	  <boolean name="isValid" title="Valid"/>
-
+	  <datetime name="lastSynchronization" title="Last Synchronization"/>
       <finder-method name="findByUser" using="user" />
 
 	  <extra-code>

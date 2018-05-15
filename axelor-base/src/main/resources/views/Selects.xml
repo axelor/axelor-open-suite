@@ -374,7 +374,7 @@
 		<option value="4">Leave</option>
 	</selection>
 
-	<selection name="icrm.calendar.synchronization.select">
+	<selection name="icalendar.synchronization.select">
 		<option value="ICalEvent">ICal events only</option>
 	</selection>
 
