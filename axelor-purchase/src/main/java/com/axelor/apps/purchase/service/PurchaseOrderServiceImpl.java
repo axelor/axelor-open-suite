@@ -347,7 +347,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		if(purchaseOrder.getPurchaseOrderLineList() != null){
 			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 				Product product = purchaseOrderLine.getProduct();
-				if(product != null && purchaseOrderLine != null) {
+				if(product != null) {
 				    product.setPurchasePrice(purchaseOrderLine.getPrice());
 				    if (product.getDefShipCoefByPartner()) {
 				        BigDecimal shippingCoef = Beans.get(ShippingCoefService.class)
