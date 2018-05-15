@@ -19,6 +19,7 @@
 - Fix NPE and wrong domain set  on price list (SaleOrder/PurchaseOrder/Invoice).
 - Add missing translation for "Fullscreen Editor".
 - Invoice demo data : Fix import address string field.
+- Invoice demo data: Fix import draft sequence.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
