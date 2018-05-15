@@ -658,10 +658,10 @@ Also, improve the sale order line grid and form views.
 
 ## [Unreleased 4.x]
 - Accounting export, fix problem on export FEC
+- Fiscal Position interface reworked and moved from Account to Base module
 
 ## [4.2.3] - 2018-02-28
 4.1.3 with axelor-process-studio modules
-- Fiscal Position interface reworked and moved from Account to Base module
 
 ## [4.1.3] - 2018-02-28
 ### Improvements
