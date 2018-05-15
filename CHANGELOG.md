@@ -23,6 +23,7 @@
 - Fix stack overflow error on duplicate city check. Refactored the code of duplicate check.
 - Fix NPE that happens when we invoice a stock move with a partner with no in/out payment mode.
 - Add missing translation in Calendars
+- Fix java.lang.NullPointerException by checking if product and purchaseOrderLine are null
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
