@@ -114,29 +114,29 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
     saleOrderLine.setPrice(price);
 
-		if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
-			saleOrderLine.setDescription(product.getDescription());
-		}
-	}
+    if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
+      saleOrderLine.setDescription(product.getDescription());
+    }
+  }
 
-	@Override
-	public SaleOrderLine resetProductInformation(SaleOrderLine line) {
-		line.setTaxLine(null);
-		line.setTaxEquiv(null);
-		line.setProductName(null);
-		line.setUnit(null);
-		line.setCompanyCostPrice(null);
-		line.setDiscountAmount(null);
-		line.setDiscountTypeSelect(null);
-		line.setPrice(null);
-		line.setExTaxTotal(null);
-		line.setInTaxTotal(null);
-		line.setCompanyInTaxTotal(null);
-		line.setCompanyExTaxTotal(null);
-		if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
-			line.setDescription(null);
-		}
-		return line;
+  @Override
+  public SaleOrderLine resetProductInformation(SaleOrderLine line) {
+    line.setTaxLine(null);
+    line.setTaxEquiv(null);
+    line.setProductName(null);
+    line.setUnit(null);
+    line.setCompanyCostPrice(null);
+    line.setDiscountAmount(null);
+    line.setDiscountTypeSelect(null);
+    line.setPrice(null);
+    line.setExTaxTotal(null);
+    line.setInTaxTotal(null);
+    line.setCompanyInTaxTotal(null);
+    line.setCompanyExTaxTotal(null);
+    if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
+      line.setDescription(null);
+    }
+    return line;
   }
 
   @Override

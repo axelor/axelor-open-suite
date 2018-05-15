@@ -37,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -55,6 +56,7 @@ import java.util.stream.Collectors;
 public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   protected AppBaseService appBaseService;
+  protected AppStockService appStockService;
   protected StockMoveService stockMoveService;
   private TrackingNumberService trackingNumberService;
 
@@ -62,9 +64,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public StockMoveLineServiceImpl(
       TrackingNumberService trackingNumberService,
       AppBaseService appBaseService,
+      AppStockService appStockService,
       StockMoveService stockMoveService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
     this.stockMoveService = stockMoveService;
   }
 
@@ -784,6 +788,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     stockMoveLine.setUnit(product.getUnit());
     stockMoveLine.setProductName(product.getName());
+
+    if (appStockService.getAppStock().getIsEnabledProductDescriptionCopy()) {
+      stockMoveLine.setDescription(product.getDescription());
+    }
 
     if (Beans.get(AppBaseService.class).getAppBase().getManageProductVariants()) {
       stockMoveLine.setProductModel(product.getParentProduct());

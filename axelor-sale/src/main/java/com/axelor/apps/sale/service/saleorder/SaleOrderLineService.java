@@ -53,7 +53,7 @@ public interface SaleOrderLineService {
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean taxLineIsOptional)
       throws AxelorException;
 
-	SaleOrderLine resetProductInformation(SaleOrderLine line);
+  SaleOrderLine resetProductInformation(SaleOrderLine line);
 
   /**
    * Compute totals from a sale order line

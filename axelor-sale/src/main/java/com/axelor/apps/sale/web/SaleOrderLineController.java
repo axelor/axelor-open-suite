@@ -20,7 +20,6 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -30,7 +29,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -116,8 +114,7 @@ public class SaleOrderLineController {
     }
   }
 
-  public void resetProductInformation(ActionResponse response,
-      SaleOrderLine line)  {
+  public void resetProductInformation(ActionResponse response, SaleOrderLine line) {
     Beans.get(SaleOrderLineService.class).resetProductInformation(line);
     response.setValue("saleSupplySelect", null);
     response.setValues(line);

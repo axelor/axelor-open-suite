@@ -4,6 +4,8 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppStock" lang="java" cachable="true" extends="App" />
+	<entity name="AppStock" lang="java" cachable="true" extends="App">
+		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
+	</entity>
 
 </domain-models>
