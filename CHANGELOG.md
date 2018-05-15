@@ -20,6 +20,7 @@
 - Add missing translation for "Fullscreen Editor".
 - Invoice demo data : Fix import address string field.
 - Fix stack overflow error on duplicate city check. Refactored the code of duplicate check.
+- Fix NPE that happens when we invoice a stock move with a partner with no in/out payment mode.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
