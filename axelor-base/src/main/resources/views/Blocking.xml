@@ -33,7 +33,7 @@
 
     <action-attrs name="action-blocking-attrs-domain-companySet">
         <attribute name="domain" for="companySet" expr="eval: null"/>
-        <attribute name="domain" for="companySet" expr="eval: self.id IN (${_parent?.companySet?.collect{ it.id }.join(',')})" if="_parent?.companySet &amp;&amp; !_parent.companySet.isEmpty()"/>
+        <attribute name="domain" for="companySet" expr="eval: 'self.id IN (' + _parent?.companySet?.collect{ it.id }.join(',') + ')'" if="_parent?.companySet &amp;&amp; !_parent.companySet.isEmpty()"/>
     </action-attrs>
 
 </object-views>

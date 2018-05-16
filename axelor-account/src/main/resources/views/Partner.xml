@@ -54,19 +54,19 @@
     <form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
         <panel title="Blockings" colSpan="12" showIf="isSupplier || isCustomer">
             <field name="blockingList" colSpan="12" title="Blockings" showIf="$readonly()">
-                <editor x-show-on-new="false" x-viewer="true" colSpan="12">
-                    <field name="companySet" colSpan="3" widget="TagSelect"/>
-                    <field name="blockingSelect" colSpan="2" selection="base.blocking.select"/>
-                    <field name="blockingToDate" colSpan="2">
-          	        	<hilite if="$moment(blockingToDate) &gt; $moment(__date__)" color="danger" strong="true"/>
-                    </field>
-                    <field name="blockingReason" colSpan="3" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
-                    <field name="blockingByUser" colSpan="2" form-view="user-form" grid-view="user-grid"/>
-                </editor>
+				<editor colSpan="12" x-viewer="true" x-show-on-new="false">
+					<field name="companySet" colSpan="3" widget="TagSelect"/>
+					<field name="blockingSelect" colSpan="2" selection="base.blocking.select"/>
+					<field name="blockingToDate" colSpan="2">
+						<hilite if="$moment(blockingToDate) &gt; $moment(__date__)" color="danger" strong="true"/>
+					</field>
+					<field name="blockingReason" colSpan="3" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
+					<field name="blockingByUser" colSpan="2" form-view="user-form" grid-view="user-grid"/>
+				</editor>
             </field>
             <field name="blockingList" colSpan="12" title="Blockings" showIf="!$readonly()">
                 <editor x-show-on-new="false" onNew="action-blocking-record-default-companies,action-blocking-record-realized-by" colSpan="12">
-                    <field name="companySet" colSpan="12" widget="TagSelect" onSelect="action-blocking-attrs-domain-companySet"/>
+                    <field name="companySet" colSpan="12" widget="TagSelect" onSelect="action-blocking-attrs-domain-companySet" canNew="false"/>
                     <field name="blockingSelect" colSpan="12" selection="base.blocking.select" widget="RadioSelect" required="true"/>
                     <field name="blockingToDate" colSpan="3" required="true"/>
                     <field name="blockingReason" colSpan="3" canNew="true" form-view="stop-reason-form" grid-view="stop-reason-grid"/>

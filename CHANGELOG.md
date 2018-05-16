@@ -20,6 +20,7 @@
 - Add missing translation for "Fullscreen Editor".
 - Invoice demo data : Fix import address string field.
 - Fix stack overflow error on duplicate city check. Refactored the code of duplicate check.
+- Fix "Blockings" UI after $moment() helper was fixed, also fixed a bugged onSelect field on blocking.companies on edit mode.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
