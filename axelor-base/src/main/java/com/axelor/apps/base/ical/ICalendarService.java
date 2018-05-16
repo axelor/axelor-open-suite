@@ -54,6 +54,7 @@ import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.service.MailAccountService;
@@ -654,10 +655,11 @@ public class ICalendarService {
 		try {
 			String password = getCalendarDecryptPassword(calendar.getPassword());
 
-			if(calendar.getLogin() != null && calendar.getPassword() != null && store.connect(calendar.getLogin(), getCalendarDecryptPassword(calendar.getPassword()))){
+			if(calendar.getLogin() != null && calendar.getPassword() != null && store.connect(calendar.getLogin(), password)){
 				List<CalDavCalendarCollection> colList = store.getCollections();
 				if(!colList.isEmpty()){
 					calendar = doSync(calendar, colList.get(0));
+					calendar.setLastSynchronization(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
 					Beans.get(ICalendarRepository.class).save(calendar);
 				}
 			} else {
@@ -690,12 +692,13 @@ public class ICalendarService {
 		final Map<String, VEvent> remoteEvents = new HashMap<>();
 		final List<VEvent> localEvents = new ArrayList<>();
 		final Set<String> synced = new HashSet<>();
-
+		final List<ICalendarEvent> oldEvents = getICalendarEvents(calendar);
+		
 		for (VEvent item : ICalendarStore.getEvents(collection)) {
 			remoteEvents.put(item.getUid().getValue(), item);
 		}
 
-		for (ICalendarEvent item : getICalendarEvents(calendar)) {
+		for (ICalendarEvent item : oldEvents) {
 			VEvent source = createVEvent(item);
 			VEvent target = remoteEvents.get(source.getUid().getValue());
 			if (target == null && Strings.isNullOrEmpty(item.getUid())) {
@@ -761,7 +764,6 @@ public class ICalendarService {
 		}
 		
 		// update local events
-		List<ICalendarEvent> oldEvents = getICalendarEvents(calendar);
 		for (VEvent item : localEvents) {
 			ICalendarEvent iEvent = findOrCreateEvent(item, calendar);
 			if (oldEvents.contains(iEvent)) {
@@ -911,7 +913,11 @@ public class ICalendarService {
 	}
 	
 	private List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
-		
+		LocalDateTime lastSynchro = calendar.getLastSynchronization();
+		if(lastSynchro != null) {
+			List<ICalendarEvent> events = iEventRepo.all().filter("self.calendar = ?1 AND self.updatedOn < ?2", calendar, lastSynchro).fetch();
+			return events;
+		}
 		return iEventRepo.all().filter("self.calendar = ?1", calendar).fetch();
 	}
 
