@@ -311,7 +311,6 @@
     	<action name="action-sale-order-line-method-get-product-information" />
     	<action name="action-sale-order-line-method-create-pack-lines"  if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()"/>
     	<action name="action-sale-order-line-method-compute" />
-    	<action name="action-sale-order-line-method-compute-subMargin" />
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-get-production-information"/>
 		<action name="action-sale-order-line-method-supplier-partner-default" if="__config__.app.isApp('supplychain')"/>
@@ -324,7 +323,6 @@
     <action-group name="action-group-sale-saleorderline-qty-onchange">
     	<action name="action-sale-order-line-method-get-discount"/>
     	<action name="action-sale-order-line-method-compute"/>
-    	<action name="action-sale-order-line-method-compute-subMargin" />
     	<action name="action-sale-order-line-method-compute-analytic-distribution" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
 		<action name="action-sale-order-line-method-check-stock"
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
