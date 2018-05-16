@@ -27,6 +27,7 @@
 - Add missing translation in Calendars
 - Fix java.lang.NullPointerException by checking if product is null
 - Sales : perform calculation of margin when we apply discount on sale order line.
+- Fix permissions for role.manager and role.crm
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
