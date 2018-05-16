@@ -17,29 +17,32 @@
  */
 package com.axelor.apps.base.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Query;
 
-import com.axelor.apps.tool.StringTool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.JPA;
-import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 
 @Singleton
 public class DuplicateObjectsService {
+	
+	private final Logger log = LoggerFactory.getLogger(DuplicateObjectsService.class);
 	
 	@Inject
 	private MetaFieldRepository metaFieldRepo;
@@ -129,115 +132,85 @@ public class DuplicateObjectsService {
 		return selectedObject;
 	}
 	
-	/*
-	 * find duplicate records
-	 */
-	public String findDuplicateRecords(List<String> fieldList, String object, String selectedRecored, String filter) {
+	public List<?> findDuplicatedRecordIds(Set<String> fieldSet, Class<?> modelClass,  String filter) throws AxelorException {
 
-		List<List<String>> allRecords = getAllRecords(fieldList, object, selectedRecored, filter);
-
-		Map<String, List<String>> recordMap = new HashMap<String, List<String>>();
-
-		for (List<String> rec : allRecords) {
-
-			List<String> record = new ArrayList<String>();
-			for (String field : rec) {
-				if (field != null) {
-					record.add(StringTool.deleteAccent(field.toLowerCase()));
-				}
-			}
-
-			String recId = record.get(0);
-			record.remove(0);
-			if (!record.isEmpty()) {
-				recordMap.put(recId, record);
-			}
+		if (fieldSet == null || fieldSet.isEmpty()) {
+			return null;
 		}
+		
+		String concatedFields = concatFields(modelClass, fieldSet);
 
-		Iterator<String> keys = recordMap.keySet().iterator();
+		String subQuery = createSubQuery(modelClass, filter, concatedFields);
+		log.debug("Duplicate check subquery: {}", concatedFields);
+		
+		return fetchDuplicatedRecordIds(modelClass, concatedFields, subQuery);
+		
+	}
 
-		List<String> ids = getDuplicateIds(keys, recordMap, new ArrayList<String>());
+	private String concatFields(Class<?> modelClass, Set<String> fieldSet) throws AxelorException {
+		
+		StringBuilder fields = new StringBuilder("concat(");
+		Mapper mapper = Mapper.of(modelClass);
+		
+		int count = 0;
+		
+		for (String field : fieldSet) {
+			Property property = mapper.getProperty(field);
+			if (property == null) {
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+						I18n.get(IExceptionMessage.GENERAL_8), field, modelClass.getSimpleName());
+			}
+			if (property.isCollection()) {
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+						I18n.get(IExceptionMessage.GENERAL_9), field);
+			}
+			if (count != 0) {
+				fields.append(",");
+			}
+			count++;
+			fields.append("cast(self" + "." + field);
+			
+			if (property.getTarget() != null) {
+				 fields.append(".id");
+			}
+			fields.append(" as string)");
+			
+		}
+		fields.append(")");
+		
+		return fields.toString();
+	}
 
-		return Joiner.on(",").join(ids);
+	private String createSubQuery(Class<?> modelClass, String filter, String concatedFields) {
+		
+		StringBuilder queryBuilder = new StringBuilder("SELECT ");
+		queryBuilder.append(concatedFields);
+		queryBuilder.append(" FROM ");
+		queryBuilder.append(modelClass.getSimpleName() + " self");
+		if(filter != null) {
+			queryBuilder.append(" WHERE " + filter);
+		}
+		queryBuilder.append(" GROUP BY ");
+		queryBuilder.append(concatedFields);
+		queryBuilder.append(" HAVING COUNT(self) > 1");
+		
+		return queryBuilder.toString();
+		
 	}
 	
-	/*
-	 * get all records for duplicate records
-	 */
-	@SuppressWarnings("unchecked")
-	private List<List<String>> getAllRecords(List<String> fieldList,String object,String selectedRecored,String filter){
+	private List<?> fetchDuplicatedRecordIds(Class<?> modelClass, String concatedFields, String subQuery) {
 		
-		String query = "SELECT new List( CAST ( self.id AS string )";
+		StringBuilder queryBuilder = new StringBuilder("SELECT self.id FROM ");
+		queryBuilder.append(modelClass.getSimpleName() + " self");
+		queryBuilder.append(" WHERE ");
+		queryBuilder.append(concatedFields);
+		queryBuilder.append(" IN " );
+		queryBuilder.append("(" + subQuery + ")");
 		
-		for(String field : fieldList) {
-			query += ", self." + field;
-		}
-		List<List<Object>> resultList = new ArrayList<>();
-		if(selectedRecored == null || selectedRecored.isEmpty()) {
-			if(filter.equals("null")) {
-				resultList = JPA.em().createQuery(query + ") FROM " + object + " self").getResultList();
-			} else {
-				resultList = JPA.em().createQuery(query + ") FROM " + object + " self WHERE " + filter).getResultList();
-			}
-		} else {
-			if(filter.equals("null")) {
-				resultList = JPA.em().createQuery(query + ") FROM " + object + " self where self.id in("+selectedRecored+")").getResultList();
-			} else {
-				resultList = JPA.em().createQuery(query + ") FROM " + object + " self where self.id in("+selectedRecored+") AND " + filter).getResultList();
-			}
-		}
+		List<?> recordIds =  JPA.em().createQuery(queryBuilder.toString())
+				.getResultList();
 		
-		List<List<String>> records = new ArrayList<List<String>>();
-		
-		for(List<Object> result : resultList){
-			
-			List<String> record = new ArrayList<String>();
-			for(Object field : result){
-				if(field == null){
-					continue;
-				}
-				if(field instanceof Model){
-					record.add(((Model)field).getId().toString());
-				}
-				else{
-					record.add(field.toString());
-				}
-			}
-			
-			records.add(record);
-		}
-		
-		return records;
+		return recordIds;
 	}
-	
-	/*
-	 * get duplicate records id
-	 */
-	private List<String> getDuplicateIds(Iterator<String> keys, Map<String, List<String>> recordMap, List<String> ids) {
 
-		if (!keys.hasNext()) {
-			return ids;
-		}
-
-		String recId = keys.next();
-		List<String> record = recordMap.get(recId);
-		keys.remove();
-		recordMap.remove(recId);
-
-		Iterator<String> compareKeys = recordMap.keySet().iterator();
-
-		while (compareKeys.hasNext()) {
-			String compareId = compareKeys.next();
-			List<String> value = recordMap.get(compareId);
-			if (value.containsAll(record)) {
-				ids.add(recId);
-				ids.add(compareId);
-				compareKeys.remove();
-				recordMap.remove(compareId);
-				keys = recordMap.keySet().iterator();
-			}
-		}
-
-		return getDuplicateIds(keys, recordMap, ids);
-	}
 }

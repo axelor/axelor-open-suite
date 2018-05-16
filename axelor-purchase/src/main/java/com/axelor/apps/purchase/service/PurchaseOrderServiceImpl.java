@@ -347,24 +347,26 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		if(purchaseOrder.getPurchaseOrderLineList() != null){
 			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 				Product product = purchaseOrderLine.getProduct();
-				product.setPurchasePrice(purchaseOrderLine.getPrice());
-				if (product.getDefShipCoefByPartner()) {
-					BigDecimal shippingCoef = Beans.get(ShippingCoefService.class)
-							.getShippingCoef(
-									product,
-									purchaseOrder.getSupplierPartner(),
-									purchaseOrder.getCompany()
-							);
-					if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
-						product.setShippingCoef(shippingCoef);
-					}
+				if(product != null) {
+				    product.setPurchasePrice(purchaseOrderLine.getPrice());
+				    if (product.getDefShipCoefByPartner()) {
+				        BigDecimal shippingCoef = Beans.get(ShippingCoefService.class)
+				                .getShippingCoef(
+				                        product,
+				                        purchaseOrder.getSupplierPartner(),
+				                        purchaseOrder.getCompany()
+				                        );
+				        if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
+				            product.setShippingCoef(shippingCoef);
+				        }
+				    }
+				    if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
+				        product.setCostPrice(purchaseOrderLine.getPrice());
+				        if (product.getAutoUpdateSalePrice()) {
+				            Beans.get(ProductService.class).updateSalePrice(product);
+				        }
+				    }
 				}
-				if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
-					product.setCostPrice(purchaseOrderLine.getPrice());
-					if (product.getAutoUpdateSalePrice()) {
-						Beans.get(ProductService.class).updateSalePrice(product);
-					}
-                }
 			}
 			purchaseOrderRepo.save(purchaseOrder);
 		}

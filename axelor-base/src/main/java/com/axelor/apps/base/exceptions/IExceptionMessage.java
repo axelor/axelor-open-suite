@@ -173,7 +173,7 @@ public interface IExceptionMessage {
 	static final public String ADDRESS_4 = /*$$(*/ "NA" /*)*/;
 	static final public String ADDRESS_5 = /*$$(*/ "<B>%s</B> not found" /*)*/;
 	static final public String ADDRESS_6 = /*$$(*/ "Feature currently not available with Open Street Maps." /*)*/;
-	static final public String ADDRESS_7 = /*$$(*/ "Current user's partner delivery address not set" /*)*/;
+	static final public String ADDRESS_7 = /*$$(*/ "Current user's active company address is not set" /*)*/;
 
 	/**
 	 * Bank details controller
@@ -191,7 +191,9 @@ public interface IExceptionMessage {
 	static final public String GENERAL_5 = /*$$(*/ "Export Object" /*)*/;
 	static final public String GENERAL_6 = /*$$(*/ "Connection successful" /*)*/;
 	static final public String GENERAL_7 = /*$$(*/ "Error in Connection" /*)*/;
-
+	static final public String GENERAL_8 = /*$$(*/ "Duplicate finder field '%s' is not found inside model '%s'" /*)*/;
+	static final public String GENERAL_9 = /*$$(*/ "Invalid duplicate finder field '%s'. Field type ManyToMany or OneToMany is not supported for duplicate check" /*)*/;
+	static final public String GENERAL_10 = /*$$(*/ "No duplicate finder field configured." /*)*/;
 	/**
 	 * Messsage controller
 	 */

@@ -6,6 +6,7 @@
 - Sale order form : improve timetable and printing settings tabs.
 - Employee : Removed social security number field in advanced search.
 - Default configuration added for lead import. 
+- Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
@@ -16,10 +17,15 @@
 - Fix project planning editor breaking changes due to adk updates.
 - Invoice : allow add/remove lines only on draft state.
 - Timesheet editor: Remove line confirmation message translation fixed.
+- Fix call to getInvoicingAddress of PartnerService in UMR form view.
 - Fix NPE and wrong domain set  on price list (SaleOrder/PurchaseOrder/Invoice).
 - Add missing translation for "Fullscreen Editor".
 - Invoice demo data : Fix import address string field.
 - Invoice demo data: Fix import draft sequence.
+- Fix stack overflow error on duplicate city check. Refactored the code of duplicate check.
+- Fix NPE that happens when we invoice a stock move with a partner with no in/out payment mode.
+- Add missing translation in Calendars
+- Fix java.lang.NullPointerException by checking if product is null
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
