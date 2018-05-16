@@ -21,6 +21,7 @@
 - Fix NPE and wrong domain set  on price list (SaleOrder/PurchaseOrder/Invoice).
 - Add missing translation for "Fullscreen Editor".
 - Invoice demo data : Fix import address string field.
+- Invoice demo data: Fix import draft sequence.
 - Fix stack overflow error on duplicate city check. Refactored the code of duplicate check.
 - Fix NPE that happens when we invoice a stock move with a partner with no in/out payment mode.
 - Add missing translation in Calendars
