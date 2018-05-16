@@ -22,11 +22,15 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class YearServiceImpl implements YearService {
@@ -41,7 +45,7 @@ public class YearServiceImpl implements YearService {
 		
 	}
 	
-	public List<Period> generatePeriods(Year year){
+	public List<Period> generatePeriods(Year year) throws AxelorException{
 
 		List<Period> periods = new ArrayList<Period>();
 		Integer duration = year.getPeriodDurationSelect();
@@ -50,7 +54,13 @@ public class YearServiceImpl implements YearService {
 		LocalDate periodToDate = fromDate;
 		Integer periodNumber = 1;
 
+    int c = 0;
+    int loopLimit = 1000;
 		while(periodToDate.isBefore(toDate)){
+      if(c >= loopLimit) {
+        throw new AxelorException(I18n.get(IExceptionMessage.PERIOD_3), IException.INCONSISTENCY);
+      }
+      c += 1;
 			if(periodNumber != 1)
 				fromDate = fromDate.plusMonths(duration);
 			periodToDate = fromDate.plusMonths(duration).minusDays(1);

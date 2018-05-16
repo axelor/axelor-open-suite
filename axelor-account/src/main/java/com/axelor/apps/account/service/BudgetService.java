@@ -29,6 +29,10 @@ import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
@@ -70,7 +74,7 @@ public class BudgetService {
 		return budget.getBudgetLineList();
 	}
 	
-	public List<BudgetLine> generatePeriods(Budget budget){
+	public List<BudgetLine> generatePeriods(Budget budget) throws AxelorException{
 		
 		if(budget.getBudgetLineList() != null && !budget.getBudgetLineList().isEmpty()){
 			List<BudgetLine> budgetLineList = budget.getBudgetLineList();
@@ -84,7 +88,13 @@ public class BudgetService {
 		LocalDate budgetLineToDate = fromDate;
 		Integer budgetLineNumber = 1;
 
+    int c = 0;
+    int loopLimit = 1000;
 		while(budgetLineToDate.isBefore(toDate)){
+      if(c >= loopLimit) {
+        throw new AxelorException(I18n.get(IExceptionMessage.BUDGET_1), IException.INCONSISTENCY);
+      }
+      c += 1;
 			if(budgetLineNumber != 1)
 				fromDate = fromDate.plusMonths(duration);
 			budgetLineToDate = fromDate.plusMonths(duration).minusDays(1);

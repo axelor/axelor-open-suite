@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.service.YearServiceAccountImpl;
 import com.axelor.apps.base.db.Year;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -41,7 +42,11 @@ public class YearController {
 	}
 	
 	public void generatePeriods(ActionRequest request, ActionResponse response) {
-		Year year = request.getContext().asType(Year.class);
-		response.setValue("periodList", ys.generatePeriods(year));
+    try {
+      Year year = request.getContext().asType(Year.class);
+      response.setValue("periodList", ys.generatePeriods(year));
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
 	}
 }
