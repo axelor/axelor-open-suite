@@ -657,9 +657,20 @@ Also, improve the sale order line grid and form views.
 
 
 ## [Unreleased 4.x]
-- Accounting export, fix problem on export FEC
+### Improvements
 - Fiscal Position interface reworked and moved from Account to Base module
+- Accounting export, use 1000 for administration and 1001 for FEC
+- Move every method of mobile service in HumanRessourceMobileController + fix some and change parameters
+- Web service mobile, create getKilometricAllowParam
+
+### Bug Fixes
 - Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
+- Filter on values selection
+- Fix translation in base module, add traceback on checkPlanning method in WeeklyPlanningController
+- MoveLine, show tab of reconcile credit or debit
+- Human ressource, remove french title in Employee, employee-filters + add translation
+- Invoice, replace empty line on pending total by a color line (blue, info-text)
+- In MoveLineExportServiceImpl, always have ignoreInAccountingOk = false
 
 ## [4.2.3] - 2018-02-28
 4.1.3 with axelor-process-studio modules
