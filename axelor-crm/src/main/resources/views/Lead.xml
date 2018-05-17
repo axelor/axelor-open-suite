@@ -49,7 +49,6 @@
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 			  <item title="Schedule Event" action="save,action-lead-view-schedule-event"/>
-			  <item title="Show all events" readonlyIf="id == null" action="action-lead-view-events"/>
 			  <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
 			  <item title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 5" action="save,action-send-by-email-with-template"/>
 			</menu>
@@ -132,6 +131,7 @@
 			</panel>
 
 			<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 5" itemSpan="12">
+				<button name="showAllEvents" title="Show all events" css="btn-custom text-left" icon="fa-tasks" readonlyIf="id == null" onClick="action-lead-view-events"/>
 				<panel-related colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid"/>
 				<panel-related colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid"/>
 				<panel-dashlet action="action-lead-view-emails"/>
