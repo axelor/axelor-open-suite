@@ -150,20 +150,24 @@ public class EventController {
 	}
 
 	public void viewMap(ActionRequest request, ActionResponse response)  {
-		Event event = request.getContext().asType(Event.class);
-		if(event.getLocation() != null){
-			Map<String,Object> result = Beans.get(MapService.class).getMap(event.getLocation());
-			if(result != null){
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", "Map");
-				mapView.put("resource", result.get("url"));
-				mapView.put("viewType", "html");
-				response.setView(mapView);
-			}
-			else
-				response.setFlash(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),event.getLocation()));
-		}else
-			response.setFlash(I18n.get(IExceptionMessage.EVENT_1));
+		try {
+			Event event = request.getContext().asType(Event.class);
+			if(event.getLocation() != null){
+				Map<String,Object> result = Beans.get(MapService.class).getMap(event.getLocation());
+				if(result != null){
+					Map<String,Object> mapView = new HashMap<String,Object>();
+					mapView.put("title", "Map");
+					mapView.put("resource", result.get("url"));
+					mapView.put("viewType", "html");
+					response.setView(mapView);
+				}
+				else
+					response.setFlash(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),event.getLocation()));
+			}else
+				response.setFlash(I18n.get(IExceptionMessage.EVENT_1));
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 

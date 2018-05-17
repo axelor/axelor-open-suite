@@ -245,7 +245,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 		productInformation.put("inTaxTotal", null);
 		productInformation.put("companyInTaxTotal", null);
 		productInformation.put("companyExTaxTotal", null);
-		productInformation.put("description", null);
 		return productInformation;
 	}
 
@@ -269,8 +268,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
 		productInformation.put("productName", invoiceLine.getProduct().getName());
 		productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
-
-		productInformation.put("description", invoiceLine.getProduct().getDescription());
 
 		// getting correct account for the product
 		AccountManagement accountManagement = accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
