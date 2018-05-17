@@ -18,19 +18,16 @@
 (function() {
     var query = window.location.search.substring(1);
     query = decodeURIComponent(query);
-
     function loadGoogleMapAPIJS(key, callback) {
 		if (!key) {
 			throw 'Google Maps API key is missing.';
 		}
-
     	var url = 'https://maps.googleapis.com/maps/api/js?v=3&key=' + key;
         var script = document.createElement('script');
         script.src = url;
         script.onload = callback;
         document.body.appendChild(script);
     }
-
     function getQueryVariable(variable) {
         var vars = query.split("&");
         for (var i = 0; i < vars.length; i++) {
@@ -41,52 +38,37 @@
         }
         return (false);
     }
-
     function loadMap() {
-
         var mapElement = document.getElementById('map');
         var loadingImage = document.getElementById('loadingImage');
+        var minZoom = 3;
         mapElement.style.visibility = "hidden";
         loadingImage.style.display = "inline";
-
         var options = {
-            zoom: 3,
-            center: new google.maps.LatLng(48.8357120, 2.5856770),
+            zoom: minZoom,
+            center: new google.maps.LatLng(20.8948062, 1.6760691),
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-
         var map = new google.maps.Map(document.getElementById('map'), options);
-        var appHome = location.protocol + '//' + location.host + '/' + location.pathname.split('/')[1];
-
-
         google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
-
             // Creating an array that will store the markers
             var markers = [];
             // To show Object details on click of Pinpoint
             var infowindow = new google.maps.InfoWindow();
-
             var bounds = new google.maps.LatLngBounds();
-
-            var url = appHome + "/ws/map/" + getQueryVariable("object");
+            var url = getAppHome() + "/ws/map/" + getQueryVariable("object");
             var id = getQueryVariable("id");
-
             if (id) {
                 url += "/" + id;
             }
-
             var requestP = $.ajax({
                 type: "GET",
                 contentType: 'application/json',
                 url: url
             });
-
             requestP.done(function(result) {
-
                 if (result.status == 0) {
-
                     for (var i = 0; i < result.data.length; i++) {
-
                         var d = result.data[i];
                         var icon = 'http://thydzik.com/thydzikGoogleMap/markerlink.php?text=' + d['pinChar'];
                         var latlng = new google.maps.LatLng(d['latit'], d['longit']);
@@ -96,7 +78,6 @@
                         var emailAddress = d['emailAddress'] ? "<i class='fa fa-envelope'></i>&nbsp;" + d['emailAddress'] : '';
                         var content = "<b>" + title + "</b><br/>" + address + fixedPhone + emailAddress;
                         var iconcolor;
-
                         switch (d['pinColor']) {
                             case 'blue':
                                 iconcolor = '5680FC';
@@ -123,55 +104,54 @@
                                 iconcolor = 'FC6355';
                                 break;
                         }
-
                         icon = icon + '&color=' + iconcolor;
-
                         var marker = new google.maps.Marker({
                             position: latlng,
                             map: map,
                             title: title.split('<br/>')[0],
                             icon: icon
                         });
-
                         google.maps.event.addListener(marker, 'click', (function(content) {
                             return function() {
                                 infowindow.setContent(content);
                                 infowindow.open(map, this);
                             };
                         })(content));
-
                         markers.push(marker);
                         bounds.extend(marker.getPosition());
-
                     } //end loop
-
-                    if (markers.length > 0) {
-                        if (id) {
-                            map.fitBounds(bounds);
+                    if (markers.length < 2) {
+                        var latLng;
+                        if (markers.length) {
+                            latLng = markers[0].getPosition();
+                        } else {
+                            latLng = result.company ? new google.maps.LatLng(result.company) : options.center;
                         }
-
-                        if (markers.length == 1) {
-                            map.setZoom(15);
+                        map.setCenter(latLng);
+                        map.setZoom(10);
+                    } else {
+                        map.fitBounds(bounds);
+                        if (map.getZoom() <= minZoom) {
+                            if (map.getZoom() < minZoom) {
+                                map.setZoom(minZoom);
+                            }
+                            map.setCenter(options.center);
                         }
                     }
-                } // end if
+                } else {
+                    window.location = "error.html?msg=" + result.errorMsg;
+                }
             });
-
             requestP.fail(function(jqXHR, textStatus) {
                 alert("Request failed: " + textStatus);
             });
-
             requestP.complete(function() {
                 mapElement.style.visibility = "visible";
                 loadingImage.style.display = "none";
             });
-
             var markerclusterer = new MarkerClusterer(map, markers);
-
         });
     };
-
-
     window.onload = function() {
 		try {
 	        loadGoogleMapAPIJS(getQueryVariable('key'), function() {
