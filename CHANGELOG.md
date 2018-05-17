@@ -6,6 +6,7 @@
 - Sale order form : improve timetable and printing settings tabs.
 - Employee : Removed social security number field in advanced search.
 - Default configuration added for lead import. 
+- Product : procurement method can now be both 'Buy and produce'. Stock rules creation now set a default refill method based on the product's procurement method.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
