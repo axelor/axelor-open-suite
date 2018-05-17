@@ -31,12 +31,15 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import com.opencsv.CSVWriter;
+
+import wslite.json.JSONException;
 
 @Singleton
 public class AddressServiceImpl implements AddressService  {
@@ -137,7 +140,7 @@ public class AddressServiceImpl implements AddressService  {
 	}
 	
 	@Transactional
-	public Address checkLatLang(Address address, boolean forceUpdate){
+	public Address checkLatLang(Address address, boolean forceUpdate) throws AxelorException, JSONException{
 		
 		address = addressRepo.find(address.getId());
 		BigDecimal latit = address.getLatit();

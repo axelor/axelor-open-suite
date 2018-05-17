@@ -73,11 +73,9 @@ public class SaleOrderLineController {
 		SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 
 		saleOrderLine.setSaleOrder(saleOrder);
-		saleOrderLineService.computeSubMargin(saleOrderLine);
+		Map<String, BigDecimal> map = saleOrderLineService.computeSubMargin(saleOrder, saleOrderLine);
 
-		response.setValue("subTotalCostPrice", saleOrderLine.getSubTotalCostPrice());
-		response.setValue("subTotalGrossMargin", saleOrderLine.getSubTotalGrossMargin());
-		response.setValue("subMarginRate", saleOrderLine.getSubMarginRate());
+		response.setValues(map);
 	}
 
 
