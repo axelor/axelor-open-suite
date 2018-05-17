@@ -7,6 +7,7 @@
 - Employee : Removed social security number field in advanced search.
 - Default configuration added for lead import. 
 - Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
+- Sale order: close linked opportunity upon confirmation.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.

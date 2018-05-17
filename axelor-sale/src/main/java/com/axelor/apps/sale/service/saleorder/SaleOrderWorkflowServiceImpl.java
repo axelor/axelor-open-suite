@@ -35,6 +35,8 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -151,6 +153,12 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 		saleOrder.setConfirmedByUser(userService.getUser());
 
 		this.validateCustomer(saleOrder);
+
+        Opportunity opportunity = saleOrder.getOpportunity();
+
+        if (opportunity != null) {
+            opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_CLOSED_WON);
+        }
 
 		saleOrderRepo.save(saleOrder);
 	}
