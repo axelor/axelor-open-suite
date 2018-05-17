@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.base.service.user;
 
+import java.util.Optional;
+
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -124,8 +127,19 @@ public class UserServiceImpl implements UserService  {
 		return company.getLogo();
 		
 	}
-	
-	/**
+
+    @Override
+    public Optional<Address> getUserActiveCompanyAddress() {
+        Company company = getUserActiveCompany();
+
+        if (company != null) {
+            return Optional.ofNullable(company.getAddress());
+        }
+
+        return Optional.empty();
+    }
+
+    /**
 	 * Method that return the active team of the current connected user
 	 * 
 	 * @return Team

@@ -17,7 +17,9 @@
  */
 package com.axelor.web;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -33,7 +35,6 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -47,133 +48,152 @@ import com.google.inject.persist.Transactional;
 @Path("/map")
 public class MapRestCrm {
 
-	@Inject MapService mapService;
-	
-	@Inject
-	private LeadRepository leadRepo;
-	
-	@Inject
-	private OpportunityRepository opportunityRepo;
-	
-	@Inject
-	private AddressRepository addressRepo;
+    @Inject
+    private MapService mapService;
 
-	private JsonNodeFactory factory = JsonNodeFactory.instance;
+    @Inject
+    private LeadRepository leadRepo;
 
-	@Path("/lead")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public JsonNode getLeads() {
+    @Inject
+    private OpportunityRepository opportunityRepo;
 
-		List<? extends Lead> leads = leadRepo.all().fetch();
+    @Inject
+    private AddressRepository addressRepo;
 
-		ObjectNode mainNode = factory.objectNode();
-		ArrayNode arrayNode = factory.arrayNode();
+    private JsonNodeFactory factory = JsonNodeFactory.instance;
 
-		for (Lead lead : leads) {
-			
-			String fullName = lead.getFirstName() + " " + lead.getName();
-			
-			if (lead.getEnterpriseName() != null) {
-                fullName = lead.getEnterpriseName() + "<br/>" + fullName;
-			}			
-			ObjectNode objectNode = factory.objectNode();
-			objectNode.put("fullName", fullName);
-			objectNode.put("fixedPhone", lead.getFixedPhone() != null ? lead.getFixedPhone() : " ");
-			
-			if (lead.getEmailAddress() != null) {
-				objectNode.put("emailAddress", lead.getEmailAddress().getAddress());
-			}
-			
-			StringBuilder addressString = new StringBuilder();
-			
-			if (lead.getPrimaryAddress() != null) {
-                addressString.append(lead.getPrimaryAddress() + "<br/>");
-			}
-			if (lead.getPrimaryCity() != null) {
-                addressString.append(lead.getPrimaryCity() + "<br/>");
-			}
-			if (lead.getPrimaryPostalCode() != null) {
-                addressString.append(lead.getPrimaryPostalCode() + "<br/>");
-			}
-			if (lead.getPrimaryState() != null) {
-                addressString.append(lead.getPrimaryState() + "<br/>");
-			}
-			if (lead.getPrimaryCountry() != null) {
-				addressString.append(lead.getPrimaryCountry().getName());
-			}						 
-			
-			objectNode.put("address", addressString.toString());
-			objectNode.put("pinColor", "yellow");
-			objectNode.put("pinChar", "L");
-			
-			arrayNode.add(objectNode);	
-		}
-		
-		mainNode.put("status", 0);
-		mainNode.set("data", arrayNode);
-		
-		return mainNode;
-	}
-	
-	@Transactional
-	@Path("/opportunity")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public JsonNode getOpportunities() {
+    @Path("/lead")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonNode getLeads() {
+        ObjectNode mainNode = factory.objectNode();
 
-		ObjectNode mainNode = factory.objectNode();
+        try {
+            List<? extends Lead> leads = leadRepo.all().fetch();
+            ArrayNode arrayNode = factory.arrayNode();
 
-		try {
-			List<? extends Opportunity> opportunities = opportunityRepo.all().fetch();
+            for (Lead lead : leads) {
 
-			ArrayNode arrayNode = factory.arrayNode();
+                String fullName = lead.getFirstName() + " " + lead.getName();
 
-			for (Opportunity opportunity : opportunities) {
+                if (lead.getEnterpriseName() != null) {
+                    fullName = lead.getEnterpriseName() + "<br/>" + fullName;
+                }
 
-				Partner partner = opportunity.getPartner();
-				if (partner == null) continue;
-				
-				ObjectNode objectNode = factory.objectNode();
-				
-				String currencyCode = "";
-				if (opportunity.getCurrency() != null) {
-					currencyCode = opportunity.getCurrency().getCode();
-				}
-				
-				String amtLabel = "Amount";
-				if (!Strings.isNullOrEmpty(I18n.get("amount"))) {
-					amtLabel = I18n.get("amount");				
-				}
-				String amount = amtLabel + " : " +opportunity.getAmount() + " " + currencyCode;
-				
-	            objectNode.put("fullName", opportunity.getName() + "<br/>" + amount);
-				objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
-				
-				if (partner.getEmailAddress() != null) {
-					objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
-				}
-				
-				Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
-				if (address != null) {
-					String addressString = mapService.makeAddressString(address, objectNode);
-					addressRepo.save(address);
-					objectNode.put("address", addressString);							
-				}
-				
-				objectNode.put("pinColor", "pink");
-				objectNode.put("pinChar", "O");			
-				arrayNode.add(objectNode);	
-			}
+                ObjectNode objectNode = factory.objectNode();
+                objectNode.put("fullName", fullName);
+                objectNode.put("fixedPhone", lead.getFixedPhone() != null ? lead.getFixedPhone() : " ");
 
-			mainNode.put("status", 0);
-			mainNode.set("data", arrayNode);
-		} catch (Exception e) {
-			TraceBackService.trace(e);
-			mainNode.put("status", -1);
-			mainNode.put("errorMsg", e.getLocalizedMessage());
-		}
-		return mainNode;
-	}	
+                if (lead.getEmailAddress() != null) {
+                    objectNode.put("emailAddress", lead.getEmailAddress().getAddress());
+                }
+
+                StringBuilder addressString = new StringBuilder();
+
+                if (lead.getPrimaryAddress() != null) {
+                    addressString.append(lead.getPrimaryAddress() + "<br/>");
+                }
+
+                if (lead.getPrimaryCity() != null) {
+                    addressString.append(lead.getPrimaryCity() + "<br/>");
+                }
+
+                if (lead.getPrimaryPostalCode() != null) {
+                    addressString.append(lead.getPrimaryPostalCode() + "<br/>");
+                }
+
+                if (lead.getPrimaryState() != null) {
+                    addressString.append(lead.getPrimaryState() + "<br/>");
+                }
+
+                if (lead.getPrimaryCountry() != null) {
+                    addressString.append(lead.getPrimaryCountry().getName());
+                }
+
+                String addressFullname = addressString.toString();
+                objectNode.put("address", addressFullname);
+                objectNode.put("pinColor", "yellow");
+                objectNode.put("pinChar", I18n.get(ITranslation.PIN_CHAR_LEAD));
+
+                Map<String, Object> result = Beans.get(MapService.class).getMap(addressFullname);
+
+                if (result != null) {
+                    objectNode.put("latit", (BigDecimal) result.get("latitude"));
+                    objectNode.put("longit", (BigDecimal) result.get("longitude"));
+                }
+
+                arrayNode.add(objectNode);
+            }
+
+            mapService.setData(mainNode, arrayNode);
+        } catch (Exception e) {
+            mapService.setError(mainNode, e);
+        }
+
+        return mainNode;
+    }
+
+    @Transactional
+    @Path("/opportunity")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonNode getOpportunities() {
+        ObjectNode mainNode = factory.objectNode();
+
+        try {
+            List<? extends Opportunity> opportunities = opportunityRepo.all().fetch();
+            ArrayNode arrayNode = factory.arrayNode();
+
+            for (Opportunity opportunity : opportunities) {
+
+                Partner partner = opportunity.getPartner();
+
+                if (partner == null) {
+                    continue;
+                }
+
+                ObjectNode objectNode = factory.objectNode();
+
+                String currencyCode = "";
+
+                if (opportunity.getCurrency() != null) {
+                    currencyCode = opportunity.getCurrency().getCode();
+                }
+
+                String amtLabel = "Amount";
+
+                if (!Strings.isNullOrEmpty(I18n.get("amount"))) {
+                    amtLabel = I18n.get("amount");
+                }
+
+                String amount = amtLabel + " : " + opportunity.getAmount() + " " + currencyCode;
+
+                objectNode.put("fullName", opportunity.getName() + "<br/>" + amount);
+                objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
+
+                if (partner.getEmailAddress() != null) {
+                    objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
+                }
+
+                Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
+
+                if (address != null) {
+                    String addressString = mapService.makeAddressString(address, objectNode);
+                    addressRepo.save(address);
+                    objectNode.put("address", addressString);
+                }
+
+                objectNode.put("pinColor", "pink");
+                objectNode.put("pinChar", I18n.get(ITranslation.PIN_CHAR_OPPORTUNITY));
+                arrayNode.add(objectNode);
+            }
+
+            mapService.setData(mainNode, arrayNode);
+        } catch (Exception e) {
+            mapService.setError(mainNode, e);
+        }
+
+        return mainNode;
+    }
 
 }

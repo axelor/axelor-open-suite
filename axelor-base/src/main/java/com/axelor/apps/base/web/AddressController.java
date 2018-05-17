@@ -44,7 +44,6 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
@@ -203,7 +202,7 @@ public class AddressController {
 	public void viewMap(ActionRequest request, ActionResponse response)  {
         try {
     		Address address = request.getContext().asType(Address.class);
-    		address = addressService.checkLatLang(address,false);
+    		address = addressService.checkLatLong(address,false);
     		BigDecimal latit = address.getLatit();
     		BigDecimal longit = address.getLongit();
     		BigDecimal zero = BigDecimal.ZERO;
@@ -244,7 +243,7 @@ public class AddressController {
     			return;
     		}
 
-    		departureAddress = addressService.checkLatLang(departureAddress,false);
+    		departureAddress = addressService.checkLatLong(departureAddress,false);
     		BigDecimal dLat = departureAddress.getLatit();
     		BigDecimal dLon = departureAddress.getLongit();
     		BigDecimal zero = BigDecimal.ZERO;
@@ -252,17 +251,17 @@ public class AddressController {
     			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),departureAddress.getFullName()));
     			return;
     		}
-    
+
     		Address arrivalAddress = request.getContext().asType(Address.class);
-    		arrivalAddress = addressService.checkLatLang(arrivalAddress,false);
+    		arrivalAddress = addressService.checkLatLong(arrivalAddress,false);
     		BigDecimal aLat = arrivalAddress.getLatit();
     		BigDecimal aLon =  arrivalAddress.getLongit();
     		if(zero.compareTo(aLat) == 0 || zero.compareTo(aLon) == 0){
     			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),arrivalAddress.getFullName()));
     			return;
     		}
-    
-    		Map<String,Object> mapView = new HashMap<String,Object>();
+
+    		Map<String,Object> mapView = new HashMap<>();
     		mapView.put("title", "Map");
     		mapView.put("resource", mapService.getDirectionUrl(key, dLat, dLon, aLat, aLon));
     		mapView.put("viewType", "html");
@@ -273,20 +272,24 @@ public class AddressController {
         }
 	}
 
-	public void checkLatLang(ActionRequest request, ActionResponse response) {
+	public void checkLatLong(ActionRequest request, ActionResponse response) {
 		try  {
 			Address address = request.getContext().asType(Address.class);
 			AppBase appBase = Beans.get(AppBase.class);
 			if(appBase.getMapApiSelect() == null || (appBase.getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE && appBase.getGoogleMapsApiKey() == null)) {
 				return;
 			}
-			addressService.checkLatLang(address, true);
+			addressService.checkLatLong(address, true);
 			response.setReload(true);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
 	}
 
+	@Deprecated
+	public void checkLatLang(ActionRequest request, ActionResponse response) {
+	    checkLatLong(request, response);
+	}
 
 	public void createPartnerAddress(ActionRequest request, ActionResponse response){
 		Context context = request.getContext();
@@ -310,14 +313,14 @@ public class AddressController {
 		}
 
     LOG.debug("Create partner address : Partner = {}", partner);
-		
+
 		if (partner == null || partner.getId() == null) {
 			return;
 		}
 		Address address = context.asType(Address.class);
 
 		PartnerAddress partnerAddress = Beans.get(PartnerAddressRepository.class).all().filter("self.partner.id = ? AND self.address.id = ?", partner.getId(), address.getId()).fetchOne();
-		
+
     LOG.debug("Create partner address : Partner Address = {}", partnerAddress);
 
 		if (partnerAddress == null) {

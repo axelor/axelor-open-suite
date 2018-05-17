@@ -27,25 +27,30 @@ import com.axelor.exception.AxelorException;
 import wslite.json.JSONException;
 
 public interface AddressService {
-	
-	
+
+
 	public boolean check(String wsdlUrl);
-	
+
 	public Map<String,Object> validate(String wsdlUrl, String search);
-	
+
 	public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
-	
+
 	public int export(String path) throws IOException;
-	
-	public Address createAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, 	Country addressL7Country); 
-		
-	
-	public Address getAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, Country addressL7Country); 
-	
+
+	public Address createAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, 	Country addressL7Country);
+
+
+	public Address getAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, Country addressL7Country);
+
 	public boolean checkAddressUsed(Long addressId);
-	
+
+    public Address checkLatLong(Address address) throws AxelorException, JSONException;
+
+    public Address checkLatLong(Address address, boolean forceUpdate) throws AxelorException, JSONException;
+
+    @Deprecated
 	public Address checkLatLang(Address address, boolean forceUpdate) throws AxelorException, JSONException;
-	
+
 	public String computeFullName(Address address);
 
 	/**

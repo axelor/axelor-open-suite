@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.base.service.user;
 
+import java.util.Optional;
+
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
@@ -98,5 +101,12 @@ public interface UserService {
 	public void createPartner(User user);
 	
 	public String getLanguage();
+
+    /**
+     * Get user's active company address.
+     * 
+     * @return
+     */
+    Optional<Address> getUserActiveCompanyAddress();
 
 }

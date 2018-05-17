@@ -32,23 +32,21 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
-import wslite.json.JSONException;
 
 @Path("/map")
 public class MapRest {
@@ -75,8 +73,8 @@ public class MapRest {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode getPartners() {
-
 		ObjectNode mainNode = nodeFactory.objectNode();
+
 		try {
 			List<? extends Partner> partners = partnerRepo.all()
 					.filter("self.isCustomer = true OR self.isSupplier = true AND self.isContact=?", false).fetch();
@@ -98,7 +96,7 @@ public class MapRest {
 
 				Address address = partnerService.getInvoicingAddress(partner);
 				if (address != null && address.getFullName() != null) {
-					String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
+                    String addressString = mapService.makeAddressString(address, objectNode);
 					objectNode.put("address", addressString);
 				}
 
@@ -111,128 +109,73 @@ public class MapRest {
 				arrayNode.add(objectNode);
 			}
 
-			mainNode.put("status", 0);
-			mainNode.set("data", arrayNode);
-		} catch (Exception e) {
-			TraceBackService.trace(e);
-			mainNode.put("status", -1);
-			mainNode.put("errorMsg", e.getLocalizedMessage());
-		}
+            mapService.setData(mainNode, arrayNode);
+        } catch (Exception e) {
+            mapService.setError(mainNode, e);
+        }
+
 		return mainNode;
 	}
 
 	@Path("/partner/{id}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonNode getPartner(@PathParam("id") long id) {
+    public JsonNode getPartner(@PathParam("id") long id) {
+        ObjectNode mainNode = nodeFactory.objectNode();
 
-		ObjectNode mainNode = nodeFactory.objectNode();
+        try {
+            Partner partner = partnerRepo.find(id);
 
-		Partner partner = partnerRepo.find(id);
-		List<String> errors = new ArrayList<>();
-		if (partner == null) {
-			mainNode.put("status", -1);
-			return mainNode;
-		}
+            if (partner == null) {
+                throw new AxelorException(Partner.class, TraceBackRepository.CATEGORY_NO_VALUE,
+                        I18n.get(IExceptionMessage.PARTNER_NOT_FOUND));
+            }
 
-		ArrayNode arrayNode = nodeFactory.arrayNode();
-		String pinColor = getPinColor(partner);
+            ArrayNode arrayNode = nodeFactory.arrayNode();
+            String pinColor = getPinColor(partner);
 
-		List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList() != null
-				? partner.getPartnerAddressList()
-				: Collections.emptyList();
+            List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList() != null
+                    ? partner.getPartnerAddressList()
+                    : Collections.emptyList();
 
-		partnerAddressList.stream().filter(partnerAddress -> partnerAddress.getAddress() != null)
-				.forEach(partnerAddress -> {
-					try {
-						ObjectNode objectNode = nodeFactory.objectNode();
-						objectNode.put("fullName", getFullName(partnerAddress));
+            for (PartnerAddress partnerAddress : partnerAddressList) {
+                if (partnerAddress.getAddress() == null) {
+                    continue;
+                }
+                ObjectNode objectNode = nodeFactory.objectNode();
+                objectNode.put("fullName", getFullName(partnerAddress));
 
-						if (partnerAddress.getIsDefaultAddr()) {
-							if (!StringUtils.isBlank(partner.getFixedPhone())) {
-								objectNode.put("fixedPhone", partner.getFixedPhone());
-							}
+                if (partnerAddress.getIsDefaultAddr()) {
+                    if (!StringUtils.isBlank(partner.getFixedPhone())) {
+                        objectNode.put("fixedPhone", partner.getFixedPhone());
+                    }
 
-							if (partner.getEmailAddress() != null) {
-								objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
-							}
-						}
+                    if (partner.getEmailAddress() != null) {
+                        objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
+                    }
+                }
 
-						Address address = partnerAddress.getAddress();
+                Address address = partnerAddress.getAddress();
 
-						if (!StringUtils.isBlank(address.getFullName())) {
-							String addressString;
-							addressString = mapService.makeAddressString(address, objectNode);
-							objectNode.put("address", addressString);
-						}
+                if (!StringUtils.isBlank(address.getFullName())) {
+                    String addressString;
+                    addressString = mapService.makeAddressString(address, objectNode);
+                    objectNode.put("address", addressString);
+                }
 
-						objectNode.put("pinColor", pinColor);
-						objectNode.put("pinChar", getPinChar(partnerAddress));
+                objectNode.put("pinColor", pinColor);
+                objectNode.put("pinChar", getPinChar(partnerAddress));
 
-						arrayNode.add(objectNode);
-					} catch (AxelorException | JSONException e) {
-						TraceBackService.trace(e);
-						errors.add(e.getLocalizedMessage());
-					}
-				});
+                arrayNode.add(objectNode);
+            }
 
-		if (errors.isEmpty()) {
-			mainNode.put("status", 0);
-			mainNode.set("data", arrayNode);
-		} else {
-			mainNode.put("status", -1);
-			mainNode.put("errorMsg", String.join("<br>", errors));
-		}
-		return mainNode;
-	}
+            mapService.setData(mainNode, arrayNode);
+        } catch (Exception e) {
+            mapService.setError(mainNode, e);
+        }
 
-	protected String getFullName(PartnerAddress partnerAddress) {
-		String fullName = partnerAddress.getPartner().getFullName();
-
-		if (StringUtils.isBlank(fullName)) {
-			fullName = "";
-		}
-
-		List<String> texts = new ArrayList<>();
-
-		if (partnerAddress.getIsDefaultAddr()) {
-			texts.add(I18n.get(ITranslation.DEFAULT));
-		}
-
-		if (partnerAddress.getIsInvoicingAddr()) {
-			texts.add(I18n.get(ITranslation.INVOICING));
-		}
-
-		if (partnerAddress.getIsDeliveryAddr()) {
-			texts.add(I18n.get(ITranslation.DELIVERY));
-		}
-
-		if (!texts.isEmpty()) {
-			fullName += String.format(" (%s)", String.join(", ", texts));
-		}
-
-		return fullName;
-	}
-
-	protected String getPinColor(Partner partner) {
-		return partner.getIsProspect() ? "red" : "orange";
-	}
-
-	protected String getPinChar(PartnerAddress partnerAddress) {
-		if (partnerAddress.getIsDefaultAddr()) {
-			return "";
-		}
-
-		if (partnerAddress.getIsInvoicingAddr()) {
-			return I18n.get(ITranslation.PIN_CHAR_INVOICING);
-		}
-
-		if (partnerAddress.getIsDeliveryAddr()) {
-			return I18n.get(ITranslation.PIN_CHAR_DELIVERY);
-		}
-
-		return "";
-	}
+        return mainNode;
+    }
 
 	@Transactional
 	@Path("/customer")
@@ -259,7 +202,7 @@ public class MapRest {
 
 				Address address = partnerService.getInvoicingAddress(customer);
 				if (address != null) {
-					String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
+                    String addressString = mapService.makeAddressString(address, objectNode);
 					addressRepo.save(address);
 					objectNode.put("address", addressString);
 				}
@@ -269,12 +212,9 @@ public class MapRest {
 				arrayNode.add(objectNode);
 			}
 
-			mainNode.put("status", 0);
-			mainNode.set("data", arrayNode);
-		} catch (Exception e) {
-			TraceBackService.trace(e);
-			mainNode.put("status", -1);
-			mainNode.put("errorMsg", e.getLocalizedMessage());
+            mapService.setData(mainNode, arrayNode);
+        } catch (Exception e) {
+            mapService.setError(mainNode, e);
 		}
 
 		return mainNode;
@@ -305,7 +245,7 @@ public class MapRest {
 
 				Address address = partnerService.getInvoicingAddress(prospect);
 				if (address != null) {
-					String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
+                    String addressString = mapService.makeAddressString(address, objectNode);
 					addressRepo.save(address);
 					objectNode.put("address", addressString);
 				}
@@ -315,12 +255,9 @@ public class MapRest {
 				arrayNode.add(objectNode);
 			}
 
-			mainNode.put("status", 0);
-			mainNode.set("data", arrayNode);
-		} catch (Exception e) {
-			TraceBackService.trace(e);
-			mainNode.put("status", -1);
-			mainNode.put("errorMsg", e.getLocalizedMessage());
+            mapService.setData(mainNode, arrayNode);
+        } catch (Exception e) {
+            mapService.setError(mainNode, e);
 		}
 
 		return mainNode;
@@ -350,7 +287,7 @@ public class MapRest {
 
 				Address address = partnerService.getInvoicingAddress(supplier);
 				if (address != null) {
-					String addressString = Beans.get(MapService.class).makeAddressString(address, objectNode);
+                    String addressString = mapService.makeAddressString(address, objectNode);
 					addressRepo.save(address);
 					objectNode.put("address", addressString);
 				}
@@ -360,12 +297,9 @@ public class MapRest {
 				arrayNode.add(objectNode);
 			}
 
-			mainNode.put("status", 0);
-			mainNode.set("data", arrayNode);
-		} catch (Exception e) {
-			TraceBackService.trace(e);
-			mainNode.put("status", -1);
-			mainNode.put("errorMsg", e.getLocalizedMessage());
+            mapService.setData(mainNode, arrayNode);
+        } catch (Exception e) {
+            mapService.setError(mainNode, e);
 		}
 
 		return mainNode;
@@ -388,6 +322,54 @@ public class MapRest {
 		mainNode.put("translation", translation);
 
 		return mainNode;
+	}
+
+    protected String getFullName(PartnerAddress partnerAddress) {
+        String fullName = partnerAddress.getPartner().getFullName();
+
+        if (StringUtils.isBlank(fullName)) {
+            fullName = "";
+        }
+
+        List<String> texts = new ArrayList<>();
+
+        if (partnerAddress.getIsDefaultAddr()) {
+            texts.add(I18n.get(ITranslation.DEFAULT));
+        }
+
+        if (partnerAddress.getIsInvoicingAddr()) {
+            texts.add(I18n.get(ITranslation.INVOICING));
+        }
+
+        if (partnerAddress.getIsDeliveryAddr()) {
+            texts.add(I18n.get(ITranslation.DELIVERY));
+        }
+
+        if (!texts.isEmpty()) {
+            fullName += String.format(" (%s)", String.join(", ", texts));
+        }
+
+        return fullName;
+    }
+
+    protected String getPinColor(Partner partner) {
+        return partner.getIsProspect() ? "red" : "orange";
+    }
+
+    protected String getPinChar(PartnerAddress partnerAddress) {
+        if (partnerAddress.getIsDefaultAddr()) {
+            return "";
+        }
+
+        if (partnerAddress.getIsInvoicingAddr()) {
+            return I18n.get(ITranslation.PIN_CHAR_INVOICING);
+        }
+
+        if (partnerAddress.getIsDeliveryAddr()) {
+            return I18n.get(ITranslation.PIN_CHAR_DELIVERY);
+        }
+
+        return "";
 	}
 
 }
