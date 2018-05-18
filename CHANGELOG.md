@@ -32,6 +32,7 @@
 - Sales : perform calculation of margin when we apply discount on sale order line.
 - Fix permissions for role.manager and role.crm
 - Fix line adding with having multiple project on timesheet editor.
+- Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c. 
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
