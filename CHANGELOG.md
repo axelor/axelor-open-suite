@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased 5.0.0-rc3]
+## Features
+- Sale order: option to close linked opportunity upon confirmation.
 
 ## Improvements
 - Sale order form : improve timetable and printing settings tabs.
