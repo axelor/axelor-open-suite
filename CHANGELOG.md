@@ -6,6 +6,7 @@
 - Sale order form : improve timetable and printing settings tabs.
 - Employee : Removed social security number field in advanced search.
 - Default configuration added for lead import. 
+- Product : procurement method can now be both 'Buy and produce'. Stock rules creation now set a default refill method based on the product's procurement method.
 - Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
 - Copy account type from account in analytic move line.
 - Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
@@ -32,6 +33,7 @@
 - Sales : perform calculation of margin when we apply discount on sale order line.
 - Fix permissions for role.manager and role.crm
 - Fix line adding with having multiple project on timesheet editor.
+- Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c. 
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
