@@ -671,6 +671,7 @@ Also, improve the sale order line grid and form views.
 - Human ressource, remove french title in Employee, employee-filters + add translation
 - Invoice, replace empty line on pending total by a color line (blue, info-text)
 - In MoveLineExportServiceImpl, always have ignoreInAccountingOk = false
+- Only "Active" EbicsUsers can be selected as signatoryEbicsUser in BankOrder form views.
 
 ## [4.2.3] - 2018-02-28
 4.1.3 with axelor-process-studio modules
