@@ -233,6 +233,10 @@
     	<context name="_partner" expr="eval: partner"/>
     	<context name="_contactPartner" expr="eval: contactPartner"/>
     	<context name="_eventLead" expr="eval: lead"/>
+    	<context name="_relatedToSelect" expr="eval: relatedToSelect"/>
+    	<context name="_calendar" expr="eval: calendar"/>
+    	<context name="_typeSelect" expr="eval: typeSelect"/>
+    	<context name="_relatedToSelectId" expr="eval: relatedToSelectId"/>
     </action-view>
 
 	<form model="com.axelor.apps.base.db.Wizard" title="Apply modifications" name="modifications-assistant-form">
@@ -292,6 +296,11 @@
     	<field name="partner" expr="eval: _contactMainPartner" if="_contactMainPartner"/>
     	<field name="contactPartner" expr="eval: _contactPartner"/>
     	<field name="lead" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.crm.db.Lead' " />
+    	<field name="lead" expr="eval: _eventLead" if="_eventLead != null"/>
+    	<field name="relatedToSelect" expr="eval: _relatedToSelect"/>
+    	<field name="calendar" expr="eval: _calendar"/>
+    	<field name="typeSelect" expr="eval: _typeSelect"/>
+    	<field name="relatedToSelectId" expr="eval: _relatedToSelectId"/>
     </action-record>
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
