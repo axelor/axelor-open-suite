@@ -28,6 +28,7 @@
 - Invoice demo data : Fix import address string field.
 - Invoice demo data: Fix import draft sequence.
 - Fix stack overflow error on duplicate city check. Refactored the code of duplicate check.
+- Fix "Blockings" UI after $moment() helper was fixed, also fixed a bugged onSelect field on blocking.companies on edit mode.
 - Fix NPE that happens when we invoice a stock move with a partner with no in/out payment mode.
 - Add missing translation in Calendars
 - Fix java.lang.NullPointerException by checking if product is null

@@ -167,17 +167,27 @@
 					</viewer>
 				</field>
 				<field name="isContact" hidden="true" colSpan="12" />
-				<!-- Waiting for '$moment()' helper to work on AngularJS expressions.
                 <panel hideIf="!$readonly()" colOffset="9" colSpan="3">
                     <field name="$activeBlockings" showTitle="false" colSpan="12">
                         <viewer><![CDATA[
                             <h4 style="text-align: right;">
-                                <span ng-repeat="item in record.blockingList" class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="(item.blockingToDate | date:'dd/MM/yyyy') > ('26/07/2017' | date:'dd/MM/yyyy')"><i class="fa fa-ban"></i> <span x-translate>{{ {'1':'Remin.','2':'Inv.','3':'Reimb.','4':'Debit'}[item.blockingSelect] }}</span><i class="fa fa-caret-right" style="margin: 0 4px;"></i>{{ item.blockingToDate | date:'dd/MM/yy' }}</span>
+                                <span ng-repeat="item in record.blockingList" class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="$moment(item.blockingToDate) > $moment(today)">
+                                	<i class="fa fa-ban"/>
+                                	<span x-translate>{{ {'1':'Remin._block','2':'Inv._block','3':'Reimb._block','4':'Debit_block','5':'Sale_block','6':'Purch._block'}[item.blockingSelect] }}</span>
+                                	<!-- hidden spans only there for translation purposes -->
+                                	<span x-translate style="display:none">Remin._block</span>
+                                	<span x-translate style="display:none">Inv._block</span>
+                                	<span x-translate style="display:none">Reimb._block</span>
+                                	<span x-translate style="display:none">Debit_block</span>
+                                	<span x-translate style="display:none">Sale_block</span>
+                                	<span x-translate style="display:none">Purch._block</span>
+                                	<i class="fa fa-caret-right" style="margin: 0 4px;"/>
+                                	{{ item.blockingToDate | date:'dd/MM/yy' }}
+                                </span>
                             </h4>
                         ]]></viewer>
                     </field>
                 </panel>
-                -->
 			</panel>
 		</panel>
 		<panel-related field="contactPartnerSet" hideIf="!id || isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
