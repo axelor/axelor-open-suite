@@ -28,6 +28,7 @@
 - Sale order: allow increasing quantity on delivered detail lines.
 - Moved the Partner seq at the top of the Partner form views and set it as the first column in Partner grid views.
 - Make Logistical form printable even in Provision status.
+- Filter trackingNumber in stockMoveLine in function of fromStockLocation as it is done in tab detailsStockLocation of StockLocation
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.

@@ -36,7 +36,7 @@
         <field name="trackingNumber"
             form-view="tracking-number-stock-move-line-form"
             grid-view="tracking-number-grid"
-            domain="self.product = :product"/>
+            onSelect="action-stock-move-line-attrs-tracking-number-domain"/>
         <field name="conformitySelect"/>
         <field name="stockMove.statusSelect" hidden="true"/>
     </grid>
@@ -272,6 +272,19 @@
 		<attribute name="domain" for="product" expr="eval:&quot;self.isModel = false AND self.isShippingCostsProduct = false AND self.parentProduct.id = ${productModel.id}&quot;" if="productModel"/>
 		<attribute name="domain" for="product" expr="eval:&quot;self.isModel = false AND self.isShippingCostsProduct = false&quot;" if="!productModel"/>
 	</action-attrs>
+
+    <action-attrs name="action-stock-move-line-attrs-tracking-number-domain">
+        <attribute name="domain"
+            expr="eval:
+                &quot;
+                self.product = :product AND
+                self in
+                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
+                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
+                    WHERE sl.id = ${__parent__.fromStockLocation.id})
+                &quot;"
+            for="trackingNumber" />
+    </action-attrs>
 
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
 		<attribute name="scale" for="unitPriceUntaxed" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
