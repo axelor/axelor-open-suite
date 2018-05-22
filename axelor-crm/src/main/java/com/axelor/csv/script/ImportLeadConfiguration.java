@@ -53,7 +53,6 @@ public class ImportLeadConfiguration {
 			importConfig.setBindMetaFile(metaFiles.upload(file));
 			file = path.resolve(FILES_DIR + File.separator + IMPORT_LEAD_CSV).toFile();
 			importConfig.setDataMetaFile(metaFiles.upload(file));
-			importConfig.setUser(AuthUtils.getUser());
 		} catch (IOException e) {
 			log.debug("Error importing lead import config", e);
 			return null;

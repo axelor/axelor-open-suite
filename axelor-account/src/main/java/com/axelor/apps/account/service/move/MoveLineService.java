@@ -287,6 +287,7 @@ public class MoveLineService {
 						analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 						analyticMoveLine.setInvoiceLine(null);
 						analyticMoveLine.setAccount(moveLine.getAccount());
+						analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
 						moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
 					}
 				}

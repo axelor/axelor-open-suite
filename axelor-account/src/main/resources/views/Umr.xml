@@ -25,8 +25,8 @@
     </form>
     
     <action-record name="action-umr-record-new" model="com.axelor.apps.account.db.Umr">
-    	<field name="debtorName"  expr="eval: _parent?.name" if="_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
-    	<field name="debtorAddress"  expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(_parent)" if="_parent?._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="debtorName"  expr="eval: __parent__?.name" if="__parent__?._model == 'com.axelor.apps.base.db.Partner'"/>
+    	<field name="debtorAddress"  expr="call: com.axelor.apps.base.service.PartnerService:getInvoicingAddress(__repo__(Partner).find(__parent__.id))" if="__parent__?._model == 'com.axelor.apps.base.db.Partner'"/>
     	<field name="creationDate"  expr="eval: __config__.app.getTodayDate()"/>
     	<field name="mandateSignatureDate"  expr="eval: __config__.app.getTodayDate()"/>
 <!--     	<field name="mandateSignatureCommune"  expr="eval: com.axelor.apps.base.db.Commune.findByInseeCode(&quot;86194&quot;)"/> -->

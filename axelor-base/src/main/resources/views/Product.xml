@@ -173,7 +173,7 @@
 	    		</panel>
                 <panel name="productionInformations"
                     title="Production information" showTitle="false"
-                    showIf="productTypeSelect == 'storable' &amp;&amp; procurementMethodSelect == 'produce'"
+                    showIf="productTypeSelect == 'storable' &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"
                     onTabSelect="action-product-attrs-readonly-create-production-order"
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
@@ -493,7 +493,7 @@
 
     <action-record name="action-product-record-tick-checkbox-purchasable"
         model="com.axelor.apps.base.db.Product">
-        <field name="purchasable" expr="eval: procurementMethodSelect == 'buy'"/>
+        <field name="purchasable" expr="eval: procurementMethodSelect == 'buy' || procurementMethodSelect == 'buyAndProduce'"/>
     </action-record>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">

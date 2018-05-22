@@ -22,6 +22,9 @@ import java.util.Map;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
+import com.axelor.exception.AxelorException;
+
+import wslite.json.JSONException;
 
 public interface AddressService {
 	
@@ -41,7 +44,7 @@ public interface AddressService {
 	
 	public boolean checkAddressUsed(Long addressId);
 	
-	public Address checkLatLang(Address address, boolean forceUpdate);
+	public Address checkLatLang(Address address, boolean forceUpdate) throws AxelorException, JSONException;
 	
 	public String computeFullName(Address address);
 
