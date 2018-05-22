@@ -20,7 +20,10 @@ package com.axelor.apps.purchase.web;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -35,11 +38,13 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class PurchaseOrderLineController {
@@ -319,5 +324,51 @@ public class PurchaseOrderLineController {
     purchaseOrderLineService.checkMinQty(purchaseOrder, purchaseOrderLine, request, response);
 
     purchaseOrderLineService.checkMultipleQty(purchaseOrderLine, response);
+  }
+
+  /**
+   * Called on supplier partner select. Set the domain for the field supplierPartner
+   *
+   * @param request
+   * @param response
+   */
+  public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    if (purchaseOrder == null) {
+      purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    }
+    Company company = purchaseOrder.getCompany();
+
+    String domain = "";
+    if (purchaseOrderLine.getProduct() != null
+        && !purchaseOrderLine.getProduct().getSupplierCatalogList().isEmpty()) {
+      domain +=
+          "self.id != "
+              + company.getPartner().getId()
+              + " AND self.id IN "
+              + purchaseOrderLine
+                  .getProduct()
+                  .getSupplierCatalogList()
+                  .stream()
+                  .map(s -> s.getSupplierPartner().getId())
+                  .collect(Collectors.toList())
+                  .toString()
+                  .replace('[', '(')
+                  .replace(']', ')');
+
+      String blockedPartnerQuery =
+          Beans.get(BlockingService.class)
+              .listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
+
+      if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+        domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+      }
+    } else {
+      domain += "self.id = 0";
+    }
+
+    response.setAttr("supplierPartner", "domain", domain);
   }
 }
