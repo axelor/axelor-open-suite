@@ -100,7 +100,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	    this.partnerProductQualityRatingService = partnerProductQualityRatingService;
 	}
 
-	
+
 	@Override
 	public BigDecimal compute(StockMove stockMove){
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
@@ -111,9 +111,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 		return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Méthode permettant d'obtenir la séquence du StockMove.
 	 * @param stockMoveType Type de mouvement de stock
@@ -159,7 +159,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Override
 	/**
 	 * Generic method to create any stock move
-	 * 
+	 *
 	 * @param fromAddress
 	 * @param toAddress
 	 * @param company
@@ -177,8 +177,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 	 * @return
 	 * @throws AxelorException No Stock move sequence defined
 	 */
-	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, 
-			StockLocation fromStockLocation, StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, 
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner,
+			StockLocation fromStockLocation, StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate,
 			String description, ShipmentMode shipmentMode, FreightCarrierMode freightCarrierMode,
 			Partner carrierPartner, Partner forwarderPartner, Incoterm incoterm) throws AxelorException {
 
@@ -195,10 +195,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 		return stockMove;
 	}
-	
+
 	/**
 	 * Generic method to create any stock move for internal stock move (without partner information)
-	 * 
+	 *
 	 * @param fromAddress
 	 * @param toAddress
 	 * @param company
@@ -213,8 +213,13 @@ public class StockMoveServiceImpl implements StockMoveService {
 	@Override
 	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company,  StockLocation fromStockLocation,
 			StockLocation toStockLocation, LocalDate realDate, LocalDate estimatedDate, String description) throws AxelorException  {
-		
+
 		StockMove stockMove = new StockMove();
+
+		if (stockMove.getStockMoveLineList() == null) {
+		    stockMove.setStockMoveLineList(new ArrayList<>());
+		}
+
 		stockMove.setFromAddress(fromAddress);
 		stockMove.setToAddress(toAddress);
 		this.computeAddressStr(stockMove);
@@ -236,7 +241,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		}
 
 		return stockMove;
-		
+
 	}
 
 	/**
@@ -383,10 +388,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate(),
 				true);
-		
+
 		stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
-		
+
 		stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
 		stockMove.setRealDate(appBaseService.getTodayDate());
 		resetWeights(stockMove);
@@ -409,7 +414,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 			computeWeights(stockMove);
 			stockMoveRepo.save(stockMove);
 		}
-		
+
 		if(stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
 			partnerProductQualityRatingService.calculate(stockMove);
 		}
@@ -435,7 +440,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	/**
 	 * Check and raise an exception if the provided stock move is involved in an
 	 * ongoing inventory.
-	 * 
+	 *
 	 * @param stockMove
 	 * @throws AxelorException
 	 */
@@ -478,7 +483,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
 	private void resetWeights(StockMove stockMove) {
 		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-		
+
 		if (stockMoveLineList == null) {
 			return;
 		}
@@ -496,15 +501,15 @@ public class StockMoveServiceImpl implements StockMoveService {
 		if (weightsRequired && endUnit == null) {
 			throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.STOCK_MOVE_17));
 		}
-		
+
 		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-		
+
 		if (stockMoveLineList == null) {
 			return;
 		}
 
         UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-		
+
 		for (StockMoveLine stockMoveLine : stockMoveLineList) {
 			Product product = stockMoveLine.getProduct();
 
@@ -825,12 +830,12 @@ public class StockMoveServiceImpl implements StockMoveService {
 		return copyAndSplitStockMoveReverse(stockMove, false);
 
 	}
-	
+
 	@Override
 	public List<Map<String,Object>> getStockPerDate(Long locationId, Long productId, LocalDate fromDate, LocalDate toDate) {
-		
+
 		List<Map<String,Object>> stock = new ArrayList<>();
-		
+
 		while(!fromDate.isAfter(toDate)) {
 			Double qty = getStock(locationId, productId, fromDate);
 			Map<String,Object> dateStock = new HashMap<>();
@@ -839,26 +844,26 @@ public class StockMoveServiceImpl implements StockMoveService {
 			stock.add(dateStock);
 			fromDate = fromDate.plusDays(1);
 		}
-		
+
 		return stock;
 	}
-	
+
     private Double getStock(Long locationId, Long productId, LocalDate date) {
-		
+
 		List<StockMoveLine> inLines = stockMoveLineRepo.all()
 			.filter("self.product.id = ?1 AND self.stockMove.toStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)"
 			,productId, locationId, StockMoveRepository.STATUS_CANCELED, date).fetch();
-		
+
 		List<StockMoveLine> outLines = stockMoveLineRepo.all()
 				.filter("self.product.id = ?1 AND self.stockMove.fromStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)"
 				,productId, locationId, StockMoveRepository.STATUS_CANCELED, date).fetch();
-		
+
 		Double inQty = inLines.stream().mapToDouble(inl->Double.parseDouble(inl.getQty().toString())).sum();
-		
+
 		Double outQty = outLines.stream().mapToDouble(out->Double.parseDouble(out.getQty().toString())).sum();
-		
+
 		Double qty = inQty-outQty;
-		
+
 		return qty;
 	}
 

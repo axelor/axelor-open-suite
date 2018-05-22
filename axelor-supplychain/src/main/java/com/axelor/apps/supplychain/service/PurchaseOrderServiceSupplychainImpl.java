@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +167,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			StockMove stockMove = Beans.get(StockMoveService.class).createStockMove(address, null, company, supplierPartner, startLocation, purchaseOrder.getStockLocation(), null, 
 					purchaseOrder.getDeliveryDate(), purchaseOrder.getNotes(), purchaseOrder.getShipmentMode(), purchaseOrder.getFreightCarrierMode(), null, null, null);
 			stockMove.setPurchaseOrder(purchaseOrder);
-			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
 			stockMove.setTradingName(purchaseOrder.getTradingName());
 
@@ -200,10 +198,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 							priceDiscounted, unit, 
 							stockMove, StockMoveLineService.TYPE_PURCHASES, purchaseOrder.getInAti(), taxRate);
 					if(stockMoveLine != null) {
-
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
-
-						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}
 				}
 				else if(purchaseOrderLine.getIsTitleLine()){
@@ -213,10 +208,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 							BigDecimal.ZERO,null, 
 							stockMove, 2, purchaseOrder.getInAti(), null);
 					if(stockMoveLine != null) {
-
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
-
-						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}
 				}
 			}
@@ -421,6 +413,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 		}
 	}
 
+	@Override
 	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
 	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 		super.validatePurchaseOrder(purchaseOrder);
