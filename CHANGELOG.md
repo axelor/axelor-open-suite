@@ -52,7 +52,6 @@
 - Fix permissions for role.manager and role.crm
 - Fix line adding with having multiple project on timesheet editor.
 - Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c. 
-- Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c.
 - Fix partner data for 'admin' and 'demo' users on demo data.
 - Fix error on 'Import demo data' for apps without modules. 
 - Advanced export: Fix crashing server,added parameters for fetch limit and maximum export limt
@@ -89,6 +88,7 @@
 - Bill of materials: fix filters using define sub-bill of materials
 - Logistical form is now printed in customer language and not in user language.
 - Timesheet editor: fix java.lang.NullPointerException in TimesheetServiceImpl when delete a line in editor
+- Supplier request : added suggestion filters on selecting supplierPartner 
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

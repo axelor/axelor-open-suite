@@ -139,7 +139,7 @@
 			</panel>
 			<panel name="supplierRequests" title="Suppliers requests" if-module="axelor-supplier-management" if="__config__.app.getApp('purchase').getSupplierRequestMgt()" >
 				<button name="generateSuppliersRequests" title="Generate suppliers requests"   onClick="action-group-purchase-purchase-orderline-generate-supplierreq-click"/>
-				<field name="supplierPartner" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid" />
+				<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid" onSelect="action-purchase-order-line-set-supplierPartner-domain"/>
 				<panel-related field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 			</panel>
 			<panel name="invoicing" title="Invoicing" if-module="axelor-account" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
@@ -307,6 +307,10 @@
 
 	<action-method name="action-purchase-order-line-method-get-tax-equiv">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="getTaxEquiv"/>
+	</action-method>
+	
+	<action-method name="action-purchase-order-line-set-supplierPartner-domain">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="supplierPartnerDomain"/>
 	</action-method>
 
 	<!-- ACTION ATTRS -->
