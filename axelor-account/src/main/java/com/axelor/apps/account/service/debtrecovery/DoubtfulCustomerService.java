@@ -19,12 +19,11 @@ package com.axelor.apps.account.service.debtrecovery;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.Query;
 
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,10 +58,11 @@ public class DoubtfulCustomerService {
 	protected MoveLineRepository moveLineRepo;
 	protected ReconcileService reconcileService;
 	protected AccountConfigService accountConfigService;
+	protected AppBaseService appBaseService;
 
 	@Inject
 	public DoubtfulCustomerService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, MoveLineRepository moveLineRepo,
-			ReconcileService reconcileService, AccountConfigService accountConfigService) {
+			ReconcileService reconcileService, AccountConfigService accountConfigService, AppBaseService appBaseService) {
 
 		this.moveService = moveService;
 		this.moveRepo = moveRepo;
@@ -70,6 +70,8 @@ public class DoubtfulCustomerService {
 		this.moveLineRepo = moveLineRepo;
 		this.reconcileService = reconcileService;
 		this.accountConfigService = accountConfigService;
+		this.appBaseService = appBaseService;
+		
 	}
 
 
@@ -126,50 +128,44 @@ public class DoubtfulCustomerService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createDoubtFulCustomerMove(Move move, Account doubtfulCustomerAccount, String debtPassReason) throws AxelorException  {
 
-		log.debug("Ecriture concernée : {} ",move.getReference());
+		log.debug("Concerned account move : {} ", move.getReference());
 
-		BigDecimal totalAmountRemaining = BigDecimal.ZERO;
 		Company company = move.getCompany();
 		Partner partner = move.getPartner();
 		Invoice invoice = move.getInvoice();
-		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getAutoMiscOpeJournal(), company, invoice.getCurrency(), partner, move.getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getAutoMiscOpeJournal(), company, invoice.getCurrency(), partner, 
+		    move.getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		newMove.setInvoice(invoice);
+		LocalDate todayDate = appBaseService.getTodayDate();
 		
-		int ref = 1;
-		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
-		List<MoveLine> moveLineList = move.getMoveLineList();
-		for(MoveLine moveLine : moveLineList)  {
-			if(moveLine.getAccount().getUseForPartnerBalance()
-					&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-					&& moveLine.getAccount() != doubtfulCustomerAccount
-					&& moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
+		MoveLine invoicePartnerMoveLine = null;
+		
+		for(MoveLine moveLine : move.getMoveLineList())  {
+      if(moveLine.getAccount().getUseForPartnerBalance()
+          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+          && moveLine.getAccount() != doubtfulCustomerAccount
+          && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
+        invoicePartnerMoveLine = moveLine;
+      }
+    }
 
-					BigDecimal amountRemaining = moveLine.getAmountRemaining();
-					// Ecriture au crédit sur le 411
-					MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, Beans.get(AppBaseService.class).getTodayDate(), ref, null);
-					newMove.getMoveLineList().add(creditMoveLine);
+		BigDecimal amountRemaining = invoicePartnerMoveLine.getAmountRemaining();
+    // Debit move line on partner account
+    MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , partner, invoicePartnerMoveLine.getAccount(), 
+        amountRemaining, false, todayDate, 1, move.getInvoice().getInvoiceId(), debtPassReason);
+    newMove.getMoveLineList().add(creditMoveLine);
 
-					Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
-					reconcileList.add(reconcile);
-
-					totalAmountRemaining = totalAmountRemaining.add(amountRemaining);
-
-					ref++;
-			}
-		}
-
-		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, totalAmountRemaining, true, Beans.get(AppBaseService.class).getTodayDate(), ref, null);
+    // Credit move line on partner account
+		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , partner, doubtfulCustomerAccount, 
+		    amountRemaining, true, todayDate, 2, creditMoveLine.getOrigin(), debtPassReason);
 		newMove.getMoveLineList().add(debitMoveLine);
-
 		debitMoveLine.setPassageReason(debtPassReason);
 
 		moveService.getMoveValidateService().validateMove(newMove);
 		moveRepo.save(newMove);
 
-		for(Reconcile reconcile : reconcileList)  {
-			reconcileService.confirmReconcile(reconcile, true);
-		}
+    Reconcile reconcile = reconcileService.createReconcile(invoicePartnerMoveLine, creditMoveLine, amountRemaining, false);
+		reconcileService.confirmReconcile(reconcile, true);
 
 		this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
 
@@ -203,23 +199,24 @@ public class DoubtfulCustomerService {
 		log.debug("Ecriture concernée : {} ",moveLine.getName());
 		Company company = moveLine.getMove().getCompany();
 		Partner partner = moveLine.getPartner();
+    LocalDate todayDate = appBaseService.getTodayDate();
 
-		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getAutoMiscOpeJournal(), company, null, partner, moveLine.getMove().getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-
-		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
+		Move newMove = moveService.getMoveCreateService().createMove(company.getAccountConfig().getAutoMiscOpeJournal(), company, null, partner, 
+		    moveLine.getMove().getPaymentMode(), MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		BigDecimal amountRemaining = moveLine.getAmountRemaining();
 
 		// Ecriture au crédit sur le 411
-		MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, Beans.get(AppBaseService.class).getTodayDate(), 1, null);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), 
+		    amountRemaining, false, todayDate, 1, moveLine.getName(), debtPassReason);
 		newMove.addMoveLineListItem(creditMoveLine);
 
 		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
-		reconcileList.add(reconcile);
 		reconcileService.confirmReconcile(reconcile, true);
 
 		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, Beans.get(AppBaseService.class).getTodayDate(), 2, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, 
+		    amountRemaining, true, todayDate, 2, moveLine.getName(), debtPassReason);
 		newMove.getMoveLineList().add(debitMoveLine);
 
 		debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());

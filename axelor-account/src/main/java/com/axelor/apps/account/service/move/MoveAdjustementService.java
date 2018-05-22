@@ -19,8 +19,6 @@ package com.axelor.apps.account.service.move;
 
 import java.math.BigDecimal;
 
-import java.time.LocalDate;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
@@ -79,11 +77,11 @@ public class MoveAdjustementService {
 		Move adjustmentMove = moveCreateService.createMove(miscOperationJournal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		// Création de la ligne au crédit
-		MoveLine creditAdjustmentMoveLine = moveLineService.createMoveLine(adjustmentMove, partner, account, debitAmountRemaining, false, appAccountService.getTodayDate(), 1, null);
+		MoveLine creditAdjustmentMoveLine = moveLineService.createMoveLine(adjustmentMove, partner, account, debitAmountRemaining, false, appAccountService.getTodayDate(), 1, null, null);
 
 		// Création de la ligne au debit
 		MoveLine debitAdjustmentMoveLine = moveLineService.createMoveLine(
-				adjustmentMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), debitAmountRemaining, true, appAccountService.getTodayDate(), 2, null);
+				adjustmentMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), debitAmountRemaining, true, appAccountService.getTodayDate(), 2, null, null);
 
 		adjustmentMove.addMoveLineListItem(creditAdjustmentMoveLine);
 		adjustmentMove.addMoveLineListItem(debitAdjustmentMoveLine);
@@ -116,10 +114,11 @@ public class MoveAdjustementService {
 
 		// Création de la ligne au crédit
 		MoveLine creditAdjustmentMoveLine = moveLineService.createMoveLine(
-				adjustmentMove, partner, account, debitAmountRemaining, false, appAccountService.getTodayDate(), 1, null);
+				adjustmentMove, partner, account, debitAmountRemaining, false, appAccountService.getTodayDate(), 1, null, null);
 
 		// Création de la ligne au débit
-		MoveLine debitAdjustmentMoveLine = moveLineService.createMoveLine(adjustmentMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), debitAmountRemaining, true, appAccountService.getTodayDate(), 2, null);
+		MoveLine debitAdjustmentMoveLine = moveLineService.createMoveLine(adjustmentMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), 
+		    debitAmountRemaining, true, appAccountService.getTodayDate(), 2, null, null);
 
 		adjustmentMove.addMoveLineListItem(creditAdjustmentMoveLine);
 		adjustmentMove.addMoveLineListItem(debitAdjustmentMoveLine);
@@ -158,10 +157,10 @@ public class MoveAdjustementService {
 		Move move = moveCreateService.createMove(journal, company, null, partnerDebit, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partnerCredit, creditMoveLineToReconcile.getAccount(), 
-				amount, true, appAccountService.getTodayDate(), 1, null);
+				amount, true, appAccountService.getTodayDate(), 1, null, null);
 		
 		MoveLine creditMoveLine = moveLineService.createMoveLine(move, partnerDebit, debitMoveLineToReconcile.getAccount(), 
-				amount, false, appAccountService.getTodayDate(), 2, null);
+				amount, false, appAccountService.getTodayDate(), 2, null, null);
 		
 		move.addMoveLineListItem(debitMoveLine);
 		move.addMoveLineListItem(creditMoveLine);

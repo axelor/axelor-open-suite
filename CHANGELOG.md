@@ -6,6 +6,7 @@
 - Sale order form : improve timetable and printing settings tabs.
 - Employee : Removed social security number field in advanced search.
 - Default configuration added for lead import. 
+- Fill automatically the description of account move line for some accounting process : expense, doubtful, bank moves, account clearance, move template...
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.

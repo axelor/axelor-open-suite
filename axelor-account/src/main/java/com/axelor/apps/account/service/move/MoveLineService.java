@@ -125,7 +125,7 @@ public class MoveLineService {
 	 *
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amountInSpecificMoveCurrency, boolean isDebit, LocalDate date,
-			LocalDate dueDate, int counter, String origin) throws AxelorException  {
+			LocalDate dueDate, int counter, String origin, String description) throws AxelorException  {
 		
 		log.debug("Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",  
 				new Object[]{account.getName(), amountInSpecificMoveCurrency, isDebit, date, counter, origin});
@@ -141,7 +141,7 @@ public class MoveLineService {
 			account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
 		}
 
-		return this.createMoveLine(move, partner, account, amountInSpecificMoveCurrency, amountConvertedInCompanyCurrency, currencyRate, isDebit, date, dueDate, counter, origin, null);
+		return this.createMoveLine(move, partner, account, amountInSpecificMoveCurrency, amountConvertedInCompanyCurrency, currencyRate, isDebit, date, dueDate, counter, origin, description);
 		
 	}
 	
@@ -220,9 +220,10 @@ public class MoveLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date, int ref, String origin) throws AxelorException{
+	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date, int ref, String origin, String description) throws AxelorException{
 
-		return this.createMoveLine(move, partner, account, amount, isDebit, date, date, ref, origin);
+		return this.createMoveLine(move, partner, account, amount, isDebit, date, date, ref, origin, description);
+		
 	}
 
 

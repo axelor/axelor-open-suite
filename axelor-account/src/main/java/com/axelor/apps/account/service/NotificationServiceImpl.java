@@ -103,17 +103,17 @@ public class NotificationServiceImpl implements NotificationService {
 				if (isOutPayment) {
 					creditMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
 							invoice.getPartnerAccount(), amountPaid, false, notification.getPaymentDate(), null, 1,
-							subrogationRelease.getSequenceNumber());
+							subrogationRelease.getSequenceNumber(), invoice.getInvoiceId());
 					debitMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
 							accountConfig.getFactorCreditAccount(), amountPaid, true, notification.getPaymentDate(),
-							null, 2, subrogationRelease.getSequenceNumber());
+							null, 2, subrogationRelease.getSequenceNumber(), invoice.getInvoiceId());
 				} else {
 					creditMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
 							accountConfig.getFactorDebitAccount(), amountPaid, false, notification.getPaymentDate(),
-							null, 1, subrogationRelease.getSequenceNumber());
+							null, 1, subrogationRelease.getSequenceNumber(), invoice.getInvoiceId());
 					debitMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
 							invoice.getPartnerAccount(), amountPaid, true, notification.getPaymentDate(), null, 2,
-							subrogationRelease.getSequenceNumber());
+							subrogationRelease.getSequenceNumber(), invoice.getInvoiceId());
 				}
 
 				moveLineRepo.save(creditMoveLine);
