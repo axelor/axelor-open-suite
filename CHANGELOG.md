@@ -3,6 +3,7 @@
 ## [Unreleased 5.0.0-rc3]
 ## Features
 - Sale order: option to close linked opportunity upon confirmation.
+- Calendar synchronization batch
 
 ## Improvements
 - Sale order form : improve timetable and printing settings tabs.
@@ -13,6 +14,7 @@
 - Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
 - Copy account type from account in analytic move line.
 - Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
+- Improve calendar synchronization speed
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
