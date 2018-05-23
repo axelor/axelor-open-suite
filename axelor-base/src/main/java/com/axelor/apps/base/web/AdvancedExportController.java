@@ -27,6 +27,7 @@ import java.util.Map;
 
 import com.google.inject.Inject;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,25 +175,8 @@ public class AdvancedExportController {
 			}
 		}
 	}
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void showAdvancedExportData(ActionRequest request, ActionResponse response) throws ClassNotFoundException {
-		
-		String criteria = ""; 
-		if (request.getContext().get("_contextCriteria") != null)
-			criteria = request.getContext().get("_contextCriteria").toString();
-		List<Map> allDataList = new ArrayList<>();
-		
-		List<Map<String, Object>> advancedExportLines = (List<Map<String, Object>>) request.getData().get("advancedExportLineList");
-		
-		if (advancedExportLines != null && advancedExportLines.size() > 0) {
-			MetaModel metaModel = metaModelRepo.find(Long.parseLong(((Map) request.getData().get("metaModel")).get("id").toString()));
-			allDataList = advancedExportService.showAdvancedExportData(advancedExportLines, metaModel, criteria);
-			response.setData(allDataList);
-		}
-	}
 
-	public void advancedExportPDF(ActionRequest request, ActionResponse response)  {
+	public void advancedExportPDF(ActionRequest request, ActionResponse response) throws InvalidFormatException  {
 	    try {
             advancedExportFile(request, response, "PDF");
         } catch (DocumentException | ClassNotFoundException | IOException | AxelorException e) {
@@ -200,7 +184,7 @@ public class AdvancedExportController {
         }
 	}
 
-	public void advancedExportExcel(ActionRequest request, ActionResponse response) {
+	public void advancedExportExcel(ActionRequest request, ActionResponse response) throws InvalidFormatException {
 	    try {
             advancedExportFile(request, response, "EXCEL");
         } catch (DocumentException | ClassNotFoundException | IOException | AxelorException e) {
@@ -208,7 +192,7 @@ public class AdvancedExportController {
         }
 	}
 
-	public void advancedExportCSV(ActionRequest request, ActionResponse response) {
+	public void advancedExportCSV(ActionRequest request, ActionResponse response) throws InvalidFormatException {
         try {
             advancedExportFile(request, response, "CSV");
         } catch (DocumentException | ClassNotFoundException | IOException | AxelorException e) {
@@ -217,7 +201,7 @@ public class AdvancedExportController {
     }
 
     public void advancedExportFile(ActionRequest request, ActionResponse response, String fileType)
-            throws ClassNotFoundException, IOException, DocumentException, AxelorException {
+            throws ClassNotFoundException, IOException, DocumentException, AxelorException, InvalidFormatException {
 
         AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
         MetaFile exportFile = null;
@@ -225,7 +209,6 @@ public class AdvancedExportController {
         if (request.getContext().get("_contextCriteria") != null)
             criteria = request.getContext().get("_contextCriteria").toString();
 
-        List<Map> allDataList;
         List<Map<String, Object>> advancedExportLineList = new ArrayList<>();
 
         List<AdvancedExportLine> advancedExportLines = advancedExportLineRepo.all().filter("self.advancedExport.id = :advancedExportId").bind("advancedExportId", advancedExport.getId()).fetch();
@@ -240,27 +223,28 @@ public class AdvancedExportController {
             }
 
             if (!advancedExportLineList.isEmpty()) {
+            	MetaModel metaModel = (MetaModel) request.getContext().get("metaModel");
+            
+                if(fileType.contentEquals("PDF")) {
+					exportFile = advancedExportService.advancedExportPDF(advancedExportLineList, metaModel, criteria,
+							advancedExport.getMaxExportLimit(), advancedExport.getQueryFetchSize());
+                    
+                } else if(fileType.contentEquals("EXCEL")) {
+					exportFile = advancedExportService.advancedExportExcel(advancedExportLineList, metaModel, criteria,
+							advancedExport.getMaxExportLimit(), advancedExport.getQueryFetchSize());
 
-                MetaModel metaModel = (MetaModel) request.getContext().get("metaModel");
-                allDataList = advancedExportService.showAdvancedExportData(advancedExportLineList, metaModel, criteria);
-
-                if(fileType.contentEquals("PDF")){
-                    exportFile = advancedExportService.advancedExportPDF(exportFile, advancedExportLineList, allDataList, metaModel);
-                }
-                else if(fileType.contentEquals("EXCEL")){
-                    exportFile = advancedExportService.advancedExportExcel(exportFile, metaModel, allDataList, advancedExportLineList);
-                }
-                else if(fileType.contentEquals("CSV")){
-                    exportFile = advancedExportService.advancedExportCSV(exportFile, metaModel, allDataList, advancedExportLineList);
-                }
-                else {
+				} else if (fileType.contentEquals("CSV")) {
+					exportFile = advancedExportService.advancedExportCSV(advancedExportLineList, metaModel, criteria,
+							advancedExport.getMaxExportLimit(), advancedExport.getQueryFetchSize());
+                    
+                } else {
                     throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.ADVANCED_EXPORT_FILE_TYPE_UNKNOWN);
                 }
             }
         } else {
             response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_1));
         }
-	downloadExportFile(response, exportFile);
+        downloadExportFile(response, exportFile);
     }
 
 	@SuppressWarnings("unchecked")
@@ -303,7 +287,9 @@ public class AdvancedExportController {
 	}
 	
 	
-	public void generateExportFile(ActionRequest request, ActionResponse response) throws ClassNotFoundException, IOException, DocumentException {
+	@SuppressWarnings("rawtypes")
+	public void generateExportFile(ActionRequest request, ActionResponse response)
+			throws ClassNotFoundException, IOException, DocumentException, AxelorException, InvalidFormatException {
 		
 		if (request.getContext().get("_xAdvancedExport") == null || request.getContext().get("exportFormatSelect") == null)
 			return;
@@ -315,7 +301,6 @@ public class AdvancedExportController {
 		if (request.getContext().get("_criteria") != null)
 			criteria = request.getContext().get("_criteria").toString();
 		
-		List<Map> allDataList = new ArrayList<>();
 		List<Map<String, Object>> advancedExportLineList = new ArrayList<>();
 		
 		List<AdvancedExportLine> advancedExportLines = advancedExportLineRepo.all().filter("self.advancedExport.id = :advancedExportId").bind("advancedExportId", advancedExport.getId()).fetch();
@@ -330,16 +315,23 @@ public class AdvancedExportController {
 			}
 			
 			if (advancedExportLineList.size() > 0) {
-				
 				MetaModel metaModel = metaModelRepo.find(Long.valueOf(((Map)request.getContext().get("_metaModel")).get("id").toString()));
-				allDataList = advancedExportService.showAdvancedExportData(advancedExportLineList, metaModel, criteria);
 
-				if (exportFormatSelect == 0)
-					exportFile = advancedExportService.advancedExportPDF(exportFile, advancedExportLineList, allDataList, metaModel);
-				else if (exportFormatSelect == 1)
-					exportFile = advancedExportService.advancedExportExcel(exportFile, metaModel, allDataList, advancedExportLineList);
-				else if (exportFormatSelect == 2)
-					exportFile = advancedExportService.advancedExportCSV(exportFile, metaModel, allDataList, advancedExportLineList);
+				if (exportFormatSelect == 0) {
+					exportFile = advancedExportService.advancedExportPDF(advancedExportLineList, metaModel, criteria,
+							advancedExport.getMaxExportLimit(), advancedExport.getQueryFetchSize());
+
+				} else if (exportFormatSelect == 1) {
+					exportFile = advancedExportService.advancedExportExcel(advancedExportLineList, metaModel, criteria,
+							advancedExport.getMaxExportLimit(), advancedExport.getQueryFetchSize());
+
+				} else if (exportFormatSelect == 2) {
+					exportFile = advancedExportService.advancedExportCSV(advancedExportLineList, metaModel, criteria,
+							advancedExport.getMaxExportLimit(), advancedExport.getQueryFetchSize());
+					
+				} else {
+					throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ADVANCED_EXPORT_FILE_TYPE_UNKNOWN));
+				}
 			}
 		} else {
 			response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_1));
@@ -355,6 +347,8 @@ public class AdvancedExportController {
 					.model(AdvancedExport.class.getName())
 					.add("html", "ws/rest/com.axelor.meta.db.MetaFile/"+exportFile.getId()+"/content/download?v="+exportFile.getVersion())
 					.param("download", "true").map());
+			
+			response.setFlash(I18n.get(IExceptionMessage.ADVANCED_EXPORT_3));
 		}
 	}
 }

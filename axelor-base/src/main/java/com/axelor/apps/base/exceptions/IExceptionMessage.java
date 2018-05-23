@@ -232,6 +232,7 @@ public interface IExceptionMessage {
 	 */
 	static final String ADVANCED_EXPORT_1 = /*$$(*/ "Please select fields for export." /*)*/;
 	static final String ADVANCED_EXPORT_2 = /*$$(*/ "There is no records to export." /*)*/;
+	static final String ADVANCED_EXPORT_3 = /*$$(*/ "Warning : Exported maximum export limit records." /*)*/;
     static final String ADVANCED_EXPORT_FILE_TYPE_UNKNOWN = /*$$(*/ "The file type is unknown." /*)*/;
 
 	/**

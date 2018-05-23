@@ -36,9 +36,11 @@
 - Sales : perform calculation of margin when we apply discount on sale order line.
 - Fix permissions for role.manager and role.crm
 - Fix line adding with having multiple project on timesheet editor.
+- Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c. 
 - Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c.
 - Fix partner data for 'admin' and 'demo' users on demo data.
 - Fix error on 'Import demo data' for apps without modules. 
+- Advanced export: Fix crashing server,added parameters for fetch limit and maximum export limt
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
