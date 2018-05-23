@@ -6,7 +6,7 @@
 	<grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
 		<toolbar>
 			<button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
-			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook"/>
+			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 			<button name="advancedExport" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
@@ -22,7 +22,7 @@
 	<grid name="partner-customer-grid" title="Customers" model="com.axelor.apps.base.db.Partner" orderBy="name">
 		<toolbar>
 			<button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
-			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook"/>
+			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
@@ -38,7 +38,7 @@
 	<grid name="partner-supplier-grid" title="Suppliers" model="com.axelor.apps.base.db.Partner" orderBy="name">
 		<toolbar>
 			<button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
-			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook"/>
+			<button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
