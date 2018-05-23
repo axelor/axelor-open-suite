@@ -368,6 +368,7 @@
 "Shipment mode",,,
 "Shipped date",,,
 "Shipped qty",,,
+"Show lines equals to zero",,,
 "Show stock move lines",,,
 "Special split",,,
 "Split",,,

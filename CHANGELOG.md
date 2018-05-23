@@ -7,6 +7,7 @@
 - Stock rules : change column name of code and name to product code and product name.
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
+- Add possibility to hide lines with currentQuantity or futureQuantity equals to 0 in stock location
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
