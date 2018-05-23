@@ -276,14 +276,16 @@
     <action-attrs name="action-stock-move-line-attrs-tracking-number-domain">
         <attribute name="domain"
             expr="eval:
+                __parent__.typeSelect &lt; 3 ?
                 &quot;
                 self.product = :product AND
                 self in
                     (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
                     join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
                     WHERE sl.id = ${__parent__.fromStockLocation.id})
-                &quot;"
-            for="trackingNumber" />
+                &quot;
+                : null"
+            for="trackingNumber"/>
     </action-attrs>
 
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
