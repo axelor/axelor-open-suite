@@ -44,7 +44,7 @@
         </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
         <panel-tabs>
-            <panel-related field="manufOrderList" colSpan="12" edit-window="blank">
+            <panel-related field="manufOrderList" colSpan="12" edit-window="blank" form-view="manuf-order-form">
                 <field name="manufOrderSeq"/>
                 <field name="product" form-view="product-form" grid-view="product-grid"/>
                 <field name="qty"/>
