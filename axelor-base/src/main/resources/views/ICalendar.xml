@@ -39,13 +39,15 @@
 				<panel-dashlet colSpan="12" height="540" showTitle="false" action="action-icalendar-view-ievent-dashlet"/>
 			</panel>
 			<panel name="connectionSettings" title="Connection settings" colSpan="12">
-				<field name="url"/>
-				<field name="typeSelect"/>
-				<field name="isSslConnection" onChange="action-calendar-record-set-port" widget="boolean-switch"/>
-				<field name="port"/>
-				<field name="synchronizationSelect"/>
-				<field name="keepRemote" widget="boolean-switch"/>
-
+				<panel colSpan="12">
+					<field name="url"/>
+					<field name="typeSelect"/>
+					<field name="isSslConnection" onChange="action-calendar-record-set-port" widget="boolean-switch"/>
+					<field name="port"/>
+					<field name="synchronizationSelect"/>
+					<field name="synchronizationDuration" widget="selection"/>
+					<field name="keepRemote" widget="boolean-switch"/>
+				</panel>
 				<panel colSpan="12">
 					<field name="login"/>
 					<field name="change" title="Change password" showIf="id &amp;&amp; !$readonly()" widget="boolean-switch"/>

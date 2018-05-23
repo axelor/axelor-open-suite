@@ -32,19 +32,20 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.ParseException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Query;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 
 import com.axelor.apps.base.db.ICalendar;
@@ -58,8 +59,9 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.service.MailAccountService;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.auth.db.User;
-import com.axelor.db.JPA;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -85,7 +87,6 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
-import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.property.Attendee;
@@ -103,13 +104,16 @@ import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.model.property.XProperty;
+import net.fortuna.ical4j.util.FixedUidGenerator;
 import net.fortuna.ical4j.util.HostInfo;
 import net.fortuna.ical4j.util.InetAddressHostInfo;
 import net.fortuna.ical4j.util.SimpleHostInfo;
 import net.fortuna.ical4j.util.UidGenerator;
 import net.fortuna.ical4j.util.Uris;
+import net.fortuna.ical4j.validate.ValidationException;
 
 /**
  * Provides calendars utilities.
@@ -121,10 +125,10 @@ public class ICalendarService {
 	static final String X_WR_CALNAME = "X-WR-CALNAME";
 
 	protected static UidGenerator generator;
-	
+
 	@Inject
 	protected ICalendarUserRepository iCalendarUserRepository;
-	
+
 	@Inject
 	protected ICalendarEventRepository iEventRepo;
 
@@ -132,38 +136,37 @@ public class ICalendarService {
 	private MailAccountService mailAccountService;
 
 	public static class GenericPathResolver extends PathResolver {
-		 
-        private String principalPath;
-        private String userPath;
-        
-        public String principalPath() {
-            return principalPath;
-        }
-        
-        public void setPrincipalPath(String principalPath) {
-            this.principalPath = principalPath;
-        }
-        
-        @Override
-        public String getPrincipalPath(String username) {
-          return principalPath + "/" + username + "/";
-        }
 
-        public String userPath() {
-            return userPath;
-        }
-        
-        public void setUserPath(String userPath) {
-            this.userPath = userPath;
-        }
-        
-        @Override
-        public String getUserPath(String username) {
-            return userPath + "/" + username;
-        }
-    }
-	
-	
+		private String principalPath;
+		private String userPath;
+
+		public String principalPath() {
+			return principalPath;
+		}
+
+		public void setPrincipalPath(String principalPath) {
+			this.principalPath = principalPath;
+		}
+
+		@Override
+		public String getPrincipalPath(String username) {
+			return principalPath + "/" + username + "/";
+		}
+
+		public String userPath() {
+			return userPath;
+		}
+
+		public void setUserPath(String userPath) {
+			this.userPath = userPath;
+		}
+
+		@Override
+		public String getUserPath(String username) {
+			return userPath + "/" + username;
+		}
+	}
+
 	/**
 	 * Generate next {@link Uid} to be used with calendar event.
 	 *
@@ -178,7 +181,7 @@ public class ICalendarService {
 				info = new InetAddressHostInfo(InetAddress.getLocalHost());
 			} catch (Exception e) {
 			}
-			generator = new UidGenerator(info, "" + new SecureRandom().nextInt(Integer.MAX_VALUE));
+			generator = new FixedUidGenerator(info, "" + new SecureRandom().nextInt(Integer.MAX_VALUE));
 		}
 		return generator.generateUid();
 	}
@@ -190,36 +193,29 @@ public class ICalendarService {
 		cal.getProperties().add(CalScale.GREGORIAN);
 		return cal;
 	}
-	
-	public boolean testConnect(ICalendar cal) throws MalformedURLException, ObjectStoreException
-	{
-		boolean connected = false;
+
+	public void testConnect(ICalendar cal) throws MalformedURLException, ObjectStoreException {
 		PathResolver RESOLVER = getPathResolver(cal.getTypeSelect());
 		Protocol protocol = getProtocol(cal.getIsSslConnection());
 		URL url = new URL(protocol.getScheme(), cal.getUrl(), cal.getPort(), "");
 		ICalendarStore store = new ICalendarStore(url, RESOLVER);
-		
-		try 
-		{
-			connected = store.connect(cal.getLogin(), getCalendarDecryptPassword(cal.getPassword()));
-		}
-		finally {
+
+		try {
+			store.connect(cal.getLogin(), getCalendarDecryptPassword(cal.getPassword()));
+		} finally {
 			store.disconnect();
 		}
-		return connected;
 	}
-	
-	public Protocol getProtocol(boolean isSslConnection)  {
-		
-		if(isSslConnection)  {
+
+	public Protocol getProtocol(boolean isSslConnection) {
+
+		if (isSslConnection) {
 			return Protocol.getProtocol("https");
-		}
-		else  {
+		} else {
 			return Protocol.getProtocol("http");
 		}
-		
+
 	}
-	
 
 	/**
 	 * Load the calendar events from the given source.
@@ -320,7 +316,7 @@ public class ICalendarService {
 			}
 			event.setStartDateTime(LocalDateTime.ofInstant(dtStart.getDate().toInstant(), zoneId));
 		}
-		
+
 		if (dtEnd.getDate() != null) {
 			if (dtEnd.getTimeZone() != null) {
 				zoneId = dtEnd.getTimeZone().toZoneId();
@@ -336,21 +332,19 @@ public class ICalendarService {
 		event.setGeo(getValue(vEvent, Property.GEO));
 		event.setUrl(getValue(vEvent, Property.URL));
 		event.setSubjectTeam(event.getSubject());
-		if(Clazz.PRIVATE.getValue().equals(getValue(vEvent, Property.CLASS))){
+		if (Clazz.PRIVATE.getValue().equals(getValue(vEvent, Property.CLASS))) {
 			event.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PRIVATE);
-		}
-		else{
+		} else {
 			event.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PUBLIC);
 		}
-		if(Transp.TRANSPARENT.getValue().equals(getValue(vEvent, Property.TRANSP))){
+		if (Transp.TRANSPARENT.getValue().equals(getValue(vEvent, Property.TRANSP))) {
 			event.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_AVAILABLE);
-		}
-		else{
+		} else {
 			event.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_BUSY);
 		}
-		if(event.getVisibilitySelect() == ICalendarEventRepository.VISIBILITY_PRIVATE){
+		if (event.getVisibilitySelect() == ICalendarEventRepository.VISIBILITY_PRIVATE) {
 			event.setSubjectTeam(I18n.get("Available"));
-			if(event.getDisponibilitySelect() == ICalendarEventRepository.DISPONIBILITY_BUSY){
+			if (event.getDisponibilitySelect() == ICalendarEventRepository.DISPONIBILITY_BUSY) {
 				event.setSubjectTeam(I18n.get("Busy"));
 			}
 		}
@@ -376,11 +370,9 @@ public class ICalendarService {
 		if (user.getPartner() != null && user.getPartner().getEmailAddress() != null
 				&& !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
 			email = user.getPartner().getEmailAddress().getAddress();
-		}
-		else if (!Strings.isNullOrEmpty(user.getEmail())) {
+		} else if (!Strings.isNullOrEmpty(user.getEmail())) {
 			email = user.getEmail();
-		}
-		else {
+		} else {
 			return null;
 		}
 
@@ -398,7 +390,8 @@ public class ICalendarService {
 			icalUser.setEmail(email);
 			icalUser.setName(user.getFullName());
 			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).findByAddress(email);
-			if(emailAddress != null && emailAddress.getPartner() != null && emailAddress.getPartner().getUser() != null){
+			if (emailAddress != null && emailAddress.getPartner() != null
+					&& emailAddress.getPartner().getUser() != null) {
 				icalUser.setUser(emailAddress.getPartner().getUser());
 			}
 		}
@@ -406,7 +399,6 @@ public class ICalendarService {
 		return icalUser;
 	}
 
-	
 	protected ICalendarUser findOrCreateUser(Property source, ICalendarEvent event) {
 		URI addr = null;
 		if (source instanceof Organizer) {
@@ -424,8 +416,7 @@ public class ICalendarService {
 		ICalendarUser user = null;
 		if (source instanceof Organizer) {
 			user = repo.all().filter("self.email = ?1", email).fetchOne();
-		}
-		else{
+		} else {
 			user = repo.all().filter("self.email = ?1 AND self.event.id = ?2", email, event.getId()).fetchOne();
 		}
 		if (user == null) {
@@ -433,22 +424,21 @@ public class ICalendarService {
 			user.setEmail(email);
 			user.setName(email);
 			EmailAddress emailAddress = Beans.get(EmailAddressRepository.class).findByAddress(email);
-			if(emailAddress != null && emailAddress.getPartner() != null && emailAddress.getPartner().getUser() != null){
+			if (emailAddress != null && emailAddress.getPartner() != null
+					&& emailAddress.getPartner().getUser() != null) {
 				user.setUser(emailAddress.getPartner().getUser());
 			}
 		}
 		if (source.getParameter(Parameter.CN) != null) {
 			user.setName(source.getParameter(Parameter.CN).getValue());
 		}
-		if(source.getParameter(Parameter.PARTSTAT) != null){
+		if (source.getParameter(Parameter.PARTSTAT) != null) {
 			String role = source.getParameter(Parameter.PARTSTAT).getValue();
-			if(role.equals("TENTATIVE")){
+			if (role.equals("TENTATIVE")) {
 				user.setStatusSelect(ICalendarUserRepository.STATUS_MAYBE);
-			}
-			else if(role.equals("ACCEPTED")){
+			} else if (role.equals("ACCEPTED")) {
 				user.setStatusSelect(ICalendarUserRepository.STATUS_YES);
-			}
-			else if(role.equals("DECLINED")){
+			} else if (role.equals("DECLINED")) {
 				user.setStatusSelect(ICalendarUserRepository.STATUS_NO);
 			}
 		}
@@ -487,15 +477,17 @@ public class ICalendarService {
 			if (res.toLowerCase().startsWith("mailto:")) {
 				res = res.substring(7);
 			}
-		} else if (!res.toLowerCase().startsWith("mailto:")){
+		} else if (!res.toLowerCase().startsWith("mailto:")) {
 			res = "mailto:" + res;
 		}
 		return res;
 	}
 
 	protected Date toDate(LocalDateTime dt, boolean allDay) {
-		if (dt == null) return null;
-		if (allDay) return new Date(java.util.Date.from(dt.toInstant(OffsetDateTime.now().getOffset())));
+		if (dt == null)
+			return null;
+		if (allDay)
+			return new Date(java.util.Date.from(dt.toInstant(OffsetDateTime.now().getOffset())));
 		return new DateTime(java.util.Date.from(dt.toInstant(OffsetDateTime.now().getOffset())));
 	}
 
@@ -515,7 +507,7 @@ public class ICalendarService {
 
 		VEvent vevent = new VEvent();
 
-		PropertyList items = vevent.getProperties();
+		PropertyList<Property> items = vevent.getProperties();
 
 		items.add(new DtStart(start));
 		if (end != null) {
@@ -542,16 +534,17 @@ public class ICalendarService {
 			items.add(new Uid(event.getUid()));
 		}
 		if (event.getUrl() != null) {
-			items.add(createUri(event.getUrl()));
+			items.add(new Url(createUri(event.getUrl())));
 		}
 		if (event.getUpdatedOn() != null) {
-			DateTime date = new DateTime(java.util.Date.from(event.getUpdatedOn().toInstant(OffsetDateTime.now().getOffset())));
+			DateTime date = new DateTime(
+					java.util.Date.from(event.getUpdatedOn().toInstant(OffsetDateTime.now().getOffset())));
 			date.setUtc(true);
 			LastModified lastModified = new LastModified(date);
 			items.add(lastModified);
-		}
-		else{
-			DateTime date = new DateTime(java.util.Date.from(event.getCreatedOn().toInstant(OffsetDateTime.now().getOffset())));
+		} else {
+			DateTime date = new DateTime(
+					java.util.Date.from(event.getCreatedOn().toInstant(OffsetDateTime.now().getOffset())));
 			date.setUtc(true);
 			LastModified lastModified = new LastModified(date);
 			items.add(lastModified);
@@ -582,10 +575,10 @@ public class ICalendarService {
 	 * @param file
 	 *            the target file
 	 * @throws IOException
+	 * @throws ParseException
 	 * @throws ValidationException
-	 * @throws ParseException 
 	 */
-	public void export(ICalendar calendar, File file) throws IOException, ValidationException, ParseException {
+	public void export(ICalendar calendar, File file) throws IOException, ParseException, ValidationException {
 		Preconditions.checkNotNull(calendar, "calendar can't be null");
 		Preconditions.checkNotNull(file, "input file can't be null");
 
@@ -605,10 +598,10 @@ public class ICalendarService {
 	 * @param writer
 	 *            the output writer
 	 * @throws IOException
+	 * @throws ParseException
 	 * @throws ValidationException
-	 * @throws ParseException 
 	 */
-	public void export(ICalendar calendar, Writer writer) throws IOException, ValidationException, ParseException {
+	public void export(ICalendar calendar, Writer writer) throws IOException, ParseException, ValidationException {
 		Preconditions.checkNotNull(calendar, "calendar can't be null");
 		Preconditions.checkNotNull(writer, "writer can't be null");
 		Preconditions.checkNotNull(getICalendarEvents(calendar), "can't export empty calendar");
@@ -625,28 +618,18 @@ public class ICalendarService {
 		outputter.output(cal, writer);
 	}
 
-	/**
-	 * Synchronize the calendar with the given CalDAV collection.
-	 *
-	 * @param calendar
-	 *            the {@link ICalendar} to sync
-	 * @param collection
-	 *            the remote CalDAV collection
-	 * @return the same update {@link ICalendar}
-	 * @throws ICalendarException
-	 *             if there is any error during sync
-	 */
-	public ICalendar sync(ICalendar calendar, CalDavCalendarCollection collection)
-			throws ICalendarException {
-		try {
-		return doSync(calendar, collection);
-		} catch (Exception e) {
-			throw new ICalendarException(e);
+	public void sync(ICalendar calendar, boolean all, int weeks) throws MalformedURLException, ICalendarException {
+		if (all || calendar.getLastSynchronization() == null) {
+			sync(calendar, null, null);
+		} else {
+			int nbOfWeeks = weeks <= 0 ? calendar.getSynchronizationDuration() : weeks;
+			LocalDateTime now = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
+			sync(calendar, now.minusWeeks(nbOfWeeks), now.plusWeeks(nbOfWeeks));
 		}
 	}
-	
+
 	@Transactional
-	public void sync(ICalendar calendar)
+	protected void sync(ICalendar calendar, LocalDateTime startDate, LocalDateTime endDate)
 			throws ICalendarException, MalformedURLException {
 		PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
 		Protocol protocol = getProtocol(calendar.getIsSslConnection());
@@ -655,15 +638,18 @@ public class ICalendarService {
 		try {
 			String password = getCalendarDecryptPassword(calendar.getPassword());
 
-			if(calendar.getLogin() != null && calendar.getPassword() != null && store.connect(calendar.getLogin(), password)){
+			if (calendar.getLogin() != null && calendar.getPassword() != null
+					&& store.connect(calendar.getLogin(), password)) {
 				List<CalDavCalendarCollection> colList = store.getCollections();
-				if(!colList.isEmpty()){
-					calendar = doSync(calendar, colList.get(0));
-					calendar.setLastSynchronization(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+				if (!colList.isEmpty()) {
+					calendar = doSync(calendar, colList.get(0), startDate, endDate);
+					calendar.setLastSynchronization(
+							Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
 					Beans.get(ICalendarRepository.class).save(calendar);
 				}
 			} else {
-				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+						I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
 			}
 		} catch (Exception e) {
 			throw new ICalendarException(e);
@@ -671,74 +657,135 @@ public class ICalendarService {
 			store.disconnect();
 		}
 	}
-	
 
-	protected ICalendar doSync(ICalendar calendar, CalDavCalendarCollection collection)
-			throws IOException, URISyntaxException, ParseException, ObjectStoreException, ConstraintViolationException {
-
-		final String[] names = {
-				Property.UID,
-				Property.URL,
-				Property.SUMMARY,
-				Property.DESCRIPTION,
-				Property.DTSTART,
-				Property.DTEND,
-				Property.ORGANIZER,
-				Property.ATTENDEE
-		};
+	@Transactional
+	protected ICalendar doSync(ICalendar calendar, CalDavCalendarCollection collection, LocalDateTime startDate,
+			LocalDateTime endDate) throws IOException, URISyntaxException, ParseException, ObjectStoreException,
+			ConstraintViolationException, DavException, ParserConfigurationException, ParserException {
 
 		final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;
 
-		final Map<String, VEvent> remoteEvents = new HashMap<>();
-		final List<VEvent> localEvents = new ArrayList<>();
-		final Set<String> synced = new HashSet<>();
-		final List<ICalendarEvent> oldEvents = getICalendarEvents(calendar);
-		
-		for (VEvent item : ICalendarStore.getEvents(collection)) {
-			remoteEvents.put(item.getUid().getValue(), item);
+		final Map<String, VEvent> modifiedRemoteEvents = new HashMap<>();
+		final List<ICalendarEvent> modifiedLocalEvents = getICalendarEvents(calendar);
+		final Set<String> allRemoteUids = new HashSet<>();
+		final Set<VEvent> updatedEvents = new HashSet<>();
+		List<VEvent> events = null;
+		Instant lastSynchro = null;
+
+		if (calendar.getLastSynchronization() != null) {
+			lastSynchro = calendar.getLastSynchronization().toInstant(OffsetDateTime.now().getOffset());
+		} else {
+			lastSynchro = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toInstant(OffsetDateTime.now().getOffset());
 		}
 
-		for (ICalendarEvent item : oldEvents) {
+		if (startDate == null || endDate == null) {
+			events = ICalendarStore.getModifiedEvents(collection, lastSynchro, allRemoteUids);
+		} else {
+			events = ICalendarStore.getModifiedEventsInRange(collection, lastSynchro, allRemoteUids, startDate,
+					endDate);
+		}
+		for (VEvent item : events) {
+			modifiedRemoteEvents.put(item.getUid().getValue(), item);
+		}
+
+		for (ICalendarEvent item : modifiedLocalEvents) {
 			VEvent source = createVEvent(item);
-			VEvent target = remoteEvents.get(source.getUid().getValue());
-			if (target == null && Strings.isNullOrEmpty(item.getUid())) {
+			VEvent target = modifiedRemoteEvents.get(source.getUid().getValue());
+
+			// If uid is empty, the event is new
+			if (StringUtils.isBlank(item.getUid())) {
 				item.setUid(source.getUid().getValue());
-				target = source;
+				Calendar cal = newCalendar();
+				cal.getComponents().add(source);
+				collection.addCalendar(cal);
 			}
-			
-			if(target != null){
-				if (keepRemote) {
+			// else it has been modified
+			else {
+				// if target is null, then it hasn't been modified or it has been deleted
+				if (target == null) {
+					target = source;
+				} else {
+					updateEvent(source, target, keepRemote);
+					modifiedRemoteEvents.remove(target.getUid().getValue());
+				}
+				updatedEvents.add(target);
+			}
+		}
+
+		// Process remaining modified remote events, find and update or create a
+		// corresponding ICalendarEvent
+		for (Map.Entry<String, VEvent> entry : modifiedRemoteEvents.entrySet()) {
+			findOrCreateEvent(entry.getValue(), calendar);
+		}
+
+		// update remote events
+		for (VEvent item : updatedEvents) {
+			Calendar cal = newCalendar();
+			cal.getComponents().add(item);
+			collection.updateCalendar(cal);
+		}
+
+		// remove deleted remote events
+		removeDeletedEventsInRange(allRemoteUids, calendar, startDate, endDate);
+		return calendar;
+	}
+
+	@Transactional
+	protected void removeDeletedEventsInRange(Set<String> allRemoteUids, ICalendar calendar, LocalDateTime startDate,
+			LocalDateTime endDate) {
+
+		QueryBuilder<ICalendarEvent> queryBuilder = QueryBuilder.of(ICalendarEvent.class);
+		queryBuilder.add("self.uid NOT in (:uids)").bind("uids", allRemoteUids);
+		queryBuilder.add("self.calendar = :calendar").bind("calendar", calendar);
+		queryBuilder.add("self.archived = :archived OR self.archived IS NULL").bind("archived", false);
+
+		if (startDate != null && endDate != null) {
+			queryBuilder.add("self.startDateTime BETWEEN :start AND :end OR self.endDateTime BETWEEN :start AND :end")
+					.bind("start", startDate).bind("end", endDate);
+		}
+
+		ICalendarEventRepository repo = Beans.get(ICalendarEventRepository.class);
+
+		for (ICalendarEvent event : queryBuilder.build().fetch()) {
+			if(ICalendarRepository.ICAL_ONLY.equals(calendar.getSynchronizationSelect())) {
+				repo.remove(event);
+			} else {
+				event.setArchived(true);
+			}
+		}
+	}
+
+	private VEvent updateEvent(VEvent source, VEvent target, boolean keepRemote)
+			throws IOException, URISyntaxException, ParseException {
+
+		final String[] names = { Property.UID, Property.URL, Property.SUMMARY, Property.DESCRIPTION, Property.DTSTART,
+				Property.DTEND, Property.ORGANIZER, Property.ATTENDEE };
+
+		if (keepRemote) {
+			VEvent tmp = target;
+			target = source;
+			source = tmp;
+		} else {
+			if (source.getLastModified() != null && target.getLastModified() != null) {
+				ZoneId zoneId = OffsetDateTime.now().getOffset();
+				if (source.getLastModified().getTimeZone() != null) {
+					zoneId = source.getLastModified().getTimeZone().toZoneId();
+				}
+				LocalDateTime lastModifiedSource = LocalDateTime
+						.ofInstant(source.getLastModified().getDate().toInstant(), zoneId);
+				LocalDateTime lastModifiedTarget = LocalDateTime
+						.ofInstant(target.getLastModified().getDate().toInstant(), zoneId);
+				if (lastModifiedSource.isBefore(lastModifiedTarget)) {
 					VEvent tmp = target;
 					target = source;
 					source = tmp;
 				}
-				else{
-					if(source.getLastModified() != null && target.getLastModified() != null){
-						ZoneId zoneId = OffsetDateTime.now().getOffset();
-						if (source.getLastModified().getTimeZone() != null) {
-							zoneId = source.getLastModified().getTimeZone().toZoneId();
-						}
-						LocalDateTime lastModifiedSource = LocalDateTime.ofInstant(source.getLastModified().getDate().toInstant(), zoneId);
-						LocalDateTime lastModifiedTarget = LocalDateTime.ofInstant(target.getLastModified().getDate().toInstant(), zoneId);
-						if(lastModifiedSource.isBefore(lastModifiedTarget)){
-							VEvent tmp = target;
-							target = source;
-							source = tmp;
-						}
-					}
-					else if(target.getLastModified() != null){
-						VEvent tmp = target;
-						target = source;
-						source = tmp;
-					}
-				}
-				localEvents.add(target);
-				synced.add(target.getUid().getValue());
-
-				if (source == target) {
-					continue;
-				}
-
+			} else if (target.getLastModified() != null) {
+				VEvent tmp = target;
+				target = source;
+				source = tmp;
+			}
+			if (source != target) {
 				for (String name : names) {
 					Property s = source.getProperty(name);
 					Property t = target.getProperty(name);
@@ -756,65 +803,39 @@ public class ICalendarService {
 				}
 			}
 		}
-
-		for (String uid : remoteEvents.keySet()) {
-			if (!synced.contains(uid)) {
-				localEvents.add(remoteEvents.get(uid));
-			}
-		}
-		
-		// update local events
-		for (VEvent item : localEvents) {
-			ICalendarEvent iEvent = findOrCreateEvent(item, calendar);
-			if (oldEvents.contains(iEvent)) {
-				oldEvents.remove(iEvent);
-			}
-		}
-		removeOldEvents(oldEvents);
-
-		// update remote events
-		for (VEvent item : localEvents) {
-			if (!synced.contains(item.getUid().getValue())) {
-				continue;
-			}
-			Calendar cal = newCalendar();
-			cal.getComponents().add(item);
-			collection.addCalendar(cal);
-		}
-
-		return calendar;
+		return target;
 	}
-	
-	
-	public PathResolver getPathResolver(int typeSelect)  {
+
+	public PathResolver getPathResolver(int typeSelect) {
 		switch (typeSelect) {
-		case ICalendarRepository.ICAL_SERVER :
+		case ICalendarRepository.ICAL_SERVER:
 			return PathResolver.ICAL_SERVER;
 
-		case ICalendarRepository.CALENDAR_SERVER :
+		case ICalendarRepository.CALENDAR_SERVER:
 			return PathResolver.CALENDAR_SERVER;
 
-		case ICalendarRepository.GCAL :
+		case ICalendarRepository.GCAL:
 			return PathResolver.GCAL;
 
-		case ICalendarRepository.ZIMBRA :
+		case ICalendarRepository.ZIMBRA:
 			return PathResolver.ZIMBRA;
 
-		case ICalendarRepository.KMS :
+		case ICalendarRepository.KMS:
 			return PathResolver.KMS;
 
-		case ICalendarRepository.CGP :
+		case ICalendarRepository.CGP:
 			return PathResolver.CGP;
-					
-		case ICalendarRepository.CHANDLER :
+
+		case ICalendarRepository.CHANDLER:
 			return PathResolver.CHANDLER;
-			
+
 		default:
 			return null;
 		}
 	}
-	
-	public ICalendarEvent createEvent(LocalDateTime fromDateTime, LocalDateTime toDateTime, User user, String description, int type, String subject){
+
+	public ICalendarEvent createEvent(LocalDateTime fromDateTime, LocalDateTime toDateTime, User user,
+			String description, int type, String subject) {
 		ICalendarEvent event = new ICalendarEvent();
 		event.setSubject(subject);
 		event.setStartDateTime(fromDateTime);
@@ -822,64 +843,66 @@ public class ICalendarService {
 		event.setTypeSelect(type);
 		event.setUser(user);
 		event.setCalendar(user.getiCalendar());
-		if(!Strings.isNullOrEmpty(description)){
+		if (!Strings.isNullOrEmpty(description)) {
 			event.setDescription(description);
 		}
 		return event;
 	}
-	
-	public net.fortuna.ical4j.model.Calendar removeCalendar(CalDavCalendarCollection collection,String uid) throws FailedOperationException, ObjectStoreException {
-        net.fortuna.ical4j.model.Calendar calendar = collection.getCalendar(uid);
 
-        DeleteMethod deleteMethod = new DeleteMethod( collection.getPath() + uid + ".ics");
-        try {
-            collection.getStore().getClient().execute(deleteMethod);
-        } catch (IOException e) {
-            throw new ObjectStoreException(e);
-        }
-        if (!deleteMethod.succeeded()) {
-            throw new FailedOperationException(deleteMethod.getStatusLine().toString());
-        }
+	public net.fortuna.ical4j.model.Calendar removeCalendar(CalDavCalendarCollection collection, String uid)
+			throws FailedOperationException, ObjectStoreException {
+		net.fortuna.ical4j.model.Calendar calendar = collection.getCalendar(uid);
 
-        return calendar;
-    }
-	
-	public net.fortuna.ical4j.model.Calendar getCalendar(String uid, ICalendar calendar) throws ICalendarException, MalformedURLException{
+		DeleteMethod deleteMethod = new DeleteMethod(collection.getPath() + uid + ".ics");
+		try {
+			collection.getStore().getClient().execute(deleteMethod);
+		} catch (IOException e) {
+			throw new ObjectStoreException(e);
+		}
+		if (!deleteMethod.succeeded()) {
+			throw new FailedOperationException(deleteMethod.getStatusLine().toString());
+		}
+
+		return calendar;
+	}
+
+	public net.fortuna.ical4j.model.Calendar getCalendar(String uid, ICalendar calendar)
+			throws ICalendarException, MalformedURLException {
 		net.fortuna.ical4j.model.Calendar cal = null;
 		PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
 		Protocol protocol = getProtocol(calendar.getIsSslConnection());
 		URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
 		ICalendarStore store = new ICalendarStore(url, RESOLVER);
 		try {
-			if(store.connect(calendar.getLogin(), calendar.getPassword())){
+			if (store.connect(calendar.getLogin(), calendar.getPassword())) {
 				List<CalDavCalendarCollection> colList = store.getCollections();
-				if(!colList.isEmpty()){
+				if (!colList.isEmpty()) {
 					CalDavCalendarCollection collection = colList.get(0);
 					cal = collection.getCalendar(uid);
 				}
 			} else {
-				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+						I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
 			}
 		} catch (Exception e) {
 			throw new ICalendarException(e);
-		}
-		finally {
+		} finally {
 			store.disconnect();
 		}
 		return cal;
 	}
-	
-	public void removeEventFromIcal(ICalendarEvent event) throws MalformedURLException, ICalendarException{
-		if(event.getCalendar() != null && !Strings.isNullOrEmpty(event.getUid())){
-			ICalendar calendar  = event.getCalendar();
+
+	public void removeEventFromIcal(ICalendarEvent event) throws MalformedURLException, ICalendarException {
+		if (event.getCalendar() != null && !Strings.isNullOrEmpty(event.getUid())) {
+			ICalendar calendar = event.getCalendar();
 			PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
 			Protocol protocol = getProtocol(calendar.getIsSslConnection());
 			URL url = new URL(protocol.getScheme(), calendar.getUrl(), calendar.getPort(), "");
 			ICalendarStore store = new ICalendarStore(url, RESOLVER);
 			try {
-				if(store.connect(calendar.getLogin(), getCalendarDecryptPassword(calendar.getPassword()))){
+				if (store.connect(calendar.getLogin(), getCalendarDecryptPassword(calendar.getPassword()))) {
 					List<CalDavCalendarCollection> colList = store.getCollections();
-					if(!colList.isEmpty()){
+					if (!colList.isEmpty()) {
 						CalDavCalendarCollection collection = colList.get(0);
 						final Map<String, VEvent> remoteEvents = new HashMap<>();
 
@@ -889,36 +912,35 @@ public class ICalendarService {
 
 						VEvent target = remoteEvents.get(event.getUid());
 						if (target != null)
-							removeCalendar(collection,target.getUid().getValue());
+							removeCalendar(collection, target.getUid().getValue());
 					}
 				} else {
-					throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
+					throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+							I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
 				}
 			} catch (Exception e) {
 				throw new ICalendarException(e);
-			}
-			finally {
+			} finally {
 				store.disconnect();
 			}
 		}
 	}
-	
-	
+
 	@Transactional
 	public void removeOldEvents(List<ICalendarEvent> oldEvents) {
-		
+
 		for (ICalendarEvent event : oldEvents) {
 			iEventRepo.remove(event);
 		}
 	}
-	
+
 	private List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
 		LocalDateTime lastSynchro = calendar.getLastSynchronization();
-		if(lastSynchro != null) {
-			List<ICalendarEvent> events = iEventRepo.all().filter("self.calendar = ?1 AND self.updatedOn < ?2", calendar, lastSynchro).fetch();
-			return events;
+		if (lastSynchro != null) {
+			return iEventRepo.all().filter("COALESCE(self.archived, false) = false AND self.calendar = ?1 AND COALESCE(self.updatedOn, self.createdOn) > ?2",
+					calendar, lastSynchro).fetch();
 		}
-		return iEventRepo.all().filter("self.calendar = ?1", calendar).fetch();
+		return iEventRepo.all().filter("COALESCE(self.archived, false) = false AND self.calendar = ?1", calendar).fetch();
 	}
 
 	public String getCalendarEncryptPassword(String password) {

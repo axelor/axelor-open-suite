@@ -29,10 +29,8 @@ import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.exception.AxelorException;
 
-import net.fortuna.ical4j.model.ValidationException;
-
 public interface ICalendarEventService {
 
-	List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event)	throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException;
+	List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event)	throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ParseException;
 
 }

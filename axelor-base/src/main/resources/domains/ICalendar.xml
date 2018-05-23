@@ -21,6 +21,7 @@
 	  <integer name="port" title="Port"  default="80" />
 	  <boolean name="isValid" title="Valid"/>
 	  <datetime name="lastSynchronization" title="Last Synchronization"/>
+	  <integer name="synchronizationDuration" min="1" title="Synchronization duration (week)"/>
       <finder-method name="findByUser" using="user" />
 
 	  <extra-code>

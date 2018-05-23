@@ -120,6 +120,7 @@
 
 	<selection name='ibase.batch.action.select'>
 		<option value='1'>Target</option>
+		<option value='2'>Calendar synchronization</option>
 	</selection>
 
 	<selection name="base.keyword.type.select">
