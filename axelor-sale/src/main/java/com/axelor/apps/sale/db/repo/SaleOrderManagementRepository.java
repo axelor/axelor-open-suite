@@ -111,7 +111,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
 		if (saleOrder.getSaleOrderLineList() != null) {
 			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				Beans.get(SaleOrderLineService.class).computeSubMargin(saleOrderLine);
+				Beans.get(SaleOrderLineService.class).computeSubMargin(saleOrder, saleOrderLine);
 			}
 		}
 	}

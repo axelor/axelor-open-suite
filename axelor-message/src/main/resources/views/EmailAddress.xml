@@ -5,7 +5,7 @@
 	
 	<grid name="email-address-grid" title="Email addresses" model="com.axelor.apps.message.db.EmailAddress">
 		<toolbar>
-			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-method-show-duplicate"/>
+			<button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
 		</toolbar>
 		<field name="address"/>
 	</grid>

@@ -44,7 +44,7 @@
 		title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion" >
 		<view type="grid" name="unit-conversion-grid"/>
 		<view type="form" name="unit-conversion-form"/>
-		<context name="searchFields" expr="fromUnit;toUnit"/>
+		<context name="_duplicateFinderFields" expr="startUnit;endUnit"/>
 	</action-view>
 
 	<menuitem name="admin-root-general-year" parent="admin-root-general"
@@ -200,7 +200,7 @@
 		<view type="grid" name="address-grid" />
 		<view type="form" name="address-form" />
 		<context name="fromMain" expr="eval:true"/>
-		<context name="searchFields" expr=" addressL4;addressL6"/>
+		<context name="_duplicateFinderFields" expr=" addressL4;addressL6"/>
 	</action-view>
 	
 	<menuitem name="referential-conf-invoice-rib" parent="referential-conf"
@@ -353,7 +353,7 @@
 		title="Cities" model="com.axelor.apps.base.db.City" >
 		<view type="grid" name="city-grid"/>
 		<view type="form" name="city-form"/>
-		<context name="searchFields" expr="name"/>
+		<context name="_duplicateFinderFields" expr="name"/>
 	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-department"

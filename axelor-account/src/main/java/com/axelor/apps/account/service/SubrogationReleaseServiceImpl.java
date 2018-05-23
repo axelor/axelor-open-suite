@@ -158,17 +158,17 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 			if (InvoiceToolService.isOutPayment(invoice)) {
 				creditMoveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
 						accountConfig.getFactorDebitAccount(), invoice.getCompanyInTaxTotalRemaining(), false, date,
-						null, 1, subrogationRelease.getSequenceNumber());
+						null, 1, subrogationRelease.getSequenceNumber(), null);
 				debitMoveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
 						accountConfig.getFactorCreditAccount(), invoice.getCompanyInTaxTotalRemaining(), true, date,
-						null, 2, subrogationRelease.getSequenceNumber());
+						null, 2, subrogationRelease.getSequenceNumber(), null);
 			} else {
 				creditMoveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
 						accountConfig.getFactorCreditAccount(), invoice.getCompanyInTaxTotalRemaining(), false, date,
-						null, 1, subrogationRelease.getSequenceNumber());
+						null, 1, subrogationRelease.getSequenceNumber(), null);
 				debitMoveLine = moveService.getMoveLineService().createMoveLine(move, invoice.getPartner(),
 						accountConfig.getFactorDebitAccount(), invoice.getCompanyInTaxTotalRemaining(), true, date,
-						null, 2, subrogationRelease.getSequenceNumber());
+						null, 2, subrogationRelease.getSequenceNumber(), null);
 			}
 
 			moveLineRepo.save(creditMoveLine);

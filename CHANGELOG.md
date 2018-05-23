@@ -1,11 +1,18 @@
 # Changelog
 
 ## [Unreleased 5.0.0-rc3]
+## Features
+- Sale order: option to close linked opportunity upon confirmation.
 
 ## Improvements
 - Sale order form : improve timetable and printing settings tabs.
 - Employee : Removed social security number field in advanced search.
 - Default configuration added for lead import. 
+- Fill automatically the description of account move line for some accounting process : expense, doubtful, bank moves, account clearance, move template...
+- Product : procurement method can now be both 'Buy and produce'. Stock rules creation now set a default refill method based on the product's procurement method.
+- Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
+- Copy account type from account in analytic move line.
+- Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
@@ -16,9 +23,24 @@
 - Fix project planning editor breaking changes due to adk updates.
 - Invoice : allow add/remove lines only on draft state.
 - Timesheet editor: Remove line confirmation message translation fixed.
+- Fix call to getInvoicingAddress of PartnerService in UMR form view.
 - Fix NPE and wrong domain set  on price list (SaleOrder/PurchaseOrder/Invoice).
 - Add missing translation for "Fullscreen Editor".
 - Invoice demo data : Fix import address string field.
+- Invoice demo data: Fix import draft sequence.
+- Fix stack overflow error on duplicate city check. Refactored the code of duplicate check.
+- Fix "Blockings" UI after $moment() helper was fixed, also fixed a bugged onSelect field on blocking.companies on edit mode.
+- Fix NPE that happens when we invoice a stock move with a partner with no in/out payment mode.
+- Add missing translation in Calendars
+- Fix java.lang.NullPointerException by checking if product is null
+- Sales : perform calculation of margin when we apply discount on sale order line.
+- Fix permissions for role.manager and role.crm
+- Fix line adding with having multiple project on timesheet editor.
+- Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c. 
+- Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c.
+- Fix partner data for 'admin' and 'demo' users on demo data.
+- Fix error on 'Import demo data' for apps without modules. 
+- Advanced export: Fix crashing server,added parameters for fetch limit and maximum export limt
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
@@ -495,7 +517,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-
+[Unreleased 5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...dev
 [5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
 [5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
 [Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev

@@ -38,9 +38,10 @@
 	        <field name="amount"/>
 	        <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" />
 	        <field name="project" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"/>
-  			<field name="account"/>
-			<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
+  			<field name="account" onSelect="action-analytic-move-line-attrs-account-domain" onChange="action-analytic-move-line-record-account-onchange"/>
+            <field name="accountType" onChange="action-analytic-move-line-record-account-type-onchange"/>
 	        <field name="typeSelect"/>
+           <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
        </panel>
         
     </form>
@@ -65,6 +66,19 @@
     <action-record name="action-analytic-move-line-record-currency" model="com.axelor.apps.account.db.AnalyticMoveLine">
     	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
     </action-record>
+
+    <action-record name="action-analytic-move-line-record-account-onchange" model="com.axelor.apps.account.db.AnalyticMoveLine">
+        <field name="accountType" expr="eval: account.accountType" if="account"/>
+    </action-record>
+
+    <action-record name="action-analytic-move-line-record-account-type-onchange" model="com.axelor.apps.account.db.AnalyticMoveLine">
+        <field name="account" expr="eval: null"/>
+    </action-record>
+
+    <action-attrs name="action-analytic-move-line-attrs-account-domain">
+        <attribute for="account" name="domain" expr="eval: null"/>
+        <attribute for="account" name="domain" expr="eval: 'self.accountType = :accountType'" if="accountType"/>
+    </action-attrs>
     
     <action-attrs if-module="axelor-business-project"  name="action-analytic-move-line-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>

@@ -52,6 +52,7 @@
 	<selection name='product.procurement.method.select'>
 		<option value='buy'>Buy</option>
 		<option value='produce'>Produce</option>
+		<option value='buyAndProduce'>Buy and produce</option>
 	</selection>
 
 	<selection name="product.sale.supply.select">

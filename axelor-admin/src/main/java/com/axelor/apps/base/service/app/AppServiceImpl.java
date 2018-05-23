@@ -119,6 +119,9 @@ public class AppServiceImpl implements AppService {
 	private void importData(App app, String dataDir) {
 		
 		String modules = app.getModules();
+		if (modules == null) {
+			return;
+		}
 		String code = app.getCode();
 		String lang = getLanguage(app);
 		
@@ -395,7 +398,7 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public void refreshApp() throws IOException, ClassNotFoundException {
+	public void refreshApp() throws IOException {
 
 		File dataDir = Files.createTempDir();
 		File imgDir = new File(dataDir, "img");
@@ -411,7 +414,12 @@ public class AppServiceImpl implements AppService {
 		
 		log.debug("Total app models: {}", metaModels.size());
 		for (MetaModel metaModel : metaModels) {
-			Class<?> klass = Class.forName(metaModel.getFullName());
+			Class<?> klass;
+			try {
+				klass = Class.forName(metaModel.getFullName());
+			} catch (ClassNotFoundException e) {
+				continue;
+			}
 			if (!App.class.isAssignableFrom(klass)){
 				log.debug("Not a App class : {}", metaModel.getName());
 				continue;

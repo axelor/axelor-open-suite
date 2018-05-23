@@ -41,4 +41,11 @@ public interface TranslationService {
      * @param key
      */
     void removeValueTranslations(String key);
+
+    /**
+     * Get the translation of the given key
+     *
+     * @param key
+     */
+    String getValueTranslation(String key, String language);
 }

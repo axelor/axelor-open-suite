@@ -98,7 +98,7 @@ public class ReimbursementImportService {
 			}
 			if(move != null)  {
 			// Création d'une ligne au débit
-				MoveLine debitMoveLine = moveLineService.createMoveLine(move , null, company.getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, rejectDate, seq, null);
+				MoveLine debitMoveLine = moveLineService.createMoveLine(move , null, company.getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, rejectDate, seq, null, null);
 				move.getMoveLineList().add(debitMoveLine);	
 				this.validateMove(move);
 			}
@@ -122,7 +122,7 @@ public class ReimbursementImportService {
 		BigDecimal amount = reimbursement.getAmountReimbursed();
 		
 		// Création de la ligne au crédit
-		MoveLine creditMoveLine = moveLineService.createMoveLine(move , partner, company.getAccountConfig().getCustomerAccount(), amount, false, rejectDate, seq, refReject);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(move , partner, company.getAccountConfig().getCustomerAccount(), amount, false, rejectDate, seq, refReject, null);
 		move.getMoveLineList().add(creditMoveLine);	
 		
 		moveLineRepo.save(creditMoveLine); 
@@ -159,7 +159,7 @@ public class ReimbursementImportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public MoveLine createOppositeRejectMoveLine(Move move, int seq, LocalDate rejectDate) throws AxelorException  {
 		// Création d'une ligne au débit
-		MoveLine debitMoveLine = moveLineService.createMoveLine(move , null, move.getCompany().getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, rejectDate, seq, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(move , null, move.getCompany().getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, rejectDate, seq, null, null);
 		move.getMoveLineList().add(debitMoveLine);	
 		moveRepo.save(move);
 		return debitMoveLine;
