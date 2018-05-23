@@ -213,14 +213,14 @@ public class PaymentVoucherConfirmService  {
             // in the else case we create a classical balance on the bank account of the payment mode
             if (paymentVoucher.getMoveLine() != null){
                 moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(),paymentVoucher.getMoveLine().getAccount(),
-                        paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
+                        paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, paymentVoucher.getRef(), null);
 
                 Reconcile reconcile = reconcileService.createReconcile(moveLine,paymentVoucher.getMoveLine(),moveLine.getDebit(), !isDebitToPay);
                 reconcileService.confirmReconcile(reconcile, true);
             }
             else{
 
-                moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, null);
+                moveLine = moveLineService.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, paymentDate, moveLineNo++, paymentVoucher.getRef(), null);
             }
             move.getMoveLineList().add(moveLine);
             // Check if the paid amount is > paid lines total
@@ -239,7 +239,7 @@ public class PaymentVoucherConfirmService  {
 
                 Account partnerAccount = Beans.get(AccountCustomerService.class).getPartnerAccount(payerPartner, company, paymentVoucherToolService.isPurchase(paymentVoucher));
 
-                moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(), partnerAccount, remainingPaidAmount,!isDebitToPay, paymentDate, moveLineNo++, null);
+                moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(), partnerAccount, remainingPaidAmount,!isDebitToPay, paymentDate, moveLineNo++, paymentVoucher.getRef(), null);
                 move.getMoveLineList().add(moveLine);
 
                 if(isDebitToPay)  {
@@ -346,7 +346,8 @@ public class PaymentVoucherConfirmService  {
 				!isDebitToPay,
 				paymentDate,
 				moveLineSeq,
-				invoiceName);
+				invoiceName,
+				null);
 
 		paymentMove.addMoveLineListItem(moveLine);
 		payVoucherElementToPay.setMoveLineGenerated(moveLine);

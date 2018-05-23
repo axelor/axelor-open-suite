@@ -195,7 +195,7 @@ public class ReimbursementExportService {
 						first = false;
 					}
 					// Création d'une ligne au débit
-					MoveLine newDebitMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, true, appAccountService.getTodayDate(), seq, null);
+					MoveLine newDebitMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, true, appAccountService.getTodayDate(), seq, reimbursement.getRef(), reimbursement.getDescription());
 					newMove.getMoveLineList().add(newDebitMoveLine);
 					if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {
 						newDebitMoveLine.setDescription(reimbursement.getDescription());
@@ -209,7 +209,7 @@ public class ReimbursementExportService {
 				}
 			}
 			// Création de la ligne au crédit
-			MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, accountConfig.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, appAccountService.getTodayDate(), seq, null);
+			MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, accountConfig.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, appAccountService.getTodayDate(), seq, reimbursement.getRef(), reimbursement.getDescription());
 
 			newMove.getMoveLineList().add(newCreditMoveLine);
 			if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {

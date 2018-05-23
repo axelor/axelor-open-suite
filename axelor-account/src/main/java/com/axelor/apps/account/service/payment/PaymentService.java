@@ -241,7 +241,8 @@ public class PaymentService {
 					false,
 					appAccountService.getTodayDate(),
 					moveLineNo2,
-					invoiceName);
+					invoiceName,
+					null);
 			move.getMoveLineList().add(creditMoveLine);
 
 			// Utiliser uniquement dans le cas du paiemnt des échéances lors d'une saisie paiement
@@ -284,6 +285,7 @@ public class PaymentService {
 					false,
 					appAccountService.getTodayDate(),
 					moveLineNo2,
+					null,
 					null);
 
 			move.getMoveLineList().add(moveLine);
@@ -329,6 +331,7 @@ public class PaymentService {
 							date,
 							dueDate,
 							moveLineNo2,
+							null,
 							null);
 					move.getMoveLineList().add(debitMoveLine);
 					moveLineNo2++;
@@ -377,6 +380,7 @@ public class PaymentService {
 					date,
 					dueDate,
 					moveLineNo2,
+					null,
 					null);
 
 			move.getMoveLineList().add(debitmoveLine);

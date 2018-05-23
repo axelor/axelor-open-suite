@@ -343,7 +343,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		int moveLineId = 1;
 		int expenseLineId = 1;
 		Account employeeAccount = accountingSituationService.getEmployeeAccount(expense.getUser().getPartner(), expense.getCompany());
-		moveLines.add(moveLineService.createMoveLine(move, expense.getUser().getPartner(), employeeAccount, expense.getInTaxTotal(), false, moveDate, moveDate, moveLineId++, ""));
+		moveLines.add(moveLineService.createMoveLine(move, expense.getUser().getPartner(), employeeAccount, expense.getInTaxTotal(), false, moveDate, moveDate, moveLineId++, expense.getExpenseSeq(), expense.getFullName()));
 
 		for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
 			analyticAccounts.clear();
@@ -357,7 +357,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 			}
 
 			exTaxTotal = expenseLine.getUntaxedAmount();
-			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, exTaxTotal, true, moveDate, moveDate, moveLineId++, "");
+			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, exTaxTotal, true, moveDate, moveDate, moveLineId++, expense.getExpenseSeq(), expenseLine.getComments());
 			for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
 				AnalyticMoveLine analyticDistributionLine = Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
 				analyticDistributionLine.setExpenseLine(null);
@@ -377,7 +377,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		}
 
 		if (taxTotal.compareTo(BigDecimal.ZERO) != 0) {
-			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, taxTotal, true, moveDate, moveDate, moveLineId++, "");
+			MoveLine moveLine = moveLineService.createMoveLine(move, expense.getUser().getPartner(), account, taxTotal, true, moveDate, moveDate, moveLineId++, expense.getExpenseSeq(), expense.getFullName());
 			moveLines.add(moveLine);
 		}
 

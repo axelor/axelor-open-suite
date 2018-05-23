@@ -127,18 +127,19 @@ public class BankReconciliationService {
 		LocalDate effectDate = bankReconciliationLine.getEffectDate();
 
 		String name = bankReconciliationLine.getName();
+    String reference = bankReconciliationLine.getReference();
 
 		Move move = moveService.getMoveCreateService().createMove(bankReconciliation.getJournal(), bankReconciliation.getCompany(), null, partner, effectDate, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		boolean isNegate = amount.compareTo(BigDecimal.ZERO) < 0;
 
 		MoveLine partnerMoveLine = moveLineService.createMoveLine(move, partner, bankReconciliationLine.getAccount(), amount,
-				isNegate, effectDate, effectDate, 1, name);
+				isNegate, effectDate, effectDate, 1, reference, name);
 		move.addMoveLineListItem(partnerMoveLine);
 
 		move.addMoveLineListItem(
 				moveLineService.createMoveLine(move, partner, bankReconciliation.getCashAccount(), amount,
-						!isNegate, effectDate, effectDate, 1, name));
+						!isNegate, effectDate, effectDate, 1, reference, name));
 
 		moveRepository.save(move);
 
