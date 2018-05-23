@@ -48,7 +48,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.mysql.jdbc.StringUtils;
 import com.axelor.rpc.filter.Filter;
 
 
