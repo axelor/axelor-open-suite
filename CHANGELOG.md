@@ -21,6 +21,8 @@
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 - Add supplier invoice number in supplier invoices grid.
 - Add column description in move line grid views.
+- Make the boolean IsValid set to false when a line is changed in MoveTemplate.
+- Can now select an ahead date in the Move From Template view wizard.
 
 ## Bug Fixes
 - Fix on prod process report.
