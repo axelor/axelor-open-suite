@@ -42,6 +42,7 @@
 - Fix partner data for 'admin' and 'demo' users on demo data.
 - Fix error on 'Import demo data' for apps without modules. 
 - Advanced export: Fix crashing server,added parameters for fetch limit and maximum export limt
+- Product : set format of description field as html in product report to support formatting of description.
 - Sale: Add missing translation in subscription
 
 ## [5.0.0-rc2] - 2018-05-09
