@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
@@ -33,14 +34,14 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
 
 	@Inject
 	protected SaleOrderCreateService saleOrderCreateService;
-	
+
 	@Inject
 	protected SaleOrderRepository saleOrderRepo;
 
 	@Inject
 	protected AppBaseService appBaseService;
 
-	
+
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException  {
@@ -56,6 +57,11 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
 		SaleOrder saleOrder = createSaleOrder(opportunity, currency);
 
 		opportunity.addSaleOrderListItem(saleOrder);
+
+        if (opportunity.getSalesStageSelect() < OpportunityRepository.SALES_STAGE_PROPOSITION) {
+            opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_PROPOSITION);
+        }
+
 		saleOrderRepo.save(saleOrder);
 
 		return saleOrder;
