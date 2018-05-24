@@ -18,6 +18,7 @@
 package com.axelor.apps.contract.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.contract.service.BatchContract;
 import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
 import com.axelor.apps.contract.service.ContractLineService;
