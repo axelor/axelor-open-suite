@@ -13,6 +13,7 @@
 - Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
 - Copy account type from account in analytic move line.
 - Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
+- Opportunity: move to proposition stage when creating a sale order.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
@@ -41,7 +42,9 @@
 - Fix partner data for 'admin' and 'demo' users on demo data.
 - Fix error on 'Import demo data' for apps without modules. 
 - Advanced export: Fix crashing server,added parameters for fetch limit and maximum export limt
-- Production: fix Nb of digits for BOM quantities configuration.
+- Product : set format of description field as html in product report to support formatting of description.
+- Sale: Add missing translation in subscription
+- Production: fix nb of digits for BOM quantities configuration.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
