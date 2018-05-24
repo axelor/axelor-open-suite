@@ -15,6 +15,7 @@
 
     <enum name="ContractBatchAction">
         <item name="INVOICING" title="Invoicing"/>
+        <item name="TERMINATE" title="Terminate"/>
     </enum>
 
 </domain-models>

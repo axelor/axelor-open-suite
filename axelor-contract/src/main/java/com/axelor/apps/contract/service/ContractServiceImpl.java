@@ -323,25 +323,22 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       throws AxelorException {
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
-    if (isManual) {
-      contract.setTerminationDemandDate(appBaseService.getTodayDate());
-      contract.setTerminatedManually(true);
-      contract.setTerminatedDate(date);
-      contract.setTerminatedByUser(AuthUtils.getUser());
-    } else {
-      if (currentVersion.getIsTacitRenewal() && !currentVersion.getDoNotRenew()) {
-        renewContract(contract, date);
-        return;
-      }
+    if (currentVersion.getIsTacitRenewal() && !currentVersion.getDoNotRenew()) {
+      renewContract(contract, date);
+      return;
     }
 
-    if (contract.getTerminatedDate().isBefore(appBaseService.getTodayDate())
-        || contract.getTerminatedDate().equals(appBaseService.getTodayDate())) {
+    contract.setTerminatedManually(isManual);
+    contract.setTerminatedDate(date);
+    if (isManual) {
+      contract.setTerminationDemandDate(appBaseService.getTodayDate());
+      contract.setTerminatedByUser(AuthUtils.getUser());
+    }
+    contract.setEndDate(date);
+    if (date.isBefore(appBaseService.getTodayDate())
+        || date.equals(appBaseService.getTodayDate())) {
       versionService.terminate(currentVersion, date);
-      contract.setEndDate(date);
       contract.setStatusSelect(CLOSED_CONTRACT);
-    } else {
-      contract.setEndDate(date);
     }
 
     save(contract);
