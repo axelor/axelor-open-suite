@@ -13,6 +13,7 @@
 - Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
 - Copy account type from account in analytic move line.
 - Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
+- Opportunity: move to proposition stage when creating a sale order.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
