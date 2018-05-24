@@ -20,6 +20,7 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -57,4 +58,13 @@ public class ContractRepository extends AbstractContractRepository {
       throw new PersistenceException(e.getLocalizedMessage());
     }
   }
+
+	@Override
+	public Contract copy(Contract entity, boolean deep) {
+		Contract contract = super.copy(entity, deep);
+		ContractVersion version = Beans.get(ContractVersionRepository.class).copy(entity);
+		contract.setCurrentContractVersion(version);
+		return contract;
+	}
+
 }
