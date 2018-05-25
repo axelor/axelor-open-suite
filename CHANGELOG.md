@@ -69,6 +69,7 @@
 - Product : reset value of productVariantValue field when we change value of associated productVariantAttr field.
 - Sale order: fix unremovable sale order line and editable invoiced sale order line.
 - Fix set a prospect as the client of a sale order.
+- Stock Move: select stock move not completly invoiced in multiple sale and puchase invoicing form
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
