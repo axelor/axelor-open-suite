@@ -40,6 +40,7 @@ import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -94,19 +95,18 @@ public class VentilateState extends WorkflowInvoice {
 		setDate();
 		setJournal();
 		setPartnerAccount();
-
-		Sequence sequence = this.getSequence();
-
-		if(!InvoiceToolService.isPurchase(invoice))  {
-			this.checkInvoiceDate(sequence);
-		}
-
-		setInvoiceId(sequence);
+		setInvoiceId();
 		updatePaymentSchedule( );
 		setMove( );
 		setStatus( );
+		setVentilatedLog();
 
 		workflowService.afterVentilation(invoice);
+	}
+
+	protected void setVentilatedLog() {
+		invoice.setVentilatedDate(appAccountService.getTodayDate());
+		invoice.setVentilatedByUser(AuthUtils.getUser());
 	}
 
 	protected void updatePaymentSchedule( ){
@@ -229,12 +229,17 @@ public class VentilateState extends WorkflowInvoice {
 	/**
 	 * Détermine le numéro de facture
 	 *
-	 * @param sequence
 	 * @throws AxelorException
 	 */
-	protected void setInvoiceId(Sequence sequence) throws AxelorException {
+	protected void setInvoiceId() throws AxelorException {
 
 		if ( !sequenceService.isEmptyOrDraftSequenceNumber(invoice.getInvoiceId())) { return; }
+
+		Sequence sequence = this.getSequence();
+
+		if(!InvoiceToolService.isPurchase(invoice))  {
+			this.checkInvoiceDate(sequence);
+		}
 
 		invoice.setInvoiceId( sequenceService.getSequenceNumber(sequence, invoice.getInvoiceDate()) );
 

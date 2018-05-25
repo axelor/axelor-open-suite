@@ -51,14 +51,7 @@ public class VentilateAdvancePaymentState extends VentilateState {
         setDate();
         setJournal();
         setPartnerAccount();
-
-        Sequence sequence = this.getSequence();
-
-        if (!InvoiceToolService.isPurchase(invoice)) {
-            this.checkInvoiceDate(sequence);
-        }
-
-        setInvoiceId(sequence);
+        setInvoiceId();
         updatePaymentSchedule();
         // we don't create the move
         // and the invoice stays validated
