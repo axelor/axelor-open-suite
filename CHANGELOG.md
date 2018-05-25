@@ -44,6 +44,7 @@
 - Advanced export: Fix crashing server,added parameters for fetch limit and maximum export limt
 - Product : set format of description field as html in product report to support formatting of description.
 - Sale: Add missing translation in subscription
+- Charts : rename action call that action has been renamed earlier.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
