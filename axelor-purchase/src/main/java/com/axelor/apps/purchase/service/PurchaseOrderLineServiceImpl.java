@@ -23,6 +23,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,6 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -68,10 +68,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
 	@Inject
 	protected AppBaseService appBaseService;
-	
+
 	@Inject
 	protected PurchaseProductService productService;
-	
+
 	@Inject
 	protected ProductMultipleQtyService productMultipleQtyService;
 
@@ -79,7 +79,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	private int sequence = 0;
 
 
-	public Map<String, BigDecimal> compute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException{
+	@Override
+    public Map<String, BigDecimal> compute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException{
 
 		HashMap<String, BigDecimal> map = new HashMap<>();
 		if(purchaseOrder == null || purchaseOrderLine.getPrice() == null || purchaseOrderLine.getQty() == null)  {  return map;  }
@@ -158,7 +159,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		}
 		return new String[]{"",""};
 	}
-	
+
 	@Override
 	public BigDecimal getUnitPrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine) throws AxelorException  {
 
@@ -186,12 +187,12 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	public BigDecimal getMinSalePrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
 
 		Product product = purchaseOrderLine.getProduct();
-		
+
 		if(product == null || !product.getSellable())  {  return BigDecimal.ZERO;  }
-		
+
 		TaxLine saleTaxLine = accountManagementService.getTaxLine(
 				purchaseOrder.getOrderDate(), purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner().getFiscalPosition(), false);
-		
+
 		BigDecimal price = this.convertUnitPrice(product, saleTaxLine, product.getSalePrice(), purchaseOrder);
 
 		return currencyService.getAmountCurrencyConvertedAtDate(
@@ -203,13 +204,13 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 	public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, Product product, BigDecimal price) throws AxelorException  {
 
     if(product == null || !product.getSellable())  {  return BigDecimal.ZERO;  }
-	  
+
 		TaxLine saleTaxLine = accountManagementService.getTaxLine(
 				purchaseOrder.getOrderDate(), product, purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner().getFiscalPosition(), false);
-		
+
 		price = this.convertUnitPrice(product, saleTaxLine, price, purchaseOrder);
 		price = price.multiply(product.getManagPriceCoef());
-		
+
 		return currencyService.getAmountCurrencyConvertedAtDate(
 				product.getSaleCurrency(), purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
 				.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
@@ -225,6 +226,14 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
 	}
 
+    @Override
+    public Optional<TaxLine> geOptionalTaxLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+        try {
+            return Optional.of(getTaxLine(purchaseOrder, purchaseOrderLine));
+        } catch (AxelorException e) {
+           return Optional.empty();
+        }
+    }
 
 	@Override
 	public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine)  {
@@ -275,22 +284,22 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
 		purchaseOrderLine.setUnit(unit);
 		purchaseOrderLine.setProductName(productName);
-		
+
 		if(product == null)  {	 return purchaseOrderLine; 	}
-		
+
 		purchaseOrderLine.setProduct(product);
-		
+
 		if(productName == null)  {
 			purchaseOrderLine.setProductName(product.getName());
 		}
-		
+
 		TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
 		purchaseOrderLine.setTaxLine(taxLine);
-		
+
 		BigDecimal price = this.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
-		
+
 		Map<String, Object> discounts = this.getDiscount(purchaseOrder, purchaseOrderLine, price);
-		
+
 		if(discounts != null){
 			purchaseOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
 			purchaseOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
@@ -302,9 +311,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		purchaseOrderLine.setPrice(price);
 
 		purchaseOrderLine.setPriceDiscounted(this.computeDiscount(purchaseOrderLine));
-		
+
 		BigDecimal exTaxTotal, inTaxTotal, companyExTaxTotal, companyInTaxTotal;
-		
+
 		if(!purchaseOrder.getInAti()){
 			exTaxTotal = computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
 			inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
@@ -319,7 +328,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 			companyExTaxTotal = companyInTaxTotal.divide(purchaseOrderLine.getTaxLine().getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 
 		}
-		
+
 		purchaseOrderLine.setExTaxTotal(exTaxTotal);
 		purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
 		purchaseOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
@@ -381,9 +390,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
 	@Override
 	public BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, PurchaseOrder purchaseOrder)  {
-		
+
 		if(taxLine == null)  {  return price;  }
-		
+
 		if(product.getInAti() && !purchaseOrder.getInAti()){
 			price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
 		}
@@ -392,17 +401,18 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		}
 		return price;
 	}
-	
 
-	public Map<String,Object> getDiscount(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal price)  {
-		
+
+	@Override
+    public Map<String,Object> getDiscount(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal price)  {
+
 		PriceList priceList = purchaseOrder.getPriceList();
 		BigDecimal discountAmount = BigDecimal.ZERO;
 
 		int computeMethodDiscountSelect = appBaseService.getAppBase().getComputeMethodDiscountSelect();
-		
+
 		Map<String, Object> discounts = null;
-		
+
 		if(priceList != null)  {
 			PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList);
 			discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
@@ -413,17 +423,17 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 			if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
 				SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",purchaseOrderLine.getProduct(),purchaseOrderLine.getQty(),purchaseOrder.getSupplierPartner()).fetchOne();
 				if(supplierCatalog != null)  {
-					
+
 					discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
 
 					if(computeMethodDiscountSelect != AppBaseRepository.DISCOUNT_SEPARATE){
 						discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount")));
-						
+
 					}
 				}
 			}
 		}
-		
+
 		return discounts;
 	}
 
@@ -437,22 +447,24 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		}
 		return 0;
 	}
-	
-	public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine)  {
+
+	@Override
+    public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine)  {
 		Unit unit = purchaseOrderLine.getProduct().getPurchasesUnit();
 		if(unit == null){
 			unit = purchaseOrderLine.getProduct().getUnit();
 		}
 		return unit;
 	}
-	
-	public boolean unitPriceShouldBeUpdate(PurchaseOrder purchaseOrder, Product product)  {
-		
+
+	@Override
+    public boolean unitPriceShouldBeUpdate(PurchaseOrder purchaseOrder, Product product)  {
+
 		if(product != null && product.getInAti() != purchaseOrder.getInAti())  {
 			return true;
 		}
 		return false;
-		
+
 	}
 
 	@Override
@@ -460,10 +472,11 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 		SupplierCatalog supplierCatalog = getSupplierCatalog(purchaseOrder, purchaseOrderLine);
 		return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
 	}
-	
-	
-	public void checkMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionRequest request, ActionResponse response)  {
-		
+
+
+	@Override
+    public void checkMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionRequest request, ActionResponse response)  {
+
 		BigDecimal minQty = this.getMinQty(purchaseOrder, purchaseOrderLine);
 
 		if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
@@ -472,26 +485,27 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 			if (request.getAction().endsWith("onchange")) {
 				response.setFlash(msg);
 			}
-			
+
 			String title = ContextTool.formatLabel(msg, ContextTool.SPAN_CLASS_WARNING, 75);
 
 			response.setAttr("minQtyNotRespectedLabel", "title", title);
 			response.setAttr("minQtyNotRespectedLabel", "hidden", false);
-		
+
 		} else {
 			response.setAttr("minQtyNotRespectedLabel", "hidden", true);
 		}
 	}
 
-	public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response)  {
-		
+	@Override
+    public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response)  {
+
 		Product product = purchaseOrderLine.getProduct();
-		
+
 		if(product == null)  {  return;  }
-		
+
 		productMultipleQtyService.checkMultipleQty(
 				purchaseOrderLine.getQty(), product.getPurchaseProductMultipleQtyList(), product.getAllowToForcePurchaseQty(), response);
-		
+
 	}
 
 }

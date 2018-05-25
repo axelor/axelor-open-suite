@@ -71,6 +71,7 @@
 - Fix set a prospect as the client of a sale order.
 - Stock Move: select stock move with current invoice canceled in multiple sale and purchase invoicing form
 - Set trading name automatically when creating or merging purchase order
+- Product: fill information on sale/purchase order and invoice lines even when tax is missing.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

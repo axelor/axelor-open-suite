@@ -19,16 +19,17 @@ package com.axelor.apps.purchase.service;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -43,6 +44,15 @@ public interface PurchaseOrderLineService{
 	public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, Product product, BigDecimal price) throws AxelorException;
 
 	public TaxLine getTaxLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
+
+	/**
+     * Get optional tax line.
+     *
+     * @param purchaseOrder
+     * @param purchaseOrderLine
+     * @return
+     */
+    Optional<TaxLine> geOptionalTaxLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
 	public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine);
 
@@ -66,16 +76,16 @@ public interface PurchaseOrderLineService{
 	public BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, PurchaseOrder purchaseOrder);
 
 	public Map<String,Object> getDiscount(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal price);
-	
+
 	public int getDiscountTypeSelect(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 
 	public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine);
-	
+
 	public boolean unitPriceShouldBeUpdate(PurchaseOrder purchaseOrder, Product product);
 
 	/**
 	 * Get minimum quantity from supplier catalog if available, else return one.
-	 * 
+	 *
 	 * @param purchaseOrder
 	 * @param purchaseOrderLine
 	 * @return
@@ -83,9 +93,9 @@ public interface PurchaseOrderLineService{
 	public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
 	public void checkMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionRequest request, ActionResponse response);
-	
+
 	public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response);
-	
+
 	public String[] getProductSupplierInfos(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
 }

@@ -42,6 +42,17 @@ public interface SaleOrderLineService {
 	void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
 	/**
+	 * Compute product information.
+	 *
+	 * @param saleOrderLine
+	 * @param saleOrder
+	 * @param taxLineIsOptional
+	 * @throws AxelorException
+	 */
+	void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean taxLineIsOptional)
+            throws AxelorException;
+
+	/**
 	 * Compute totals from a sale order line
 	 * @param saleOrder
 	 * @param saleOrderLine
@@ -61,7 +72,7 @@ public interface SaleOrderLineService {
 	 * 			The excluded tax total amount.
 	 */
 	public BigDecimal computeAmount(SaleOrderLine saleOrderLine);
-	
+
 	public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price);
 
 	public BigDecimal getUnitPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
@@ -81,19 +92,19 @@ public interface SaleOrderLineService {
 	public Map<String,Object> getDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
 	public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
-	
+
 	public Unit getSaleUnit(SaleOrderLine saleOrderLine);
-	
+
 	public boolean unitPriceShouldBeUpdate(SaleOrder saleOrder, Product product);
-	
+
 	public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine);
-	
+
 	public SaleOrder getSaleOrder(Context context);
-	
+
 	public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 
 	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
-	
+
 	public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
 
 }
