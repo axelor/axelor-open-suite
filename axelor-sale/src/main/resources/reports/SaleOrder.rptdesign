@@ -5299,7 +5299,7 @@ row["ClientPartFirstName"]
                     <text id="3596">
                         <property name="fontSize">8pt</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["iban"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["iban"].match(/(.{1,4})/g).join(" ")</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
