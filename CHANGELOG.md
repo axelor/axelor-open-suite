@@ -89,6 +89,7 @@
 - Bill of materials: fix filters using define sub-bill of materials
 - Logistical form is now printed in customer language and not in user language.
 - Timesheet editor: fix java.lang.NullPointerException in TimesheetServiceImpl when delete a line in editor
+- Fix BillOfMaterial copy when creating a personalized BOM.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
