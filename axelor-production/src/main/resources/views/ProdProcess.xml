@@ -22,6 +22,7 @@
 		</toolbar>
 
 		<panel name="main">
+            <field name="statusSelect" showTitle="false" colSpan="12" readonly="false" widget="NavSelect"/>
             <panel stacked="true" colSpan="8">
                 <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false" css="label-bold bold large"/>
                 <field name="name" hidden="true" showIf="!$readonly()" showTitle="false" css="label-bold bold large"/>
