@@ -848,7 +848,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'Contact PhoneBook'</value>
+                                        <value type="javascript">'Phonebook.contactPhonebook'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
