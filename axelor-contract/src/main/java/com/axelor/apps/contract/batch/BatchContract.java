@@ -18,8 +18,14 @@ public class BatchContract extends BatchStrategy {
       new EnumMap<>(ContractBatchAction.class);
 
   static {
-    STATES.put(ContractBatchAction.INVOICING, Beans.get(BatchContractStateInvoicing.class));
-    STATES.put(ContractBatchAction.TERMINATE, Beans.get(BatchContractStateTerminate.class));
+    STATES.put(ContractBatchAction.INVOICING,
+        Beans.get(BatchContractStateInvoicing.class));
+    STATES.put(ContractBatchAction.TERMINATE,
+        Beans.get(BatchContractStateTerminate.class));
+    STATES.put(ContractBatchAction.CURRENT_VERSION_ACTIVATION,
+        Beans.get(BatchContractStateCurrentActivation.class));
+    STATES.put(ContractBatchAction.NEXT_VERSION_ACTIVATION,
+        Beans.get(BatchContractStateNextActivation.class));
   }
 
   @Override

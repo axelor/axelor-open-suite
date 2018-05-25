@@ -16,6 +16,8 @@
     <enum name="ContractBatchAction">
         <item name="INVOICING" title="Invoicing"/>
         <item name="TERMINATE" title="Terminate"/>
+        <item name="CURRENT_VERSION_ACTIVATION" title="Current Version Activation"/>
+        <item name="NEXT_VERSION_ACTIVATION" title="Next Version Activation"/>
     </enum>
 
 </domain-models>
