@@ -35,6 +35,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -62,6 +63,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected PriceListService priceListService;
 
   @Inject protected AppBaseService appBaseService;
+
+  @Inject protected PurchaseConfigService purchaseConfigService;
 
   @Inject protected PurchaseProductService productService;
 
@@ -213,8 +216,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       TaxLine taxLine,
       boolean resultInAti)
       throws AxelorException {
-    BigDecimal purchasePrice;
-    Currency purchaseCurrency;
+    BigDecimal purchasePrice = null;
+    Currency purchaseCurrency = null;
     Product product = purchaseOrderLine.getProduct();
     SupplierCatalog supplierCatalog =
         getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
@@ -222,9 +225,14 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (supplierCatalog != null) {
       purchasePrice = supplierCatalog.getPrice();
       purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
-    } else {
-      return null;
+    } else if (purchaseConfigService
+        .getPurchaseConfig(purchaseOrder.getCompany())
+        .getUsePurchasePriceWhenNoCatalog()) {
+      purchasePrice = product.getPurchasePrice();
+      purchaseCurrency = product.getPurchaseCurrency();
     }
+
+    if (purchasePrice == null) return null;
 
     BigDecimal price =
         (product.getInAti() == resultInAti)

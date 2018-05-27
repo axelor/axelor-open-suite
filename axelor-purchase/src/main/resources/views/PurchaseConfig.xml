@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://axelor.com/xml/ns/object-views"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
     <grid name="purchase-config-grid" title="Purchase configurations" model="com.axelor.apps.purchase.db.PurchaseConfig">
         <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
 
     <form name="purchase-config-form" title="Purchase configuration" model="com.axelor.apps.purchase.db.PurchaseConfig" onNew="action-purchase-config-record-default">
-		<panel name="main" >
-		  <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
-		  <field name="purchaseOrderInAtiSelect"/>
-		  <field name="priceDisplay"/>
-		  <field name="priceRequest" colSpan="12"/>
-		</panel>
+        <panel name="main">
+            <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+            <field name="purchaseOrderInAtiSelect"/>
+            <field name="usePurchasePriceWhenNoCatalog" widget="boolean-switch"/>
+            <field name="priceDisplay"/>
+            <field name="priceRequest" colSpan="12"/>
+        </panel>
     </form>
-	
-	<action-record name="action-purchase-config-record-default" model="com.axelor.apps.purchase.db.PurchaseConfig">
-		<field name="company" expr="eval: _company" if="_company != null"/>
-		<field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-	</action-record>
-	
-	<action-view name="action-company-view-purchase-config" title="Purchase config (${ name })" model="com.axelor.apps.purchase.db.PurchaseConfig">
-    	<view type="form" name="purchase-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.purchaseConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
+
+    <action-record name="action-purchase-config-record-default" model="com.axelor.apps.purchase.db.PurchaseConfig">
+        <field name="company" expr="eval: _company" if="_company != null"/>
+        <field name="company" expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
+        <field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    </action-record>
+
+    <action-view name="action-company-view-purchase-config" title="Purchase config (${ name })" model="com.axelor.apps.purchase.db.PurchaseConfig">
+        <view type="form" name="purchase-config-form"/>
+        <context name="_showRecord" expr="eval: __self__.purchaseConfig?.id"/>
+        <context name="_company" expr="eval: __this__"/>
     </action-view>
-	
+
 </object-views>

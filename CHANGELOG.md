@@ -7,6 +7,7 @@
 ## Improvements
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
+- Account: use partner name as default account name when creating from partner's account configuration screen.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 
 ## Bug Fixes
