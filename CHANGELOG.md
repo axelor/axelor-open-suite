@@ -45,6 +45,7 @@
 - Product : set format of description field as html in product report to support formatting of description.
 - Sale: Add missing translation in subscription
 - Production order : New manufaturing order directly will not be created but with newly created popup wizard for Manufaturing order.
+- Add missing translation for "Print production process"
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
