@@ -16,12 +16,14 @@ allprojects {
 	repositories repos
 }
 
+apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: "com.axelor.app"
 
 apply from: "modules/abs/version.gradle"
 
 allprojects {
+	apply plugin: 'idea'
 	apply plugin: 'eclipse'
 	
 	group = "com.axelor"
