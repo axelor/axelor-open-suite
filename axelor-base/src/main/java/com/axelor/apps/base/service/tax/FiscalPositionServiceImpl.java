@@ -20,24 +20,28 @@ package com.axelor.apps.base.service.tax;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
+import com.google.inject.Singleton;
 
+@Singleton
 public class FiscalPositionServiceImpl implements FiscalPositionService  {
 
-    public Tax getTax(FiscalPosition fiscalPosition, Tax tax)  {
-        TaxEquiv taxEquiv = getTaxEquiv(fiscalPosition, tax);
+	@Override
+	public Tax getTax(FiscalPosition fiscalPosition, Tax tax)  {
+		TaxEquiv taxEquiv = getTaxEquiv(fiscalPosition, tax);
 
-        return taxEquiv == null ? tax : taxEquiv.getToTax();
-    }
+		return taxEquiv == null ? tax : taxEquiv.getToTax();
+	}
 
+	@Override
 	public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax) {
-        if (fiscalPosition != null && fiscalPosition.getTaxEquivList() != null)  {
-            for (TaxEquiv taxEquiv : fiscalPosition.getTaxEquivList())  {
-                if (taxEquiv.getFromTax().equals(tax) && taxEquiv.getToTax() != null)  {
-                    return taxEquiv;
-                }
-            }
-        }
+		if (fiscalPosition != null && fiscalPosition.getTaxEquivList() != null)  {
+			for (TaxEquiv taxEquiv : fiscalPosition.getTaxEquivList())  {
+				if (taxEquiv.getFromTax().equals(tax) && taxEquiv.getToTax() != null)  {
+					return taxEquiv;
+				}
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 }
