@@ -18,7 +18,6 @@
 		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isContact = false AND self.isCustomer = true OR self.isProspect = true</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isCustomer" expr="true"/>
 		<context name="_domain" expr="self.isContact = false AND self.isCustomer = true OR self.isProspect = true"/>
 	</action-view>

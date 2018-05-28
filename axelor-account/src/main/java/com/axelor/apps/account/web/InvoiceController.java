@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -53,12 +54,11 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -280,9 +280,11 @@ public class InvoiceController {
 	@SuppressWarnings("unchecked")
 	public void showInvoice(ActionRequest request, ActionResponse response) {
 		Context context = request.getContext();
-		ReportSettings reportSetting;
+		String fileLink;
+		String title;
 
 		try {
+			InvoicePrintService invoicePrintService = Beans.get(InvoicePrintService.class);
 			if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
 				List<Long> ids = Lists.transform((List) request.getContext().get("_ids"), new Function<Object, Long>() {
 					@Nullable
@@ -291,15 +293,17 @@ public class InvoiceController {
 						return Long.parseLong(input.toString());
 					}
 				});
-				reportSetting = invoiceService.printInvoices(ids);
+				fileLink = invoicePrintService.printInvoices(ids);
+				title = I18n.get("Invoices");
 			} else if (context.get("id") != null) {
-				reportSetting = invoiceService.printInvoice(request.getContext().asType(Invoice.class), false);
+				fileLink = invoicePrintService.printInvoice(request.getContext().asType(Invoice.class));
+				title = I18n.get("Invoice");
 			} else {
-				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
+				throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
 			}
 			response.setView(ActionView
-					.define(reportSetting.getOutputName())
-					.add("html", reportSetting.getFileLink()).map());
+					.define(title)
+					.add("html", fileLink).map());
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);
 		}
@@ -703,12 +707,8 @@ public class InvoiceController {
 	public void changePriceListDomain(ActionRequest request, ActionResponse response) {
 		try {
 			Invoice invoice = request.getContext().asType(Invoice.class);
-			Partner partner = invoice.getPartner();
-			if (partner == null) {
-				return;
-			}
 			int priceListTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
-			String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(partner, priceListTypeSelect);
+			String domain = Beans.get(PartnerPriceListService.class).getPriceListDomain(invoice.getPartner(), priceListTypeSelect);
 			response.setAttr("priceList", "domain", domain);
 		} catch (Exception e) {
 			TraceBackService.trace(response, e);

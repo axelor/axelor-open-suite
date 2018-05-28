@@ -70,7 +70,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -130,26 +130,26 @@ public class StockMoveServiceImpl implements StockMoveService {
 			case StockMoveRepository.TYPE_INTERNAL:
 				ref = sequenceService.getSequenceNumber(SequenceRepository.INTERNAL, company);
 				if (ref == null) {
-					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_1), company.getName());
+					throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_1), company.getName());
 				}
 				break;
 
 			case StockMoveRepository.TYPE_INCOMING:
 				ref = sequenceService.getSequenceNumber(SequenceRepository.INCOMING, company);
 				if (ref == null) {
-					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_2), company.getName());
+					throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_2), company.getName());
 				}
 				break;
 
 			case StockMoveRepository.TYPE_OUTGOING:
 				ref = sequenceService.getSequenceNumber(SequenceRepository.OUTGOING, company);
 				if (ref == null) {
-					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_3), company.getName());
+					throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_3), company.getName());
 				}
 				break;
 
 			default:
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_4), company.getName());
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_4), company.getName());
 		}
 
 		return ref;
@@ -311,10 +311,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 		StockLocation toStockLocation = stockMove.getToStockLocation();
 
 		if (fromStockLocation == null) {
-			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_5), stockMove.getName());
+			throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_5), stockMove.getName());
 		}
 		if (toStockLocation == null) {
-			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_6), stockMove.getName());
+			throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_6), stockMove.getName());
 
 		}
 
@@ -417,14 +417,14 @@ public class StockMoveServiceImpl implements StockMoveService {
 				&& stockMove.getStockMoveAutomaticMail()) {
 			Template template = stockMove.getStockMoveMessageTemplate();
 			if (template == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR,
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
 						I18n.get(IExceptionMessage.STOCK_MOVE_MISSING_TEMPLATE),
 						stockMove);
 			}
 			try {
 				Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
 			} catch (Exception e) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, e.getMessage(), stockMove);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
 			}
 		}
 
@@ -472,7 +472,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				.bind("productList", productList).fetchOne();
 
 		if (inventoryLine != null) {
-			throw new AxelorException(inventoryLine, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_19), inventoryLine.getInventory().getInventorySeq());
+			throw new AxelorException(inventoryLine, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_19), inventoryLine.getInventory().getInventorySeq());
 		}
 	}
 
@@ -494,7 +494,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 		Unit endUnit = stockConfig != null ? stockConfig.getCustomsMassUnit() : null;
 
 		if (massesRequired && endUnit == null) {
-			throw new AxelorException(stockMove, IException.NO_VALUE, I18n.get(IExceptionMessage.STOCK_MOVE_17));
+			throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.STOCK_MOVE_17));
 		}
 		
 		List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
@@ -527,7 +527,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 				BigDecimal totalNetMass = netMass.multiply(stockMoveLine.getRealQty());
 				stockMoveLine.setTotalNetMass(totalNetMass);
 			} else if (massesRequired) {
-				throw new AxelorException(stockMove, IException.NO_VALUE, I18n.get(IExceptionMessage.STOCK_MOVE_18));
+				throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.STOCK_MOVE_18));
 			}
 		}
 	}
@@ -781,7 +781,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 					|| (correspondingMoveLine.isPresent()
 					&& moveLine.getQty().compareTo(correspondingMoveLine.get().getRealQty()) > 0)
 					) {
-				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_16), originalStockMove);
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_16), originalStockMove);
 			}
 
 			if (correspondingMoveLine.isPresent()) {
@@ -942,14 +942,14 @@ public class StockMoveServiceImpl implements StockMoveService {
 			aString = toAddressStr.replace('\n',' ');
 		}
 		if (Strings.isNullOrEmpty(dString) || Strings.isNullOrEmpty(aString)) {
-			throw new AxelorException(stockMove, IException.MISSING_FIELD, I18n.get(IExceptionMessage.STOCK_MOVE_11));
+			throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.STOCK_MOVE_11));
 		}
 		if (appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
-			throw new AxelorException(stockMove, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_12));
+			throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.STOCK_MOVE_12));
 		}
 			Map<String, Object> result = Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
 			if (result == null) {
-			    throw new AxelorException(stockMove, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.STOCK_MOVE_13), dString, aString);
+			    throw new AxelorException(stockMove, TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.STOCK_MOVE_13), dString, aString);
 			}
 			return result;
 	}
@@ -968,7 +968,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 	    	 selectedStockMoveListId = new ArrayList<>();
 	    	 selectedStockMoveListId.add(stockMove.getId());
 		} else {
-			throw new AxelorException(StockMove.class, IException.INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
+			throw new AxelorException(StockMove.class, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.STOCK_MOVE_10));
 		}
 
 		List<StockMove> stockMoveList = stockMoveRepo.all()
@@ -982,7 +982,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 							.map(StockMove::getStockMoveSeq)
 							.collect(Collectors.joining("</li><li>", "<li>", "</li>"))
 							+ "<ul>");
-			throw new AxelorException(IException.MISSING_FIELD, exceptionMessage);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, exceptionMessage);
 		}
 
 		String stockMoveIds = selectedStockMoveListId.stream()
@@ -1047,10 +1047,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     @Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	protected void applyCancelReason(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
 		if (cancelReason == null) {
-			throw new AxelorException(stockMove, IException.MISSING_FIELD, I18n.get(IExceptionMessage.CANCEL_REASON_MISSING));
+			throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.CANCEL_REASON_MISSING));
 		}
         if (!StockMove.class.getCanonicalName().equals(cancelReason.getApplicationType())) {
-			throw new AxelorException(stockMove, IException.INCONSISTENCY, I18n.get(IExceptionMessage.CANCEL_REASON_BAD_TYPE));
+			throw new AxelorException(stockMove, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.CANCEL_REASON_BAD_TYPE));
 		}
 		stockMove.setCancelReason(cancelReason);
 	}

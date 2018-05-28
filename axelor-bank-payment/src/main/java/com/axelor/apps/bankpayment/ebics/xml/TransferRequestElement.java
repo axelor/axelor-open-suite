@@ -28,7 +28,7 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 
 
 /**
@@ -91,7 +91,7 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
     try {
       return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

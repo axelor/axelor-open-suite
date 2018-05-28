@@ -81,14 +81,14 @@ public class TranslationServiceImpl implements TranslationService {
 
         for (int i = 0; i < args.length; ++i) {
             String key = String.valueOf(args[i]);
-            translatedArgs[i] = getValueMessage(key, language);
+            translatedArgs[i] = getValueTranslation(VALUE_KEY_PREFIX + key, language);
         }
 
         return translatedArgs;
     }
 
-    private String getValueMessage(String key, String language) {
-        MetaTranslation metaTranslation = metaTranslationRepo.findByKey(VALUE_KEY_PREFIX + key, language);
+    public String getValueTranslation(String key, String language) {
+        MetaTranslation metaTranslation = metaTranslationRepo.findByKey(key, language);
         return metaTranslation != null && !StringUtils.isBlank(metaTranslation.getMessage())
                 ? metaTranslation.getMessage()
                 : key;

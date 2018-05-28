@@ -36,7 +36,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -124,22 +124,22 @@ public class MoveValidateService {
 		Journal journal = move.getJournal();
 		Company company = move.getCompany();
 		if(journal == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_2));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_2));
 		}
 		if(company == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_3));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_3));
 		}
 
 		if(move.getPeriod() == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_4));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_4));
 		}
 
 		if (journal.getSequence() == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_5), journal.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_5), journal.getName());
 		}
 
 		if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
 		}
 
 		if (move.getMoveLineList().stream()
@@ -147,7 +147,7 @@ public class MoveValidateService {
 						moveLine.getDebit().add(moveLine.getCredit())
 								.compareTo(BigDecimal.ZERO) == 0
 				)) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
 		}
 
 		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
@@ -186,7 +186,7 @@ public class MoveValidateService {
 			for (MoveLine moveLine : move.getMoveLineList()){
 
 				if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0 && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-					throw new AxelorException(move, IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_6), moveLine.getName());
+					throw new AxelorException(move, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_6), moveLine.getName());
 				}
 
 				totalDebit = totalDebit.add(moveLine.getDebit());
@@ -194,7 +194,7 @@ public class MoveValidateService {
 			}
 
 			if (totalDebit.compareTo(totalCredit) != 0){
-				throw new AxelorException(move, IException.INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_7), move.getReference(), totalDebit, totalCredit);
+				throw new AxelorException(move, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_7), move.getReference(), totalDebit, totalCredit);
 			}
 			move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
 		}

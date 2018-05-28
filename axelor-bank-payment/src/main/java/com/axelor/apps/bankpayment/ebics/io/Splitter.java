@@ -22,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 
 /**
  * A mean to split a given input file to
@@ -75,7 +75,7 @@ public class Splitter {
       content = EbicsUtils.encrypt(input, keySpec);
       segmentation();
     } catch (Exception e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

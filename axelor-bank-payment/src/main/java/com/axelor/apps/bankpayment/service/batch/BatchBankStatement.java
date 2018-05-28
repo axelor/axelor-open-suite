@@ -37,6 +37,7 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -91,7 +92,7 @@ public class BatchBankStatement extends AbstractBatch {
             } catch (AxelorException e) {
                 processError(e, e.getCategory(), ebicsPartner);
             } catch (IOException e) {
-                processError(e, IException.CONFIGURATION_ERROR, ebicsPartner);
+                processError(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, ebicsPartner);
             }
         }
     }

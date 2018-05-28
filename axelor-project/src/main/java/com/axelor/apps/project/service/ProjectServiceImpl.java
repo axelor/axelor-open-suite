@@ -34,7 +34,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
@@ -116,13 +116,13 @@ public class ProjectServiceImpl implements ProjectService {
 		if (project.getParentProject() == null){
 			//it is a root project, can get the client partner
 			if(project.getClientPartner() == null){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_CUSTOMER_PARTNER));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_CUSTOMER_PARTNER));
 			}else{
 				return project.getClientPartner();
 			}
 		}else{
 			if (counter > MAX_LEVEL_OF_PROJECT){
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_DEEP_LIMIT_REACH));
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROJECT_DEEP_LIMIT_REACH));
 			}else{
 				return this.getClientPartnerFromProject(project.getParentProject(), counter + 1);
 			}

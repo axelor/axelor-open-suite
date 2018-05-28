@@ -32,7 +32,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSup
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -102,7 +102,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             throws AxelorException {
 
         if (purchaseOrder.getCurrency() == null) {
-            throw new AxelorException(purchaseOrder, IException.CONFIGURATION_ERROR,
+            throw new AxelorException(purchaseOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                     I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq());
         }
 

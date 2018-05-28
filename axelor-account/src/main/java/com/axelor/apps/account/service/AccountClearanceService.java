@@ -41,7 +41,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -152,18 +152,18 @@ public class AccountClearanceService{
 
 		// Debit MoveLine 411
 		BigDecimal amount = moveLine.getAmountRemaining();
-		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), amount, true, appBaseService.getTodayDateTime().toLocalDate(), 1, null);
+		MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), amount, true, appBaseService.getTodayDateTime().toLocalDate(), 1, null, null);
 		move.getMoveLineList().add(debitMoveLine);
 
 		// Credit MoveLine 77. (profit account)
 		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 		BigDecimal profitAmount = amount.divide(divid, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN).setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, partner, profitAccount, profitAmount, false, appBaseService.getTodayDateTime().toLocalDate(), 2, null);
+		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, partner, profitAccount, profitAmount, false, appBaseService.getTodayDateTime().toLocalDate(), 2, null, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
 		// Credit MoveLine 445 (Tax account)
 		BigDecimal taxAmount = amount.subtract(profitAmount);
-		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, partner, taxAccount, taxAmount, false, appBaseService.getTodayDateTime().toLocalDate(), 3, null);
+		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, partner, taxAccount, taxAmount, false, appBaseService.getTodayDateTime().toLocalDate(), 3, null, null);
 		move.getMoveLineList().add(creditMoveLine2);
 
 		Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
@@ -202,27 +202,27 @@ public class AccountClearanceService{
 		AccountConfig accountConfig = company.getAccountConfig();
 
 		if(accountConfig == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1), AppBaseServiceImpl.EXCEPTION,company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(accountConfig.getProfitAccount() == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2), AppBaseServiceImpl.EXCEPTION,company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(accountConfig.getStandardRateTax() == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3), AppBaseServiceImpl.EXCEPTION,company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(accountConfig.getClearanceAccountSet() == null || accountConfig.getClearanceAccountSet().size() == 0)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4), AppBaseServiceImpl.EXCEPTION,company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(!sequenceService.hasSequence(SequenceRepository.ACCOUNT_CLEARANCE, company)) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5), AppBaseServiceImpl.EXCEPTION,company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 		if(accountConfig.getAccountClearanceJournal() == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6), AppBaseServiceImpl.EXCEPTION,company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6), AppBaseServiceImpl.EXCEPTION,company.getName());
 		}
 
 	}

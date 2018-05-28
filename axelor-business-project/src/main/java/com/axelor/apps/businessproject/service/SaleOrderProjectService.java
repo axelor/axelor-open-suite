@@ -32,7 +32,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
@@ -59,7 +59,7 @@ public class SaleOrderProjectService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Project generateProject(SaleOrder saleOrder, String type) throws AxelorException {
 	    if (type == null) {
-	        throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_TYPE_GEN_PROJECT));
+	        throw new AxelorException(saleOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_TYPE_GEN_PROJECT));
         }
 		Project project = projectBusinessService.generateProject(saleOrder);
 		project.setGenProjTypePerOrderLine(GenProjTypePerOrderLine.valueOf(type));
@@ -88,12 +88,12 @@ public class SaleOrderProjectService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public List<? extends AuditableModel> generateProjectTypePerOrderLine(SaleOrder saleOrder) throws AxelorException {
 	    if (saleOrder.getProject() == null) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_PROJECT));
+			throw new AxelorException(saleOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_PROJECT));
 		}
 		List<? extends AuditableModel> models;
 	    switch (saleOrder.getProject().getGenProjTypePerOrderLine()) {
 			case PROJECT_ALONE:
-				throw new AxelorException(saleOrder.getProject(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_PROJECT_ALONE));
+				throw new AxelorException(saleOrder.getProject(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_PROJECT_ALONE));
 			case PHASE_BY_LINE:
 				models = generateProjectPhases(saleOrder);
 				break;
@@ -101,10 +101,10 @@ public class SaleOrderProjectService {
 				models = generateProjectTasks(saleOrder);
 				break;
 			default:
-				throw new AxelorException(saleOrder.getProject(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_TYPE_GEN_PROJECT));
+				throw new AxelorException(saleOrder.getProject(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_TYPE_GEN_PROJECT));
 		}
 		if (models.isEmpty()) {
-			throw new AxelorException(saleOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_LINES));
+			throw new AxelorException(saleOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_ORDER_NO_LINES));
 		}
 		return models;
 	}

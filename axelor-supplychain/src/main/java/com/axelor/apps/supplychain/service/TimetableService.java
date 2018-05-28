@@ -17,142 +17,30 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
-import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.db.Timetable;
-import com.axelor.apps.supplychain.db.repo.TimetableRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
-import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 
-public class TimetableService {
+public interface TimetableService {
 
-	@Transactional
-	public Invoice generateInvoice(Timetable timetable) throws AxelorException{
-		if(Strings.isNullOrEmpty(timetable.getProductName())){
-			throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TIMETABLE_MISSING_PRODUCT_NAME));
-		}
-		Invoice invoice = this.createInvoice(timetable);
-		Beans.get(InvoiceRepository.class).save(invoice);
-		timetable.setInvoice(invoice);
-		Beans.get(TimetableRepository.class).save(timetable);
-		return invoice;
-	}
-	
-	public Invoice createInvoice(Timetable timetable) throws AxelorException{
-		SaleOrder saleOrder = timetable.getSaleOrder();
-		PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
-		if (saleOrder != null) {
-			if (saleOrder.getCurrency() == null) {
-				throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq());
-			}
-			InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(saleOrder) {
+  @Transactional
+  public Invoice generateInvoice(Timetable timetable) throws AxelorException;
 
-				@Override
-				public Invoice generate() throws AxelorException {
+  public Invoice createInvoice(Timetable timetable) throws AxelorException;
 
-					return super.createInvoiceHeader();
-				}
-			};
-			Invoice invoice = invoiceGenerator.generate();
-			invoiceGenerator.populate(invoice, this.createInvoiceLine(invoice, timetable));
-			this.fillInLines(invoice);
-			return invoice;
-		}
-		
-		if (purchaseOrder != null) {
-			if (purchaseOrder.getCurrency() == null) {
-				throw new AxelorException(timetable, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq());
-			}
-			InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(purchaseOrder) {
+  public void fillInLines(Invoice invoice);
 
-				@Override
-				public Invoice generate() throws AxelorException {
+  public List<InvoiceLine> createInvoiceLine(Invoice invoice, Timetable timetable) throws AxelorException;
 
-					return super.createInvoiceHeader();
-				}
-			};
-			
-			Invoice invoice = invoiceGenerator.generate();
-			invoiceGenerator.populate(invoice, this.createInvoiceLine(invoice, timetable));
-			return invoice;
-		}
-		
-		return null;
-	}
-	
-	public void fillInLines(Invoice invoice){
-		List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-		for (InvoiceLine invoiceLine : invoiceLineList) {
-			invoiceLine.setSaleOrder(invoice.getSaleOrder());
-		}
-	}
-	
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Timetable timetable) throws AxelorException  {
+  public SaleOrderLine findFirstSaleOrderLine(Timetable timetable);
 
-		Product product = timetable.getProduct();
+  public PurchaseOrderLine findFirstPurchaseOrderLine(Timetable timetable);
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, timetable.getProductName(),
-				timetable.getAmount(), timetable.getAmount(), timetable.getComments(), timetable.getQty(),
-				timetable.getUnit(), null, 1, BigDecimal.ZERO, PriceListLineRepository.AMOUNT_TYPE_NONE,
-				timetable.getAmount().multiply(timetable.getQty()),null, false,
-				this.findFirstSaleOrderLine(timetable), this.findFirstPurchaseOrderLine(timetable), null) {
-
-			@Override
-			public List<InvoiceLine> creates() throws AxelorException {
-
-				InvoiceLine invoiceLine = this.createInvoiceLine();
-
-				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-				invoiceLines.add(invoiceLine);
-				return invoiceLines;
-			}
-		};
-
-		return invoiceLineGenerator.creates();
-	}
-
-	public SaleOrderLine findFirstSaleOrderLine(Timetable timetable) {
-	    SaleOrder saleOrder = timetable.getSaleOrder();
-	    if (saleOrder != null) {
-	    	for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-	    		if (saleOrderLine.getTypeSelect() == null || !saleOrderLine.getTypeSelect().equals(SaleOrderLineRepository.TYPE_TITLE)) {
-	    			return saleOrderLine;
-				}
-			}
-		}
-		return null;
-	}
-
-	public PurchaseOrderLine findFirstPurchaseOrderLine(Timetable timetable) {
-		PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
-		if (purchaseOrder != null) {
-			for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-				if (!purchaseOrderLine.getIsTitleLine()) {
-					return purchaseOrderLine;
-				}
-			}
-		}
-		return null;
-	}
+  public void computeProductInformation(Timetable timetable) throws AxelorException;
 }

@@ -35,6 +35,14 @@
 	  		public static final Integer DISPONIBILITY_AVAILABLE = 2;
 	  ]]>
       </extra-code>
+
+      <track subscribe="true">
+          <field name="subject"/>
+          <field name="startDateTime"/>
+          <field name="endDateTime" on="UPDATE"/>
+          <field name="computedAttendeeList"/>
+      </track>
+
 	</entity>
 
   

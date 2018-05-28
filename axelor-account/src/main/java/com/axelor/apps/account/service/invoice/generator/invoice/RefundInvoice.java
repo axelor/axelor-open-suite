@@ -32,7 +32,7 @@ import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
@@ -71,7 +71,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		refund.setPaymentMode(InvoiceToolService.getPaymentMode(refund));
 
 		if (refund.getPaymentMode() == null) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.REFUND_INVOICE_1), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.REFUND_INVOICE_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		return refund;

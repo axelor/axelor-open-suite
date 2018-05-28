@@ -122,13 +122,17 @@
 	</selection>
 	
 	<selection name="crm.convert.lead.wizard.lead.to.partner.select">
-		<option value="1">Create partner</option>
-		<option value="2">Select partner</option>
+		<option value="1">Create new partner</option>
+		<option value="2">Select existing partner</option>
 	</selection>
 	
 	<selection name="crm.convert.lead.wizard.lead.to.contact.select">
-		<option value="1">Create contact</option>
-		<option value="2">Select contact</option>
+		<option value="1">Create new contact</option>
+		<option value="2">Select existing contact</option>
+	</selection>
+
+	<selection name="icrm.calendar.synchronization.select">
+		<option value="Event">CRM events</option>
 	</selection>
 
 </object-views>

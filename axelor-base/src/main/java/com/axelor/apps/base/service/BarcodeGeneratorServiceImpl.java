@@ -34,7 +34,7 @@ import com.google.inject.Singleton;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -106,7 +106,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 				break;
 
 			default:
-				throw new AxelorException(IException.CONFIGURATION_ERROR,
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
 						I18n.get(IExceptionMessage.BARCODE_GENERATOR_9));
 			}
 			return generateBarcode(serialno, barcodeTypeConfig, barcodeFormat);
@@ -149,7 +149,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 		if (isNumber(serialno)) {
 			return serialno;
 		}
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_3),
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_3),
 				serialno, barcodeFormat, null);
 
 	}
@@ -161,7 +161,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 		if (serialno.equals(serialno.toUpperCase())) {
 			return serialno;
 		}
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_4),
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_4),
 				serialno, barcodeFormat, null);
 
 	}
@@ -178,7 +178,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 		if (isNumber(serialno) && (serialno.length() % 2) == 0) {
 			return serialno;
 		}
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_2),
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_2),
 				serialno, barcodeFormat, null);
 
 	}
@@ -195,7 +195,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 			if (isAlphanumeric(serialno)) {
 				return serialno;
 			}
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_6),
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_6),
 					serialno, barcodeFormat);
 		}
 		// return serialno if it is only number or only alphabets
@@ -205,12 +205,12 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 			} else if (isCharacter(serialno)) {
 				return serialno;
 			}
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_8),
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_8),
 					serialno, barcodeFormat);
 		} else if (serialno.length() > 3 && serialno.length() < 12) {
 			return serialno;
 		}
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_5),
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_5),
 				serialno, barcodeFormat, 3, 12);
 
 	}
@@ -259,7 +259,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 		if (isNumber(serialno) && barcodeLength == serialno.length()) {
 			return serialno;
 		}
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_1),
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_1),
 				serialno, barcodeFormat, barcodeLength);
 
 	}
@@ -314,7 +314,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 			}
 			return serialno;
 		}
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_7),
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_7),
 				serialno, barcodeFormat, barcodeLength);
 
 	}
@@ -332,7 +332,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 			}
 			return serialno;
 		}
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_7),
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BARCODE_GENERATOR_7),
 				serialno, barcodeFormat, barcodeLength);
 
 	}

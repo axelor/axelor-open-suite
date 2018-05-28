@@ -44,7 +44,7 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -102,14 +102,14 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 			try {
 				reportSettings.addParam(birtTemplateParameter.getName(), convertValue(birtTemplateParameter.getType(), maker.make()));
 			} catch (BirtException e) {
-				throw new AxelorException(e, IException.CONFIGURATION_ERROR);
+				throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
 			}
 		}
 
 		try {
 			return reportSettings.generate().getFile();
 		} catch (AxelorException e) {
-			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
+			throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
 		}
 
 	}

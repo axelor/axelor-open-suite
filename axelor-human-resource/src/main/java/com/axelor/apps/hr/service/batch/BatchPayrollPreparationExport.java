@@ -19,9 +19,13 @@ package com.axelor.apps.hr.service.batch;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -44,10 +48,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
 
 
 public class BatchPayrollPreparationExport extends BatchStrategy {

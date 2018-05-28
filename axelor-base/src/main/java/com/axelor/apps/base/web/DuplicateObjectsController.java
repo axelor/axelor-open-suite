@@ -21,10 +21,11 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,23 +33,20 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.DuplicateObjectsService;
-import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.axelor.rpc.filter.Filter;
 
 
 @Singleton
@@ -58,9 +56,6 @@ public class DuplicateObjectsController {
 	
 	@Inject
 	private DuplicateObjectsService duplicateObjectService;
-	
-	@Inject
-	private MetaFieldRepository metaFieldRepo;
 	
 	@Inject
 	private MetaModelRepository metaModelRepo;
@@ -151,77 +146,82 @@ public class DuplicateObjectsController {
 	}
 	
 	/**
-	 * show duplicate records
+	 * Find duplicated records by using DuplicateObjectsService and open it.  
 	 * 
 	 * @param request
 	 * @param response
+	 * @throws AxelorException 
 	 */
-	@SuppressWarnings("unchecked")
-	public void showDuplicate(ActionRequest request, ActionResponse response) {
-
-		String model = (String) request.getContext().get("object");
-		List<String> fields = new ArrayList<String>();
-
-		if (model == null) {
-			model = request.getModel();
-			String searchFields = (String) request.getContext().get("searchFields");
-			if (searchFields != null) {
-				fields.addAll(Arrays.asList(searchFields.split(";")));
-			}
-		} else {
-
-			if (request.getContext().get("fieldsSet") != null) {
-				List<HashMap<String, Object>> fieldsSet = (List<HashMap<String, Object>>) request.getContext()
-						.get("fieldsSet");
-
-				for (HashMap<String, Object> field : fieldsSet) {
-					MetaField metaField = metaFieldRepo.find(Long.parseLong(field.get("id").toString()));
-					fields.add(metaField.getName());
-				}
-			}
-		}
-
-		LOG.debug("Duplicate record model: {}", model);
+	public void showDuplicate(ActionRequest request, ActionResponse response) throws AxelorException{
+		
+		Context context = request.getContext();
+		Set<String> fields = new HashSet<String>();
+		Class<? extends Model> modelClass = extractModel(request, fields);
+		
+		LOG.debug("Duplicate record model: {}", modelClass.getName());
 
 		if (fields.size() > 0) {
-
-			LOG.debug("Duplicate record joinList: {}", fields);
-
-			String criteria = (String) (request.getContext().get("_criteria"));
-
-			if (criteria == null) {
-				if (request.getContext().get("_ids") != null) {
-					criteria = request.getContext().get("_ids").toString();
-				} else {
-					criteria = this.getCriteria(request);
-				}
+			
+			String filter = findDuplicated(request, fields, modelClass);
+			
+			if (filter == null) {
+				response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
 			}
-
-			if (criteria.equals("[]")) {
-				response.setError(I18n.get(IExceptionMessage.GENERAL_8));
-			} else {
-				criteria = criteria.substring(1, criteria.length() - 1);
-				String ids = duplicateObjectService.findDuplicateRecords(fields, model, criteria);
-				if (ids.isEmpty())
-					response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
-				else {
-					String domain = "self.id in (" + ids + ")";
-					Class<?> modelClass = JPA.model(model);
-					final Inflector inflector = Inflector.getInstance();
-					String viewName = inflector.dasherize(modelClass.getSimpleName());
-
-					response.setView(ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
-							.model(model)
-							.add("grid", String.format("%s-grid", viewName))
-							.add("form", String.format("%s-form", viewName))
-							.domain(domain).context("_domain", domain)
-							.map());
-
+			else {
+				response.setView(ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
+						  .model(modelClass.getName())
+						  .add("grid")
+						  .add("form")
+						  .domain(filter)
+						  .context("_domain", filter)
+						  .map());
+				
+				if (context.get("_contextModel") != null) {
 					response.setCanClose(true);
 				}
 			}
-		} else
+		} else if (context.get("_contextModel") == null) {
+			response.setFlash(I18n.get(IExceptionMessage.GENERAL_10));
+		} else {
 			response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
+		}
+	}
+
+	private String findDuplicated(ActionRequest request, Set<String> fields, Class<? extends  Model> modelClass) throws AxelorException {
+		
+		LOG.debug("Duplicate finder fields: {}", fields);
+		
+		List<?> ids = duplicateObjectService.findDuplicatedRecordIds(fields, modelClass, getCriteria(request, modelClass));
+		
+		if (ids.isEmpty()) {
+			return null;
+		}
+		
+		return "self.id in (" + Joiner.on(",").join(ids) + ")";
+	}
+
+	private Class<? extends Model> extractModel(ActionRequest request, Set<String> fields) {
+		
+		Context context = request.getContext();
+		String model = (String) context.get("_contextModel");
+		
+		if (model == null) {
+			model = request.getModel();
+			String duplicateFinderFields = (String) context.get("_duplicateFinderFields");
+			if (duplicateFinderFields != null) {
+				fields.addAll(Arrays.asList(duplicateFinderFields.split(";")));
+			}
+		} else {
+			
+			if (context.get("fieldsSet") != null) {
+				List<HashMap<String, Object>> fieldsSet = (List<HashMap<String, Object>>) context.get("fieldsSet");
+				for (HashMap<String, Object> field : fieldsSet) {
+					fields.add((String) field.get("name"));
+				}
+			}
+		}
+		
+		return (Class<? extends Model>) JPA.model(model);
 	}
 
 	/**
@@ -235,36 +235,39 @@ public class DuplicateObjectsController {
 
 		LOG.debug("Call check duplicate wizard for model : {} ", request.getModel());
 
-		MetaModel metaModel = metaModelRepo.all().filter("self.fullName = ?", request.getModel()).fetchOne();
-		String criteria;
+		String criteria = getCriteria(request, (Class<? extends Model>)JPA.model(request.getModel()));
 
-		if (request.getContext().get("_ids") != null) {
-			criteria = request.getContext().get("_ids").toString();
-		} else {
-			criteria = this.getCriteria(request);
-		}
-		if (criteria.equals("[]")) {
-			response.setError(I18n.get(IExceptionMessage.GENERAL_8));
-		} else {
-			response.setView(ActionView.define("Check duplicate")
-					.model(Wizard.class.getName())
-					.add("form", "wizard-check-duplicate-form")
-					.param("popup", "true").param("show-toolbar", "false")
-					.param("width", "500")
-					.param("popup-save", "false")
-					.context("object", metaModel.getFullName())
-					.context("_criteria", criteria).map());
-		}
+		response.setView(ActionView.define("Check duplicate")
+				.model(Wizard.class.getName())
+				.add("form", "wizard-check-duplicate-form")
+				.param("popup", "true").param("show-toolbar", "false")
+				.param("width", "500")
+				.param("popup-save", "false")
+				.context("_contextModel", request.getModel())
+				.context("_criteria", criteria).map());
 	}
 
-	private String getCriteria(ActionRequest request) {
+	private String getCriteria(ActionRequest request, Class<? extends Model> modelClass) {
 		
-		MetaModel metaModel = metaModelRepo.all().filter("self.fullName = ?", request.getModel()).fetchOne();
-		Class<? extends Model> klass = (Class<? extends Model>) request.getBeanClass();
-		Filter filter = duplicateObjectService.getJpaSecurityFilter(metaModel);		
-		Stream<? extends Model> listObj = request.getCriteria().createQuery(klass, filter).fetchSteam();
-        
-		return listObj.map(it->it.getId()).collect(Collectors.toList()).toString();
+		String criteria = (String) (request.getContext().get("_criteria"));
+		if (criteria != null) {
+			return criteria;
+		}
+		
+		List<?> contextIds = (List<?>) request.getContext().get("_ids");
+		if (contextIds != null && !contextIds.isEmpty()) {
+			return "self.id in (" + Joiner.on(",").join(contextIds) + ")";
+		}
+		else {
+			List<Map> listObj = request.getCriteria().createQuery(modelClass).select("id").fetch(0, 0);
+			if (listObj != null) {
+				List<?> ids = listObj.stream().map(it-> it.get("id")).collect(Collectors.toList());
+				LOG.debug("Total criteria ids: {}", ids.size());
+				return "self.id in (" + Joiner.on(",").join(ids) + ")";
+			}
+		}
+		
+		return null;
 	}
 
 }

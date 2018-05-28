@@ -39,7 +39,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -196,7 +196,7 @@ public class MessageServiceImpl implements MessageService {
                 bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
 
         if (toRecipients.isEmpty() && ccRecipients.isEmpty() && bccRecipients.isEmpty()) {
-            throw new AxelorException(message, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MESSAGE_8));
+            throw new AxelorException(message, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MESSAGE_8));
         }
 
         MailSender sender = new MailSender(account);
@@ -209,7 +209,7 @@ public class MessageServiceImpl implements MessageService {
                 log.debug("Override from :::  {}", message.getFromEmailAddress().getAddress());
                 mailBuilder.from(message.getFromEmailAddress().getAddress());
             } else {
-                throw new AxelorException(message, IException.CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_7);
+                throw new AxelorException(message, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_7);
             }
         }
         if (replytoRecipients != null && !replytoRecipients.isEmpty()) {

@@ -205,5 +205,9 @@
 	<action-method name="action-timesheet-line-method-set-stored-duration" model="com.axelor.apps.hr.db.TimesheetLine">
         <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="setStoredDuration"/>
 	</action-method>
+	
+	<action-method name="action-timesheet-line-method-set-duration" model="com.axelor.apps.hr.db.TimesheetLine">
+        <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="setDuration"/>
+	</action-method>
 
 </object-views>

@@ -59,7 +59,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -108,7 +108,7 @@ public class ExpenseController {
 			expenseLine = expenseServiceProvider.get().createAnalyticDistributionWithTemplate(expenseLine);
 			response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
 		} else {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 	
@@ -279,7 +279,7 @@ public class ExpenseController {
 		}
 		if (!expenseLineId.isEmpty()) {
 			String ids =  Joiner.on(",").join(expenseLineId);
-			throw new AxelorException(IException.CONFIGURATION_ERROR, String.format(I18n.get("Date problem for line(s) : %s"),ids));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, String.format(I18n.get("Date problem for line(s) : %s"),ids));
 		}
 	}
 	
@@ -496,7 +496,7 @@ public class ExpenseController {
 		Employee employee = Beans.get(EmployeeRepository.class).all().filter("self.user.id = ?1", userId).fetchOne();
 		
 		if (employee == null){
-			throw new AxelorException( IException.CONFIGURATION_ERROR,I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), userName)  ;
+			throw new AxelorException( TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), userName)  ;
 		}
 		
 		BigDecimal amount = BigDecimal.ZERO;
@@ -612,7 +612,7 @@ public class ExpenseController {
 		Employee employee = expense.getUser().getEmployee();
 
 		if (employee == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), expense.getUser().getName());
 		}
 
 		BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);

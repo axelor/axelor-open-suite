@@ -51,14 +51,6 @@
 	  		public static final Integer TYPE_TASK = 3;
 	  ]]>
     </extra-code>
-      
-    <track subscribe="true">
-      <field name="subject"/>
-      <field name="startDateTime"/>
-      <field name="endDateTime" on="UPDATE"/>
-      <field name="computedAttendeeList"/>
-    </track>
-      
 
   </entity>
 </domain-models>

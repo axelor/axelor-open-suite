@@ -79,7 +79,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 		}
 		saleOrder.setSalemanUser(AuthUtils.getUser());
 		saleOrder.setTeam(saleOrder.getSalemanUser().getActiveTeam());
-		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT);
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
 		saleOrderService.computeEndOfValidityDate(saleOrder);
 		return saleOrder;
 	}
@@ -131,7 +131,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
 		saleOrder.setSaleOrderLineList(new ArrayList<>());
 
-		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT);
+		saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
 
 		saleOrderService.computeEndOfValidityDate(saleOrder);
 

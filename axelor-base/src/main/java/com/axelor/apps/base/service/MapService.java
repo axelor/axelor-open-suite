@@ -37,7 +37,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -100,7 +100,7 @@ public class MapService {
             }
         }
 
-        throw new AxelorException(appBaseService.getAppBase(), IException.NO_VALUE, I18n.get(IExceptionMessage.MAP_RESPONSE_ERROR), restResponse);
+        throw new AxelorException(appBaseService.getAppBase(), TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.MAP_RESPONSE_ERROR), restResponse);
 
 		/*
 		log.debug("restResponse = {}", restResponse)
@@ -135,26 +135,22 @@ public class MapService {
 	//}
 	}
 
-	public HashMap<String,Object> getMapGoogle(String qString){
-		LOG.debug("Query string: {}",qString);
-		try {
-				JSONObject googleResponse = geocodeGoogle(qString);
-				LOG.debug("Google response: {}",googleResponse);
-				if(googleResponse != null){
-					HashMap<String,Object> result = new HashMap<String,Object>();
-					BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
-					BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
-					LOG.debug("URL:"+"map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
-					result.put("url","map/gmaps.html?key=" + getGoogleMapsApiKey()
-							+  "&x="+latitude+"&y="+longitude+"&z=18");
-					result.put("latitude", latitude);
-					result.put("longitude",longitude);
-					return result;
-				}
-
-		}catch(Exception e){
-			TraceBackService.trace(e);
+	public HashMap<String, Object> getMapGoogle(String qString) throws AxelorException, JSONException {
+		LOG.debug("Query string: {}", qString);
+		JSONObject googleResponse = geocodeGoogle(qString);
+		LOG.debug("Google response: {}", googleResponse);
+		if (googleResponse != null) {
+			HashMap<String, Object> result = new HashMap<String, Object>();
+			BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
+			BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
+			LOG.debug("URL:" + "map/gmaps.html?x=" + latitude + "&y=" + longitude + "&z=18");
+			result.put("url",
+					"map/gmaps.html?key=" + getGoogleMapsApiKey() + "&x=" + latitude + "&y=" + longitude + "&z=18");
+			result.put("latitude", latitude);
+			result.put("longitude", longitude);
+			return result;
 		}
+
 		return null;
 	}
 
@@ -212,7 +208,7 @@ public class MapService {
 		return null;
 	}
 
-	public HashMap<String,Object> getMap(String qString)  {
+	public HashMap<String,Object> getMap(String qString) throws AxelorException, JSONException  {
 		LOG.debug("qString = {}", qString);
 		
 		switch (appBaseService.getAppBase().getMapApiSelect()) {
@@ -259,8 +255,8 @@ public class MapService {
         }
     }
 
-	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
-			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon+"&key="+getGoogleMapsApiKey();
+	public String getDirectionUrl(String key, BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
+			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon+"&key="+key;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -301,7 +297,7 @@ public class MapService {
 		return null;
 	}
 
-	public String makeAddressString(Address address, ObjectNode objectNode) {
+	public String makeAddressString(Address address, ObjectNode objectNode) throws AxelorException, JSONException {
 
 		address = Beans.get(AddressService.class).checkLatLang(address,false);
 		BigDecimal latit = address.getLatit();
@@ -371,7 +367,7 @@ public class MapService {
 
         if (response.getStatusCode() != HttpStatus.SC_OK) {
             String msg = String.format("%d: %s", response.getStatusCode(), response.getStatusMessage());
-            throw new AxelorException(appBase, IException.CONFIGURATION_ERROR, msg);
+            throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
         }
 
         JSONObject json = new JSONObject(response.getContentAsString());
@@ -380,7 +376,7 @@ public class MapService {
         if (!"OK".equalsIgnoreCase(status)) {
             String msg = json.has("error_message") ? String.format("%s: %s", status, json.getString("error_message"))
                     : status;
-            throw new AxelorException(appBase, IException.CONFIGURATION_ERROR, msg);
+            throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
         }
         
         return json;

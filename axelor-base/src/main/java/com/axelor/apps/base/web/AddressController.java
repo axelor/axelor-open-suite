@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
@@ -44,6 +45,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -216,7 +218,6 @@ public class AddressController {
             } else {
                 response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5), address.getFullName()));
     		}
-    
     		response.setReload(true);
         } catch (Exception e) {
             TraceBackService.trace(response, e);
@@ -225,8 +226,16 @@ public class AddressController {
 
 	public void viewDirection(ActionRequest request, ActionResponse response)  {
         try {
-    		Partner currPartner = Beans.get(UserService.class).getUserPartner();
-    		if(currPartner == null){
+        	MapService mapService = Beans.get(MapService.class);
+        	String key = mapService.getGoogleMapsApiKey();
+
+        	Company company = AuthUtils.getUser().getActiveCompany();
+        	if(company == null) {
+        		response.setFlash(I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+        		return;
+        	}
+        	Address departureAddress = company.getAddress();
+    		if(departureAddress == null){
     			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
     			return;
     		}
@@ -234,16 +243,12 @@ public class AddressController {
     			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
     			return;
     		}
-    		Address departureAddress = Beans.get(PartnerService.class).getDeliveryAddress(currPartner);
-    		if (departureAddress == null) {
-    			response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
-    			return;
-    		}
+
     		departureAddress = addressService.checkLatLang(departureAddress,false);
     		BigDecimal dLat = departureAddress.getLatit();
     		BigDecimal dLon = departureAddress.getLongit();
     		BigDecimal zero = BigDecimal.ZERO;
-    		if(zero.compareTo(dLat) == 0 || zero.compareTo(dLat) == 0){
+    		if(zero.compareTo(dLat) == 0 || zero.compareTo(dLon) == 0){
     			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),departureAddress.getFullName()));
     			return;
     		}
@@ -252,14 +257,14 @@ public class AddressController {
     		arrivalAddress = addressService.checkLatLang(arrivalAddress,false);
     		BigDecimal aLat = arrivalAddress.getLatit();
     		BigDecimal aLon =  arrivalAddress.getLongit();
-    		if(zero.compareTo(aLat) == 0 || zero.compareTo(aLat) == 0){
+    		if(zero.compareTo(aLat) == 0 || zero.compareTo(aLon) == 0){
     			response.setFlash(String.format(I18n.get(IExceptionMessage.ADDRESS_5),arrivalAddress.getFullName()));
     			return;
     		}
     
     		Map<String,Object> mapView = new HashMap<String,Object>();
     		mapView.put("title", "Map");
-    		mapView.put("resource", Beans.get(MapService.class).getDirectionUrl(dLat, dLon, aLat, aLon));
+    		mapView.put("resource", mapService.getDirectionUrl(key, dLat, dLon, aLat, aLon));
     		mapView.put("viewType", "html");
     		response.setView(mapView);
     		response.setReload(true);
@@ -269,9 +274,17 @@ public class AddressController {
 	}
 
 	public void checkLatLang(ActionRequest request, ActionResponse response) {
-		Address address = request.getContext().asType(Address.class);
-		addressService.checkLatLang(address, true);
-		response.setReload(true);
+		try  {
+			Address address = request.getContext().asType(Address.class);
+			AppBase appBase = Beans.get(AppBase.class);
+			if(appBase.getMapApiSelect() == null || (appBase.getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE && appBase.getGoogleMapsApiKey() == null)) {
+				return;
+			}
+			addressService.checkLatLang(address, true);
+			response.setReload(true);
+		} catch (Exception e) {
+			TraceBackService.trace(response, e);
+		}
 	}
 
 

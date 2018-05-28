@@ -34,7 +34,7 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 
 
 /**
@@ -95,9 +95,9 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
     try {
       return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     } catch (NoSuchProviderException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -117,13 +117,13 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
    */
   protected byte[] decodeHex(byte[] hex) throws AxelorException {
     if (hex == null) {
-      throw new AxelorException(IException.CONFIGURATION_ERROR, "Bank digest is empty, HPB request must be performed before");
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "Bank digest is empty, HPB request must be performed before");
     }
 
     try {
       return Hex.decodeHex((new String(hex)).toCharArray());
     } catch (DecoderException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -141,7 +141,7 @@ public abstract class InitializationRequestElement extends DefaultEbicsRootEleme
       return cipher.doFinal(nonce);
     } catch (Exception e) {
       e.printStackTrace();
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

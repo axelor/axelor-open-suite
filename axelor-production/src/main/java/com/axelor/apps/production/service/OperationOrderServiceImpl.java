@@ -48,7 +48,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
@@ -179,7 +179,7 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
 		OperationOrderRepository operationOrderRepo = Beans.get(OperationOrderRepository.class);
 		if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
 		}
 
 		List<OperationOrder> operationOrderListTemp = operationOrderRepo.all().filter("self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", fromDateTime, toDateTime).fetch();
@@ -246,7 +246,7 @@ public class OperationOrderServiceImpl implements OperationOrderService  {
 		toDateTime = toDateTime.withHour(23).withMinute(59);
 		LocalDateTime itDateTime = LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
 		if (Duration.between(fromDateTime,toDateTime).toDays() > 500) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
 		}
 
 

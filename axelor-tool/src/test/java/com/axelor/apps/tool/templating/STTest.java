@@ -51,7 +51,7 @@ public class STTest {
 			+"<p><strong>DateOfBirth:</strong> $contact.dateOfBirth;format=\"dd/MM/YYYY\"$</p>"
 			+"<p>&nbsp;</p>"
 			+"<p><em>Contact me:</em>&nbsp;<a href='mailto:$contact.email$' target='_blank'>$contact.fullName$</a></p>"
-			+"<hr />$__time__;format=\"HH:mm\"$"
+			+"<hr />$__time__;format=\"HH\"$"
 			+"<ul>$__date__$"
 			+"<li>Java</li>"
 			+"<li>JavaScript</li>"
@@ -66,8 +66,8 @@ public class STTest {
 	
 	@Before
 	public void prepareTest() {
-		contact = new Contact("Belloy","Pierre");
-		contact.setEmail("p.belloy@axelor.com");
+		contact = new Contact("Doe","John");
+		contact.setEmail("john.doe@axelor.com");
 		contact.setFullName(contact.getFullName());
 		contact.setDateOfBirth(LocalDate.now());
 		contact.setPayeurQuality(new BigDecimal("2.2569"));
@@ -81,7 +81,7 @@ public class STTest {
 		map.put("testKey3", "This is the key 3");
 		
 		contentFinal = ""
-				+"<h1>About Me (PIERRE)</h1>"
+				+"<h1>About Me (JOHN)</h1>"
 				+"<hr />"
 				+"<p><strong>PayeurQuality:</strong> 2,257</p>"
 				+"<p><strong>Title: "+title.toString()+"</p>"
@@ -90,7 +90,7 @@ public class STTest {
 				+"<p><strong>DateOfBirth:</strong> "+contact.getDateOfBirth().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"))+"</p>"
 				+"<p>&nbsp;</p>"
 				+"<p><em>Contact me:</em>&nbsp;<a href='mailto:"+contact.getEmail()+"' target='_blank'>"+contact.getFullName()+"</a></p>"
-				+"<hr />"+ java.time.LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+				+"<hr />"+ java.time.LocalTime.now().format(DateTimeFormatter.ofPattern("HH"))
 				+"<ul>"+LocalDate.now()
 				+"<li>Java</li>"
 				+"<li>JavaScript</li>"

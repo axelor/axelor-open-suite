@@ -11,10 +11,10 @@
 	</selection>
 	
 	<selection name="sale.order.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Finalized</option>
+		<option value="1">Draft quotation</option>
+		<option value="2">Finalized quotation</option>
 		<option value="3">Order confirmed</option>
-		<option value="4">Finished</option>
+		<option value="4">Order completed</option>
 		<option value="5">Canceled</option>
 	</selection>
 	

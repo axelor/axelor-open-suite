@@ -19,10 +19,8 @@ package com.axelor.apps.account.service.batch;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-
-import com.google.inject.Inject;
-
 import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +34,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 
 public class BatchMoveLineExport extends BatchStrategy {
 
@@ -130,13 +130,13 @@ public class BatchMoveLineExport extends BatchStrategy {
 	public void testAccountingBatchField() throws AxelorException  {
 		AccountingBatch accountingBatch = batch.getAccountingBatch();
 		if(accountingBatch.getCompany() == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_1), AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_1), AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode());
 		}
 		if(accountingBatch.getEndDate() == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_2), AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_2), AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode());
 		}
 		if(accountingBatch.getMoveLineExportTypeSelect() == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_3), AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_3), AppAccountServiceImpl.EXCEPTION, accountingBatch.getCode());
 		}
 	}
 

@@ -182,7 +182,12 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 					continue;
 				} else {
 					Partner partner = partnerRepo.findByUser(user);
-					recipients.add(partner.getEmailAddress().getAddress());
+					if (partner != null && partner.getEmailAddress() != null) {
+						recipients.add(partner.getEmailAddress().getAddress());
+					}
+					else if (user.getEmail() != null) {
+						recipients.add(user.getEmail());
+					}
 				}
 			} else {
 

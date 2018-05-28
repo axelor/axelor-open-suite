@@ -23,7 +23,7 @@ import org.eclipse.birt.core.exception.BirtException;
 
 import com.axelor.app.internal.AppFilter;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.report.ReportGenerator;
 
@@ -51,13 +51,11 @@ public class EmbeddedReportSettings  extends ReportSettings  {
 			this.attach();
 		
 		} catch(IOException | BirtException e)  {
-			throw new AxelorException(e, IException.CONFIGURATION_ERROR);
+			throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
 		}
 		
 		return this;
         
 	}
-	
-	
-}
 
+}

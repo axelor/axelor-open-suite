@@ -54,7 +54,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
@@ -85,7 +85,7 @@ public class EbicsCertificateService {
 			 return Beans.get(EbicsCertificateService.class).getSSLCertificate(bank);
 		 }
 
-		 throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No bank certificate of type %s found"), type);
+		 throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("No bank certificate of type %s found"), type);
 	}
 	
 	public static X509Certificate getCertificate(byte[] certificate, String type) throws AxelorException {
@@ -95,7 +95,7 @@ public class EbicsCertificateService {
 		try {
 			cert = (X509Certificate) CertificateFactory.getInstance("X.509", "BC").generateCertificate(instream);
 		} catch (CertificateException | NoSuchProviderException e) {
-			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get("Error in bank certificate of type %s"), type);
+			throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("Error in bank certificate of type %s"), type);
 		}
 		
 		return cert;
@@ -187,7 +187,7 @@ public class EbicsCertificateService {
 		
 		return null;
 		
-//		throw new AxelorException(I18n.get("Error in getting ssl certificate"), IException.CONFIGURATION_ERROR);
+//		throw new AxelorException(I18n.get("Error in getting ssl certificate"), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
 		
 	}
 	

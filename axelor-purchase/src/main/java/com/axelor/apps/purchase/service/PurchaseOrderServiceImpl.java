@@ -55,7 +55,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -215,7 +215,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	public String getSequence(Company company) throws AxelorException  {
 		String seq = sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_ORDER, company);
 		if (seq == null) {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());
+			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());
 		}
 		return seq;
 	}
@@ -233,7 +233,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Override
 	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException  {
 		if (purchaseOrder.getPrintingSettings() == null) {
-			throw new AxelorException(IException.MISSING_FIELD, String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS), purchaseOrder.getPurchaseOrderSeq()));
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS), purchaseOrder.getPurchaseOrderSeq()));
 		}
 
 		String language= ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
@@ -260,7 +260,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         if (blocking != null) {
             String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
-			throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason, partner);
+			throw new AxelorException(TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason, partner);
         }
 		if (purchaseOrder.getVersionNumber() == 1){
 			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
@@ -347,24 +347,26 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		if(purchaseOrder.getPurchaseOrderLineList() != null){
 			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 				Product product = purchaseOrderLine.getProduct();
-				product.setPurchasePrice(purchaseOrderLine.getPrice());
-				if (product.getDefShipCoefByPartner()) {
-					BigDecimal shippingCoef = Beans.get(ShippingCoefService.class)
-							.getShippingCoef(
-									product,
-									purchaseOrder.getSupplierPartner(),
-									purchaseOrder.getCompany()
-							);
-					if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
-						product.setShippingCoef(shippingCoef);
-					}
+				if(product != null) {
+				    product.setPurchasePrice(purchaseOrderLine.getPrice());
+				    if (product.getDefShipCoefByPartner()) {
+				        BigDecimal shippingCoef = Beans.get(ShippingCoefService.class)
+				                .getShippingCoef(
+				                        product,
+				                        purchaseOrder.getSupplierPartner(),
+				                        purchaseOrder.getCompany()
+				                        );
+				        if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
+				            product.setShippingCoef(shippingCoef);
+				        }
+				    }
+				    if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
+				        product.setCostPrice(purchaseOrderLine.getPrice());
+				        if (product.getAutoUpdateSalePrice()) {
+				            Beans.get(ProductService.class).updateSalePrice(product);
+				        }
+				    }
 				}
-				if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
-					product.setCostPrice(purchaseOrderLine.getPrice());
-					if (product.getAutoUpdateSalePrice()) {
-						Beans.get(ProductService.class).updateSalePrice(product);
-					}
-                }
 			}
 			purchaseOrderRepo.save(purchaseOrder);
 		}
@@ -381,7 +383,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	    	 selectedPurchaseOrderListId = new ArrayList<>();
 	    	 selectedPurchaseOrderListId.add(purchaseOrder.getId());
 		} else {
-			throw new AxelorException(PurchaseOrder.class, IException.INCONSISTENCY, I18n.get(IExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
+			throw new AxelorException(PurchaseOrder.class, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
 		}
 
 		List<PurchaseOrder> purchaseOrderList = purchaseOrderRepo.all()
@@ -395,7 +397,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 							.map(PurchaseOrder::getPurchaseOrderSeq)
 							.collect(Collectors.joining("</li><li>", "<li>", "</li>"))
 							+ "<ul>");
-			throw new AxelorException(IException.MISSING_FIELD, exceptionMessage);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, exceptionMessage);
 		}
 
 		String purchaseOrderIds = selectedPurchaseOrderListId.stream()

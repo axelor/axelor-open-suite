@@ -37,7 +37,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -101,7 +101,7 @@ public class BankReconciliationService {
 	public void checkBalance(BankReconciliation bankReconciliation) throws AxelorException  {
 
 		if(bankReconciliation.getComputedBalance().compareTo(bankReconciliation.getEndingBalance()) != 0)  {
-			throw new AxelorException(bankReconciliation, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_1),
+			throw new AxelorException(bankReconciliation, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_1),
 					AppAccountServiceImpl.EXCEPTION);
 		}
 
@@ -127,18 +127,19 @@ public class BankReconciliationService {
 		LocalDate effectDate = bankReconciliationLine.getEffectDate();
 
 		String name = bankReconciliationLine.getName();
+    String reference = bankReconciliationLine.getReference();
 
 		Move move = moveService.getMoveCreateService().createMove(bankReconciliation.getJournal(), bankReconciliation.getCompany(), null, partner, effectDate, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
 		boolean isNegate = amount.compareTo(BigDecimal.ZERO) < 0;
 
 		MoveLine partnerMoveLine = moveLineService.createMoveLine(move, partner, bankReconciliationLine.getAccount(), amount,
-				isNegate, effectDate, effectDate, 1, name);
+				isNegate, effectDate, effectDate, 1, reference, name);
 		move.addMoveLineListItem(partnerMoveLine);
 
 		move.addMoveLineListItem(
 				moveLineService.createMoveLine(move, partner, bankReconciliation.getCashAccount(), amount,
-						!isNegate, effectDate, effectDate, 1, name));
+						!isNegate, effectDate, effectDate, 1, reference, name));
 
 		moveRepository.save(move);
 
@@ -155,13 +156,13 @@ public class BankReconciliationService {
 		MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
 		if (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) == 0) {
-			throw new AxelorException(bankReconciliationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_3),
+			throw new AxelorException(bankReconciliationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_3),
 				AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference());
 		}
 		
 		if ((bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getCredit()) != 0)
 				|| (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getDebit()) != 0)) {
-			throw new AxelorException(bankReconciliationLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_2),
+			throw new AxelorException(bankReconciliationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_2),
 				AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference());
 		}
 

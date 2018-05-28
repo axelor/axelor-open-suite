@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -64,7 +64,7 @@ public class MailBatchController{
 				response.setFlash(batch.getComments());
 			response.setReload(true);
 		} else {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
 		}
 	}
 }

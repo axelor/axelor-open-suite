@@ -102,6 +102,7 @@ public interface IExceptionMessage {
 	static final String MOVE_LINE_EXPORT_2 = /*$$(*/ "%s : Error : You must configure a credit note interface sequence for the company %s" /*)*/ ;
 	static final String MOVE_LINE_EXPORT_3 = /*$$(*/ "%s : Error : You must configure a treasury interface sequence for the company %s" /*)*/ ;
 	static final String MOVE_LINE_EXPORT_4 = /*$$(*/ "%s : Error : You must configure a purchase interface sequence for the company %s" /*)*/ ;
+	static final String MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL = /*$$(*/ "Year or period or date is null, you must set a period." /*)*/ ;
 
 	/**
 	 * Accounting report service and controller
@@ -446,6 +447,7 @@ public interface IExceptionMessage {
 	 * Validate state
 	 */
 	static final String INVOICE_VALIDATE_1 = /*$$(*/ "The payment mode is not in adequacy with the invoice type" /*)*/;
+	static final String INVOICE_VALIDATE_BLOCKING = /*$$(*/ "The partner is blocked for invoicing." /*)*/;
 
 	/**
 	 * Cancel state
@@ -575,4 +577,5 @@ public interface IExceptionMessage {
      */
     String INVOICE_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on invoice %s." /*)*/;
 	String INVOICES_MISSING_PRINTING_SETTINGS = /*$$(*/ "Please fill printing settings on following invoices: %s" /*)*/;
+	String INVOICE_PRINTING_IO_ERROR = /*$$(*/  "Error on uploading printed invoice:"  /*)*/;
 }

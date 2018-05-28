@@ -79,7 +79,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 				.getAppSupplychain()
 				.getIntercoSaleCreatingStatusSelect();
 		if (saleOrder.getInterco()
-				&& intercoSaleCreatingStatus == SaleOrderRepository.STATUS_CONFIRMED) {
+				&& intercoSaleCreatingStatus == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
 		    Beans.get(IntercoService.class)
 					.generateIntercoPurchaseFromSale(saleOrder);
 		}
@@ -99,14 +99,14 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
 	@Override
     @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class}, ignore = {BlockedSaleOrderException.class })
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+	public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
 		accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
-		super.finalizeSaleOrder(saleOrder);
+		super.finalizeQuotation(saleOrder);
 		int intercoSaleCreatingStatus = Beans.get(AppSupplychainService.class)
 				.getAppSupplychain()
 				.getIntercoSaleCreatingStatusSelect();
 		if (saleOrder.getInterco()
-				&& intercoSaleCreatingStatus == SaleOrderRepository.STATUS_FINALIZED) {
+				&& intercoSaleCreatingStatus == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
 		    Beans.get(IntercoService.class)
 					.generateIntercoPurchaseFromSale(saleOrder);
 		}

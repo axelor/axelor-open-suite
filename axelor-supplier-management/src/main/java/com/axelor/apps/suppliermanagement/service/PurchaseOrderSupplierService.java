@@ -48,7 +48,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -141,7 +141,7 @@ public class PurchaseOrderSupplierService {
 			Partner supplierPartner = purchaseOrderLine.getSupplierPartner();
 
 			if (supplierPartner == null) {
-				throw new AxelorException(purchaseOrderLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_PURCHASE_1), purchaseOrderLine.getProductName());
+				throw new AxelorException(purchaseOrderLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_PURCHASE_1), purchaseOrderLine.getProductName());
 			}
 
 			if(!purchaseOrderLinesBySupplierPartner.containsKey(supplierPartner))  {

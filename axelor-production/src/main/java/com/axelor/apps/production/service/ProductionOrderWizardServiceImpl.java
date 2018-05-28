@@ -36,7 +36,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
@@ -89,7 +89,7 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 		if(productionOrder != null)  {
 			return productionOrder.getId();
 		} else {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_2));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_ORDER_2));
 		}
 	}
 	

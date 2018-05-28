@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.service.batch;
 
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +36,9 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -64,15 +68,20 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 		filterList.add("self.amountRemaining > 0");
 		filterList.add("self.hasPendingPayments = FALSE");
 
-		if (accountingBatch.getDueDate() != null) {
-			filterList.add("self.dueDate <= :dueDate");
-			bindingList.add(Pair.of("dueDate", (Object) accountingBatch.getDueDate()));
-		}
+		LocalDate dueDate = accountingBatch.getDueDate() != null ? accountingBatch.getDueDate()
+        		: Beans.get(AppBaseService.class).getTodayDate();
+		filterList.add("self.dueDate <= :dueDate");
+		bindingList.add(Pair.of("dueDate", (Object) dueDate));
 
 		if (accountingBatch.getCompany() != null) {
 			filterList.add("self.company = :company");
 			bindingList.add(Pair.of("company", (Object) accountingBatch.getCompany()));
 		}
+
+		filterList.add(
+			"self.partner.id NOT IN (SELECT DISTINCT partner.id FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
+		bindingList.add(Pair.of("blockingSelect", BlockingRepository.DEBIT_BLOCKING));
+		bindingList.add(Pair.of("blockingToDate", Beans.get(AppBaseService.class).getTodayDate()));
 
 		if (accountingBatch.getBankDetails() != null) {
 			Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());

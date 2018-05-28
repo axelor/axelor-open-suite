@@ -45,7 +45,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -410,7 +410,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 		} else if (metaFieldType == "SaleOrderLine") {
 			configuratorFormula.setSaleOrderLineMetaField(metaField);
 		} else {
-			throw new AxelorException(ConfiguratorFormula.class, IException.NO_VALUE,
+			throw new AxelorException(ConfiguratorFormula.class, TraceBackRepository.CATEGORY_NO_VALUE,
 					I18n.get(com.axelor.apps.sale.exception.IExceptionMessage.CONFIGURATOR_CREATOR_UNVALID_METAFIELD));
 		}
 

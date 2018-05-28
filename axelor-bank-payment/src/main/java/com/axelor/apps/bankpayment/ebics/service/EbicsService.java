@@ -53,7 +53,7 @@ import com.axelor.apps.bankpayment.ebics.io.IOUtils;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
@@ -183,7 +183,7 @@ public class EbicsService {
 		    
 	    } catch(Exception e) {
 	    	TraceBackService.trace(e);
-	    	throw new AxelorException(e, IException.TECHNICAL);
+	    	throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
 	    }
 	 }
 
@@ -214,7 +214,7 @@ public class EbicsService {
 		    userRepo.save(ebicsUser);
 		} catch (IOException | AxelorException | JDOMException e) {
 			TraceBackService.trace(e);
-			throw new AxelorException(e, IException.TECHNICAL);
+			throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
 		}
 
 	    
@@ -240,7 +240,7 @@ public class EbicsService {
 	      return keyManager.sendHPB();
 	    } catch (Exception e) {
 	    	TraceBackService.trace(e);
-	    	throw new AxelorException(e, IException.TECHNICAL);
+	    	throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
 	    }
 	}
 
@@ -267,7 +267,7 @@ public class EbicsService {
 		  userRepo.save(ebicsUser);
 	    } catch (Exception e) {
 	    	TraceBackService.trace(e);
-	    	throw new AxelorException(e, IException.TECHNICAL);
+	    	throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
 	    }
 	    
 	}
@@ -314,7 +314,7 @@ public class EbicsService {
         }
 
         throw new AxelorException(I18n.get(IExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
-                IException.CONFIGURATION_ERROR, ebicsPartner.getPartnerId(), format.getName());
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, ebicsPartner.getPartnerId(), format.getName());
     }
 
 	/**
@@ -332,16 +332,16 @@ public class EbicsService {
 	    	session.addSessionParam("TEST", "true");
 	    }
 	    if (file == null) {
-	    	throw new AxelorException(IException.CONFIGURATION_ERROR, "File is required to send FUL request");
+	    	throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "File is required to send FUL request");
 	    }
 	    EbicsPartner ebicsPartner = transportUser.getEbicsPartner();
 	    
 	    if (ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)  {
 	    	if(signature == null)  {
-	    		throw new AxelorException(IException.CONFIGURATION_ERROR, "Signature file is required to send FUL request");
+	    		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "Signature file is required to send FUL request");
 	    	}
 	    	if(signatoryUser == null)  {
-	    		throw new AxelorException(IException.CONFIGURATION_ERROR, "Signatory user is required to send FUL request");
+	    		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "Signatory user is required to send FUL request");
 	    	}
 	    }
 	    
@@ -364,7 +364,7 @@ public class EbicsService {
 			userService.getNextOrderId(transportUser);
 	    } catch (IOException | AxelorException e) {
 	    	TraceBackService.trace(e);
-	    	throw new AxelorException(e,IException.TECHNICAL);
+	    	throw new AxelorException(e,TraceBackRepository.TYPE_TECHNICAL);
 	    }
 	    
 	    try {
@@ -438,7 +438,7 @@ public class EbicsService {
 			
 		} catch (IOException | AxelorException e) {
 			TraceBackService.trace(e);
-			throw new AxelorException(e, IException.TECHNICAL);
+			throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
 		
 		}
 

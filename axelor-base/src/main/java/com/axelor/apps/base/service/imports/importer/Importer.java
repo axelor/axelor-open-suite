@@ -46,7 +46,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -96,10 +96,10 @@ public abstract class Importer {
 			data = MetaFiles.getPath( configuration.getDataMetaFile() ).toFile();
 
 		if (!bind.exists()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_1));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_1));
 		}
 		if (!data.exists()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_2));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_2));
 		}
 
 		File workspace = createFinalWorkspace(configuration.getDataMetaFile());

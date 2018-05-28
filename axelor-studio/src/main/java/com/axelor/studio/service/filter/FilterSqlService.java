@@ -29,7 +29,7 @@ import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
@@ -292,7 +292,7 @@ public class FilterSqlService {
 			}
 		}
 		
-		throw new AxelorException(IException.MISSING_FIELD, "No sub field found field: %s model: %s ", targetName, model.getFullName());
+		throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, "No sub field found field: %s model: %s ", targetName, model.getFullName());
 		
 	}
 	
@@ -328,7 +328,7 @@ public class FilterSqlService {
 				if (joins != null) { addJoin(field, joins, parent); }
 				return parseJsonField(subJson, target, joins, parent);
 			}
-			throw new AxelorException(IException.MISSING_FIELD, "No sub field found model: %s field %s ", field.getTargetJsonModel().getName(), targetName);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, "No sub field found model: %s field %s ", field.getTargetJsonModel().getName(), targetName);
 		}
 		else {
 			MetaField subMeta = findMetaField(targetName, field.getTargetModel());
@@ -336,7 +336,7 @@ public class FilterSqlService {
 				if (joins != null) { addJoin(field, joins, parent); }
 				return parseMetaField(subMeta, target, joins, parent, true);
 			}
-			throw new AxelorException(IException.MISSING_FIELD, "No sub field found model: %s field %s ", field.getTargetModel(), targetName);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, "No sub field found model: %s field %s ", field.getTargetModel(), targetName);
 		}
 		
 	}

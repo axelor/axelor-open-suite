@@ -44,7 +44,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
@@ -167,7 +167,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		MoveLine creditMoveLine = reconcile.getCreditMoveLine();
 
 		if (debitMoveLine == null || creditMoveLine == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECONCILE_1), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECONCILE_1), AppAccountServiceImpl.EXCEPTION);
 		}
 		
 		// Check if move lines companies are the same as the reconcile company
@@ -177,7 +177,7 @@ public class ReconcileServiceImpl  implements ReconcileService {
 		if (!debitMoveLineCompany.equals(reconcileCompany) && !creditMoveLineCompany.equals(reconcileCompany)){
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_7), AppAccountServiceImpl.EXCEPTION,
 					debitMoveLineCompany, creditMoveLineCompany, reconcileCompany),
-					IException.CONFIGURATION_ERROR);
+					TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
 		}
 
 		// Check if move lines accounts are the same (debit and credit)
@@ -186,18 +186,18 @@ public class ReconcileServiceImpl  implements ReconcileService {
 
 			// Check if move lines accounts are compatible
 			if (!debitMoveLine.getAccount().getCompatibleAccountSet().contains(creditMoveLine.getAccount())) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECONCILE_2), AppAccountServiceImpl.EXCEPTION);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECONCILE_2), AppAccountServiceImpl.EXCEPTION);
 			}
 		}
 
 		// Check if the amount to reconcile is != zero
 		if (reconcile.getAmount() == null || reconcile.getAmount().compareTo(BigDecimal.ZERO) == 0)  {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.RECONCILE_4), AppAccountServiceImpl.EXCEPTION, reconcile.getReconcileSeq(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), creditMoveLine.getName(), creditMoveLine.getAccount().getLabel());
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.RECONCILE_4), AppAccountServiceImpl.EXCEPTION, reconcile.getReconcileSeq(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), creditMoveLine.getName(), creditMoveLine.getAccount().getLabel());
 		}
 
 		if ((reconcile.getAmount().compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid())) > 0
 				|| (reconcile.getAmount().compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid())) > 0))){
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.RECONCILE_5)+" " +I18n.get(IExceptionMessage.RECONCILE_3), AppAccountServiceImpl.EXCEPTION, reconcile.getReconcileSeq(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), creditMoveLine.getName(), creditMoveLine.getAccount().getLabel());
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.RECONCILE_5)+" " +I18n.get(IExceptionMessage.RECONCILE_3), AppAccountServiceImpl.EXCEPTION, reconcile.getReconcileSeq(), debitMoveLine.getName(), debitMoveLine.getAccount().getLabel(), creditMoveLine.getName(), creditMoveLine.getAccount().getLabel());
 		}
 
 	}

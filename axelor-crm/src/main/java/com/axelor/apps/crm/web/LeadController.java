@@ -36,6 +36,7 @@ import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.csv.script.ImportLeadConfiguration;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -130,8 +131,12 @@ public class LeadController {
 	}
 	
 	public void getLeadImportConfig(ActionRequest request, ActionResponse response){
-		ImportConfiguration leadImportConfig  = Beans.get(ImportConfigurationRepository.class).all().filter("self.bindMetaFile.fileName = ?1","import-config-lead.xml").fetchOne();
+		
+		ImportConfiguration leadImportConfig  = Beans.get(ImportConfigurationRepository.class).
+				all().filter("self.bindMetaFile.fileName = ?1",ImportLeadConfiguration.IMPORT_LEAD_CONFIG).fetchOne();
+		
 		logger.debug("ImportConfig for lead: {}",leadImportConfig);
+		
 		if(leadImportConfig == null){
 			response.setFlash(I18n.get(IExceptionMessage.LEAD_4));
 		}

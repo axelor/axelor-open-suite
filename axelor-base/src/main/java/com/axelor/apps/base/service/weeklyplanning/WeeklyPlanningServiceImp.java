@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 
@@ -54,21 +54,21 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 					&& dayPlanning.getMorningFrom().isAfter(dayPlanning.getMorningTo())) {
 
 				String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_1, dayPlanning);
-				throw new AxelorException(IException.INCONSISTENCY, message);
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
 			}
 
 			if (dayPlanning.getMorningTo() != null && dayPlanning.getAfternoonFrom() != null
 					&& dayPlanning.getMorningTo().isAfter(dayPlanning.getAfternoonFrom())) {
 
 				String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_2, dayPlanning);
-				throw new AxelorException(IException.INCONSISTENCY, message);
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
 			}
 
 			if (dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null
 					&& dayPlanning.getAfternoonFrom().isAfter(dayPlanning.getAfternoonTo())) {
 
 				String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_3, dayPlanning);
-				throw new AxelorException(IException.INCONSISTENCY, message);
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
 			}
 
 			if ((dayPlanning.getMorningFrom() == null && dayPlanning.getMorningTo() != null)
@@ -77,7 +77,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService{
 				|| (dayPlanning.getAfternoonTo() == null && dayPlanning.getAfternoonFrom() != null)){
 
 				String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_4,dayPlanning);
-				throw new AxelorException(IException.INCONSISTENCY,message);
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY,message);
 			}
 		}
 		return planning;

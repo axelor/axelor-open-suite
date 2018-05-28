@@ -46,7 +46,7 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
@@ -175,7 +175,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 	public void testAccountingBatchBankDetails(AccountingBatch accountingBatch) throws AxelorException  {
 
 		if(accountingBatch.getBankDetails() == null) {
-			throw new AxelorException(accountingBatch, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_STRATEGY_1), AppAccountServiceImpl.EXCEPTION,accountingBatch.getCode());
+			throw new AxelorException(accountingBatch, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BATCH_STRATEGY_1), AppAccountServiceImpl.EXCEPTION,accountingBatch.getCode());
 		}
 
 		this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());

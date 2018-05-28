@@ -25,6 +25,7 @@ import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MailAccountService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -61,12 +62,16 @@ public class MailAccountController {
 		
 	}
 	
-	public void checkDefaultMailAccount(ActionRequest request, ActionResponse response){
+	public void checkDefaultMailAccount(ActionRequest request, ActionResponse response) throws AxelorException {
+		
 		EmailAccount account = request.getContext().asType(EmailAccount.class);
-		if(!mailAccountService.checkDefaultMailAccount(account)){
-			response.setError(I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
-			response.setValue("isDefault", false);
+		try {
+			mailAccountService.checkDefaultMailAccount(account);
+		} catch(AxelorException e) {
+			response.setAttr("isDefault", "value", false);
+			response.setFlash(e.getMessage());
 		}
+	
 	}
 	
 	public void fetchEmails(ActionRequest request, ActionResponse response) throws MessagingException, IOException  {

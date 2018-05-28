@@ -35,7 +35,7 @@ import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
@@ -134,7 +134,7 @@ public class CfonbImportService {
 		this.importFile = FileTool.reader(fileName);
 
 		if(appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_1), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		String headerCFONB = null;
@@ -149,13 +149,13 @@ public class CfonbImportService {
 		while (this.importFile != null && this.importFile.size() != 0) {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
 			if (headerCFONB == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_2), AppAccountServiceImpl.EXCEPTION, fileName);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_2), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
 			this.importFile.remove(headerCFONB);
 
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
 			if (multiDetailsCFONB.isEmpty()) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_3), AppAccountServiceImpl.EXCEPTION, fileName);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_3), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
 			for (String detail : multiDetailsCFONB) {
 				this.importFile.remove(detail);
@@ -163,7 +163,7 @@ public class CfonbImportService {
 
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
 			if (endingCFONB == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_4), AppAccountServiceImpl.EXCEPTION, fileName);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_4), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
 			this.importFile.remove(endingCFONB);
 
@@ -201,7 +201,7 @@ public class CfonbImportService {
 		this.importFile = FileTool.reader(fileName);
 
 		if (appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_1), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		String headerCFONB = null;
@@ -216,13 +216,13 @@ public class CfonbImportService {
 		while (this.importFile != null && this.importFile.size() != 0) {
 			headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
 			if (headerCFONB == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_2), AppAccountServiceImpl.EXCEPTION, fileName);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_2), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
 			this.importFile.remove(headerCFONB);
 
 			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, operation, optionalOperation);
 			if (multiDetailsCFONB.isEmpty()) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_3), AppAccountServiceImpl.EXCEPTION, fileName);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_3), AppAccountServiceImpl.EXCEPTION, fileName);
 
 			}
 			for (String detail : multiDetailsCFONB) {
@@ -231,7 +231,7 @@ public class CfonbImportService {
 
 			endingCFONB = this.getEndingCFONB(this.importFile, operation, optionalOperation);
 			if (endingCFONB == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_4), AppAccountServiceImpl.EXCEPTION, fileName);
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_4), AppAccountServiceImpl.EXCEPTION, fileName);
 			}
 			this.importFile.remove(endingCFONB);
 
@@ -277,7 +277,7 @@ public class CfonbImportService {
 				new Object[]{totalAmount,totalRecord});
 
 		if (totalAmount != totalRecord) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_5), AppAccountServiceImpl.EXCEPTION,fileName, endingCFONB);
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CFONB_IMPORT_5), AppAccountServiceImpl.EXCEPTION,fileName, endingCFONB);
 		}
 	}
 

@@ -23,12 +23,15 @@ import javax.mail.MessagingException;
 
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.exception.AxelorException;
+import com.axelor.mail.MailAccount;
 
 public interface MailAccountService {
 
-	public boolean checkDefaultMailAccount(EmailAccount mailAccount);
+	public void checkDefaultMailAccount(EmailAccount mailAccount) throws AxelorException;
 	
-	public EmailAccount getDefaultMailAccount(int serverType);
+	public EmailAccount getDefaultSender();
+	
+	public EmailAccount getDefaultReader();
 	
 	public void checkMailAccountConfiguration(EmailAccount mailAccount) throws AxelorException, Exception;
 	
@@ -43,5 +46,7 @@ public interface MailAccountService {
 	public String getDecryptPassword(String password);
 
 	public int fetchEmails(EmailAccount mailAccount, boolean unseenOnly) throws MessagingException, IOException;
+
+	public MailAccount getMailAccount(EmailAccount mailAccount);
 	
 }

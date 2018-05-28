@@ -33,7 +33,7 @@ import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.apps.cash.management.exception.IExceptionMessage;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -53,7 +53,7 @@ public class ForecastRecapController {
 	public void populate(ActionRequest request, ActionResponse response) throws AxelorException  {
 		ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
 		if(forecastRecap.getCompany() == null){
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.FORECAST_COMPANY));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.FORECAST_COMPANY));
 		}
 		forecastRecapService.populate(forecastRecap);
 		response.setValues(forecastRecap);

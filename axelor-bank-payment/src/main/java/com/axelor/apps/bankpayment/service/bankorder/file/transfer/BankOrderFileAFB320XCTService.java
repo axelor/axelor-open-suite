@@ -42,7 +42,7 @@ import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -247,7 +247,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			return senderRecord;
 		
 		} catch (Exception e) {
-			throw new AxelorException(e, senderBankDetails, IException.MISSING_FIELD,
+			throw new AxelorException(e, senderBankDetails, TraceBackRepository.CATEGORY_MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_SENDER_RECORD)
 					+ ": " + e.getMessage(), bankOrderSeq);
 		}
@@ -270,7 +270,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 		String iban = bankDetails.getIban();
 		
 		if (Strings.isNullOrEmpty(iban)) {
-			throw new AxelorException(bankDetails, IException.MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_EMPTY_IBAN), bankDetails.getOwnerName(), bankOrderSeq);
+			throw new AxelorException(bankDetails, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_EMPTY_IBAN), bankDetails.getOwnerName(), bankOrderSeq);
 		}
 		
 		switch (bankDetails.getBank().getBankDetailsTypeSelect()) {
@@ -335,7 +335,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			
 			// Zone 4 : Type identifiant du compte du bénéficiaire ("1" : IBAN, "2" : Identifiant national, "0" : Autre )
 			if (receiverBankDetails.getBank() == null) {
-				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK), IException.MISSING_FIELD);
+				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK), TraceBackRepository.CATEGORY_MISSING_FIELD);
 			}
 			detailRecord += cfonbToolService.createZone(I18n.get("4 - Bank details type"), receiverBankDetails.getBank().getBankDetailsTypeSelect(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 1);
 			
@@ -446,7 +446,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			return detailRecord;
 		
 		} catch (Exception e) {
-			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD,
+			throw new AxelorException(e, bankOrderLine, TraceBackRepository.CATEGORY_MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_MAIN_DETAIL_RECORD)
 					+ ": " + e.getMessage(), bankOrderLine.getSequence());
 		}
@@ -509,7 +509,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			return totalRecord;
 		
 		} catch (Exception e) {
-			throw new AxelorException(e.getCause(), bankOrderLine, IException.MISSING_FIELD,
+			throw new AxelorException(e.getCause(), bankOrderLine, TraceBackRepository.CATEGORY_MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_BENEFICIARY_BANK_DETAIL_RECORD)
 					+ ": " + e.getMessage(), bankOrderLine.getSequence());
 		}
@@ -575,7 +575,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			return totalRecord;
 		
 		} catch (Exception e) {
-			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD,
+			throw new AxelorException(e, bankOrderLine, TraceBackRepository.CATEGORY_MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD)
 					+ ": " + e.getMessage(), bankOrderLine.getSequence());
 		}
@@ -687,7 +687,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			return totalRecord;
 			
 		} catch (Exception e) {
-			throw new AxelorException(e, IException.MISSING_FIELD,
+			throw new AxelorException(e, TraceBackRepository.CATEGORY_MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_TOTAL_RECORD)
 					+ ": " + e.getMessage(), bankOrderSeq);
 		}

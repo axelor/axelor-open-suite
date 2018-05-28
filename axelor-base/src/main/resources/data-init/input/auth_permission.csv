@@ -1,6 +1,7 @@
-"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
-"perm.base.all";"com.axelor.apps.base.db.*";"true";"true";"true";"true";"true";;;;;;;;
-"perm.meta.all";"com.axelor.meta.db.*";"true";"true";"true";"true";"true";;;;;;;;
-"perm.mail.all";"com.axelor.mail.db.*";"true";"true";"true";"true";"true";;;;;;;;
-"perm.dms.all";"com.axelor.dms.db.*";"true";"true";"true";"true";"true";;;;;;;;
-perm.auth.all;com.axelor.auth.db.*;true;true;true;true;true;;;;;;;;
+"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport"
+"perm.base.all";"com.axelor.apps.base.db.*";"true";"true";"true";"true";"true"
+"perm.meta.all";"com.axelor.meta.db.*";"true";"true";"true";"true";"true"
+"perm.mail.all";"com.axelor.mail.db.*";"true";"true";"true";"true";"true"
+"perm.dms.all";"com.axelor.dms.db.*";"true";"true";"true";"true";"true"
+"perm.auth.all";"com.axelor.auth.db.*";"true";"true";"true";"true";"true"
+"perm.team.all";"com.axelor.team.db.*";"true";"true";"true";"true";"true"

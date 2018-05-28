@@ -17,12 +17,19 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.PaymentScheduleService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -90,6 +97,45 @@ public class PaymentScheduleController {
         } catch (Exception e) {
             TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }
+    }
+
+    /**
+     * Called on partner, company or payment mode change.
+     * Fill the bank details with a default value.
+     * @param request
+     * @param response
+     */
+    public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+      PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+      PaymentMode paymentMode = paymentSchedule.getPaymentMode();
+      Company company = paymentSchedule.getCompany();
+      Partner partner = paymentSchedule.getPartner();
+
+      if (company == null) {
+        return;
+      }
+      if (partner != null) {
+        partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      }
+      BankDetails defaultBankDetails = Beans.get(BankDetailsService.class).getDefaultCompanyBankDetails(company, paymentMode, partner);
+      response.setValue("companyBankDetails", defaultBankDetails);
+    }
+
+    /**
+     * Called on partner change.
+     * Fill the bank details with a default value.
+     * @param request
+     * @param response
+     */
+    public void fillPartnerBankDetails(ActionRequest request, ActionResponse response) {
+      PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+      Partner partner = paymentSchedule.getPartner();
+
+      if (partner != null) {
+        partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      }
+      BankDetails defaultBankDetails = Beans.get(PartnerService.class).getDefaultBankDetails(partner);
+      response.setValue("bankDetails", defaultBankDetails);
     }
 
 	// Creating payment schedule lines button

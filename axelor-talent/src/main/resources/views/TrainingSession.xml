@@ -40,6 +40,7 @@
 	<action-view name="action-dashlet-training-session-employee-registered" title="Employee registred" model="com.axelor.apps.hr.db.Employee">
 		<view type="grid" name="employee-grid"/>
 		<view type="form" name="employee-form"/>
+		<view-param name="search-filters" value="employee-filters"/>
 		<domain>self.id in (:_employeeIds)</domain>
 		<context name="_employeeIds" expr="eval:[0] + __repo__(TrainingRegister).all().filter('self.trainingSession.id = ' + id).fetch().collect{it->it.employee?.id}"/>
 	</action-view>

@@ -105,7 +105,7 @@
                     </field>
 
                     <field name="typeSelect" title="Type" showIf="!$readonly()" onChange="action-stock-move-set-default-stock-locations,action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
-                    <field name="conformitySelect" showIf="!$readonly()" onChange="action-stock-move-method-change-conformity" readonlyIf="statusSelect &gt; 2"/>
+                    <field name="conformitySelect" showIf="statusSelect == 2" onChange="action-stock-move-method-change-conformity" />
 
                     <field name="cancelReason" colOffset="6" canView="false" showIf="cancelReason != null" readonly="true"/>
                     <field name="isReversion" hidden="true" />
@@ -123,7 +123,7 @@
         </panel>
 
         <panel name="stockMoveInformation" title="Stock move information">
-            <field name="partner" domain="self.isContact = false" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
+            <field name="partner" domain="self.isContact = false" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form" hideIf="typeSelect == 1"/>
             <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-update-info-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
             <field name="name" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
             <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-printing-settings-default-value" canEdit="false" if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
@@ -178,7 +178,7 @@
                 <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
                 <field name="grossMass" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
 
-                <field name="saleOrder.specificPackage" readonly="true" colSpan="4"/>
+                <field name="saleOrder.specificPackage" readonly="true" colSpan="4" showIf="saleOrder.specificPackage"/>
                 <panel stacked="true" colSpan="8">
                     <field name="isIspmRequired" showIf="!$readonly()"/>
                     <field name="$IspmTag" showTitle="false" showIf="$readonly()">

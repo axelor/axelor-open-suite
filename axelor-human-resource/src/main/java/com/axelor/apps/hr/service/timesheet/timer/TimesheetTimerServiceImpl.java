@@ -38,7 +38,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
@@ -60,7 +60,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 		if(timer.getDuration() > 59) {
 			generateTimesheetLine(timer);
 		} else {
-			throw new AxelorException(IException.FUNCTIONNAL,
+			throw new AxelorException(TraceBackRepository.TYPE_FUNCTIONNAL,
 					I18n.get(IExceptionMessage.NO_TIMESHEET_CREATED), timer);
 		}
 	}

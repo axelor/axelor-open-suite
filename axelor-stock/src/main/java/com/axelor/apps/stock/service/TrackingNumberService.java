@@ -30,7 +30,7 @@ import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -99,7 +99,7 @@ public class TrackingNumberService {
 		TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 
 		if (trackingNumberConfiguration.getSequence() == null) {
-			throw new AxelorException(product, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TRACKING_NUMBER_1), company.getName(), product.getCode());
+			throw new AxelorException(product, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TRACKING_NUMBER_1), company.getName(), product.getCode());
 		}
 
 		String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence());

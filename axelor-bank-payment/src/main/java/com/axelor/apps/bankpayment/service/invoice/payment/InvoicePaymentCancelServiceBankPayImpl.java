@@ -35,7 +35,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -85,7 +85,7 @@ public class InvoicePaymentCancelServiceBankPayImpl  extends InvoicePaymentCance
 		
 		if(paymentBankOrder != null){
 			if(paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT || paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED){
-				throw new AxelorException(invoicePayment, IException.FUNCTIONNAL, I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANCEL));
+				throw new AxelorException(invoicePayment, TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANCEL));
 			} else {
 				bankOrderService.cancelBankOrder(paymentBankOrder);
 				this.updateCancelStatus(invoicePayment);

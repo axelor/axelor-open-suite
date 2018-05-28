@@ -18,11 +18,16 @@
 package com.axelor.apps.crm.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.db.repo.ICalendarRepository;
+import com.axelor.apps.base.ical.ICalendarEventFactory;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.CrmBatchCrmRepository;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.db.repo.EventManagementRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.db.repo.LeadManagementRepository;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.CalendarService;
@@ -41,6 +46,7 @@ public class CrmModule extends AxelorModule {
     @Override
     protected void configure() {
         bind(EventRepository.class).to(EventManagementRepository.class);
+        bind(LeadRepository.class).to(LeadManagementRepository.class);
         bind(OpportunityRepository.class).to(OpportunityManagementRepository.class);
         bind(OpportunityService.class).to(OpportunityServiceImpl.class);
         bind(ICalendarService.class).to(CalendarService.class);
@@ -48,5 +54,6 @@ public class CrmModule extends AxelorModule {
         bind(EventService.class).to(EventServiceImpl.class);
         bind(CrmBatchRepository.class).to(CrmBatchCrmRepository.class);
         bind(LeadService.class).to(LeadServiceImpl.class);
+        ICalendarEventFactory.register(ICalendarRepository.CRM_SYNCHRO, Event::new);
     }
 }
