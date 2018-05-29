@@ -1564,6 +1564,7 @@
 "With Payment Rejected",,,
 "Year",,,
 "Year or period or date is null, you must set a period.",,,
+"You can not ventilate an invoice in the future.",,,
 "You can't remove this record, because the move has already been validated",,,
 "You cannot delete this deposit slip.",,,
 "You have to choose at least one invoice",,,
