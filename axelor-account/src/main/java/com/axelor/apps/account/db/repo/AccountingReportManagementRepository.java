@@ -42,7 +42,7 @@ public class AccountingReportManagementRepository extends AccountingReportReposi
 			
 			return super.save(accountingReport);
 		} catch (Exception e) {
-            JPA.em().getTransaction().commit();
+            JPA.em().getTransaction().rollback();
             JPA.runInTransaction(() -> TraceBackService.trace(e));
             JPA.em().getTransaction().begin();
 			throw new PersistenceException(e.getLocalizedMessage());
