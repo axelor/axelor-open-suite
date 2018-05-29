@@ -159,8 +159,9 @@ public class TemplateMaker {
 		Map<String, Object> _map = Maps.newHashMap();
 		if(localContext != null && !localContext.isEmpty()) {
 			_map.putAll(localContext);
+		} if(context != null) {
+			_map.putAll(context);
 		}
-		_map.putAll(context);
 		
 		//Internal context
 		_map.put("__user__", AuthUtils.getUser());
