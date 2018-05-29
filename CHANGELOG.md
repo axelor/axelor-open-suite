@@ -45,6 +45,7 @@
 - Advanced export: Fix crashing server,added parameters for fetch limit and maximum export limt
 - Product : set format of description field as html in product report to support formatting of description.
 - Sale: Add missing translation in subscription
+- Production: fix nb of digits for BOM quantities configuration.
 - Production order : New manufaturing order directly will not be created but with newly created popup wizard for Manufaturing order.
 - Add missing translation for "Print production process"
 
