@@ -48,6 +48,7 @@
 - Production: fix nb of digits for BOM quantities configuration.
 - Production order : New manufaturing order directly will not be created but with newly created popup wizard for Manufaturing order.
 - Add missing translation for "Print production process"
+- Fixed issue on amounts computation on general balance report and add a sort on account codes.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
