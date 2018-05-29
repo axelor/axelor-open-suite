@@ -46,6 +46,7 @@
 - Sale: Add missing translation in subscription
 - Production order : New manufaturing order directly will not be created but with newly created popup wizard for Manufaturing order.
 - Add missing translation for "Print production process"
+- Fix NPE on automatic template message without a model.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
