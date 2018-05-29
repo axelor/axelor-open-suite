@@ -13,6 +13,7 @@
 - Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
 - Copy account type from account in analytic move line.
 - Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
+- Change phonebook title to Contact PhoneBook or Company PhoneBook in view and reports.
 - Opportunity: move to proposition stage when creating a sale order.
 
 ## Bug Fixes
@@ -45,6 +46,8 @@
 - Product : set format of description field as html in product report to support formatting of description.
 - Sale: Add missing translation in subscription
 - Production: fix nb of digits for BOM quantities configuration.
+- Production order : New manufaturing order directly will not be created but with newly created popup wizard for Manufaturing order.
+- Add missing translation for "Print production process"
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
