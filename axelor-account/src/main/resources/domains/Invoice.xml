@@ -41,7 +41,7 @@
     <boolean name="doubtfulCustomerOk" title="Doubtful Customer" default="false"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
   	<one-to-many name="invoicePaymentList" ref="com.axelor.apps.account.db.InvoicePayment" title ="Payments" mappedBy="invoice"/>
-    <date name="ventilatedDate" title="Ventilated Date"/>
+    <date name="ventilatedDate" readonly="true" title="Ventilated Date"/>
     <many-to-one name="ventilatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Ventilated by"/>
 
     
@@ -106,6 +106,7 @@
     <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select" readonly="true" default="1"/>
     
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Validated by"/>
+    <date name="validatedDate" readonly="true" title="Validated Date"/>
 
     <boolean name="inAti" title="In ATI"/>
     

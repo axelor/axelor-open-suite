@@ -40,7 +40,7 @@ import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.auth.AuthUtils;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -67,19 +67,23 @@ public class VentilateState extends WorkflowInvoice {
 
 	protected WorkflowVentilationService workflowService;
 
+	protected UserService userService;
+
 	@Inject
 	public VentilateState(SequenceService sequenceService,
 						  MoveService moveService,
 						  AccountConfigService accountConfigService,
 						  AppAccountService appAccountService,
 						  InvoiceRepository invoiceRepo,
-						  WorkflowVentilationService workflowService) {
+						  WorkflowVentilationService workflowService,
+						  UserService userService) {
 		this.sequenceService = sequenceService;
 		this.moveService = moveService;
 		this.accountConfigService = accountConfigService;
 		this.appAccountService = appAccountService;
 		this.invoiceRepo = invoiceRepo;
 		this.workflowService = workflowService;
+		this.userService = userService;
 	}
 
 	@Override
@@ -106,7 +110,7 @@ public class VentilateState extends WorkflowInvoice {
 
 	protected void setVentilatedLog() {
 		invoice.setVentilatedDate(appAccountService.getTodayDate());
-		invoice.setVentilatedByUser(AuthUtils.getUser());
+		invoice.setVentilatedByUser(userService.getUser());
 	}
 
 	protected void updatePaymentSchedule( ){
