@@ -39,7 +39,7 @@
                 colSpan="4"
                 hideIf="product.defaultBillOfMaterial.id == id"/>
             <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
-            <field name="$defaultBOMOnProduct" showTitle="false" colSpan="3">
+            <field name="$defaultBOMOnProduct" readonly="true" showTitle="false" colSpan="3">
                 <viewer depends="$defaultBOMOnProduct, product.defaultBillOfMaterial">
                     <![CDATA[
                         <h4 class="text-right">
