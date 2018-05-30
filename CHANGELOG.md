@@ -51,6 +51,7 @@
 - Add missing translation for "Print production process"
 - Fixed issue on amounts computation on general balance report and add a sort on account codes.
 - Sort the general ledger report per account code and date
+- Charts : rename action call that action has been renamed earlier.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
