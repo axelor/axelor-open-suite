@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -347,6 +347,7 @@ left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 
 left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
 
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
 
@@ -358,8 +359,9 @@ where
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) 
-AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND 
+Move.ignore_in_accounting_ok = false AND 
+(Move.status_select = 3 OR (Move.status_select = 2 AND AccountConfig.accounting_daybook = true))
 ]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
