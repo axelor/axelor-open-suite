@@ -24,7 +24,7 @@
     </action-record>
     
     <action-attrs name="action-prod-residual-product-attrs-qty-digits">
-    	<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForBomQty()"/>
+    	<attribute name="scale" for="qty" expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
     </action-attrs>
     
 </object-views>
