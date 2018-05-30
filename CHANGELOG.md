@@ -53,6 +53,7 @@
 - Fixed issue on amounts computation on general balance report and add a sort on account codes.
 - Sort the general ledger report per account code and date
 - Charts : rename action call that action has been renamed earlier.
+- Fix some translations in accout module.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
