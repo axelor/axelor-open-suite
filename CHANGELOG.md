@@ -13,6 +13,7 @@
 - Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
 - Copy account type from account in analytic move line.
 - Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
+- Advanced export : added warning and help for data export and fetch limits.
 - Change phonebook title to Contact PhoneBook or Company PhoneBook in view and reports.
 - Opportunity: move to proposition stage when creating a sale order.
 
