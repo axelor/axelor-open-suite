@@ -16,6 +16,7 @@
     		<button name="selectAll" title="Select all fields" colSpan="3" onClick="save,action-method-get-model-all-fields"/>
     		<field name="maxExportLimit" colSpan="4" onChange="action-advanced-export-validate-export-limit" required="true"/>
 			<field name="queryFetchSize" colSpan="4" onChange="action-advanced-export-validate-query-fetch-size" required="true"/>
+    		<label name="technicalHelper" title="Warning, modifying those configuration can have technical repercussions." colSpan="12" css="label-bold label-danger"/>
     	</panel>
      	<panel-related field="advancedExportLineList" title="Fields" hideIf="metaModel == null" grid-view="advanced-export-line-grid" form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
      	<panel>
@@ -30,7 +31,7 @@
 	</action-record>
 	
 	<action-record name="action-advanced-export-record-set-last-export-limit" model="com.axelor.apps.base.db.AdvancedExport">
-		<field name="maxExportLimit" expr="eval: id == null ? maxExportLimit : __repo__(AdvancedExport).find(id).getMaxExportLimit()" if="maxExportLimit &lt; queryFetchSize || maxExportLimit &lt;= 0"/>
+		<field name="maxExportLimit" expr="eval: id == null ? 1000 : __repo__(AdvancedExport).find(id).getMaxExportLimit()" if="maxExportLimit &lt; queryFetchSize || maxExportLimit &lt;= 0"/>
 	</action-record>
 	
 	<action-record name="action-advanced-export-record-set-last-fetch-size" model="com.axelor.apps.base.db.AdvancedExport">

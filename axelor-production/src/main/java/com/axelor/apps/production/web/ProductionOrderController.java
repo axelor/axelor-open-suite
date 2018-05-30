@@ -92,11 +92,11 @@ public class ProductionOrderController {
 				startDate = appBaseService.getTodayDateTime();
 			}
 			
-			ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
+			ProductionOrder productionOrder = productionOrderRepo.find(Long.parseLong(request.getContext().get("_id").toString()));
 			
-			productionOrderService.addManufOrder(productionOrderRepo.find(productionOrder.getId()), product, billOfMaterial, qty, startDate.toLocalDateTime());
+			productionOrderService.addManufOrder(productionOrder, product, billOfMaterial, qty, startDate.toLocalDateTime());
 			
-			response.setReload(true);
+			response.setCanClose(true);
 		}
 		
 	}
