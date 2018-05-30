@@ -16,6 +16,7 @@
 - Advanced export : added warning and help for data export and fetch limits.
 - Change phonebook title to Contact PhoneBook or Company PhoneBook in view and reports.
 - Opportunity: move to proposition stage when creating a sale order.
+- Correctly use daybook moves in accounting reports if the configuration is daybook.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
