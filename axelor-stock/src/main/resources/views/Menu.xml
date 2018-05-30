@@ -196,10 +196,9 @@
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 	</action-view>
 		
-	<menuitem name="stock-root-report" parent="stock-root"
-		title="Reportings" order="45"/>
+	<menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 		
-	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="50"/>
+	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="50" icon="fa-cog"/>
 	
 	<menuitem name="stock-root-incoterm" parent="stock-root-conf"
 		title="Incoterms" action="stock.root.incoterm" />

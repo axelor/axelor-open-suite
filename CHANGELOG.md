@@ -16,6 +16,7 @@
 - Advanced export : added warning and help for data export and fetch limits.
 - Change phonebook title to Contact PhoneBook or Company PhoneBook in view and reports.
 - Opportunity: move to proposition stage when creating a sale order.
+- Add icons to reportings & configurations submenus and harmonize their order among all menus
 - Accounting report : add domain filters on selection fields and resets to maintain consistency.
 - Correctly use daybook moves in accounting reports if the configuration is daybook.
 
