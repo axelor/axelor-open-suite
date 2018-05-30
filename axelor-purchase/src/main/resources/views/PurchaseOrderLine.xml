@@ -95,7 +95,7 @@
 				<field name="$qtyValid" hidden="true" colSpan="12"/>
 			</panel>
 			<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-			<field name="taxLine" canEdit="false" onChange="action-purchase-order-line-method-convert-tax,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+			<field name="taxLine" canEdit="false" onChange="action-group-purchase-purchase-orderline-taxline-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
 				<hilite color="danger" if=" $number(saleMinPrice) &lt; $number(salePrice)"/>
 			</field>
@@ -104,7 +104,7 @@
 			<field name="inTaxTotal" readonly="true"/>
 			<field name="saleMinPrice" readonly="true"/>
 			<field name="salePrice" hidden="true"/>
-			   <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
+			<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 		</panel>
 
 		<panel name="discount" title="Discount" canCollapse="true" hideIf="isTitleLine">
@@ -235,7 +235,14 @@
 		<action name="action-purchase-order-line-method-generate-suppliers-requests"/>
 		<action name="save"/>
 	</action-group>
-	
+
+	<action-group name="action-group-purchase-purchase-orderline-taxline-onchange">
+		<action name="action-purchase-order-line-method-get-tax-equiv"/>
+		<action name="action-purchase-order-line-method-convert-tax"/>
+		<action name="action-purchase-order-line-method-compute"/>
+		<action name="action-purchase-order-line-method-compute-analytic-distribution" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
+	</action-group>
+
 	<action-attrs name="action-purchase-order-line-attrs-delivery-panel">
 		<attribute name="hidden" for="deliveryPanel" expr="eval: product?.productTypeSelect != 'storable'"/>
 	</action-attrs>
@@ -296,6 +303,10 @@
 
 	<action-method name="action-purchase-order-line-method-check-qty">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="checkQty"/>
+	</action-method>
+
+	<action-method name="action-purchase-order-line-method-get-tax-equiv">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="getTaxEquiv"/>
 	</action-method>
 
 	<!-- ACTION ATTRS -->
