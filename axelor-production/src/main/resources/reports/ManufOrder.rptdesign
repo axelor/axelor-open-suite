@@ -1820,7 +1820,7 @@ INNER JOIN
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyy hh:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4221">
@@ -2765,7 +2765,7 @@ INNER JOIN
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["planned_start_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row["planned_start_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4117">
@@ -2785,8 +2785,9 @@ INNER JOIN
                                             <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
+                                            <structure name="toc"/>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["planned_end_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row["planned_end_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4118">
@@ -2807,7 +2808,7 @@ INNER JOIN
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["real_start_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row["real_start_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4119">
@@ -2828,7 +2829,7 @@ INNER JOIN
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["real_end_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row["real_end_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4120">
