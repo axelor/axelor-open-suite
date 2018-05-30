@@ -147,7 +147,7 @@
 	    
 	<action-attrs name="action-accounting-report-attrs-period-domain">
 		<attribute if="eval: year != null" name="domain" expr="eval: &quot;self.year.id = ${year?.id}&quot;" for="period"/>
-		<attribute name="domain" for="period" expr="eval: &quot; self.year.id IN (SELECT y.id FROM Year y WHERE y.company = :company AND y.typeSelect = 1)&quot;" if="eval: year == null "/>
+		<attribute name="domain" for="period" expr="eval: &quot; self.year.company = :company AND self.year.typeSelect = 1 &quot;" if="eval: year == null "/>
 	</action-attrs>
 	
 	<action-attrs name="action-accounting-report-attrs-year-domain">
