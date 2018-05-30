@@ -21,6 +21,7 @@
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 - Add supplier invoice number in supplier invoices grid.
 - Add column description in move line grid views.
+- Add a "Generate the pdf printing during sale order finalization" to configuration of Sale app.
 
 ## Bug Fixes
 - Fix on prod process report.
