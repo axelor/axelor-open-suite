@@ -20,10 +20,9 @@ package com.axelor.apps.account.service.invoice.workflow.ventilate;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveService;
-import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -38,9 +37,10 @@ public class VentilateAdvancePaymentState extends VentilateState {
                                         AccountConfigService accountConfigService,
                                         AppAccountService appAccountService,
                                         InvoiceRepository invoiceRepo,
-                                        WorkflowVentilationService workflowService) {
+                                        WorkflowVentilationService workflowService,
+                                        UserService userService) {
         super(sequenceService, moveService, accountConfigService,
-                appAccountService, invoiceRepo, workflowService);
+                appAccountService, invoiceRepo, workflowService, userService);
     }
 
     @Override
@@ -51,14 +51,7 @@ public class VentilateAdvancePaymentState extends VentilateState {
         setDate();
         setJournal();
         setPartnerAccount();
-
-        Sequence sequence = this.getSequence();
-
-        if (!InvoiceToolService.isPurchase(invoice)) {
-            this.checkInvoiceDate(sequence);
-        }
-
-        setInvoiceId(sequence);
+        setInvoiceId();
         updatePaymentSchedule();
         // we don't create the move
         // and the invoice stays validated
