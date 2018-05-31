@@ -19,7 +19,6 @@ package com.axelor.apps.quality.translation;
 
 public interface ITranslation {
 
-	public static final String QUALITY_RESPONSIBLE = /*$$(*/ "quality.responsible"; /*)*/
-	public static final String QUALITY_APP_NAME = /*$$(*/ "value:Quality"; /*)*/
-
+  public static final String QUALITY_RESPONSIBLE = /*$$(*/ "quality.responsible"; /*)*/
+  public static final String QUALITY_APP_NAME = /*$$(*/ "value:Quality"; /*)*/
 }

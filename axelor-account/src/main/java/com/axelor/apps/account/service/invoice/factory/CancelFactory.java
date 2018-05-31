@@ -23,11 +23,10 @@ import com.axelor.inject.Beans;
 
 public class CancelFactory {
 
-	public CancelState getCanceller(Invoice invoice){
+  public CancelState getCanceller(Invoice invoice) {
 
-		CancelState cancelState = Beans.get(CancelState.class);
-		cancelState.init(invoice);
-		return cancelState;
-	}
-
+    CancelState cancelState = Beans.get(CancelState.class);
+    cancelState.init(invoice);
+    return cancelState;
+  }
 }

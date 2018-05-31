@@ -17,14 +17,12 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.purchase.db.PurchaseRequest;
 import java.util.List;
 
-import com.axelor.apps.purchase.db.PurchaseRequest;
-
 public interface PurchaseRequestService {
-	
-	public void confirmCart();
-	
-	public void acceptRequest(List<PurchaseRequest> purchaseRequests);
 
+  public void confirmCart();
+
+  public void acceptRequest(List<PurchaseRequest> purchaseRequests);
 }

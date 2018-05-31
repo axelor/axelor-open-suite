@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -43,107 +37,171 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class NotificationServiceImpl implements NotificationService {
 
-	@Override
-	public void populateNotificationItemList(Notification notification) {
-		notification.clearNotificationItemList();
+  @Override
+  public void populateNotificationItemList(Notification notification) {
+    notification.clearNotificationItemList();
 
-		Comparator<Invoice> byInvoiceDate = (i1, i2) -> i1.getInvoiceDate().compareTo(i2.getInvoiceDate());
-		Comparator<Invoice> byDueDate = (i1, i2) -> i1.getDueDate().compareTo(i2.getDueDate());
-		Comparator<Invoice> byInvoiceId = (i1, i2) -> i1.getInvoiceId().compareTo(i2.getInvoiceId());
+    Comparator<Invoice> byInvoiceDate =
+        (i1, i2) -> i1.getInvoiceDate().compareTo(i2.getInvoiceDate());
+    Comparator<Invoice> byDueDate = (i1, i2) -> i1.getDueDate().compareTo(i2.getDueDate());
+    Comparator<Invoice> byInvoiceId = (i1, i2) -> i1.getInvoiceId().compareTo(i2.getInvoiceId());
 
-		List<Invoice> invoiceList = notification.getSubrogationRelease().getInvoiceSet().stream()
-				.sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId)).collect(Collectors.toList());
+    List<Invoice> invoiceList =
+        notification
+            .getSubrogationRelease()
+            .getInvoiceSet()
+            .stream()
+            .sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId))
+            .collect(Collectors.toList());
 
-		for (Invoice invoice : invoiceList) {
-			if (invoice.getAmountRemaining().signum() > 0) {
-				notification.addNotificationItemListItem(createNotificationItem(invoice));
-			}
-		}
-	}
+    for (Invoice invoice : invoiceList) {
+      if (invoice.getAmountRemaining().signum() > 0) {
+        notification.addNotificationItemListItem(createNotificationItem(invoice));
+      }
+    }
+  }
 
-	private NotificationItem createNotificationItem(Invoice invoice) {
-		return new NotificationItem(invoice, invoice.getAmountRemaining());
-	}
+  private NotificationItem createNotificationItem(Invoice invoice) {
+    return new NotificationItem(invoice, invoice.getAmountRemaining());
+  }
 
-	@Override
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void validate(Notification notification) throws AxelorException {
-		MoveService moveService = Beans.get(MoveService.class);
-		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
-		InvoicePaymentCreateService invoicePaymentCreateService = Beans.get(InvoicePaymentCreateService.class);
-		ReconcileService reconcileService = Beans.get(ReconcileService.class);
-		AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validate(Notification notification) throws AxelorException {
+    MoveService moveService = Beans.get(MoveService.class);
+    MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
+    InvoicePaymentCreateService invoicePaymentCreateService =
+        Beans.get(InvoicePaymentCreateService.class);
+    ReconcileService reconcileService = Beans.get(ReconcileService.class);
+    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 
-		SubrogationRelease subrogationRelease = notification.getSubrogationRelease();
-		Company company = subrogationRelease.getCompany();
-		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-		Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
-		boolean allCleared = true;
+    SubrogationRelease subrogationRelease = notification.getSubrogationRelease();
+    Company company = subrogationRelease.getCompany();
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
+    boolean allCleared = true;
 
-		for (NotificationItem notificationItem : notification.getNotificationItemList()) {
-			Invoice invoice = notificationItem.getInvoice();
-			BigDecimal amountRemaining = invoice.getAmountRemaining();
+    for (NotificationItem notificationItem : notification.getNotificationItemList()) {
+      Invoice invoice = notificationItem.getInvoice();
+      BigDecimal amountRemaining = invoice.getAmountRemaining();
 
-			if (amountRemaining.signum() > 0) {
-				BigDecimal amountPaid = notificationItem.getAmountPaid();
+      if (amountRemaining.signum() > 0) {
+        BigDecimal amountPaid = notificationItem.getAmountPaid();
 
-				if (amountRemaining.compareTo(amountPaid) > 0) {
-					allCleared = false;
-				}
+        if (amountRemaining.compareTo(amountPaid) > 0) {
+          allCleared = false;
+        }
 
-				Move paymentMove = moveService.getMoveCreateService().createMove(journal, company,
-						company.getCurrency(), invoice.getPartner(), notification.getPaymentDate(), null,
-						MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-				MoveLine creditMoveLine, debitMoveLine;
-				boolean isOutPayment = InvoiceToolService.isOutPayment(invoice);
+        Move paymentMove =
+            moveService
+                .getMoveCreateService()
+                .createMove(
+                    journal,
+                    company,
+                    company.getCurrency(),
+                    invoice.getPartner(),
+                    notification.getPaymentDate(),
+                    null,
+                    MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+        MoveLine creditMoveLine, debitMoveLine;
+        boolean isOutPayment = InvoiceToolService.isOutPayment(invoice);
 
-				if (isOutPayment) {
-					creditMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
-							invoice.getPartnerAccount(), amountPaid, false, notification.getPaymentDate(), null, 1,
-							subrogationRelease.getSequenceNumber(), invoice.getInvoiceId());
-					debitMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
-							accountConfig.getFactorCreditAccount(), amountPaid, true, notification.getPaymentDate(),
-							null, 2, subrogationRelease.getSequenceNumber(), invoice.getInvoiceId());
-				} else {
-					creditMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
-							accountConfig.getFactorDebitAccount(), amountPaid, false, notification.getPaymentDate(),
-							null, 1, subrogationRelease.getSequenceNumber(), invoice.getInvoiceId());
-					debitMoveLine = moveService.getMoveLineService().createMoveLine(paymentMove, invoice.getPartner(),
-							invoice.getPartnerAccount(), amountPaid, true, notification.getPaymentDate(), null, 2,
-							subrogationRelease.getSequenceNumber(), invoice.getInvoiceId());
-				}
+        if (isOutPayment) {
+          creditMoveLine =
+              moveService
+                  .getMoveLineService()
+                  .createMoveLine(
+                      paymentMove,
+                      invoice.getPartner(),
+                      invoice.getPartnerAccount(),
+                      amountPaid,
+                      false,
+                      notification.getPaymentDate(),
+                      null,
+                      1,
+                      subrogationRelease.getSequenceNumber(),
+                      invoice.getInvoiceId());
+          debitMoveLine =
+              moveService
+                  .getMoveLineService()
+                  .createMoveLine(
+                      paymentMove,
+                      invoice.getPartner(),
+                      accountConfig.getFactorCreditAccount(),
+                      amountPaid,
+                      true,
+                      notification.getPaymentDate(),
+                      null,
+                      2,
+                      subrogationRelease.getSequenceNumber(),
+                      invoice.getInvoiceId());
+        } else {
+          creditMoveLine =
+              moveService
+                  .getMoveLineService()
+                  .createMoveLine(
+                      paymentMove,
+                      invoice.getPartner(),
+                      accountConfig.getFactorDebitAccount(),
+                      amountPaid,
+                      false,
+                      notification.getPaymentDate(),
+                      null,
+                      1,
+                      subrogationRelease.getSequenceNumber(),
+                      invoice.getInvoiceId());
+          debitMoveLine =
+              moveService
+                  .getMoveLineService()
+                  .createMoveLine(
+                      paymentMove,
+                      invoice.getPartner(),
+                      invoice.getPartnerAccount(),
+                      amountPaid,
+                      true,
+                      notification.getPaymentDate(),
+                      null,
+                      2,
+                      subrogationRelease.getSequenceNumber(),
+                      invoice.getInvoiceId());
+        }
 
-				moveLineRepo.save(creditMoveLine);
-				moveLineRepo.save(debitMoveLine);
-				invoicePaymentCreateService.createInvoicePayment(invoice, amountPaid, paymentMove);
-				moveService.getMoveValidateService().validateMove(paymentMove);
+        moveLineRepo.save(creditMoveLine);
+        moveLineRepo.save(debitMoveLine);
+        invoicePaymentCreateService.createInvoicePayment(invoice, amountPaid, paymentMove);
+        moveService.getMoveValidateService().validateMove(paymentMove);
 
-				if (isOutPayment) {
-					reconcileService.reconcile(findInvoiceAccountMoveLine(invoice), creditMoveLine, true, true);
-				} else {
-					reconcileService.reconcile(debitMoveLine, findInvoiceAccountMoveLine(invoice), true, true);
-				}
+        if (isOutPayment) {
+          reconcileService.reconcile(
+              findInvoiceAccountMoveLine(invoice), creditMoveLine, true, true);
+        } else {
+          reconcileService.reconcile(
+              debitMoveLine, findInvoiceAccountMoveLine(invoice), true, true);
+        }
+      }
+    }
 
-			}
-		}
+    if (allCleared) {
+      subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_CLEARED);
+    }
 
-		if (allCleared) {
-			subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_CLEARED);
-		}
+    notification.setStatusSelect(NotificationRepository.STATUS_VALIDATED);
+  }
 
-		notification.setStatusSelect(NotificationRepository.STATUS_VALIDATED);
-	}
-
-	private MoveLine findInvoiceAccountMoveLine(Invoice invoice) {
-		for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
-			if (moveLine.getAccount().equals(invoice.getPartnerAccount())) {
-				return moveLine;
-			}
-		}
-		throw new NoSuchElementException();
-	}
-
+  private MoveLine findInvoiceAccountMoveLine(Invoice invoice) {
+    for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
+      if (moveLine.getAccount().equals(invoice.getPartnerAccount())) {
+        return moveLine;
+      }
+    }
+    throw new NoSuchElementException();
+  }
 }

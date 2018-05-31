@@ -24,11 +24,9 @@ import com.google.inject.persist.Transactional;
 
 public interface OpportunityService {
 
-	@Transactional
-	public void saveOpportunity(Opportunity opportunity);
+  @Transactional
+  public void saveOpportunity(Opportunity opportunity);
 
-	@Transactional
-	public Partner createClientFromLead(Opportunity opportunity) throws AxelorException;
-	
-	
+  @Transactional
+  public Partner createClientFromLead(Opportunity opportunity) throws AxelorException;
 }

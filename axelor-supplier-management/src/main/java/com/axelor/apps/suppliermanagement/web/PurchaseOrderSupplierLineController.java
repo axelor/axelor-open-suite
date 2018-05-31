@@ -36,47 +36,57 @@ import com.google.inject.Singleton;
 @Singleton
 public class PurchaseOrderSupplierLineController {
 
-	@Inject
-	private PurchaseOrderSupplierLineRepository purchaseOrderSupplierLineRepo;
-	
-	@Inject
-	private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
-	
-	public void accept(ActionRequest request, ActionResponse response){
-		
-		PurchaseOrderSupplierLine purchaseOrderSupplierLine = purchaseOrderSupplierLineRepo.find( request.getContext().asType(PurchaseOrderSupplierLine.class).getId() );
-		
-		if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null && request.getContext().getParent() != null){
-			purchaseOrderSupplierLine.setPurchaseOrderLine( Beans.get(PurchaseOrderLineRepository.class).find(request.getContext().getParent().asType(PurchaseOrderLine.class).getId()) );
-		}
-		
-		try {
-			purchaseOrderSupplierLineService.accept(purchaseOrderSupplierLine);
-			response.setReload(true);
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
+  @Inject private PurchaseOrderSupplierLineRepository purchaseOrderSupplierLineRepo;
 
-	/**
-	 * Called on supplier partner select.
-	 * Set the domain for the field supplierPartner
-	 * @param request
-	 * @param response
-	 */
-	public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
-		PurchaseOrderSupplierLine purchaseOrderSupplierLine = request.getContext().asType(PurchaseOrderSupplierLine.class);
-		if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null
-				||purchaseOrderSupplierLine.getPurchaseOrderLine().getPurchaseOrder() == null ) {
-			return;
-		}
-		Company company = purchaseOrderSupplierLine.getPurchaseOrderLine().getPurchaseOrder().getCompany();
-		String domain = "self.id != " + company.getPartner().getId() + " AND self.isContact = false AND self.isSupplier = true";
-		String blockedPartnerQuery = Beans.get(BlockingService.class)
-				.listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
+  @Inject private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
 
-		if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
-			domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
-		}
-		response.setAttr("supplierPartner", "domain", domain);
-	}
+  public void accept(ActionRequest request, ActionResponse response) {
+
+    PurchaseOrderSupplierLine purchaseOrderSupplierLine =
+        purchaseOrderSupplierLineRepo.find(
+            request.getContext().asType(PurchaseOrderSupplierLine.class).getId());
+
+    if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null
+        && request.getContext().getParent() != null) {
+      purchaseOrderSupplierLine.setPurchaseOrderLine(
+          Beans.get(PurchaseOrderLineRepository.class)
+              .find(request.getContext().getParent().asType(PurchaseOrderLine.class).getId()));
+    }
+
+    try {
+      purchaseOrderSupplierLineService.accept(purchaseOrderSupplierLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called on supplier partner select. Set the domain for the field supplierPartner
+   *
+   * @param request
+   * @param response
+   */
+  public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
+    PurchaseOrderSupplierLine purchaseOrderSupplierLine =
+        request.getContext().asType(PurchaseOrderSupplierLine.class);
+    if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null
+        || purchaseOrderSupplierLine.getPurchaseOrderLine().getPurchaseOrder() == null) {
+      return;
+    }
+    Company company =
+        purchaseOrderSupplierLine.getPurchaseOrderLine().getPurchaseOrder().getCompany();
+    String domain =
+        "self.id != "
+            + company.getPartner().getId()
+            + " AND self.isContact = false AND self.isSupplier = true";
+    String blockedPartnerQuery =
+        Beans.get(BlockingService.class)
+            .listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
+
+    if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+      domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+    }
+    response.setAttr("supplierPartner", "domain", domain);
+  }
 }

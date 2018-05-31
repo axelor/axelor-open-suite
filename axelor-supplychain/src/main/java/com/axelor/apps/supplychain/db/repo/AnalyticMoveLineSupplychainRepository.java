@@ -20,12 +20,12 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 
-public class AnalyticMoveLineSupplychainRepository extends AnalyticMoveLineMngtRepository{
-	@Override
-	public AnalyticMoveLine copy(AnalyticMoveLine entity, boolean deep) {
-		AnalyticMoveLine copy = super.copy(entity, deep);
-		copy.setPurchaseOrderLine(null);
-		copy.setSaleOrderLine(null);
-		return copy;
-	}
+public class AnalyticMoveLineSupplychainRepository extends AnalyticMoveLineMngtRepository {
+  @Override
+  public AnalyticMoveLine copy(AnalyticMoveLine entity, boolean deep) {
+    AnalyticMoveLine copy = super.copy(entity, deep);
+    copy.setPurchaseOrderLine(null);
+    copy.setSaleOrderLine(null);
+    return copy;
+  }
 }

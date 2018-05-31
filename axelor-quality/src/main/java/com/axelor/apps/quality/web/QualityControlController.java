@@ -30,42 +30,41 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class QualityControlController {
-	
-	@Inject
-	private QualityControlRepository qualityControlRepo;
-	
-	@Inject
-	private QualityControlService qualityControlService;
 
-	/**
-	 * Open control point in new tab from quality control.
-	 * 
-	 * @param request
-	 * @param response
-	 */
-	public void openControlPoints(ActionRequest request, ActionResponse response) {
-		response.setView(ActionView
-				.define(I18n.get("Control points"))
-				.model("com.axelor.apps.quality.db.ControlPoint")
-				.add("grid","control-point-grid")
-				.add("form", "control-point-form")
-				.domain("self.qualityControl.id = " + request.getContext().asType(QualityControl.class).getId())
-				.map()
-				);
-	}
-	
-	/**
-	 * Copy control point model to control point of selected quality process.
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws AxelorException
-	 */
-	
-	public void preFillOperations(ActionRequest request, ActionResponse response) throws AxelorException {
-		QualityControl qualityControl =  request.getContext().asType( QualityControl.class );
-		qualityControl = qualityControlRepo.find(qualityControl.getId());
-		qualityControlService.preFillOperations(qualityControl);
-		response.setReload(true);
-	}
+  @Inject private QualityControlRepository qualityControlRepo;
+
+  @Inject private QualityControlService qualityControlService;
+
+  /**
+   * Open control point in new tab from quality control.
+   *
+   * @param request
+   * @param response
+   */
+  public void openControlPoints(ActionRequest request, ActionResponse response) {
+    response.setView(
+        ActionView.define(I18n.get("Control points"))
+            .model("com.axelor.apps.quality.db.ControlPoint")
+            .add("grid", "control-point-grid")
+            .add("form", "control-point-form")
+            .domain(
+                "self.qualityControl.id = "
+                    + request.getContext().asType(QualityControl.class).getId())
+            .map());
+  }
+
+  /**
+   * Copy control point model to control point of selected quality process.
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  public void preFillOperations(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    QualityControl qualityControl = request.getContext().asType(QualityControl.class);
+    qualityControl = qualityControlRepo.find(qualityControl.getId());
+    qualityControlService.preFillOperations(qualityControl);
+    response.setReload(true);
+  }
 }

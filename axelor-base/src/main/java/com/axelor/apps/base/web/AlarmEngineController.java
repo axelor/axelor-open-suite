@@ -30,22 +30,27 @@ import com.google.inject.Singleton;
 @Singleton
 public class AlarmEngineController {
 
-	@SuppressWarnings("rawtypes")
-	@Inject
-	private AlarmEngineService aes;
-	
-	@SuppressWarnings("unchecked")
-	public void validateQuery(ActionRequest request, ActionResponse response) {
-		
-		AlarmEngine alarmEngine = request.getContext().asType(AlarmEngine.class);
+  @SuppressWarnings("rawtypes")
+  @Inject
+  private AlarmEngineService aes;
 
-		try {
-			if (alarmEngine.getQuery() != null) { 
-				aes.results(alarmEngine.getQuery(), Class.forName(alarmEngine.getMetaModel().getFullName())); 
-			}
-		} catch (Exception e){
-			response.setValue("query", alarmEngine.getId() != null ? Beans.get(AlarmEngineRepository.class).find(alarmEngine.getId()).getQuery() : null);
-			TraceBackService.trace(response, e);
-		}
-	}
+  @SuppressWarnings("unchecked")
+  public void validateQuery(ActionRequest request, ActionResponse response) {
+
+    AlarmEngine alarmEngine = request.getContext().asType(AlarmEngine.class);
+
+    try {
+      if (alarmEngine.getQuery() != null) {
+        aes.results(
+            alarmEngine.getQuery(), Class.forName(alarmEngine.getMetaModel().getFullName()));
+      }
+    } catch (Exception e) {
+      response.setValue(
+          "query",
+          alarmEngine.getId() != null
+              ? Beans.get(AlarmEngineRepository.class).find(alarmEngine.getId()).getQuery()
+              : null);
+      TraceBackService.trace(response, e);
+    }
+  }
 }

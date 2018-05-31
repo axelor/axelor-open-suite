@@ -25,48 +25,60 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-
-import javassist.bytecode.analysis.ControlFlow.Block;
 
 public class ValidateState extends WorkflowInvoice {
 
-	protected User user;
+  protected UserService userService;
+  protected BlockingService blockingService;
+  protected WorkflowValidationService workflowValidationService;
+  protected AppBaseService appBaseService;
 
-	protected BlockingService blockingService;
+  @Inject
+  public ValidateState(
+      UserService userService,
+      BlockingService blockingService,
+      WorkflowValidationService workflowValidationService,
+      AppBaseService appBaseService) {
+    super();
+    this.userService = userService;
+    this.blockingService = blockingService;
+    this.workflowValidationService = workflowValidationService;
+    this.appBaseService = appBaseService;
+  }
 
-	public ValidateState() {
-		super();
-		this.user = AuthUtils.getUser();
-		this.blockingService = Beans.get(BlockingService.class);
-	}
+  public void init(Invoice invoice) {
+    this.invoice = invoice;
+  }
 
-	public void init(Invoice invoice){
-		this.invoice = invoice;
-	}
+  @Override
+  public void process() throws AxelorException {
 
-	@Override
-	public void process( ) throws AxelorException {
+    if ((InvoiceToolService.isOutPayment(invoice)
+            && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
+        || (!InvoiceToolService.isOutPayment(invoice)
+            && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
+    }
 
-		if ((InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
-		 || (!InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
-		}
+    if (blockingService.getBlocking(
+            invoice.getPartner(), invoice.getCompany(), BlockingRepository.INVOICING_BLOCKING)
+        != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
+    }
+    invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
+    invoice.setValidatedByUser(userService.getUser());
+    invoice.setValidatedDate(appBaseService.getTodayDate());
 
-		if(blockingService.getBlocking(invoice.getPartner(), invoice.getCompany(), BlockingRepository.INVOICING_BLOCKING) != null) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
-		}
-		invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
-		invoice.setValidatedByUser( user );
-
-		Beans.get(WorkflowValidationService.class).afterValidation(invoice);
-
-	}
-
+    workflowValidationService.afterValidation(invoice);
+  }
 }

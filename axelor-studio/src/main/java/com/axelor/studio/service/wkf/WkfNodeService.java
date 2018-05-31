@@ -17,17 +17,6 @@
  */
 package com.axelor.studio.service.wkf;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.PermissionRepository;
@@ -41,250 +30,236 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.studio.db.WkfNode;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Service handle processing of WkfNode. From wkfNode it generates status field
- * for related model. It will generate field's selection according to nodes and
- * add field in related ViewBuilder. Creates permissions for status related with
- * node and assign to roles selected in node. Add status menus(MenuBuilder)
- * according to menu details in WkfNode.
- * 
- * @author axelor
+ * Service handle processing of WkfNode. From wkfNode it generates status field for related model.
+ * It will generate field's selection according to nodes and add field in related ViewBuilder.
+ * Creates permissions for status related with node and assign to roles selected in node. Add status
+ * menus(MenuBuilder) according to menu details in WkfNode.
  *
+ * @author axelor
  */
 class WkfNodeService {
 
-	private WkfService wkfService;
+  private WkfService wkfService;
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	private List<String[]> nodeActions;
+  private List<String[]> nodeActions;
 
-	@Inject
-	private MetaModelRepository metaModelRepo;
+  @Inject private MetaModelRepository metaModelRepo;
 
-	@Inject
-	private PermissionRepository permissionRepo;
+  @Inject private PermissionRepository permissionRepo;
 
-	@Inject
-	private MetaSelectRepository metaSelectRepo;
-	
-	@Inject
-	protected WkfNodeService(WkfService wkfService) {
-		this.wkfService = wkfService;
-	}
+  @Inject private MetaSelectRepository metaSelectRepo;
 
-	/**
-	 * Root method to access the service. It start processing of WkfNode and
-	 * call different methods for that.
-	 */
-	protected List<String[]> process() {
+  @Inject
+  protected WkfNodeService(WkfService wkfService) {
+    this.wkfService = wkfService;
+  }
 
-		MetaJsonField statusField = wkfService.workflow.getStatusField();
-		MetaSelect metaSelect = addMetaSelect(statusField);
+  /**
+   * Root method to access the service. It start processing of WkfNode and call different methods
+   * for that.
+   */
+  protected List<String[]> process() {
 
-		nodeActions = new ArrayList<String[]>();
-		String defaultValue = processNodes(metaSelect, statusField);
-		statusField.setDefaultValue(defaultValue);
-		
-		return nodeActions;
-	}
+    MetaJsonField statusField = wkfService.workflow.getStatusField();
+    MetaSelect metaSelect = addMetaSelect(statusField);
 
-	/**
-	 * Add MetaSelect in statusField, if MetaSelect of field is null.
-	 * 
-	 * @param statusField
-	 *            MetaField to update with MetaSelect.
-	 * @return MetaSelect of statusField.
-	 */
-	@Transactional
-	public MetaSelect addMetaSelect(MetaJsonField statusField) {
+    nodeActions = new ArrayList<String[]>();
+    String defaultValue = processNodes(metaSelect, statusField);
+    statusField.setDefaultValue(defaultValue);
 
-		String selectName = wkfService.getSelectName();
-		
-		MetaSelect metaSelect = metaSelectRepo.findByName(selectName);
-		if (metaSelect == null) {
-			metaSelect = new MetaSelect(selectName);
-			metaSelect = metaSelectRepo.save(metaSelect);
-		}
-		
-		if (metaSelect.getItems() == null) {
-			metaSelect.setItems(new ArrayList<MetaSelectItem>());
-		}
-		
-		metaSelect.clearItems();
+    return nodeActions;
+  }
 
-		return metaSelect;
-	}
+  /**
+   * Add MetaSelect in statusField, if MetaSelect of field is null.
+   *
+   * @param statusField MetaField to update with MetaSelect.
+   * @return MetaSelect of statusField.
+   */
+  @Transactional
+  public MetaSelect addMetaSelect(MetaJsonField statusField) {
 
-	/**
-	 * Method remove old options from metaSelect options if not found in
-	 * nodeList.
-	 * 
-	 * @param metaSelect
-	 *            MetaSelect to process.
-	 * @param nodeList
-	 *            WkfNode list to compare.
-	 * @return Updated MetaSelect.
-	 */
-	private MetaSelect removeOldOptions(MetaSelect metaSelect,
-			List<WkfNode> nodeList) {
+    String selectName = wkfService.getSelectName();
 
-		log.debug("Cleaning meta select: {}", metaSelect.getName());
+    MetaSelect metaSelect = metaSelectRepo.findByName(selectName);
+    if (metaSelect == null) {
+      metaSelect = new MetaSelect(selectName);
+      metaSelect = metaSelectRepo.save(metaSelect);
+    }
 
-		List<MetaSelectItem> itemsToRemove = new ArrayList<MetaSelectItem>();
+    if (metaSelect.getItems() == null) {
+      metaSelect.setItems(new ArrayList<MetaSelectItem>());
+    }
 
-		Iterator<MetaSelectItem> itemIter = metaSelect.getItems().iterator();
+    metaSelect.clearItems();
 
-		while (itemIter.hasNext()) {
-			MetaSelectItem item = itemIter.next();
-			boolean found = false;
-			for (WkfNode node : nodeList) {
-				if (item.getValue().equals(node.getSequence().toString())) {
-					found = true;
-					break;
-				}
-			}
+    return metaSelect;
+  }
 
-			if (!found) {
-				itemsToRemove.add(item);
-				itemIter.remove();
-			}
+  /**
+   * Method remove old options from metaSelect options if not found in nodeList.
+   *
+   * @param metaSelect MetaSelect to process.
+   * @param nodeList WkfNode list to compare.
+   * @return Updated MetaSelect.
+   */
+  private MetaSelect removeOldOptions(MetaSelect metaSelect, List<WkfNode> nodeList) {
 
-		}
+    log.debug("Cleaning meta select: {}", metaSelect.getName());
 
-		return metaSelect;
-	}
+    List<MetaSelectItem> itemsToRemove = new ArrayList<MetaSelectItem>();
 
+    Iterator<MetaSelectItem> itemIter = metaSelect.getItems().iterator();
 
-	/**
-	 * Add or update items in MetaSelect according to WkfNodes.
-	 * 
-	 * @param metaSelect
-	 *            MetaSelect to update.
-	 * @return Return first item as default value for wkfStatus field.
-	 */
-	private String processNodes(MetaSelect metaSelect, MetaJsonField statusField) {
+    while (itemIter.hasNext()) {
+      MetaSelectItem item = itemIter.next();
+      boolean found = false;
+      for (WkfNode node : nodeList) {
+        if (item.getValue().equals(node.getSequence().toString())) {
+          found = true;
+          break;
+        }
+      }
 
-		List<WkfNode> nodeList = wkfService.workflow.getNodes();
-		
-		String defaultValue = null;
-		removeOldOptions(metaSelect, nodeList);
-		
-		Collections.sort(nodeList, (WkfNode node1, WkfNode node2) -> node1.getSequence().compareTo(node2.getSequence()));
-		
-		for (WkfNode node : nodeList) {
-			
-			log.debug("Procesing node: {}", node.getName());
-			String option = node.getSequence().toString();
-			MetaSelectItem metaSelectItem = getMetaSelectItem(metaSelect,
-					option);
-			if (metaSelectItem == null) {
-				metaSelectItem = new MetaSelectItem();
-				metaSelectItem.setValue(option);
-				metaSelect.addItem(metaSelectItem);
-			}
+      if (!found) {
+        itemsToRemove.add(item);
+        itemIter.remove();
+      }
+    }
 
-			metaSelectItem.setTitle(node.getTitle());
-			metaSelectItem.setOrder(node.getSequence());
+    return metaSelect;
+  }
 
-			if (defaultValue == null) {
-				defaultValue = metaSelectItem.getValue();
-				log.debug("Default value set: {}", defaultValue);
-			}
+  /**
+   * Add or update items in MetaSelect according to WkfNodes.
+   *
+   * @param metaSelect MetaSelect to update.
+   * @return Return first item as default value for wkfStatus field.
+   */
+  private String processNodes(MetaSelect metaSelect, MetaJsonField statusField) {
 
-			List<String[]> actions = new ArrayList<String[]>();
-			
-			if (node.getMetaActionSet() != null) {
-				Stream<MetaAction> actionStream = node.getMetaActionSet().stream().sorted(Comparator.comparing(MetaAction::getSequence));
-				actionStream.forEach(metaAction -> actions.add(new String[]{metaAction.getName()}));
-			}
-			
-			if (!actions.isEmpty()) {
-				String name = getActionName(node.getName());
-				String value = node.getSequence().toString();
-				if (statusField.getType().equals("string")) {
-					value = "'" + value + "'";
-				}
-				String condition = statusField.getName() + " == " + value;
-				if (!wkfService.workflow.getIsJson()) {
-					condition = "$" + wkfService.workflow.getJsonField() + "." + condition;
-				}
-				nodeActions.add(new String[]{name,condition});
-				this.wkfService.updateActionGroup(name, actions);
-			}
+    List<WkfNode> nodeList = wkfService.workflow.getNodes();
 
-		}
+    String defaultValue = null;
+    removeOldOptions(metaSelect, nodeList);
 
-		return defaultValue;
+    Collections.sort(
+        nodeList,
+        (WkfNode node1, WkfNode node2) -> node1.getSequence().compareTo(node2.getSequence()));
 
-	}
+    for (WkfNode node : nodeList) {
 
+      log.debug("Procesing node: {}", node.getName());
+      String option = node.getSequence().toString();
+      MetaSelectItem metaSelectItem = getMetaSelectItem(metaSelect, option);
+      if (metaSelectItem == null) {
+        metaSelectItem = new MetaSelectItem();
+        metaSelectItem.setValue(option);
+        metaSelect.addItem(metaSelectItem);
+      }
 
-	public String getActionName(String node) {
+      metaSelectItem.setTitle(node.getTitle());
+      metaSelectItem.setOrder(node.getSequence());
 
-		String name = wkfService.inflector.simplify(node);
-		name = name.toLowerCase().replace(" ", "-");
-		name = "action-group-" + wkfService.wkfId + "-" + name;
+      if (defaultValue == null) {
+        defaultValue = metaSelectItem.getValue();
+        log.debug("Default value set: {}", defaultValue);
+      }
 
-		return name;
-	}
+      List<String[]> actions = new ArrayList<String[]>();
 
-	/**
-	 * Method to save MetaModel
-	 * 
-	 * @param metaModel
-	 *            Model to save.
-	 * @return Saved MetaModel
-	 */
-	@Transactional
-	public MetaModel saveModel(MetaModel metaModel) {
-		return metaModelRepo.save(metaModel);
-	}
+      if (node.getMetaActionSet() != null) {
+        Stream<MetaAction> actionStream =
+            node.getMetaActionSet().stream().sorted(Comparator.comparing(MetaAction::getSequence));
+        actionStream.forEach(metaAction -> actions.add(new String[] {metaAction.getName()}));
+      }
 
-	/**
-	 * Fetch MetaSelectItem from MetaSelect according to option.
-	 * 
-	 * @param metaSelect
-	 *            MetaSelect to search for item.
-	 * @param option
-	 *            Option to search.
-	 * @return MetaSelctItem found or null.
-	 */
-	private MetaSelectItem getMetaSelectItem(MetaSelect metaSelect,
-			String option) {
+      if (!actions.isEmpty()) {
+        String name = getActionName(node.getName());
+        String value = node.getSequence().toString();
+        if (statusField.getType().equals("string")) {
+          value = "'" + value + "'";
+        }
+        String condition = statusField.getName() + " == " + value;
+        if (!wkfService.workflow.getIsJson()) {
+          condition = "$" + wkfService.workflow.getJsonField() + "." + condition;
+        }
+        nodeActions.add(new String[] {name, condition});
+        this.wkfService.updateActionGroup(name, actions);
+      }
+    }
 
-		for (MetaSelectItem selectItem : metaSelect.getItems()) {
-			if (selectItem.getValue().equals(option)) {
-				return selectItem;
-			}
-		}
+    return defaultValue;
+  }
 
-		return null;
+  public String getActionName(String node) {
 
-	}
+    String name = wkfService.inflector.simplify(node);
+    name = name.toLowerCase().replace(" ", "-");
+    name = "action-group-" + wkfService.wkfId + "-" + name;
 
-	/**
-	 * Method remove old permission according to name of permission.
-	 * 
-	 * @param name
-	 *            Permission name.
-	 */
-	@Transactional
-	public void clearOldPermissions(String name) {
+    return name;
+  }
 
-		Permission permission = permissionRepo.findByName(name);
+  /**
+   * Method to save MetaModel
+   *
+   * @param metaModel Model to save.
+   * @return Saved MetaModel
+   */
+  @Transactional
+  public MetaModel saveModel(MetaModel metaModel) {
+    return metaModelRepo.save(metaModel);
+  }
 
-		if (permission != null) {
-			List<Role> oldRoleList = wkfService.roleRepo.all()
-					.filter("self.permissions.id = ?1", permission.getId())
-					.fetch();
-			for (Role role : oldRoleList) {
-				role.removePermission(permission);
-				wkfService.roleRepo.save(role);
-			}
-		}
-	}
-	
+  /**
+   * Fetch MetaSelectItem from MetaSelect according to option.
+   *
+   * @param metaSelect MetaSelect to search for item.
+   * @param option Option to search.
+   * @return MetaSelctItem found or null.
+   */
+  private MetaSelectItem getMetaSelectItem(MetaSelect metaSelect, String option) {
 
+    for (MetaSelectItem selectItem : metaSelect.getItems()) {
+      if (selectItem.getValue().equals(option)) {
+        return selectItem;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Method remove old permission according to name of permission.
+   *
+   * @param name Permission name.
+   */
+  @Transactional
+  public void clearOldPermissions(String name) {
+
+    Permission permission = permissionRepo.findByName(name);
+
+    if (permission != null) {
+      List<Role> oldRoleList =
+          wkfService.roleRepo.all().filter("self.permissions.id = ?1", permission.getId()).fetch();
+      for (Role role : oldRoleList) {
+        role.removePermission(permission);
+        wkfService.roleRepo.save(role);
+      }
+    }
+  }
 }

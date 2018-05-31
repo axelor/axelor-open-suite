@@ -24,5 +24,5 @@ import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 
 public interface TeamTaskBusinessService extends TeamTaskService {
-    TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo);
+  TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo);
 }

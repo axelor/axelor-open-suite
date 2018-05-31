@@ -20,16 +20,15 @@ package com.axelor.apps.crm.db.repo;
 import com.axelor.apps.crm.db.Lead;
 
 public class LeadManagementRepository extends LeadRepository {
-	
-	@Override
-	public Lead save(Lead entity) {
-		
-		if (entity.getUser() != null && entity.getStatusSelect() == LEAD_STATUS_NEW) {
-			entity.setStatusSelect(LEAD_STATUS_ASSIGNED);
-		} else if (entity.getUser() == null && entity.getStatusSelect() == LEAD_STATUS_ASSIGNED) {
-			entity.setStatusSelect(LEAD_STATUS_NEW);
-		}
-		return super.save(entity);
-	}
-	
+
+  @Override
+  public Lead save(Lead entity) {
+
+    if (entity.getUser() != null && entity.getStatusSelect() == LEAD_STATUS_NEW) {
+      entity.setStatusSelect(LEAD_STATUS_ASSIGNED);
+    } else if (entity.getUser() == null && entity.getStatusSelect() == LEAD_STATUS_ASSIGNED) {
+      entity.setStatusSelect(LEAD_STATUS_NEW);
+    }
+    return super.save(entity);
+  }
 }

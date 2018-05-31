@@ -35,95 +35,89 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class MrpController {
-	
-	@Inject
-	protected Provider<MrpService> mrpServiceProvider;
-	
-	@Inject
-	protected Provider<MrpRepository> mrpRepositoryProvider;
-	
-	public void runCalculation(ActionRequest request, ActionResponse response)  {
-	
-		Mrp mrp = request.getContext().asType(Mrp.class);
-		MrpService mrpService = mrpServiceProvider.get();
-		MrpRepository mrpRepository = mrpRepositoryProvider.get();
-		try {
-			
-			mrpService.runCalculation(mrpRepository.find(mrp.getId()));
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-			mrpService.reset(mrpRepository.find(mrp.getId()));
-		}
-		finally  {
-			response.setReload(true);
-		}
-		
-	}
-	
-	public void generateAllProposals(ActionRequest request, ActionResponse response) throws AxelorException  {
-		Mrp mrp = request.getContext().asType(Mrp.class);
-		MrpService mrpService = mrpServiceProvider.get();
-		MrpRepository mrpRepository = mrpRepositoryProvider.get();
-		mrpService.generateProposals(mrpRepository.find(mrp.getId()));
-		response.setReload(true);
-	}
 
-	/**
-	 * Prints the weekly breakdown MRP birt report and shows it to the user.
-     *
-	 * @param request
-	 * @param response
-	 */
-	public void printWeeks(ActionRequest request, ActionResponse response) {
-		Mrp mrp = request.getContext().asType(Mrp.class);
-		MrpService mrpService = mrpServiceProvider.get();
-		MrpRepository mrpRepository = mrpRepositoryProvider.get();
-		mrp = mrpRepository.find(mrp.getId());
-		String name = I18n.get("MRP") + "-" + mrp.getId();
+  @Inject protected Provider<MrpService> mrpServiceProvider;
 
-		try {
-			String fileLink = ReportFactory.createReport(IReport.MRP_WEEKS, name)
-					.addParam("mrpId", mrp.getId())
-					.addParam("Locale", ReportSettings.getPrintingLocale(null))
-					.addParam("endDate", mrpService.findMrpEndDate(mrp).atStartOfDay().toString())
-					.addFormat(ReportSettings.FORMAT_PDF)
-					.generate()
-					.getFileLink();
+  @Inject protected Provider<MrpRepository> mrpRepositoryProvider;
 
-			response.setView(ActionView
-					.define(name)
-					.add("html", fileLink).map());
+  public void runCalculation(ActionRequest request, ActionResponse response) {
 
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+    Mrp mrp = request.getContext().asType(Mrp.class);
+    MrpService mrpService = mrpServiceProvider.get();
+    MrpRepository mrpRepository = mrpRepositoryProvider.get();
+    try {
 
-    /**
-     * Prints the list MRP birt report and shows it to the user.
-     *
-     * @param request
-     * @param response
-     */
-    public void printList(ActionRequest request, ActionResponse response) {
-        Mrp mrp = request.getContext().asType(Mrp.class);
-        String name = I18n.get("MRP") + "-" + mrp.getId();
-
-        try {
-            String fileLink = ReportFactory.createReport(IReport.MRP_LIST, name)
-                    .addParam("mrpId", mrp.getId())
-                    .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                    .addFormat(ReportSettings.FORMAT_PDF)
-                    .generate()
-                    .getFileLink();
-
-            response.setView(ActionView
-                    .define(name)
-                    .add("html", fileLink).map());
-
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+      mrpService.runCalculation(mrpRepository.find(mrp.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      mrpService.reset(mrpRepository.find(mrp.getId()));
+    } finally {
+      response.setReload(true);
     }
-	
+  }
+
+  public void generateAllProposals(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Mrp mrp = request.getContext().asType(Mrp.class);
+    MrpService mrpService = mrpServiceProvider.get();
+    MrpRepository mrpRepository = mrpRepositoryProvider.get();
+    mrpService.generateProposals(mrpRepository.find(mrp.getId()));
+    response.setReload(true);
+  }
+
+  /**
+   * Prints the weekly breakdown MRP birt report and shows it to the user.
+   *
+   * @param request
+   * @param response
+   */
+  public void printWeeks(ActionRequest request, ActionResponse response) {
+    Mrp mrp = request.getContext().asType(Mrp.class);
+    MrpService mrpService = mrpServiceProvider.get();
+    MrpRepository mrpRepository = mrpRepositoryProvider.get();
+    mrp = mrpRepository.find(mrp.getId());
+    String name = I18n.get("MRP") + "-" + mrp.getId();
+
+    try {
+      String fileLink =
+          ReportFactory.createReport(IReport.MRP_WEEKS, name)
+              .addParam("mrpId", mrp.getId())
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam("endDate", mrpService.findMrpEndDate(mrp).atStartOfDay().toString())
+              .addFormat(ReportSettings.FORMAT_PDF)
+              .generate()
+              .getFileLink();
+
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Prints the list MRP birt report and shows it to the user.
+   *
+   * @param request
+   * @param response
+   */
+  public void printList(ActionRequest request, ActionResponse response) {
+    Mrp mrp = request.getContext().asType(Mrp.class);
+    String name = I18n.get("MRP") + "-" + mrp.getId();
+
+    try {
+      String fileLink =
+          ReportFactory.createReport(IReport.MRP_LIST, name)
+              .addParam("mrpId", mrp.getId())
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addFormat(ReportSettings.FORMAT_PDF)
+              .generate()
+              .getFileLink();
+
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

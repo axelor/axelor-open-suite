@@ -18,7 +18,6 @@
 package com.axelor.apps.sale.translation;
 
 public interface ITranslation {
-	
-	public static final String SALE_APP_NAME = /*$$(*/ "value:Sale"; /*)*/
 
+  public static final String SALE_APP_NAME = /*$$(*/ "value:Sale"; /*)*/
 }

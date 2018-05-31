@@ -26,44 +26,49 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.exception.AxelorException;
-
 import java.math.BigDecimal;
 import java.util.Map;
 
 public interface InvoiceLineService {
-    InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException;
+  InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException;
 
-    void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, InvoiceLine invoiceLine);
+  void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, InvoiceLine invoiceLine);
 
-    InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) throws AxelorException;
+  InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine)
+      throws AxelorException;
 
-    TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException;
+  TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
+      throws AxelorException;
 
-    BigDecimal getUnitPrice(Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase) throws AxelorException;
+  BigDecimal getUnitPrice(
+      Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
+      throws AxelorException;
 
-    boolean isPurchase(Invoice invoice);
+  boolean isPurchase(Invoice invoice);
 
-    BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException;
+  BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException;
 
-    BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException;
+  BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException;
 
-    PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList);
+  PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList);
 
-    BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice);
+  BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice);
 
-    BigDecimal computeDiscount(int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice, Invoice invoice);
+  BigDecimal computeDiscount(
+      int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice, Invoice invoice);
 
-    BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, Invoice invoice);
+  BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, Invoice invoice);
 
-    Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
+  Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
 
-    int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine);
+  int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine);
 
-    Unit getUnit(Product product, boolean isPurchase);
+  Unit getUnit(Product product, boolean isPurchase);
 
-    boolean unitPriceShouldBeUpdate(Invoice invoice, Product product);
+  boolean unitPriceShouldBeUpdate(Invoice invoice, Product product);
 
-    Map<String, Object> resetProductInformation();
+  Map<String, Object> resetProductInformation();
 
-    Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+  Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException;
 }

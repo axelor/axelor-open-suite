@@ -17,17 +17,17 @@
  */
 package com.axelor.apps.base.test;
 
+import com.axelor.apps.tool.file.CsvTool;
+import com.google.common.base.CaseFormat;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -38,105 +38,101 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.axelor.apps.tool.file.CsvTool;
-import com.google.common.base.CaseFormat;
-
 public class PrepareCsv {
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Test
-	public void prepareCsv(){
-		String xmlDir = System.getProperty("xmlDir");
-		String csvDir = System.getProperty("csvDir");
-		List<String> ignoreType = Arrays.asList("one-to-one","many-to-many","one-to-many");
-		try{
-			if(xmlDir != null && csvDir != null){
-				File xDir = new File(xmlDir);
-				File cDir = new File(csvDir);
-				List<String[]> blankData = new ArrayList<String[]>();
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-				if(xDir.isDirectory() && cDir.isDirectory()){
-					for(File xf : xDir.listFiles()){
-						LOG.info("Processing XML: "+xf.getName());
-						List<String> fieldList = new ArrayList<String>();
-						Document doc = dBuilder.parse(xf);
-						NodeList nList = doc.getElementsByTagName("module");
-						String module = nList.item(0).getAttributes().getNamedItem("name").getNodeValue();
-						nList = doc.getElementsByTagName("entity");
-						if(nList != null){
-							NodeList fields = nList.item(0).getChildNodes();
-							Integer count = 0;
-							String csvFileName = module+"_"+CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, xf.getName().replace(".xml", ".csv"));
-							while(count < fields.getLength()){
-								Node field = fields.item(count);
-								NamedNodeMap attrs = field.getAttributes();
-								String type = field.getNodeName();
-								if(attrs != null && attrs.getNamedItem("name") != null && !ignoreType.contains(type)){
-									String fieldName = attrs.getNamedItem("name").getNodeValue();
-									if(type.equals("many-to-one")){
-										String[] objName = attrs.getNamedItem("ref").getNodeValue().split("\\.");
-										String refName = objName[objName.length-1];
-										String nameColumn = getNameColumn(xmlDir+"/"+refName+".xml");
-										if(nameColumn != null)
-											fieldList.add(fieldName+"."+nameColumn);
-										else{
-											fieldList.add(fieldName);
-											LOG.error("No name column found for "+refName+", field '"+attrs.getNamedItem("name").getNodeValue()+"'");
-										}
-									}
-									else
-										fieldList.add(fieldName);
-								}
-									
-								count++;
-							}
-							CsvTool.csvWriter(csvDir, csvFileName, ';', StringUtils.join(fieldList,",").split(","), blankData);
-							LOG.info("CSV file prepared: "+csvFileName);
-						}
-					}
-					
-				}
-				else 
-					LOG.error("XML and CSV paths must be directory");
-			}
-			else
-				LOG.error("Please input XML and CSV directory path");
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
 
-	private String getNameColumn(String fileName) throws SAXException, IOException, ParserConfigurationException {
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		File domainFile = new File(fileName);
-		if(!domainFile.exists())
-			return null;
-		Document doc = dBuilder.parse(domainFile);
-		NodeList nList = doc.getElementsByTagName("entity");
-		if(nList != null){
-			NodeList fields = nList.item(0).getChildNodes();
-			Integer count = 0;
-			while(count < fields.getLength()){
-				NamedNodeMap attrs = fields.item(count).getAttributes();
-				count++;
-				if(attrs != null && attrs.getNamedItem("name") != null){
-					String name = attrs.getNamedItem("name").getNodeValue();
-					if(name.equals("importId"))
-						return "importId";
-					else if(name.equals("code"))
-					    return "code";
-					else if(name.equals("name"))
-						return "name";
-					else
-						continue;
-				}
-				
-			}
-		}
-		return null;
-	}
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Test
+  public void prepareCsv() {
+    String xmlDir = System.getProperty("xmlDir");
+    String csvDir = System.getProperty("csvDir");
+    List<String> ignoreType = Arrays.asList("one-to-one", "many-to-many", "one-to-many");
+    try {
+      if (xmlDir != null && csvDir != null) {
+        File xDir = new File(xmlDir);
+        File cDir = new File(csvDir);
+        List<String[]> blankData = new ArrayList<String[]>();
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        if (xDir.isDirectory() && cDir.isDirectory()) {
+          for (File xf : xDir.listFiles()) {
+            LOG.info("Processing XML: " + xf.getName());
+            List<String> fieldList = new ArrayList<String>();
+            Document doc = dBuilder.parse(xf);
+            NodeList nList = doc.getElementsByTagName("module");
+            String module = nList.item(0).getAttributes().getNamedItem("name").getNodeValue();
+            nList = doc.getElementsByTagName("entity");
+            if (nList != null) {
+              NodeList fields = nList.item(0).getChildNodes();
+              Integer count = 0;
+              String csvFileName =
+                  module
+                      + "_"
+                      + CaseFormat.UPPER_CAMEL.to(
+                          CaseFormat.LOWER_CAMEL, xf.getName().replace(".xml", ".csv"));
+              while (count < fields.getLength()) {
+                Node field = fields.item(count);
+                NamedNodeMap attrs = field.getAttributes();
+                String type = field.getNodeName();
+                if (attrs != null
+                    && attrs.getNamedItem("name") != null
+                    && !ignoreType.contains(type)) {
+                  String fieldName = attrs.getNamedItem("name").getNodeValue();
+                  if (type.equals("many-to-one")) {
+                    String[] objName = attrs.getNamedItem("ref").getNodeValue().split("\\.");
+                    String refName = objName[objName.length - 1];
+                    String nameColumn = getNameColumn(xmlDir + "/" + refName + ".xml");
+                    if (nameColumn != null) fieldList.add(fieldName + "." + nameColumn);
+                    else {
+                      fieldList.add(fieldName);
+                      LOG.error(
+                          "No name column found for "
+                              + refName
+                              + ", field '"
+                              + attrs.getNamedItem("name").getNodeValue()
+                              + "'");
+                    }
+                  } else fieldList.add(fieldName);
+                }
+
+                count++;
+              }
+              CsvTool.csvWriter(
+                  csvDir, csvFileName, ';', StringUtils.join(fieldList, ",").split(","), blankData);
+              LOG.info("CSV file prepared: " + csvFileName);
+            }
+          }
+
+        } else LOG.error("XML and CSV paths must be directory");
+      } else LOG.error("Please input XML and CSV directory path");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private String getNameColumn(String fileName)
+      throws SAXException, IOException, ParserConfigurationException {
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    File domainFile = new File(fileName);
+    if (!domainFile.exists()) return null;
+    Document doc = dBuilder.parse(domainFile);
+    NodeList nList = doc.getElementsByTagName("entity");
+    if (nList != null) {
+      NodeList fields = nList.item(0).getChildNodes();
+      Integer count = 0;
+      while (count < fields.getLength()) {
+        NamedNodeMap attrs = fields.item(count).getAttributes();
+        count++;
+        if (attrs != null && attrs.getNamedItem("name") != null) {
+          String name = attrs.getNamedItem("name").getNodeValue();
+          if (name.equals("importId")) return "importId";
+          else if (name.equals("code")) return "code";
+          else if (name.equals("name")) return "name";
+          else continue;
+        }
+      }
+    }
+    return null;
+  }
 }

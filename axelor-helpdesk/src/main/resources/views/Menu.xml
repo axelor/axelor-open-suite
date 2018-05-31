@@ -73,7 +73,7 @@
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
 	
-	<menuitem title="Reportings" name="helpdesk-reporting" order="-20" parent="helpdesk-root"/>
+	<menuitem title="Reportings" name="helpdesk-reporting" order="-20" parent="helpdesk-root" icon="fa-bar-chart"/>
 	
 	<menuitem title="Ticket" name="helpdesk-report-ticket" action="helpdesk.report.ticket" parent="helpdesk-reporting"/>
 
@@ -90,7 +90,7 @@
 	  <context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	
-	<menuitem title="Configuration" name="helpdesk-config" order="-10" parent="helpdesk-root"/>
+	<menuitem title="Configuration" name="helpdesk-config" order="-10" parent="helpdesk-root" icon="fa-cog"/>
 	
 	<menuitem title="SLA policies" name="helpdesk-sla-policies-all" action="helpdesk.sla.policies.all" parent="helpdesk-config" if="__config__.app.getApp('helpdesk').getIsSla()"/>
 	

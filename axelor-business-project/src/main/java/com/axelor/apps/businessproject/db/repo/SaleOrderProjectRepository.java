@@ -21,13 +21,13 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 
 public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
-    @Override
-    public SaleOrder copy(SaleOrder entity, boolean deep) {
+  @Override
+  public SaleOrder copy(SaleOrder entity, boolean deep) {
 
-        SaleOrder copy = super.copy(entity, deep);
+    SaleOrder copy = super.copy(entity, deep);
 
-        copy.setProject(null);
+    copy.setProject(null);
 
-        return copy;
-    }
+    return copy;
+  }
 }

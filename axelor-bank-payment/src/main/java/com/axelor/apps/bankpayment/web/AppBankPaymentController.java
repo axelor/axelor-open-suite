@@ -27,13 +27,12 @@ import com.google.inject.Singleton;
 @Singleton
 public class AppBankPaymentController {
 
-    public void generateBankPaymentConfigurations(ActionRequest request, ActionResponse response) {
-        try {
-            Beans.get(AppBankPaymentService.class).generateBankPaymentConfigurations();
-            response.setReload(true);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+  public void generateBankPaymentConfigurations(ActionRequest request, ActionResponse response) {
+    try {
+      Beans.get(AppBankPaymentService.class).generateBankPaymentConfigurations();
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
+  }
 }

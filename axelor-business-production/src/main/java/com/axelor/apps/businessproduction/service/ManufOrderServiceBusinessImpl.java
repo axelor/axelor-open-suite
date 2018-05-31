@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductVariantService;
@@ -39,59 +32,72 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
-	
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
+public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
 
-	@Inject
-	public ManufOrderServiceBusinessImpl(SequenceService sequenceService, OperationOrderService operationOrderService,
-			ManufOrderWorkflowService manufOrderWorkflowService, ProductVariantService productVariantService,
-			AppProductionService appProductionService, ManufOrderRepository manufOrderRepo,
-			OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
-		super(sequenceService, operationOrderService, manufOrderWorkflowService, productVariantService, appProductionService,
-				manufOrderRepo);
-		this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
-		
-	}
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
 
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void propagateIsToInvoice(ManufOrder manufOrder) {
+  @Inject
+  public ManufOrderServiceBusinessImpl(
+      SequenceService sequenceService,
+      OperationOrderService operationOrderService,
+      ManufOrderWorkflowService manufOrderWorkflowService,
+      ProductVariantService productVariantService,
+      AppProductionService appProductionService,
+      ManufOrderRepository manufOrderRepo,
+      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
+    super(
+        sequenceService,
+        operationOrderService,
+        manufOrderWorkflowService,
+        productVariantService,
+        appProductionService,
+        manufOrderRepo);
+    this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
+  }
 
-		logger.debug("{} is to invoice ? {}", manufOrder.getManufOrderSeq(), manufOrder.getIsToInvoice());
-		
-		boolean isToInvoice = manufOrder.getIsToInvoice();
-		
-		if(manufOrder.getOperationOrderList() != null)  {
-			for(OperationOrder operationOrder : manufOrder.getOperationOrderList())  {
-				
-				operationOrder.setIsToInvoice(isToInvoice);
-				
-			}
-		}
-		
-		manufOrderRepo.save(manufOrder);
-		
-	}
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void propagateIsToInvoice(ManufOrder manufOrder) {
 
-	
-	
-	@Override
-	public ManufOrder createManufOrder(Product product, BigDecimal qty, int priority, boolean isToInvoice, Company company,
-			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException  {
-		
+    logger.debug(
+        "{} is to invoice ? {}", manufOrder.getManufOrderSeq(), manufOrder.getIsToInvoice());
 
-		ManufOrder manufOrder = super.createManufOrder(product, qty, priority, isToInvoice, company, billOfMaterial, plannedStartDateT);
-		
-		manufOrder.setIsToInvoice(isToInvoice);
-			
+    boolean isToInvoice = manufOrder.getIsToInvoice();
 
-		return manufOrder; 
-		
-	}
-	
+    if (manufOrder.getOperationOrderList() != null) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+
+        operationOrder.setIsToInvoice(isToInvoice);
+      }
+    }
+
+    manufOrderRepo.save(manufOrder);
+  }
+
+  @Override
+  public ManufOrder createManufOrder(
+      Product product,
+      BigDecimal qty,
+      int priority,
+      boolean isToInvoice,
+      Company company,
+      BillOfMaterial billOfMaterial,
+      LocalDateTime plannedStartDateT)
+      throws AxelorException {
+
+    ManufOrder manufOrder =
+        super.createManufOrder(
+            product, qty, priority, isToInvoice, company, billOfMaterial, plannedStartDateT);
+
+    manufOrder.setIsToInvoice(isToInvoice);
+
+    return manufOrder;
+  }
 }

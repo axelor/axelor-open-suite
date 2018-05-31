@@ -18,7 +18,7 @@
 package com.axelor.apps.marketing.translation;
 
 public interface ITranslation {
-	
-	public static final String MARKETING_MANAGEMENT_APP_NAME = /*$$(*/ "value:Marketing Management"; /*)*/
-	
+
+  public static final String MARKETING_MANAGEMENT_APP_NAME = /*$$(*/
+      "value:Marketing Management"; /*)*/
 }

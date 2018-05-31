@@ -26,33 +26,34 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
-
 import java.util.List;
 
 public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsService {
 
-    @Override
-    public PartnerStockSettings getOrCreateMailSettings(Partner partner, Company company) throws AxelorException {
-        List<PartnerStockSettings> mailSettingsList = partner.getPartnerStockSettingsList();
-        if (mailSettingsList == null || mailSettingsList.isEmpty()) {
-            return createMailSettings(partner, company);
-        }
-        return  mailSettingsList.stream()
-                .filter(partnerStockSettings ->
-                        company.equals(partnerStockSettings.getCompany()))
-                .findAny()
-                .orElse(createMailSettings(partner, company));
+  @Override
+  public PartnerStockSettings getOrCreateMailSettings(Partner partner, Company company)
+      throws AxelorException {
+    List<PartnerStockSettings> mailSettingsList = partner.getPartnerStockSettingsList();
+    if (mailSettingsList == null || mailSettingsList.isEmpty()) {
+      return createMailSettings(partner, company);
     }
+    return mailSettingsList
+        .stream()
+        .filter(partnerStockSettings -> company.equals(partnerStockSettings.getCompany()))
+        .findAny()
+        .orElse(createMailSettings(partner, company));
+  }
 
-    @Override
-    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    public PartnerStockSettings createMailSettings(Partner partner, Company company) throws AxelorException {
-        PartnerStockSettings mailSettings = new PartnerStockSettings();
-        mailSettings.setCompany(company);
-        StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(company);
-        mailSettings.setStockMoveAutomaticMail(stockConfig.getStockMoveAutomaticMail());
-        mailSettings.setStockMoveMessageTemplate(stockConfig.getStockMoveMessageTemplate());
-        partner.addPartnerStockSettingsListItem(mailSettings);
-        return Beans.get(PartnerStockSettingsRepository.class).save(mailSettings);
-    }
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public PartnerStockSettings createMailSettings(Partner partner, Company company)
+      throws AxelorException {
+    PartnerStockSettings mailSettings = new PartnerStockSettings();
+    mailSettings.setCompany(company);
+    StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(company);
+    mailSettings.setStockMoveAutomaticMail(stockConfig.getStockMoveAutomaticMail());
+    mailSettings.setStockMoveMessageTemplate(stockConfig.getStockMoveMessageTemplate());
+    partner.addPartnerStockSettingsListItem(mailSettings);
+    return Beans.get(PartnerStockSettingsRepository.class).save(mailSettings);
+  }
 }

@@ -22,12 +22,12 @@ import com.axelor.db.JpaRepository;
 
 public class ContractLineRepository extends JpaRepository<ContractLine> {
 
-	public ContractLineRepository() {
-		super(ContractLine.class);
-	}
+  public ContractLineRepository() {
+    super(ContractLine.class);
+  }
 
-	@Override
-	public ContractLine copy(ContractLine entity, boolean deep) {
-		return super.copy(entity, deep);
-	}
+  @Override
+  public ContractLine copy(ContractLine entity, boolean deep) {
+    return super.copy(entity, deep);
+  }
 }

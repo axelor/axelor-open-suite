@@ -25,16 +25,15 @@ import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
 
 /**
- * The <code>TransferResponseElement</code> is the common element
- * response for all ebics transfers.
+ * The <code>TransferResponseElement</code> is the common element response for all ebics transfers.
  *
  * @author Hachani
- *
  */
 public class TransferResponseElement extends DefaultResponseElement {
 
   /**
    * Constructs a new <code>TransferResponseElement</code> element.
+   *
    * @param factory the content factory
    * @param orderType the order type
    * @param name the element name;
@@ -45,11 +44,11 @@ public class TransferResponseElement extends DefaultResponseElement {
 
   @Override
   public void build() throws AxelorException {
-    String			code;
-    String			text;
+    String code;
+    String text;
 
     parse(factory);
-    response = ((EbicsResponseDocument)document).getEbicsResponse();
+    response = ((EbicsResponseDocument) document).getEbicsResponse();
     code = response.getHeader().getMutable().getReturnCode();
     text = response.getHeader().getMutable().getReportText();
     returnCode = ReturnCode.toReturnCode(code, text);
@@ -59,5 +58,5 @@ public class TransferResponseElement extends DefaultResponseElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  protected EbicsResponse		response;
+  protected EbicsResponse response;
 }

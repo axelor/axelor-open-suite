@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
@@ -32,82 +29,106 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.List;
 
-public class PaymentVoucherControlService  {
+public class PaymentVoucherControlService {
 
-	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
-	
-	@Inject
-	public PaymentVoucherControlService(PaymentVoucherSequenceService paymentVoucherSequenceService)  {
-		
-		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
-		
-	}
+  protected PaymentVoucherSequenceService paymentVoucherSequenceService;
 
+  @Inject
+  public PaymentVoucherControlService(PaymentVoucherSequenceService paymentVoucherSequenceService) {
 
-	/**
-	 * Procédure permettant de vérifier le remplissage et le bon contenu des champs de la saisie paiement et de la société
-	 * @param paymentVoucher
-	 * 			Une saisie paiement
-	 * @param company
-	 * 			Une société
-	 * @param paymentModeAccount
-	 * 			Le compte de trésoreie du mode de règlement
-	 * @throws AxelorException
-	 */
-	public void checkPaymentVoucherField(PaymentVoucher paymentVoucher, Company company, Account paymentModeAccount, Journal journal) throws AxelorException  {
-		
-		if (paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) < 1) {
-			throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT), AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef());
-		}
-		
-		if (paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) < 0) {
-			throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1), AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef());
-		}
+    this.paymentVoucherSequenceService = paymentVoucherSequenceService;
+  }
 
-		// Si on a des lignes à payer (dans le deuxième tableau)
-		if (!paymentVoucher.getHasAutoInput() && (paymentVoucher.getPayVoucherElementToPayList() == null || paymentVoucher.getPayVoucherElementToPayList().size() == 0)) {
-			throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2), AppAccountServiceImpl.EXCEPTION);
-		}
+  /**
+   * Procédure permettant de vérifier le remplissage et le bon contenu des champs de la saisie
+   * paiement et de la société
+   *
+   * @param paymentVoucher Une saisie paiement
+   * @param company Une société
+   * @param paymentModeAccount Le compte de trésoreie du mode de règlement
+   * @throws AxelorException
+   */
+  public void checkPaymentVoucherField(
+      PaymentVoucher paymentVoucher, Company company, Account paymentModeAccount, Journal journal)
+      throws AxelorException {
 
-		if (journal == null || paymentModeAccount == null) {
-			throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3), AppAccountServiceImpl.EXCEPTION);
-		}
+    if (paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) < 1) {
+      throw new AxelorException(
+          paymentVoucher,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT),
+          AppAccountServiceImpl.EXCEPTION,
+          paymentVoucher.getRef());
+    }
 
-		if (journal.getEditReceiptOk()) {
-			paymentVoucherSequenceService.checkReceipt(paymentVoucher);
-		}
-	}
+    if (paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) < 0) {
+      throw new AxelorException(
+          paymentVoucher,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1),
+          AppAccountServiceImpl.EXCEPTION,
+          paymentVoucher.getRef());
+    }
 
+    // Si on a des lignes à payer (dans le deuxième tableau)
+    if (!paymentVoucher.getHasAutoInput()
+        && (paymentVoucher.getPayVoucherElementToPayList() == null
+            || paymentVoucher.getPayVoucherElementToPayList().size() == 0)) {
+      throw new AxelorException(
+          paymentVoucher,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),
+          AppAccountServiceImpl.EXCEPTION);
+    }
 
-	public void checkPayboxAmount(PaymentVoucher paymentVoucher) throws AxelorException  {
-		if (paymentVoucher.getPayboxAmountPaid() != null && paymentVoucher.getPayboxAmountPaid().compareTo(paymentVoucher.getPaidAmount()) != 0) {
-				throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_4), AppAccountServiceImpl.EXCEPTION, paymentVoucher.getPaidAmount(), paymentVoucher.getPayboxAmountPaid());
-		}
-	}
+    if (journal == null || paymentModeAccount == null) {
+      throw new AxelorException(
+          paymentVoucher,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3),
+          AppAccountServiceImpl.EXCEPTION);
+    }
 
+    if (journal.getEditReceiptOk()) {
+      paymentVoucherSequenceService.checkReceipt(paymentVoucher);
+    }
+  }
 
-	/**
-	 * Fonction vérifiant si l'ensemble des lignes à payer ont le même compte et que ce compte est le même que celui du trop-perçu
-	 * @param payVoucherElementToPayList
-	 * 			La liste des lignes à payer
-	 * @param moveLine
-	 * 			Le trop-perçu à utiliser
-	 * @return
-	 */
-	public boolean checkIfSameAccount(List<PayVoucherElementToPay> payVoucherElementToPayList, MoveLine moveLine)  {
-		if(moveLine != null)  {
-			Account account = moveLine.getAccount();
-			for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList)  {
-				if(!payVoucherElementToPay.getMoveLine().getAccount().equals(account))  {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
+  public void checkPayboxAmount(PaymentVoucher paymentVoucher) throws AxelorException {
+    if (paymentVoucher.getPayboxAmountPaid() != null
+        && paymentVoucher.getPayboxAmountPaid().compareTo(paymentVoucher.getPaidAmount()) != 0) {
+      throw new AxelorException(
+          paymentVoucher,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_4),
+          AppAccountServiceImpl.EXCEPTION,
+          paymentVoucher.getPaidAmount(),
+          paymentVoucher.getPayboxAmountPaid());
+    }
+  }
 
-
-
+  /**
+   * Fonction vérifiant si l'ensemble des lignes à payer ont le même compte et que ce compte est le
+   * même que celui du trop-perçu
+   *
+   * @param payVoucherElementToPayList La liste des lignes à payer
+   * @param moveLine Le trop-perçu à utiliser
+   * @return
+   */
+  public boolean checkIfSameAccount(
+      List<PayVoucherElementToPay> payVoucherElementToPayList, MoveLine moveLine) {
+    if (moveLine != null) {
+      Account account = moveLine.getAccount();
+      for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList) {
+        if (!payVoucherElementToPay.getMoveLine().getAccount().equals(account)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
 }

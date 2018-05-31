@@ -18,6 +18,6 @@
 package com.axelor.apps.crm.service.app;
 
 public interface AppCrmService {
-	
-	public void generateCrmConfigurations();
+
+  public void generateCrmConfigurations();
 }

@@ -19,33 +19,36 @@ package com.axelor.apps.tool.file;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestFileTool {
 
-	@Test
-	public void create() throws IOException {
-		
-		String destinationFolder = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "tata/titi/toto";
-		String fileName = "toto.txt";
-		
-		File file = FileTool.create(destinationFolder, fileName);
-		file.deleteOnExit();
-		
-		Assert.assertTrue( file.createNewFile() );
+  @Test
+  public void create() throws IOException {
 
-	}
-	
-	@Test
-	public void create2() throws IOException {
-		
-		String fileName = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "tata2/titi2/toto2/toto.txt";
-		File file = FileTool.create( fileName );
-		file.deleteOnExit();
-		
-		Assert.assertTrue( file.createNewFile() );
+    String destinationFolder =
+        System.getProperty("java.io.tmpdir")
+            + System.getProperty("file.separator")
+            + "tata/titi/toto";
+    String fileName = "toto.txt";
 
-	}
+    File file = FileTool.create(destinationFolder, fileName);
+    file.deleteOnExit();
+
+    Assert.assertTrue(file.createNewFile());
+  }
+
+  @Test
+  public void create2() throws IOException {
+
+    String fileName =
+        System.getProperty("java.io.tmpdir")
+            + System.getProperty("file.separator")
+            + "tata2/titi2/toto2/toto.txt";
+    File file = FileTool.create(fileName);
+    file.deleteOnExit();
+
+    Assert.assertTrue(file.createNewFile());
+  }
 }

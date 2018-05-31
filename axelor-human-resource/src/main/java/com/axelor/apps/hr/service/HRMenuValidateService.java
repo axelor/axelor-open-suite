@@ -24,22 +24,25 @@ import com.axelor.meta.schema.actions.ActionView;
 
 public class HRMenuValidateService {
 
-	public void createValidateDomain(User user, Employee employee, ActionView.ActionViewBuilder actionView) {
+  public void createValidateDomain(
+      User user, Employee employee, ActionView.ActionViewBuilder actionView) {
 
-		actionView.domain("self.statusSelect = :_statusSelect")
-				.context("_statusSelect", ExpenseRepository.STATUS_CONFIRMED);
+    actionView
+        .domain("self.statusSelect = :_statusSelect")
+        .context("_statusSelect", ExpenseRepository.STATUS_CONFIRMED);
 
-		if(employee == null || !employee.getHrManager())  {
-			if (employee == null || employee.getManagerUser() == null) {
-				actionView.domain(actionView.get().getDomain() + " AND (self.user = :_user OR self.user.employee.managerUser = :_user)")
-						.context("_user", user);
-			}
-			else {
-				actionView.domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
-						.context("_user", user);
-			}
-		}
-	}
-
-
+    if (employee == null || !employee.getHrManager()) {
+      if (employee == null || employee.getManagerUser() == null) {
+        actionView
+            .domain(
+                actionView.get().getDomain()
+                    + " AND (self.user = :_user OR self.user.employee.managerUser = :_user)")
+            .context("_user", user);
+      } else {
+        actionView
+            .domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
+            .context("_user", user);
+      }
+    }
+  }
 }

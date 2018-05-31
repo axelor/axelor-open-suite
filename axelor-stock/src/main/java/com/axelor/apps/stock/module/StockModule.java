@@ -52,27 +52,26 @@ import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
 
-
 public class StockModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(StockRulesService.class).to(StockRulesServiceImpl.class);
-        bind(AddressServiceStockImpl.class);
-        bind(InventoryRepository.class).to(InventoryManagementRepository.class);
-        bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
-        bind(StockLocationLineService.class).to(StockLocationLineServiceImpl.class);
-        bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
-        bind(StockMoveService.class).to(StockMoveServiceImpl.class);
-        bind(StockLocationService.class).to(StockLocationServiceImpl.class);
-        bind(ProductBaseRepository.class).to(ProductStockRepository.class);
-        bind(PartnerProductQualityRatingService.class).to(PartnerProductQualityRatingServiceImpl.class);
-        bind(LogisticalFormService.class).to(LogisticalFormServiceImpl.class);
-        bind(LogisticalFormLineService.class).to(LogisticalFormLineServiceImpl.class);
-        bind(LogisticalFormRepository.class).to(LogisticalFormStockRepository.class);
-        bind(StockLocationRepository.class).to(StockLocationStockRepository.class);
-        bind(PartnerStockSettingsService.class).to(PartnerStockSettingsServiceImpl.class);
-        bind(AppStockService.class).to(AppStockServiceImpl.class);
-        PartnerAddressRepository.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
-    }
+  @Override
+  protected void configure() {
+    bind(StockRulesService.class).to(StockRulesServiceImpl.class);
+    bind(AddressServiceStockImpl.class);
+    bind(InventoryRepository.class).to(InventoryManagementRepository.class);
+    bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
+    bind(StockLocationLineService.class).to(StockLocationLineServiceImpl.class);
+    bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
+    bind(StockMoveService.class).to(StockMoveServiceImpl.class);
+    bind(StockLocationService.class).to(StockLocationServiceImpl.class);
+    bind(ProductBaseRepository.class).to(ProductStockRepository.class);
+    bind(PartnerProductQualityRatingService.class).to(PartnerProductQualityRatingServiceImpl.class);
+    bind(LogisticalFormService.class).to(LogisticalFormServiceImpl.class);
+    bind(LogisticalFormLineService.class).to(LogisticalFormLineServiceImpl.class);
+    bind(LogisticalFormRepository.class).to(LogisticalFormStockRepository.class);
+    bind(StockLocationRepository.class).to(StockLocationStockRepository.class);
+    bind(PartnerStockSettingsService.class).to(PartnerStockSettingsServiceImpl.class);
+    bind(AppStockService.class).to(AppStockServiceImpl.class);
+    PartnerAddressRepository.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
+  }
 }

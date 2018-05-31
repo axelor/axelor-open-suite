@@ -17,76 +17,80 @@
  */
 package com.axelor.apps.base.service;
 
-import org.iban4j.IbanFormatException;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
-
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import org.iban4j.IbanFormatException;
+import org.iban4j.InvalidCheckDigitException;
+import org.iban4j.UnsupportedCountryException;
 
 public interface BankDetailsService {
 
-	/**
-	 * This method allows to extract information from iban
-	 * Update following fields :
-	 * 		<ul>
-     *      	<li>BankCode</li>
-     *      	<li>SortCode</li>
-     *      	<li>AccountNbr</li>
-     *      	<li>BbanKey</li>
-     *      	<li>Bank</li>
-	 * 		</ul>
-	 *
-	 * @param bankDetails
-	 * @return BankDetails
-	 */
-	BankDetails detailsIban(BankDetails bankDetails);
+  /**
+   * This method allows to extract information from iban Update following fields :
+   *
+   * <ul>
+   *   <li>BankCode
+   *   <li>SortCode
+   *   <li>AccountNbr
+   *   <li>BbanKey
+   *   <li>Bank
+   * </ul>
+   *
+   * @param bankDetails
+   * @return BankDetails
+   */
+  BankDetails detailsIban(BankDetails bankDetails);
 
+  /**
+   * Method allowing to create a bank details
+   *
+   * @param accountNbr
+   * @param bankCode
+   * @param bbanKey
+   * @param bank
+   * @param ownerName
+   * @param partner
+   * @param sortCode
+   * @return
+   */
+  BankDetails createBankDetails(
+      String accountNbr,
+      String bankCode,
+      String bbanKey,
+      Bank bank,
+      String ownerName,
+      Partner partner,
+      String sortCode);
 
-	/**
-     * Method allowing to create a bank details
-	 *
-	 * @param accountNbr
-	 * @param bankCode
-	 * @param bbanKey
-	 * @param bank
-	 * @param ownerName
-	 * @param partner
-	 * @param sortCode
-	 *
-	 * @return
-	 */
-	BankDetails createBankDetails(String accountNbr, String bankCode,
-								  String bbanKey, Bank bank, String ownerName,
-								  Partner partner, String sortCode);
+  /**
+   * Create domain for the field companyBankDetails.
+   *
+   * @param company
+   * @param paymentMode
+   * @return
+   */
+  String createCompanyBankDetailsDomain(Company company, PaymentMode paymentMode);
 
+  /**
+   * @param company
+   * @param paymentMode
+   * @param partner
+   * @return default value for the field companyBankDetails
+   */
+  BankDetails getDefaultCompanyBankDetails(
+      Company company, PaymentMode paymentMode, Partner partner);
 
-	/**
-	 * Create domain for the field companyBankDetails.
-	 * @param company
-	 * @param paymentMode
-	 * @return
-	 */
-	String createCompanyBankDetailsDomain(Company company, PaymentMode paymentMode);
-
-	/**
-	 * @param company
-	 * @param paymentMode
-	 * @param partner
-	 * @return default value for the field companyBankDetails
-	 */
-	BankDetails getDefaultCompanyBankDetails(Company company, PaymentMode paymentMode, Partner partner);
-
-	/**
-	 * ABS method to validate a iban.
-	 * @param iban
-	 * @throws IbanFormatException
-	 * @throws InvalidCheckDigitException
-	 * @throws UnsupportedCountryException
-	 */
-	void validateIban(String iban) throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException ;
-
+  /**
+   * ABS method to validate a iban.
+   *
+   * @param iban
+   * @throws IbanFormatException
+   * @throws InvalidCheckDigitException
+   * @throws UnsupportedCountryException
+   */
+  void validateIban(String iban)
+      throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException;
 }

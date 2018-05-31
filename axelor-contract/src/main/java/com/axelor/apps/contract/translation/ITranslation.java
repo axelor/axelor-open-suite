@@ -19,6 +19,5 @@ package com.axelor.apps.contract.translation;
 
 public interface ITranslation {
 
-	public static final String CONTRACT_APP_NAME = /*$$(*/ "value:Contract"; /*)*/
-
+  public static final String CONTRACT_APP_NAME = /*$$(*/ "value:Contract"; /*)*/
 }

@@ -57,29 +57,28 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 
-
 public class SaleModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-    	bind(PartnerService.class).to(PartnerSaleService.class);
-        bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
-        bind(SaleOrderLineService.class).to(SaleOrderLineServiceImpl.class);
-        bind(SaleOrderRepository.class).to(SaleOrderManagementRepository.class);
-        bind(SaleOrderWorkflowService.class).to(SaleOrderWorkflowServiceImpl.class);
-        bind(SaleOrderMarginService.class).to(SaleOrderMarginServiceImpl.class);
-        bind(SaleOrderCreateService.class).to(SaleOrderCreateServiceImpl.class);
-        bind(SaleOrderComputeService.class).to(SaleOrderComputeServiceImpl.class);
-        bind(OpportunitySaleOrderService.class).to(OpportunitySaleOrderServiceImpl.class);
-        bind(AdvancePaymentService.class).to(AdvancePaymentServiceImpl.class);
-        bind(AppSaleService.class).to(AppSaleServiceImpl.class);
-        bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
-        bind(SaleConfigService.class).to(SaleConfigServiceImpl.class);
-        bind(SaleBatchRepository.class).to(SaleBatchSaleRepository.class);
-        PartnerAddressRepository.modelPartnerFieldMap.put(SaleOrder.class.getName(), "clientPartner");
-        bind(AdvancePaymentRepository.class).to(AdvancePaymentSaleRepository.class);
-        bind(ConfiguratorCreatorService.class).to(ConfiguratorCreatorServiceImpl.class);
-        bind(ConfiguratorService.class).to(ConfiguratorServiceImpl.class);
-        bind(ConfiguratorFormulaService.class).to(ConfiguratorFormulaServiceImpl.class);
-    }
+  @Override
+  protected void configure() {
+    bind(PartnerService.class).to(PartnerSaleService.class);
+    bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
+    bind(SaleOrderLineService.class).to(SaleOrderLineServiceImpl.class);
+    bind(SaleOrderRepository.class).to(SaleOrderManagementRepository.class);
+    bind(SaleOrderWorkflowService.class).to(SaleOrderWorkflowServiceImpl.class);
+    bind(SaleOrderMarginService.class).to(SaleOrderMarginServiceImpl.class);
+    bind(SaleOrderCreateService.class).to(SaleOrderCreateServiceImpl.class);
+    bind(SaleOrderComputeService.class).to(SaleOrderComputeServiceImpl.class);
+    bind(OpportunitySaleOrderService.class).to(OpportunitySaleOrderServiceImpl.class);
+    bind(AdvancePaymentService.class).to(AdvancePaymentServiceImpl.class);
+    bind(AppSaleService.class).to(AppSaleServiceImpl.class);
+    bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
+    bind(SaleConfigService.class).to(SaleConfigServiceImpl.class);
+    bind(SaleBatchRepository.class).to(SaleBatchSaleRepository.class);
+    PartnerAddressRepository.modelPartnerFieldMap.put(SaleOrder.class.getName(), "clientPartner");
+    bind(AdvancePaymentRepository.class).to(AdvancePaymentSaleRepository.class);
+    bind(ConfiguratorCreatorService.class).to(ConfiguratorCreatorServiceImpl.class);
+    bind(ConfiguratorService.class).to(ConfiguratorServiceImpl.class);
+    bind(ConfiguratorFormulaService.class).to(ConfiguratorFormulaServiceImpl.class);
+  }
 }

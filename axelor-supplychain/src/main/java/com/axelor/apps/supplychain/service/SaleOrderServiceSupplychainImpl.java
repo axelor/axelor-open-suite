@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
@@ -44,84 +37,99 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
-	
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	protected AppSupplychain appSupplychain;
 
-	@Inject
-	public SaleOrderServiceSupplychainImpl(AppSupplychainService appSupplychainService) {
-		
-		this.appSupplychain = appSupplychainService.getAppSupplychain();
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	}
-	
-	public SaleOrder getClientInformations(SaleOrder saleOrder){
-		Partner client = saleOrder.getClientPartner();
-		PartnerService partnerService = Beans.get(PartnerService.class);
-		if(client != null){
-			saleOrder.setPaymentCondition(client.getPaymentCondition());
-			saleOrder.setPaymentMode(client.getInPaymentMode());
-			saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
-			this.computeAddressStr(saleOrder);
-			saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
-			saleOrder.setPriceList(Beans.get(PartnerPriceListService.class).getDefaultPriceList(client, PriceListRepository.TYPE_SALE));
-		}
-		return saleOrder;
-	}
+  protected AppSupplychain appSupplychain;
 
+  @Inject
+  public SaleOrderServiceSupplychainImpl(AppSupplychainService appSupplychainService) {
 
-	public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
-		List<Timetable> timetableList = saleOrder.getTimetableList();
-		BigDecimal totalHT = saleOrder.getExTaxTotal();
-		BigDecimal sumTimetableAmount = BigDecimal.ZERO;
-		if (timetableList != null) {
-			for (Timetable timetable : timetableList) {
-				sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount().multiply(timetable.getQty()));
-			}
-		}
-		saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
-	}
+    this.appSupplychain = appSupplychainService.getAppSupplychain();
+  }
 
-
-	@Override
-	@Transactional(rollbackOn = {Exception.class, AxelorException.class})
-	public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
-		super.enableEditOrder(saleOrder);
-
-		List<StockMove> stockMoves = Beans.get(StockMoveRepository.class).findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED).fetch();
-		if (!stockMoves.isEmpty()) {
-			StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-			CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
-			if (cancelReason == null) {
-				throw new AxelorException(appSupplychain, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
-			}
-			for (StockMove stockMove : stockMoves) {
-			    stockMoveService.cancel(stockMove, cancelReason);
-			}
-		}
-	}
-
-    @Override
-    public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
-        super.validateChanges(saleOrder, saleOrderView);
-        if (saleOrder.getSaleOrderLineList() == null) {
-            return;
-        }
-
-        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.getDeliveryState() > SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED
-                    && saleOrderView.getSaleOrderLineList() == null
-                    || !saleOrderView.getSaleOrderLineList().contains(saleOrderLine)) {
-                throw new AxelorException(saleOrderView, TraceBackRepository.CATEGORY_INCONSISTENCY,
-                        I18n.get(IExceptionMessage.SO_CANT_REMOVED_DELIVERED_LINE), saleOrderLine.getFullName());
-
-            }
-        }
+  public SaleOrder getClientInformations(SaleOrder saleOrder) {
+    Partner client = saleOrder.getClientPartner();
+    PartnerService partnerService = Beans.get(PartnerService.class);
+    if (client != null) {
+      saleOrder.setPaymentCondition(client.getPaymentCondition());
+      saleOrder.setPaymentMode(client.getInPaymentMode());
+      saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
+      this.computeAddressStr(saleOrder);
+      saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
+      saleOrder.setPriceList(
+          Beans.get(PartnerPriceListService.class)
+              .getDefaultPriceList(client, PriceListRepository.TYPE_SALE));
     }
+    return saleOrder;
+  }
 
+  public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
+    List<Timetable> timetableList = saleOrder.getTimetableList();
+    BigDecimal totalHT = saleOrder.getExTaxTotal();
+    BigDecimal sumTimetableAmount = BigDecimal.ZERO;
+    if (timetableList != null) {
+      for (Timetable timetable : timetableList) {
+        sumTimetableAmount =
+            sumTimetableAmount.add(timetable.getAmount().multiply(timetable.getQty()));
+      }
+    }
+    saleOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+    super.enableEditOrder(saleOrder);
+
+    List<StockMove> stockMoves =
+        Beans.get(StockMoveRepository.class)
+            .findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED)
+            .fetch();
+    if (!stockMoves.isEmpty()) {
+      StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+      CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
+      if (cancelReason == null) {
+        throw new AxelorException(
+            appSupplychain,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
+      }
+      for (StockMove stockMove : stockMoves) {
+        stockMoveService.cancel(stockMove, cancelReason);
+      }
+    }
+  }
+
+  @Override
+  public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
+    super.validateChanges(saleOrder, saleOrderView);
+
+    List<SaleOrderLine> saleOrderLineList =
+        MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());
+    List<SaleOrderLine> saleOrderViewLineList =
+        MoreObjects.firstNonNull(saleOrderView.getSaleOrderLineList(), Collections.emptyList());
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (saleOrderLine.getDeliveryState() > SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED
+          && !saleOrderViewLineList.contains(saleOrderLine)) {
+        throw new AxelorException(
+            saleOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SO_CANT_REMOVED_DELIVERED_LINE),
+            saleOrderLine.getFullName());
+      }
+    }
+  }
 }

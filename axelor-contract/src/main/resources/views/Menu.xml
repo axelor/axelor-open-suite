@@ -22,7 +22,7 @@
 		<context name="_xTargetType" expr="eval: 2"/>
 	</action-view>
 
-	<menuitem title="Configuration" name="contracts-root-conf-all" parent="contracts-root"/>
+	<menuitem title="Configuration" name="contracts-root-conf-all" parent="contracts-root" icon="fa-cog"/>
 
 	<menuitem title="Terminated contracts" name="contracts-root-conf-terminated" action="contracts.root.conf.terminated" parent="contracts-root-conf-all"/>
 

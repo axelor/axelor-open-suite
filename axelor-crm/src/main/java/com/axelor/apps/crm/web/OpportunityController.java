@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.crm.web;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
@@ -34,46 +31,47 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class OpportunityController {
-	
-	@Inject
-	private OpportunityRepository opportunityRepo;
-	
-	@Inject
-	private OpportunityService opportunityService;
-	
-	@SuppressWarnings("rawtypes")
-	public void assignToMe(ActionRequest request, ActionResponse response)  {
-		
-		if(request.getContext().get("id") != null){
-			Opportunity opportunity = opportunityRepo.find((Long)request.getContext().get("id"));
-			opportunity.setUser(AuthUtils.getUser());
-			opportunityService.saveOpportunity(opportunity);
-		}
-		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Opportunity opportunity : opportunityRepo.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
-				opportunity.setUser(AuthUtils.getUser());
-				opportunityService.saveOpportunity(opportunity);
-			}
-		}
-		response.setReload(true);
-	}
 
-	public void showOpportunitiesOnMap(ActionRequest request, ActionResponse response) {
-        try {
-            response.setView(ActionView.define(I18n.get("Opportunities"))
-                    .add("html", Beans.get(MapService.class).getMapURI("opportunity")).map());
-        } catch (Exception e) {
-            TraceBackService.trace(e);
-        }
-	}	
+  @Inject private OpportunityRepository opportunityRepo;
 
-	public void createClient(ActionRequest request, ActionResponse response) throws AxelorException{
-		Opportunity opportunity = request.getContext().asType(Opportunity.class);
-		opportunity = opportunityRepo.find(opportunity.getId());
-		opportunityService.createClientFromLead(opportunity);
-		response.setReload(true);
-	}
+  @Inject private OpportunityService opportunityService;
+
+  @SuppressWarnings("rawtypes")
+  public void assignToMe(ActionRequest request, ActionResponse response) {
+
+    if (request.getContext().get("id") != null) {
+      Opportunity opportunity = opportunityRepo.find((Long) request.getContext().get("id"));
+      opportunity.setUser(AuthUtils.getUser());
+      opportunityService.saveOpportunity(opportunity);
+    } else if (!((List) request.getContext().get("_ids")).isEmpty()) {
+      for (Opportunity opportunity :
+          opportunityRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch()) {
+        opportunity.setUser(AuthUtils.getUser());
+        opportunityService.saveOpportunity(opportunity);
+      }
+    }
+    response.setReload(true);
+  }
+
+  public void showOpportunitiesOnMap(ActionRequest request, ActionResponse response) {
+    try {
+      response.setView(
+          ActionView.define(I18n.get("Opportunities"))
+              .add("html", Beans.get(MapService.class).getMapURI("opportunity"))
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void createClient(ActionRequest request, ActionResponse response) throws AxelorException {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    opportunity = opportunityRepo.find(opportunity.getId());
+    opportunityService.createClientFromLead(opportunity);
+    response.setReload(true);
+  }
 }

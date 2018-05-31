@@ -17,12 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
@@ -32,61 +29,108 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.servlet.RequestScoped;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @RequestScoped
 public class StockLocationLineServiceSupplychainImpl extends StockLocationLineServiceImpl {
-	
-	@Override
-    public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine) throws AxelorException {
-        super.checkStockMin(stockLocationLine, isDetailLocationLine);
-        if (!isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0 && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-            throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
 
-        } else if (isDetailLocationLine && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
-                && ((stockLocationLine.getStockLocation() != null && stockLocationLine.getStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
-                || (stockLocationLine.getDetailsStockLocation() != null && stockLocationLine.getDetailsStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL))) {
+  @Override
+  public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine)
+      throws AxelorException {
+    super.checkStockMin(stockLocationLine, isDetailLocationLine);
+    if (!isDetailLocationLine
+        && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
+        && stockLocationLine.getStockLocation().getTypeSelect()
+            != StockLocationRepository.TYPE_VIRTUAL) {
+      throw new AxelorException(
+          stockLocationLine,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.LOCATION_LINE_1),
+          stockLocationLine.getProduct().getName(),
+          stockLocationLine.getProduct().getCode());
 
-            String trackingNumber = "";
-            if (stockLocationLine.getTrackingNumber() != null) {
-                trackingNumber = stockLocationLine.getTrackingNumber().getTrackingNumberSeq();
-            }
+    } else if (isDetailLocationLine
+        && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
+        && ((stockLocationLine.getStockLocation() != null
+                && stockLocationLine.getStockLocation().getTypeSelect()
+                    != StockLocationRepository.TYPE_VIRTUAL)
+            || (stockLocationLine.getDetailsStockLocation() != null
+                && stockLocationLine.getDetailsStockLocation().getTypeSelect()
+                    != StockLocationRepository.TYPE_VIRTUAL))) {
 
-            throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_2), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode(), trackingNumber);
-        }
+      String trackingNumber = "";
+      if (stockLocationLine.getTrackingNumber() != null) {
+        trackingNumber = stockLocationLine.getTrackingNumber().getTrackingNumberSeq();
+      }
+
+      throw new AxelorException(
+          stockLocationLine,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.LOCATION_LINE_2),
+          stockLocationLine.getProduct().getName(),
+          stockLocationLine.getProduct().getCode(),
+          trackingNumber);
     }
+  }
 
-	@Override
-    public StockLocationLine updateLocation(StockLocationLine stockLocationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement,
-                                       LocalDate lastFutureStockMoveDate, BigDecimal reservedQty) {
+  @Override
+  public StockLocationLine updateLocation(
+      StockLocationLine stockLocationLine,
+      BigDecimal qty,
+      boolean current,
+      boolean future,
+      boolean isIncrement,
+      LocalDate lastFutureStockMoveDate,
+      BigDecimal reservedQty) {
 
-        stockLocationLine = super.updateLocation(stockLocationLine, qty, current, future, isIncrement, lastFutureStockMoveDate, reservedQty);
-        if (current) {
-            if (isIncrement) {
-                stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(reservedQty));
-            } else {
-                stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().subtract(reservedQty));
-            }
-        }
-		if(future)  {
-			if(isIncrement)  {
-				stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().subtract(reservedQty));
-			} else {
-				stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(reservedQty));
-			}
-			stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
-		}
-        return stockLocationLine;
+    stockLocationLine =
+        super.updateLocation(
+            stockLocationLine,
+            qty,
+            current,
+            future,
+            isIncrement,
+            lastFutureStockMoveDate,
+            reservedQty);
+    if (current) {
+      if (isIncrement) {
+        stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(reservedQty));
+      } else {
+        stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().subtract(reservedQty));
+      }
     }
-
-    @Override
-    public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty) throws AxelorException{
-        super.checkIfEnoughStock(stockLocation, product, qty);
-
-        if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()) {
-            StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
-            if (stockLocationLine != null && stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty()).compareTo(qty) < 0) {
-                throw new AxelorException(stockLocationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LOCATION_LINE_1), stockLocationLine.getProduct().getName(), stockLocationLine.getProduct().getCode());
-            }
-        }
+    if (future) {
+      if (isIncrement) {
+        stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().subtract(reservedQty));
+      } else {
+        stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(reservedQty));
+      }
+      stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
     }
+    return stockLocationLine;
+  }
+
+  @Override
+  public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
+      throws AxelorException {
+    super.checkIfEnoughStock(stockLocation, product, qty);
+
+    if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()) {
+      StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
+      if (stockLocationLine != null
+          && stockLocationLine
+                  .getCurrentQty()
+                  .subtract(stockLocationLine.getReservedQty())
+                  .compareTo(qty)
+              < 0) {
+        throw new AxelorException(
+            stockLocationLine,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.LOCATION_LINE_1),
+            stockLocationLine.getProduct().getName(),
+            stockLocationLine.getProduct().getCode());
+      }
+    }
+  }
 }

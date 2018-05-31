@@ -26,35 +26,34 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
-	
-	@Override
-	public SaleOrder copy(SaleOrder entity, boolean deep) {
-		
-		SaleOrder copy = super.copy(entity, deep);
-		
-		if (!Beans.get(AppService.class).isApp("supplychain")) {
-				return copy;
-		}
-		
-		copy.setShipmentDate(null);
-		copy.setDeliveryState(DELIVERY_STATE_NOT_DELIVERED);
-		copy.setAmountInvoiced(null);
-		copy.setStockMoveList(null);
-		return copy;
-	}
-	
-	@Override
-	public void remove(SaleOrder order) {
-		
-		Partner partner = order.getClientPartner();
-		
-		super.remove(order);
-		
-		try {
-			Beans.get(AccountingSituationSupplychainService.class).updateUsedCredit(partner);
-		} catch (AxelorException e) {
-			e.printStackTrace();
-		}
-		
-	}
+
+  @Override
+  public SaleOrder copy(SaleOrder entity, boolean deep) {
+
+    SaleOrder copy = super.copy(entity, deep);
+
+    if (!Beans.get(AppService.class).isApp("supplychain")) {
+      return copy;
+    }
+
+    copy.setShipmentDate(null);
+    copy.setDeliveryState(DELIVERY_STATE_NOT_DELIVERED);
+    copy.setAmountInvoiced(null);
+    copy.setStockMoveList(null);
+    return copy;
+  }
+
+  @Override
+  public void remove(SaleOrder order) {
+
+    Partner partner = order.getClientPartner();
+
+    super.remove(order);
+
+    try {
+      Beans.get(AccountingSituationSupplychainService.class).updateUsedCredit(partner);
+    } catch (AxelorException e) {
+      e.printStackTrace();
+    }
+  }
 }

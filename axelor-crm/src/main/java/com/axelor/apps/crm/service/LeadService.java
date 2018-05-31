@@ -17,64 +17,63 @@
  */
 package com.axelor.apps.crm.service;
 
-import java.util.Map;
-
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LostReason;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.Map;
 
 public interface LeadService {
 
-	/**
-	 * Convert lead into a partner
-	 * @param lead
-	 * @return
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner) throws AxelorException;
+  /**
+   * Convert lead into a partner
+   *
+   * @param lead
+   * @return
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
+      throws AxelorException;
 
+  /**
+   * Get sequence for partner
+   *
+   * @return
+   * @throws AxelorException
+   */
+  public String getSequence() throws AxelorException;
 
-	/**
-	 * Get sequence for partner
-	 * @return
-	 * @throws AxelorException
-	 */
-	public String getSequence() throws AxelorException;
+  /**
+   * Assign user company to partner
+   *
+   * @param partner
+   * @return
+   */
+  public Partner setPartnerCompany(Partner partner);
 
-	/**
-	 * Assign user company to partner
-	 * @param partner
-	 * @return
-	 */
-	public Partner setPartnerCompany(Partner partner);
+  public Map<String, String> getSocialNetworkUrl(String name, String firstName, String companyName);
 
-	public Map<String,String> getSocialNetworkUrl(String name,String firstName, String companyName);
+  @Transactional
+  public void saveLead(Lead lead);
 
-	@Transactional
-	public void saveLead(Lead lead);
+  @SuppressWarnings("rawtypes")
+  public Object importLead(Object bean, Map values);
 
+  /**
+   * Check if the lead in view has a duplicate.
+   *
+   * @param lead a context lead object
+   * @return if there is a duplicate lead
+   */
+  public boolean isThereDuplicateLead(Lead lead);
 
-	@SuppressWarnings("rawtypes")
-	public Object importLead(Object bean, Map values);
-
-	/**
-	 * Check if the lead in view has a duplicate.
-	 * @param lead a context lead object
-	 * @return if there is a duplicate lead
-	 */
-	public boolean isThereDuplicateLead(Lead lead);
-
-
-	/**
-	 * Set the lead status to lost and set the lost reason with the given lost reason.
-	 * @param lead a context lead object
-	 * @param lostReason the specified lost reason
-	 */
-	public void loseLead(Lead lead, LostReason lostReason);
-	
+  /**
+   * Set the lead status to lost and set the lost reason with the given lost reason.
+   *
+   * @param lead a context lead object
+   * @param lostReason the specified lost reason
+   */
+  public void loseLead(Lead lead, LostReason lostReason);
 }

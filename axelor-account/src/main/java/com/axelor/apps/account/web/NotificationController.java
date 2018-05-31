@@ -29,17 +29,16 @@ import com.google.inject.Singleton;
 @Singleton
 public class NotificationController {
 
-	public void populateNotificationItemList(ActionRequest request, ActionResponse response) {
-		Notification notification = request.getContext().asType(Notification.class);
-		Beans.get(NotificationService.class).populateNotificationItemList(notification);
-		response.setValue("notificationItemList", notification.getNotificationItemList());
-	}
-	
-	public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
-		Notification notification = request.getContext().asType(Notification.class);
-		notification = Beans.get(NotificationRepository.class).find(notification.getId());
-		Beans.get(NotificationService.class).validate(notification);
-		response.setReload(true);
-	}
+  public void populateNotificationItemList(ActionRequest request, ActionResponse response) {
+    Notification notification = request.getContext().asType(Notification.class);
+    Beans.get(NotificationService.class).populateNotificationItemList(notification);
+    response.setValue("notificationItemList", notification.getNotificationItemList());
+  }
 
+  public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
+    Notification notification = request.getContext().asType(Notification.class);
+    notification = Beans.get(NotificationRepository.class).find(notification.getId());
+    Beans.get(NotificationService.class).validate(notification);
+    response.setReload(true);
+  }
 }

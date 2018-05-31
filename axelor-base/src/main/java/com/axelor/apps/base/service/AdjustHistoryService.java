@@ -21,48 +21,55 @@ import com.axelor.apps.base.db.AdjustHistory;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.AdjustHistoryRepository;
-import com.google.inject.persist.Transactional;
-
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 
 public class AdjustHistoryService {
-    private AdjustHistoryRepository adjustHistoryRepo;
+  private AdjustHistoryRepository adjustHistoryRepo;
 
-    @Inject
-    public AdjustHistoryService(AdjustHistoryRepository adjustHistoryRepo) {
-        this.adjustHistoryRepo = adjustHistoryRepo;
-    }
+  @Inject
+  public AdjustHistoryService(AdjustHistoryRepository adjustHistoryRepo) {
+    this.adjustHistoryRepo = adjustHistoryRepo;
+  }
 
-    @Transactional
-    public void setStartDate(Year year) {
-        AdjustHistory adjustHistory = new AdjustHistory();
-        adjustHistory.setFiscalYear(year);
-        adjustHistory.setStartDate(LocalDateTime.now());
-        adjustHistoryRepo.save(adjustHistory);
-    }
+  @Transactional
+  public void setStartDate(Year year) {
+    AdjustHistory adjustHistory = new AdjustHistory();
+    adjustHistory.setFiscalYear(year);
+    adjustHistory.setStartDate(LocalDateTime.now());
+    adjustHistoryRepo.save(adjustHistory);
+  }
 
-    @Transactional
-    public void setStartDate(Period period) {
-        AdjustHistory adjustHistory = new AdjustHistory();
-        adjustHistory.setPeriod(period);
-        adjustHistory.setStartDate(LocalDateTime.now());
-        adjustHistoryRepo.save(adjustHistory);
-    }
+  @Transactional
+  public void setStartDate(Period period) {
+    AdjustHistory adjustHistory = new AdjustHistory();
+    adjustHistory.setPeriod(period);
+    adjustHistory.setStartDate(LocalDateTime.now());
+    adjustHistoryRepo.save(adjustHistory);
+  }
 
-    @Transactional
-    public AdjustHistory setEndDate(Year year) {
-        AdjustHistory adjustHistory = adjustHistoryRepo.all().filter("self.fiscalYear.id = ? AND self.endDate IS NULL", year.getId()).fetchOne();
-        adjustHistory.setEndDate(LocalDateTime.now());
-        adjustHistoryRepo.save(adjustHistory);
+  @Transactional
+  public AdjustHistory setEndDate(Year year) {
+    AdjustHistory adjustHistory =
+        adjustHistoryRepo
+            .all()
+            .filter("self.fiscalYear.id = ? AND self.endDate IS NULL", year.getId())
+            .fetchOne();
+    adjustHistory.setEndDate(LocalDateTime.now());
+    adjustHistoryRepo.save(adjustHistory);
 
-        return adjustHistory;
-    }
+    return adjustHistory;
+  }
 
-    @Transactional
-    public void setEndDate(Period period) {
-        AdjustHistory adjustHistory = adjustHistoryRepo.all().filter("self.period.id = ? AND self.endDate IS NULL", period.getId()).fetchOne();
-        adjustHistory.setEndDate(LocalDateTime.now());
-        adjustHistoryRepo.save(adjustHistory);
-    }
+  @Transactional
+  public void setEndDate(Period period) {
+    AdjustHistory adjustHistory =
+        adjustHistoryRepo
+            .all()
+            .filter("self.period.id = ? AND self.endDate IS NULL", period.getId())
+            .fetchOne();
+    adjustHistory.setEndDate(LocalDateTime.now());
+    adjustHistoryRepo.save(adjustHistory);
+  }
 }

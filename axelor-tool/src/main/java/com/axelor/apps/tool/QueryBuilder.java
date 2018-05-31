@@ -17,83 +17,80 @@
  */
 package com.axelor.apps.tool;
 
+import com.axelor.db.Model;
+import com.axelor.db.Query;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.axelor.db.Model;
-import com.axelor.db.Query;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-
 public class QueryBuilder<T extends Model> {
-    private final List<String> filterList;
-    private final Map<String, Object> bindingMap;
-    private final Class<T> modelClass;
+  private final List<String> filterList;
+  private final Map<String, Object> bindingMap;
+  private final Class<T> modelClass;
 
-    private QueryBuilder(Class<T> modelClass) {
-        filterList = new ArrayList<>();
-        bindingMap = new HashMap<>();
-        this.modelClass = modelClass;
+  private QueryBuilder(Class<T> modelClass) {
+    filterList = new ArrayList<>();
+    bindingMap = new HashMap<>();
+    this.modelClass = modelClass;
+  }
+
+  /**
+   * Get a query builder.
+   *
+   * @param modelClass
+   * @return
+   */
+  public static <T extends Model> QueryBuilder<T> of(Class<T> modelClass) {
+    return new QueryBuilder<>(modelClass);
+  }
+
+  /**
+   * Add filter.
+   *
+   * @param filter
+   * @return
+   */
+  public QueryBuilder<T> add(String filter) {
+    filterList.add(filter);
+    return this;
+  }
+
+  /**
+   * Add binding.
+   *
+   * @param name
+   * @param value
+   * @return
+   */
+  public QueryBuilder<T> bind(String name, Object value) {
+    bindingMap.put(name, value);
+    return this;
+  }
+
+  /**
+   * Build the query.
+   *
+   * @return
+   */
+  public Query<T> build() {
+    String filter =
+        Joiner.on(" AND ").join(Lists.transform(filterList, input -> String.format("(%s)", input)));
+    Query<T> query = Query.of(modelClass).filter(filter);
+
+    for (Entry<String, Object> entry : bindingMap.entrySet()) {
+      query.bind(entry.getKey(), entry.getValue());
     }
 
-    /**
-     * Get a query builder.
-     * 
-     * @param modelClass
-     * @return
-     */
-    public static <T extends Model> QueryBuilder<T> of(Class<T> modelClass) {
-        return new QueryBuilder<>(modelClass);
-    }
+    return query;
+  }
 
-    /**
-     * Add filter.
-     * 
-     * @param filter
-     * @return
-     */
-    public QueryBuilder<T> add(String filter) {
-        filterList.add(filter);
-        return this;
-    }
-
-    /**
-     * Add binding.
-     * 
-     * @param name
-     * @param value
-     * @return
-     */
-    public QueryBuilder<T> bind(String name, Object value) {
-        bindingMap.put(name, value);
-        return this;
-    }
-
-    /**
-     * Build the query.
-     * 
-     * @return
-     */
-    public Query<T> build() {
-        String filter = Joiner.on(" AND ").join(Lists.transform(filterList, input -> String.format("(%s)", input)));
-        Query<T> query = Query.of(modelClass).filter(filter);
-
-        for (Entry<String, Object> entry : bindingMap.entrySet()) {
-            query.bind(entry.getKey(), entry.getValue());
-        }
-
-        return query;
-    }
-
-    /**
-     * @deprecated (use build() instead)
-     */
-    @Deprecated
-    public Query<T> create() {
-        return build();
-    }
-
+  /** @deprecated (use build() instead) */
+  @Deprecated
+  public Query<T> create() {
+    return build();
+  }
 }

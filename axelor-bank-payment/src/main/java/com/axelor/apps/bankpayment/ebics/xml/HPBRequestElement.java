@@ -20,18 +20,17 @@ package com.axelor.apps.bankpayment.ebics.xml;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.exception.AxelorException;
 
-
 /**
- * The <code>HPBRequestElement</code> is the element to be sent when
- * a HPB request is needed to retrieve the bank public keys
+ * The <code>HPBRequestElement</code> is the element to be sent when a HPB request is needed to
+ * retrieve the bank public keys
  *
  * @author hachani
- *
  */
 public class HPBRequestElement extends DefaultEbicsRootElement {
 
   /**
    * Constructs a new HPB Request element.
+   *
    * @param session the current ebics session.
    */
   public HPBRequestElement(EbicsSession session) {
@@ -45,9 +44,9 @@ public class HPBRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public void build() throws AxelorException {
-    SignedInfo			signedInfo;
-    byte[]			signature;
-    
+    SignedInfo signedInfo;
+    byte[] signature;
+
     noPubKeyDigestsRequest = new NoPubKeyDigestsRequestElement(session);
     noPubKeyDigestsRequest.build();
     signedInfo = new SignedInfo(session.getUser(), noPubKeyDigestsRequest.getDigest());
@@ -71,5 +70,5 @@ public class HPBRequestElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private NoPubKeyDigestsRequestElement		noPubKeyDigestsRequest;
+  private NoPubKeyDigestsRequestElement noPubKeyDigestsRequest;
 }

@@ -17,77 +17,83 @@
  */
 package com.axelor.apps.base.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService  {
+public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  public boolean checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties) {
 
-	public boolean checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties)  {
-		
-		if(productMultipleQties.size() == 0)  {  return true;  }
-		
-		for(ProductMultipleQty productMultipleQty : productMultipleQties)  {
-			
-			LOG.debug("Check on multiple qty : {}, Modulo : {}", qty, qty.remainder(productMultipleQty.getMultipleQty()));
-			
-			if(qty.remainder(productMultipleQty.getMultipleQty()).compareTo(BigDecimal.ZERO) == 0)  {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	
-	public String toStringMultipleQty(List<ProductMultipleQty> productMultipleQties)  {
-		
-		String message = "";
-		
-		for(ProductMultipleQty productMultipleQty : productMultipleQties)  {
-			if(message.length() > 0)  {  
-				message += " " + I18n.get("or") + " ";
-			}
-			message += productMultipleQty.getMultipleQty();
-			if(!Strings.isNullOrEmpty(productMultipleQty.getName()))  {
-				message += " (" + productMultipleQty.getName() + ")";
-			}
-		}
-		
-		return message;
-			
-	}
+    if (productMultipleQties.size() == 0) {
+      return true;
+    }
 
-	public void checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties, boolean allowToForce, ActionResponse response)  {
-		
-		boolean isMultiple = this.checkMultipleQty(qty, productMultipleQties);
-		
-		if(isMultiple)  {
-			response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
-			response.setValue("$qtyValid", true);
-		} else {
-			String spanClass = allowToForce ? ContextTool.SPAN_CLASS_WARNING : ContextTool.SPAN_CLASS_IMPORTANT;
+    for (ProductMultipleQty productMultipleQty : productMultipleQties) {
 
-			String message = String.format(I18n.get("Quantity should be a multiple of %s"), this.toStringMultipleQty(productMultipleQties));
-			String title = ContextTool.formatLabel(message, spanClass, 75);
-			
-			response.setAttr("multipleQtyNotRespectedLabel", "title", title);
-			response.setAttr("multipleQtyNotRespectedLabel", "hidden", false);
-			response.setValue("$qtyValid", allowToForce);
-		}
-		
-	}	
-	
+      LOG.debug(
+          "Check on multiple qty : {}, Modulo : {}",
+          qty,
+          qty.remainder(productMultipleQty.getMultipleQty()));
+
+      if (qty.remainder(productMultipleQty.getMultipleQty()).compareTo(BigDecimal.ZERO) == 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public String toStringMultipleQty(List<ProductMultipleQty> productMultipleQties) {
+
+    String message = "";
+
+    for (ProductMultipleQty productMultipleQty : productMultipleQties) {
+      if (message.length() > 0) {
+        message += " " + I18n.get("or") + " ";
+      }
+      message += productMultipleQty.getMultipleQty();
+      if (!Strings.isNullOrEmpty(productMultipleQty.getName())) {
+        message += " (" + productMultipleQty.getName() + ")";
+      }
+    }
+
+    return message;
+  }
+
+  public void checkMultipleQty(
+      BigDecimal qty,
+      List<ProductMultipleQty> productMultipleQties,
+      boolean allowToForce,
+      ActionResponse response) {
+
+    boolean isMultiple = this.checkMultipleQty(qty, productMultipleQties);
+
+    if (isMultiple) {
+      response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
+      response.setValue("$qtyValid", true);
+    } else {
+      String spanClass =
+          allowToForce ? ContextTool.SPAN_CLASS_WARNING : ContextTool.SPAN_CLASS_IMPORTANT;
+
+      String message =
+          String.format(
+              I18n.get("Quantity should be a multiple of %s"),
+              this.toStringMultipleQty(productMultipleQties));
+      String title = ContextTool.formatLabel(message, spanClass, 75);
+
+      response.setAttr("multipleQtyNotRespectedLabel", "title", title);
+      response.setAttr("multipleQtyNotRespectedLabel", "hidden", false);
+      response.setValue("$qtyValid", allowToForce);
+    }
+  }
 }

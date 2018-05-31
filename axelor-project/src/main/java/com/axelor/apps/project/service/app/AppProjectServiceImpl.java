@@ -24,14 +24,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProjectService  {
-	
-	@Inject
-	private AppProjectRepository appProjectRepo;
-	
-	@Override
-	public AppProject getAppProject() {
-		return appProjectRepo.all().fetchOne();
-	}
+public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProjectService {
 
+  @Inject private AppProjectRepository appProjectRepo;
+
+  @Override
+  public AppProject getAppProject() {
+    return appProjectRepo.all().fetchOne();
+  }
 }
