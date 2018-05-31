@@ -59,6 +59,7 @@
 - Charts : rename action call that action has been renamed earlier.
 - Fix date format in birt report in manufactoring order and operation order
 - Fix some translations in account module.
+- Fix the opportunity field of a sale order being readonly
 - Product : reset value of productVariantValue field when we change value of associated productVariantAttr field.
 
 ## [5.0.0-rc2] - 2018-05-09
