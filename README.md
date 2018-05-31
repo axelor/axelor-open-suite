@@ -22,8 +22,8 @@ Download
 $ git clone git@github.com:axelor/abs-webapp.git
 $ cd abs-webapp
 $ git checkout master
-$ git submodule init 
-$ git submodule update 
+$ git submodule init
+$ git submodule update
 $ git submodule foreach git checkout master
 $ git submodule foreach git pull origin master
 ```
