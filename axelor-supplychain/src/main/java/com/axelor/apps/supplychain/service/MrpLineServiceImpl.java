@@ -130,7 +130,8 @@ public class MrpLineServiceImpl implements MrpLineService  {
 					stockLocation,
 					appBaseService.getTodayDate(),
 					Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
-					supplierPartner));
+					supplierPartner,
+					null));
 			if (purchaseOrders != null) {
 				purchaseOrders.put(key, purchaseOrder);
 			}

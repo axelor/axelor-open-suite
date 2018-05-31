@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -142,6 +143,7 @@ public class PurchaseOrderController {
 		Partner commonSupplierPartner = null;
 		Company commonCompany = null;
 		Partner commonContactPartner = null;
+		TradingName commonTradingName = null;
 		//Useful to determine if a difference exists between contact partners of all purchase orders
 		boolean existContactPartnerDiff = false;
 		PriceList commonPriceList = null;
@@ -163,6 +165,7 @@ public class PurchaseOrderController {
 				commonContactPartner = purchaseOrderTemp.getContactPartner();
 				commonPriceList = purchaseOrderTemp.getPriceList();
 				commonLocation = purchaseOrderTemp.getStockLocation();
+				commonTradingName = purchaseOrderTemp.getTradingName();
 			}else{
 				if (commonCurrency != null
 						&& !commonCurrency.equals(purchaseOrderTemp.getCurrency())){
@@ -176,6 +179,10 @@ public class PurchaseOrderController {
 						&& !commonCompany.equals(purchaseOrderTemp.getCompany())){
 					commonCompany = null;
 				}
+                if (commonTradingName != null
+                        && !commonTradingName.equals(purchaseOrderTemp.getTradingName())){
+                    commonTradingName = null;
+                }
 				if (commonContactPartner != null
 						&& !commonContactPartner.equals(purchaseOrderTemp.getContactPartner())){
 					commonContactPartner = null;
@@ -212,6 +219,9 @@ public class PurchaseOrderController {
 			}
 			fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
 		}
+        if (commonTradingName == null){
+            fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
+        }
 
 		if (fieldErrors.length() > 0){
 			response.setFlash(fieldErrors.toString());
@@ -262,7 +272,7 @@ public class PurchaseOrderController {
 
 
 		try{
-			PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychain.mergePurchaseOrders(purchaseOrderList, commonCurrency, commonSupplierPartner, commonCompany, commonLocation,commonContactPartner, commonPriceList);
+			PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychain.mergePurchaseOrders(purchaseOrderList, commonCurrency, commonSupplierPartner, commonCompany, commonLocation,commonContactPartner, commonPriceList, commonTradingName);
 			if (purchaseOrder != null){
 				//Open the generated purchase order in a new tab
 				response.setView(ActionView
