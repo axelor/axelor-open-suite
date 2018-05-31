@@ -59,6 +59,7 @@
 - Charts : rename action call that action has been renamed earlier.
 - Fix date format in birt report in manufactoring order and operation order
 - Fix some translations in account module.
+- Permission assistant : Fix when import permissions with more than one role or group.
 - Fix the opportunity field of a sale order being readonly
 - Product : reset value of productVariantValue field when we change value of associated productVariantAttr field.
 
