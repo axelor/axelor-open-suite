@@ -15,31 +15,24 @@
           onSave="save,action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
           onNew="action-bill-of-material-default-record,action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components"
           onLoad="action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components">
-		<toolbar>
-			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
-		</toolbar>
 
 		<menubar>
 			<menu title="Reports">
 				<item title="Print" action="action-bill-of-material-method-print"/>				
 			</menu>
+
+            <menu title="Options">
+                <item title="Generate new version"
+                    action="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"
+                    if="__config__.app.getApp('production').manageBillOfMaterialVersion"/>
+                <item title="Define as default bill of material of product"
+                    action="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
+                    hideIf="product.defaultBillOfMaterial.id == id"/>
+            </menu>
 		</menubar>
 
 		<panel name="main">
-			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12" showTitle="false" css="label-bold bold large"/>
-			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
-			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product AND self.company = :company"/>
-			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
-            <field name="qty" colSpan="3"/>
-			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-            <button name="setDefaultBOMOnProduct"
-                title="Define as default bill of material of product"
-                onClick="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
-                colSpan="4"
-                hideIf="product.defaultBillOfMaterial.id == id"/>
-            <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
-            <field name="$defaultBOMOnProduct" readonly="true" showTitle="false" colSpan="3">
+            <field name="$defaultBOMOnProduct" readonly="true" showTitle="false" colSpan="4" colOffset="8">
                 <viewer depends="$defaultBOMOnProduct, product.defaultBillOfMaterial">
                     <![CDATA[
                         <h4 class="text-right">
@@ -48,11 +41,21 @@
                         </h4>
                 ]]></viewer>
             </field>
+			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12" showTitle="false" css="label-bold bold large"/>
+			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="self.product = :product AND self.company = :company"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
+            <field name="qty" colSpan="3"/>
+			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+            <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
 		</panel>
 
 		<panel-tabs>
 			<panel title="Components">
-				<button name="openBomTree" title="Open tree" onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3"/>
+				<panel>
+				    <button name="openBomTree" title="Open tree" onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3" css="btn-custom"/>
+				</panel>
 				<field name="$numberOfComponents" showTitle="false" readonly="true" colSpan="9" showIf="$numberOfComponents > 0">
 					<viewer depends="$numberOfComponents">
                         <![CDATA[
