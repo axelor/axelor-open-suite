@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
@@ -100,13 +101,13 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation stockLocation, LocalDate orderDate,
-			PriceList priceList, Partner supplierPartner) throws AxelorException  {
+			PriceList priceList, Partner supplierPartner, TradingName tradingName) throws AxelorException  {
 
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
-				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
+				company.getName(), externalReference, supplierPartner.getFullName());
 
 		PurchaseOrder purchaseOrder = super.createPurchaseOrder(buyerUser, company, contactPartner, currency, deliveryDate,
-				internalReference, externalReference, orderDate, priceList, supplierPartner);
+				internalReference, externalReference, orderDate, priceList, supplierPartner, tradingName);
 
 		purchaseOrder.setStockLocation(stockLocation);
 
@@ -128,6 +129,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 					.getDefPaymentCondition()
 				);
 		}
+
+		purchaseOrder.setTradingName(tradingName);
+
 		return purchaseOrder;
 	}
 
@@ -166,6 +170,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
+			stockMove.setTradingName(purchaseOrder.getTradingName());
 
 			for(PurchaseOrderLine purchaseOrderLine: purchaseOrder.getPurchaseOrderLineList()) {
 
@@ -260,7 +265,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 	@Transactional
 	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency,
 			Partner supplierPartner, Company company, StockLocation stockLocation, Partner contactPartner,
-			PriceList priceList) throws AxelorException{
+			PriceList priceList, TradingName tradingName) throws AxelorException{
 		String numSeq = "";
 		String externalRef = "";
 		for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
@@ -288,7 +293,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 				stockLocation,
 				LocalDate.now(),
 				priceList,
-				supplierPartner);
+				supplierPartner,
+				tradingName);
 		
 		super.attachToNewPurchaseOrder(purchaseOrderList, purchaseOrderMerged);
 

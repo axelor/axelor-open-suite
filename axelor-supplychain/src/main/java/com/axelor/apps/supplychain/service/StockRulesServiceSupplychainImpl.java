@@ -126,7 +126,8 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
 							stockLocation,
 							today,
 							Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
-							supplierPartner));
+							supplierPartner,
+							null));
 
 					purchaseOrder.addPurchaseOrderLineListItem(
 							purchaseOrderLineService.createPurchaseOrderLine(

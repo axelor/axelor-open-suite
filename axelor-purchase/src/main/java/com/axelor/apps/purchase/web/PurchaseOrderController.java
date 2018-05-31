@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -172,11 +173,12 @@ public class PurchaseOrderController {
 			}
 		}
 
-		//Check if currency, supplierPartner and company are the same for all selected purchase orders
+		//Check if currency, supplierPartner, company and tradingName are the same for all selected purchase orders
 		Currency commonCurrency = null;
 		Partner commonSupplierPartner = null;
 		Company commonCompany = null;
 		Partner commonContactPartner = null;
+		TradingName commonTradingName = null;
 		//Useful to determine if a difference exists between contact partners of all purchase orders
 		boolean existContactPartnerDiff = false;
 		PriceList commonPriceList = null;
@@ -193,6 +195,7 @@ public class PurchaseOrderController {
 				commonCompany = purchaseOrderTemp.getCompany();
 				commonContactPartner = purchaseOrderTemp.getContactPartner();
 				commonPriceList = purchaseOrderTemp.getPriceList();
+				commonTradingName = purchaseOrderTemp.getTradingName();
 			}else{
 				if (commonCurrency != null
 						&& !commonCurrency.equals(purchaseOrderTemp.getCurrency())){
@@ -216,6 +219,10 @@ public class PurchaseOrderController {
 					commonPriceList = null;
 					existPriceListDiff = true;
 				}
+                if (commonTradingName != null
+                        && !commonTradingName.equals(purchaseOrderTemp.getTradingName())){
+                    commonTradingName = null;
+                }
 			}
 			count++;
 		}
@@ -236,6 +243,9 @@ public class PurchaseOrderController {
 			}
 			fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
 		}
+        if (commonTradingName == null) {
+            fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
+        }
 
 		if (fieldErrors.length() > 0){
 			response.setFlash(fieldErrors.toString());
@@ -280,7 +290,7 @@ public class PurchaseOrderController {
 
 
 		try{
-			PurchaseOrder purchaseOrder = purchaseOrderService.mergePurchaseOrders(purchaseOrderList, commonCurrency, commonSupplierPartner, commonCompany, commonContactPartner, commonPriceList);
+			PurchaseOrder purchaseOrder = purchaseOrderService.mergePurchaseOrders(purchaseOrderList, commonCurrency, commonSupplierPartner, commonCompany, commonContactPartner, commonPriceList, commonTradingName);
 			if (purchaseOrder != null){
 				//Open the generated purchase order in a new tab
 				response.setView(ActionView

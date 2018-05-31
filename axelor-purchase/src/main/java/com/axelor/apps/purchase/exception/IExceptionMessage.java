@@ -44,9 +44,10 @@ public interface IExceptionMessage {
 	 * Merge purchase order
 	 */
 
-	static final public String PURCHASE_ORDER_MERGE_ERROR_CURRENCY = /*$$(*/ "The currency is required and must be the same for all purchase orders" /*)*/;
-	static final public String PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER = /*$$(*/ "The supplier Partner is required and must be the same for all purchase orders" /*)*/;
-	static final public String PURCHASE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/ "The company is required and must be the same for all purchase orders" /*)*/;
+	public static final String PURCHASE_ORDER_MERGE_ERROR_CURRENCY = /*$$(*/ "The currency is required and must be the same for all purchase orders" /*)*/;
+	public static final String PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER = /*$$(*/ "The supplier Partner is required and must be the same for all purchase orders" /*)*/;
+	public static final String PURCHASE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/ "The company is required and must be the same for all purchase orders" /*)*/;
+    public static final String PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME = /*$$(*/ "The trading name must be the same for all purchase orders" /*)*/;
 
 	/**
 	 * Blocking supplier

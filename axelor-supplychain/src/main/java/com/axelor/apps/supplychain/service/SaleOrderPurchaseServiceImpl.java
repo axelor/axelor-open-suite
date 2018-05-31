@@ -121,7 +121,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(saleOrder.getCompany()),
 				Beans.get(AppBaseService.class).getTodayDate(),
 				Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
-				supplierPartner);
+				supplierPartner,
+				saleOrder.getTradingName());
 
 		Integer atiChoice =  Beans.get(PurchaseConfigService.class).getPurchaseConfig(saleOrder.getCompany()).getPurchaseOrderInAtiSelect();
 		if(atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS || atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT){

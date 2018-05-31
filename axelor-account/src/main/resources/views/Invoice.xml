@@ -621,7 +621,7 @@
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
-	    <action name="action-invoice-record-printing-fields"/>
+	    <action name="action-invoice-record-printing-fields" if="__config__.app.isApp('business-project')"/>
         <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
     </action-group>
 
@@ -752,11 +752,6 @@
 		<field name="interco"
 			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromInvoice()"/>
 	</action-record>
-
-    <action-record name="action-invoice-record-printing-fields" model="com.axelor.apps.account.db.Invoice">
-    	<field name="displayTimesheetOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"/>
-    	<field name="displayExpenseOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
-    </action-record>
 
     <action-record name="action-invoice-record-reset-operationsubtype" model="com.axelor.apps.account.db.Invoice">
         <field name="operationSubTypeSelect" expr="eval: null"/>

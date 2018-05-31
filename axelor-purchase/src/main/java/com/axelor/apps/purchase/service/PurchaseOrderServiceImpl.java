@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -184,7 +185,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	@Override
 	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
-			PriceList priceList, Partner supplierPartner) throws AxelorException  {
+			PriceList priceList, Partner supplierPartner, TradingName tradingName) throws AxelorException  {
 
 		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
 				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
@@ -199,6 +200,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		purchaseOrder.setExternalReference(externalReference);
 		purchaseOrder.setOrderDate(orderDate);
 		purchaseOrder.setPriceList(priceList);
+		purchaseOrder.setTradingName(tradingName);
 		purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
 
 		purchaseOrder.setPrintingSettings(Beans.get(TradingNameService.class)
@@ -273,7 +275,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 	@Override
 	@Transactional
-	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency, Partner supplierPartner, Company company, Partner contactPartner, PriceList priceList) throws AxelorException{
+	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency, Partner supplierPartner, Company company, Partner contactPartner, PriceList priceList, TradingName tradingName) throws AxelorException{
 
 		String numSeq = "";
 		String externalRef = "";
@@ -301,7 +303,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 				externalRef,
 				LocalDate.now(),
 				priceList,
-				supplierPartner);
+				supplierPartner,
+				tradingName);
 
 		this.attachToNewPurchaseOrder(purchaseOrderList,purchaseOrderMerged);
 		
