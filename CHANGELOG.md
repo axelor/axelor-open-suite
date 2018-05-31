@@ -57,6 +57,7 @@
 - Charts : rename action call that action has been renamed earlier.
 - Fix date format in birt report in manufactoring order and operation order
 - Fix some translations in account module.
+- Fix set a prospect as the client of a sale order.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
