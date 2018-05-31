@@ -80,6 +80,8 @@ public class InvoiceController {
 
   @Inject private InvoiceRepository invoiceRepo;
 
+  @Inject private InvoicePrintService invoicePrintService;
+
   /**
    * Fonction appeler par le bouton calculer
    *
@@ -278,7 +280,6 @@ public class InvoiceController {
     String title;
 
     try {
-      InvoicePrintService invoicePrintService = Beans.get(InvoicePrintService.class);
       if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
         List<Long> ids =
             Lists.transform(
@@ -293,13 +294,29 @@ public class InvoiceController {
         fileLink = invoicePrintService.printInvoices(ids);
         title = I18n.get("Invoices");
       } else if (context.get("id") != null) {
-        fileLink = invoicePrintService.printInvoice(invoiceRepo.find(request.getContext().asType(Invoice.class).getId()));
+        fileLink =
+            invoicePrintService.printInvoice(
+                invoiceRepo.find(request.getContext().asType(Invoice.class).getId()), false);
         title = I18n.get("Invoice");
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    Invoice invoice = invoiceRepo.find(context.asType(Invoice.class).getId());
+
+    try {
+      response.setView(
+          ActionView.define(I18n.get("Invoice"))
+              .add("html", invoicePrintService.printInvoice(invoice, true))
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -377,8 +394,8 @@ public class InvoiceController {
   // Generate single invoice from several
   @SuppressWarnings({"rawtypes", "unchecked"})
   public void mergeInvoice(ActionRequest request, ActionResponse response) {
-    List<Invoice> invoiceList = new ArrayList<Invoice>();
-    List<Long> invoiceIdList = new ArrayList<Long>();
+    List<Invoice> invoiceList = new ArrayList<>();
+    List<Long> invoiceIdList = new ArrayList<>();
     boolean fromPopup = false;
 
     if (request.getContext().get("invoiceToMerge") != null) {
