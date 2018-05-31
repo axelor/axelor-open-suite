@@ -144,8 +144,7 @@
 		</filter>
 	</search-filters>
 	
-	<menuitem name="sc-root-sale-report" parent="sc-root-sale"
-		title="Reportings"  order="40"/>
+	<menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"  order="40" icon="fa-bar-chart"/>
 		
 	<menuitem name="sc-root-sale-maps" parent="sc-root-sale-report" title="Maps" order="10"/>
 		
@@ -157,7 +156,7 @@
 		title="Prospects" action="action-show-prospects-on-map-page"/>
 
 	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
-		title="Configuration"  order="45"/>
+		title="Configuration"  order="45" icon="fa-cog"/>
 
 	<menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf"
 		title="Cancel Reasons" action="sale.conf.cancelreason" />
@@ -331,6 +330,6 @@
 	</action-view>
 
 	<menuitem name="menu-dashboards-customers"  parent="sc-root-sale-report"
-    	title="Customers" icon="fa-bar-chart"  action="customer.list.dashboard.view"/>
+    	title="Customers" action="customer.list.dashboard.view"/>
 
 </object-views>

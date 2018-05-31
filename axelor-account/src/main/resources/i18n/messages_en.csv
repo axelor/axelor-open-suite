@@ -225,6 +225,7 @@
 "Accounting situations",,,
 "Accounting.Account","Account",,
 "Accounting.Accounts","Accounts",,
+"Accounting.toAccount","Account",,
 "AccountingReportType1.balance","Balance",,
 "AccountingReportType1.company","Company",,
 "AccountingReportType1.credit","Credit",,
