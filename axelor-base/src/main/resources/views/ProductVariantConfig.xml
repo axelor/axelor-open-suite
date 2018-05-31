@@ -44,6 +44,20 @@
     	<attribute name="domain" for="productVariantConfig?.productVariantValue4Set" expr="eval: (productVariantConfig?.productVariantAttr4?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr4?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     </action-attrs>
     
-    
+    <action-record name="action-product-variant-config-record-reset-variant-value1" model="com.axelor.apps.base.db.ProductVariantConfig">
+		<field name="productVariantValue1Set" expr="eval: null"/>
+    </action-record>
+
+    <action-record name="action-product-variant-config-record-reset-variant-value2" model="com.axelor.apps.base.db.ProductVariantConfig">
+		<field name="productVariantValue2Set" expr="eval: null"/>
+    </action-record>
+
+    <action-record name="action-product-variant-config-record-reset-variant-value3" model="com.axelor.apps.base.db.ProductVariantConfig">
+		<field name="productVariantValue3Set" expr="eval: null"/>
+    </action-record>
+
+    <action-record name="action-product-variant-config-record-reset-variant-value4" model="com.axelor.apps.base.db.ProductVariantConfig">
+		<field name="productVariantValue4Set" expr="eval: null"/>
+    </action-record>
 
 </object-views>
