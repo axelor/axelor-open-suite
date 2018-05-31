@@ -1959,7 +1959,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != ""){ row["translation"]} else { row["message_key"] }</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { row._outer["company_cb_select"] }</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4041"/>
@@ -2075,7 +2075,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != ""){ row["translation"]} else { row["message_key"] }</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { row._outer["multiple_users"] }</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4048"/>
@@ -3067,7 +3067,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'Kilometric allowances'</value>
+                                        <value type="javascript">'Kilometric Allowances'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -3086,7 +3086,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != ""){ row["translation"]} else { row["message_key"] }</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { 'Kilometric Allowances' }</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -3510,7 +3510,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != ""){ row["translation"]} else { row["message_key"] }</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { row._outer["kilometric_expense_type"] }</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4090">
@@ -3550,7 +3550,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != ""){ row["translation"]} else { row["message_key"] }</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { row._outer["kilometric_allow_param"] }</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4091">
