@@ -293,7 +293,7 @@ public class InvoiceController {
         fileLink = invoicePrintService.printInvoices(ids);
         title = I18n.get("Invoices");
       } else if (context.get("id") != null) {
-        fileLink = invoicePrintService.printInvoice(request.getContext().asType(Invoice.class));
+        fileLink = invoicePrintService.printInvoice(invoiceRepo.find(request.getContext().asType(Invoice.class).getId()));
         title = I18n.get("Invoice");
       } else {
         throw new AxelorException(
