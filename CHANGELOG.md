@@ -15,6 +15,14 @@
 - Copy account type from account in analytic move line.
 - Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
 - Improve calendar synchronization speed
+- Advanced export : added warning and help for data export and fetch limits.
+- Change phonebook title to Contact PhoneBook or Company PhoneBook in view and reports.
+- Opportunity: move to proposition stage when creating a sale order.
+- Add icons to reportings & configurations submenus and harmonize their order among all menus
+- Accounting report : add domain filters on selection fields and resets to maintain consistency.
+- Correctly use daybook moves in accounting reports if the configuration is daybook.
+- Add validate date, ventilation date/user on Invoice.
+- Show alert box instead readonly ventilate button when invoice date is in future. 
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
@@ -43,6 +51,22 @@
 - Fix partner data for 'admin' and 'demo' users on demo data.
 - Fix error on 'Import demo data' for apps without modules. 
 - Advanced export: Fix crashing server,added parameters for fetch limit and maximum export limt
+- Product : set format of description field as html in product report to support formatting of description.
+- Sale: Add missing translation in subscription
+- Production: fix nb of digits for BOM quantities configuration.
+- Production order : New manufaturing order directly will not be created but with newly created popup wizard for Manufaturing order.
+- Add missing translation for "Print production process"
+- Fix NPE on automatic template message without a model.
+- Fixed issue on amounts computation on general balance report and add a sort on account codes.
+- Sort the general ledger report per account code and date
+- Add missing sequence for analytic report in demo data, and add missing trace for exception in "save" method called in accounting report.
+- Charts : rename action call that action has been renamed earlier.
+- Fix date format in birt report in manufactoring order and operation order
+- Fix some translations in account module.
+- Permission assistant : Fix when import permissions with more than one role or group.
+- Fix the opportunity field of a sale order being readonly
+- Product : reset value of productVariantValue field when we change value of associated productVariantAttr field.
+- Sale order: fix unremovable sale order line and editable invoiced sale order line.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

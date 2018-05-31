@@ -100,7 +100,7 @@
 		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
-	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" />
+	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 
     <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />
 
@@ -115,7 +115,7 @@
         <view type="form" name="manufacturing-dashboard-user"/>
     </action-view>
 		
-	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations" order="50" />
+	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configuration" order="50" icon="fa-cog"/>
 
 	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
 		title="Work centers" action="manufacturing.conf.work.center" />

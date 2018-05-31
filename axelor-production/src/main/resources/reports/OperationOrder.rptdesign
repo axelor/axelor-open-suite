@@ -1758,7 +1758,7 @@ LEFT JOIN
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyy hh:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyy HH:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4398"/>
@@ -1825,7 +1825,7 @@ LEFT JOIN
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row._outer["planned_end_datet"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_end_datet"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -1896,7 +1896,7 @@ LEFT JOIN
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4396"/>
@@ -1963,7 +1963,7 @@ LEFT JOIN
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row._outer["planned_end_datet"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_end_datet"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>

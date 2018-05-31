@@ -48,6 +48,9 @@ public class PurchaseOrderLineController {
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
 
+	@Inject
+	private FiscalPositionService fiscalPositionService;
+
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
 
 		try{
@@ -145,7 +148,21 @@ public class PurchaseOrderLineController {
 
 	}
 
-	
+	public void getTaxEquiv(ActionRequest request, ActionResponse response) {
+
+		Context context = request.getContext();
+		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+		PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+
+		response.setValue("taxEquiv", null);
+
+		if(purchaseOrder == null || purchaseOrderLine == null ||
+				purchaseOrder.getSupplierPartner() == null || purchaseOrderLine.getTaxLine() == null) return;
+
+		response.setValue("taxEquiv", fiscalPositionService.getTaxEquiv(purchaseOrder.getSupplierPartner().getFiscalPosition(), purchaseOrderLine.getTaxLine().getTax()));
+
+	}
+
 	public void getDiscount(ActionRequest request, ActionResponse response){
 
 		Context context = request.getContext();
