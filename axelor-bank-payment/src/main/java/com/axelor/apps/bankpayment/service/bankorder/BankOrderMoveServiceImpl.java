@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Journal;
@@ -47,200 +41,249 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class BankOrderMoveServiceImpl implements BankOrderMoveService  {
+public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected MoveService moveService;
-	protected PaymentModeService paymentModeService;
-	protected AccountingSituationService accountingSituationService;
-	protected BankPaymentConfigService bankPaymentConfigService;
+  protected MoveService moveService;
+  protected PaymentModeService paymentModeService;
+  protected AccountingSituationService accountingSituationService;
+  protected BankPaymentConfigService bankPaymentConfigService;
 
-	protected PaymentMode paymentMode;
-	protected Company senderCompany;
-	protected int orderTypeSelect;
-	protected int partnerTypeSelect;
-	protected Journal journal;
-	protected LocalDate bankOrderDate;
-	protected Currency bankOrderCurrency;
-	protected Account senderBankAccount;
-	protected BankDetails senderBankDetails;
-	protected boolean isMultiDate;
-	protected boolean isMultiCurrency;
-	protected boolean isDebit;
+  protected PaymentMode paymentMode;
+  protected Company senderCompany;
+  protected int orderTypeSelect;
+  protected int partnerTypeSelect;
+  protected Journal journal;
+  protected LocalDate bankOrderDate;
+  protected Currency bankOrderCurrency;
+  protected Account senderBankAccount;
+  protected BankDetails senderBankDetails;
+  protected boolean isMultiDate;
+  protected boolean isMultiCurrency;
+  protected boolean isDebit;
 
-    @Inject
-    public BankOrderMoveServiceImpl(MoveService moveService, PaymentModeService paymentModeService,
-            AccountingSituationService accountingSituationService, BankPaymentConfigService bankPaymentConfigService) {
+  @Inject
+  public BankOrderMoveServiceImpl(
+      MoveService moveService,
+      PaymentModeService paymentModeService,
+      AccountingSituationService accountingSituationService,
+      BankPaymentConfigService bankPaymentConfigService) {
 
-        this.moveService = moveService;
-        this.paymentModeService = paymentModeService;
-        this.accountingSituationService = accountingSituationService;
-        this.bankPaymentConfigService = bankPaymentConfigService;
+    this.moveService = moveService;
+    this.paymentModeService = paymentModeService;
+    this.accountingSituationService = accountingSituationService;
+    this.bankPaymentConfigService = bankPaymentConfigService;
+  }
 
+  @Override
+  public void generateMoves(BankOrder bankOrder) throws AxelorException {
+
+    if (bankOrder.getBankOrderLineList() == null || bankOrder.getBankOrderLineList().isEmpty()) {
+      return;
     }
 
+    paymentMode = bankOrder.getPaymentMode();
 
-	@Override
-	public void generateMoves(BankOrder bankOrder) throws AxelorException  {
+    if (paymentMode == null || !paymentMode.getGenerateMoveAutoFromBankOrder()) {
+      return;
+    }
 
-		if(bankOrder.getBankOrderLineList() == null || bankOrder.getBankOrderLineList().isEmpty())  {  return;  }
+    orderTypeSelect = bankOrder.getOrderTypeSelect();
+    senderCompany = bankOrder.getSenderCompany();
+    senderBankDetails = bankOrder.getSenderBankDetails();
 
-		paymentMode = bankOrder.getPaymentMode();
+    journal =
+        paymentModeService.getPaymentModeJournal(paymentMode, senderCompany, senderBankDetails);
+    senderBankAccount =
+        paymentModeService.getPaymentModeAccount(paymentMode, senderCompany, senderBankDetails);
 
-		if(paymentMode == null || !paymentMode.getGenerateMoveAutoFromBankOrder())  {  return;  }
+    isMultiDate = bankOrder.getIsMultiDate();
+    isMultiCurrency = bankOrder.getIsMultiCurrency();
 
-		orderTypeSelect = bankOrder.getOrderTypeSelect();
-		senderCompany = bankOrder.getSenderCompany();
-		senderBankDetails = bankOrder.getSenderBankDetails();
+    if (orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
+        || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER) {
+      isDebit = true;
+    } else {
+      isDebit = false;
+    }
 
-		journal = paymentModeService.getPaymentModeJournal(paymentMode, senderCompany, senderBankDetails);
-		senderBankAccount = paymentModeService.getPaymentModeAccount(paymentMode, senderCompany, senderBankDetails);
+    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
 
-		isMultiDate = bankOrder.getIsMultiDate();
-		isMultiCurrency = bankOrder.getIsMultiCurrency();
+      generateMoves(bankOrderLine);
+    }
+  }
 
-		if(orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
-				|| orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER)  {
-			isDebit = true;
-		}
-		else  {
-			isDebit = false;
-		}
+  protected void generateMoves(BankOrderLine bankOrderLine) throws AxelorException {
 
+    bankOrderLine.setSenderMove(generateSenderMove(bankOrderLine));
 
-		for(BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList())  {
+    if (partnerTypeSelect == BankOrderRepository.PARTNER_TYPE_COMPANY) {
+      bankOrderLine.setReceiverMove(generateReceiverMove(bankOrderLine));
+    }
+  }
 
-			generateMoves(bankOrderLine);
+  protected Move generateSenderMove(BankOrderLine bankOrderLine) throws AxelorException {
 
-		}
+    Partner partner = bankOrderLine.getPartner();
 
-	}
+    Move senderMove =
+        moveService
+            .getMoveCreateService()
+            .createMove(
+                journal,
+                senderCompany,
+                this.getCurrency(bankOrderLine),
+                partner,
+                this.getDate(bankOrderLine),
+                paymentMode,
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
-	protected void generateMoves(BankOrderLine bankOrderLine) throws AxelorException  {
+    MoveLine bankMoveLine =
+        moveService
+            .getMoveLineService()
+            .createMoveLine(
+                senderMove,
+                partner,
+                senderBankAccount,
+                bankOrderLine.getBankOrderAmount(),
+                !isDebit,
+                senderMove.getDate(),
+                1,
+                bankOrderLine.getReceiverReference(),
+                bankOrderLine.getReceiverLabel());
+    senderMove.addMoveLineListItem(bankMoveLine);
 
-		bankOrderLine.setSenderMove(
-				generateSenderMove(bankOrderLine));
+    MoveLine partnerMoveLine =
+        moveService
+            .getMoveLineService()
+            .createMoveLine(
+                senderMove,
+                partner,
+                getPartnerAccount(
+                    partner, bankOrderLine.getReceiverCompany(), senderMove.getCompany()),
+                bankOrderLine.getBankOrderAmount(),
+                isDebit,
+                senderMove.getDate(),
+                2,
+                bankOrderLine.getReceiverReference(),
+                bankOrderLine.getReceiverLabel());
+    senderMove.addMoveLineListItem(partnerMoveLine);
 
-		if(partnerTypeSelect == BankOrderRepository.PARTNER_TYPE_COMPANY)  {
-			bankOrderLine.setReceiverMove(
-					generateReceiverMove(bankOrderLine));
-		}
+    return senderMove;
+  }
 
-	}
+  protected Move generateReceiverMove(BankOrderLine bankOrderLine) throws AxelorException {
 
+    Partner partner = bankOrderLine.getPartner();
+    Company receiverCompany = bankOrderLine.getReceiverCompany();
 
-	protected Move generateSenderMove(BankOrderLine bankOrderLine) throws AxelorException  {
+    BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
 
-		Partner partner = bankOrderLine.getPartner();
+    Journal receiverJournal =
+        paymentModeService.getPaymentModeJournal(paymentMode, receiverCompany, receiverBankDetails);
+    Account receiverBankAccount =
+        paymentModeService.getPaymentModeAccount(paymentMode, receiverCompany, receiverBankDetails);
 
-		Move senderMove = moveService.getMoveCreateService()
-				.createMove(journal, senderCompany,
-						this.getCurrency(bankOrderLine), partner,
-						this.getDate(bankOrderLine), paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+    Move receiverMove =
+        moveService
+            .getMoveCreateService()
+            .createMove(
+                receiverJournal,
+                receiverCompany,
+                this.getCurrency(bankOrderLine),
+                partner,
+                this.getDate(bankOrderLine),
+                paymentMode,
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
-		MoveLine bankMoveLine = moveService.getMoveLineService().createMoveLine(
-				senderMove, partner, senderBankAccount,
-				bankOrderLine.getBankOrderAmount(), !isDebit,
-				senderMove.getDate(), 1, bankOrderLine.getReceiverReference(), bankOrderLine.getReceiverLabel());
-		senderMove.addMoveLineListItem(bankMoveLine);
+    MoveLine bankMoveLine =
+        moveService
+            .getMoveLineService()
+            .createMoveLine(
+                receiverMove,
+                partner,
+                receiverBankAccount,
+                bankOrderLine.getBankOrderAmount(),
+                isDebit,
+                receiverMove.getDate(),
+                1,
+                bankOrderLine.getReceiverReference(),
+                bankOrderLine.getReceiverLabel());
+    receiverMove.addMoveLineListItem(bankMoveLine);
 
-		MoveLine partnerMoveLine = moveService.getMoveLineService().createMoveLine(
-				senderMove, partner, getPartnerAccount(partner, bankOrderLine.getReceiverCompany(), senderMove.getCompany()),
-				bankOrderLine.getBankOrderAmount(), isDebit,
-				senderMove.getDate(), 2, bankOrderLine.getReceiverReference(), bankOrderLine.getReceiverLabel());
-		senderMove.addMoveLineListItem(partnerMoveLine);
+    MoveLine partnerMoveLine =
+        moveService
+            .getMoveLineService()
+            .createMoveLine(
+                receiverMove,
+                partner,
+                getPartnerAccount(partner, receiverCompany, receiverMove.getCompany()),
+                bankOrderLine.getBankOrderAmount(),
+                !isDebit,
+                receiverMove.getDate(),
+                2,
+                bankOrderLine.getReceiverReference(),
+                bankOrderLine.getReceiverLabel());
+    receiverMove.addMoveLineListItem(partnerMoveLine);
 
-		return senderMove;
+    return receiverMove;
+  }
 
-	}
+  protected Account getPartnerAccount(Partner partner, Company receiverCompany, Company moveCompany)
+      throws AxelorException {
 
-	protected Move generateReceiverMove(BankOrderLine bankOrderLine) throws AxelorException  {
+    AccountingSituation accountingSituation =
+        accountingSituationService.getAccountingSituation(partner, receiverCompany);
 
-		Partner partner = bankOrderLine.getPartner();
-		Company receiverCompany = bankOrderLine.getReceiverCompany();
+    switch (partnerTypeSelect) {
+      case BankOrderRepository.PARTNER_TYPE_CUSTOMER:
+        return accountingSituationService.getCustomerAccount(partner, receiverCompany);
 
-		BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+      case BankOrderRepository.PARTNER_TYPE_EMPLOYEE:
+        return accountingSituationService.getEmployeeAccount(partner, receiverCompany);
 
-		Journal receiverJournal = paymentModeService.getPaymentModeJournal(paymentMode, receiverCompany, receiverBankDetails);
-		Account receiverBankAccount = paymentModeService.getPaymentModeAccount(paymentMode, receiverCompany, receiverBankDetails);
+      case BankOrderRepository.PARTNER_TYPE_SUPPLIER:
+        return accountingSituationService.getSupplierAccount(partner, receiverCompany);
 
-		Move receiverMove = moveService.getMoveCreateService()
-				.createMove(receiverJournal, receiverCompany,
-						this.getCurrency(bankOrderLine), partner,
-						this.getDate(bankOrderLine), paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+      case BankOrderRepository.PARTNER_TYPE_COMPANY:
+        if (receiverCompany.equals(senderCompany)) {
+          return bankPaymentConfigService.getInternalBankToBankAccount(
+              bankPaymentConfigService.getBankPaymentConfig(moveCompany));
+        } else {
+          return bankPaymentConfigService.getExternalBankToBankAccount(
+              bankPaymentConfigService.getBankPaymentConfig(moveCompany));
+        }
 
-		MoveLine bankMoveLine = moveService.getMoveLineService().createMoveLine(
-				receiverMove, partner, receiverBankAccount,
-				bankOrderLine.getBankOrderAmount(), isDebit,
-				receiverMove.getDate(), 1, bankOrderLine.getReceiverReference(), bankOrderLine.getReceiverLabel());
-		receiverMove.addMoveLineListItem(bankMoveLine);
+      default:
+        throw new AxelorException(
+            accountingSituation,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
+            AppAccountServiceImpl.EXCEPTION);
+    }
+  }
 
-		MoveLine partnerMoveLine = moveService.getMoveLineService().createMoveLine(
-				receiverMove, partner, getPartnerAccount(partner, receiverCompany, receiverMove.getCompany()),
-				bankOrderLine.getBankOrderAmount(), !isDebit,
-				receiverMove.getDate(), 2, bankOrderLine.getReceiverReference(), bankOrderLine.getReceiverLabel());
-		receiverMove.addMoveLineListItem(partnerMoveLine);
+  protected LocalDate getDate(BankOrderLine bankOrderLine) {
 
-		return receiverMove;
+    if (isMultiDate) {
+      return bankOrderDate;
+    } else {
+      return bankOrderLine.getBankOrderDate();
+    }
+  }
 
-	}
+  protected Currency getCurrency(BankOrderLine bankOrderLine) {
 
-
-	protected Account getPartnerAccount(Partner partner, Company receiverCompany, Company moveCompany) throws AxelorException  {
-
-		AccountingSituation accountingSituation = accountingSituationService.getAccountingSituation(partner, receiverCompany);
-
-		switch (partnerTypeSelect) {
-		case BankOrderRepository.PARTNER_TYPE_CUSTOMER:
-			return accountingSituationService.getCustomerAccount(partner, receiverCompany);
-
-		case BankOrderRepository.PARTNER_TYPE_EMPLOYEE:
-			return accountingSituationService.getEmployeeAccount(partner, receiverCompany);
-
-		case BankOrderRepository.PARTNER_TYPE_SUPPLIER:
-			return accountingSituationService.getSupplierAccount(partner, receiverCompany);
-
-		case BankOrderRepository.PARTNER_TYPE_COMPANY :
-			if(receiverCompany.equals(senderCompany))  {
-				return bankPaymentConfigService.getInternalBankToBankAccount(bankPaymentConfigService.getBankPaymentConfig(moveCompany));
-			} else {
-				return bankPaymentConfigService.getExternalBankToBankAccount(bankPaymentConfigService.getBankPaymentConfig(moveCompany));
-			}
-
-		default:
-			throw new AxelorException(accountingSituation, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING), AppAccountServiceImpl.EXCEPTION);
-		}
-
-	}
-
-	protected LocalDate getDate(BankOrderLine bankOrderLine)  {
-
-		if(isMultiDate)  {
-			return bankOrderDate;
-		}
-		else  {
-			return bankOrderLine.getBankOrderDate();
-		}
-
-	}
-
-	protected Currency getCurrency(BankOrderLine bankOrderLine)   {
-
-		if(isMultiCurrency)  {
-			return bankOrderCurrency;
-		}
-		else  {
-			return bankOrderLine.getBankOrderCurrency();
-		}
-
-	}
-
-
+    if (isMultiCurrency) {
+      return bankOrderCurrency;
+    } else {
+      return bankOrderLine.getBankOrderCurrency();
+    }
+  }
 }
-
-
-
-
-

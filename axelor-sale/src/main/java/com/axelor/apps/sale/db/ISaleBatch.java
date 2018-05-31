@@ -20,12 +20,8 @@ package com.axelor.apps.sale.db;
 @Deprecated
 public interface ISaleBatch {
 
-	/**
-	 * Static select in SaleBatch
-	 */
+  /** Static select in SaleBatch */
 
-
-	// ACTION TYPE
-	static final int BATCH_INVOICING = 1;
-	
+  // ACTION TYPE
+  static final int BATCH_INVOICING = 1;
 }

@@ -23,9 +23,9 @@ import com.google.inject.AbstractModule;
 
 public class TestModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
-        install(new JpaModule("testUnit", true, true));
-        install(new AuthModule());
-	}
+  @Override
+  protected void configure() {
+    install(new JpaModule("testUnit", true, true));
+    install(new AuthModule());
+  }
 }

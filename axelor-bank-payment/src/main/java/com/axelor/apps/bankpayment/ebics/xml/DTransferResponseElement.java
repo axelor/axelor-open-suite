@@ -23,25 +23,22 @@ import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
 
 /**
- * The <code>DTransferResponseElement</code> is the response element
- * for all ebics downloads transfers.
+ * The <code>DTransferResponseElement</code> is the response element for all ebics downloads
+ * transfers.
  *
  * @author Hachani
- *
  */
 public class DTransferResponseElement extends TransferResponseElement {
 
   /**
    * Constructs a new <code>DTransferResponseElement</code> object.
+   *
    * @param factory the content factory
    * @param orderType the order type
    * @param name the element name.
    */
-  public DTransferResponseElement(ContentFactory factory,
-                                  OrderType orderType,
-                                  String name,
-                                  EbicsUser ebicsUser)
-  {
+  public DTransferResponseElement(
+      ContentFactory factory, OrderType orderType, String name, EbicsUser ebicsUser) {
     super(factory, name, ebicsUser);
   }
 
@@ -54,6 +51,7 @@ public class DTransferResponseElement extends TransferResponseElement {
 
   /**
    * Returns the order data.
+   *
    * @return the order data.
    */
   public byte[] getOrderData() {
@@ -64,5 +62,5 @@ public class DTransferResponseElement extends TransferResponseElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private byte[]			orderData;
+  private byte[] orderData;
 }

@@ -34,43 +34,51 @@ import com.google.inject.Inject;
 
 public class ValidateState extends WorkflowInvoice {
 
-	protected UserService userService;
-	protected BlockingService blockingService;
-	protected WorkflowValidationService workflowValidationService;
-	protected AppBaseService appBaseService;
+  protected UserService userService;
+  protected BlockingService blockingService;
+  protected WorkflowValidationService workflowValidationService;
+  protected AppBaseService appBaseService;
 
-	@Inject
-	public ValidateState(UserService userService,
-						 BlockingService blockingService,
-						 WorkflowValidationService workflowValidationService,
-						 AppBaseService appBaseService) {
-		super();
-		this.userService = userService;
-		this.blockingService = blockingService;
-		this.workflowValidationService = workflowValidationService;
-		this.appBaseService = appBaseService;
-	}
+  @Inject
+  public ValidateState(
+      UserService userService,
+      BlockingService blockingService,
+      WorkflowValidationService workflowValidationService,
+      AppBaseService appBaseService) {
+    super();
+    this.userService = userService;
+    this.blockingService = blockingService;
+    this.workflowValidationService = workflowValidationService;
+    this.appBaseService = appBaseService;
+  }
 
-	public void init(Invoice invoice){
-		this.invoice = invoice;
-	}
+  public void init(Invoice invoice) {
+    this.invoice = invoice;
+  }
 
-	@Override
-	public void process( ) throws AxelorException {
+  @Override
+  public void process() throws AxelorException {
 
-		if ((InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
-		 || (!InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
-		}
+    if ((InvoiceToolService.isOutPayment(invoice)
+            && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
+        || (!InvoiceToolService.isOutPayment(invoice)
+            && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
+    }
 
-		if(blockingService.getBlocking(invoice.getPartner(), invoice.getCompany(), BlockingRepository.INVOICING_BLOCKING) != null) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
-		}
-		invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
-		invoice.setValidatedByUser(userService.getUser());
-		invoice.setValidatedDate(appBaseService.getTodayDate());
+    if (blockingService.getBlocking(
+            invoice.getPartner(), invoice.getCompany(), BlockingRepository.INVOICING_BLOCKING)
+        != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
+    }
+    invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
+    invoice.setValidatedByUser(userService.getUser());
+    invoice.setValidatedDate(appBaseService.getTodayDate());
 
-		workflowValidationService.afterValidation(invoice);
-	}
-
+    workflowValidationService.afterValidation(invoice);
+  }
 }

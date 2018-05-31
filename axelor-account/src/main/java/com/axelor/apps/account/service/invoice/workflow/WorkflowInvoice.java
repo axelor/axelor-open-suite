@@ -22,10 +22,9 @@ import com.axelor.exception.AxelorException;
 
 public abstract class WorkflowInvoice {
 
-	protected Invoice invoice;
+  protected Invoice invoice;
 
-	public abstract void init(Invoice invoice);
+  public abstract void init(Invoice invoice);
 
-	public abstract void process() throws AxelorException;
-
+  public abstract void process() throws AxelorException;
 }

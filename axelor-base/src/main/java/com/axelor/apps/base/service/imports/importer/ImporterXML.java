@@ -23,18 +23,15 @@ import com.axelor.data.xml.XMLImporter;
 
 class ImporterXML extends Importer {
 
-	@Override
-	protected ImportHistory process( String bind, String data ) {
+  @Override
+  protected ImportHistory process(String bind, String data) {
 
-		XMLImporter importer = new XMLImporter( bind, data);
-		
-		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
-		importer.addListener( listener );
-		importer.run();
-		
-		return addHistory( listener );
-		
-	}
+    XMLImporter importer = new XMLImporter(bind, data);
 
+    ImporterListener listener = new ImporterListener(getConfiguration().getName());
+    importer.addListener(listener);
+    importer.run();
 
+    return addHistory(listener);
+  }
 }

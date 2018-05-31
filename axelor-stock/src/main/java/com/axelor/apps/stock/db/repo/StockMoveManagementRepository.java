@@ -17,47 +17,45 @@
  */
 package com.axelor.apps.stock.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import javax.persistence.PersistenceException;
 
 public class StockMoveManagementRepository extends StockMoveRepository {
-	@Override
-	public StockMove copy(StockMove entity, boolean deep) {
+  @Override
+  public StockMove copy(StockMove entity, boolean deep) {
 
-		StockMove copy = super.copy(entity, deep);
+    StockMove copy = super.copy(entity, deep);
 
-		copy.setStatusSelect(STATUS_DRAFT);
-		copy.setStockMoveSeq(null);
-		copy.setName(null);
-		copy.setRealDate(null);
+    copy.setStatusSelect(STATUS_DRAFT);
+    copy.setStockMoveSeq(null);
+    copy.setName(null);
+    copy.setRealDate(null);
 
-		return copy;
-	}
+    return copy;
+  }
 
-    @Override
-    public StockMove save(StockMove entity) {
-        try {
-            StockMove stockMove = super.save(entity);
-            SequenceService sequenceService = Beans.get(SequenceService.class);
+  @Override
+  public StockMove save(StockMove entity) {
+    try {
+      StockMove stockMove = super.save(entity);
+      SequenceService sequenceService = Beans.get(SequenceService.class);
 
-            if (Strings.isNullOrEmpty(stockMove.getStockMoveSeq())) {
-                stockMove.setStockMoveSeq(sequenceService.getDraftSequenceNumber(stockMove));
-            }
+      if (Strings.isNullOrEmpty(stockMove.getStockMoveSeq())) {
+        stockMove.setStockMoveSeq(sequenceService.getDraftSequenceNumber(stockMove));
+      }
 
-            if (Strings.isNullOrEmpty(stockMove.getName())
-                    || stockMove.getName().startsWith(stockMove.getStockMoveSeq())) {
-                stockMove.setName(Beans.get(StockMoveService.class).computeName(stockMove));
-            }
+      if (Strings.isNullOrEmpty(stockMove.getName())
+          || stockMove.getName().startsWith(stockMove.getStockMoveSeq())) {
+        stockMove.setName(Beans.get(StockMoveService.class).computeName(stockMove));
+      }
 
-            return stockMove;
-        } catch (Exception e) {
-            throw new PersistenceException(e);
-        }
+      return stockMove;
+    } catch (Exception e) {
+      throw new PersistenceException(e);
     }
-
+  }
 }

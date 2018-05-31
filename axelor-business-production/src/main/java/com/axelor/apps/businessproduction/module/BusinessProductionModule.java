@@ -39,23 +39,22 @@ import com.axelor.apps.production.service.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.ProductionOrderWizardServiceImpl;
 
-
 public class BusinessProductionModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(ProductionOrderServiceImpl.class).to(ProductionOrderServiceBusinessImpl.class);
-		bind(CostSheetServiceImpl.class).to(CostSheetServiceBusinessImpl.class);
-		bind(ManufOrderServiceImpl.class).to(ManufOrderServiceBusinessImpl.class);
-		bind(OperationOrderServiceImpl.class).to(OperationOrderServiceBusinessImpl.class);
-		bind(ProductionOrderServiceImpl.class).to(ProductionOrderServiceBusinessImpl.class);
-		bind(ProductionOrderWizardServiceImpl.class).to(ProductionOrderWizardServiceBusinessImpl.class);
-		bind(ProductionOrderSaleOrderServiceImpl.class).to(ProductionOrderSaleOrderServiceBusinessImpl.class);
-		bind(InvoicingProjectService.class).to(InvoicingProjectServiceBusinessProdImpl.class);
-		bind(OperationOrderWorkflowService.class).to(OperationOrderWorkflowServiceBusinessImpl.class);
-		bind(ManufOrderValidateBusinessService.class).to(ManufOrderValidateBusinessServiceImpl.class);
-		bind(OperationOrderValidateBusinessService.class).to(OperationOrderValidateBusinessServiceImpl.class);
-	}
-
+  @Override
+  protected void configure() {
+    bind(ProductionOrderServiceImpl.class).to(ProductionOrderServiceBusinessImpl.class);
+    bind(CostSheetServiceImpl.class).to(CostSheetServiceBusinessImpl.class);
+    bind(ManufOrderServiceImpl.class).to(ManufOrderServiceBusinessImpl.class);
+    bind(OperationOrderServiceImpl.class).to(OperationOrderServiceBusinessImpl.class);
+    bind(ProductionOrderServiceImpl.class).to(ProductionOrderServiceBusinessImpl.class);
+    bind(ProductionOrderWizardServiceImpl.class).to(ProductionOrderWizardServiceBusinessImpl.class);
+    bind(ProductionOrderSaleOrderServiceImpl.class)
+        .to(ProductionOrderSaleOrderServiceBusinessImpl.class);
+    bind(InvoicingProjectService.class).to(InvoicingProjectServiceBusinessProdImpl.class);
+    bind(OperationOrderWorkflowService.class).to(OperationOrderWorkflowServiceBusinessImpl.class);
+    bind(ManufOrderValidateBusinessService.class).to(ManufOrderValidateBusinessServiceImpl.class);
+    bind(OperationOrderValidateBusinessService.class)
+        .to(OperationOrderValidateBusinessServiceImpl.class);
+  }
 }
- 

@@ -17,45 +17,51 @@
  */
 package com.axelor.csv.script;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
-
+import java.util.ArrayList;
+import java.util.Map;
 
 public class ImportPartnerAccount {
-		
-		@Inject
-		private AccountRepository accountRepo;
-	
-		public Object importAccountingSituation(Object bean, Map<String,Object> values) {
-			assert bean instanceof Partner;
-	        try{
-	            Partner partner = (Partner) bean;
-				for(Company company : partner.getCompanySet())  {
-					AccountingSituation accountingSituation = new AccountingSituation();
-					accountingSituation.setPartner(partner);
-					accountingSituation.setCompany(company);
-					accountingSituation.setCustomerAccount(accountRepo.all().filter("self.code = ?1 AND self.company = ?2",values.get("customerAccount_code").toString(),company).fetchOne());
-					accountingSituation.setSupplierAccount(accountRepo.all().filter("self.code = ?1 AND self.company = ?2",values.get("supplierAccount_code").toString(),company).fetchOne());
-					if(partner.getAccountingSituationList() == null)  {
-						partner.setAccountingSituationList(new ArrayList<AccountingSituation>());
-					}
-					partner.getAccountingSituationList().add(accountingSituation);
-						
-				}
-				return partner;
-	        }catch(Exception e){
-	            e.printStackTrace();
-	        }
-	        return bean;
-		}
-		
+
+  @Inject private AccountRepository accountRepo;
+
+  public Object importAccountingSituation(Object bean, Map<String, Object> values) {
+    assert bean instanceof Partner;
+    try {
+      Partner partner = (Partner) bean;
+      for (Company company : partner.getCompanySet()) {
+        AccountingSituation accountingSituation = new AccountingSituation();
+        accountingSituation.setPartner(partner);
+        accountingSituation.setCompany(company);
+        accountingSituation.setCustomerAccount(
+            accountRepo
+                .all()
+                .filter(
+                    "self.code = ?1 AND self.company = ?2",
+                    values.get("customerAccount_code").toString(),
+                    company)
+                .fetchOne());
+        accountingSituation.setSupplierAccount(
+            accountRepo
+                .all()
+                .filter(
+                    "self.code = ?1 AND self.company = ?2",
+                    values.get("supplierAccount_code").toString(),
+                    company)
+                .fetchOne());
+        if (partner.getAccountingSituationList() == null) {
+          partner.setAccountingSituationList(new ArrayList<AccountingSituation>());
+        }
+        partner.getAccountingSituationList().add(accountingSituation);
+      }
+      return partner;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return bean;
+  }
 }
-
-
-

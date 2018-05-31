@@ -20,16 +20,16 @@ package com.axelor.apps.fleet.service;
 import com.axelor.apps.fleet.db.Vehicle;
 
 public class VehicleServiceImpl implements VehicleService {
-	
-	@Override
-	public String setVehicleName(Vehicle vehicle) {
-		String model = "";
-		if (vehicle.getVehicleModel() != null) {
-			model = vehicle.getVehicleModel().getName();
-		}
-		if (vehicle.getPlateNo() != null) {
-			model += " " + vehicle.getPlateNo();  			
-		}		
-		return model;
-	}
+
+  @Override
+  public String setVehicleName(Vehicle vehicle) {
+    String model = "";
+    if (vehicle.getVehicleModel() != null) {
+      model = vehicle.getVehicleModel().getName();
+    }
+    if (vehicle.getPlateNo() != null) {
+      model += " " + vehicle.getPlateNo();
+    }
+    return model;
+  }
 }

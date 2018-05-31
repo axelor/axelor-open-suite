@@ -37,24 +37,22 @@ import java.util.Map;
 import org.bouncycastle.openssl.PEMReader;
 
 /**
- * Key store loader. This class loads a key store from
- * a given path and allow to get private keys and certificates
- * for a given alias.
- * The PKCS12 key store type is recommended to be used
+ * Key store loader. This class loads a key store from a given path and allow to get private keys
+ * and certificates for a given alias. The PKCS12 key store type is recommended to be used
  *
  * @author hachani
- *
  */
 public class KeyStoreManager {
 
   /**
    * Loads a certificate for a given alias
+   *
    * @param alias the certificate alias
    * @return the certificate
    * @throws KeyStoreException
    */
   public final X509Certificate getCertificate(String alias) throws KeyStoreException {
-    X509Certificate		cert;
+    X509Certificate cert;
 
     cert = (X509Certificate) keyStore.getCertificate(alias);
 
@@ -67,12 +65,13 @@ public class KeyStoreManager {
 
   /**
    * Loads a private key for a given alias
+   *
    * @param alias the certificate alias
    * @return the private key
    * @throws GeneralSecurityException
    */
   public final PrivateKey getPrivateKey(String alias) throws GeneralSecurityException {
-    PrivateKey			key;
+    PrivateKey key;
 
     key = (PrivateKey) keyStore.getKey(alias, password);
     if (key == null) {
@@ -84,14 +83,13 @@ public class KeyStoreManager {
 
   /**
    * Loads a key store from a given path and password
+   *
    * @param path the key store path
    * @param password the key store password
    * @throws GeneralSecurityException
    * @throws IOException
    */
-  public void load(String path, char[] password)
-    throws GeneralSecurityException, IOException
-  {
+  public void load(String path, char[] password) throws GeneralSecurityException, IOException {
     keyStore = KeyStore.getInstance("PKCS12", "BC");
     this.password = password;
     load(path);
@@ -99,6 +97,7 @@ public class KeyStoreManager {
 
   /**
    * Loads a key store and cache the loaded one
+   *
    * @param path the key store path.
    * @throws GeneralSecurityException
    * @throws IOException
@@ -114,6 +113,7 @@ public class KeyStoreManager {
 
   /**
    * Reads a certificate from an input stream for a given provider
+   *
    * @param input the input stream
    * @param provider the certificate provider
    * @return the certificate
@@ -121,15 +121,16 @@ public class KeyStoreManager {
    * @throws IOException
    */
   public X509Certificate read(InputStream input, Provider provider)
-    throws CertificateException, IOException
-  {
-    X509Certificate		certificate;
+      throws CertificateException, IOException {
+    X509Certificate certificate;
 
-    certificate = (X509Certificate) CertificateFactory.getInstance("X.509", provider).generateCertificate(input);
-    
+    certificate =
+        (X509Certificate)
+            CertificateFactory.getInstance("X.509", provider).generateCertificate(input);
+
     if (certificate == null) {
       PEMReader reader = new PEMReader(new InputStreamReader(input));
-      certificate = (X509Certificate)(reader).readObject();
+      certificate = (X509Certificate) (reader).readObject();
       reader.close();
     }
 
@@ -138,44 +139,43 @@ public class KeyStoreManager {
 
   /**
    * Returns the public key of a given certificate.
+   *
    * @param input the given certificate
    * @return The RSA public key of the given certificate
    * @throws GeneralSecurityException
    * @throws IOException
    */
-  public RSAPublicKey getPublicKey(InputStream input)
-    throws GeneralSecurityException, IOException
-  {
-    X509Certificate		cert;
+  public RSAPublicKey getPublicKey(InputStream input) throws GeneralSecurityException, IOException {
+    X509Certificate cert;
     cert = read(input, keyStore.getProvider());
     return (RSAPublicKey) cert.getPublicKey();
   }
-  
+
   /**
    * Writes the given certificate into the key store.
+   *
    * @param alias the certificate alias
    * @param input the given certificate.
    * @throws GeneralSecurityException
    * @throws IOException
    */
   public void setCertificateEntry(String alias, InputStream input)
-    throws GeneralSecurityException, IOException
-  {
+      throws GeneralSecurityException, IOException {
     keyStore.setCertificateEntry(alias, read(input, keyStore.getProvider()));
   }
 
   /**
    * Saves the key store to a given output stream.
+   *
    * @param output the output stream.
    */
-  public void save(OutputStream output)
-    throws GeneralSecurityException, IOException
-  {
+  public void save(OutputStream output) throws GeneralSecurityException, IOException {
     keyStore.store(output, password);
   }
-  
+
   /**
    * Returns the certificates contained in the key store.
+   *
    * @return the certificates contained in the key store.
    */
   public Map<String, X509Certificate> getCertificates() {
@@ -184,24 +184,22 @@ public class KeyStoreManager {
 
   /**
    * Reads all certificate existing in a given key store
+   *
    * @param keyStore the key store
-   * @return A <code>Map</code> of certificate,
-   *         the key of the map is the certificate alias
+   * @return A <code>Map</code> of certificate, the key of the map is the certificate alias
    * @throws KeyStoreException
    */
-  public Map<String, X509Certificate> read(KeyStore keyStore)
-    throws KeyStoreException
-  {
-    Map<String, X509Certificate>	certificates;
-    Enumeration<String> 		enumeration;
+  public Map<String, X509Certificate> read(KeyStore keyStore) throws KeyStoreException {
+    Map<String, X509Certificate> certificates;
+    Enumeration<String> enumeration;
 
     certificates = new HashMap<String, X509Certificate>();
     enumeration = keyStore.aliases();
     while (enumeration.hasMoreElements()) {
-      String		alias;
+      String alias;
 
       alias = enumeration.nextElement();
-      certificates.put(alias, (X509Certificate)keyStore.getCertificate(alias));
+      certificates.put(alias, (X509Certificate) keyStore.getCertificate(alias));
     }
 
     return certificates;
@@ -211,7 +209,7 @@ public class KeyStoreManager {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private KeyStore			keyStore;
-  private char[]			password;
-  private Map<String, X509Certificate>	certs;
+  private KeyStore keyStore;
+  private char[] password;
+  private Map<String, X509Certificate> certs;
 }

@@ -22,35 +22,30 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.exception.AxelorException;
-
 import java.util.Map;
-
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 public class ImportInvoice {
-	
-	@Inject
-	private AddressService addressService;
-	
-	@Inject
-	private InvoiceService invoiceService;
-	
-	@Inject
-	private InvoiceRepository invoiceRepo;
-	
-	@Transactional
-    public Object importInvoice(Object bean, Map<String, Object> values) throws AxelorException {
-    	assert bean instanceof Invoice;
-    	Invoice invoice = (Invoice) bean;
-    	
-    	if (invoice.getAddress() != null) {
-    		invoice.setAddressStr(addressService.computeAddressStr(invoice.getAddress()));
-    	}
-    	invoiceRepo.save(invoice);
-    	if (invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT) {
-    		invoiceService.setDraftSequence(invoice);
-    	}
-    	return invoice;
+
+  @Inject private AddressService addressService;
+
+  @Inject private InvoiceService invoiceService;
+
+  @Inject private InvoiceRepository invoiceRepo;
+
+  @Transactional
+  public Object importInvoice(Object bean, Map<String, Object> values) throws AxelorException {
+    assert bean instanceof Invoice;
+    Invoice invoice = (Invoice) bean;
+
+    if (invoice.getAddress() != null) {
+      invoice.setAddressStr(addressService.computeAddressStr(invoice.getAddress()));
     }
+    invoiceRepo.save(invoice);
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT) {
+      invoiceService.setDraftSequence(invoice);
+    }
+    return invoice;
+  }
 }

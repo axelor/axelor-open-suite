@@ -23,12 +23,12 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 
 public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl
-        implements LogisticalFormSupplychainService {
+    implements LogisticalFormSupplychainService {
 
-    @Override
-    protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
-        SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-        return saleOrderLine == null || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
-    }
-
+  @Override
+  protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
+    SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+    return saleOrderLine == null
+        || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
+  }
 }

@@ -17,50 +17,46 @@
  */
 package com.axelor.csv.script;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.Map;
-
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ImportApp {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ImportApp.class);
-	
-	@Inject
-	private MetaFiles metaFiles;
+  private static final Logger LOG = LoggerFactory.getLogger(ImportApp.class);
 
-	public Object importApp(Object bean, Map<String,Object> values) {
-		
-		assert bean instanceof App;
-		
-		App app = (App) bean;
-		
-		final Path path = (Path) values.get("__path__");
-		String fileName = (String) values.get("imagePath");
-		
-		try {
-			final File image = path.resolve("img" + File.separator +  fileName).toFile(); 
-			final MetaFile metaFile = metaFiles.upload(image);
-			app.setImage(metaFile);
-			
-		} catch (Exception e) {
-			LOG.warn("Can't load image {} for app {}", fileName, app.getName());
-		}
-		
-		
-		if (app.getLanguageSelect() == null) {
-			String language = AppSettings.get().get("application.locale");
-			app.setLanguageSelect(language);
-		}
-		
-		return app;
-	}
-	
+  @Inject private MetaFiles metaFiles;
+
+  public Object importApp(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof App;
+
+    App app = (App) bean;
+
+    final Path path = (Path) values.get("__path__");
+    String fileName = (String) values.get("imagePath");
+
+    try {
+      final File image = path.resolve("img" + File.separator + fileName).toFile();
+      final MetaFile metaFile = metaFiles.upload(image);
+      app.setImage(metaFile);
+
+    } catch (Exception e) {
+      LOG.warn("Can't load image {} for app {}", fileName, app.getName());
+    }
+
+    if (app.getLanguageSelect() == null) {
+      String language = AppSettings.get().get("application.locale");
+      app.setLanguageSelect(language);
+    }
+
+    return app;
+  }
 }

@@ -17,48 +17,48 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.util.Optional;
 
 public interface SaleOrderStockService {
 
-    /**
-	 * Create a delivery stock move from a sale order.
-	 * 
-	 * @param saleOrder
-	 * @return
-	 * @throws AxelorException
-	 */
-	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  /**
+   * Create a delivery stock move from a sale order.
+   *
+   * @param saleOrder
+   * @return
+   * @throws AxelorException
+   */
+  public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
-	
-	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine) throws AxelorException;
+  public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
 
-	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException;
+  public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 
-	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException;
+  public StockMoveLine createStockMoveLine(
+      StockMove stockMove, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException;
 
-    /**
-     * Find active stock move for sale order.
-     * 
-     * @param saleOrder
-     * @return
-     */
-    Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder);
+  public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException;
 
-    /**
-     * Update delivery state by checking delivery states on the sale order lines.
-     * 
-     * @param saleOrder
-     */
-    void updateDeliveryState(SaleOrder saleOrder) throws AxelorException;
+  /**
+   * Find active stock move for sale order.
+   *
+   * @param saleOrder
+   * @return
+   */
+  Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder);
 
+  /**
+   * Update delivery state by checking delivery states on the sale order lines.
+   *
+   * @param saleOrder
+   */
+  void updateDeliveryState(SaleOrder saleOrder) throws AxelorException;
 }

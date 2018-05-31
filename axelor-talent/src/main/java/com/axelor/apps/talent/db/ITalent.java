@@ -19,11 +19,9 @@ package com.axelor.apps.talent.db;
 
 @Deprecated
 public class ITalent {
-	
-	/**
-	 * Static select in Sequence
-	 */
 
-	// TYPE
-	public static final String JOB_POSITION = "jobPosition";
+  /** Static select in Sequence */
+
+  // TYPE
+  public static final String JOB_POSITION = "jobPosition";
 }

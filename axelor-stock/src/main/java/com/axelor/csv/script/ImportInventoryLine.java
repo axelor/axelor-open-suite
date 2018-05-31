@@ -17,9 +17,6 @@
  */
 package com.axelor.csv.script;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -30,81 +27,81 @@ import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class ImportInventoryLine {
 
-	@Inject
-	private InventoryLineRepository inventoryLineRepo;
+  @Inject private InventoryLineRepository inventoryLineRepo;
 
-	@Inject
-	private InventoryLineService inventoryLineService;
+  @Inject private InventoryLineService inventoryLineService;
 
-	@Inject
-	private TrackingNumberService trackingNumberService;
+  @Inject private TrackingNumberService trackingNumberService;
 
-	@Inject
-	private AppBaseService appBaseService;
+  @Inject private AppBaseService appBaseService;
 
-	@Transactional
-	public Object importInventoryLine(Object bean, Map<String,Object> values) throws AxelorException {
+  @Transactional
+  public Object importInventoryLine(Object bean, Map<String, Object> values)
+      throws AxelorException {
 
-		assert bean instanceof InventoryLine;
+    assert bean instanceof InventoryLine;
 
-		InventoryLine inventoryLine = (InventoryLine) bean;
+    InventoryLine inventoryLine = (InventoryLine) bean;
 
-		TrackingNumberConfiguration trackingNumberConfig = inventoryLine.getProduct().getTrackingNumberConfiguration();
+    TrackingNumberConfiguration trackingNumberConfig =
+        inventoryLine.getProduct().getTrackingNumberConfiguration();
 
-		BigDecimal qtyByTracking = BigDecimal.ONE;
+    BigDecimal qtyByTracking = BigDecimal.ONE;
 
-		BigDecimal realQtyRemaning = inventoryLine.getRealQty();
-		
-		TrackingNumber trackingNumber;
+    BigDecimal realQtyRemaning = inventoryLine.getRealQty();
 
-		if (trackingNumberConfig != null) {
+    TrackingNumber trackingNumber;
 
-			if (trackingNumberConfig.getGenerateProductionAutoTrackingNbr()) {
-				qtyByTracking = trackingNumberConfig.getProductionQtyByTracking();
-			} else if (trackingNumberConfig.getGeneratePurchaseAutoTrackingNbr()) {
-				qtyByTracking = trackingNumberConfig.getPurchaseQtyByTracking();
-			} else {
-				qtyByTracking = trackingNumberConfig.getSaleQtyByTracking();
-			}
+    if (trackingNumberConfig != null) {
 
-			InventoryLine inventoryLineNew;
+      if (trackingNumberConfig.getGenerateProductionAutoTrackingNbr()) {
+        qtyByTracking = trackingNumberConfig.getProductionQtyByTracking();
+      } else if (trackingNumberConfig.getGeneratePurchaseAutoTrackingNbr()) {
+        qtyByTracking = trackingNumberConfig.getPurchaseQtyByTracking();
+      } else {
+        qtyByTracking = trackingNumberConfig.getSaleQtyByTracking();
+      }
 
-			for (int i=0;i<inventoryLine.getRealQty().intValue();i+=qtyByTracking.intValue()) {
-				
-				trackingNumber = trackingNumberService.createTrackingNumber(
-						inventoryLine.getProduct(),
-						inventoryLine.getInventory().getStockLocation().getCompany(),
-						appBaseService.getTodayDate()
-						);
-				
-				if (realQtyRemaning.compareTo(qtyByTracking)<0) {
-					trackingNumber.setCounter(realQtyRemaning);
-				} else {
-					trackingNumber.setCounter(qtyByTracking);
-				}
+      InventoryLine inventoryLineNew;
 
-				inventoryLineNew = inventoryLineService.createInventoryLine(
-						inventoryLine.getInventory(),
-						inventoryLine.getProduct(),
-						inventoryLine.getCurrentQty(),
-						inventoryLine.getRack(),
-						trackingNumber
-						);
-				
-				if (realQtyRemaning.compareTo(qtyByTracking)<0) {
-					inventoryLineNew.setRealQty(realQtyRemaning);
-				} else {
-					inventoryLineNew.setRealQty(qtyByTracking);
-					realQtyRemaning = realQtyRemaning.subtract(qtyByTracking);
-				}
+      for (int i = 0; i < inventoryLine.getRealQty().intValue(); i += qtyByTracking.intValue()) {
 
-				inventoryLineRepo.save(inventoryLineNew);
-			}
-			return null;
-		}
-		return bean;
-	}
+        trackingNumber =
+            trackingNumberService.createTrackingNumber(
+                inventoryLine.getProduct(),
+                inventoryLine.getInventory().getStockLocation().getCompany(),
+                appBaseService.getTodayDate());
+
+        if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
+          trackingNumber.setCounter(realQtyRemaning);
+        } else {
+          trackingNumber.setCounter(qtyByTracking);
+        }
+
+        inventoryLineNew =
+            inventoryLineService.createInventoryLine(
+                inventoryLine.getInventory(),
+                inventoryLine.getProduct(),
+                inventoryLine.getCurrentQty(),
+                inventoryLine.getRack(),
+                trackingNumber);
+
+        if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
+          inventoryLineNew.setRealQty(realQtyRemaning);
+        } else {
+          inventoryLineNew.setRealQty(qtyByTracking);
+          realQtyRemaning = realQtyRemaning.subtract(qtyByTracking);
+        }
+
+        inventoryLineRepo.save(inventoryLineNew);
+      }
+      return null;
+    }
+    return bean;
+  }
 }

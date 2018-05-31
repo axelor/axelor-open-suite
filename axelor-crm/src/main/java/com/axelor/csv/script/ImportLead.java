@@ -17,37 +17,31 @@
  */
 package com.axelor.csv.script;
 
-import com.google.inject.Inject;
-
-import java.util.Map;
-
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.google.inject.Inject;
+import java.util.Map;
 
-public class ImportLead{
-	
-	@Inject
-	private UserRepository userRepo;
-	
-	@Inject
-	private LeadRepository leadRepo;
-	
-	public User importCreatedBy(String importId){
-		User user = userRepo.all().filter("self.importId = ?1",importId).fetchOne();
-		if(user != null)
-			return user;
-		return userRepo.all().filter("self.code = 'democrm'").fetchOne();
-	}
-	
-	public Object saveLead(Object bean, Map<String,Object> values) {
-		
-		assert bean instanceof Lead;
-		
-		Lead lead = (Lead) bean;
-		
-		return leadRepo.save(lead);
-	}
+public class ImportLead {
 
+  @Inject private UserRepository userRepo;
+
+  @Inject private LeadRepository leadRepo;
+
+  public User importCreatedBy(String importId) {
+    User user = userRepo.all().filter("self.importId = ?1", importId).fetchOne();
+    if (user != null) return user;
+    return userRepo.all().filter("self.code = 'democrm'").fetchOne();
+  }
+
+  public Object saveLead(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof Lead;
+
+    Lead lead = (Lead) bean;
+
+    return leadRepo.save(lead);
+  }
 }

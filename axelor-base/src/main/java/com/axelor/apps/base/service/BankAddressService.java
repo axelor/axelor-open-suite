@@ -21,27 +21,26 @@ import com.axelor.apps.base.db.BankAddress;
 
 public class BankAddressService {
 
-    public String computeFullAddress(String label, String address, String code) {
-        //fullAddress = label address (code)
-        String fullAddress = "";
-        fullAddress = label;
-        if(fullAddress == null || fullAddress.equals("") ) {
-            fullAddress = "";
-        }
-        else {
-            fullAddress += " ";
-        }
-        fullAddress += address;
+  public String computeFullAddress(String label, String address, String code) {
+    // fullAddress = label address (code)
+    String fullAddress = "";
+    fullAddress = label;
+    if (fullAddress == null || fullAddress.equals("")) {
+      fullAddress = "";
+    } else {
+      fullAddress += " ";
+    }
+    fullAddress += address;
 
-        if(code == null|| code.equals("")) {
-            return fullAddress;
-        }
-
-        return fullAddress + " ( " + code + " )";
-
+    if (code == null || code.equals("")) {
+      return fullAddress;
     }
 
-    public String computeFullAddress(BankAddress bankAddress) {
-        return this.computeFullAddress(bankAddress.getLabel(), bankAddress.getAddress(), bankAddress.getCode());
-    }
+    return fullAddress + " ( " + code + " )";
+  }
+
+  public String computeFullAddress(BankAddress bankAddress) {
+    return this.computeFullAddress(
+        bankAddress.getLabel(), bankAddress.getAddress(), bankAddress.getCode());
+  }
 }

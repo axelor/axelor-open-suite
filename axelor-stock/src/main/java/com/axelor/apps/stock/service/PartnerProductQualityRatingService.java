@@ -22,20 +22,19 @@ import com.axelor.exception.AxelorException;
 
 public interface PartnerProductQualityRatingService {
 
-	/**
-	 * Calculate quality rating.
-	 * 
-	 * @param stockMove
-	 * @throws AxelorException
-	 */
-	void calculate(StockMove stockMove) throws AxelorException;
+  /**
+   * Calculate quality rating.
+   *
+   * @param stockMove
+   * @throws AxelorException
+   */
+  void calculate(StockMove stockMove) throws AxelorException;
 
-	/**
-	 * Undo calculation of the quality rating.
-	 * 
-	 * @param stockMove
-	 * @throws AxelorException
-	 */
-	void undoCalculation(StockMove stockMove) throws AxelorException;
-
+  /**
+   * Undo calculation of the quality rating.
+   *
+   * @param stockMove
+   * @throws AxelorException
+   */
+  void undoCalculation(StockMove stockMove) throws AxelorException;
 }

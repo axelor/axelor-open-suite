@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.base.service;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
@@ -30,20 +24,40 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
 import com.itextpdf.text.DocumentException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 public interface AdvancedExportService {
 
-	public String getTargetField(Context context, MetaField metaField, String targetField, MetaModel parentMetaModel);
-	
-	public MetaFile advancedExportPDF(List<Map<String, Object>> advancedExportLines, MetaModel metaModel,
-			String criteria, Integer maxExportLimit, Integer queryFetchLimit) throws DocumentException, IOException, ClassNotFoundException, AxelorException;
+  public String getTargetField(
+      Context context, MetaField metaField, String targetField, MetaModel parentMetaModel);
 
-	public MetaFile advancedExportExcel(List<Map<String, Object>> advancedExportLines, MetaModel metaModel,
-			String criteria, Integer maxExportLimit, Integer queryFetchLimit)
-			throws IOException, ClassNotFoundException, DocumentException, AxelorException, InvalidFormatException;
+  public MetaFile advancedExportPDF(
+      List<Map<String, Object>> advancedExportLines,
+      MetaModel metaModel,
+      String criteria,
+      Integer maxExportLimit,
+      Integer queryFetchLimit)
+      throws DocumentException, IOException, ClassNotFoundException, AxelorException;
 
-	public MetaFile advancedExportCSV(List<Map<String, Object>> advancedExportLines, MetaModel metaModel,
-			String criteria, Integer maxExportLimit, Integer queryFetchLimit) throws IOException, ClassNotFoundException, DocumentException, AxelorException;
+  public MetaFile advancedExportExcel(
+      List<Map<String, Object>> advancedExportLines,
+      MetaModel metaModel,
+      String criteria,
+      Integer maxExportLimit,
+      Integer queryFetchLimit)
+      throws IOException, ClassNotFoundException, DocumentException, AxelorException,
+          InvalidFormatException;
 
-	public Filter getJpaSecurityFilter(MetaModel metaModel);
+  public MetaFile advancedExportCSV(
+      List<Map<String, Object>> advancedExportLines,
+      MetaModel metaModel,
+      String criteria,
+      Integer maxExportLimit,
+      Integer queryFetchLimit)
+      throws IOException, ClassNotFoundException, DocumentException, AxelorException;
+
+  public Filter getJpaSecurityFilter(MetaModel metaModel);
 }

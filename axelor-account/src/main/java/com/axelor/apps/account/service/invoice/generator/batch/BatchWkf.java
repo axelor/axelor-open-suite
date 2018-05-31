@@ -17,64 +17,64 @@
  */
 package com.axelor.apps.account.service.invoice.generator.batch;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceBatch;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.inject.Beans;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BatchWkf extends BatchStrategy {
 
-	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected BatchWkf(InvoiceService invoiceService) {
-		
-		super(invoiceService);
-		
-	}
+  protected BatchWkf(InvoiceService invoiceService) {
 
-	/**
-	 * Récupérer la liste des factures à traiter.
-	 * 
-	 * @param invoiceBatch
-	 *            Le batch de facturation concerné.
-	 * 
-	 * @return Une liste de facture.
-	 */
-	protected static Collection<? extends Invoice> invoices(InvoiceBatch invoiceBatch, boolean isTo) {
+    super(invoiceService);
+  }
 
-		if (invoiceBatch.getOnSelectOk()) { return invoiceBatch.getInvoiceSet(); } 
-		else { return invoiceQuery(invoiceBatch, isTo); }
+  /**
+   * Récupérer la liste des factures à traiter.
+   *
+   * @param invoiceBatch Le batch de facturation concerné.
+   * @return Une liste de facture.
+   */
+  protected static Collection<? extends Invoice> invoices(InvoiceBatch invoiceBatch, boolean isTo) {
 
-	}
+    if (invoiceBatch.getOnSelectOk()) {
+      return invoiceBatch.getInvoiceSet();
+    } else {
+      return invoiceQuery(invoiceBatch, isTo);
+    }
+  }
 
-	public static List<? extends Invoice> invoiceQuery(InvoiceBatch invoiceBatch, boolean isTo) {
-		
-		if ( invoiceBatch != null ){
-			
-			List<Object> params = new ArrayList<Object>();
-			
-			String query = "self.company = ?1";
-			params.add(invoiceBatch.getCompany());
-	
-			query += " AND self.statusSelect = ?2";
-			if (isTo) { params.add(invoiceBatch.getToStatusSelect()); }
-			else { params.add(invoiceBatch.getFromStatusSelect()); }
-	
-			LOG.debug("Query: {}", query);
-			
-			return Beans.get(InvoiceRepository.class).all().filter(query, params.toArray()).fetch();
-			
-		} else { return new ArrayList<Invoice>(); }
+  public static List<? extends Invoice> invoiceQuery(InvoiceBatch invoiceBatch, boolean isTo) {
 
-	}
+    if (invoiceBatch != null) {
 
+      List<Object> params = new ArrayList<Object>();
+
+      String query = "self.company = ?1";
+      params.add(invoiceBatch.getCompany());
+
+      query += " AND self.statusSelect = ?2";
+      if (isTo) {
+        params.add(invoiceBatch.getToStatusSelect());
+      } else {
+        params.add(invoiceBatch.getFromStatusSelect());
+      }
+
+      LOG.debug("Query: {}", query);
+
+      return Beans.get(InvoiceRepository.class).all().filter(query, params.toArray()).fetch();
+
+    } else {
+      return new ArrayList<Invoice>();
+    }
+  }
 }

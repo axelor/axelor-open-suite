@@ -20,17 +20,17 @@ package com.axelor.apps.account.service.invoice.factory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.validate.ValidateState;
 import com.axelor.inject.Beans;
-//import com.axelor.apps.base.service.alarm.AlarmEngineService;
+
+// import com.axelor.apps.base.service.alarm.AlarmEngineService;
 
 public class ValidateFactory {
 
-//	@Inject
-//	private AlarmEngineService<Invoice> alarmEngineService;
+  //	@Inject
+  //	private AlarmEngineService<Invoice> alarmEngineService;
 
-	public ValidateState getValidator(Invoice invoice){
-		ValidateState validateState = Beans.get(ValidateState.class);
-		validateState.init(invoice);
-		return validateState;
-	}
-
+  public ValidateState getValidator(Invoice invoice) {
+    ValidateState validateState = Beans.get(ValidateState.class);
+    validateState.init(invoice);
+    return validateState;
+  }
 }

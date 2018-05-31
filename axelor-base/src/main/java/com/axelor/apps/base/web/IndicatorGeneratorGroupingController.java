@@ -31,33 +31,37 @@ import com.google.inject.Singleton;
 @Singleton
 public class IndicatorGeneratorGroupingController {
 
-	@Inject
-	private IndicatorGeneratorGroupingService indicatorGeneratorGroupingService;
-	
-	@Inject
-	private IndicatorGeneratorGroupingRepository indicatorGeneratorGroupingRepo;
-	
-	public void run(ActionRequest request, ActionResponse response){
-		
-		IndicatorGeneratorGrouping indicatorGeneratorGrouping = request.getContext().asType(IndicatorGeneratorGrouping.class);
-		
-		try {	
-			indicatorGeneratorGroupingService.run(indicatorGeneratorGroupingRepo.find(indicatorGeneratorGrouping.getId()));
-			response.setReload(true);
-			response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));		
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
-	
-	public void export(ActionRequest request, ActionResponse response){
-		
-		IndicatorGeneratorGrouping indicatorGeneratorGrouping = request.getContext().asType(IndicatorGeneratorGrouping.class);
-		
-		try {
-			indicatorGeneratorGroupingService.export(indicatorGeneratorGroupingRepo.find(indicatorGeneratorGrouping.getId()));
-			response.setReload(true);
-			response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_4));
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
+  @Inject private IndicatorGeneratorGroupingService indicatorGeneratorGroupingService;
+
+  @Inject private IndicatorGeneratorGroupingRepository indicatorGeneratorGroupingRepo;
+
+  public void run(ActionRequest request, ActionResponse response) {
+
+    IndicatorGeneratorGrouping indicatorGeneratorGrouping =
+        request.getContext().asType(IndicatorGeneratorGrouping.class);
+
+    try {
+      indicatorGeneratorGroupingService.run(
+          indicatorGeneratorGroupingRepo.find(indicatorGeneratorGrouping.getId()));
+      response.setReload(true);
+      response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void export(ActionRequest request, ActionResponse response) {
+
+    IndicatorGeneratorGrouping indicatorGeneratorGrouping =
+        request.getContext().asType(IndicatorGeneratorGrouping.class);
+
+    try {
+      indicatorGeneratorGroupingService.export(
+          indicatorGeneratorGroupingRepo.find(indicatorGeneratorGrouping.getId()));
+      response.setReload(true);
+      response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_4));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

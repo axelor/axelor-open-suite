@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
@@ -29,47 +26,60 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.rpc.Context;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-public class AnalyticMoveLineServiceSupplychainImpl extends AnalyticMoveLineServiceImpl{
-	
-	public AnalyticMoveLineServiceSupplychainImpl(AppAccountService appAccountService, AccountManagementService accountManagementService) {
-		super(appAccountService, accountManagementService);
-	}
+public class AnalyticMoveLineServiceSupplychainImpl extends AnalyticMoveLineServiceImpl {
 
-	@Override
-	public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine){
-		BigDecimal amount = BigDecimal.ZERO;
-		if(analyticMoveLine.getPurchaseOrderLine() != null){
-			amount = analyticMoveLine.getPercentage().multiply(analyticMoveLine.getPurchaseOrderLine().getExTaxTotal()
-					.divide(new BigDecimal(100),2,RoundingMode.HALF_UP));
-		}
-		if(analyticMoveLine.getSaleOrderLine() != null){
-			amount = analyticMoveLine.getPercentage().multiply(analyticMoveLine.getSaleOrderLine().getExTaxTotal()
-						.divide(new BigDecimal(100),2,RoundingMode.HALF_UP));
-		}
-		
-		if(amount.compareTo(BigDecimal.ZERO) == 0){
-			return super.computeAmount(analyticMoveLine);
-		}
-		return amount;
-	}
-	
-	@Override
-	public BigDecimal chooseComputeWay(Context context, AnalyticMoveLine analyticMoveLine){
-		if(analyticMoveLine.getPurchaseOrderLine() == null && analyticMoveLine.getSaleOrderLine() == null){
-			if(context.getParent().getContextClass() == PurchaseOrderLine.class){
-				analyticMoveLine.setPurchaseOrderLine(context.getParent().asType(PurchaseOrderLine.class));
-			}
-			else if(context.getParent().getContextClass() == InvoiceLine.class){
-				analyticMoveLine.setInvoiceLine(context.getParent().asType(InvoiceLine.class));
-			}
-			else if(context.getParent().getContextClass() == MoveLine.class){
-				analyticMoveLine.setMoveLine(context.getParent().asType(MoveLine.class));
-			}
-			else{
-				analyticMoveLine.setSaleOrderLine(context.getParent().asType(SaleOrderLine.class));
-			}
-		}
-		return this.computeAmount(analyticMoveLine);
-	}
+  public AnalyticMoveLineServiceSupplychainImpl(
+      AppAccountService appAccountService, AccountManagementService accountManagementService) {
+    super(appAccountService, accountManagementService);
+  }
+
+  @Override
+  public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine) {
+    BigDecimal amount = BigDecimal.ZERO;
+    if (analyticMoveLine.getPurchaseOrderLine() != null) {
+      amount =
+          analyticMoveLine
+              .getPercentage()
+              .multiply(
+                  analyticMoveLine
+                      .getPurchaseOrderLine()
+                      .getExTaxTotal()
+                      .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+    }
+    if (analyticMoveLine.getSaleOrderLine() != null) {
+      amount =
+          analyticMoveLine
+              .getPercentage()
+              .multiply(
+                  analyticMoveLine
+                      .getSaleOrderLine()
+                      .getExTaxTotal()
+                      .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+    }
+
+    if (amount.compareTo(BigDecimal.ZERO) == 0) {
+      return super.computeAmount(analyticMoveLine);
+    }
+    return amount;
+  }
+
+  @Override
+  public BigDecimal chooseComputeWay(Context context, AnalyticMoveLine analyticMoveLine) {
+    if (analyticMoveLine.getPurchaseOrderLine() == null
+        && analyticMoveLine.getSaleOrderLine() == null) {
+      if (context.getParent().getContextClass() == PurchaseOrderLine.class) {
+        analyticMoveLine.setPurchaseOrderLine(context.getParent().asType(PurchaseOrderLine.class));
+      } else if (context.getParent().getContextClass() == InvoiceLine.class) {
+        analyticMoveLine.setInvoiceLine(context.getParent().asType(InvoiceLine.class));
+      } else if (context.getParent().getContextClass() == MoveLine.class) {
+        analyticMoveLine.setMoveLine(context.getParent().asType(MoveLine.class));
+      } else {
+        analyticMoveLine.setSaleOrderLine(context.getParent().asType(SaleOrderLine.class));
+      }
+    }
+    return this.computeAmount(analyticMoveLine);
+  }
 }

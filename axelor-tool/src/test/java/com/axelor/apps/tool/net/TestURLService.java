@@ -17,25 +17,24 @@
  */
 package com.axelor.apps.tool.net;
 
+import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.i18n.I18n;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
-import com.axelor.i18n.I18n;
-
-
 public class TestURLService {
-	
-	@Test
-	public void testNotExist() {
-		
-		Assert.assertNull(URLService.notExist("http://www.google.com"));
-		
-		String url = "www.google.com";
-		Assert.assertEquals(String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url), URLService.notExist(url));
-		
-		url = "http://www.testtrgfgfdg.com/";
-		Assert.assertEquals(String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url), URLService.notExist(url));
-	}
-	
+
+  @Test
+  public void testNotExist() {
+
+    Assert.assertNull(URLService.notExist("http://www.google.com"));
+
+    String url = "www.google.com";
+    Assert.assertEquals(
+        String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url), URLService.notExist(url));
+
+    url = "http://www.testtrgfgfdg.com/";
+    Assert.assertEquals(
+        String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url), URLService.notExist(url));
+  }
 }

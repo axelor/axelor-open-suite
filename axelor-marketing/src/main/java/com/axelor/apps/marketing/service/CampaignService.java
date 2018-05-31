@@ -21,11 +21,10 @@ import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.meta.db.MetaFile;
 
 public interface CampaignService {
-	
-	public MetaFile sendEmail(Campaign campaign);
-	
-	public void generateEvents(Campaign campaign);
-	
-	public void generateTargets(Campaign campaign);
-	
+
+  public MetaFile sendEmail(Campaign campaign);
+
+  public void generateEvents(Campaign campaign);
+
+  public void generateTargets(Campaign campaign);
 }

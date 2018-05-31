@@ -34,30 +34,30 @@ import com.google.inject.Singleton;
 @Singleton
 public class PurchaseOrderInvoiceController {
 
-	@Inject
-	private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
-	
-	public void generateInvoice(ActionRequest request, ActionResponse response)  {
-		
-		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		
-		purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-		
-		try {
-			Invoice invoice = purchaseOrderInvoiceService.generateInvoice(purchaseOrder);
-			
-			if(invoice != null)  {
-				response.setReload(true);
-				response.setView(ActionView
-			            .define(I18n.get(IExceptionMessage.PO_INVOICE_2))
-			            .model(Invoice.class.getName())
-			            .add("form", "invoice-form")
-			            .add("grid", "invoice-grid")
-			            .domain("self.purchaseOrder.id = "+String.valueOf(invoice.getId()))
-			            .context("_showRecord",String.valueOf(invoice.getId()))
-			            .map());
-			}
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+  @Inject private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+
+  public void generateInvoice(ActionRequest request, ActionResponse response) {
+
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+
+    try {
+      Invoice invoice = purchaseOrderInvoiceService.generateInvoice(purchaseOrder);
+
+      if (invoice != null) {
+        response.setReload(true);
+        response.setView(
+            ActionView.define(I18n.get(IExceptionMessage.PO_INVOICE_2))
+                .model(Invoice.class.getName())
+                .add("form", "invoice-form")
+                .add("grid", "invoice-grid")
+                .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
+                .context("_showRecord", String.valueOf(invoice.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

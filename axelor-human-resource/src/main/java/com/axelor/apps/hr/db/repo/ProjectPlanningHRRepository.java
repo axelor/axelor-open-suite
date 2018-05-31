@@ -26,36 +26,35 @@ import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 
 public class ProjectPlanningHRRepository extends ProjectPlanningRepository {
-	
-	@Inject
-	private ProjectPlanningService planningService;
-	
-	@Override
-	public ProjectPlanning save(ProjectPlanning projectPlanning) {
-		
-		try {
-			if (!projectPlanning.getFromEditor()) {
-				projectPlanning = planningService.updatePlanningTime(projectPlanning);
-			}
-			projectPlanning.setTotalPlannedHrs(planningService.getTotalPlannedHrs(projectPlanning));
-			planningService.updateTaskPlannedHrs(projectPlanning.getTask());
-			planningService.updateProjectPlannedHrs(projectPlanning.getProject());
-		} catch (AxelorException e) {
-			e.printStackTrace();
-		}
-		
-		return super.save(projectPlanning);
-	}
-	
-	@Override
-	public void remove(ProjectPlanning projectPlanning) {
-		
-		TeamTask task = projectPlanning.getTask();
-		Project project = projectPlanning.getProject();
-		
-		super.remove(projectPlanning);
-		
-		planningService.updateTaskPlannedHrs(task);
-		planningService.updateProjectPlannedHrs(project);
-	}
+
+  @Inject private ProjectPlanningService planningService;
+
+  @Override
+  public ProjectPlanning save(ProjectPlanning projectPlanning) {
+
+    try {
+      if (!projectPlanning.getFromEditor()) {
+        projectPlanning = planningService.updatePlanningTime(projectPlanning);
+      }
+      projectPlanning.setTotalPlannedHrs(planningService.getTotalPlannedHrs(projectPlanning));
+      planningService.updateTaskPlannedHrs(projectPlanning.getTask());
+      planningService.updateProjectPlannedHrs(projectPlanning.getProject());
+    } catch (AxelorException e) {
+      e.printStackTrace();
+    }
+
+    return super.save(projectPlanning);
+  }
+
+  @Override
+  public void remove(ProjectPlanning projectPlanning) {
+
+    TeamTask task = projectPlanning.getTask();
+    Project project = projectPlanning.getProject();
+
+    super.remove(projectPlanning);
+
+    planningService.updateTaskPlannedHrs(task);
+    planningService.updateProjectPlannedHrs(project);
+  }
 }

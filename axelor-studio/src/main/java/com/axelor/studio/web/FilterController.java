@@ -29,52 +29,48 @@ import com.google.inject.Inject;
 
 public class FilterController {
 
-	@Inject
-	private FilterSqlService filterSqlService;
+  @Inject private FilterSqlService filterSqlService;
 
-	public void updateTargetField(ActionRequest request, ActionResponse response) {
+  public void updateTargetField(ActionRequest request, ActionResponse response) {
 
-		Filter filter = request.getContext().asType(Filter.class);
+    Filter filter = request.getContext().asType(Filter.class);
 
-		MetaField metaField = filter.getMetaField();
-		MetaJsonField metaJson = filter.getMetaJsonField();
-		
-		Boolean isJson = filter.getIsJson() != null ? filter.getIsJson() : false;
+    MetaField metaField = filter.getMetaField();
+    MetaJsonField metaJson = filter.getMetaJsonField();
 
-		if (!isJson && metaField != null){
-			String type = metaField.getRelationship() != null ? metaField.getRelationship() : metaField.getTypeName();
-			response.setValue("targetType", type);
-			response.setValue("targetField", metaField.getName());
-		}
-		else if(isJson && metaJson != null) {
-			response.setValue("targetType", Inflector.getInstance().camelize(metaJson.getType()));
-			response.setValue("targetField", metaJson.getName());
-		}	
-		else {
-			response.setValue("targetField", null);
-			response.setValue("targetType", null);
-		}
+    Boolean isJson = filter.getIsJson() != null ? filter.getIsJson() : false;
 
-		response.setValue("filterOperator", null);
+    if (!isJson && metaField != null) {
+      String type =
+          metaField.getRelationship() != null
+              ? metaField.getRelationship()
+              : metaField.getTypeName();
+      response.setValue("targetType", type);
+      response.setValue("targetField", metaField.getName());
+    } else if (isJson && metaJson != null) {
+      response.setValue("targetType", Inflector.getInstance().camelize(metaJson.getType()));
+      response.setValue("targetField", metaJson.getName());
+    } else {
+      response.setValue("targetField", null);
+      response.setValue("targetType", null);
+    }
 
-	}
+    response.setValue("filterOperator", null);
+  }
 
-	public void updateTargetType(ActionRequest request,
-			ActionResponse response) throws AxelorException {
+  public void updateTargetType(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-		Filter filter = request.getContext().asType(Filter.class);
-		
-		if (filter.getTargetField() == null) return;
-		
-		StringBuilder parent = new StringBuilder("self");
-		String targetType = filterSqlService.getTargetType(filterSqlService.getTargetField(parent, filter, null, false));
-		
-		response.setValue("targetType", targetType);
-		response.setValue("filterOperator", null);
+    Filter filter = request.getContext().asType(Filter.class);
 
-	}
+    if (filter.getTargetField() == null) return;
 
-	
+    StringBuilder parent = new StringBuilder("self");
+    String targetType =
+        filterSqlService.getTargetType(
+            filterSqlService.getTargetField(parent, filter, null, false));
 
-	
+    response.setValue("targetType", targetType);
+    response.setValue("filterOperator", null);
+  }
 }

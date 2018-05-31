@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -28,79 +26,72 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import java.math.BigDecimal;
 
 public class JournalService {
-	
-	private AccountConfigService accountConfigService;
-	
-	public JournalService()  {
-		
-		this.accountConfigService = new AccountConfigService();
-		
-	}
-	
-	
-	/**
-	 * 
-	 * @param invoice
-	 * 
-	 * OperationTypeSelect
-	 *  1 : Achat fournisseur
-	 *	2 : Avoir fournisseur
-	 *	3 : Vente client
-	 *	4 : Avoir client
-	 * @return
-	 * @throws AxelorException
-	 */
-	public Journal getJournal(Invoice invoice) throws AxelorException  {
-		
-		Company company = invoice.getCompany();
-		
-		if(company != null)  {
-			
-			AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-			
-			switch(invoice.getOperationTypeSelect())  {
-			case 1:
-				// Si le montant est négatif, alors c'est un avoir
-				if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == -1)  {
-					return accountConfigService.getSupplierCreditNoteJournal(accountConfig);
-				}
-				else  {
-					return accountConfigService.getSupplierPurchaseJournal(accountConfig);
-				}
-				
-			case 2:
-				// Si le montant est négatif, alors c'est une facture
-				if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == -1)  {
-					return accountConfigService.getSupplierPurchaseJournal(accountConfig);
-				}
-				else  {
-					return accountConfigService.getSupplierCreditNoteJournal(accountConfig);
-				}
-			case 3:
-				// Si le montant est négatif, alors c'est un avoir
-				if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == -1)  {
-					return accountConfigService.getCustomerCreditNoteJournal(accountConfig);
-				}
-				else  {
-					return accountConfigService.getCustomerSalesJournal(accountConfig);
-				}
-			case 4:
-				// Si le montant est négatif, alors c'est une facture
-				if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == -1)  {
-					return accountConfigService.getCustomerSalesJournal(accountConfig);
-				}
-				else  {
-					return accountConfigService.getCustomerCreditNoteJournal(accountConfig);
-				}
-			
-			default:
-				throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId());
-			}	
-		}
-		
-		return null;
-	}
-	
+
+  private AccountConfigService accountConfigService;
+
+  public JournalService() {
+
+    this.accountConfigService = new AccountConfigService();
+  }
+
+  /**
+   * @param invoice
+   *     <p>OperationTypeSelect 1 : Achat fournisseur 2 : Avoir fournisseur 3 : Vente client 4 :
+   *     Avoir client
+   * @return
+   * @throws AxelorException
+   */
+  public Journal getJournal(Invoice invoice) throws AxelorException {
+
+    Company company = invoice.getCompany();
+
+    if (company != null) {
+
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+      switch (invoice.getOperationTypeSelect()) {
+        case 1:
+          // Si le montant est négatif, alors c'est un avoir
+          if (invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == -1) {
+            return accountConfigService.getSupplierCreditNoteJournal(accountConfig);
+          } else {
+            return accountConfigService.getSupplierPurchaseJournal(accountConfig);
+          }
+
+        case 2:
+          // Si le montant est négatif, alors c'est une facture
+          if (invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == -1) {
+            return accountConfigService.getSupplierPurchaseJournal(accountConfig);
+          } else {
+            return accountConfigService.getSupplierCreditNoteJournal(accountConfig);
+          }
+        case 3:
+          // Si le montant est négatif, alors c'est un avoir
+          if (invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == -1) {
+            return accountConfigService.getCustomerCreditNoteJournal(accountConfig);
+          } else {
+            return accountConfigService.getCustomerSalesJournal(accountConfig);
+          }
+        case 4:
+          // Si le montant est négatif, alors c'est une facture
+          if (invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == -1) {
+            return accountConfigService.getCustomerSalesJournal(accountConfig);
+          } else {
+            return accountConfigService.getCustomerCreditNoteJournal(accountConfig);
+          }
+
+        default:
+          throw new AxelorException(
+              invoice,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.JOURNAL_1),
+              invoice.getInvoiceId());
+      }
+    }
+
+    return null;
+  }
 }

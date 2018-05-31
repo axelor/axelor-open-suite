@@ -24,24 +24,21 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.google.inject.Inject;
 
 public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
-	
-	@Inject
-	private SaleOrderLineService solService;
-	
-	@Inject
-	private AppSaleService appSaleService;
-	
-	@Override
-	public SaleOrderLine save(SaleOrderLine soLine) {
-		
-		AppSale appSale = appSaleService.getAppSale();
-		soLine = super.save(soLine);
-		
-		if (appSale.getActive() && appSale.getProductPackMgt()) {
-			soLine.setTotalPack(solService.computeTotalPack(soLine));
-		}
-		
-		return soLine;
-	}
 
+  @Inject private SaleOrderLineService solService;
+
+  @Inject private AppSaleService appSaleService;
+
+  @Override
+  public SaleOrderLine save(SaleOrderLine soLine) {
+
+    AppSale appSale = appSaleService.getAppSale();
+    soLine = super.save(soLine);
+
+    if (appSale.getActive() && appSale.getProductPackMgt()) {
+      soLine.setTotalPack(solService.computeTotalPack(soLine));
+    }
+
+    return soLine;
+  }
 }

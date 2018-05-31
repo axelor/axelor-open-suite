@@ -19,7 +19,7 @@ package com.axelor.apps.tool.service;
 
 public interface CipherService {
 
-    public String encrypt(String unencryptedString);
+  public String encrypt(String unencryptedString);
 
-    public String decrypt(String encryptedString);
+  public String decrypt(String encryptedString);
 }

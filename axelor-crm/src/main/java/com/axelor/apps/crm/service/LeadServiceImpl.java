@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.crm.service;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -43,169 +39,200 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 public class LeadServiceImpl implements LeadService {
 
-	@Inject
-	private SequenceService sequenceService;
+  @Inject private SequenceService sequenceService;
 
-	@Inject
-	private UserService userService;
+  @Inject private UserService userService;
 
-	@Inject
-	PartnerRepository partnerRepo;
+  @Inject PartnerRepository partnerRepo;
 
-	@Inject
-	OpportunityRepository opportunityRepo;
+  @Inject OpportunityRepository opportunityRepo;
 
-	@Inject
-	LeadRepository leadRepo;
+  @Inject LeadRepository leadRepo;
 
-	@Inject
-	EventRepository eventRepo;
+  @Inject EventRepository eventRepo;
 
-	/**
-	 * Convert lead into a partner
-	 * 
-	 * @param lead
-	 * @return
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner) throws AxelorException {
-		
-		if (partner != null && contactPartner != null) {
-			contactPartner = partnerRepo.save(contactPartner);
-			if (partner.getContactPartnerSet() == null) {
-				partner.setContactPartnerSet(new HashSet<Partner>());
-			}
-			partner.getContactPartnerSet().add(contactPartner);
-			contactPartner.setMainPartner(partner);
-		}
-		if (partner != null) {
-			partner = partnerRepo.save(partner);
-			lead.setPartner(partner);
-		}
-		
-		for (Event event : lead.getEventList()) {
-			event.setPartner(partner);
-			event.setContactPartner(contactPartner);
-			eventRepo.save(event);
-		}
-		
-		for (Opportunity opportunity : lead.getOpportunitiesList()) {
-			opportunity.setPartner(partner);
-			opportunityRepo.save(opportunity);
-		}
-		
-		lead.setStatusSelect(LeadRepository.LEAD_STATUS_CONVERTED);
-		
-		return leadRepo.save(lead);
+  /**
+   * Convert lead into a partner
+   *
+   * @param lead
+   * @return
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
+      throws AxelorException {
 
-	}
+    if (partner != null && contactPartner != null) {
+      contactPartner = partnerRepo.save(contactPartner);
+      if (partner.getContactPartnerSet() == null) {
+        partner.setContactPartnerSet(new HashSet<Partner>());
+      }
+      partner.getContactPartnerSet().add(contactPartner);
+      contactPartner.setMainPartner(partner);
+    }
+    if (partner != null) {
+      partner = partnerRepo.save(partner);
+      lead.setPartner(partner);
+    }
 
-	/**
-	 * Get sequence for partner
-	 * 
-	 * @return
-	 * @throws AxelorException
-	 */
-	public String getSequence() throws AxelorException {
+    for (Event event : lead.getEventList()) {
+      event.setPartner(partner);
+      event.setContactPartner(contactPartner);
+      eventRepo.save(event);
+    }
 
-		String seq = sequenceService.getSequenceNumber(SequenceRepository.PARTNER);
-		if (seq == null) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
-		}
-		return seq;
-	}
+    for (Opportunity opportunity : lead.getOpportunitiesList()) {
+      opportunity.setPartner(partner);
+      opportunityRepo.save(opportunity);
+    }
 
-	/**
-	 * Assign user company to partner
-	 * 
-	 * @param partner
-	 * @return
-	 */
-	public Partner setPartnerCompany(Partner partner) {
+    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CONVERTED);
 
-		if (userService.getUserActiveCompany() != null) {
-			partner.setCompanySet(new HashSet<Company>());
-			partner.getCompanySet().add(userService.getUserActiveCompany());
-		}
+    return leadRepo.save(lead);
+  }
 
-		return partner;
-	}
+  /**
+   * Get sequence for partner
+   *
+   * @return
+   * @throws AxelorException
+   */
+  public String getSequence() throws AxelorException {
 
-	public Map<String, String> getSocialNetworkUrl(String name, String firstName, String companyName) {
+    String seq = sequenceService.getSequenceNumber(SequenceRepository.PARTNER);
+    if (seq == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
+    }
+    return seq;
+  }
 
-		Map<String, String> urlMap = new HashMap<String, String>();
-		String searchName = firstName != null && name != null ? firstName + "+" + name
-				: name == null ? firstName : name;
-		searchName = searchName == null ? "" : searchName;
-		urlMap.put("facebook", "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q=" + searchName
-				+ "&init=public" + "' target='_blank'/>");
-		urlMap.put("twitter",
-				"<a class='fa fa-twitter' href='https://twitter.com/search?q=" + searchName + "' target='_blank' />");
-		urlMap.put("linkedin", "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
-				+ searchName.replace("+", "/") + "' target='_blank' />");
-		if (companyName != null) {
-			urlMap.put("youtube", "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
-					+ companyName + "' target='_blank' />");
-			urlMap.put("google", "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q=" + companyName
-					+ "+" + searchName + "' target='_blank' />");
-		} else {
-			urlMap.put("youtube", "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
-					+ searchName + "' target='_blank' />");
-			urlMap.put("google", "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q=" + searchName
-					+ "' target='_blank' />");
-		}
-		return urlMap;
-	}
+  /**
+   * Assign user company to partner
+   *
+   * @param partner
+   * @return
+   */
+  public Partner setPartnerCompany(Partner partner) {
 
-	@Transactional
-	public void saveLead(Lead lead) {
-		leadRepo.save(lead);
-	}
+    if (userService.getUserActiveCompany() != null) {
+      partner.setCompanySet(new HashSet<Company>());
+      partner.getCompanySet().add(userService.getUserActiveCompany());
+    }
 
-	@SuppressWarnings("rawtypes")
-	public Object importLead(Object bean, Map values) {
+    return partner;
+  }
 
-		assert bean instanceof Lead;
-		Lead lead = (Lead) bean;
-		User user = AuthUtils.getUser();
-		lead.setUser(user);
-		lead.setTeam(user.getActiveTeam());
-		return lead;
-	}
+  public Map<String, String> getSocialNetworkUrl(
+      String name, String firstName, String companyName) {
 
-	/**
-	 * Check if the lead in view has a duplicate.
-	 * 
-	 * @param lead
-	 *            a context lead object
-	 * @return if there is a duplicate lead
-	 */
-	public boolean isThereDuplicateLead(Lead lead) {
-		String newName = lead.getFullName();
-		if (Strings.isNullOrEmpty(newName)) {
-			return false;
-		}
-		Long leadId = lead.getId();
-		if (leadId == null) {
-			Lead existingLead = leadRepo.all().filter("lower(self.fullName) = lower(:newName) ")
-					.bind("newName", newName).fetchOne();
-			return existingLead != null;
-		} else {
-			Lead existingLead = leadRepo.all()
-					.filter("lower(self.fullName) = lower(:newName) " + "and self.id != :leadId ")
-					.bind("newName", newName).bind("leadId", leadId).fetchOne();
-			return existingLead != null;
-		}
-	}
+    Map<String, String> urlMap = new HashMap<String, String>();
+    String searchName =
+        firstName != null && name != null
+            ? firstName + "+" + name
+            : name == null ? firstName : name;
+    searchName = searchName == null ? "" : searchName;
+    urlMap.put(
+        "facebook",
+        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
+            + searchName
+            + "&init=public"
+            + "' target='_blank'/>");
+    urlMap.put(
+        "twitter",
+        "<a class='fa fa-twitter' href='https://twitter.com/search?q="
+            + searchName
+            + "' target='_blank' />");
+    urlMap.put(
+        "linkedin",
+        "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+            + searchName.replace("+", "/")
+            + "' target='_blank' />");
+    if (companyName != null) {
+      urlMap.put(
+          "youtube",
+          "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
+              + companyName
+              + "' target='_blank' />");
+      urlMap.put(
+          "google",
+          "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
+              + companyName
+              + "+"
+              + searchName
+              + "' target='_blank' />");
+    } else {
+      urlMap.put(
+          "youtube",
+          "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
+              + searchName
+              + "' target='_blank' />");
+      urlMap.put(
+          "google",
+          "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
+              + searchName
+              + "' target='_blank' />");
+    }
+    return urlMap;
+  }
 
-	@Transactional(rollbackOn= {AxelorException.class, Exception.class})
-	public void loseLead(Lead lead, LostReason lostReason) {
-		lead.setStatusSelect(LeadRepository.LEAD_STATUS_LOST);
-		lead.setLostReason(lostReason);
-	}
+  @Transactional
+  public void saveLead(Lead lead) {
+    leadRepo.save(lead);
+  }
 
+  @SuppressWarnings("rawtypes")
+  public Object importLead(Object bean, Map values) {
+
+    assert bean instanceof Lead;
+    Lead lead = (Lead) bean;
+    User user = AuthUtils.getUser();
+    lead.setUser(user);
+    lead.setTeam(user.getActiveTeam());
+    return lead;
+  }
+
+  /**
+   * Check if the lead in view has a duplicate.
+   *
+   * @param lead a context lead object
+   * @return if there is a duplicate lead
+   */
+  public boolean isThereDuplicateLead(Lead lead) {
+    String newName = lead.getFullName();
+    if (Strings.isNullOrEmpty(newName)) {
+      return false;
+    }
+    Long leadId = lead.getId();
+    if (leadId == null) {
+      Lead existingLead =
+          leadRepo
+              .all()
+              .filter("lower(self.fullName) = lower(:newName) ")
+              .bind("newName", newName)
+              .fetchOne();
+      return existingLead != null;
+    } else {
+      Lead existingLead =
+          leadRepo
+              .all()
+              .filter("lower(self.fullName) = lower(:newName) " + "and self.id != :leadId ")
+              .bind("newName", newName)
+              .bind("leadId", leadId)
+              .fetchOne();
+      return existingLead != null;
+    }
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void loseLead(Lead lead, LostReason lostReason) {
+    lead.setStatusSelect(LeadRepository.LEAD_STATUS_LOST);
+    lead.setLostReason(lostReason);
+  }
 }

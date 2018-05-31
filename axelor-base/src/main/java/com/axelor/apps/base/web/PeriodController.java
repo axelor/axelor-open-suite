@@ -23,43 +23,42 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
-
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 @Singleton
 public class PeriodController {
-	
-    private PeriodService periodService;
-    private PeriodRepository periodRepository;
 
-    @Inject
-    public PeriodController(PeriodService periodService, PeriodRepository periodRepository) {
-        this.periodService = periodService;
-        this.periodRepository = periodRepository;
+  private PeriodService periodService;
+  private PeriodRepository periodRepository;
+
+  @Inject
+  public PeriodController(PeriodService periodService, PeriodRepository periodRepository) {
+    this.periodService = periodService;
+    this.periodRepository = periodRepository;
+  }
+
+  public void close(ActionRequest request, ActionResponse response) {
+    Period period = request.getContext().asType(Period.class);
+    period = periodRepository.find(period.getId());
+
+    try {
+      periodService.close(period);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 
-    public void close(ActionRequest request, ActionResponse response) {
-        Period period = request.getContext().asType(Period.class);
-        period = periodRepository.find(period.getId());
+  public void adjust(ActionRequest request, ActionResponse response) {
+    Period period = request.getContext().asType(Period.class);
+    period = periodRepository.find(period.getId());
 
-        try {
-            periodService.close(period);
-            response.setReload(true);
-        } catch(Exception e) {
-            TraceBackService.trace(response, e);
-        }
+    try {
+      periodService.adjust(period);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    public void adjust(ActionRequest request, ActionResponse response) {
-        Period period = request.getContext().asType(Period.class);
-        period = periodRepository.find(period.getId());
-
-        try {
-            periodService.adjust(period);
-            response.setReload(true);
-        } catch(Exception e) {
-            TraceBackService.trace(response, e);
-        }
-    }
+  }
 }

@@ -17,16 +17,6 @@
  */
 package com.axelor.apps.purchase.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
@@ -62,403 +52,471 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	private PurchaseOrderLineTaxService purchaseOrderLineVatService;
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@Inject
-	private SequenceService sequenceService;
+  @Inject private PurchaseOrderLineTaxService purchaseOrderLineVatService;
 
-	@Inject
-	private PartnerRepository partnerRepo;
+  @Inject private SequenceService sequenceService;
 
-	@Inject
-	protected AppPurchaseService appPurchaseService;
-	
-	@Inject
-	protected PurchaseOrderRepository purchaseOrderRepo;
+  @Inject private PartnerRepository partnerRepo;
 
-	@Override
-	public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException  {
+  @Inject protected AppPurchaseService appPurchaseService;
 
-		if(purchaseOrder.getPurchaseOrderLineList() != null)  {
-			PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
-			for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList())  {
-				purchaseOrderLine.setExTaxTotal(purchaseOrderLineService.computePurchaseOrderLine(purchaseOrderLine));
-				purchaseOrderLine.setCompanyExTaxTotal(purchaseOrderLineService.getCompanyExTaxTotal(purchaseOrderLine.getExTaxTotal(), purchaseOrder));
-			}
-		}
+  @Inject protected PurchaseOrderRepository purchaseOrderRepo;
 
-		return purchaseOrder;
-	}
+  @Override
+  public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
+      throws AxelorException {
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
+    if (purchaseOrder.getPurchaseOrderLineList() != null) {
+      PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        purchaseOrderLine.setExTaxTotal(
+            purchaseOrderLineService.computePurchaseOrderLine(purchaseOrderLine));
+        purchaseOrderLine.setCompanyExTaxTotal(
+            purchaseOrderLineService.getCompanyExTaxTotal(
+                purchaseOrderLine.getExTaxTotal(), purchaseOrder));
+      }
+    }
 
-		this.initPurchaseOrderLineTax(purchaseOrder);
+    return purchaseOrder;
+  }
 
-		this._computePurchaseOrderLines(purchaseOrder);
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
-		this._populatePurchaseOrder(purchaseOrder);
+    this.initPurchaseOrderLineTax(purchaseOrder);
 
-		this._computePurchaseOrder(purchaseOrder);
+    this._computePurchaseOrderLines(purchaseOrder);
 
-		return purchaseOrder;
-	}
+    this._populatePurchaseOrder(purchaseOrder);
 
-	/**
-	 * Peupler une commande.
-	 * <p>
-	 * Cette fonction permet de déterminer les tva d'une commande à partir des lignes de factures passées en paramètres.
-	 * </p>
-	 *
-	 * @param purchaseOrder
-	 *
-	 * @throws AxelorException
-	 */
-	@Override
-	public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    this._computePurchaseOrder(purchaseOrder);
 
-		logger.debug("Peupler une facture => lignes de devis: {} ", new Object[] { purchaseOrder.getPurchaseOrderLineList().size() });
+    return purchaseOrder;
+  }
 
-		// create Tva lines
-		purchaseOrder.getPurchaseOrderLineTaxList().addAll(purchaseOrderLineVatService.createsPurchaseOrderLineTax(purchaseOrder, purchaseOrder.getPurchaseOrderLineList()));
+  /**
+   * Peupler une commande.
+   *
+   * <p>Cette fonction permet de déterminer les tva d'une commande à partir des lignes de factures
+   * passées en paramètres.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  @Override
+  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
-	}
+    logger.debug(
+        "Peupler une facture => lignes de devis: {} ",
+        new Object[] {purchaseOrder.getPurchaseOrderLineList().size()});
 
-	/**
-	 * Compute the purchase order total amounts
-	 *
-	 * @param purchaseOrder
-	 * @throws AxelorException
-	 */
-	@Override
-	public void _computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    // create Tva lines
+    purchaseOrder
+        .getPurchaseOrderLineTaxList()
+        .addAll(
+            purchaseOrderLineVatService.createsPurchaseOrderLineTax(
+                purchaseOrder, purchaseOrder.getPurchaseOrderLineList()));
+  }
 
-		purchaseOrder.setExTaxTotal(BigDecimal.ZERO);
-		purchaseOrder.setCompanyExTaxTotal(BigDecimal.ZERO);
-		purchaseOrder.setTaxTotal(BigDecimal.ZERO);
-		purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
-		
-		for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-			purchaseOrder.setExTaxTotal(purchaseOrder.getExTaxTotal().add( purchaseOrderLine.getExTaxTotal() ));
-			
-			// In the company accounting currency
-			purchaseOrder.setCompanyExTaxTotal(purchaseOrder.getCompanyExTaxTotal().add( purchaseOrderLine.getCompanyExTaxTotal() ));
-		}
-		
-		for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
+  /**
+   * Compute the purchase order total amounts
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  @Override
+  public void _computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
-			// In the purchase order currency
-			purchaseOrder.setTaxTotal(purchaseOrder.getTaxTotal().add( purchaseOrderLineVat.getTaxTotal() ));
+    purchaseOrder.setExTaxTotal(BigDecimal.ZERO);
+    purchaseOrder.setCompanyExTaxTotal(BigDecimal.ZERO);
+    purchaseOrder.setTaxTotal(BigDecimal.ZERO);
+    purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
 
-		}
-		
-		purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add( purchaseOrder.getTaxTotal() ));
-		
-		logger.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
-			new Object[] { purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal() });
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      purchaseOrder.setExTaxTotal(
+          purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
 
-	}
+      // In the company accounting currency
+      purchaseOrder.setCompanyExTaxTotal(
+          purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
+    }
 
+    for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
 
-	/**
-	 * Permet de réinitialiser la liste des lignes de TVA
-	 * @param purchaseOrder
-	 * 			Une commande.
-	 */
-	@Override
-	public void initPurchaseOrderLineTax(PurchaseOrder purchaseOrder) {
+      // In the purchase order currency
+      purchaseOrder.setTaxTotal(
+          purchaseOrder.getTaxTotal().add(purchaseOrderLineVat.getTaxTotal()));
+    }
 
-		if (purchaseOrder.getPurchaseOrderLineTaxList() == null) { purchaseOrder.setPurchaseOrderLineTaxList(new ArrayList<PurchaseOrderLineTax>()); }
+    purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add(purchaseOrder.getTaxTotal()));
 
-		else { purchaseOrder.getPurchaseOrderLineTaxList().clear(); }
+    logger.debug(
+        "Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
+        new Object[] {
+          purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal()
+        });
+  }
 
-	}
+  /**
+   * Permet de réinitialiser la liste des lignes de TVA
+   *
+   * @param purchaseOrder Une commande.
+   */
+  @Override
+  public void initPurchaseOrderLineTax(PurchaseOrder purchaseOrder) {
 
+    if (purchaseOrder.getPurchaseOrderLineTaxList() == null) {
+      purchaseOrder.setPurchaseOrderLineTaxList(new ArrayList<PurchaseOrderLineTax>());
+    } else {
+      purchaseOrder.getPurchaseOrderLineTaxList().clear();
+    }
+  }
 
-	@Override
-	public PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
-			PriceList priceList, Partner supplierPartner, TradingName tradingName) throws AxelorException  {
+  @Override
+  public PurchaseOrder createPurchaseOrder(
+      User buyerUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      LocalDate orderDate,
+      PriceList priceList,
+      Partner supplierPartner,
+      TradingName tradingName)
+      throws AxelorException {
 
-		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
-				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
+    logger.debug(
+        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+        new Object[] {company.getName(), externalReference, supplierPartner.getFullName()});
 
-		PurchaseOrder purchaseOrder = new PurchaseOrder();
-		purchaseOrder.setBuyerUser(buyerUser);
-		purchaseOrder.setCompany(company);
-		purchaseOrder.setContactPartner(contactPartner);
-		purchaseOrder.setCurrency(currency);
-		purchaseOrder.setDeliveryDate(deliveryDate);
-		purchaseOrder.setInternalReference(internalReference);
-		purchaseOrder.setExternalReference(externalReference);
-		purchaseOrder.setOrderDate(orderDate);
-		purchaseOrder.setPriceList(priceList);
-		purchaseOrder.setTradingName(tradingName);
-		purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
+    PurchaseOrder purchaseOrder = new PurchaseOrder();
+    purchaseOrder.setBuyerUser(buyerUser);
+    purchaseOrder.setCompany(company);
+    purchaseOrder.setContactPartner(contactPartner);
+    purchaseOrder.setCurrency(currency);
+    purchaseOrder.setDeliveryDate(deliveryDate);
+    purchaseOrder.setInternalReference(internalReference);
+    purchaseOrder.setExternalReference(externalReference);
+    purchaseOrder.setOrderDate(orderDate);
+    purchaseOrder.setPriceList(priceList);
+    purchaseOrder.setTradingName(tradingName);
+    purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
 
-		purchaseOrder.setPrintingSettings(Beans.get(TradingNameService.class)
-				.getDefaultPrintingSettings(null, company));
+    purchaseOrder.setPrintingSettings(
+        Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
-		purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
-		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
-		purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
+    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+    purchaseOrder.setSupplierPartner(supplierPartner);
 
-		return purchaseOrder;
-	}
+    return purchaseOrder;
+  }
 
-	@Override
-	public String getSequence(Company company) throws AxelorException  {
-		String seq = sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_ORDER, company);
-		if (seq == null) {
-			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_ORDER_1), company.getName());
-		}
-		return seq;
-	}
+  @Override
+  public String getSequence(Company company) throws AxelorException {
+    String seq = sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_ORDER, company);
+    if (seq == null) {
+      throw new AxelorException(
+          company,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PURCHASE_ORDER_1),
+          company.getName());
+    }
+    return seq;
+  }
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Partner validateSupplier(PurchaseOrder purchaseOrder)  {
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Partner validateSupplier(PurchaseOrder purchaseOrder) {
 
-		Partner supplierPartner = partnerRepo.find(purchaseOrder.getSupplierPartner().getId());
-		supplierPartner.setIsSupplier(true);
+    Partner supplierPartner = partnerRepo.find(purchaseOrder.getSupplierPartner().getId());
+    supplierPartner.setIsSupplier(true);
 
-		return partnerRepo.save(supplierPartner);
-	}
+    return partnerRepo.save(supplierPartner);
+  }
 
-	@Override
-	public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException  {
-		if (purchaseOrder.getPrintingSettings() == null) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS), purchaseOrder.getPurchaseOrderSeq()));
-		}
+  @Override
+  public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (purchaseOrder.getPrintingSettings() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          String.format(
+              I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
+              purchaseOrder.getPurchaseOrderSeq()));
+    }
 
-		String language= ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
+    String language = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
 
-		String title = I18n.get("Purchase order") + purchaseOrder.getPurchaseOrderSeq() + ((purchaseOrder.getVersionNumber() > 1) ? "-V" + purchaseOrder.getVersionNumber() : "");
+    String title =
+        I18n.get("Purchase order")
+            + purchaseOrder.getPurchaseOrderSeq()
+            + ((purchaseOrder.getVersionNumber() > 1)
+                ? "-V" + purchaseOrder.getVersionNumber()
+                : "");
 
-		ReportFactory.createReport(IReport.PURCHASE_ORDER, title+"-${date}")
-				.addParam("PurchaseOrderId", purchaseOrder.getId().toString())
-				.addParam("Locale", language)
-				.toAttach(purchaseOrder)
-				.generate()
-				.getFileLink();
+    ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
+        .addParam("PurchaseOrderId", purchaseOrder.getId().toString())
+        .addParam("Locale", language)
+        .toAttach(purchaseOrder)
+        .generate()
+        .getFileLink();
+  }
 
-	}
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
+    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
+    Partner partner = purchaseOrder.getSupplierPartner();
+    Company company = purchaseOrder.getCompany();
+    Blocking blocking =
+        Beans.get(BlockingService.class)
+            .getBlocking(partner, company, BlockingRepository.PURCHASE_BLOCKING);
 
+    if (blocking != null) {
+      String reason =
+          blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
+      throw new AxelorException(
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
+          partner);
+    }
+    if (purchaseOrder.getVersionNumber() == 1) {
+      purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
+    }
+    purchaseOrderRepo.save(purchaseOrder);
+    if (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()) {
+      this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
+    }
+  }
 
-	@Override
-	@Transactional(rollbackOn = {Exception.class})
-	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception{
-		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
-		Partner partner = purchaseOrder.getSupplierPartner();
-		Company company = purchaseOrder.getCompany();
-		Blocking blocking = Beans.get(BlockingService.class).getBlocking(partner, company, BlockingRepository.PURCHASE_BLOCKING);
+  @Override
+  @Transactional
+  public PurchaseOrder mergePurchaseOrders(
+      List<PurchaseOrder> purchaseOrderList,
+      Currency currency,
+      Partner supplierPartner,
+      Company company,
+      Partner contactPartner,
+      PriceList priceList,
+      TradingName tradingName)
+      throws AxelorException {
 
-        if (blocking != null) {
-            String reason = blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
-			throw new AxelorException(TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason, partner);
+    String numSeq = "";
+    String externalRef = "";
+    for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
+      if (!numSeq.isEmpty()) {
+        numSeq += "-";
+      }
+      numSeq += purchaseOrderLocal.getPurchaseOrderSeq();
+
+      if (!externalRef.isEmpty()) {
+        externalRef += "|";
+      }
+      if (purchaseOrderLocal.getExternalReference() != null) {
+        externalRef += purchaseOrderLocal.getExternalReference();
+      }
+    }
+
+    PurchaseOrder purchaseOrderMerged =
+        this.createPurchaseOrder(
+            AuthUtils.getUser(),
+            company,
+            contactPartner,
+            currency,
+            null,
+            numSeq,
+            externalRef,
+            LocalDate.now(),
+            priceList,
+            supplierPartner,
+            tradingName);
+
+    this.attachToNewPurchaseOrder(purchaseOrderList, purchaseOrderMerged);
+
+    this.computePurchaseOrder(purchaseOrderMerged);
+
+    purchaseOrderRepo.save(purchaseOrderMerged);
+
+    this.removeOldPurchaseOrders(purchaseOrderList);
+
+    return purchaseOrderMerged;
+  }
+
+  // Attachment of all purchase order lines to new purchase order
+  public void attachToNewPurchaseOrder(
+      List<PurchaseOrder> purchaseOrderList, PurchaseOrder purchaseOrderMerged) {
+    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+      int countLine = 1;
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        purchaseOrderLine.setSequence(countLine * 10);
+        purchaseOrderMerged.addPurchaseOrderLineListItem(purchaseOrderLine);
+        countLine++;
+      }
+    }
+  }
+
+  // Remove old purchase orders after merge
+  public void removeOldPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
+    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+      purchaseOrderRepo.remove(purchaseOrder);
+    }
+  }
+
+  @Override
+  public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException {
+
+    if (purchaseOrder.getId() != null
+        && Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())) {
+      purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
+    }
+  }
+
+  @Override
+  @Transactional
+  public void updateCostPrice(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder.getPurchaseOrderLineList() != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        Product product = purchaseOrderLine.getProduct();
+        if (product != null) {
+          product.setPurchasePrice(purchaseOrderLine.getPrice());
+          if (product.getDefShipCoefByPartner()) {
+            BigDecimal shippingCoef =
+                Beans.get(ShippingCoefService.class)
+                    .getShippingCoef(
+                        product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
+            if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
+              product.setShippingCoef(shippingCoef);
+            }
+          }
+          if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
+            product.setCostPrice(purchaseOrderLine.getPrice());
+            if (product.getAutoUpdateSalePrice()) {
+              Beans.get(ProductService.class).updateSalePrice(product);
+            }
+          }
         }
-		if (purchaseOrder.getVersionNumber() == 1){
-			purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
-		}
-		purchaseOrderRepo.save(purchaseOrder);
-		if (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()){
-			this.savePurchaseOrderPDFAsAttachment(purchaseOrder);
-		}
-	}
+      }
+      purchaseOrderRepo.save(purchaseOrder);
+    }
+  }
 
-	@Override
-	@Transactional
-	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency, Partner supplierPartner, Company company, Partner contactPartner, PriceList priceList, TradingName tradingName) throws AxelorException{
+  public String printPurchaseOrder(PurchaseOrder purchaseOrder, List<Integer> lstSelectedMove)
+      throws AxelorException {
+    List<Long> selectedPurchaseOrderListId;
+    if (lstSelectedMove != null && !lstSelectedMove.isEmpty()) {
+      selectedPurchaseOrderListId =
+          lstSelectedMove
+              .stream()
+              .map(integer -> Long.parseLong(integer.toString()))
+              .collect(Collectors.toList());
+      purchaseOrder = purchaseOrderRepo.find(selectedPurchaseOrderListId.get(0));
+    } else if (purchaseOrder != null && purchaseOrder.getId() != null) {
+      selectedPurchaseOrderListId = new ArrayList<>();
+      selectedPurchaseOrderListId.add(purchaseOrder.getId());
+    } else {
+      throw new AxelorException(
+          PurchaseOrder.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
+    }
 
-		String numSeq = "";
-		String externalRef = "";
-		for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
-			if (!numSeq.isEmpty()){
-				numSeq += "-";
-			}
-			numSeq += purchaseOrderLocal.getPurchaseOrderSeq();
+    List<PurchaseOrder> purchaseOrderList =
+        purchaseOrderRepo
+            .all()
+            .filter(
+                "self.id IN ("
+                    + selectedPurchaseOrderListId
+                        .stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(","))
+                    + ") AND self.printingSettings IS NULL")
+            .fetch();
+    if (!purchaseOrderList.isEmpty()) {
+      String exceptionMessage =
+          String.format(
+              I18n.get(IExceptionMessage.PURCHASE_ORDERS_MISSING_PRINTING_SETTINGS),
+              "<ul>"
+                  + purchaseOrderList
+                      .stream()
+                      .map(PurchaseOrder::getPurchaseOrderSeq)
+                      .collect(Collectors.joining("</li><li>", "<li>", "</li>"))
+                  + "<ul>");
+      throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, exceptionMessage);
+    }
 
-			if (!externalRef.isEmpty()){
-				externalRef += "|";
-			}
-			if (purchaseOrderLocal.getExternalReference() != null){
-				externalRef += purchaseOrderLocal.getExternalReference();
-			}
-		}
+    String purchaseOrderIds =
+        selectedPurchaseOrderListId.stream().map(Object::toString).collect(Collectors.joining(","));
 
-		PurchaseOrder purchaseOrderMerged = this.createPurchaseOrder(
-				AuthUtils.getUser(),
-				company,
-				contactPartner,
-				currency,
-				null,
-				numSeq,
-				externalRef,
-				LocalDate.now(),
-				priceList,
-				supplierPartner,
-				tradingName);
+    String title = I18n.get("Purchase order");
+    if (purchaseOrder.getPurchaseOrderSeq() != null) {
+      title =
+          selectedPurchaseOrderListId.size() == 1
+              ? I18n.get("Purchase order") + " " + purchaseOrder.getPurchaseOrderSeq()
+              : I18n.get("Purchase order");
+    }
 
-		this.attachToNewPurchaseOrder(purchaseOrderList,purchaseOrderMerged);
-		
-		this.computePurchaseOrder(purchaseOrderMerged);
+    return ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
+        .addParam("PurchaseOrderId", purchaseOrderIds)
+        .addParam("Locale", ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner()))
+        .generate()
+        .getFileLink();
+  }
 
-		purchaseOrderRepo.save(purchaseOrderMerged);
-		
-		this.removeOldPurchaseOrders(purchaseOrderList);
+  @Override
+  @Transactional
+  public void draftPurchaseOrder(PurchaseOrder purchaseOrder) {
 
-		return purchaseOrderMerged;
-	}
-	
-	//Attachment of all purchase order lines to new purchase order
-	public void attachToNewPurchaseOrder(List<PurchaseOrder> purchaseOrderList, PurchaseOrder purchaseOrderMerged) {
-		for(PurchaseOrder purchaseOrder : purchaseOrderList)  {
-			int countLine = 1;
-			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-				purchaseOrderLine.setSequence(countLine * 10);
-				purchaseOrderMerged.addPurchaseOrderLineListItem(purchaseOrderLine);
-				countLine++;
-			}
-		}
-	}
+    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+    purchaseOrderRepo.save(purchaseOrder);
+  }
 
-	//Remove old purchase orders after merge
-	public void removeOldPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
-		for(PurchaseOrder purchaseOrder : purchaseOrderList)  {
-			purchaseOrderRepo.remove(purchaseOrder);
-		}
-	}
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    computePurchaseOrder(purchaseOrder);
 
-	@Override
-	public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException {
-		
-		if(purchaseOrder.getId() != null && Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())){
-            purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
-		}
-	}
-	
-	@Override
-	@Transactional
-	public void updateCostPrice(PurchaseOrder purchaseOrder) {
-		if(purchaseOrder.getPurchaseOrderLineList() != null){
-			for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-				Product product = purchaseOrderLine.getProduct();
-				if(product != null) {
-				    product.setPurchasePrice(purchaseOrderLine.getPrice());
-				    if (product.getDefShipCoefByPartner()) {
-				        BigDecimal shippingCoef = Beans.get(ShippingCoefService.class)
-				                .getShippingCoef(
-				                        product,
-				                        purchaseOrder.getSupplierPartner(),
-				                        purchaseOrder.getCompany()
-				                        );
-				        if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
-				            product.setShippingCoef(shippingCoef);
-				        }
-				    }
-				    if(product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE){
-				        product.setCostPrice(purchaseOrderLine.getPrice());
-				        if (product.getAutoUpdateSalePrice()) {
-				            Beans.get(ProductService.class).updateSalePrice(product);
-				        }
-				    }
-				}
-			}
-			purchaseOrderRepo.save(purchaseOrder);
-		}
-	}
+    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+    purchaseOrder.setValidationDate(appPurchaseService.getTodayDate());
+    purchaseOrder.setValidatedByUser(AuthUtils.getUser());
 
-	public String printPurchaseOrder(PurchaseOrder purchaseOrder, List<Integer> lstSelectedMove) throws AxelorException {
-	    List<Long> selectedPurchaseOrderListId;
-	    if (lstSelectedMove != null && !lstSelectedMove.isEmpty()) {
-			selectedPurchaseOrderListId = lstSelectedMove.stream()
-					.map(integer -> Long.parseLong(integer.toString()))
-					.collect(Collectors.toList());
-			purchaseOrder = purchaseOrderRepo.find(selectedPurchaseOrderListId.get(0));
-		} else if (purchaseOrder != null && purchaseOrder.getId() != null) {
-	    	 selectedPurchaseOrderListId = new ArrayList<>();
-	    	 selectedPurchaseOrderListId.add(purchaseOrder.getId());
-		} else {
-			throw new AxelorException(PurchaseOrder.class, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
-		}
+    purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
 
-		List<PurchaseOrder> purchaseOrderList = purchaseOrderRepo.all()
-				.filter("self.id IN (" +
-						selectedPurchaseOrderListId.stream().map(Object::toString).collect(Collectors.joining(",")) +
-						") AND self.printingSettings IS NULL")
-				.fetch();
-		if (!purchaseOrderList.isEmpty()) {
-			String exceptionMessage = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDERS_MISSING_PRINTING_SETTINGS),
-					"<ul>" + purchaseOrderList.stream()
-							.map(PurchaseOrder::getPurchaseOrderSeq)
-							.collect(Collectors.joining("</li><li>", "<li>", "</li>"))
-							+ "<ul>");
-			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, exceptionMessage);
-		}
+    if (purchaseOrder.getCompany() != null) {
+      purchaseOrder.setPurchaseOrderSeq(getSequence(purchaseOrder.getCompany()));
+    }
 
-		String purchaseOrderIds = selectedPurchaseOrderListId.stream()
-				.map(Object::toString)
-				.collect(Collectors.joining(","));
+    updateCostPrice(purchaseOrder);
+  }
 
-		String title = I18n.get("Purchase order");
-		if (purchaseOrder.getPurchaseOrderSeq() != null) {
-			title = selectedPurchaseOrderListId.size() == 1 ? I18n.get("Purchase order") + " " + purchaseOrder.getPurchaseOrderSeq() : I18n.get("Purchase order");
-		}
+  @Override
+  @Transactional
+  public void finishPurchaseOrder(PurchaseOrder purchaseOrder) {
 
-		return ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
-				.addParam("PurchaseOrderId", purchaseOrderIds)
-				.addParam("Locale", ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner()))
-				.generate()
-				.getFileLink();
+    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
+    purchaseOrderRepo.save(purchaseOrder);
+  }
 
-	}
+  @Override
+  @Transactional
+  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
 
-	@Override
-	@Transactional
-	public void draftPurchaseOrder(PurchaseOrder purchaseOrder){
-		
-		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
-		purchaseOrderRepo.save(purchaseOrder);
-	}
-
-	@Override
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-		computePurchaseOrder(purchaseOrder);
-
-		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
-		purchaseOrder.setValidationDate(appPurchaseService.getTodayDate());
-		purchaseOrder.setValidatedByUser(AuthUtils.getUser());
-
-		purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
-
-		if (purchaseOrder.getCompany() != null) {
-			purchaseOrder.setPurchaseOrderSeq(getSequence(purchaseOrder.getCompany()));
-		}
-
-		updateCostPrice(purchaseOrder);
-	}
-
-	@Override
-	@Transactional
-	public void finishPurchaseOrder(PurchaseOrder purchaseOrder){
-		
-		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
-		purchaseOrderRepo.save(purchaseOrder);
-	}
-	
-	@Override
-	@Transactional
-	public void cancelPurchaseOrder(PurchaseOrder purchaseOrder){
-		
-		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_CANCELED);
-		purchaseOrderRepo.save(purchaseOrder);
-	}
+    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_CANCELED);
+    purchaseOrderRepo.save(purchaseOrder);
+  }
 }
