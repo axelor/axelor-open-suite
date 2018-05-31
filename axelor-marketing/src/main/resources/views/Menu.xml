@@ -22,7 +22,7 @@
 		<view name="target-list-form" type="form" />
 	</action-view>	
 	
-	<menuitem name="marketing-conf" title="Configuration" parent="marketing-root"/>
+	<menuitem name="marketing-conf" title="Configuration" parent="marketing-root" icon="fa-cog"/>
 	
 	<menuitem name="marketing-conf-campaign-type" parent="marketing-conf" title="Campaign types" action="marketing.conf.campaign.type"/>
 	

@@ -18,9 +18,11 @@
 package com.axelor.auth.service;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -127,7 +129,7 @@ public class PermissionAssistantService {
 
 		try {
 			
-			FileWriterWithEncoding fileWriter = new FileWriterWithEncoding(permFile, "utf-8");
+			FileWriterWithEncoding fileWriter = new FileWriterWithEncoding(permFile, StandardCharsets.UTF_8);
 			CSVWriter csvWriter =  new CSVWriter(fileWriter, ';');
 			writeGroup(csvWriter, assistant);
 			csvWriter.close();
@@ -152,19 +154,18 @@ public class PermissionAssistantService {
 
 		String[] groupRow = null;
 		Integer count = header.length;
-		Integer rowSize = groupHeader.size() + header.length;
 		
 		List<String> headerRow = new ArrayList<String>();
 		headerRow.addAll(Arrays.asList(header));
 		if (assistant.getTypeSelect() == 1) {
-			groupRow = new String[assistant.getGroupSet().size()*rowSize];
+			groupRow = new String[header.length + (assistant.getGroupSet().size() * groupHeader.size())];
 			for(Group group : assistant.getGroupSet()){
 				groupRow[count+1] = group.getCode();
 				headerRow.addAll(groupHeader);
 				count += groupHeader.size();
 			}
 		} else if (assistant.getTypeSelect() == 2){
-			groupRow = new String[assistant.getRoleSet().size()*rowSize];
+			groupRow = new String[header.length + (assistant.getRoleSet().size() * groupHeader.size())];
 			for(Role role : assistant.getRoleSet()){
 				groupRow[count+1] = role.getName();
 				headerRow.addAll(groupHeader);
@@ -361,7 +362,7 @@ public class PermissionAssistantService {
 		try {
 			MetaFile metaFile = permissionAssistant.getMetaFile();
 			File csvFile = MetaFiles.getPath(metaFile).toFile();
-			CSVReader csvReader = new CSVReader(new FileReader(csvFile), ';');
+			CSVReader csvReader = new CSVReader(new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';');
 
 			String[] groupRow = csvReader.readNext();
 			if(groupRow == null || groupRow.length < 11){

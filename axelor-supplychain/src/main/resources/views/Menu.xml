@@ -64,7 +64,7 @@
 	</action-view>
 	
 	
-	<menuitem name="stock-mrp-configuration" parent="stock-mrp" title="Configuration"/>
+	<menuitem name="stock-mrp-configuration" parent="stock-mrp" title="Configuration" icon="fa-cog"/>
 	
 	<menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration" title="MRP move types" action="stock.mrp.configuration.mrp.line.type"/>
 	

@@ -85,7 +85,7 @@
     </action-view>
 	
 	
-	<menuitem name="invoice-root-report" parent="invoice-root" order="50"
+	<menuitem name="invoice-root-report" parent="invoice-root" order="50"  icon="fa-bar-chart"
 		title="Reportings"/>
 
 	<menuitem name="account-root" title="Accounting" order="-90"  if="__config__.app.isApp('account')"
@@ -197,7 +197,7 @@
 	</action-view>
 
 	<menuitem name="debt-recovery-root-conf" parent="account-root-debt-recovery"
-		title="Configuration" order="3" />
+		title="Configuration" order="3" icon="fa-cog"/>
 
 	<menuitem name="debt-recovery-root-conf-debt-recovery-method"
 		parent="debt-recovery-root-conf" title="Debt recovery methods"
@@ -243,7 +243,7 @@
     </action-view>
 
 	<menuitem name="account-root-accounting-accounting-reports" parent="account-root-accounting"
-		title="Accounting reports" action="account.root.accounting.accounting.reports" />
+		title="Accounting reports" action="account.root.accounting.accounting.reports" icon="fa-bar-chart"/>
 
 	<action-view name="account.root.accounting.accounting.reports"
 		title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport" >
@@ -285,11 +285,10 @@
 		<view type="form" name="budget-form"/>
 	</action-view>
 
-	<menuitem name="account-root-report" parent="account-root"
-		title="Reportings" order="30"/>
+	<menuitem name="account-root-report" parent="account-root" title="Reportings" order="30" icon="fa-bar-chart"/>
 	
 	
-	<menuitem name="account-conf" parent="account-root" title="Configuration" order="50"/>
+	<menuitem name="account-conf" parent="account-root" title="Configuration" order="50" icon="fa-cog"/>
 
 	<menuitem name="account-conf-financial" parent="account-conf"
 		title="Financial" />
