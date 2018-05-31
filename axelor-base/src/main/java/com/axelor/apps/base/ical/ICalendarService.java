@@ -619,7 +619,7 @@ public class ICalendarService {
 	}
 
 	public void sync(ICalendar calendar, boolean all, int weeks) throws MalformedURLException, ICalendarException {
-		if (all || calendar.getLastSynchronization() == null) {
+		if (all || calendar.getLastSynchronizationDateT() == null) {
 			sync(calendar, null, null);
 		} else {
 			int nbOfWeeks = weeks <= 0 ? calendar.getSynchronizationDuration() : weeks;
@@ -643,7 +643,7 @@ public class ICalendarService {
 				List<CalDavCalendarCollection> colList = store.getCollections();
 				if (!colList.isEmpty()) {
 					calendar = doSync(calendar, colList.get(0), startDate, endDate);
-					calendar.setLastSynchronization(
+					calendar.setLastSynchronizationDateT(
 							Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
 					Beans.get(ICalendarRepository.class).save(calendar);
 				}
@@ -672,8 +672,8 @@ public class ICalendarService {
 		List<VEvent> events = null;
 		Instant lastSynchro = null;
 
-		if (calendar.getLastSynchronization() != null) {
-			lastSynchro = calendar.getLastSynchronization().toInstant(OffsetDateTime.now().getOffset());
+		if (calendar.getLastSynchronizationDateT() != null) {
+			lastSynchro = calendar.getLastSynchronizationDateT().toInstant(OffsetDateTime.now().getOffset());
 		} else {
 			lastSynchro = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toInstant(OffsetDateTime.now().getOffset());
 		}
@@ -935,7 +935,7 @@ public class ICalendarService {
 	}
 
 	private List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
-		LocalDateTime lastSynchro = calendar.getLastSynchronization();
+		LocalDateTime lastSynchro = calendar.getLastSynchronizationDateT();
 		if (lastSynchro != null) {
 			return iEventRepo.all().filter("COALESCE(self.archived, false) = false AND self.calendar = ?1 AND COALESCE(self.updatedOn, self.createdOn) > ?2",
 					calendar, lastSynchro).fetch();

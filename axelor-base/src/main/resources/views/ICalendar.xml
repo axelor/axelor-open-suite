@@ -32,7 +32,7 @@
 		</panel>
 		<panel colSpan="6">
 			<field name="user" title="calendar.owner" colSpan="3"/>
-			<field name="lastSynchronization" readonly="true" showIf="lastSynchronization"/>
+			<field name="lastSynchronizationDateT" readonly="true" showIf="lastSynchronizationDateT"/>
 		</panel>
 		<panel-tabs>
 			<panel title ="Events" colSpan="12">
