@@ -249,7 +249,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 		log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
 		
 		ventilateFactory.getVentilator(invoice).process();
-		
+
 		invoiceRepo.save(invoice);
 		
 		if(appAccountService.getAppAccount().getPrintReportOnVentilation()){

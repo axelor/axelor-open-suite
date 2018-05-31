@@ -19,6 +19,8 @@
 - Add icons to reportings & configurations submenus and harmonize their order among all menus
 - Accounting report : add domain filters on selection fields and resets to maintain consistency.
 - Correctly use daybook moves in accounting reports if the configuration is daybook.
+- Add validate date, ventilation date/user on Invoice.
+- Show alert box instead readonly ventilate button when invoice date is in future. 
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.

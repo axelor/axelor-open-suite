@@ -286,13 +286,16 @@
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
             <button name="validate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
-            <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+            <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
             <button name="validateAndVentilate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/>
             <button name="cancel" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-            <field name="validatedByUser" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
+            <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
+			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
+			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
         </panel>
 
         <panel-stack sidebar="true" hideIf="partner == null">
@@ -301,7 +304,7 @@
 				<field name="externalReference"/>
 			</panel>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-attrs-ventilate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -450,7 +453,7 @@
 				<field name="externalReference"/>
 			</panel>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-attrs-ventilate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -458,14 +461,17 @@
 
 	    <panel sidebar="true" name="actions" title="Actions" >
 	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-validate"/>
-	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
 	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
         	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
-	        <field name="validatedByUser" grid-view="user-grid" form-view="user-form" canNew="false" canEdit="false" canView="false"/>
+			<field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
+			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
+			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
 	    </panel>
 
 		<panel sidebar="true" name="totals" title="Totals" itemSpan="6">
@@ -625,7 +631,6 @@
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
-		<action name="action-invoice-attrs-ventilate"/>
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
@@ -675,10 +680,6 @@
 
     <action-attrs name="action-invoice-attrs-domain-project">
     	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-    </action-attrs>
-
-    <action-attrs name="action-invoice-attrs-ventilate">
-    	<attribute name="readonly" for="ventilate" expr="eval: invoiceDate > __date__"/>
     </action-attrs>
 
 	<!-- ACTION RECORD -->
@@ -840,7 +841,6 @@
 	<action-validate name="action-validate-send-email-remove-access-for-client">
 		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
     </action-validate>
-
 
 	<!-- ACTION METHOD -->
 
