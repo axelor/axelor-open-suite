@@ -54,6 +54,7 @@
 - Production: fix nb of digits for BOM quantities configuration.
 - Production order : New manufaturing order directly will not be created but with newly created popup wizard for Manufaturing order.
 - Add missing translation for "Print production process"
+- Fix NPE on automatic template message without a model.
 - Fixed issue on amounts computation on general balance report and add a sort on account codes.
 - Sort the general ledger report per account code and date
 - Add missing sequence for analytic report in demo data, and add missing trace for exception in "save" method called in accounting report.
