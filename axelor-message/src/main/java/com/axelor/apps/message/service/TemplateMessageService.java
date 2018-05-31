@@ -33,7 +33,7 @@ public interface TemplateMessageService {
 
 	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
 	
-	public Message generateMessage(long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
+	public Message generateMessage(Long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
 	
 	public Message generateAndSendMessage(Model model, Template template) throws MessagingException, IOException, AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException;
 	

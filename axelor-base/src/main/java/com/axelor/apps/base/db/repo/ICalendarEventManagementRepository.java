@@ -27,7 +27,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class ICalendarEventManagementRepository extends ICalendarEventRepository{
+public class ICalendarEventManagementRepository extends ICalendarEventRepository {
 	
 	@Inject
 	private ICalendarService calendarService;
@@ -65,11 +65,17 @@ public class ICalendarEventManagementRepository extends ICalendarEventRepository
 		return super.save(entity);
 	}
 	
+
 	@Override
 	public void remove(ICalendarEvent entity) {
-		
+		remove(entity, true);
+	}
+
+	public void remove(ICalendarEvent entity, boolean removeRemote) {
 		try {
-			calendarService.removeEventFromIcal(entity);
+			if (removeRemote) {
+				calendarService.removeEventFromIcal(entity);
+			}
 		} catch (Exception e) {
 			TraceBackService.trace(e);
 		}

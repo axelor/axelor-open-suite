@@ -68,7 +68,7 @@
     </calendar>
 	
     <action-view name="action-icalendar-view-ievent-dashlet" title="Events" model="com.axelor.apps.base.db.ICalendarEvent">
-        <view type="grid" name="calendar-event-grid"/>
+        <view type="grid" name="calendar-event-calendar-grid"/>
         <view type="form" name="calendar-event-form"/>
         <domain>self.calendar.id = :calendarId</domain>
         <context name="calendarId" expr="eval:id"/>

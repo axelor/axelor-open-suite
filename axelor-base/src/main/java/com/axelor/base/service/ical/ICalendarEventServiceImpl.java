@@ -29,12 +29,10 @@ import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.exception.AxelorException;
 
-import net.fortuna.ical4j.model.ValidationException;
-
 public class ICalendarEventServiceImpl implements ICalendarEventService{
 
 	@Override
-	public List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+	public List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ParseException{
 		if(email != null){
 			if(event.getAttendees() == null || !event.getAttendees().stream().anyMatch(x -> email.getAddress().equals(x.getEmail()))){
 				ICalendarUser calUser = new ICalendarUser();

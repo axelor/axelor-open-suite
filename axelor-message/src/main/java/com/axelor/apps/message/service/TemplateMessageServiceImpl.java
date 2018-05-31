@@ -34,7 +34,6 @@ import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
@@ -48,6 +47,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -62,7 +62,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	
 	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	protected TemplateMaker maker;
+	protected TemplateMaker maker = new TemplateMaker( Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 
 	protected MessageService messageService;
 
@@ -73,27 +73,27 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
 	@Override
 	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
-		
 		Class<?> klass = EntityHelper.getEntityClass(model);
 		return generateMessage( model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
-		
 	}
 	
 	@Override
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message generateMessage( long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
+	public Message generateMessage( Long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException  {
 		
-		if (!model.equals(template.getMetaModel().getFullName())) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
+		MetaModel metaModel = template.getMetaModel();
+		if (metaModel != null) {
+			if(!model.equals(metaModel.getFullName())) {
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3), template.getMetaModel().getFullName());
+			}
+			initMaker(objectId, model, tag);
 		}
-		
+
 		log.debug("model : {}", model);
 		log.debug("tag : {}", tag);
 		log.debug("object id : {}", objectId);
 		log.debug("template : {}", template);
-		
-		initMaker(objectId, model, tag);
-		
+
 		String content = "", subject = "", from= "", replyToRecipients = "", toRecipients = "", ccRecipients = "", bccRecipients = "", addressBlock= "";
 		int mediaTypeSelect;
 		
@@ -188,8 +188,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 	@Override
 	@SuppressWarnings("unchecked")
 	public TemplateMaker initMaker( long objectId, String model, String tag ) throws InstantiationException, IllegalAccessException, ClassNotFoundException  {
-		//Init the maker
-		this.maker = new TemplateMaker( Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 		
 		Class<? extends Model> myClass = (Class<? extends Model>) Class.forName( model );
 		maker.setContext( JPA.find( myClass, objectId), tag );

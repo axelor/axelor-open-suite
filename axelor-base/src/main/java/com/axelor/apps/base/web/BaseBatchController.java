@@ -20,9 +20,13 @@ package com.axelor.apps.base.web;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.axelor.apps.base.db.BaseBatch;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.service.batch.BaseBatchService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -50,5 +54,18 @@ public class BaseBatchController {
 	    Map<String,Object> mapData = new HashMap<String,Object>();   
 		mapData.put("anomaly", batch.getAnomaly());
 		response.setData(mapData);	       
+	}
+
+	public void actionSynchronizeCalendars(ActionRequest request, ActionResponse response) {
+	    try {
+	        BaseBatch baseBatch = request.getContext().asType(BaseBatch.class);
+	        baseBatch = Beans.get(BaseBatchRepository.class).find(baseBatch.getId());
+	        Batch batch = baseBatchService.synchronizeCalendars(baseBatch);
+	        response.setFlash(batch.getComments());
+	    } catch (Exception e) {
+	        TraceBackService.trace(response, e);
+        } finally {
+            response.setReload(true);
+        }
 	}
 }
