@@ -49,7 +49,7 @@
 	    <view type="form" name="employee-bonus-mgt-form"/>
 	</action-view>
 
-	<menuitem name="hr-root-emp-mgt-conf" parent="hr-root-emp-mgt" title="Configuration"/>
+	<menuitem name="hr-root-emp-mgt-conf" parent="hr-root-emp-mgt" title="Configuration" icon="fa-cog"/>
 
 	<menuitem name="hr-conf-product-activity" parent="hr-root-emp-mgt-conf" title="Product Activities" action="conf.product.activity"/>
 
@@ -191,7 +191,7 @@
 		<context name="to_justify_leave_reason" expr="eval: true"/>
 	</action-view>
 
-	<menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration"/>
+	<menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration" icon="fa-cog"/>
 
 	<menuitem name="leave-reason-all" parent="leave-request-conf" title="Leave reason" action="leave.reason.all" />
 
@@ -253,7 +253,7 @@
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>
 	</action-method>
 
-	<menuitem name="expense-root-conf"  parent="expense-root" title="Configuration" />
+	<menuitem name="expense-root-conf"  parent="expense-root" title="Configuration" icon="fa-cog"/>
 
 	<menuitem name="conf-expense-type" parent="expense-root-conf" title="Expense Type" action="conf.expense.type"/>
 	
@@ -369,7 +369,7 @@
 		<view type="form" name="hr-batch-form"/>
 	</action-view>
 
-	<menuitem name="hr-report-root" parent="hr-root" title="Dashboards" order="300"/>
+	<menuitem name="hr-report-root" parent="hr-root" title="Dashboards" order="300" icon="fa-bar-chart"/>
     	
     <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root" title="Human Resources Manager"
     	action="hr.manager.dashboard.view"/>
