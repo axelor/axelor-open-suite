@@ -31,29 +31,38 @@ public interface InvoicePrintService {
    * Print an invoice with the desired number of copies and return the file link.
    *
    * @param invoice the invoice to print
+   * @param forceRefresh Only used in case of ventilated invoices: if <code>true</code> forces PDF
+   *     regeneration, if <code>false</code> and a stored copy already exists it will be used,
+   *     changes made to invoice between last print and current state won't appear on printed copy.
    * @return the file link to the printed invoice.
    * @throws AxelorException
    */
-  String printInvoice(Invoice invoice) throws AxelorException, IOException;
+  String printInvoice(Invoice invoice, boolean forceRefresh) throws AxelorException, IOException;
 
   /**
    * Print the invoice with the desired number of copies and return the file.
    *
    * @param invoice
+   * @param forceRefresh Only used in case of ventilated invoices: if <code>true</code> forces PDF
+   *     regeneration, if <code>false</code> and a stored copy already exists it will be used,
+   *     changes made to invoice between last print and current state won't appear on printed copy.
    * @return the generated file.
    * @throws AxelorException
    * @throws IOException
    */
-  File printCopiesToFile(Invoice invoice) throws AxelorException, IOException;
+  File printCopiesToFile(Invoice invoice, boolean forceRefresh) throws AxelorException, IOException;
 
   /**
    * Take the stored report on the invoice, if the invoice is ventilated and the file is available,
    * else print it.
    *
    * @param invoice an invoice.
+   * @param forceRefresh Only used in case of ventilated invoices: if <code>true</code> forces PDF
+   *     regeneration, if <code>false</code> and a stored copy already exists it will be used,
+   *     changes made to invoice between last print and current state won't appear on printed copy.
    * @return a file with the invoice as PDF.
    */
-  File getPrintedInvoice(Invoice invoice) throws AxelorException;
+  File getPrintedInvoice(Invoice invoice, boolean forceRefresh) throws AxelorException;
 
   /**
    * Print an invoice, then save the generated file in this invoice.
