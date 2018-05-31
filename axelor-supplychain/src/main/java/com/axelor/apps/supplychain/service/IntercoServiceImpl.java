@@ -117,7 +117,8 @@ public class IntercoServiceImpl implements IntercoService {
                         null,
                         saleOrder.getOrderDate(),
                         saleOrder.getPriceList(),
-                        saleOrder.getCompany().getPartner()
+                        saleOrder.getCompany().getPartner(),
+                        saleOrder.getTradingName()
                 );
         //copy date
         purchaseOrder.setOrderDate(saleOrder.getOrderDate());

@@ -173,7 +173,8 @@ public class PurchaseOrderSupplierService {
 				Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(parentPurchaseOrder.getCompany()),
 				Beans.get(AppBaseService.class).getTodayDate(),
 				Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
-				supplierPartner);
+				supplierPartner,
+				parentPurchaseOrder.getTradingName());
 
 		purchaseOrder.setParentPurchaseOrder(parentPurchaseOrder);
 

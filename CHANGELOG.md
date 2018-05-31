@@ -69,6 +69,7 @@
 - Product : reset value of productVariantValue field when we change value of associated productVariantAttr field.
 - Sale order: fix unremovable sale order line and editable invoiced sale order line.
 - Fix set a prospect as the client of a sale order.
+- Set trading name automatically when creating or merging purchase order
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
