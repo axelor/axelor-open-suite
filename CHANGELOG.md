@@ -63,6 +63,7 @@
 - Permission assistant : Fix when import permissions with more than one role or group.
 - Fix the opportunity field of a sale order being readonly
 - Product : reset value of productVariantValue field when we change value of associated productVariantAttr field.
+- Sale order: fix unremovable sale order line and editable invoiced sale order line.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
