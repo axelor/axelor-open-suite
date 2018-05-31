@@ -19,7 +19,6 @@ package com.axelor.apps.crm.db.repo;
 
 import java.util.List;
 
-import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
@@ -97,8 +96,13 @@ public class EventManagementRepository extends EventRepository {
 	}
 	
 	
+
 	@Override
-	public void remove(Event entity){
+	public void remove(Event entity) {
+		remove(entity, true);
+	}
+
+	public void remove(Event entity, boolean removeRemote){
 		try{
 			User user = AuthUtils.getUser();
 			List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
@@ -112,7 +116,9 @@ public class EventManagementRepository extends EventRepository {
 			TraceBackService.trace(e);
 		}
 		
-		super.remove(entity);
+		entity.setArchived(true);
 	}
+
+
 
 }
