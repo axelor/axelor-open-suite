@@ -32,6 +32,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -181,7 +182,14 @@ public class AccountingReportController {
 
         accountingReportService.setPublicationDateTime(accountingReport);
 
-        String name = I18n.get("Accounting reporting") + " " + accountingReport.getRef();
+        String name =
+            I18n.get(
+                    MetaStore.getSelectionItem(
+                            "accounting.report.type.select",
+                            accountingReport.getTypeSelect().toString())
+                        .getTitle())
+                + " "
+                + accountingReport.getRef();
 
         String fileLink =
             ReportFactory.createReport(
