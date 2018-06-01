@@ -17,12 +17,23 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -33,10 +44,14 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
 
@@ -67,7 +82,9 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrder.setOrderDate(purchaseOrder.getOrderDate());
 
     // copy payments
-    saleOrder.setPaymentMode(purchaseOrder.getPaymentMode());
+    PaymentMode intercoPaymentMode =
+        Beans.get(PaymentModeService.class).reverseInOut(purchaseOrder.getPaymentMode());
+    saleOrder.setPaymentMode(intercoPaymentMode);
     saleOrder.setPaymentCondition(purchaseOrder.getPaymentCondition());
 
     // copy delivery info
@@ -121,7 +138,9 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setOrderDate(saleOrder.getOrderDate());
 
     // copy payments
-    purchaseOrder.setPaymentMode(saleOrder.getPaymentMode());
+    PaymentMode intercoPaymentMode =
+        Beans.get(PaymentModeService.class).reverseInOut(saleOrder.getPaymentMode());
+    purchaseOrder.setPaymentMode(intercoPaymentMode);
     purchaseOrder.setPaymentCondition(saleOrder.getPaymentCondition());
 
     // copy delivery info
@@ -217,30 +236,79 @@ public class IntercoServiceImpl implements IntercoService {
 
   @Override
   public Invoice generateIntercoInvoice(Invoice invoice) throws AxelorException {
-    Invoice generatedInvoice = Beans.get(InvoiceManagementRepository.class).copy(invoice, true);
-
+    PartnerService partnerService = Beans.get(PartnerService.class);
+    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
+    InvoiceService invoiceService = Beans.get(InvoiceService.class);
     // set the status
-    int generatedOperationTypeSelect = 0;
+    int generatedOperationTypeSelect;
+    int priceListRepositoryType;
     switch (invoice.getOperationTypeSelect()) {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+        priceListRepositoryType = PriceListRepository.TYPE_SALE;
         break;
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+        priceListRepositoryType = PriceListRepository.TYPE_SALE;
         break;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+        priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
         break;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+        priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
         break;
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.INVOICE_MISSING_TYPE),
+            invoice);
     }
-    generatedInvoice.setOperationTypeSelect(generatedOperationTypeSelect);
+    Company intercoCompany = findIntercoCompany(invoice.getPartner());
+    Partner intercoPartner = invoice.getCompany().getPartner();
+    PaymentMode intercoPaymentMode =
+        Beans.get(PaymentModeService.class).reverseInOut(invoice.getPaymentMode());
+    Address intercoAddress = partnerService.getInvoicingAddress(intercoPartner);
+    BankDetails intercoBankDetails = partnerService.getDefaultBankDetails(intercoPartner);
+    AccountingSituation accountingSituation =
+        Beans.get(AccountingSituationService.class)
+            .getAccountingSituation(intercoPartner, intercoCompany);
+    PriceList intercoPriceList =
+        Beans.get(PartnerPriceListService.class)
+            .getDefaultPriceList(intercoPartner, priceListRepositoryType);
 
-    // set the correct company and partner
-    generatedInvoice.setCompany(findIntercoCompany(invoice.getPartner()));
-    generatedInvoice.setPartner(invoice.getCompany().getPartner());
-    return Beans.get(InvoiceRepository.class).save(generatedInvoice);
+    Invoice intercoInvoice = invoiceRepository.copy(invoice, true);
+
+    intercoInvoice.setOperationTypeSelect(generatedOperationTypeSelect);
+    intercoInvoice.setCompany(intercoCompany);
+    intercoInvoice.setPartner(intercoPartner);
+    intercoInvoice.setAddress(intercoAddress);
+    intercoInvoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(intercoAddress));
+    intercoInvoice.setPaymentMode(intercoPaymentMode);
+    intercoInvoice.setBankDetails(intercoBankDetails);
+    Set<Invoice> invoices = invoiceService.getDefaultAdvancePaymentInvoice(intercoInvoice);
+    intercoInvoice.setAdvancePaymentInvoiceSet(invoices);
+    if (accountingSituation != null) {
+      intercoInvoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
+      intercoInvoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
+    }
+    intercoInvoice.setPriceList(intercoPriceList);
+    intercoInvoice.setInvoicesCopySelect(intercoPartner.getInvoicesCopySelect());
+    intercoInvoice.setCreatedByInterco(true);
+    intercoInvoice.setInterco(false);
+    if (intercoInvoice.getInvoiceLineList() != null) {
+      intercoInvoice
+          .getInvoiceLineList()
+          .forEach(invoiceLine -> invoiceLine.setInvoice(intercoInvoice));
+    }
+    if (intercoInvoice.getInvoiceLineTaxList() != null) {
+      intercoInvoice
+          .getInvoiceLineTaxList()
+          .forEach(invoiceTaxLine -> invoiceTaxLine.setInvoice(intercoInvoice));
+    }
+
+    return invoiceRepository.save(intercoInvoice);
   }
 
   @Override
