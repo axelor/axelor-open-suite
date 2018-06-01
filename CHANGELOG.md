@@ -37,6 +37,7 @@
 - Add validate date, ventilation date/user on Invoice.
 - Show alert box instead readonly ventilate button when invoice date is in future. 
 - Opportunity: move to proposition stage when creating a sale order.
+- Change generated accounting report file name to be more explicit.
 - Sale order: allow increasing quantity on delivered detail lines.
 
 ## Bug Fixes
