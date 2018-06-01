@@ -25,6 +25,7 @@
 - Show alert box instead readonly ventilate button when invoice date is in future. 
 - Opportunity: move to proposition stage when creating a sale order.
 - Change generated accounting report file name to be more explicit.
+- Sale order: allow increasing quantity on delivered detail lines.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
@@ -72,6 +73,9 @@
 - Fix set a prospect as the client of a sale order.
 - Stock Move: select stock move with current invoice canceled in multiple sale and purchase invoicing form
 - Set trading name automatically when creating or merging purchase order
+- Fix trading names not being changeable in edit mode when partner was set in sale or purchase orders and invoice forms.
+- Fix bad domain on permission assistant's user field.
+- Fix interco invoice, sale and purchase order generation.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

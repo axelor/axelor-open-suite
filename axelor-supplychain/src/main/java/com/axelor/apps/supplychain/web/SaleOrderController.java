@@ -491,6 +491,7 @@ public class SaleOrderController {
       if (saleOrderView.getOrderBeingEdited()) {
         SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
         saleOrderServiceSupplychain.validateChanges(saleOrder, saleOrderView);
+        response.setValues(saleOrderView);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

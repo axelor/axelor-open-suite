@@ -497,7 +497,7 @@ public class SaleOrderController {
       SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
       SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
       Beans.get(SaleOrderService.class).validateChanges(saleOrder, saleOrderView);
-      response.setValue("orderBeingEdited", false);
+      response.setValues(saleOrderView);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);

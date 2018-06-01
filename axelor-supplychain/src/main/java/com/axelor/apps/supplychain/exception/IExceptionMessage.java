@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/** */
+
 package com.axelor.apps.supplychain.exception;
 
 /** @author axelor */
@@ -112,6 +112,8 @@ public interface IExceptionMessage {
       "An active stock move (%s) already exists for the sale order %s." /*)*/;
   static final String SO_CANT_REMOVED_DELIVERED_LINE = /*$$(*/
       "Can't remove delivered detail line %s." /*)*/;
+  static final String SO_CANT_DECREASE_QTY_ON_DELIVERED_LINE = /*$$(*/
+      "Quantity cannot be lower than already delivered quantity on detail line %s." /*)*/;
   static final String SO_MISSING_STOCK_LOCATION = /*$$(*/
       "Stock location is missing for the sale order %s." /*)*/;
 
@@ -141,4 +143,7 @@ public interface IExceptionMessage {
 
   static final String SUBSCRIPTION_INVOICE_GENERATION_ERROR = /*$$(*/
       "Error generating subscription invoice(s): '%s'" /*)*/;
+
+  /** Interco Service */
+  static final String INVOICE_MISSING_TYPE = /*$$(*/ "Invoice %s type is not filled." /*)*/;
 }

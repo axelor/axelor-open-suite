@@ -46,7 +46,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -339,10 +338,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   @Override
-  @Transactional
   public void updateDeliveryState(SaleOrder saleOrder) throws AxelorException {
-
     saleOrder.setDeliveryState(computeDeliveryState(saleOrder));
+  }
+
+  @Override
+  public void fullyUpdateDeliveryState(SaleOrder saleOrder) throws AxelorException {
+    saleOrderLineServiceSupplyChain.updateDeliveryStates(saleOrder.getSaleOrderLineList());
+    updateDeliveryState(saleOrder);
   }
 
   private int computeDeliveryState(SaleOrder saleOrder) throws AxelorException {
