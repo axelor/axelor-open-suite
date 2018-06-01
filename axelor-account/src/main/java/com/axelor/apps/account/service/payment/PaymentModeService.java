@@ -47,4 +47,10 @@ public interface PaymentModeService {
    * @return list of bankdetails in the payment mode for the given company.
    */
   public List<BankDetails> getCompatibleBankDetailsList(PaymentMode paymentMode, Company company);
+
+  /**
+   * Returns a payment mode with the same type as the given payment mode, but with reversed in or
+   * out status. Return null if no payment mode were found or if the given payment mode is null.
+   */
+  public PaymentMode reverseInOut(PaymentMode paymentMode);
 }

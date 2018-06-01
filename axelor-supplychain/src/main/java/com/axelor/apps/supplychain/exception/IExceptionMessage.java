@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/** */
+
 package com.axelor.apps.supplychain.exception;
 
 /** @author axelor */
@@ -141,4 +141,7 @@ public interface IExceptionMessage {
 
   static final String SUBSCRIPTION_INVOICE_GENERATION_ERROR = /*$$(*/
       "Error generating subscription invoice(s): '%s'" /*)*/;
+
+  /** Interco Service */
+  static final String INVOICE_MISSING_TYPE = /*$$(*/ "Invoice %s type is not filled." /*)*/;
 }
