@@ -44,6 +44,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,11 +53,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppSupplychain appSupplychain;
+  protected SaleOrderStockService saleOrderStockService;
 
   @Inject
-  public SaleOrderServiceSupplychainImpl(AppSupplychainService appSupplychainService) {
+  public SaleOrderServiceSupplychainImpl(
+      AppSupplychainService appSupplychainService, SaleOrderStockService saleOrderStockService) {
 
     this.appSupplychain = appSupplychainService.getAppSupplychain();
+    this.saleOrderStockService = saleOrderStockService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -122,8 +126,25 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
         MoreObjects.firstNonNull(saleOrderView.getSaleOrderLineList(), Collections.emptyList());
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      if (saleOrderLine.getDeliveryState() > SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED
-          && !saleOrderViewLineList.contains(saleOrderLine)) {
+      if (saleOrderLine.getDeliveryState()
+          <= SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED) {
+        continue;
+      }
+
+      Optional<SaleOrderLine> optionalNewSaleOrderLine =
+          saleOrderViewLineList.stream().filter(saleOrderLine::equals).findFirst();
+
+      if (optionalNewSaleOrderLine.isPresent()) {
+        SaleOrderLine newSaleOrderLine = optionalNewSaleOrderLine.get();
+
+        if (newSaleOrderLine.getQty().compareTo(saleOrderLine.getDeliveredQty()) < 0) {
+          throw new AxelorException(
+              saleOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.SO_CANT_DECREASE_QTY_ON_DELIVERED_LINE),
+              saleOrderLine.getFullName());
+        }
+      } else {
         throw new AxelorException(
             saleOrder,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -131,5 +152,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
             saleOrderLine.getFullName());
       }
     }
+
+    saleOrderStockService.fullyUpdateDeliveryState(saleOrderView);
+    saleOrderView.setOrderBeingEdited(false);
   }
 }

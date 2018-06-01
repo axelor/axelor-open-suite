@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -187,5 +188,27 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         .filter(Objects::nonNull)
         .map(Partner::getId)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public void updateDeliveryStates(List<SaleOrderLine> saleOrderLineList) {
+    if (ObjectUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      updateDeliveryState(saleOrderLine);
+    }
+  }
+
+  @Override
+  public void updateDeliveryState(SaleOrderLine saleOrderLine) {
+    if (saleOrderLine.getDeliveredQty().signum() == 0) {
+      saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+    } else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
+      saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
+    } else {
+      saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
+    }
   }
 }
