@@ -84,6 +84,7 @@
 - Fix set a prospect as the client of a sale order.
 - Stock Move: select stock move with current invoice canceled in multiple sale and purchase invoicing form
 - Set trading name automatically when creating or merging purchase order
+- Fix bad domain on permission assistant's user field.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

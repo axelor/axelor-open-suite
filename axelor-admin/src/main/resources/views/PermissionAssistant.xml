@@ -16,7 +16,7 @@
       <panel-related field="roleSet" showIf="typeSelect == 2" colSpan="12"/>
       <panel-related field="groupSet" showIf="typeSelect == 1" colSpan="12"/>
       <panel-related field="objectSet" colSpan="12"/>
-      <field name="metaField" domain="self.metaModel = 3 and self.relationship != null" onChange="action-permission-assistant-method-fill-objects"/>
+      <field name="metaField" domain="self.metaModel.name = 'User' and self.relationship != null" onChange="action-permission-assistant-method-fill-objects"/>
       <field name="fieldPermission" />
       <field name="metaFile" colSpan="12" widget="binary-link" />
       <field name="language" />
