@@ -61,4 +61,12 @@ public interface SaleOrderStockService {
    * @param saleOrder
    */
   void updateDeliveryState(SaleOrder saleOrder) throws AxelorException;
+
+  /**
+   * Update delivery states in sale order and sale order lines.
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  void fullyUpdateDeliveryState(SaleOrder saleOrder) throws AxelorException;
 }

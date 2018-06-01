@@ -266,6 +266,7 @@
 "Purchase proposal",,,
 "Qty",,,
 "Qty to invoice",,,
+"Quantity cannot be lower than already delivered quantity on detail line %s.",,,
 "Real/Current Quantity",,,
 "Receipt state",,,
 "Ref",,,
