@@ -38,4 +38,18 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @return the list of ids
    */
   List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine);
+
+  /**
+   * Update delivery state.
+   *
+   * @param saleOrderLine
+   */
+  void updateDeliveryState(SaleOrderLine saleOrderLine);
+
+  /**
+   * Update delivery states.
+   *
+   * @param saleOrderLineList
+   */
+  void updateDeliveryStates(List<SaleOrderLine> saleOrderLineList);
 }

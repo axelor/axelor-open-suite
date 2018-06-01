@@ -24,6 +24,7 @@
 - Add validate date, ventilation date/user on Invoice.
 - Show alert box instead readonly ventilate button when invoice date is in future. 
 - Opportunity: move to proposition stage when creating a sale order.
+- Sale order: allow increasing quantity on delivered detail lines.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
