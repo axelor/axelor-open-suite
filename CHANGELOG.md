@@ -76,6 +76,7 @@
 - Fix trading names not being changeable in edit mode when partner was set in sale or purchase orders and invoice forms.
 - Fix bad domain on permission assistant's user field.
 - Fix interco invoice, sale and purchase order generation.
+- Fix missing domains in production menu
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
