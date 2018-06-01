@@ -227,7 +227,7 @@
 	  		]]></viewer>
 	    </field>
 		<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement"
-			readonlyIf="statusSelect == 3 || clientPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-sale-method-printing-settings-default-values"/>
+			readonlyIf="statusSelect >= 2" domain=":company MEMBER OF self.companySet" onChange="action-sale-method-printing-settings-default-values"/>
 	    <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect &gt;= 2"/>
           <field name="saleOrderTypeSelect" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" readonlyIf="statusSelect &gt;= 2"/>
 	    <field name="versionNumber" if="__config__.app.getApp('sale').getManageSaleOrderVersion()"/>

@@ -98,7 +98,7 @@
 			<field name="versionNumber"
 				if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
 			<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement"
-				   readonlyIf="statusSelect >= 3 || supplierPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-printing-settings-default-value"/>
+				   readonlyIf="statusSelect >= 3" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-printing-settings-default-value"/>
 			<field name="companyBankDetails" widget="SuggestBox"
 					onSelect="action-invoice-attrs-domain-company-bank-details"
 					form-view="bank-details-form" grid-view="bank-details-grid"
