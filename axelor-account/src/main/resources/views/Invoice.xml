@@ -749,8 +749,8 @@
 
 	<action-record name="action-invoice-record-interco-supplychain"
 				   model="com.axelor.apps.account.db.Invoice" if-module="axelor-supplychain">
-		<field name="interco"
-			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromInvoice()"/>
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromInvoice
+            &amp;&amp; !createdByInterco &amp;&amp; partner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', partner).fetchOne()"/>
 	</action-record>
 
     <action-record name="action-invoice-record-reset-operationsubtype" model="com.axelor.apps.account.db.Invoice">
@@ -802,8 +802,6 @@
 	<action-attrs name="action-invoice-attrs-interco-supplychain" if-module="axelor-supplychain">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
-		<attribute for="interco" name="value" expr="eval: false"
-				   if="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
 	   <attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 2"/>
 	</action-attrs>

@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
@@ -42,6 +43,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Override
   public Account getPaymentModeAccount(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException {
 
@@ -69,6 +71,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
         paymentMode.getName());
   }
 
+  @Override
   public AccountManagement getAccountManagement(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) {
 
@@ -104,6 +107,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
         .getAccountManagement(paymentMode.getAccountManagementList(), company);
   }
 
+  @Override
   public Sequence getPaymentModeSequence(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException {
 
@@ -123,6 +127,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     return accountManagement.getSequence();
   }
 
+  @Override
   public Journal getPaymentModeJournal(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException {
 
@@ -142,9 +147,9 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     return accountManagement.getJournal();
   }
 
-  /** @inheritDoc */
+  @Override
   public List<BankDetails> getCompatibleBankDetailsList(PaymentMode paymentMode, Company company) {
-    List<BankDetails> bankDetailsList = new ArrayList<BankDetails>();
+    List<BankDetails> bankDetailsList = new ArrayList<>();
     if (paymentMode == null) {
       return bankDetailsList;
     }
@@ -159,5 +164,23 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       }
     }
     return bankDetailsList;
+  }
+
+  @Override
+  public PaymentMode reverseInOut(PaymentMode paymentMode) {
+    if (paymentMode == null) {
+      return null;
+    }
+    int inversedInOrOut =
+        paymentMode.getInOutSelect() == PaymentModeRepository.IN
+            ? PaymentModeRepository.OUT
+            : PaymentModeRepository.IN;
+
+    return Beans.get(PaymentModeRepository.class)
+        .all()
+        .filter("self.typeSelect = :_paymentModeType AND self.inOutSelect = :_inversedInOrOut")
+        .bind("_paymentModeType", paymentMode.getTypeSelect())
+        .bind("_inversedInOrOut", inversedInOrOut)
+        .fetchOne();
   }
 }
