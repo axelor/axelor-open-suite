@@ -1505,31 +1505,27 @@ where SaleOrder.id = ?]]></xml-property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-<<<<<<< HEAD
                         <property name="position">16</property>
-=======
-                        <property name="position">19</property>
                         <property name="name">parent_pack_price_select</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">17</property>
                         <property name="name">pack_price_select</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
->>>>>>> parent of 80ca845... Revert "Pack price select"
+                        <property name="position">18</property>
                         <property name="name">is_title_line</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">19</property>
                         <property name="name">is_pack_line</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">23</property>
+                        <property name="position">20</property>
                         <property name="name">is_sub_line</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -1643,32 +1639,28 @@ where SaleOrder.id = ?]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-<<<<<<< HEAD
                     <property name="position">16</property>
-=======
-                    <property name="position">19</property>
                     <property name="name">parent_pack_price_select</property>
                     <property name="nativeName">parent_pack_price_select</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">17</property>
                     <property name="name">pack_price_select</property>
                     <property name="nativeName">pack_price_select</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
->>>>>>> parent of 80ca845... Revert "Pack price select"
+                    <property name="position">18</property>
                     <property name="name">is_title_line</property>
                     <property name="nativeName">is_title_line</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">19</property>
                     <property name="name">is_pack_line</property>
                     <property name="nativeName">is_pack_line</property>
                     <property name="dataType">integer</property>
@@ -1705,11 +1697,7 @@ where SaleOrder.id = ?]]></xml-property>
 	SOLine.is_sub_line
 from sale_sale_order as SaleOrder
 left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
-<<<<<<< HEAD
-=======
 left outer join sale_sale_order_line as ParentSOLine on (ParentSOLine.id = SOLine.parent_line)
-left outer join supplychain_subscription as Subscription on (Subscription.sale_order_line = SOLine.id)
->>>>>>> parent of 80ca845... Revert "Pack price select"
 left outer join base_product as Product on (SOLine.product = Product.id)
 left outer join base_unit as Unit on (SOLine.unit = Unit.id)
 left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
