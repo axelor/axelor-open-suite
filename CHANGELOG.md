@@ -81,6 +81,8 @@
 - Fix bank details default value in invoice form.
 - Fix wrong calculation of unit price when create stock move from purchase order and sale order
 - Product: fill information on sale/purchase order and invoice lines even when tax is missing.
+- Fix trading name not being imported from opportunity on sale quotation generation
+- Purchase order: fix doubled stock move total when generating supplier arrival.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

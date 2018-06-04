@@ -255,6 +255,11 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
 
     StockMove stockMove = new StockMove();
+
+    if (stockMove.getStockMoveLineList() == null) {
+      stockMove.setStockMoveLineList(new ArrayList<>());
+    }
+
     stockMove.setFromAddress(fromAddress);
     stockMove.setToAddress(toAddress);
     this.computeAddressStr(stockMove);
