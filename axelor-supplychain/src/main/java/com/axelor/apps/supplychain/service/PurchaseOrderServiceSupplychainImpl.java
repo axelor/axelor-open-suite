@@ -66,7 +66,6 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,7 +207,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                   null,
                   null);
       stockMove.setPurchaseOrder(purchaseOrder);
-      stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
       stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
       stockMove.setTradingName(purchaseOrder.getTradingName());
 
@@ -261,10 +259,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                       purchaseOrder.getInAti(),
                       taxRate);
           if (stockMoveLine != null) {
-
             stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
-
-            stockMove.getStockMoveLineList().add(stockMoveLine);
           }
         } else if (purchaseOrderLine.getIsTitleLine()) {
           StockMoveLine stockMoveLine =
@@ -281,10 +276,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                       purchaseOrder.getInAti(),
                       null);
           if (stockMoveLine != null) {
-
             stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
-
-            stockMove.getStockMoveLineList().add(stockMoveLine);
           }
         }
       }
@@ -514,6 +506,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
   }
 
+  @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
