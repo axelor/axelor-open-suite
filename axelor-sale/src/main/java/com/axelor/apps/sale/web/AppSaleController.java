@@ -25,14 +25,13 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AppSaleController {
-	
-	@Inject
-	private AppSaleService appSaleService;
-	
-	public void generateSaleConfigurations(ActionRequest request, ActionResponse response) {
-		
-		appSaleService.generateSaleConfigurations();
-		
-		response.setReload(true);
-	}
+
+  @Inject private AppSaleService appSaleService;
+
+  public void generateSaleConfigurations(ActionRequest request, ActionResponse response) {
+
+    appSaleService.generateSaleConfigurations();
+
+    response.setReload(true);
+  }
 }

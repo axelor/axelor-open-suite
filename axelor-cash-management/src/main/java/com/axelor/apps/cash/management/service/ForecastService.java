@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.cash.management.service;
 
-import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.List;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -32,57 +25,74 @@ import com.axelor.apps.cash.management.db.ForecastGenerator;
 import com.axelor.apps.cash.management.db.ForecastReason;
 import com.axelor.apps.cash.management.db.repo.ForecastRepository;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
+import java.util.List;
 
 public class ForecastService {
 
-	@Inject
-	protected AppBaseService appBaseService;
-	
-	public void generate(ForecastGenerator forecastGenerator) {
-		LocalDate fromDate = forecastGenerator.getFromDate();
-		LocalDate toDate = forecastGenerator.getToDate();
-		LocalDate itDate = LocalDate.parse(fromDate.toString(),DateTimeFormatter.ISO_DATE);
-		LocalDate todayDate = appBaseService.getTodayDate();
-		int count = 0;
+  @Inject protected AppBaseService appBaseService;
 
-		if (forecastGenerator.getForecastList() != null && !forecastGenerator.getForecastList().isEmpty()) {
-			List<Forecast> forecastList = forecastGenerator.getForecastList();
-			Iterator<Forecast> it = forecastList.iterator();
-			while (it.hasNext()) {
-				Forecast forecast = it.next();
-				if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_NO) {
-					it.remove();
-				} else if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_AUTO
-						&& forecast.getEstimatedDate().isAfter(todayDate)) {
-					it.remove();
-				}
-			}
-		}
+  public void generate(ForecastGenerator forecastGenerator) {
+    LocalDate fromDate = forecastGenerator.getFromDate();
+    LocalDate toDate = forecastGenerator.getToDate();
+    LocalDate itDate = LocalDate.parse(fromDate.toString(), DateTimeFormatter.ISO_DATE);
+    LocalDate todayDate = appBaseService.getTodayDate();
+    int count = 0;
 
-		while (!itDate.isAfter(toDate)) {
-			Forecast forecast = this.createForecast(forecastGenerator.getCompany(), forecastGenerator.getBankDetails(),
-					forecastGenerator.getTypeSelect(), forecastGenerator.getAmount(), itDate,
-					forecastGenerator.getForecastReason(), forecastGenerator.getComments(),
-					forecastGenerator.getRealizedSelect());
-			forecastGenerator.addForecastListItem(forecast);
-			itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
-		}
-	}
+    if (forecastGenerator.getForecastList() != null
+        && !forecastGenerator.getForecastList().isEmpty()) {
+      List<Forecast> forecastList = forecastGenerator.getForecastList();
+      Iterator<Forecast> it = forecastList.iterator();
+      while (it.hasNext()) {
+        Forecast forecast = it.next();
+        if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_NO) {
+          it.remove();
+        } else if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_AUTO
+            && forecast.getEstimatedDate().isAfter(todayDate)) {
+          it.remove();
+        }
+      }
+    }
 
-	public Forecast createForecast(Company company, BankDetails bankDetails, int typeSelect, BigDecimal amount,
-			LocalDate estimatedDate, ForecastReason reason, String comments, int realizedSelect) {
+    while (!itDate.isAfter(toDate)) {
+      Forecast forecast =
+          this.createForecast(
+              forecastGenerator.getCompany(),
+              forecastGenerator.getBankDetails(),
+              forecastGenerator.getTypeSelect(),
+              forecastGenerator.getAmount(),
+              itDate,
+              forecastGenerator.getForecastReason(),
+              forecastGenerator.getComments(),
+              forecastGenerator.getRealizedSelect());
+      forecastGenerator.addForecastListItem(forecast);
+      itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
+    }
+  }
 
-		Forecast forecast = new Forecast();
-		forecast.setCompany(company);
-		forecast.setBankDetails(bankDetails);
-		forecast.setTypeSelect(typeSelect);
-		forecast.setAmount(amount);
-		forecast.setEstimatedDate(estimatedDate);
-		forecast.setForecastReason(reason);
-		forecast.setComments(comments);
-		forecast.setRealizedSelect(realizedSelect);
+  public Forecast createForecast(
+      Company company,
+      BankDetails bankDetails,
+      int typeSelect,
+      BigDecimal amount,
+      LocalDate estimatedDate,
+      ForecastReason reason,
+      String comments,
+      int realizedSelect) {
 
-		return forecast;
-	}
+    Forecast forecast = new Forecast();
+    forecast.setCompany(company);
+    forecast.setBankDetails(bankDetails);
+    forecast.setTypeSelect(typeSelect);
+    forecast.setAmount(amount);
+    forecast.setEstimatedDate(estimatedDate);
+    forecast.setForecastReason(reason);
+    forecast.setComments(comments);
+    forecast.setRealizedSelect(realizedSelect);
 
+    return forecast;
+  }
 }

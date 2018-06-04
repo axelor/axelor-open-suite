@@ -30,37 +30,35 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 @Singleton
 public class EmployeeController {
 
-	public void showAnnualReport(ActionRequest request, ActionResponse response) throws JSONException, NumberFormatException, AxelorException{
-		
-		String employeeId = request.getContext().get("_id").toString();
-		String year = request.getContext().get("year").toString();
-		int yearId = new JSONObject(year).getInt("id");
-		String yearName = new JSONObject(year).getString("name");
-		User user = AuthUtils.getUser();
+  public void showAnnualReport(ActionRequest request, ActionResponse response)
+      throws JSONException, NumberFormatException, AxelorException {
 
-		String name = I18n.get("Annual expenses report") + " :  " + user.getFullName() + " (" + yearName + ")";
-		
-		String fileLink = ReportFactory.createReport(IReport.EMPLOYEE_ANNUAL_REPORT, name)
-				.addParam("EmployeeId", Long.valueOf(employeeId) )
-				.addParam("YearId",  Long.valueOf(yearId) )
-				.addParam("Locale", ReportSettings.getPrintingLocale(null))
-				.toAttach(Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId)))
-				.generate()
-				.getFileLink();
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
-		
-		response.setCanClose(true);
-	}
-	
+    String employeeId = request.getContext().get("_id").toString();
+    String year = request.getContext().get("year").toString();
+    int yearId = new JSONObject(year).getInt("id");
+    String yearName = new JSONObject(year).getString("name");
+    User user = AuthUtils.getUser();
 
+    String name =
+        I18n.get("Annual expenses report") + " :  " + user.getFullName() + " (" + yearName + ")";
+
+    String fileLink =
+        ReportFactory.createReport(IReport.EMPLOYEE_ANNUAL_REPORT, name)
+            .addParam("EmployeeId", Long.valueOf(employeeId))
+            .addParam("YearId", Long.valueOf(yearId))
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .toAttach(Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId)))
+            .generate()
+            .getFileLink();
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+
+    response.setCanClose(true);
+  }
 }

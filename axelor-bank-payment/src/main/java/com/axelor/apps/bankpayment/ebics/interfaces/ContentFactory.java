@@ -42,10 +42,10 @@ import java.io.InputStream;
 public interface ContentFactory {
 
   /**
-   * Returns a new data source of the data to be sent.
-   * The instance must ensure that the returned stream will
-   * deliver the identical data during the lifetime of this instance.
-   * Nevertheless how often the method will be called.
+   * Returns a new data source of the data to be sent. The instance must ensure that the returned
+   * stream will deliver the identical data during the lifetime of this instance. Nevertheless how
+   * often the method will be called.
+   *
    * @return a new data source of the data to be sent.
    * @throws IOException
    */

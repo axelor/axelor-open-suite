@@ -17,23 +17,24 @@
  */
 package com.axelor.csv.script;
 
-import java.util.Map;
-
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.util.Map;
 
 public class ImportSaleOrderLine {
 
-	public Object importSaleOrderLine(Object bean, Map<String, Object> values) throws AxelorException {
-		assert bean instanceof SaleOrderLine;
+  public Object importSaleOrderLine(Object bean, Map<String, Object> values)
+      throws AxelorException {
+    assert bean instanceof SaleOrderLine;
 
-		SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
-		SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-		saleOrderLine.setTaxLine(saleOrderLineService.getTaxLine(saleOrderLine.getSaleOrder(), saleOrderLine));
-		saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+    SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    saleOrderLine.setTaxLine(
+        saleOrderLineService.getTaxLine(saleOrderLine.getSaleOrder(), saleOrderLine));
+    saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
 
-		return saleOrderLine;
-	}
+    return saleOrderLine;
+  }
 }

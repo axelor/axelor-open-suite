@@ -20,10 +20,10 @@ package com.axelor.apps.account.service.invoice.workflow.cancel;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.exception.AxelorException;
 
-public class WorkflowCancelServiceImpl implements WorkflowCancelService{
-    @Override
-    public void beforeCancel(Invoice invoice) {}
+public class WorkflowCancelServiceImpl implements WorkflowCancelService {
+  @Override
+  public void beforeCancel(Invoice invoice) {}
 
-    @Override
-    public void afterCancel(Invoice invoice) throws AxelorException {}
+  @Override
+  public void afterCancel(Invoice invoice) throws AxelorException {}
 }

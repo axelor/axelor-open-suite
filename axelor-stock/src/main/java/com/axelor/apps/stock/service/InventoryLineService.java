@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -26,42 +24,46 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
 
 public class InventoryLineService {
-	
 
-	public InventoryLine createInventoryLine(Inventory inventory, Product product, BigDecimal currentQty, String rack, TrackingNumber trackingNumber)  {
-		
-		InventoryLine inventoryLine = new InventoryLine();
-		inventoryLine.setInventory(inventory);
-		inventoryLine.setProduct(product);
-		inventoryLine.setRack(rack);
-		inventoryLine.setCurrentQty(currentQty);
-		inventoryLine.setTrackingNumber(trackingNumber);
-		
-		return inventoryLine;
-		
-	}
+  public InventoryLine createInventoryLine(
+      Inventory inventory,
+      Product product,
+      BigDecimal currentQty,
+      String rack,
+      TrackingNumber trackingNumber) {
 
-	public InventoryLine updateInventoryLine(InventoryLine inventoryLine) {
-		
-		StockLocation stockLocation = inventoryLine.getInventory().getStockLocation();
-		Product product = inventoryLine.getProduct();
-		
-		if (product != null) {
-			StockLocationLine stockLocationLine = Beans.get(StockLocationLineService.class).getOrCreateStockLocationLine(stockLocation, product);
-			
-			if (stockLocationLine != null) {
-				inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
-				inventoryLine.setRack(stockLocationLine.getRack());
-			} else {
-				inventoryLine.setCurrentQty(null);
-				inventoryLine.setRack(null);
-			}
-		}
-		
-		return inventoryLine;
-	}
+    InventoryLine inventoryLine = new InventoryLine();
+    inventoryLine.setInventory(inventory);
+    inventoryLine.setProduct(product);
+    inventoryLine.setRack(rack);
+    inventoryLine.setCurrentQty(currentQty);
+    inventoryLine.setTrackingNumber(trackingNumber);
 
-	
+    return inventoryLine;
+  }
+
+  public InventoryLine updateInventoryLine(InventoryLine inventoryLine) {
+
+    StockLocation stockLocation = inventoryLine.getInventory().getStockLocation();
+    Product product = inventoryLine.getProduct();
+
+    if (product != null) {
+      StockLocationLine stockLocationLine =
+          Beans.get(StockLocationLineService.class)
+              .getOrCreateStockLocationLine(stockLocation, product);
+
+      if (stockLocationLine != null) {
+        inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
+        inventoryLine.setRack(stockLocationLine.getRack());
+      } else {
+        inventoryLine.setCurrentQty(null);
+        inventoryLine.setRack(null);
+      }
+    }
+
+    return inventoryLine;
+  }
 }

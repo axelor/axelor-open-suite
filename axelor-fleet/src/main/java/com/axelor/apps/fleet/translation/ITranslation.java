@@ -19,6 +19,5 @@ package com.axelor.apps.fleet.translation;
 
 public interface ITranslation {
 
-	public static final String FLEET_APP_NAME = /*$$(*/ "value:Fleet"; /*)*/
-
+  public static final String FLEET_APP_NAME = /*$$(*/ "value:Fleet"; /*)*/
 }

@@ -26,36 +26,35 @@ import com.axelor.exception.AxelorException;
 
 public interface IntercoService {
 
-    /**
-     * Given a purchase order, generate the sale order counterpart for
-     * the other company
-     * @param purchaseOrder
-     * @return the generated sale order
-     */
-    SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder) throws AxelorException;
+  /**
+   * Given a purchase order, generate the sale order counterpart for the other company
+   *
+   * @param purchaseOrder
+   * @return the generated sale order
+   */
+  SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder) throws AxelorException;
 
-    /**
-     * Given a sale order, generate the sale order counterpart for
-     * the other company
-     * @param saleOrder
-     * @return the generated purchase order
-     */
-    PurchaseOrder generateIntercoPurchaseFromSale(SaleOrder saleOrder) throws AxelorException;
+  /**
+   * Given a sale order, generate the sale order counterpart for the other company
+   *
+   * @param saleOrder
+   * @return the generated purchase order
+   */
+  PurchaseOrder generateIntercoPurchaseFromSale(SaleOrder saleOrder) throws AxelorException;
 
-    /**
-     * Given an invoice, generate the invoice counterpart for the
-     * other company.
-     * @param invoice
-     * @return  the generated invoice
-     * @throws AxelorException
-     */
-    Invoice generateIntercoInvoice(Invoice invoice) throws AxelorException;
+  /**
+   * Given an invoice, generate the invoice counterpart for the other company.
+   *
+   * @param invoice
+   * @return the generated invoice
+   * @throws AxelorException
+   */
+  Invoice generateIntercoInvoice(Invoice invoice) throws AxelorException;
 
-    /**
-     * Find the interco company from the partner
-     *
-     * @param partner
-     */
-    Company findIntercoCompany(Partner partner);
-
+  /**
+   * Find the interco company from the partner
+   *
+   * @param partner
+   */
+  Company findIntercoCompany(Partner partner);
 }

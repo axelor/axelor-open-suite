@@ -18,19 +18,20 @@
 package com.axelor.apps.base.exceptions;
 
 public interface IAppExceptionMessages {
-	
-	static final public String NO_CONFIG_REQUIRED = /*$$(*/ "No configuration required" /*)*/;
-	
-	static final public String APP_IN_USE = /*$$(*/ "This app is used by %s. Please deactivate them before continue." /*)*/;
-	
-	static final public String BULK_INSTALL_SUCCESS = /*$$(*/ "Apps installed successfully" /*)*/;
-	
-	static final public String REFRESH_APP_SUCCESS = /*$$(*/ "Apps refreshed successfully" /*)*/;
-	
-	static final public String REFRESH_APP_ERROR = /*$$(*/ "Error in refreshing app" /*)*/;
-	
-	static final public String NO_LANGAUAGE_SELECTED = /*$$(*/ "No application language set. Please set 'application.locale' property." /*)*/;
-	
-	static final public String DEMO_DATA_SUCCESS = /*$$(*/ "Demo data loaded successfully" /*)*/;
-	
+
+  public static final String NO_CONFIG_REQUIRED = /*$$(*/ "No configuration required" /*)*/;
+
+  public static final String APP_IN_USE = /*$$(*/
+      "This app is used by %s. Please deactivate them before continue." /*)*/;
+
+  public static final String BULK_INSTALL_SUCCESS = /*$$(*/ "Apps installed successfully" /*)*/;
+
+  public static final String REFRESH_APP_SUCCESS = /*$$(*/ "Apps refreshed successfully" /*)*/;
+
+  public static final String REFRESH_APP_ERROR = /*$$(*/ "Error in refreshing app" /*)*/;
+
+  public static final String NO_LANGAUAGE_SELECTED = /*$$(*/
+      "No application language set. Please set 'application.locale' property." /*)*/;
+
+  public static final String DEMO_DATA_SUCCESS = /*$$(*/ "Demo data loaded successfully" /*)*/;
 }

@@ -31,21 +31,23 @@ import com.google.inject.Singleton;
 @Singleton
 public class LogisticalFormController {
 
-	public void print(ActionRequest request, ActionResponse response) {
-		try {
-			LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+  public void print(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 
-			String name = String.format("%s %s", I18n.get("Packaging list"), logisticalForm.getDeliveryNumber());
+      String name =
+          String.format("%s %s", I18n.get("Packaging list"), logisticalForm.getDeliveryNumber());
 
-			String fileLink = ReportFactory.createReport(IReport.PACKAGING_LIST, name + " - ${date}")
-					.addParam("LogisticalFormId", logisticalForm.getId())
-					.addParam("Locale", ReportSettings.getPrintingLocale(null))
-					.generate().getFileLink();
+      String fileLink =
+          ReportFactory.createReport(IReport.PACKAGING_LIST, name + " - ${date}")
+              .addParam("LogisticalFormId", logisticalForm.getId())
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .generate()
+              .getFileLink();
 
-			response.setView(ActionView.define(name).add("html", fileLink).map());
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

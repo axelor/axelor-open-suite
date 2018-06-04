@@ -21,9 +21,8 @@ import com.axelor.apps.base.db.AppBankPayment;
 import com.axelor.apps.base.service.app.AppBaseService;
 
 public interface AppBankPaymentService extends AppBaseService {
-	
-	public AppBankPayment getAppBankPayment();
-	
-	public void generateBankPaymentConfigurations();
-	
+
+  public AppBankPayment getAppBankPayment();
+
+  public void generateBankPaymentConfigurations();
 }

@@ -32,39 +32,42 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class MailBatchController{
+public class MailBatchController {
 
-	@Inject
-	MailBatchService mailBatchService;
-	
-	@Inject
-	MailBatchRepository mailBatchRepo;
+  @Inject MailBatchService mailBatchService;
 
-	public void remindTimesheet(ActionRequest request, ActionResponse response) throws AxelorException{
+  @Inject MailBatchRepository mailBatchRepo;
 
-		MailBatch mailBatch = request.getContext().asType(MailBatch.class);
+  public void remindTimesheet(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-		Batch batch = null;
+    MailBatch mailBatch = request.getContext().asType(MailBatch.class);
 
-		batch = mailBatchService.remindMail(mailBatchRepo.find(mailBatch.getId()));
+    Batch batch = null;
 
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+    batch = mailBatchService.remindMail(mailBatchRepo.find(mailBatch.getId()));
 
-	public void remindTimesheetGeneral(ActionRequest request, ActionResponse response) throws AxelorException{
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-		MailBatch mailBatch = Beans.get(MailBatchRepository.class).findByCode(MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
-		if(mailBatch != null){
-			Batch batch = null;
-			batch = mailBatchService.remindMail(mailBatch);
+  public void remindTimesheetGeneral(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-			if(batch != null)
-				response.setFlash(batch.getComments());
-			response.setReload(true);
-		} else {
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
-		}
-	}
+    MailBatch mailBatch =
+        Beans.get(MailBatchRepository.class)
+            .findByCode(MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
+    if (mailBatch != null) {
+      Batch batch = null;
+      batch = mailBatchService.remindMail(mailBatch);
+
+      if (batch != null) response.setFlash(batch.getComments());
+      response.setReload(true);
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BASE_BATCH_2),
+          MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
+    }
+  }
 }

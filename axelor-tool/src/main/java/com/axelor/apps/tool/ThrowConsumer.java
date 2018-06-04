@@ -19,14 +19,16 @@ package com.axelor.apps.tool;
 
 /**
  * Represents an operation that accepts one argument, returns no result and can throws exception.
+ *
  * @param <T>
  */
 @FunctionalInterface
 public interface ThrowConsumer<T> {
-    /**
-     * Performs this operation on the given argument.
-     * @param t the input argument.
-     * @throws Exception from operation.
-     */
-    void accept(T t) throws Exception;
+  /**
+   * Performs this operation on the given argument.
+   *
+   * @param t the input argument.
+   * @throws Exception from operation.
+   */
+  void accept(T t) throws Exception;
 }

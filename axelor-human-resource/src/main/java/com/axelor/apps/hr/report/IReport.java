@@ -18,14 +18,12 @@
 package com.axelor.apps.hr.report;
 
 public interface IReport {
-	
-	public static final String EMPLYOMENT_CONTRACT = "EmploymentContract.rptdesign";
-	public static final String EXPENSE="Expense.rptdesign";
-	public static final String TIMESHEET = "Timesheet.rptdesign";
-	public static final String EMPLOYEE_BONUS_MANAGEMENT = "EmployeeBonusMgt.rptdesign";
-	public static final String EMPLOYEE_ANNUAL_REPORT = "EmployeeAnnualReport.rptdesign";
-	public static final String LUNCH_VOUCHER_MGT_MONTHLY = "LunchVoucherMgt_Monthly.rptdesign";
-	public static final String LUNCH_VOUCHER_ADVANCE = "LunchVoucherAdvance.rptdesign";
 
-	
+  public static final String EMPLYOMENT_CONTRACT = "EmploymentContract.rptdesign";
+  public static final String EXPENSE = "Expense.rptdesign";
+  public static final String TIMESHEET = "Timesheet.rptdesign";
+  public static final String EMPLOYEE_BONUS_MANAGEMENT = "EmployeeBonusMgt.rptdesign";
+  public static final String EMPLOYEE_ANNUAL_REPORT = "EmployeeAnnualReport.rptdesign";
+  public static final String LUNCH_VOUCHER_MGT_MONTHLY = "LunchVoucherMgt_Monthly.rptdesign";
+  public static final String LUNCH_VOUCHER_ADVANCE = "LunchVoucherAdvance.rptdesign";
 }

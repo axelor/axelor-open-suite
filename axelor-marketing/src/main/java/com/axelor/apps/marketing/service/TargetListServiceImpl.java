@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.marketing.service;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.crm.db.Lead;
@@ -27,79 +24,77 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.marketing.db.TargetList;
 import com.axelor.studio.service.filter.FilterJpqlService;
 import com.google.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This service class use to get filtered Partners and Leads.
- * 
- * @author axelor
  *
+ * @author axelor
  */
 public class TargetListServiceImpl implements TargetListService {
 
-	@Inject
-	private FilterJpqlService filterJpqlService;
+  @Inject private FilterJpqlService filterJpqlService;
 
-	@Inject
-	private PartnerRepository partnerRepo;
+  @Inject private PartnerRepository partnerRepo;
 
-	@Inject
-	private LeadRepository leadRepo;
+  @Inject private LeadRepository leadRepo;
 
-	@Override
-	public String getPartnerQuery(TargetList targetList) {
-		String partnerFilters = null;
+  @Override
+  public String getPartnerQuery(TargetList targetList) {
+    String partnerFilters = null;
 
-		if (targetList.getPartnerQueryTypeSelect() == 0) {
-			partnerFilters = filterJpqlService.getJpqlFilters(targetList.getPartnerFilterList());
-		}
-		if (targetList.getPartnerQueryTypeSelect() == 1) {
-			partnerFilters = targetList.getPartnerQuery();
-		}
-		return partnerFilters;
-	}
+    if (targetList.getPartnerQueryTypeSelect() == 0) {
+      partnerFilters = filterJpqlService.getJpqlFilters(targetList.getPartnerFilterList());
+    }
+    if (targetList.getPartnerQueryTypeSelect() == 1) {
+      partnerFilters = targetList.getPartnerQuery();
+    }
+    return partnerFilters;
+  }
 
-	@Override
-	public String getLeadQuery(TargetList targetList) {
-		String leadFilters = null;
+  @Override
+  public String getLeadQuery(TargetList targetList) {
+    String leadFilters = null;
 
-		if (targetList.getLeadQueryTypeSelect() == 0) {
-			leadFilters = filterJpqlService.getJpqlFilters(targetList.getLeadFilterList());
-		}
-		if (targetList.getLeadQueryTypeSelect() == 1) {
-			leadFilters = targetList.getLeadQuery();
-		}
-		return leadFilters;
-	}
+    if (targetList.getLeadQueryTypeSelect() == 0) {
+      leadFilters = filterJpqlService.getJpqlFilters(targetList.getLeadFilterList());
+    }
+    if (targetList.getLeadQueryTypeSelect() == 1) {
+      leadFilters = targetList.getLeadQuery();
+    }
+    return leadFilters;
+  }
 
-	@Override
-	public Set<Partner> getAllPartners(Set<TargetList> targetListSet) {
-		Set<Partner> partnerSet = new HashSet<>();
+  @Override
+  public Set<Partner> getAllPartners(Set<TargetList> targetListSet) {
+    Set<Partner> partnerSet = new HashSet<>();
 
-		for (TargetList target : targetListSet) {
-			String filter = getPartnerQuery(target);
-			if (filter != null) {
-				partnerSet.addAll(partnerRepo.all().filter(filter).fetch());
-			}
-			for (Partner partner : target.getPartnerSet()) {
-				partnerSet.add(partner);
-			}
-		}
-		return partnerSet;
-	}
+    for (TargetList target : targetListSet) {
+      String filter = getPartnerQuery(target);
+      if (filter != null) {
+        partnerSet.addAll(partnerRepo.all().filter(filter).fetch());
+      }
+      for (Partner partner : target.getPartnerSet()) {
+        partnerSet.add(partner);
+      }
+    }
+    return partnerSet;
+  }
 
-	@Override
-	public Set<Lead> getAllLeads(Set<TargetList> targetListSet) {
-		Set<Lead> leadSet = new HashSet<>();
+  @Override
+  public Set<Lead> getAllLeads(Set<TargetList> targetListSet) {
+    Set<Lead> leadSet = new HashSet<>();
 
-		for (TargetList target : targetListSet) {
-			String filter = getLeadQuery(target);
-			if (filter != null) {
-				leadSet.addAll(leadRepo.all().filter(filter).fetch());
-			}
-			for (Lead lead : target.getLeadSet()) {
-				leadSet.add(lead);
-			}
-		}
-		return leadSet;
-	}
+    for (TargetList target : targetListSet) {
+      String filter = getLeadQuery(target);
+      if (filter != null) {
+        leadSet.addAll(leadRepo.all().filter(filter).fetch());
+      }
+      for (Lead lead : target.getLeadSet()) {
+        leadSet.add(lead);
+      }
+    }
+    return leadSet;
+  }
 }

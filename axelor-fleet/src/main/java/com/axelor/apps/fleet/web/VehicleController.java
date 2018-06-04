@@ -27,12 +27,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class VehicleController {
 
-	@Inject
-	private VehicleService vehicleService;
-	
-	public void setVehicleName(ActionRequest request , ActionResponse response) {
-		Vehicle vehicle = request.getContext().asType(Vehicle.class);
-		String actualName = vehicleService.setVehicleName(vehicle);
-		response.setValue("name",actualName);
-	}
+  @Inject private VehicleService vehicleService;
+
+  public void setVehicleName(ActionRequest request, ActionResponse response) {
+    Vehicle vehicle = request.getContext().asType(Vehicle.class);
+    String actualName = vehicleService.setVehicleName(vehicle);
+    response.setValue("name", actualName);
+  }
 }

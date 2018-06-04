@@ -22,17 +22,14 @@ import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 
 public abstract class BankOrderFile008Service extends BankOrderFileService {
 
-    public static final String SEPA_TYPE_CORE = "CORE";
-    public static final String SEPA_TYPE_SBB = "SBB";
-	protected static final String BIC_NOT_PROVIDED = "NOTPROVIDED"; 
-	protected static final String CURRENCY_CODE = "EUR";
+  public static final String SEPA_TYPE_CORE = "CORE";
+  public static final String SEPA_TYPE_SBB = "SBB";
+  protected static final String BIC_NOT_PROVIDED = "NOTPROVIDED";
+  protected static final String CURRENCY_CODE = "EUR";
 
+  public BankOrderFile008Service(BankOrder bankOrder) {
+    super(bankOrder);
 
-    public BankOrderFile008Service(BankOrder bankOrder) {
-        super(bankOrder);
-        
-		fileExtension = FILE_EXTENSION_XML;
-
-    }
-
+    fileExtension = FILE_EXTENSION_XML;
+  }
 }

@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.purchase.web;
 
-import java.util.List;
-
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
@@ -26,36 +24,35 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class PurchaseRequestController {
-	
-	@Inject
-	private PurchaseRequestRepository purchaseRequestRepo;
-	
-	@Inject
-	private PurchaseRequestService purchaseRequestService;
-	
-	public void confirmCart(ActionRequest request, ActionResponse response) {
-		purchaseRequestService.confirmCart();
-		response.setReload(true);
-	}
-	
-	public void acceptRequest(ActionRequest request, ActionResponse response) {
-		
-		if (request.getContext().get("_ids") == null) {
-			return;
-		}
-		
-		List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
-		
-		if (!requestIds.isEmpty()) {
-			List<PurchaseRequest> purchaseRequests = purchaseRequestRepo.all().filter("self.id in (?1)", requestIds).fetch();
-		
-			purchaseRequestService.acceptRequest(purchaseRequests);
-		
-			response.setReload(true);
-		}
-		
-	}
+
+  @Inject private PurchaseRequestRepository purchaseRequestRepo;
+
+  @Inject private PurchaseRequestService purchaseRequestService;
+
+  public void confirmCart(ActionRequest request, ActionResponse response) {
+    purchaseRequestService.confirmCart();
+    response.setReload(true);
+  }
+
+  public void acceptRequest(ActionRequest request, ActionResponse response) {
+
+    if (request.getContext().get("_ids") == null) {
+      return;
+    }
+
+    List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
+
+    if (!requestIds.isEmpty()) {
+      List<PurchaseRequest> purchaseRequests =
+          purchaseRequestRepo.all().filter("self.id in (?1)", requestIds).fetch();
+
+      purchaseRequestService.acceptRequest(purchaseRequests);
+
+      response.setReload(true);
+    }
+  }
 }
