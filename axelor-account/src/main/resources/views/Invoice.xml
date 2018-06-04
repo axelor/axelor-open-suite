@@ -119,7 +119,9 @@
 
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null"/>
+                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect != 3 || printedPDF == null"/>
+                <item title="Show stored copy" action="action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
+                <item title="Print updated copy" action="save,action-invoice-validate-regenerate-invoice,action-invoice-method-regenerate-and-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
                 <item title="Print annex" action="action-invoice-business-project-method-print-annex" showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)" if-module="axelor-business-project"/>
             </menu>
 
@@ -129,6 +131,7 @@
         </menubar>
 
 		<panel>
+			<field name="printedPDF" hidden="true"/><!-- Needed to be able to use it in menu -->
             <panel colSpan="7" stacked="true">
                 <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect != 2" showTitle="false"/>
                 <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect == 2" showTitle="false" selection-in="[1,2,4]"/>
@@ -721,7 +724,7 @@
     	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
 		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     	<field name="currency" expr="eval: partner?.currency"/>
-		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
+		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null" />
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     	<field name="project" expr="eval: null"/>
@@ -860,6 +863,14 @@
 	<action-method name="action-invoice-method-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
 	</action-method>
+
+	<action-method name="action-invoice-method-regenerate-and-show-invoice">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="regenerateAndShowInvoice"/>
+	</action-method>
+
+	<action-validate name="action-invoice-validate-regenerate-invoice">
+		<alert message="Regenerating the printed copy can lead to several conflicting copies to be distributed. Do you still want to regenerate the printed copy?"/>
+	</action-validate>
 
 	<action-method name="action-invoice-method-validate">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="validate"/>

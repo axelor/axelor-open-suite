@@ -33,6 +33,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -42,25 +43,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Implementation of the service printing invoices. */
+@Singleton
 public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   @Override
-  public String printInvoice(Invoice invoice) throws AxelorException, IOException {
+  public String printInvoice(Invoice invoice, boolean forceRefresh)
+      throws AxelorException, IOException {
     String fileName = getInvoiceFilesName(false);
-    return PdfTool.getFileLinkFromPdfFile(printCopiesToFile(invoice), fileName);
+    return PdfTool.getFileLinkFromPdfFile(printCopiesToFile(invoice, forceRefresh), fileName);
   }
 
   @Override
-  public File printCopiesToFile(Invoice invoice) throws AxelorException, IOException {
-    File file = getPrintedInvoice(invoice);
+  public File printCopiesToFile(Invoice invoice, boolean forceRefresh)
+      throws AxelorException, IOException {
+    File file = getPrintedInvoice(invoice, forceRefresh);
     int copyNumber = invoice.getInvoicesCopySelect();
     return PdfTool.printCopiesToFile(file, copyNumber);
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, IOException.class, RuntimeException.class})
-  public File getPrintedInvoice(Invoice invoice) throws AxelorException {
-    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+  public File getPrintedInvoice(Invoice invoice, boolean forceRefresh) throws AxelorException {
+    if (forceRefresh == false
+        && invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         && invoice.getPrintedPDF() != null) {
       Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
       return path.toFile();
@@ -100,7 +105,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         new ThrowConsumer<Invoice>() {
           @Override
           public void accept(Invoice invoice) throws Exception {
-            printedInvoices.add(printCopiesToFile(invoice));
+            printedInvoices.add(printCopiesToFile(invoice, false));
           }
         });
     String fileName = getInvoiceFilesName(true);
