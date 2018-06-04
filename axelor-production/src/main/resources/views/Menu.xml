@@ -79,6 +79,7 @@
 		<view type="calendar" name="operation-order-planned-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
+		<domain>self.statusSelect = 3</domain>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-operation-order-real-calendar" parent="manufacturing-root"
@@ -89,13 +90,13 @@
 		<view type="calendar" name="operation-order-real-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
+		<domain>self.statusSelect = 4 OR self.statusSelect = 5</domain>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
-		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" order="40" />
+		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboard" order="40" />
 
-	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
-		>
+	<action-view name="manufacturing.root.charge.by.machine.dashboard" title="Charge by machine">
 		<view type="dashboard" name="charge.by.machine.dashboard" />
 		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>

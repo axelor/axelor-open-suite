@@ -254,7 +254,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                 saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
         priceDiscounted =
             unitConversionService.convertWithProduct(
-                saleOrderLine.getUnit(), unit, priceDiscounted, saleOrderLine.getProduct());
+                unit, saleOrderLine.getUnit(), priceDiscounted, saleOrderLine.getProduct());
       }
 
       BigDecimal taxRate = BigDecimal.ZERO;

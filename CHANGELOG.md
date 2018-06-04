@@ -26,6 +26,7 @@
 - Opportunity: move to proposition stage when creating a sale order.
 - Change generated accounting report file name to be more explicit.
 - Sale order: allow increasing quantity on delivered detail lines.
+- Moved the Partner seq at the top of the Partner form views and set it as the first column in Partner grid views.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
@@ -76,6 +77,9 @@
 - Fix trading names not being changeable in edit mode when partner was set in sale or purchase orders and invoice forms.
 - Fix bad domain on permission assistant's user field.
 - Fix interco invoice, sale and purchase order generation.
+- Fix missing domains in production menu.
+- Fix bank details default value in invoice form.
+- Fix wrong calculation of unit price when create stock move from purchase order and sale order
 - Product: fill information on sale/purchase order and invoice lines even when tax is missing.
 
 ## [5.0.0-rc2] - 2018-05-09
