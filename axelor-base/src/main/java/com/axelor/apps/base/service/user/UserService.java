@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.base.service.user;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
+import java.util.Optional;
 
 /** UserService is a class that implement all methods for user informations */
 public interface UserService {
@@ -87,4 +89,11 @@ public interface UserService {
   public void createPartner(User user);
 
   public String getLanguage();
+
+  /**
+   * Get user's active company address.
+   *
+   * @return
+   */
+  Optional<Address> getUserActiveCompanyAddress();
 }

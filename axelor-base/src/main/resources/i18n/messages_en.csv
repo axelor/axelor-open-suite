@@ -737,7 +737,7 @@
 "MapRest.PinCharDefault",,,
 "MapRest.PinCharDelivery","D",,
 "MapRest.PinCharInvoicing","I",,
-"MapRest.Zero results","We could not calculate driving directions.",,
+"MapRest.ZERO_RESULTS","We could not calculate driving directions.",,
 "Mapping",,,
 "Mapping service provider",,,
 "Maps",,,

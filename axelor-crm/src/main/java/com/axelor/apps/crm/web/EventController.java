@@ -154,7 +154,7 @@ public class EventController {
       if (event.getLocation() != null) {
         Map<String, Object> result = Beans.get(MapService.class).getMap(event.getLocation());
         if (result != null) {
-          Map<String, Object> mapView = new HashMap<String, Object>();
+          Map<String, Object> mapView = new HashMap<>();
           mapView.put("title", "Map");
           mapView.put("resource", result.get("url"));
           mapView.put("viewType", "html");

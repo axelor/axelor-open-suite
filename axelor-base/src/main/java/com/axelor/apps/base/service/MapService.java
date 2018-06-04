@@ -22,12 +22,15 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -40,6 +43,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.utils.URIBuilder;
@@ -66,11 +70,11 @@ public class MapService {
 
     // TODO inject the rest client, or better, run it in the browser
     RESTClient restClient = new RESTClient("https://maps.googleapis.com");
-    Map<String, Object> responseQuery = new HashMap<String, Object>();
+    Map<String, Object> responseQuery = new HashMap<>();
     responseQuery.put("address", qString.trim());
     responseQuery.put("sensor", "false");
     responseQuery.put("key", getGoogleMapsApiKey());
-    Map<String, Object> responseMap = new HashMap<String, Object>();
+    Map<String, Object> responseMap = new HashMap<>();
     responseMap.put("path", "/maps/api/geocode/json");
     responseMap.put("accept", ContentType.JSON);
     responseMap.put("query", responseQuery);
@@ -135,13 +139,12 @@ public class MapService {
     // }
   }
 
-  public HashMap<String, Object> getMapGoogle(String qString)
-      throws AxelorException, JSONException {
+  public Map<String, Object> getMapGoogle(String qString) throws AxelorException, JSONException {
     LOG.debug("Query string: {}", qString);
     JSONObject googleResponse = geocodeGoogle(qString);
     LOG.debug("Google response: {}", googleResponse);
     if (googleResponse != null) {
-      HashMap<String, Object> result = new HashMap<String, Object>();
+      Map<String, Object> result = new HashMap<>();
       BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
       BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
       LOG.debug("URL:" + "map/gmaps.html?x=" + latitude + "&y=" + longitude + "&z=18");
@@ -163,20 +166,20 @@ public class MapService {
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public HashMap<String, Object> getMapOsm(String qString) {
-    HashMap<String, Object> result = new HashMap<String, Object>();
+  public Map<String, Object> getMapOsm(String qString) {
+    Map<String, Object> result = new HashMap<>();
     try {
       BigDecimal latitude = BigDecimal.ZERO;
       BigDecimal longitude = BigDecimal.ZERO;
       RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
-      Map<String, Object> mapQuery = new HashMap<String, Object>();
+      Map<String, Object> mapQuery = new HashMap<>();
       mapQuery.put("q", qString);
       mapQuery.put("format", "xml");
       mapQuery.put("polygon", true);
       mapQuery.put("addressdetails", true);
-      Map<String, Object> mapHeaders = new HashMap<String, Object>();
+      Map<String, Object> mapHeaders = new HashMap<>();
       mapHeaders.put("HTTP referrer", "axelor");
-      Map<String, Object> mapResponse = new HashMap<String, Object>();
+      Map<String, Object> mapResponse = new HashMap<>();
       mapResponse.put("path", "/search");
       mapResponse.put("accept", ContentType.JSON);
       mapResponse.put("query", mapQuery);
@@ -215,7 +218,7 @@ public class MapService {
     return null;
   }
 
-  public HashMap<String, Object> getMap(String qString) throws AxelorException, JSONException {
+  public Map<String, Object> getMap(String qString) throws AxelorException, JSONException {
     LOG.debug("qString = {}", qString);
 
     switch (appBaseService.getAppBase().getMapApiSelect()) {
@@ -274,7 +277,7 @@ public class MapService {
   }
 
   @SuppressWarnings("unchecked")
-  public HashMap<String, Object> getDirectionMapGoogle(
+  public Map<String, Object> getDirectionMapGoogle(
       String dString,
       BigDecimal dLat,
       BigDecimal dLon,
@@ -283,7 +286,7 @@ public class MapService {
       BigDecimal aLon) {
     LOG.debug("departureString = {}", dString);
     LOG.debug("arrivalString = {}", aString);
-    HashMap<String, Object> result = new HashMap<String, Object>();
+    Map<String, Object> result = new HashMap<>();
     try {
       if (BigDecimal.ZERO.compareTo(dLat) == 0 || BigDecimal.ZERO.compareTo(dLon) == 0) {
         Map<String, Object> googleResponse = geocodeGoogle(dString);
@@ -330,7 +333,7 @@ public class MapService {
   public String makeAddressString(Address address, ObjectNode objectNode)
       throws AxelorException, JSONException {
 
-    address = Beans.get(AddressService.class).checkLatLang(address, false);
+    address = Beans.get(AddressService.class).checkLatLong(address, false);
     BigDecimal latit = address.getLatit();
     BigDecimal longit = address.getLongit();
     if (BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0) {
@@ -340,6 +343,30 @@ public class MapService {
     objectNode.put("longit", longit);
 
     return makeAddressString(address);
+  }
+
+  public void setData(ObjectNode mainNode, ArrayNode arrayNode)
+      throws AxelorException, JSONException {
+    mainNode.put("status", 0);
+    mainNode.set("data", arrayNode);
+
+    Optional<Address> optionalAddress = Beans.get(UserService.class).getUserActiveCompanyAddress();
+
+    if (optionalAddress.isPresent()) {
+      Address address = Beans.get(AddressService.class).checkLatLong(optionalAddress.get(), false);
+
+      JsonNodeFactory factory = JsonNodeFactory.instance;
+      ObjectNode objectNode = factory.objectNode();
+      objectNode.put("lat", address.getLatit());
+      objectNode.put("lng", address.getLongit());
+      mainNode.set("company", objectNode);
+    }
+  }
+
+  public void setError(ObjectNode mainNode, Exception e) {
+    TraceBackService.trace(e);
+    mainNode.put("status", -1);
+    mainNode.put("errorMsg", e.getLocalizedMessage());
   }
 
   public String makeAddressString(Address address) {
