@@ -20,6 +20,7 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -29,6 +30,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -105,7 +107,7 @@ public class SaleOrderLineController {
     }
 
     try {
-      saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+      saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder, true);
       response.setValue("taxLine", saleOrderLine.getTaxLine());
       response.setValue("taxEquiv", saleOrderLine.getTaxEquiv());
       response.setValue("productName", saleOrderLine.getProductName());
@@ -122,6 +124,21 @@ public class SaleOrderLineController {
       }
       response.setValue("price", saleOrderLine.getPrice());
 
+      if (saleOrderLine.getTaxLine() == null) {
+        String msg;
+
+        if (saleOrder.getCompany() != null) {
+          msg =
+              String.format(
+                  I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3),
+                  product.getCode(),
+                  saleOrder.getCompany().getName());
+        } else {
+          msg = String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode());
+        }
+
+        response.setFlash(msg);
+      }
     } catch (Exception e) {
       response.setFlash(e.getMessage());
       this.resetProductInformation(response);

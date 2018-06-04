@@ -60,21 +60,39 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
+    computeProductInformation(saleOrderLine, saleOrder, false);
+  }
+
+  @Override
+  public void computeProductInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean taxLineIsOptional)
+      throws AxelorException {
     AccountManagementService accountManagementService = Beans.get(AccountManagementService.class);
 
     Product product = saleOrderLine.getProduct();
+    TaxLine taxLine;
 
-    TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
-    saleOrderLine.setTaxLine(taxLine);
+    try {
+      taxLine = getTaxLine(saleOrder, saleOrderLine);
+      saleOrderLine.setTaxLine(taxLine);
 
-    Tax tax =
-        accountManagementService.getProductTax(
-            accountManagementService.getAccountManagement(product, saleOrder.getCompany()), false);
-    TaxEquiv taxEquiv =
-        Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(saleOrder.getClientPartner().getFiscalPosition(), tax);
+      Tax tax =
+          accountManagementService.getProductTax(
+              accountManagementService.getAccountManagement(product, saleOrder.getCompany()),
+              false);
+      TaxEquiv taxEquiv =
+          Beans.get(FiscalPositionService.class)
+              .getTaxEquiv(saleOrder.getClientPartner().getFiscalPosition(), tax);
 
-    saleOrderLine.setTaxEquiv(taxEquiv);
+      saleOrderLine.setTaxEquiv(taxEquiv);
+    } catch (AxelorException e) {
+      if (!taxLineIsOptional) {
+        throw e;
+      }
+      saleOrderLine.setTaxLine(null);
+      saleOrderLine.setTaxEquiv(null);
+      taxLine = null;
+    }
 
     BigDecimal price = this.getUnitPrice(saleOrder, saleOrderLine, taxLine);
 
@@ -153,6 +171,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
    * @param price The unit price.
    * @return The excluded tax total amount.
    */
+  @Override
   public BigDecimal computeAmount(SaleOrderLine saleOrderLine) {
 
     BigDecimal price = this.computeDiscount(saleOrderLine);
@@ -162,6 +181,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return amount;
   }
 
+  @Override
   public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
     BigDecimal amount =
@@ -176,6 +196,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return amount;
   }
 
+  @Override
   public BigDecimal getUnitPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine)
       throws AxelorException {
 
@@ -189,6 +210,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
+  @Override
   public TaxLine getTaxLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
@@ -201,6 +223,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             false);
   }
 
+  @Override
   public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder)
       throws AxelorException {
 
@@ -213,6 +236,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
+  @Override
   public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
@@ -227,12 +251,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
+  @Override
   public PriceListLine getPriceListLine(SaleOrderLine saleOrderLine, PriceList priceList) {
 
     return priceListService.getPriceListLine(
         saleOrderLine.getProduct(), saleOrderLine.getQty(), priceList);
   }
 
+  @Override
   public BigDecimal computeDiscount(SaleOrderLine saleOrderLine) {
 
     return priceListService.computeDiscount(
@@ -241,6 +267,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLine.getDiscountAmount());
   }
 
+  @Override
   public BigDecimal convertUnitPrice(
       Product product, TaxLine taxLine, BigDecimal price, SaleOrder saleOrder) {
 
@@ -256,6 +283,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return price;
   }
 
+  @Override
   public Map<String, Object> getDiscount(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price) {
 
@@ -268,6 +296,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
   }
 
+  @Override
   public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     PriceList priceList = saleOrder.getPriceList();
     if (priceList != null) {
@@ -278,6 +307,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return 0;
   }
 
+  @Override
   public Unit getSaleUnit(SaleOrderLine saleOrderLine) {
     Unit unit = saleOrderLine.getProduct().getSalesUnit();
     if (unit == null) {
@@ -286,6 +316,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return unit;
   }
 
+  @Override
   public boolean unitPriceShouldBeUpdate(SaleOrder saleOrder, Product product) {
 
     if (product != null && product.getInAti() != saleOrder.getInAti()) {
@@ -383,6 +414,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return BigDecimal.ZERO;
   }
 
+  @Override
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response) {
 
     Product product = saleOrderLine.getProduct();
