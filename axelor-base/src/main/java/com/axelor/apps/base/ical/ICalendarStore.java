@@ -17,17 +17,31 @@
  */
 package com.axelor.apps.base.ical;
 
+import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.jackrabbit.webdav.DavException;
 
 import net.fortuna.ical4j.connector.ObjectNotFoundException;
 import net.fortuna.ical4j.connector.ObjectStoreException;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
+import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
@@ -52,16 +66,11 @@ public class ICalendarStore {
 		this.deligateStore = new CalDavCalendarStore(ICalendarService.PRODUCT_ID, url, pathResolver);
 	}
 
-	public boolean connect(String username, String password) {
+	public boolean connect(String username, String password) throws ObjectStoreException {
 		if (deligateStore.isConnected()) {
 			return true;
 		}
-		try {
-			return deligateStore.connect(username, password.toCharArray());
-		} catch (ObjectStoreException e) {
-			e.printStackTrace();
-		}
-		return false;
+		return deligateStore.connect(username, password.toCharArray());
 	}
 
 	public boolean connect() {
@@ -81,8 +90,7 @@ public class ICalendarStore {
 		}
 	}
 
-	public CalDavCalendarCollection getCollection(String id)
-			throws ObjectStoreException, ObjectNotFoundException {
+	public CalDavCalendarCollection getCollection(String id) throws ObjectStoreException, ObjectNotFoundException {
 		return deligateStore.getCollection(id);
 	}
 
@@ -101,6 +109,45 @@ public class ICalendarStore {
 			for (Object item : cal.getComponents(Component.VEVENT)) {
 				VEvent event = (VEvent) item;
 				events.add(event);
+			}
+		}
+		return events;
+	}
+
+	public static List<VEvent> getModifiedEvents(CalDavCalendarCollection calendar, Instant instant,
+			Set<String> remoteUids) {
+		final List<VEvent> events = new ArrayList<>();
+
+		for (Calendar cal : calendar.getEvents()) {
+			cal.toString();
+			for (Object item : ((List<CalendarComponent>) cal.getComponents(Component.VEVENT))) {
+				VEvent event = (VEvent) item;
+				if (event.getLastModified().getDate().toInstant().isAfter(instant) || instant == null) {
+					events.add(event);
+				}
+				remoteUids.add(event.getUid().getValue());
+			}
+		}
+		return events;
+	}
+
+	public static List<VEvent> getModifiedEventsInRange(CalDavCalendarCollection calendar, Instant instant,
+			Set<String> remoteUids, LocalDateTime startDate, LocalDateTime endDate) throws IOException, DavException, ParserConfigurationException, ParserException, ParseException {
+		final List<VEvent> events = new ArrayList<>();
+
+		DateTime start = new DateTime(Date.from(startDate.atZone(ZoneId.systemDefault()).toInstant()));
+		DateTime end = new DateTime(Date.from(endDate.atZone(ZoneId.systemDefault()).toInstant()));
+		start = new DateTime(start.toString() + "Z");
+		end = new DateTime(end.toString() + "Z");
+
+		for (Calendar cal : calendar.getEventsForTimePeriod(start, end)) {
+			cal.toString();
+			for (Object item : ((List<CalendarComponent>) cal.getComponents(Component.VEVENT))) {
+				VEvent event = (VEvent) item;
+				if (event.getLastModified().getDate().toInstant().isAfter(instant)) {
+					events.add(event);
+				}
+				remoteUids.add(event.getUid().getValue());
 			}
 		}
 		return events;

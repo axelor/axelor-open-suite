@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -76,7 +77,7 @@ public interface PurchaseOrderService {
 
 	PurchaseOrder createPurchaseOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
 			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
-			PriceList priceList, Partner supplierPartner) throws AxelorException ;
+			PriceList priceList, Partner supplierPartner, TradingName tradingName) throws AxelorException ;
 
 
 
@@ -91,7 +92,7 @@ public interface PurchaseOrderService {
 
 	public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception;
 
-	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency, Partner supplierPartner, Company company, Partner contactPartner, PriceList priceList) throws AxelorException;
+	public PurchaseOrder mergePurchaseOrders(List<PurchaseOrder> purchaseOrderList, Currency currency, Partner supplierPartner, Company company, Partner contactPartner, PriceList priceList, TradingName tradingName) throws AxelorException;
 	
 	public void updateCostPrice(PurchaseOrder purchaseOrder);
 	

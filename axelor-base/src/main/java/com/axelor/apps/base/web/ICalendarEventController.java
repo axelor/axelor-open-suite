@@ -35,15 +35,13 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-import net.fortuna.ical4j.model.ValidationException;
-
 public class ICalendarEventController {
 
 	@Inject
 	ICalendarEventService iCalendarEventService;
 
 	@SuppressWarnings("unchecked")
-	public void addEmailGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ValidationException, ParseException{
+	public void addEmailGuest(ActionRequest request, ActionResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, MessagingException, IOException, ICalendarException, ParseException{
 		ICalendarEvent event = request.getContext().asType(ICalendarEvent.class);
 		try{
 			Map<String, Object> guestEmail = (Map<String, Object>) request.getContext().get("guestEmail");

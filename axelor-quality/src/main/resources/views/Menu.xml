@@ -58,7 +58,7 @@
  		<domain>self.statusSelect &gt; 2</domain>
 	</action-view>
 	    
-	<menuitem name="quality-reportings" parent="menu-quality-root" title="Reportings" />
+	<menuitem name="quality-reportings" parent="menu-quality-root" title="Reportings" icon="fa-bar-chart"/>
 	
 	<menuitem name="quality-reportings-dashboard" parent="quality-reportings" title="Quality Dashboard" action="quality.dashboard.view" />
 	 
@@ -66,7 +66,7 @@
  		<view type="dashboard" name="quality.dashboard" />
 	</action-view>
 	     
-	<menuitem name="quality-configurations" parent="menu-quality-root" title="Configurations" />
+	<menuitem name="quality-configurations" parent="menu-quality-root" title="Configuration" icon="fa-cog"/>
 	     	
 	<menuitem name="quality-teams" parent="quality-configurations" title="Quality teams" action="quality.teams"/>
 	     	

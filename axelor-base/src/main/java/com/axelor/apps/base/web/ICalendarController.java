@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.SocketException;
 import java.nio.file.Path;
 import java.text.ParseException;
 
@@ -31,6 +30,7 @@ import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -40,11 +40,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import net.fortuna.ical4j.connector.ObjectNotFoundException;
-import net.fortuna.ical4j.connector.ObjectStoreException;
 import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.model.ConstraintViolationException;
-import net.fortuna.ical4j.model.ValidationException;
 
 @Singleton
 public class ICalendarController {
@@ -55,7 +51,7 @@ public class ICalendarController {
 	@Inject
 	private MetaFiles metaFiles;
 	
-	public void exportCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException, ValidationException, ObjectStoreException, ObjectNotFoundException, ParseException {
+	public void exportCalendar(ActionRequest request, ActionResponse response) throws IOException, ParseException {
 		ICalendar cal = request.getContext().asType(ICalendar.class);
 		Path tempPath = MetaFiles.createTempFile(cal.getName(), ".ics");
 		calendarService.export(cal, tempPath.toFile());
@@ -63,8 +59,7 @@ public class ICalendarController {
 		response.setReload(true);
 	}
 	
-	public void importCalendarFile(ActionRequest request, ActionResponse response) throws IOException, ParserException
-	{
+	public void importCalendarFile(ActionRequest request, ActionResponse response) throws IOException, ParserException {
 
 		ImportConfiguration imp = request.getContext().asType(ImportConfiguration.class);
 		Object object = request.getContext().get("_id");
@@ -87,8 +82,7 @@ public class ICalendarController {
 		
 	}
 	
-	public void importCalendar(ActionRequest request, ActionResponse response) throws IOException, ParserException 
-	{
+	public void importCalendar(ActionRequest request, ActionResponse response) {
 		ICalendar cal = request.getContext().asType(ICalendar.class);
 		response.setView(ActionView
 					  		.define(I18n.get(IExceptionMessage.IMPORT_CALENDAR))
@@ -103,20 +97,22 @@ public class ICalendarController {
 					  		.map());
 	}
 	
-	public void testConnect(ActionRequest request, ActionResponse response) throws Exception
-	{
-		ICalendar cal = request.getContext().asType(ICalendar.class);
-		if (calendarService.testConnect(cal))
+	public void testConnect(ActionRequest request, ActionResponse response) {
+		try {
+			ICalendar cal = request.getContext().asType(ICalendar.class);
+			calendarService.testConnect(cal);
 			response.setValue("isValid", true);
-		else
-			response.setAlert("Login and password do not match.");
-		
+		} catch (Exception e) {
+			TraceBackService.trace(e);
+			response.setFlash("Configuration error");
+			response.setValue("isValid", false);
+		}
 	}
 	
-	public void synchronizeCalendar(ActionRequest request, ActionResponse response) throws MalformedURLException, SocketException, ObjectStoreException, ObjectNotFoundException, ConstraintViolationException, ICalendarException {
+	public void synchronizeCalendar(ActionRequest request, ActionResponse response) throws MalformedURLException, ICalendarException {
 		ICalendar cal = request.getContext().asType(ICalendar.class);
 		cal = Beans.get(ICalendarRepository.class).find(cal.getId());
-		calendarService.sync(cal);
+		calendarService.sync(cal, false, 0);
 		response.setReload(true);
 	}
 

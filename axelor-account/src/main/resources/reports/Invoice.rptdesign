@@ -4425,10 +4425,10 @@ row["partnerFirstName"]
                                     <property name="rowSpan">1</property>
                                     <text id="5114">
                                         <property name="fontSize">9pt</property>
-                                        <property name="fontStyle">italic</property>
+                                        <property name="fontStyle">normal</property>
                                         <property name="pageBreakAfter">avoid</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["note"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["note"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5115"/>
