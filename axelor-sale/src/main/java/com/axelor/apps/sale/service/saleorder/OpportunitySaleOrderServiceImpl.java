@@ -58,6 +58,8 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
       opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_PROPOSITION);
     }
 
+    saleOrder.setTradingName(opportunity.getTradingName());
+
     saleOrderRepo.save(saleOrder);
 
     return saleOrder;
