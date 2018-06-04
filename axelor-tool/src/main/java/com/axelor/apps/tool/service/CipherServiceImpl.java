@@ -17,87 +17,85 @@
  */
 package com.axelor.apps.tool.service;
 
+import com.axelor.app.AppSettings;
+import com.mysql.jdbc.StringUtils;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
-
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 
-import com.axelor.app.AppSettings;
-import com.mysql.jdbc.StringUtils;
-
 public class CipherServiceImpl implements CipherService {
 
-	private static final String UNICODE_FORMAT = "UTF8";
-	public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
-	private Cipher cipher;
+  private static final String UNICODE_FORMAT = "UTF8";
+  public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
+  private Cipher cipher;
 
-	@Override
-	public String encrypt(String unencryptedString) {
-		String encryptedString = null;
-		try {
+  @Override
+  public String encrypt(String unencryptedString) {
+    String encryptedString = null;
+    try {
 
-			SecretKey key = this.initEncryptOrDecrypt();
+      SecretKey key = this.initEncryptOrDecrypt();
 
-			if (key != null) {
-				cipher.init(Cipher.ENCRYPT_MODE, key);
-				byte[] plainText = unencryptedString.getBytes(UNICODE_FORMAT);
-				byte[] encryptedText = cipher.doFinal(plainText);
-                encryptedString = Base64.getEncoder().encodeToString(encryptedText);
-			} else {
-				return unencryptedString;
-			}
+      if (key != null) {
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] plainText = unencryptedString.getBytes(UNICODE_FORMAT);
+        byte[] encryptedText = cipher.doFinal(plainText);
+        encryptedString = Base64.getEncoder().encodeToString(encryptedText);
+      } else {
+        return unencryptedString;
+      }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return encryptedString;
-	}
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return encryptedString;
+  }
 
-	@Override
-	public String decrypt(String encryptedString) {
-		String decryptedText = null;
-		try {
+  @Override
+  public String decrypt(String encryptedString) {
+    String decryptedText = null;
+    try {
 
-			SecretKey key = this.initEncryptOrDecrypt();
+      SecretKey key = this.initEncryptOrDecrypt();
 
-			if (key != null) {
-				cipher.init(Cipher.DECRYPT_MODE, key);
-				byte[] encryptedText = Base64.getDecoder().decode(encryptedString);
-				byte[] plainText = cipher.doFinal(encryptedText);
-				decryptedText = new String(plainText);
-			} else {
-				return encryptedString;
-			}
+      if (key != null) {
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] encryptedText = Base64.getDecoder().decode(encryptedString);
+        byte[] plainText = cipher.doFinal(encryptedText);
+        decryptedText = new String(plainText);
+      } else {
+        return encryptedString;
+      }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return decryptedText;
-	}
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return decryptedText;
+  }
 
-	private SecretKey initEncryptOrDecrypt() throws UnsupportedEncodingException, InvalidKeyException,
-			NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException {
+  private SecretKey initEncryptOrDecrypt()
+      throws UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException,
+          NoSuchPaddingException, InvalidKeySpecException {
 
-		String encryptionScheme = DESEDE_ENCRYPTION_SCHEME;
-		String encryptionkey = AppSettings.get().get("application.encryptionkey");
-		SecretKey key = null;
+    String encryptionScheme = DESEDE_ENCRYPTION_SCHEME;
+    String encryptionkey = AppSettings.get().get("application.encryptionkey");
+    SecretKey key = null;
 
-		if (!StringUtils.isNullOrEmpty(encryptionkey)) {
-			byte[] arrayBytes = encryptionkey.getBytes(UNICODE_FORMAT);
-			KeySpec ks = new DESedeKeySpec(arrayBytes);
-			SecretKeyFactory skf = SecretKeyFactory.getInstance(encryptionScheme);
-			cipher = Cipher.getInstance(encryptionScheme);
-			key = skf.generateSecret(ks);
-		}
-		return key;
-	}
-
+    if (!StringUtils.isNullOrEmpty(encryptionkey)) {
+      byte[] arrayBytes = encryptionkey.getBytes(UNICODE_FORMAT);
+      KeySpec ks = new DESedeKeySpec(arrayBytes);
+      SecretKeyFactory skf = SecretKeyFactory.getInstance(encryptionScheme);
+      cipher = Cipher.getInstance(encryptionScheme);
+      key = skf.generateSecret(ks);
+    }
+    return key;
+  }
 }

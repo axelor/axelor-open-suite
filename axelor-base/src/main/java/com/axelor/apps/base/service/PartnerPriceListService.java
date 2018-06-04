@@ -24,34 +24,33 @@ import com.axelor.exception.AxelorException;
 
 public interface PartnerPriceListService {
 
-    /**
-     * Allows to check the dates in a price list.
-     * @param partnerPriceList
-     * @throws AxelorException
-     *         if two price lists are scheduled on the same time.
-     */
-    void checkDates(PartnerPriceList partnerPriceList) throws AxelorException;
+  /**
+   * Allows to check the dates in a price list.
+   *
+   * @param partnerPriceList
+   * @throws AxelorException if two price lists are scheduled on the same time.
+   */
+  void checkDates(PartnerPriceList partnerPriceList) throws AxelorException;
 
-    /**
-     * @param partner
-     * @param priceListTypeSelect
-     * @return  the default price list from the partner
-     *          null if partner is null, or no price list was found
-     *          for the given partner
-     */
-    PriceList getDefaultPriceList(Partner partner, int priceListTypeSelect);
+  /**
+   * @param partner
+   * @param priceListTypeSelect
+   * @return the default price list from the partner null if partner is null, or no price list was
+   *     found for the given partner
+   */
+  PriceList getDefaultPriceList(Partner partner, int priceListTypeSelect);
 
-    /**
-     * @param partner
-     * @param priceListTypeSelect
-     * @return  the domain for the partner and the type
-     */
-    String getPriceListDomain(Partner partner, int priceListTypeSelect);
+  /**
+   * @param partner
+   * @param priceListTypeSelect
+   * @return the domain for the partner and the type
+   */
+  String getPriceListDomain(Partner partner, int priceListTypeSelect);
 
-    /**
-     * @param partner
-     * @param priceListTypeSelect
-     * @return the partner price list for the given type
-     */
-    public PartnerPriceList getPartnerPriceList(Partner partner, int priceListTypeSelect);
+  /**
+   * @param partner
+   * @param priceListTypeSelect
+   * @return the partner price list for the given type
+   */
+  public PartnerPriceList getPartnerPriceList(Partner partner, int priceListTypeSelect);
 }

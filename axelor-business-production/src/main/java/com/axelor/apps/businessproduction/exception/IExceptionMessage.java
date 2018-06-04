@@ -19,6 +19,8 @@ package com.axelor.apps.businessproduction.exception;
 
 public interface IExceptionMessage {
 
-    String OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION = /*$$(*/ "There are timesheet still waiting validation on this operation order, do you want to continue anyway ?" /*)*/;
-    String MANUF_ORDER_TIMESHEET_WAITING_VALIDATION = /*$$(*/ "There are timesheet still waiting validation on this manuf order, do you want to continue anyway ?" /*)*/;
+  String OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION = /*$$(*/
+      "There are timesheet still waiting validation on this operation order, do you want to continue anyway ?" /*)*/;
+  String MANUF_ORDER_TIMESHEET_WAITING_VALIDATION = /*$$(*/
+      "There are timesheet still waiting validation on this manuf order, do you want to continue anyway ?" /*)*/;
 }

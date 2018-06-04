@@ -19,8 +19,5 @@ package com.axelor.apps.cash.management.report;
 
 public interface IReport {
 
-	
-	public static final String FORECAST_RECAP = "ForecastRecap.rptdesign";
-	
-	
+  public static final String FORECAST_RECAP = "ForecastRecap.rptdesign";
 }

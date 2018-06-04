@@ -32,24 +32,24 @@ import com.google.inject.Singleton;
 @Singleton
 public class PartnerController {
 
-    public void generateProject(ActionRequest request, ActionResponse response) {
-        try {
-            Partner partner = request.getContext().asType(Partner.class);
-            partner = Beans.get(PartnerRepository.class).find(partner.getId());
-            Project project = Beans.get(ProjectService.class).generateProject(partner);
+  public void generateProject(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      Project project = Beans.get(ProjectService.class).generateProject(partner);
 
-            response.setView(ActionView.define(I18n.get("Generated project"))
-                    .model(Project.class.getName())
-                    .add("form", "project-form")
-                    .add("grid", "project-grid")
-                    .param("forceTitle", "true")
-                    .param("forceEdit", "true")
-                    .context("_showRecord", project.getId())
-                    .map());
+      response.setView(
+          ActionView.define(I18n.get("Generated project"))
+              .model(Project.class.getName())
+              .add("form", "project-form")
+              .add("grid", "project-grid")
+              .param("forceTitle", "true")
+              .param("forceEdit", "true")
+              .context("_showRecord", project.getId())
+              .map());
 
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
+  }
 }

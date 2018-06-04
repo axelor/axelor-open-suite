@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.contract.web;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
@@ -30,42 +27,51 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class ContractVersionController {
 
-	public void newVersion(ActionRequest request, ActionResponse response) {
+  public void newVersion(ActionRequest request, ActionResponse response) {
 
-		Contract contract = Beans.get(ContractRepository.class).find(Long.valueOf(request.getContext().get("_xContractId").toString()));
+    Contract contract =
+        Beans.get(ContractRepository.class)
+            .find(Long.valueOf(request.getContext().get("_xContractId").toString()));
 
-		response.setValue("statusSelect", ContractVersionRepository.DRAFT_VERSION);
-		response.setValue("contractNext", contract);
-		response.setValue("paymentMode", contract.getCurrentVersion().getPaymentMode());
-		response.setValue("paymentCondition", contract.getCurrentVersion().getPaymentCondition());
-		response.setValue("invoicingFrequency", contract.getCurrentVersion().getInvoicingFrequency());
+    response.setValue("statusSelect", ContractVersionRepository.DRAFT_VERSION);
+    response.setValue("contractNext", contract);
+    response.setValue("paymentMode", contract.getCurrentVersion().getPaymentMode());
+    response.setValue("paymentCondition", contract.getCurrentVersion().getPaymentCondition());
+    response.setValue("invoicingFrequency", contract.getCurrentVersion().getInvoicingFrequency());
 
-		response.setValue("invoicingMoment", contract.getCurrentVersion().getInvoicingMoment());
-		//response.setValue("isConsumptionManagement", contract.getIsConsumptionManagement());
-		//response.setValue("isAdditionaBenefitManagement", contract.getIsAdditionaBenefitManagement());
-		response.setValue("isPeriodicInvoicing", contract.getCurrentVersion().getIsPeriodicInvoicing());
-		response.setValue("automaticInvoicing", contract.getCurrentVersion().getAutomaticInvoicing());
-		response.setValue("isProratedInvoice", contract.getCurrentVersion().getIsProratedInvoice());
-		response.setValue("isProratedFirstInvoice", contract.getCurrentVersion().getIsProratedFirstInvoice());
-		response.setValue("isProratedLastInvoice", contract.getCurrentVersion().getIsProratedLastInvoice());
-		response.setValue("contractLineList", copyContractLineList(contract.getCurrentVersion().getContractLineList()));
+    response.setValue("invoicingMoment", contract.getCurrentVersion().getInvoicingMoment());
+    // response.setValue("isConsumptionManagement", contract.getIsConsumptionManagement());
+    // response.setValue("isAdditionaBenefitManagement",
+    // contract.getIsAdditionaBenefitManagement());
+    response.setValue("isPeriodicInvoicing", contract.getCurrentVersion().getIsPeriodicInvoicing());
+    response.setValue("automaticInvoicing", contract.getCurrentVersion().getAutomaticInvoicing());
+    response.setValue("isProratedInvoice", contract.getCurrentVersion().getIsProratedInvoice());
+    response.setValue(
+        "isProratedFirstInvoice", contract.getCurrentVersion().getIsProratedFirstInvoice());
+    response.setValue(
+        "isProratedLastInvoice", contract.getCurrentVersion().getIsProratedLastInvoice());
+    response.setValue(
+        "contractLineList",
+        copyContractLineList(contract.getCurrentVersion().getContractLineList()));
+  }
 
-	}
+  private List<ContractLine> copyContractLineList(List<ContractLine> contractLineList) {
+    List<ContractLine> list = new ArrayList<>();
+    if (ObjectUtils.isEmpty(contractLineList)) {
+      return list;
+    }
 
-	private List<ContractLine> copyContractLineList(List<ContractLine> contractLineList) {
-		List<ContractLine> list = new ArrayList<>();
-		if(ObjectUtils.isEmpty(contractLineList)) { return list; }
+    ContractLineRepository clRepo = Beans.get(ContractLineRepository.class);
+    for (ContractLine contractLine : contractLineList) {
+      list.add(clRepo.copy(contractLine, true));
+    }
 
-		ContractLineRepository clRepo = Beans.get(ContractLineRepository.class);
-		for (ContractLine contractLine : contractLineList) {
-			list.add(clRepo.copy(contractLine, true));
-		}
-
-		return list;
-	}
-
+    return list;
+  }
 }

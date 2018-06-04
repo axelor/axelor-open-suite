@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -33,72 +26,91 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveDueService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	private MoveLineRepository moveLineRepository;
-	
-	@Inject
-	public MoveDueService (MoveLineRepository moveLineRepository)  {
-		
-		this.moveLineRepository = moveLineRepository;
-		
-	}
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	public MoveLine getOrignalInvoiceFromRefund(Invoice invoice)  {
+  private MoveLineRepository moveLineRepository;
 
-		Invoice originalInvoice = invoice.getOriginalInvoice();
+  @Inject
+  public MoveDueService(MoveLineRepository moveLineRepository) {
 
-		if(originalInvoice != null && originalInvoice.getMove() != null)  {
-			for(MoveLine moveLine : originalInvoice.getMove().getMoveLineList())  {
-				if(moveLine.getAccount().getUseForPartnerBalance() && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-						&& moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
-					return moveLine;
-				}
-			}
-		}
+    this.moveLineRepository = moveLineRepository;
+  }
 
-		return null;
-	}
-	
-	public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue) throws AxelorException {
-		Company company = invoice.getCompany();
-		Partner partner = invoice.getPartner();
+  public MoveLine getOrignalInvoiceFromRefund(Invoice invoice) {
 
-		List<MoveLine> debitMoveLines = Lists.newArrayList();
+    Invoice originalInvoice = invoice.getOriginalInvoice();
 
-		// Ajout de la facture d'origine
-		MoveLine originalInvoice = this.getOrignalInvoiceFromRefund(invoice);
+    if (originalInvoice != null && originalInvoice.getMove() != null) {
+      for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          return moveLine;
+        }
+      }
+    }
 
-		if(originalInvoice != null)  {
-			debitMoveLines.add(originalInvoice);
-		}
+    return null;
+  }
 
-		// Récupérer les dûs du tiers pour le même compte que celui de l'avoir
-		List<? extends MoveLine> othersDebitMoveLines = null;
-		if(useOthersInvoiceDue)  {
-			if(debitMoveLines != null && debitMoveLines.size() != 0)  {
-				othersDebitMoveLines = moveLineRepository.all()
-						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
-						 " AND self.account.useForPartnerBalance = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
-						 " AND self.partner = ?4 AND self NOT IN (?5) ORDER BY self.date ASC ",
-						 company, MoveRepository.STATUS_VALIDATED, true, partner, debitMoveLines).fetch();
-			}
-			else  {
-				othersDebitMoveLines = moveLineRepository.all()
-						 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
-						 " AND self.account.useForPartnerBalance = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
-						 " AND self.partner = ?4 ORDER BY self.date ASC ",
-						 company, MoveRepository.STATUS_VALIDATED, true, partner).fetch();
-			}
-			debitMoveLines.addAll(othersDebitMoveLines);
-		}
+  public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue)
+      throws AxelorException {
+    Company company = invoice.getCompany();
+    Partner partner = invoice.getPartner();
 
-		log.debug("Nombre de ligne à payer avec l'avoir récupéré : {}", debitMoveLines.size());
+    List<MoveLine> debitMoveLines = Lists.newArrayList();
 
-		return debitMoveLines;
-	}
-		
+    // Ajout de la facture d'origine
+    MoveLine originalInvoice = this.getOrignalInvoiceFromRefund(invoice);
+
+    if (originalInvoice != null) {
+      debitMoveLines.add(originalInvoice);
+    }
+
+    // Récupérer les dûs du tiers pour le même compte que celui de l'avoir
+    List<? extends MoveLine> othersDebitMoveLines = null;
+    if (useOthersInvoiceDue) {
+      if (debitMoveLines != null && debitMoveLines.size() != 0) {
+        othersDebitMoveLines =
+            moveLineRepository
+                .all()
+                .filter(
+                    "self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)"
+                        + " AND self.account.useForPartnerBalance = ?3 AND self.debit > 0 AND self.amountRemaining > 0 "
+                        + " AND self.partner = ?4 AND self NOT IN (?5) ORDER BY self.date ASC ",
+                    company,
+                    MoveRepository.STATUS_VALIDATED,
+                    true,
+                    partner,
+                    debitMoveLines)
+                .fetch();
+      } else {
+        othersDebitMoveLines =
+            moveLineRepository
+                .all()
+                .filter(
+                    "self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)"
+                        + " AND self.account.useForPartnerBalance = ?3 AND self.debit > 0 AND self.amountRemaining > 0 "
+                        + " AND self.partner = ?4 ORDER BY self.date ASC ",
+                    company,
+                    MoveRepository.STATUS_VALIDATED,
+                    true,
+                    partner)
+                .fetch();
+      }
+      debitMoveLines.addAll(othersDebitMoveLines);
+    }
+
+    log.debug("Nombre de ligne à payer avec l'avoir récupéré : {}", debitMoveLines.size());
+
+    return debitMoveLines;
+  }
 }

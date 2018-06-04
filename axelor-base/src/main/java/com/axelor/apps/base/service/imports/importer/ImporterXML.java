@@ -17,33 +17,29 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.xml.XMLImporter;
+import java.io.IOException;
+import java.util.Map;
 
 class ImporterXML extends Importer {
 
-	@Override
-	protected ImportHistory process( String bind, String data, Map<String, Object> importContext ) {
+  @Override
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext) {
 
-		XMLImporter importer = new XMLImporter( bind, data);
-		
-		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
-		importer.addListener( listener );
-		importer.setContext(importContext);
-		importer.run();
-		
-		return addHistory( listener );
-		
-	}
+    XMLImporter importer = new XMLImporter(bind, data);
 
-	@Override
-	protected ImportHistory process(String bind, String data) throws IOException {
-		return process(bind, data, null);
-	}
+    ImporterListener listener = new ImporterListener(getConfiguration().getName());
+    importer.addListener(listener);
+    importer.setContext(importContext);
+    importer.run();
 
+    return addHistory(listener);
+  }
 
+  @Override
+  protected ImportHistory process(String bind, String data) throws IOException {
+    return process(bind, data, null);
+  }
 }

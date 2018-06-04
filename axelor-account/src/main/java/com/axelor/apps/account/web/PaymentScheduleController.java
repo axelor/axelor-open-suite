@@ -43,132 +43,140 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class PaymentScheduleController {
-	
-	@Inject
-	PaymentScheduleService paymentScheduleService;
-	
-	@Inject
-	PaymentScheduleRepository paymentScheduleRepo;
-	
-	// Validation button
-	public void validate(ActionRequest request, ActionResponse response) {
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		try {
-			paymentScheduleService.validatePaymentSchedule(paymentSchedule);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-	
-	// Cancel button
-	public void cancel(ActionRequest request, ActionResponse response) {
+  @Inject PaymentScheduleService paymentScheduleService;
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		try {
-			paymentScheduleService.toCancelPaymentSchedule(paymentSchedule);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-	
-    // Called on onSave event
-    public void paymentScheduleScheduleId(ActionRequest request, ActionResponse response) {
-        try {
-            PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-            paymentScheduleService.checkTotalLineAmount(paymentSchedule);
+  @Inject PaymentScheduleRepository paymentScheduleRepo;
 
-            if (Strings.isNullOrEmpty(paymentSchedule.getPaymentScheduleSeq())) {
+  // Validation button
+  public void validate(ActionRequest request, ActionResponse response) {
 
-                String num = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PAYMENT_SCHEDULE,
-                        paymentSchedule.getCompany());
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
 
-                if (Strings.isNullOrEmpty(num)) {
-                    response.setError(String.format(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5),
-                            paymentSchedule.getCompany().getName()));
-                } else {
-                    response.setValue("paymentScheduleSeq", num);
-                }
-            }
-        } catch (Exception e) {
-            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    try {
+      paymentScheduleService.validatePaymentSchedule(paymentSchedule);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  // Cancel button
+  public void cancel(ActionRequest request, ActionResponse response) {
+
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
+
+    try {
+      paymentScheduleService.toCancelPaymentSchedule(paymentSchedule);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  // Called on onSave event
+  public void paymentScheduleScheduleId(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+      paymentScheduleService.checkTotalLineAmount(paymentSchedule);
+
+      if (Strings.isNullOrEmpty(paymentSchedule.getPaymentScheduleSeq())) {
+
+        String num =
+            Beans.get(SequenceService.class)
+                .getSequenceNumber(
+                    SequenceRepository.PAYMENT_SCHEDULE, paymentSchedule.getCompany());
+
+        if (Strings.isNullOrEmpty(num)) {
+          response.setError(
+              String.format(
+                  I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5),
+                  paymentSchedule.getCompany().getName()));
+        } else {
+          response.setValue("paymentScheduleSeq", num);
         }
-    }
-
-    /**
-     * Called on partner, company or payment mode change.
-     * Fill the bank details with a default value.
-     * @param request
-     * @param response
-     */
-    public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
-      PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-      PaymentMode paymentMode = paymentSchedule.getPaymentMode();
-      Company company = paymentSchedule.getCompany();
-      Partner partner = paymentSchedule.getPartner();
-
-      if (company == null) {
-        return;
       }
-      if (partner != null) {
-        partner = Beans.get(PartnerRepository.class).find(partner.getId());
-      }
-      BankDetails defaultBankDetails = Beans.get(BankDetailsService.class).getDefaultCompanyBankDetails(company, paymentMode, partner);
-      response.setValue("companyBankDetails", defaultBankDetails);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
 
-    /**
-     * Called on partner change.
-     * Fill the bank details with a default value.
-     * @param request
-     * @param response
-     */
-    public void fillPartnerBankDetails(ActionRequest request, ActionResponse response) {
-      PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-      Partner partner = paymentSchedule.getPartner();
+  /**
+   * Called on partner, company or payment mode change. Fill the bank details with a default value.
+   *
+   * @param request
+   * @param response
+   */
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    PaymentMode paymentMode = paymentSchedule.getPaymentMode();
+    Company company = paymentSchedule.getCompany();
+    Partner partner = paymentSchedule.getPartner();
 
-      if (partner != null) {
-        partner = Beans.get(PartnerRepository.class).find(partner.getId());
-      }
-      BankDetails defaultBankDetails = Beans.get(PartnerService.class).getDefaultBankDetails(partner);
-      response.setValue("bankDetails", defaultBankDetails);
+    if (company == null) {
+      return;
     }
+    if (partner != null) {
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    }
+    BankDetails defaultBankDetails =
+        Beans.get(BankDetailsService.class)
+            .getDefaultCompanyBankDetails(company, paymentMode, partner);
+    response.setValue("companyBankDetails", defaultBankDetails);
+  }
 
-	// Creating payment schedule lines button
-	public void createPaymentScheduleLines(ActionRequest request, ActionResponse response) {
+  /**
+   * Called on partner change. Fill the bank details with a default value.
+   *
+   * @param request
+   * @param response
+   */
+  public void fillPartnerBankDetails(ActionRequest request, ActionResponse response) {
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    Partner partner = paymentSchedule.getPartner();
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		paymentScheduleService.createPaymentScheduleLines(paymentSchedule);
-		response.setReload(true);
-	}
-	
-	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
+    if (partner != null) {
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    }
+    BankDetails defaultBankDetails = Beans.get(PartnerService.class).getDefaultBankDetails(partner);
+    response.setValue("bankDetails", defaultBankDetails);
+  }
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		try  {
-			Beans.get(IrrecoverableService.class).passInIrrecoverable(paymentSchedule);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }		
-	}
-	
-	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
+  // Creating payment schedule lines button
+  public void createPaymentScheduleLines(ActionRequest request, ActionResponse response) {
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		try  {
-			Beans.get(IrrecoverableService.class).notPassInIrrecoverable(paymentSchedule);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
+
+    paymentScheduleService.createPaymentScheduleLines(paymentSchedule);
+    response.setReload(true);
+  }
+
+  public void passInIrrecoverable(ActionRequest request, ActionResponse response) {
+
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
+
+    try {
+      Beans.get(IrrecoverableService.class).passInIrrecoverable(paymentSchedule);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void notPassInIrrecoverable(ActionRequest request, ActionResponse response) {
+
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
+
+    try {
+      Beans.get(IrrecoverableService.class).notPassInIrrecoverable(paymentSchedule);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

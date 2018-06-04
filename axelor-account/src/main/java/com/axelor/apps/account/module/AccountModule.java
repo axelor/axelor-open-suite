@@ -108,101 +108,97 @@ import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 
-
 public class AccountModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
+  @Override
+  protected void configure() {
+    bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
 
-        bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
+    bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
 
-        bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
+    bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
 
-        bind(FiscalPositionServiceImpl.class).to(FiscalPositionServiceAccountImpl.class);
+    bind(FiscalPositionServiceImpl.class).to(FiscalPositionServiceAccountImpl.class);
 
-        bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
+    bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
 
-        bind(InvoiceRepository.class).to(InvoiceManagementRepository.class);
+    bind(InvoiceRepository.class).to(InvoiceManagementRepository.class);
 
-        bind(MoveRepository.class).to(MoveManagementRepository.class);
-        
-        bind(MoveLineRepository.class).to(MoveLineManagementRepository.class);
-        
-        bind(AccountingReportRepository.class).to(AccountingReportManagementRepository.class);
-        
-        bind(AccountingReportService.class).to(AccountingReportServiceImpl.class);
-        
-        bind(JournalRepository.class).to(JournalManagementRepository.class);
+    bind(MoveRepository.class).to(MoveManagementRepository.class);
 
-        bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
+    bind(MoveLineRepository.class).to(MoveLineManagementRepository.class);
 
-        bind(InvoiceService.class).to(InvoiceServiceImpl.class);
+    bind(AccountingReportRepository.class).to(AccountingReportManagementRepository.class);
 
-        bind(InvoicePrintService.class).to(InvoicePrintServiceImpl.class);
+    bind(AccountingReportService.class).to(AccountingReportServiceImpl.class);
 
-        bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
-        
-        bind(AnalyticMoveLineService.class).to(AnalyticMoveLineServiceImpl.class);
-        
-        bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
+    bind(JournalRepository.class).to(JournalManagementRepository.class);
 
-        bind(InvoicePaymentValidateService.class).to(InvoicePaymentValidateServiceImpl.class);
-        
-        bind(InvoicePaymentCreateService.class).to(InvoicePaymentCreateServiceImpl.class);
-        
-        bind(InvoicePaymentCancelService.class).to(InvoicePaymentCancelServiceImpl.class);
-        
-        bind(InvoicePaymentToolService.class).to(InvoicePaymentToolServiceImpl.class);
+    bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
 
-        bind(AnalyticMoveLineRepository.class).to(AnalyticMoveLineMngtRepository.class);
-        
-        bind(ReconcileService.class).to(ReconcileServiceImpl.class);
-        
-        bind(ReconcileRepository.class).to(ReconcileManagementRepository.class);
-        
-        bind(AppAccountService.class).to(AppAccountServiceImpl.class);
+    bind(InvoiceService.class).to(InvoiceServiceImpl.class);
 
-        bind(AccountingSituationService.class).to(AccountingSituationServiceImpl.class);
+    bind(InvoicePrintService.class).to(InvoicePrintServiceImpl.class);
 
-        bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
+    bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
 
-        bind(BankDetailsServiceImpl.class).to(BankDetailsServiceAccountImpl.class);
+    bind(AnalyticMoveLineService.class).to(AnalyticMoveLineServiceImpl.class);
 
-        bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
+    bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
-        bind(AccountingBatchRepository.class).to(AccountingBatchAccountRepository.class);
-        bind(InvoiceBatchRepository.class).to(InvoiceBatchAccountRepository.class);
+    bind(InvoicePaymentValidateService.class).to(InvoicePaymentValidateServiceImpl.class);
 
-        bind(AccountRepository.class).to(AccountAccountRepository.class);
+    bind(InvoicePaymentCreateService.class).to(InvoicePaymentCreateServiceImpl.class);
 
-        bind(WorkflowVentilationService.class).to(WorkflowVentilationServiceImpl.class);
+    bind(InvoicePaymentCancelService.class).to(InvoicePaymentCancelServiceImpl.class);
 
-        bind(WorkflowCancelService.class).to(WorkflowCancelServiceImpl.class);
+    bind(InvoicePaymentToolService.class).to(InvoicePaymentToolServiceImpl.class);
 
-        bind(WorkflowValidationService.class).to(WorkflowValidationServiceImpl.class);
+    bind(AnalyticMoveLineRepository.class).to(AnalyticMoveLineMngtRepository.class);
 
-        bind(SubrogationReleaseService.class).to(SubrogationReleaseServiceImpl.class);
+    bind(ReconcileService.class).to(ReconcileServiceImpl.class);
 
-        bind(NotificationService.class).to(NotificationServiceImpl.class);
+    bind(ReconcileRepository.class).to(ReconcileManagementRepository.class);
 
-        bind(PaymentScheduleService.class).to(PaymentScheduleServiceImpl.class);
+    bind(AppAccountService.class).to(AppAccountServiceImpl.class);
 
-        bind(PaymentScheduleLineService.class).to(PaymentScheduleLineServiceImpl.class);
+    bind(AccountingSituationService.class).to(AccountingSituationServiceImpl.class);
 
-        bind(DepositSlipRepository.class).to(DepositSlipAccountRepository.class);
+    bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
 
-        bind(DepositSlipService.class).to(DepositSlipServiceImpl.class);
+    bind(BankDetailsServiceImpl.class).to(BankDetailsServiceAccountImpl.class);
 
-        bind(InvoiceLineService.class).to(InvoiceLineServiceImpl.class);
+    bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
 
-        bind(TemplateMessageAccountService.class).to(TemplateMessageAccountServiceImpl.class);
+    bind(AccountingBatchRepository.class).to(AccountingBatchAccountRepository.class);
+    bind(InvoiceBatchRepository.class).to(InvoiceBatchAccountRepository.class);
 
-        PartnerAddressRepository.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
+    bind(AccountRepository.class).to(AccountAccountRepository.class);
 
-        bind(UmrNumberService.class).to(UmrNumberServiceImpl.class);
-    }
-    
-    
+    bind(WorkflowVentilationService.class).to(WorkflowVentilationServiceImpl.class);
+
+    bind(WorkflowCancelService.class).to(WorkflowCancelServiceImpl.class);
+
+    bind(WorkflowValidationService.class).to(WorkflowValidationServiceImpl.class);
+
+    bind(SubrogationReleaseService.class).to(SubrogationReleaseServiceImpl.class);
+
+    bind(NotificationService.class).to(NotificationServiceImpl.class);
+
+    bind(PaymentScheduleService.class).to(PaymentScheduleServiceImpl.class);
+
+    bind(PaymentScheduleLineService.class).to(PaymentScheduleLineServiceImpl.class);
+
+    bind(DepositSlipRepository.class).to(DepositSlipAccountRepository.class);
+
+    bind(DepositSlipService.class).to(DepositSlipServiceImpl.class);
+
+    bind(InvoiceLineService.class).to(InvoiceLineServiceImpl.class);
+
+    bind(TemplateMessageAccountService.class).to(TemplateMessageAccountServiceImpl.class);
+
+    PartnerAddressRepository.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
+
+    bind(UmrNumberService.class).to(UmrNumberServiceImpl.class);
+  }
 }
-

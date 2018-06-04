@@ -22,7 +22,7 @@ import com.axelor.exception.AxelorException;
 
 public interface WorkflowCancelService {
 
-    void beforeCancel(Invoice invoice);
+  void beforeCancel(Invoice invoice);
 
-    void afterCancel(Invoice invoice) throws AxelorException;
+  void afterCancel(Invoice invoice) throws AxelorException;
 }

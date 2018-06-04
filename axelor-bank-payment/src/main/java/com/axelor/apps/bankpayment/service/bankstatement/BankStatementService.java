@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankstatement;
 
-import java.io.IOException;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
@@ -34,81 +32,88 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 
 public class BankStatementService {
 
-	protected BankStatementRepository bankStatementRepository;
-	
-	@Inject
-	public BankStatementService(BankStatementRepository bankStatementRepository)  {
-		this.bankStatementRepository = bankStatementRepository;
-	}
+  protected BankStatementRepository bankStatementRepository;
 
-	public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported) throws IOException, AxelorException  {
+  @Inject
+  public BankStatementService(BankStatementRepository bankStatementRepository) {
+    this.bankStatementRepository = bankStatementRepository;
+  }
 
-        if (bankStatement.getBankStatementFile() == null) {
-            throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE),
-                    TraceBackRepository.CATEGORY_MISSING_FIELD);
-        }
+  public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported)
+      throws IOException, AxelorException {
 
-        if (bankStatement.getBankStatementFileFormat() == null) {
-            throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT),
-                    TraceBackRepository.CATEGORY_MISSING_FIELD);
-        }
-
-		BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
-
-        switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
-        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
-        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
-        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
-            Beans.get(BankStatementFileAFB120Service.class).process(bankStatement);
-            updateStatus(bankStatement);
-            break;
-
-        default:
-        	if(alertIfFormatNotSupported)  {
-        		throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
-        				TraceBackRepository.CATEGORY_INCONSISTENCY);
-        	}
-        }
-
-	}
-	
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void updateStatus(BankStatement bankStatement)  {
-		
-		bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
-		bankStatementRepository.save(bankStatement);
-	}
-
-    /**
-     * Print bank statement.
-     * 
-     * @param bankStatement
-     * @return
-     * @throws AxelorException
-     */
-    public String print(BankStatement bankStatement) throws AxelorException {
-        String reportName;
-
-        switch (bankStatement.getBankStatementFileFormat().getStatementFileFormatSelect()) {
-        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
-        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
-        case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
-            reportName = IReport.BANK_STATEMENT_AFB120;
-            break;
-        default:
-            throw new AxelorException(I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
-                    TraceBackRepository.CATEGORY_INCONSISTENCY);
-        }
-
-        return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")
-                .addParam("BankStatementId", bankStatement.getId())
-                .addParam("Locale", ReportSettings.getPrintingLocale(null)).addFormat("pdf").toAttach(bankStatement)
-                .generate().getFileLink();
+    if (bankStatement.getBankStatementFile() == null) {
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE),
+          TraceBackRepository.CATEGORY_MISSING_FIELD);
     }
 
+    if (bankStatement.getBankStatementFileFormat() == null) {
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT),
+          TraceBackRepository.CATEGORY_MISSING_FIELD);
+    }
+
+    BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
+
+    switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
+        Beans.get(BankStatementFileAFB120Service.class).process(bankStatement);
+        updateStatus(bankStatement);
+        break;
+
+      default:
+        if (alertIfFormatNotSupported) {
+          throw new AxelorException(
+              I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
+              TraceBackRepository.CATEGORY_INCONSISTENCY);
+        }
+    }
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateStatus(BankStatement bankStatement) {
+
+    bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
+    bankStatementRepository.save(bankStatement);
+  }
+
+  /**
+   * Print bank statement.
+   *
+   * @param bankStatement
+   * @return
+   * @throws AxelorException
+   */
+  public String print(BankStatement bankStatement) throws AxelorException {
+    String reportName;
+
+    switch (bankStatement.getBankStatementFileFormat().getStatementFileFormatSelect()) {
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
+        reportName = IReport.BANK_STATEMENT_AFB120;
+        break;
+      default:
+        throw new AxelorException(
+            I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
+            TraceBackRepository.CATEGORY_INCONSISTENCY);
+    }
+
+    return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")
+        .addParam("BankStatementId", bankStatement.getId())
+        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addFormat("pdf")
+        .toAttach(bankStatement)
+        .generate()
+        .getFileLink();
+  }
 }

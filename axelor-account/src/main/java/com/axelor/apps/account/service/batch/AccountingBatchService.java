@@ -29,129 +29,125 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 /**
- * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
- * comptabilité et assimilé.
- * 
+ * InvoiceBatchService est une classe implémentant l'ensemble des batchs de comptabilité et
+ * assimilé.
+ *
  * @author Geoffrey DUBAUX
- * 
  * @version 0.1
  */
 public class AccountingBatchService extends AbstractBatchService {
 
-	@Override
-	protected Class<? extends Model> getModelClass() {
-		return AccountingBatch.class;
-	}
+  @Override
+  protected Class<? extends Model> getModelClass() {
+    return AccountingBatch.class;
+  }
 
-	@Override
-	public Batch run(Model batchModel) throws AxelorException {
+  @Override
+  public Batch run(Model batchModel) throws AxelorException {
 
-		Batch batch;
-		AccountingBatch accountingBatch = (AccountingBatch) batchModel;
+    Batch batch;
+    AccountingBatch accountingBatch = (AccountingBatch) batchModel;
 
-		switch (accountingBatch.getActionSelect()) {
-		case AccountingBatchRepository.ACTION_REIMBURSEMENT:
-			if(accountingBatch.getReimbursementTypeSelect() == AccountingBatchRepository.REIMBURSEMENT_TYPE_EXPORT)  {
-				batch = reimbursementExport(accountingBatch);
-			}
-			else if(accountingBatch.getReimbursementTypeSelect() == 
-					AccountingBatchRepository.REIMBURSEMENT_TYPE_IMPORT)  {
-				batch = reimbursementImport(accountingBatch);
-			}
-			batch = null;
-			break;
-		case AccountingBatchRepository.ACTION_DEBT_RECOVERY:
-			batch = debtRecovery(accountingBatch);
-			break;
-		case AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER:
-			batch = doubtfulCustomer(accountingBatch);
-			break;
-		case AccountingBatchRepository.ACTION_ACCOUNT_CUSTOMER:
-			batch = accountCustomer(accountingBatch);
-			break;
-		case AccountingBatchRepository.ACTION_MOVE_LINE_EXPORT:
-			batch = moveLineExport(accountingBatch);
-			break;
-		case AccountingBatchRepository.ACTION_CREDIT_TRANSFER:
-			batch = creditTransfer(accountingBatch);
-			break;
-		default:
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), accountingBatch.getActionSelect(), accountingBatch.getCode());
-		}
-		
-		return batch;
-	}
-	
-	
-	public Batch debtRecovery(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchDebtRecovery.class).run(accountingBatch);
-		
-	}
+    switch (accountingBatch.getActionSelect()) {
+      case AccountingBatchRepository.ACTION_REIMBURSEMENT:
+        if (accountingBatch.getReimbursementTypeSelect()
+            == AccountingBatchRepository.REIMBURSEMENT_TYPE_EXPORT) {
+          batch = reimbursementExport(accountingBatch);
+        } else if (accountingBatch.getReimbursementTypeSelect()
+            == AccountingBatchRepository.REIMBURSEMENT_TYPE_IMPORT) {
+          batch = reimbursementImport(accountingBatch);
+        }
+        batch = null;
+        break;
+      case AccountingBatchRepository.ACTION_DEBT_RECOVERY:
+        batch = debtRecovery(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER:
+        batch = doubtfulCustomer(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_ACCOUNT_CUSTOMER:
+        batch = accountCustomer(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_MOVE_LINE_EXPORT:
+        batch = moveLineExport(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_CREDIT_TRANSFER:
+        batch = creditTransfer(accountingBatch);
+        break;
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            accountingBatch.getActionSelect(),
+            accountingBatch.getCode());
+    }
 
-	
-	public Batch doubtfulCustomer(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchDoubtfulCustomer.class).run(accountingBatch);
-	}
-	
-	public Batch reimbursementExport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchReimbursementExport.class).run(accountingBatch);
-	}
-	
-	public Batch reimbursementImport(AccountingBatch accountingBatch) {
-		
-		return Beans.get(BatchReimbursementImport.class).run(accountingBatch);
-		
-	}
-	
+    return batch;
+  }
 
-	
-	public Batch accountCustomer(AccountingBatch accountingBatch) {
+  public Batch debtRecovery(AccountingBatch accountingBatch) {
 
-		return Beans.get(BatchAccountCustomer.class).run(accountingBatch);
+    return Beans.get(BatchDebtRecovery.class).run(accountingBatch);
+  }
 
-	}
+  public Batch doubtfulCustomer(AccountingBatch accountingBatch) {
 
-	public Batch moveLineExport(AccountingBatch accountingBatch) {
+    return Beans.get(BatchDoubtfulCustomer.class).run(accountingBatch);
+  }
 
-		return Beans.get(BatchMoveLineExport.class).run(accountingBatch);
+  public Batch reimbursementExport(AccountingBatch accountingBatch) {
 
-	}
+    return Beans.get(BatchReimbursementExport.class).run(accountingBatch);
+  }
 
-	public Batch creditTransfer(AccountingBatch accountingBatch) {
-		Class<? extends BatchStrategy> batchStrategyClass;
+  public Batch reimbursementImport(AccountingBatch accountingBatch) {
 
-		switch (accountingBatch.getCreditTransferTypeSelect()) {
-		case AccountingBatchRepository.CREDIT_TRANSFER_EXPENSE_PAYMENT:
-			batchStrategyClass = BatchCreditTransferExpensePayment.class;
-			break;
-		case AccountingBatchRepository.CREDIT_TRANSFER_SUPPLIER_PAYMENT:
-			batchStrategyClass = BatchCreditTransferSupplierPayment.class;
-			break;
-		case AccountingBatchRepository.CREDIT_TRANSFER_CUSTOMER_REIMBURSEMENT:
-			switch (accountingBatch.getCustomerReimbursementTypeSelect()) {
-			case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_CUSTOMER_REFUND:
-				batchStrategyClass = BatchCreditTransferCustomerRefund.class;
-				break;
-			case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_PARTNER_CREDIT_BALANCE:
-				batchStrategyClass = BatchCreditTransferPartnerReimbursement.class;
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown customer reimbursement type");
-			}
-			break;
-		default:
-			throw new IllegalArgumentException(
-					String.format("Unknown credit transfer type: %d", accountingBatch.getCreditTransferTypeSelect()));
-		}
+    return Beans.get(BatchReimbursementImport.class).run(accountingBatch);
+  }
 
-		return Beans.get(batchStrategyClass).run(accountingBatch);
-	}
+  public Batch accountCustomer(AccountingBatch accountingBatch) {
 
-	public Batch directDebit(AccountingBatch accountingBatch) {
-		throw new UnsupportedOperationException(I18n.get("This batch requires the bank payment module."));
-	}
+    return Beans.get(BatchAccountCustomer.class).run(accountingBatch);
+  }
 
+  public Batch moveLineExport(AccountingBatch accountingBatch) {
+
+    return Beans.get(BatchMoveLineExport.class).run(accountingBatch);
+  }
+
+  public Batch creditTransfer(AccountingBatch accountingBatch) {
+    Class<? extends BatchStrategy> batchStrategyClass;
+
+    switch (accountingBatch.getCreditTransferTypeSelect()) {
+      case AccountingBatchRepository.CREDIT_TRANSFER_EXPENSE_PAYMENT:
+        batchStrategyClass = BatchCreditTransferExpensePayment.class;
+        break;
+      case AccountingBatchRepository.CREDIT_TRANSFER_SUPPLIER_PAYMENT:
+        batchStrategyClass = BatchCreditTransferSupplierPayment.class;
+        break;
+      case AccountingBatchRepository.CREDIT_TRANSFER_CUSTOMER_REIMBURSEMENT:
+        switch (accountingBatch.getCustomerReimbursementTypeSelect()) {
+          case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_CUSTOMER_REFUND:
+            batchStrategyClass = BatchCreditTransferCustomerRefund.class;
+            break;
+          case AccountingBatchRepository.CUSTOMER_REIMBURSEMENT_PARTNER_CREDIT_BALANCE:
+            batchStrategyClass = BatchCreditTransferPartnerReimbursement.class;
+            break;
+          default:
+            throw new IllegalArgumentException("Unknown customer reimbursement type");
+        }
+        break;
+      default:
+        throw new IllegalArgumentException(
+            String.format(
+                "Unknown credit transfer type: %d", accountingBatch.getCreditTransferTypeSelect()));
+    }
+
+    return Beans.get(batchStrategyClass).run(accountingBatch);
+  }
+
+  public Batch directDebit(AccountingBatch accountingBatch) {
+    throw new UnsupportedOperationException(
+        I18n.get("This batch requires the bank payment module."));
+  }
 }

@@ -17,37 +17,35 @@
  */
 package com.axelor.apps.account.service;
 
-import java.io.IOException;
-
 import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.exception.AxelorException;
+import java.io.IOException;
 
 public interface DepositSlipService {
-    /**
-     * Load payments into deposit slip.
-     * 
-     * @param depositSlip
-     * @throws AxelorException
-     */
-    void loadPayments(DepositSlip depositSlip) throws AxelorException;
+  /**
+   * Load payments into deposit slip.
+   *
+   * @param depositSlip
+   * @throws AxelorException
+   */
+  void loadPayments(DepositSlip depositSlip) throws AxelorException;
 
-    /**
-     * Publish deposit slip.
-     * 
-     * @param depositSlip
-     * @return
-     * @throws AxelorException
-     * @throws IOException
-     */
-    String publish(DepositSlip depositSlip) throws AxelorException;
+  /**
+   * Publish deposit slip.
+   *
+   * @param depositSlip
+   * @return
+   * @throws AxelorException
+   * @throws IOException
+   */
+  String publish(DepositSlip depositSlip) throws AxelorException;
 
-    /**
-     * Get report filename.
-     * 
-     * @param depositSlip
-     * @return
-     * @throws AxelorException
-     */
-    String getFilename(DepositSlip depositSlip) throws AxelorException;
-
+  /**
+   * Get report filename.
+   *
+   * @param depositSlip
+   * @return
+   * @throws AxelorException
+   */
+  String getFilename(DepositSlip depositSlip) throws AxelorException;
 }

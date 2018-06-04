@@ -28,28 +28,24 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class SupplychainBatchController {
-	
-	@Inject 
-	protected SupplychainBatchService supplychainBatchService;
-	
-	@Inject
-	protected SupplychainBatchRepository supplychainBatchRepo;
-	
 
-	public void invoiceOutgoingStockMoves(ActionRequest request, ActionResponse response) {
-		SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
-		supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
-		Batch batch = supplychainBatchService.invoiceOutgoingStockMoves(supplychainBatch);
-		response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+  @Inject protected SupplychainBatchService supplychainBatchService;
 
-	public void invoiceOrders(ActionRequest request, ActionResponse response) {
-		SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
-		supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
-		Batch batch = supplychainBatchService.invoiceOrders(supplychainBatch);
-		response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+  @Inject protected SupplychainBatchRepository supplychainBatchRepo;
 
+  public void invoiceOutgoingStockMoves(ActionRequest request, ActionResponse response) {
+    SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+    supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
+    Batch batch = supplychainBatchService.invoiceOutgoingStockMoves(supplychainBatch);
+    response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
+
+  public void invoiceOrders(ActionRequest request, ActionResponse response) {
+    SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+    supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
+    Batch batch = supplychainBatchService.invoiceOrders(supplychainBatch);
+    response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 }

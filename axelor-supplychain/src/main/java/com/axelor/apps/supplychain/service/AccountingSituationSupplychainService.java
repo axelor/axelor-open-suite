@@ -24,12 +24,13 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 
 public interface AccountingSituationSupplychainService extends AccountingSituationService {
-	
-	public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
-	
-//	public boolean checkBlockedPartner(Partner partner, Company company) throws AxelorException;
-	
-	public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation) throws AxelorException;
-	
-	public void updateUsedCredit(Partner partner) throws AxelorException;
+
+  public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
+
+  //	public boolean checkBlockedPartner(Partner partner, Company company) throws AxelorException;
+
+  public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation)
+      throws AxelorException;
+
+  public void updateUsedCredit(Partner partner) throws AxelorException;
 }

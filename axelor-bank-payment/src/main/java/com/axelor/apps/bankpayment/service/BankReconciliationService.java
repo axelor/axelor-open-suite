@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -41,171 +36,222 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class BankReconciliationService {
 
-	protected MoveService moveService;
-	protected MoveRepository moveRepository;
-	protected MoveLineService moveLineService;
-	protected BankReconciliationRepository bankReconciliationRepository;
-	
-	@Inject
-	public BankReconciliationService(MoveService moveService, MoveRepository moveRepository, MoveLineService moveLineService, BankReconciliationRepository bankReconciliationRepository)  {
-		
-		this.moveService = moveService;
-		this.moveRepository = moveRepository;
-		this.moveLineService = moveLineService;
-		this.bankReconciliationRepository = bankReconciliationRepository;
-	}
+  protected MoveService moveService;
+  protected MoveRepository moveRepository;
+  protected MoveLineService moveLineService;
+  protected BankReconciliationRepository bankReconciliationRepository;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void compute(BankReconciliation bankReconciliation) throws AxelorException  {
+  @Inject
+  public BankReconciliationService(
+      MoveService moveService,
+      MoveRepository moveRepository,
+      MoveLineService moveLineService,
+      BankReconciliationRepository bankReconciliationRepository) {
 
-		BigDecimal computedBalance = bankReconciliation.getStartingBalance();
+    this.moveService = moveService;
+    this.moveRepository = moveRepository;
+    this.moveLineService = moveLineService;
+    this.bankReconciliationRepository = bankReconciliationRepository;
+  }
 
-		for(BankReconciliationLine bankReconciliationLine : bankReconciliation.getBankReconciliationLineList())  {
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void compute(BankReconciliation bankReconciliation) throws AxelorException {
 
-			computedBalance = computedBalance.add(bankReconciliationLine.getAmount());
+    BigDecimal computedBalance = bankReconciliation.getStartingBalance();
 
-		}
+    for (BankReconciliationLine bankReconciliationLine :
+        bankReconciliation.getBankReconciliationLineList()) {
 
-		bankReconciliation.setComputedBalance(computedBalance);
+      computedBalance = computedBalance.add(bankReconciliationLine.getAmount());
+    }
 
-		bankReconciliationRepository.save(bankReconciliation);
-	}
+    bankReconciliation.setComputedBalance(computedBalance);
 
+    bankReconciliationRepository.save(bankReconciliation);
+  }
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(BankReconciliation bankReconciliation) throws AxelorException  {
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validate(BankReconciliation bankReconciliation) throws AxelorException {
 
-		this.checkBalance(bankReconciliation);
+    this.checkBalance(bankReconciliation);
 
-		for(BankReconciliationLine bankReconciliationLine : bankReconciliation.getBankReconciliationLineList())  {
+    for (BankReconciliationLine bankReconciliationLine :
+        bankReconciliation.getBankReconciliationLineList()) {
 
-			if(!bankReconciliationLine.getIsPosted())  {
+      if (!bankReconciliationLine.getIsPosted()) {
 
-				if(bankReconciliationLine.getMoveLine() == null)  {
-					this.validate(bankReconciliationLine);
-				}
-				else  {
-					this.checkAmount(bankReconciliationLine);
-				}
-			}
-		}
+        if (bankReconciliationLine.getMoveLine() == null) {
+          this.validate(bankReconciliationLine);
+        } else {
+          this.checkAmount(bankReconciliationLine);
+        }
+      }
+    }
 
-		bankReconciliation.setStatusSelect(BankReconciliationRepository.STATUS_VALIDATED);
+    bankReconciliation.setStatusSelect(BankReconciliationRepository.STATUS_VALIDATED);
 
-		bankReconciliationRepository.save(bankReconciliation);
-	}
+    bankReconciliationRepository.save(bankReconciliation);
+  }
 
-	public void checkBalance(BankReconciliation bankReconciliation) throws AxelorException  {
+  public void checkBalance(BankReconciliation bankReconciliation) throws AxelorException {
 
-		if(bankReconciliation.getComputedBalance().compareTo(bankReconciliation.getEndingBalance()) != 0)  {
-			throw new AxelorException(bankReconciliation, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_1),
-					AppAccountServiceImpl.EXCEPTION);
-		}
+    if (bankReconciliation.getComputedBalance().compareTo(bankReconciliation.getEndingBalance())
+        != 0) {
+      throw new AxelorException(
+          bankReconciliation,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_1),
+          AppAccountServiceImpl.EXCEPTION);
+    }
+  }
 
-	}
+  public void validate(BankReconciliationLine bankReconciliationLine) throws AxelorException {
 
+    BigDecimal amount = bankReconciliationLine.getAmount();
 
-	public void validate(BankReconciliationLine bankReconciliationLine) throws AxelorException  {
+    // TODO add currency conversion
 
-		BigDecimal amount = bankReconciliationLine.getAmount();
+    if (amount.compareTo(BigDecimal.ZERO) == 0) {
 
-		//TODO add currency conversion
+      return;
+    }
 
-		if(amount.compareTo(BigDecimal.ZERO) == 0)  {
+    BankReconciliation bankReconciliation = bankReconciliationLine.getBankReconciliation();
 
-			return;
+    Partner partner = bankReconciliationLine.getPartner();
 
-		}
+    LocalDate effectDate = bankReconciliationLine.getEffectDate();
 
-		BankReconciliation bankReconciliation = bankReconciliationLine.getBankReconciliation();
-
-		Partner partner = bankReconciliationLine.getPartner();
-
-		LocalDate effectDate = bankReconciliationLine.getEffectDate();
-
-		String name = bankReconciliationLine.getName();
+    String name = bankReconciliationLine.getName();
     String reference = bankReconciliationLine.getReference();
 
-		Move move = moveService.getMoveCreateService().createMove(bankReconciliation.getJournal(), bankReconciliation.getCompany(), null, partner, effectDate, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+    Move move =
+        moveService
+            .getMoveCreateService()
+            .createMove(
+                bankReconciliation.getJournal(),
+                bankReconciliation.getCompany(),
+                null,
+                partner,
+                effectDate,
+                null,
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
-		boolean isNegate = amount.compareTo(BigDecimal.ZERO) < 0;
+    boolean isNegate = amount.compareTo(BigDecimal.ZERO) < 0;
 
-		MoveLine partnerMoveLine = moveLineService.createMoveLine(move, partner, bankReconciliationLine.getAccount(), amount,
-				isNegate, effectDate, effectDate, 1, reference, name);
-		move.addMoveLineListItem(partnerMoveLine);
+    MoveLine partnerMoveLine =
+        moveLineService.createMoveLine(
+            move,
+            partner,
+            bankReconciliationLine.getAccount(),
+            amount,
+            isNegate,
+            effectDate,
+            effectDate,
+            1,
+            reference,
+            name);
+    move.addMoveLineListItem(partnerMoveLine);
 
-		move.addMoveLineListItem(
-				moveLineService.createMoveLine(move, partner, bankReconciliation.getCashAccount(), amount,
-						!isNegate, effectDate, effectDate, 1, reference, name));
+    move.addMoveLineListItem(
+        moveLineService.createMoveLine(
+            move,
+            partner,
+            bankReconciliation.getCashAccount(),
+            amount,
+            !isNegate,
+            effectDate,
+            effectDate,
+            1,
+            reference,
+            name));
 
-		moveRepository.save(move);
+    moveRepository.save(move);
 
-		moveService.getMoveValidateService().validateMove(move);
+    moveService.getMoveValidateService().validateMove(move);
 
-		bankReconciliationLine.setMoveLine(partnerMoveLine);
+    bankReconciliationLine.setMoveLine(partnerMoveLine);
 
-		bankReconciliationLine.setIsPosted(true);
+    bankReconciliationLine.setIsPosted(true);
+  }
 
-	}
+  public void checkAmount(BankReconciliationLine bankReconciliationLine) throws AxelorException {
 
-	public void checkAmount(BankReconciliationLine bankReconciliationLine) throws AxelorException  {
+    MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
-		MoveLine moveLine = bankReconciliationLine.getMoveLine();
+    if (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          bankReconciliationLine,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_3),
+          AppAccountServiceImpl.EXCEPTION,
+          bankReconciliationLine.getReference());
+    }
 
-		if (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) == 0) {
-			throw new AxelorException(bankReconciliationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_3),
-				AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference());
-		}
-		
-		if ((bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) > 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getCredit()) != 0)
-				|| (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) < 0  && bankReconciliationLine.getAmount().compareTo(moveLine.getDebit()) != 0)) {
-			throw new AxelorException(bankReconciliationLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_STATEMENT_2),
-				AppAccountServiceImpl.EXCEPTION, bankReconciliationLine.getReference());
-		}
+    if ((bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) > 0
+            && bankReconciliationLine.getAmount().compareTo(moveLine.getCredit()) != 0)
+        || (bankReconciliationLine.getAmount().compareTo(BigDecimal.ZERO) < 0
+            && bankReconciliationLine.getAmount().compareTo(moveLine.getDebit()) != 0)) {
+      throw new AxelorException(
+          bankReconciliationLine,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_2),
+          AppAccountServiceImpl.EXCEPTION,
+          bankReconciliationLine.getReference());
+    }
+  }
 
-	}
-	
-	
-	public BankReconciliation createBankReconciliation(Company company, LocalDate fromDate, LocalDate toDate, Currency currency, BankStatement bankStatement) throws IOException  {
-		
-		BankReconciliation bankReconciliation = new BankReconciliation();
-		bankReconciliation.setCompany(company);
-		bankReconciliation.setFromDate(fromDate);
-		bankReconciliation.setToDate(toDate);
-		bankReconciliation.setCurrency(currency);
-		bankReconciliation.setBankStatement(bankStatement);
-		bankReconciliation.setName(this.computeName(bankReconciliation));
-		
-		return bankReconciliation;
-		
-	}
-	
-	private String computeName(BankReconciliation bankReconciliation)  {
-		
-		String name = "";
-		if(bankReconciliation.getCompany() != null)  {
-			name += bankReconciliation.getCompany().getCode();
-		}
-		if(bankReconciliation.getCurrency() != null)  {
-			if(name != "")  {  name += "-";  }
-			name += bankReconciliation.getCurrency().getCode();
-		}
-		if(bankReconciliation.getFromDate() != null)  {
-			if(name != "")  {  name += "-";  }
-			name += bankReconciliation.getFromDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
-		}
-		if(bankReconciliation.getToDate() != null)  {
-			if(name != "")  {  name += "-";  }
-			name += bankReconciliation.getToDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
-		}
-		
-		return name;
-		
-	}
-	
-	
+  public BankReconciliation createBankReconciliation(
+      Company company,
+      LocalDate fromDate,
+      LocalDate toDate,
+      Currency currency,
+      BankStatement bankStatement)
+      throws IOException {
 
+    BankReconciliation bankReconciliation = new BankReconciliation();
+    bankReconciliation.setCompany(company);
+    bankReconciliation.setFromDate(fromDate);
+    bankReconciliation.setToDate(toDate);
+    bankReconciliation.setCurrency(currency);
+    bankReconciliation.setBankStatement(bankStatement);
+    bankReconciliation.setName(this.computeName(bankReconciliation));
+
+    return bankReconciliation;
+  }
+
+  private String computeName(BankReconciliation bankReconciliation) {
+
+    String name = "";
+    if (bankReconciliation.getCompany() != null) {
+      name += bankReconciliation.getCompany().getCode();
+    }
+    if (bankReconciliation.getCurrency() != null) {
+      if (name != "") {
+        name += "-";
+      }
+      name += bankReconciliation.getCurrency().getCode();
+    }
+    if (bankReconciliation.getFromDate() != null) {
+      if (name != "") {
+        name += "-";
+      }
+      name += bankReconciliation.getFromDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
+    }
+    if (bankReconciliation.getToDate() != null) {
+      if (name != "") {
+        name += "-";
+      }
+      name += bankReconciliation.getToDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
+    }
+
+    return name;
+  }
 }

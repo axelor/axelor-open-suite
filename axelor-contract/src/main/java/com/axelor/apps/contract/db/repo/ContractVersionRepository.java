@@ -22,15 +22,12 @@ import com.axelor.db.JpaRepository;
 
 public class ContractVersionRepository extends JpaRepository<ContractVersion> {
 
-	public static final int DRAFT_VERSION = 1;
-	public static final int WAITING_VERSION = 2;
-	public static final int ONGOING_VERSION = 3;
-	public static final int TERMINATED_VERSION = 4;
+  public static final int DRAFT_VERSION = 1;
+  public static final int WAITING_VERSION = 2;
+  public static final int ONGOING_VERSION = 3;
+  public static final int TERMINATED_VERSION = 4;
 
-	public ContractVersionRepository() {
-		super(ContractVersion.class);
-	}
-
-	
-
+  public ContractVersionRepository() {
+    super(ContractVersion.class);
+  }
 }

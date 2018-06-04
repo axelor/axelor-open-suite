@@ -17,34 +17,30 @@
  */
 package com.axelor.apps.businessproduction.web;
 
-import com.google.inject.Inject;
-
 import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServiceBusinessImpl;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class ProductionOrderBusinessController {
 
-	@Inject
-	ProductionOrderRepository productionOrderRepo;
-	
-	@Inject
-	ProductionOrderSaleOrderServiceBusinessImpl productionOrderSaleOrderServiceBusinessImpl;
-	
-	
-	public void generateSaleOrder (ActionRequest request, ActionResponse response) throws AxelorException {
+  @Inject ProductionOrderRepository productionOrderRepo;
 
-		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
+  @Inject ProductionOrderSaleOrderServiceBusinessImpl productionOrderSaleOrderServiceBusinessImpl;
 
-		productionOrderSaleOrderServiceBusinessImpl.createSaleOrder(productionOrderRepo.find(productionOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
-	
+  public void generateSaleOrder(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    ProductionOrder productionOrder = request.getContext().asType(ProductionOrder.class);
+
+    productionOrderSaleOrderServiceBusinessImpl.createSaleOrder(
+        productionOrderRepo.find(productionOrder.getId()));
+
+    response.setReload(true);
+  }
 }

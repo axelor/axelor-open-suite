@@ -25,14 +25,13 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AppPurchaseController {
-	
-	@Inject
-	private AppPurchaseService appPurchaseService;
-	
-	public void generatePurchaseConfigurations(ActionRequest request, ActionResponse response) {
-		
-		appPurchaseService.generatePurchaseConfigurations();
-		
-		response.setReload(true);
-	}
+
+  @Inject private AppPurchaseService appPurchaseService;
+
+  public void generatePurchaseConfigurations(ActionRequest request, ActionResponse response) {
+
+    appPurchaseService.generatePurchaseConfigurations();
+
+    response.setReload(true);
+  }
 }

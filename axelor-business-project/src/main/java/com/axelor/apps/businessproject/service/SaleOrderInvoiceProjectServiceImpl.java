@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -40,50 +37,69 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
+import java.util.Map;
 
-public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl{
-	
-	private AppBusinessProjectService appBusinessProjectService;
-	
-	@Inject
-	public SaleOrderInvoiceProjectServiceImpl(AppSupplychainService appSupplychainService,
-											  SaleOrderRepository saleOrderRepo,
-											  InvoiceRepository invoiceRepo,
-											  InvoiceService invoiceService,
-											  AppBusinessProjectService appBusinessProjectService) {
-		super(appSupplychainService, saleOrderRepo, invoiceRepo, invoiceService);
-		this.appBusinessProjectService = appBusinessProjectService;
-	}
+public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl {
 
-	@Transactional
-	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
-			Partner partner, Partner contactPartner, PriceList priceList,
-			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder,Project project)
-					throws AxelorException {
-		Invoice invoiceMerged = super.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition,saleOrder);
-		if (project != null && !appBusinessProjectService.getAppBusinessProject().getProjectInvoiceLines()) {
-				invoiceMerged.setProject(project);
-				for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()){
-					invoiceLine.setProject(project);
-				}
-		}
-		return invoiceMerged;
-	}
+  private AppBusinessProjectService appBusinessProjectService;
 
-	@Override
-	public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
-	    Map<String, Integer> contextValues = super.getInvoicingWizardOperationDomain(saleOrder);
-		AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-	    boolean canInvoiceTimesheet = appBusinessProject.getEnableToInvoiceTimesheet();
-		boolean canInvoiceExpense = appBusinessProject.getEnableToInvoiceExpense();
+  @Inject
+  public SaleOrderInvoiceProjectServiceImpl(
+      AppSupplychainService appSupplychainService,
+      SaleOrderRepository saleOrderRepo,
+      InvoiceRepository invoiceRepo,
+      InvoiceService invoiceService,
+      AppBusinessProjectService appBusinessProjectService) {
+    super(appSupplychainService, saleOrderRepo, invoiceRepo, invoiceService);
+    this.appBusinessProjectService = appBusinessProjectService;
+  }
 
-		contextValues.put("invoiceTs", canInvoiceTimesheet
-				? SaleOrderRepository.INVOICE_TIMESHEET
-				: 0);
-		contextValues.put("invoiceExpense", canInvoiceExpense
-				? SaleOrderRepository.INVOICE_EXPENSE
-				: 0);
-
-		return contextValues;
+  @Transactional
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      SaleOrder saleOrder,
+      Project project)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        super.mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition,
+            saleOrder);
+    if (project != null
+        && !appBusinessProjectService.getAppBusinessProject().getProjectInvoiceLines()) {
+      invoiceMerged.setProject(project);
+      for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()) {
+        invoiceLine.setProject(project);
+      }
     }
+    return invoiceMerged;
+  }
+
+  @Override
+  public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
+    Map<String, Integer> contextValues = super.getInvoicingWizardOperationDomain(saleOrder);
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    boolean canInvoiceTimesheet = appBusinessProject.getEnableToInvoiceTimesheet();
+    boolean canInvoiceExpense = appBusinessProject.getEnableToInvoiceExpense();
+
+    contextValues.put("invoiceTs", canInvoiceTimesheet ? SaleOrderRepository.INVOICE_TIMESHEET : 0);
+    contextValues.put(
+        "invoiceExpense", canInvoiceExpense ? SaleOrderRepository.INVOICE_EXPENSE : 0);
+
+    return contextValues;
+  }
 }

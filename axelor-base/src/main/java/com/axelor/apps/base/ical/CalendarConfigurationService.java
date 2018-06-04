@@ -38,99 +38,104 @@ import com.google.inject.persist.Transactional;
 
 public class CalendarConfigurationService {
 
-	private static final String NAME = "ical-calendar-";
+  private static final String NAME = "ical-calendar-";
 
-	@Inject
-	protected CalendarConfigurationRepository calendarConfigurationRepo;
+  @Inject protected CalendarConfigurationRepository calendarConfigurationRepo;
 
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void createEntryMenu(CalendarConfiguration calendarConfiguration) {
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void createEntryMenu(CalendarConfiguration calendarConfiguration) {
 
-		String menuName = NAME + calendarConfiguration.getName().toLowerCase() + "-" + calendarConfiguration.getId();
-		String subName = menuName.replaceAll("[-\\s]", ".");
-		String title = calendarConfiguration.getName();
-		User user = calendarConfiguration.getCalendarUser();
-		Group group = calendarConfiguration.getCalendarGroup();
+    String menuName =
+        NAME + calendarConfiguration.getName().toLowerCase() + "-" + calendarConfiguration.getId();
+    String subName = menuName.replaceAll("[-\\s]", ".");
+    String title = calendarConfiguration.getName();
+    User user = calendarConfiguration.getCalendarUser();
+    Group group = calendarConfiguration.getCalendarGroup();
 
-		MetaAction metaAction = this.createMetaAction("action." + subName, title);
-		MetaMenu metaMenu = this.createMetaMenu(menuName, title, metaAction, calendarConfiguration.getParentMetaMenu());
-		Beans.get(MetaMenuRepository.class).save(metaMenu);
+    MetaAction metaAction = this.createMetaAction("action." + subName, title);
+    MetaMenu metaMenu =
+        this.createMetaMenu(menuName, title, metaAction, calendarConfiguration.getParentMetaMenu());
+    Beans.get(MetaMenuRepository.class).save(metaMenu);
 
-		Role role = new Role();
-		role.setName("role." + subName);
-		role.addMenu(metaMenu);
+    Role role = new Role();
+    role.setName("role." + subName);
+    role.addMenu(metaMenu);
 
-		Beans.get(RoleRepository.class).save(role);
+    Beans.get(RoleRepository.class).save(role);
 
-		user.addRole(role);
-		Beans.get(UserRepository.class).save(user);
+    user.addRole(role);
+    Beans.get(UserRepository.class).save(user);
 
-		if (group != null) {
-			group.addRole(role);
-			Beans.get(GroupRepository.class).save(group);
-		}
-		calendarConfiguration.setRole(role);
-		calendarConfiguration.setMetaAction(metaAction);
-		calendarConfigurationRepo.save(calendarConfiguration);
-	}
+    if (group != null) {
+      group.addRole(role);
+      Beans.get(GroupRepository.class).save(group);
+    }
+    calendarConfiguration.setRole(role);
+    calendarConfiguration.setMetaAction(metaAction);
+    calendarConfigurationRepo.save(calendarConfiguration);
+  }
 
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void deleteEntryMenu(CalendarConfiguration calendarConfiguration) {
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void deleteEntryMenu(CalendarConfiguration calendarConfiguration) {
 
-		MetaAction metaAction = calendarConfiguration.getMetaAction();
-		Role role = calendarConfiguration.getRole();
-		Group group = calendarConfiguration.getCalendarGroup();
-		calendarConfiguration.setMetaAction(null);
-		calendarConfiguration.setRole(null);
-		calendarConfiguration.getCalendarUser().removeRole(role);
+    MetaAction metaAction = calendarConfiguration.getMetaAction();
+    Role role = calendarConfiguration.getRole();
+    Group group = calendarConfiguration.getCalendarGroup();
+    calendarConfiguration.setMetaAction(null);
+    calendarConfiguration.setRole(null);
+    calendarConfiguration.getCalendarUser().removeRole(role);
 
-		if (group != null) {
-			group.removeRole(role);
-		}
+    if (group != null) {
+      group.removeRole(role);
+    }
 
-		String menuName = NAME + calendarConfiguration.getName().toLowerCase() + "-" + calendarConfiguration.getId();
+    String menuName =
+        NAME + calendarConfiguration.getName().toLowerCase() + "-" + calendarConfiguration.getId();
 
-		MetaMenuRepository metaMenuRepository = Beans.get(MetaMenuRepository.class);
-		MetaMenu metaMenu = metaMenuRepository.findByName(menuName);
-		metaMenuRepository.remove(metaMenu);
+    MetaMenuRepository metaMenuRepository = Beans.get(MetaMenuRepository.class);
+    MetaMenu metaMenu = metaMenuRepository.findByName(menuName);
+    metaMenuRepository.remove(metaMenu);
 
-		MetaActionRepository metaActionRepository = Beans.get(MetaActionRepository.class);
-		metaActionRepository.remove(metaAction);
+    MetaActionRepository metaActionRepository = Beans.get(MetaActionRepository.class);
+    metaActionRepository.remove(metaAction);
 
-		RoleRepository roleRepository = Beans.get(RoleRepository.class);
-		roleRepository.remove(role);
-	}
+    RoleRepository roleRepository = Beans.get(RoleRepository.class);
+    roleRepository.remove(role);
+  }
 
-	public MetaMenu createMetaMenu(String name, String title, MetaAction metaAction, MetaMenu parentMenu) {
+  public MetaMenu createMetaMenu(
+      String name, String title, MetaAction metaAction, MetaMenu parentMenu) {
 
-		MetaMenu metaMenu = new MetaMenu();
-		metaMenu.setName(name);
-		metaMenu.setAction(metaAction);
-		metaMenu.setModule("axelor-base");
-		metaMenu.setTitle(title);
-		metaMenu.setParent(parentMenu);
+    MetaMenu metaMenu = new MetaMenu();
+    metaMenu.setName(name);
+    metaMenu.setAction(metaAction);
+    metaMenu.setModule("axelor-base");
+    metaMenu.setTitle(title);
+    metaMenu.setParent(parentMenu);
 
-		return metaMenu;
-	}
+    return metaMenu;
+  }
 
-	public MetaAction createMetaAction(String name, String title) {
+  public MetaAction createMetaAction(String name, String title) {
 
-		String module = "axelor-base";
-		String type = "action-view";
-		String expr = String.format("eval: __repo__(CalendarConfiguration).all().filter('self.metaAction.name = :name').bind('name', '%s').fetchOne().calendarSet.collect{ it.id }", name);
+    String module = "axelor-base";
+    String type = "action-view";
+    String expr =
+        String.format(
+            "eval: __repo__(CalendarConfiguration).all().filter('self.metaAction.name = :name').bind('name', '%s').fetchOne().calendarSet.collect{ it.id }",
+            name);
 
-		ActionView actionView = ActionView
-				.define(title)
-				.name(name)
-				.model("com.axelor.apps.base.db.ICalendarEvent")
-				.add("calendar", "calendar-all")
-				.add("grid", "calendar-event-grid")
-				.add("form", "calandar-event-form")
-				.domain("self.calendar.id in (:_calendarIdList)")
-				.context("_calendarIdList", expr)
-				.get();
+    ActionView actionView =
+        ActionView.define(title)
+            .name(name)
+            .model("com.axelor.apps.base.db.ICalendarEvent")
+            .add("calendar", "calendar-all")
+            .add("grid", "calendar-event-grid")
+            .add("form", "calandar-event-form")
+            .domain("self.calendar.id in (:_calendarIdList)")
+            .context("_calendarIdList", expr)
+            .get();
 
-		return MetaActionTool.actionToMetaAction(actionView, name, type, module);
-	}
-
+    return MetaActionTool.actionToMetaAction(actionView, name, type, module);
+  }
 }

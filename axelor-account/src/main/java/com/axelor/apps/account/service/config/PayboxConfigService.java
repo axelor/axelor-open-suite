@@ -26,150 +26,217 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
-public class PayboxConfigService extends AccountConfigService  {
+public class PayboxConfigService extends AccountConfigService {
 
-	public PayboxConfig getPayboxConfig(AccountConfig accountConfig) throws AxelorException  {
+  public PayboxConfig getPayboxConfig(AccountConfig accountConfig) throws AxelorException {
 
-		PayboxConfig payboxConfig = accountConfig.getPayboxConfig();
+    PayboxConfig payboxConfig = accountConfig.getPayboxConfig();
 
-		if (payboxConfig == null) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_1), AppAccountServiceImpl.EXCEPTION, accountConfig.getCompany().getName());
-		}
+    if (payboxConfig == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_1),
+          AppAccountServiceImpl.EXCEPTION,
+          accountConfig.getCompany().getName());
+    }
 
-		return payboxConfig;
+    return payboxConfig;
+  }
 
-	}
+  public PayboxConfig getPayboxConfig(Company company) throws AxelorException {
 
+    AccountConfig accountConfig = super.getAccountConfig(company);
 
-	public PayboxConfig getPayboxConfig(Company company) throws AxelorException  {
+    return this.getPayboxConfig(accountConfig);
+  }
 
-		AccountConfig accountConfig = super.getAccountConfig(company);
+  /** ****************************** PAYBOX ******************************************* */
+  public String getPayboxSite(PayboxConfig payboxConfig) throws AxelorException {
 
-		return this.getPayboxConfig(accountConfig);
+    if (payboxConfig.getPayboxSite() == null || payboxConfig.getPayboxSite().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_2),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-	}
+    return payboxConfig.getPayboxSite();
+  }
 
+  public String getPayboxRang(PayboxConfig payboxConfig) throws AxelorException {
 
+    if (payboxConfig.getPayboxRang() == null || payboxConfig.getPayboxRang().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_3),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-	/******************************** PAYBOX ********************************************/
+    return payboxConfig.getPayboxRang();
+  }
 
+  public String getPayboxDevise(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxSite(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxDevise() == null || payboxConfig.getPayboxDevise().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_4),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxSite() == null || payboxConfig.getPayboxSite().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_2), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxDevise();
+  }
 
-		return payboxConfig.getPayboxSite();
-	}
+  public String getPayboxRetour(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxRang(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxRetour() == null || payboxConfig.getPayboxRetour().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_5),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxRang() == null || payboxConfig.getPayboxRang().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_3), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxRetour();
+  }
 
-		return payboxConfig.getPayboxRang();
-	}
+  public String getPayboxRetourUrlEffectue(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxDevise(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxRetourUrlEffectue() == null
+        || payboxConfig.getPayboxRetourUrlEffectue().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_6),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxDevise() == null || payboxConfig.getPayboxDevise().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_4), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxRetourUrlEffectue();
+  }
 
-		return payboxConfig.getPayboxDevise();
-	}
+  public String getPayboxRetourUrlRefuse(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxRetour(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxRetourUrlRefuse() == null
+        || payboxConfig.getPayboxRetourUrlRefuse().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_7),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxRetour() == null || payboxConfig.getPayboxRetour().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_5), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxRetourUrlRefuse();
+  }
 
-		return payboxConfig.getPayboxRetour();
-	}
+  public String getPayboxRetourUrlAnnule(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxRetourUrlEffectue(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxRetourUrlAnnule() == null
+        || payboxConfig.getPayboxRetourUrlAnnule().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_8),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxRetourUrlEffectue() == null || payboxConfig.getPayboxRetourUrlEffectue().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_6), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxRetourUrlAnnule();
+  }
 
-		return payboxConfig.getPayboxRetourUrlEffectue();
-	}
+  public String getPayboxIdentifiant(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxRetourUrlRefuse(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxIdentifiant() == null
+        || payboxConfig.getPayboxIdentifiant().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_9),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxRetourUrlRefuse() == null || payboxConfig.getPayboxRetourUrlRefuse().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_7), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxIdentifiant();
+  }
 
-		return payboxConfig.getPayboxRetourUrlRefuse();
-	}
+  public String getPayboxHashSelect(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxRetourUrlAnnule(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxHashSelect() == null
+        || payboxConfig.getPayboxHashSelect().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_10),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxRetourUrlAnnule() == null || payboxConfig.getPayboxRetourUrlAnnule().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_8), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxHashSelect();
+  }
 
-		return payboxConfig.getPayboxRetourUrlAnnule();
-	}
+  public String getPayboxHmac(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxIdentifiant(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxHmac() == null || payboxConfig.getPayboxHmac().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_11),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxIdentifiant() == null || payboxConfig.getPayboxIdentifiant().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_9), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxHmac();
+  }
 
-		return payboxConfig.getPayboxIdentifiant();
-	}
+  public String getPayboxUrl(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxHashSelect(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxUrl() == null || payboxConfig.getPayboxUrl().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_12),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxHashSelect() == null || payboxConfig.getPayboxHashSelect().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_10), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxUrl();
+  }
 
-		return payboxConfig.getPayboxHashSelect();
-	}
+  public String getPayboxPublicKeyPath(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxHmac(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxPublicKeyPath() == null
+        || payboxConfig.getPayboxPublicKeyPath().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_13),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxHmac() == null || payboxConfig.getPayboxHmac().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_11), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
+    return payboxConfig.getPayboxPublicKeyPath();
+  }
 
-		return payboxConfig.getPayboxHmac();
-	}
+  public String getPayboxDefaultEmail(PayboxConfig payboxConfig) throws AxelorException {
 
-	public String getPayboxUrl(PayboxConfig payboxConfig) throws AxelorException  {
+    if (payboxConfig.getPayboxDefaultEmail() == null
+        || payboxConfig.getPayboxDefaultEmail().isEmpty()) {
+      throw new AxelorException(
+          payboxConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYBOX_CONFIG_14),
+          AppAccountServiceImpl.EXCEPTION,
+          payboxConfig.getName());
+    }
 
-		if (payboxConfig.getPayboxUrl() == null || payboxConfig.getPayboxUrl().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_12), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
-
-		return payboxConfig.getPayboxUrl();
-	}
-
-	public String getPayboxPublicKeyPath(PayboxConfig payboxConfig) throws AxelorException  {
-
-		if (payboxConfig.getPayboxPublicKeyPath() == null || payboxConfig.getPayboxPublicKeyPath().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_13), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
-
-		return payboxConfig.getPayboxPublicKeyPath();
-	}
-
-	public String getPayboxDefaultEmail(PayboxConfig payboxConfig) throws AxelorException  {
-
-		if (payboxConfig.getPayboxDefaultEmail() == null || payboxConfig.getPayboxDefaultEmail().isEmpty()) {
-			throw new AxelorException(payboxConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_CONFIG_14), AppAccountServiceImpl.EXCEPTION, payboxConfig.getName());
-		}
-
-		return payboxConfig.getPayboxDefaultEmail();
-	}
-
-
+    return payboxConfig.getPayboxDefaultEmail();
+  }
 }

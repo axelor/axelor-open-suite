@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -32,37 +29,47 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.util.Map;
 
 @Singleton
 public class ElementsToInvoiceController {
 
-	public void getProductInformation(ActionRequest request, ActionResponse response){
-		ElementsToInvoice elementToInvoice = request.getContext().asType(ElementsToInvoice.class);
-		Project project = elementToInvoice.getProject();
-		if(project == null){
-			project = request.getContext().getParent().asType(Project.class);
-		}
-		Product product = elementToInvoice.getProduct();
-		if(project != null && product != null){
-			elementToInvoice.setCostPrice(product.getCostPrice());
-			elementToInvoice.setUnit(product.getUnit());
-			BigDecimal price = product.getSalePrice();
-			if(project.getClientPartner()!= null){
-				PriceList priceList = Beans.get(PartnerPriceListService.class).getDefaultPriceList(project.getClientPartner(), PriceListRepository.TYPE_SALE);
-				if(priceList != null)  {
-					
-					PriceListService priceListService = Beans.get(PriceListService.class);
-					
-					PriceListLine priceListLine = priceListService.getPriceListLine(product, elementToInvoice.getQty(), priceList);
+  public void getProductInformation(ActionRequest request, ActionResponse response) {
+    ElementsToInvoice elementToInvoice = request.getContext().asType(ElementsToInvoice.class);
+    Project project = elementToInvoice.getProject();
+    if (project == null) {
+      project = request.getContext().getParent().asType(Project.class);
+    }
+    Product product = elementToInvoice.getProduct();
+    if (project != null && product != null) {
+      elementToInvoice.setCostPrice(product.getCostPrice());
+      elementToInvoice.setUnit(product.getUnit());
+      BigDecimal price = product.getSalePrice();
+      if (project.getClientPartner() != null) {
+        PriceList priceList =
+            Beans.get(PartnerPriceListService.class)
+                .getDefaultPriceList(project.getClientPartner(), PriceListRepository.TYPE_SALE);
+        if (priceList != null) {
 
-					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-					if(discounts != null){
-						price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount"));
-					}
-				}
-			}
-			elementToInvoice.setSalePrice(price);
-		}
-		response.setValues(elementToInvoice);
-	}
+          PriceListService priceListService = Beans.get(PriceListService.class);
+
+          PriceListLine priceListLine =
+              priceListService.getPriceListLine(product, elementToInvoice.getQty(), priceList);
+
+          Map<String, Object> discounts =
+              priceListService.getDiscounts(priceList, priceListLine, price);
+          if (discounts != null) {
+            price =
+                priceListService.computeDiscount(
+                    price,
+                    (int) discounts.get("discountTypeSelect"),
+                    (BigDecimal) discounts.get("discountAmount"));
+          }
+        }
+      }
+      elementToInvoice.setSalePrice(price);
+    }
+    response.setValues(elementToInvoice);
+  }
 }

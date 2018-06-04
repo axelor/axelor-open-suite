@@ -18,15 +18,15 @@
 package com.axelor.apps.base.test;
 
 import java.time.LocalDate;
-
 import org.junit.Test;
+
 public class TestImportDateTime {
-	@Test
-	public void testDateTimeImport(){
-		LocalDate dt = LocalDate.now();
-		LocalDate dt2 = dt.plusDays(2);
-		
-		System.out.println(dt);
-		System.out.println(dt2);
-	}
+  @Test
+  public void testDateTimeImport() {
+    LocalDate dt = LocalDate.now();
+    LocalDate dt2 = dt.plusDays(2);
+
+    System.out.println(dt);
+    System.out.println(dt2);
+  }
 }

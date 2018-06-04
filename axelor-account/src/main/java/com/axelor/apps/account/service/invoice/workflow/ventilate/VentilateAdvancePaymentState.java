@@ -31,31 +31,38 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class VentilateAdvancePaymentState extends VentilateState {
 
-    @Inject
-    public VentilateAdvancePaymentState(SequenceService sequenceService,
-                                        MoveService moveService,
-                                        AccountConfigService accountConfigService,
-                                        AppAccountService appAccountService,
-                                        InvoiceRepository invoiceRepo,
-                                        WorkflowVentilationService workflowService,
-                                        UserService userService) {
-        super(sequenceService, moveService, accountConfigService,
-                appAccountService, invoiceRepo, workflowService, userService);
-    }
+  @Inject
+  public VentilateAdvancePaymentState(
+      SequenceService sequenceService,
+      MoveService moveService,
+      AccountConfigService accountConfigService,
+      AppAccountService appAccountService,
+      InvoiceRepository invoiceRepo,
+      WorkflowVentilationService workflowService,
+      UserService userService) {
+    super(
+        sequenceService,
+        moveService,
+        accountConfigService,
+        appAccountService,
+        invoiceRepo,
+        workflowService,
+        userService);
+  }
 
-    @Override
-    public void process() throws AxelorException {
+  @Override
+  public void process() throws AxelorException {
 
-        Preconditions.checkNotNull(invoice.getPartner());
+    Preconditions.checkNotNull(invoice.getPartner());
 
-        setDate();
-        setJournal();
-        setPartnerAccount();
-        setInvoiceId();
-        updatePaymentSchedule();
-        // we don't create the move
-        // and the invoice stays validated
+    setDate();
+    setJournal();
+    setPartnerAccount();
+    setInvoiceId();
+    updatePaymentSchedule();
+    // we don't create the move
+    // and the invoice stays validated
 
-        workflowService.afterVentilation(invoice);
-    }
+    workflowService.afterVentilation(invoice);
+  }
 }

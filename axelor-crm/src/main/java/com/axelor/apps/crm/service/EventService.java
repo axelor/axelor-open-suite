@@ -17,37 +17,56 @@
  */
 package com.axelor.apps.crm.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Map;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 public interface EventService {
 
-    void saveEvent(Event event);
+  void saveEvent(Event event);
 
-    Event createEvent(LocalDateTime fromDateTime, LocalDateTime toDateTime, User user, String description, int type, String subject);
+  Event createEvent(
+      LocalDateTime fromDateTime,
+      LocalDateTime toDateTime,
+      User user,
+      String description,
+      int type,
+      String subject);
 
-    String getInvoicingAddressFullName(Partner partner);
+  String getInvoicingAddressFullName(Partner partner);
 
-    void manageFollowers(Event event);
+  void manageFollowers(Event event);
 
-    void addRecurrentEventsByDays(Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate);
+  void addRecurrentEventsByDays(
+      Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate);
 
-    void addRecurrentEventsByWeeks(Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate, Map<Integer, Boolean> daysCheckedMap);
+  void addRecurrentEventsByWeeks(
+      Event event,
+      int periodicity,
+      int endType,
+      int repetitionsNumber,
+      LocalDate endDate,
+      Map<Integer, Boolean> daysCheckedMap);
 
-    void addRecurrentEventsByMonths(Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate, int monthRepeatType);
+  void addRecurrentEventsByMonths(
+      Event event,
+      int periodicity,
+      int endType,
+      int repetitionsNumber,
+      LocalDate endDate,
+      int monthRepeatType);
 
-    void addRecurrentEventsByYears(Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate);
+  void addRecurrentEventsByYears(
+      Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate);
 
-    void applyChangesToAll(Event event);
+  void applyChangesToAll(Event event);
 
-    String computeRecurrenceName(RecurrenceConfiguration recurrConf);
+  String computeRecurrenceName(RecurrenceConfiguration recurrConf);
 
-    void generateRecurrentEvents(Event event, RecurrenceConfiguration conf) throws AxelorException;
+  void generateRecurrentEvents(Event event, RecurrenceConfiguration conf) throws AxelorException;
 }

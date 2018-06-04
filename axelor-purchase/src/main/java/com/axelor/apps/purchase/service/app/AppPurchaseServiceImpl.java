@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.purchase.service.app;
 
-import java.util.List;
-
 import com.axelor.apps.base.db.AppPurchase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.AppPurchaseRepository;
@@ -29,37 +27,32 @@ import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 @Singleton
 public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPurchaseService {
-	
-	@Inject
-	private AppPurchaseRepository appPurchaseRepo;
-	
-	@Inject
-	private CompanyRepository companyRepo;
-	
-	@Inject
-	private PurchaseConfigRepository purchaseConfigRepo;
-	
-	@Override
-	public AppPurchase getAppPurchase() {
-		return appPurchaseRepo.all().fetchOne();
-	}
 
-	@Override
-	@Transactional
-	public void generatePurchaseConfigurations() {
-		
-		List<Company> companies = companyRepo.all().filter("self.purchaseConfig is null").fetch();
-		
-		for (Company company : companies) {
-			PurchaseConfig purchaseConfig = new PurchaseConfig();
-			purchaseConfig.setCompany(company);
-			purchaseConfigRepo.save(purchaseConfig);
-		}
-	
-	}
-	
-	
+  @Inject private AppPurchaseRepository appPurchaseRepo;
+
+  @Inject private CompanyRepository companyRepo;
+
+  @Inject private PurchaseConfigRepository purchaseConfigRepo;
+
+  @Override
+  public AppPurchase getAppPurchase() {
+    return appPurchaseRepo.all().fetchOne();
+  }
+
+  @Override
+  @Transactional
+  public void generatePurchaseConfigurations() {
+
+    List<Company> companies = companyRepo.all().filter("self.purchaseConfig is null").fetch();
+
+    for (Company company : companies) {
+      PurchaseConfig purchaseConfig = new PurchaseConfig();
+      purchaseConfig.setCompany(company);
+      purchaseConfigRepo.save(purchaseConfig);
+    }
+  }
 }

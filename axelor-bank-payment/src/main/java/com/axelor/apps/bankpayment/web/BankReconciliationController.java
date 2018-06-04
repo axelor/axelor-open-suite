@@ -29,34 +29,29 @@ import com.google.inject.Singleton;
 @Singleton
 public class BankReconciliationController {
 
-	@Inject
-	BankReconciliationService bankReconciliationService;
+  @Inject BankReconciliationService bankReconciliationService;
 
-	@Inject
-	BankReconciliationRepository bankReconciliationRepo;
+  @Inject BankReconciliationRepository bankReconciliationRepo;
 
-     public void compute(ActionRequest request, ActionResponse response) {
+  public void compute(ActionRequest request, ActionResponse response) {
 
-       try {
-            BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-            bankReconciliationService.compute(bankReconciliationRepo.find(bankReconciliation.getId()));
-            response.setReload(true);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
-
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliationService.compute(bankReconciliationRepo.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 
-    public void validate(ActionRequest request, ActionResponse response) {
+  public void validate(ActionRequest request, ActionResponse response) {
 
-        try {
-            BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-            bankReconciliationService.validate(bankReconciliationRepo.find(bankReconciliation.getId()));
-            response.setReload(true);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
-
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliationService.validate(bankReconciliationRepo.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
+  }
 }

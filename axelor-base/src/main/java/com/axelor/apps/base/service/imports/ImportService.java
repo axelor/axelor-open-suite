@@ -17,34 +17,29 @@
  */
 package com.axelor.apps.base.service.imports;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.io.IOException;
+import java.util.Map;
 
 public class ImportService {
 
-	@Inject
-	private FactoryImporter factoryImporter;
-	
-	@Inject
-	private ImportConfigurationRepository importConfigRepo;
-	
-	public ImportHistory run( ImportConfiguration configuration ) throws AxelorException, IOException {
-		
-		 return factoryImporter.createImporter( importConfigRepo.find( configuration.getId() ) ).run();
-		
-	}
-	
-	public ImportHistory run( ImportConfiguration configuration, Map<String, Object> config ) throws AxelorException, IOException {
-		
-		 return factoryImporter.createImporter( importConfigRepo.find( configuration.getId() ) ).run(config);
-		
-	}
+  @Inject private FactoryImporter factoryImporter;
 
+  @Inject private ImportConfigurationRepository importConfigRepo;
+
+  public ImportHistory run(ImportConfiguration configuration) throws AxelorException, IOException {
+
+    return factoryImporter.createImporter(importConfigRepo.find(configuration.getId())).run();
+  }
+
+  public ImportHistory run(ImportConfiguration configuration, Map<String, Object> config)
+      throws AxelorException, IOException {
+
+    return factoryImporter.createImporter(importConfigRepo.find(configuration.getId())).run(config);
+  }
 }

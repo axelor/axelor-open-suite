@@ -25,14 +25,13 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AppHumanResourceController {
-	
-	@Inject
-	private AppHumanResourceService appHumanResourceService;
-	
-	public void generateHrConfigurations(ActionRequest request, ActionResponse response) {
-		
-		appHumanResourceService.generateHrConfigurations();
-		
-		response.setReload(true);
-	}
+
+  @Inject private AppHumanResourceService appHumanResourceService;
+
+  public void generateHrConfigurations(ActionRequest request, ActionResponse response) {
+
+    appHumanResourceService.generateHrConfigurations();
+
+    response.setReload(true);
+  }
 }

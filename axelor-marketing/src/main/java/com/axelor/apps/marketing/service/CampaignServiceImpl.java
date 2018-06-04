@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.marketing.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Set;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
@@ -37,154 +31,169 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Set;
+import javax.mail.MessagingException;
 
 public class CampaignServiceImpl implements CampaignService {
-	
-	protected TemplateMessageServiceMarketingImpl templateMessageServiceMarketingImpl;
-	
-	protected EventRepository eventRepo;
-	
-	@Inject
-	public CampaignServiceImpl(TemplateMessageServiceMarketingImpl templateMessageServiceMarketingImpl, EventRepository eventRepo)  {
-		this.templateMessageServiceMarketingImpl = templateMessageServiceMarketingImpl;
-		this.eventRepo = eventRepo;
-		
-	}
-	
-	public MetaFile sendEmail(Campaign campaign) {
-		
-		String errorPartners = "";
-		String errorLeads = "";
-			
-		templateMessageServiceMarketingImpl.setEmailAccount(campaign.getEmailAccount());
-		
-		if(campaign.getPartnerTemplate() != null){
-			errorPartners = sendToPartners(campaign.getPartnerSet(), campaign.getPartnerTemplate());
-		} 
-		
-		if(campaign.getLeadTemplate() != null) {
-			errorLeads = sendToLeads(campaign.getLeadSet(), campaign.getLeadTemplate());
-		}
-	
-		if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
-			return null;
-		}
-		
-		return generateLog(errorPartners, errorLeads, campaign.getEmailLog(), campaign.getId());
-	}
 
-	protected String sendToPartners(Set<Partner> partnerSet, Template template) {
-		
-		StringBuilder errors = new StringBuilder();
-		
-		for (Partner partner : partnerSet) {
-			
-			try {
-				templateMessageServiceMarketingImpl.generateAndSendMessage(partner, template);
-			} catch (ClassNotFoundException | InstantiationException
-					| IllegalAccessException | MessagingException | IOException
-					| AxelorException e) {
-				errors.append(partner.getName() + "\n");
-				e.printStackTrace();
-			}
-			
-		}
-		
-		return errors.toString();
-	}
-	
-	protected String sendToLeads(Set<Lead> leadSet, Template template) {
-		
-		StringBuilder errors = new StringBuilder();
-		
-		for (Lead lead : leadSet) {
-			
-			try {
-				templateMessageServiceMarketingImpl.generateAndSendMessage(lead, template);
-			} catch (ClassNotFoundException | InstantiationException
-					| IllegalAccessException | MessagingException | IOException
-					| AxelorException e) {
-				errors.append(lead.getName() + "\n");
-				e.printStackTrace();
-			}
-			
-		}
-		
-		return errors.toString();
-		
-	}
-	
-	protected MetaFile generateLog(String errorPartners, String errorLeads, MetaFile metaFile, Long campaignId) {
-		
-		if (metaFile == null) {
-			metaFile = new MetaFile();
-			metaFile.setFileName("EmailLog" + campaignId + ".text");
-		}
-		
-		StringBuilder builder = new StringBuilder();
-		builder.append(I18n.get(IExceptionMessage.EMAIL_ERROR1));
-		builder.append("\n");
-		if (!errorPartners.isEmpty()) {
-			builder.append(I18n.get("Partners") + ":\n");
-			builder.append(errorPartners);
-		}
-		if (!errorLeads.isEmpty()) {
-			builder.append(I18n.get("Leads") + ":\n");
-			builder.append(errorLeads);
-		}
-		
-		ByteArrayInputStream stream = new ByteArrayInputStream(builder.toString().getBytes());
-		
-		try {
-			return Beans.get(MetaFiles.class).upload(stream, metaFile.getFileName());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generateEvents(Campaign campaign) {
-		
-		for(Partner partner : campaign.getPartnerSet()) {
-			Event event = new Event();
-			event.setPartner(partner);
-			event.setUser(campaign.getGenerateEventPerPartnerOrLead() ? partner.getUser() : campaign.getEventUser());
-			event.setSubject(campaign.getSubject());
-			event.setTypeSelect(campaign.getEventTypeSelect());
-			event.setStartDateTime(campaign.getEventStartDateTime());
-			event.setDuration(campaign.getDuration());
-			event.setTeam(campaign.getGenerateEventPerPartnerOrLead() ? partner.getTeam() : campaign.getTeam());
-			event.setCampaign(campaign);
-			event.setStatusSelect(1);
-			eventRepo.save(event);
-		}
-		
-		for(Lead lead : campaign.getLeadSet()) {
-			Event event = new Event();
-			event.setLead(lead);
-			event.setUser(campaign.getGenerateEventPerPartnerOrLead() ? lead.getUser() : campaign.getEventUser());
-			event.setSubject(campaign.getSubject());
-			event.setTypeSelect(campaign.getEventTypeSelect());
-			event.setStartDateTime(campaign.getEventStartDateTime());
-			event.setDuration(campaign.getDuration());
-			event.setTeam(campaign.getGenerateEventPerPartnerOrLead() ? lead.getTeam() : campaign.getTeam());
-			event.setCampaign(campaign);
-			event.setStatusSelect(1);
-			eventRepo.save(event);
-		}
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generateTargets(Campaign campaign) {
-		
-		TargetListService targetListService = Beans.get(TargetListService.class);
-		
-		Set<Partner> partnerSet= targetListService.getAllPartners(campaign.getTargetModelSet());
-		Set<Lead> leadSet = targetListService.getAllLeads(campaign.getTargetModelSet());
+  protected TemplateMessageServiceMarketingImpl templateMessageServiceMarketingImpl;
 
-		campaign.setPartnerSet(partnerSet);
-		campaign.setLeadSet(leadSet);
-	}
-}	
+  protected EventRepository eventRepo;
+
+  @Inject
+  public CampaignServiceImpl(
+      TemplateMessageServiceMarketingImpl templateMessageServiceMarketingImpl,
+      EventRepository eventRepo) {
+    this.templateMessageServiceMarketingImpl = templateMessageServiceMarketingImpl;
+    this.eventRepo = eventRepo;
+  }
+
+  public MetaFile sendEmail(Campaign campaign) {
+
+    String errorPartners = "";
+    String errorLeads = "";
+
+    templateMessageServiceMarketingImpl.setEmailAccount(campaign.getEmailAccount());
+
+    if (campaign.getPartnerTemplate() != null) {
+      errorPartners = sendToPartners(campaign.getPartnerSet(), campaign.getPartnerTemplate());
+    }
+
+    if (campaign.getLeadTemplate() != null) {
+      errorLeads = sendToLeads(campaign.getLeadSet(), campaign.getLeadTemplate());
+    }
+
+    if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
+      return null;
+    }
+
+    return generateLog(errorPartners, errorLeads, campaign.getEmailLog(), campaign.getId());
+  }
+
+  protected String sendToPartners(Set<Partner> partnerSet, Template template) {
+
+    StringBuilder errors = new StringBuilder();
+
+    for (Partner partner : partnerSet) {
+
+      try {
+        templateMessageServiceMarketingImpl.generateAndSendMessage(partner, template);
+      } catch (ClassNotFoundException
+          | InstantiationException
+          | IllegalAccessException
+          | MessagingException
+          | IOException
+          | AxelorException e) {
+        errors.append(partner.getName() + "\n");
+        e.printStackTrace();
+      }
+    }
+
+    return errors.toString();
+  }
+
+  protected String sendToLeads(Set<Lead> leadSet, Template template) {
+
+    StringBuilder errors = new StringBuilder();
+
+    for (Lead lead : leadSet) {
+
+      try {
+        templateMessageServiceMarketingImpl.generateAndSendMessage(lead, template);
+      } catch (ClassNotFoundException
+          | InstantiationException
+          | IllegalAccessException
+          | MessagingException
+          | IOException
+          | AxelorException e) {
+        errors.append(lead.getName() + "\n");
+        e.printStackTrace();
+      }
+    }
+
+    return errors.toString();
+  }
+
+  protected MetaFile generateLog(
+      String errorPartners, String errorLeads, MetaFile metaFile, Long campaignId) {
+
+    if (metaFile == null) {
+      metaFile = new MetaFile();
+      metaFile.setFileName("EmailLog" + campaignId + ".text");
+    }
+
+    StringBuilder builder = new StringBuilder();
+    builder.append(I18n.get(IExceptionMessage.EMAIL_ERROR1));
+    builder.append("\n");
+    if (!errorPartners.isEmpty()) {
+      builder.append(I18n.get("Partners") + ":\n");
+      builder.append(errorPartners);
+    }
+    if (!errorLeads.isEmpty()) {
+      builder.append(I18n.get("Leads") + ":\n");
+      builder.append(errorLeads);
+    }
+
+    ByteArrayInputStream stream = new ByteArrayInputStream(builder.toString().getBytes());
+
+    try {
+      return Beans.get(MetaFiles.class).upload(stream, metaFile.getFileName());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generateEvents(Campaign campaign) {
+
+    for (Partner partner : campaign.getPartnerSet()) {
+      Event event = new Event();
+      event.setPartner(partner);
+      event.setUser(
+          campaign.getGenerateEventPerPartnerOrLead()
+              ? partner.getUser()
+              : campaign.getEventUser());
+      event.setSubject(campaign.getSubject());
+      event.setTypeSelect(campaign.getEventTypeSelect());
+      event.setStartDateTime(campaign.getEventStartDateTime());
+      event.setDuration(campaign.getDuration());
+      event.setTeam(
+          campaign.getGenerateEventPerPartnerOrLead() ? partner.getTeam() : campaign.getTeam());
+      event.setCampaign(campaign);
+      event.setStatusSelect(1);
+      eventRepo.save(event);
+    }
+
+    for (Lead lead : campaign.getLeadSet()) {
+      Event event = new Event();
+      event.setLead(lead);
+      event.setUser(
+          campaign.getGenerateEventPerPartnerOrLead() ? lead.getUser() : campaign.getEventUser());
+      event.setSubject(campaign.getSubject());
+      event.setTypeSelect(campaign.getEventTypeSelect());
+      event.setStartDateTime(campaign.getEventStartDateTime());
+      event.setDuration(campaign.getDuration());
+      event.setTeam(
+          campaign.getGenerateEventPerPartnerOrLead() ? lead.getTeam() : campaign.getTeam());
+      event.setCampaign(campaign);
+      event.setStatusSelect(1);
+      eventRepo.save(event);
+    }
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generateTargets(Campaign campaign) {
+
+    TargetListService targetListService = Beans.get(TargetListService.class);
+
+    Set<Partner> partnerSet = targetListService.getAllPartners(campaign.getTargetModelSet());
+    Set<Lead> leadSet = targetListService.getAllLeads(campaign.getTargetModelSet());
+
+    campaign.setPartnerSet(partnerSet);
+    campaign.setLeadSet(leadSet);
+  }
+}

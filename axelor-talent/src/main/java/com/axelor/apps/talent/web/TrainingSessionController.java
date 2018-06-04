@@ -17,32 +17,28 @@
  */
 package com.axelor.apps.talent.web;
 
-import com.google.inject.Inject;
-
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
 import com.axelor.apps.talent.service.TrainingSessionService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TrainingSessionController {
-	
-	@Inject
-	private TrainingSessionService trainingSessionService;
-	
-	@Inject
-	private TrainingSessionRepository trainingSessionRepo;
-	
-	public void closeSession(ActionRequest request, ActionResponse response) {
-		
-		TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
-		trainingSession = trainingSessionRepo.find(trainingSession.getId());
-		
-		trainingSessionService.closeSession(trainingSession);
-		
-		response.setReload(true);
-		
-	}
+
+  @Inject private TrainingSessionService trainingSessionService;
+
+  @Inject private TrainingSessionRepository trainingSessionRepo;
+
+  public void closeSession(ActionRequest request, ActionResponse response) {
+
+    TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
+    trainingSession = trainingSessionRepo.find(trainingSession.getId());
+
+    trainingSessionService.closeSession(trainingSession);
+
+    response.setReload(true);
+  }
 }

@@ -25,52 +25,57 @@ import com.axelor.script.ScriptBindings;
 
 public interface ConfiguratorCreatorService {
 
-    /**
-     * Add default view attrs for configurator attributes
-     * @param creator
-     * @return
-     */
-    void updateAttributes(ConfiguratorCreator creator);
+  /**
+   * Add default view attrs for configurator attributes
+   *
+   * @param creator
+   * @return
+   */
+  void updateAttributes(ConfiguratorCreator creator);
 
-    /**
-     * Add the {@link ConfiguratorFormula#productMetaField} that need to be shown
-     * in configurator in the {@link ConfiguratorCreator#indicators} many-to-one.
-     * @param creator
-     */
-    void updateIndicators(ConfiguratorCreator creator);
+  /**
+   * Add the {@link ConfiguratorFormula#productMetaField} that need to be shown in configurator in
+   * the {@link ConfiguratorCreator#indicators} many-to-one.
+   *
+   * @param creator
+   */
+  void updateIndicators(ConfiguratorCreator creator);
 
-    /**
-     * Get the testing values in {@link ConfiguratorCreator#attributes}
-     * @param creator
-     * @return
-     * @throws AxelorException
-     */
-    ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException;
+  /**
+   * Get the testing values in {@link ConfiguratorCreator#attributes}
+   *
+   * @param creator
+   * @return
+   * @throws AxelorException
+   */
+  ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException;
 
-    /**
-     * Compute the correct domain to filter creator that are not authorized
-     * for the current user.
-     * @return the domain
-     */
-    String getConfiguratorCreatorDomain();
+  /**
+   * Compute the correct domain to filter creator that are not authorized for the current user.
+   *
+   * @return the domain
+   */
+  String getConfiguratorCreatorDomain();
 
-	/**
-	 * Add the current user to the authorized user list
-	 * @param creator
-	 */
-	void authorizeUser(ConfiguratorCreator creator, User user);
+  /**
+   * Add the current user to the authorized user list
+   *
+   * @param creator
+   */
+  void authorizeUser(ConfiguratorCreator creator, User user);
 
-	/**
-	 * Add required fields of Product to the formula list
-	 * @param creator
-	 * @throws AxelorException 
-	 */
-	void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException;
-	
-	 /**
-     * Activates the creator and saves it.
-     * @param creator
-     */
-	void activate(ConfiguratorCreator creator);
+  /**
+   * Add required fields of Product to the formula list
+   *
+   * @param creator
+   * @throws AxelorException
+   */
+  void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException;
 
+  /**
+   * Activates the creator and saves it.
+   *
+   * @param creator
+   */
+  void activate(ConfiguratorCreator creator);
 }

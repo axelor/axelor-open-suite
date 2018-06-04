@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
-
 import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountChartRepository;
@@ -41,99 +30,105 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.io.FileUtils;
 
-public class AccountChartService{
-	
-	@Inject
-	private FactoryImporter factoryImporter;
-	
-	@Inject
-	private MetaFiles metaFiles;
-	
-	protected AccountConfigRepository accountConfigRepo;
-	protected CompanyRepository companyRepo;
-	protected AccountChartRepository accountChartRepository;
-	
-	@Inject
-	public AccountChartService(AccountConfigRepository accountConfigRepo, CompanyRepository companyRepo,
-			AccountChartRepository accountChartRepository)  {
-		
-		this.accountConfigRepo = accountConfigRepo;
-		this.companyRepo = companyRepo;
-		this.accountChartRepository = accountChartRepository;
-		
-	}
-	
-	public Boolean installAccountChart(AccountChart act, Company company,
-			AccountConfig accountConfig) throws AxelorException {
-		try {
-			
-			if (act.getMetaFile() == null) {
-				return false;
-			}
-			
-			InputStream inputStream = this.getClass().getResourceAsStream("/l10n/chart-config.xml");
-			if(inputStream  == null) {
-				return false;
-			}
-			
-			File configFile = createConfigFile(inputStream);
-			
-			Map<String,Object> importContext = new HashMap<String,Object>();
-			importContext.put("_companyId", company.getId());
-			
-			importAccountChartData(act, configFile, importContext);
-			
-			updateChartCompany(act, company, accountConfig);
-			
-			FileUtils.forceDelete(configFile);
-			
-			return true;
-		} catch (IOException e) {
-			TraceBackService.trace(e);
-			return false;
-		}
-		
-	}
-	
+public class AccountChartService {
 
-	private File createConfigFile(InputStream inputStream) throws IOException, FileNotFoundException {
-	
-		File configFile = File.createTempFile("input-config", ".xml");
-		
-		FileOutputStream outputStream = new FileOutputStream(configFile);
-		int read = 0;
-		byte[] bytes = new byte[1024];
-		while ((read = inputStream.read(bytes)) != -1) {
-			outputStream.write(bytes, 0, read);
-		}
-		outputStream.close();
-		
-		return configFile;
-	}
-	
-	@Transactional
-	public void updateChartCompany(AccountChart act, Company company, AccountConfig accountConfig) {
-		
-		accountConfig = accountConfigRepo.find(accountConfig.getId());
-		accountConfig.setHasChartImported(true);
-		accountConfigRepo.save(accountConfig);
-		act = accountChartRepository.find(act.getId());
-		company = companyRepo.find(company.getId());
-		Set<Company> companySet = act.getCompanySet();
-		companySet.add(company);
-		act.setCompanySet(companySet);
-		accountChartRepository.save(act);
-	}
-	
-	public void importAccountChartData(AccountChart act, File configFile, Map<String, Object> importContext)
-			throws IOException, AxelorException {
-		
-		ImportConfiguration importConfiguration = new ImportConfiguration();
-		importConfiguration.setDataMetaFile(act.getMetaFile());
-		importConfiguration.setBindMetaFile(metaFiles.upload(configFile));
-		
-		factoryImporter.createImporter(importConfiguration).run(importContext);
-	}
-	
+  @Inject private FactoryImporter factoryImporter;
+
+  @Inject private MetaFiles metaFiles;
+
+  protected AccountConfigRepository accountConfigRepo;
+  protected CompanyRepository companyRepo;
+  protected AccountChartRepository accountChartRepository;
+
+  @Inject
+  public AccountChartService(
+      AccountConfigRepository accountConfigRepo,
+      CompanyRepository companyRepo,
+      AccountChartRepository accountChartRepository) {
+
+    this.accountConfigRepo = accountConfigRepo;
+    this.companyRepo = companyRepo;
+    this.accountChartRepository = accountChartRepository;
+  }
+
+  public Boolean installAccountChart(AccountChart act, Company company, AccountConfig accountConfig)
+      throws AxelorException {
+    try {
+
+      if (act.getMetaFile() == null) {
+        return false;
+      }
+
+      InputStream inputStream = this.getClass().getResourceAsStream("/l10n/chart-config.xml");
+      if (inputStream == null) {
+        return false;
+      }
+
+      File configFile = createConfigFile(inputStream);
+
+      Map<String, Object> importContext = new HashMap<String, Object>();
+      importContext.put("_companyId", company.getId());
+
+      importAccountChartData(act, configFile, importContext);
+
+      updateChartCompany(act, company, accountConfig);
+
+      FileUtils.forceDelete(configFile);
+
+      return true;
+    } catch (IOException e) {
+      TraceBackService.trace(e);
+      return false;
+    }
+  }
+
+  private File createConfigFile(InputStream inputStream) throws IOException, FileNotFoundException {
+
+    File configFile = File.createTempFile("input-config", ".xml");
+
+    FileOutputStream outputStream = new FileOutputStream(configFile);
+    int read = 0;
+    byte[] bytes = new byte[1024];
+    while ((read = inputStream.read(bytes)) != -1) {
+      outputStream.write(bytes, 0, read);
+    }
+    outputStream.close();
+
+    return configFile;
+  }
+
+  @Transactional
+  public void updateChartCompany(AccountChart act, Company company, AccountConfig accountConfig) {
+
+    accountConfig = accountConfigRepo.find(accountConfig.getId());
+    accountConfig.setHasChartImported(true);
+    accountConfigRepo.save(accountConfig);
+    act = accountChartRepository.find(act.getId());
+    company = companyRepo.find(company.getId());
+    Set<Company> companySet = act.getCompanySet();
+    companySet.add(company);
+    act.setCompanySet(companySet);
+    accountChartRepository.save(act);
+  }
+
+  public void importAccountChartData(
+      AccountChart act, File configFile, Map<String, Object> importContext)
+      throws IOException, AxelorException {
+
+    ImportConfiguration importConfiguration = new ImportConfiguration();
+    importConfiguration.setDataMetaFile(act.getMetaFile());
+    importConfiguration.setBindMetaFile(metaFiles.upload(configFile));
+
+    factoryImporter.createImporter(importConfiguration).run(importContext);
+  }
 }

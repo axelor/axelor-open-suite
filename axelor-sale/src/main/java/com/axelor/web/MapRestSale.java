@@ -17,17 +17,6 @@
  */
 package com.axelor.web;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -37,62 +26,69 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Path("/map")
 public class MapRestSale {
 
-	@Inject MapService mapService;
-	
-	@Inject
-	private SaleOrderRepository saleOrderRepo;
-	
-	@Path("/geomap/turnover")
-	@GET	
-	@Produces(MediaType.APPLICATION_JSON)
-	public JsonNode getGeoMapData() {
-		
-		Map<String, BigDecimal> data = new HashMap<String, BigDecimal>();		
-		List<? extends SaleOrder> orders = saleOrderRepo.all().filter("self.statusSelect=?", 3).fetch();
-		JsonNodeFactory factory = JsonNodeFactory.instance;
-		ObjectNode mainNode = factory.objectNode();
-		ArrayNode arrayNode = factory.arrayNode();
-		
-		ArrayNode labelNode = factory.arrayNode();
-		labelNode.add("Country");
-		labelNode.add("Turnover");
-		arrayNode.add(labelNode);
-		
-		for (SaleOrder so : orders) {
-			
-			Country country = so.getMainInvoicingAddress().getAddressL7Country();
-			BigDecimal value = so.getExTaxTotal();		
-			
-			if (country != null) {
-				String key = country.getName();				
-				
-				if (data.containsKey(key)) {
-					BigDecimal oldValue = data.get(key);
-					oldValue = oldValue.add(value);
-					data.put(key, oldValue);
-				}
-				else {
-					data.put(key, value);
-				}				
-			}			
-		}
-		
-		Iterator<String> keys = data.keySet().iterator();
-		while(keys.hasNext()) {
-			String key = keys.next();
-			ArrayNode dataNode  = factory.arrayNode();
-			dataNode.add(key);
-			dataNode.add(data.get(key));
-			arrayNode.add(dataNode);
-		}				
-		
-		mainNode.put("status", 0);
-		mainNode.set("data", arrayNode);
-		
-		return mainNode;
-	}	
+  @Inject MapService mapService;
+
+  @Inject private SaleOrderRepository saleOrderRepo;
+
+  @Path("/geomap/turnover")
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public JsonNode getGeoMapData() {
+
+    Map<String, BigDecimal> data = new HashMap<String, BigDecimal>();
+    List<? extends SaleOrder> orders = saleOrderRepo.all().filter("self.statusSelect=?", 3).fetch();
+    JsonNodeFactory factory = JsonNodeFactory.instance;
+    ObjectNode mainNode = factory.objectNode();
+    ArrayNode arrayNode = factory.arrayNode();
+
+    ArrayNode labelNode = factory.arrayNode();
+    labelNode.add("Country");
+    labelNode.add("Turnover");
+    arrayNode.add(labelNode);
+
+    for (SaleOrder so : orders) {
+
+      Country country = so.getMainInvoicingAddress().getAddressL7Country();
+      BigDecimal value = so.getExTaxTotal();
+
+      if (country != null) {
+        String key = country.getName();
+
+        if (data.containsKey(key)) {
+          BigDecimal oldValue = data.get(key);
+          oldValue = oldValue.add(value);
+          data.put(key, oldValue);
+        } else {
+          data.put(key, value);
+        }
+      }
+    }
+
+    Iterator<String> keys = data.keySet().iterator();
+    while (keys.hasNext()) {
+      String key = keys.next();
+      ArrayNode dataNode = factory.arrayNode();
+      dataNode.add(key);
+      dataNode.add(data.get(key));
+      arrayNode.add(dataNode);
+    }
+
+    mainNode.put("status", 0);
+    mainNode.set("data", arrayNode);
+
+    return mainNode;
+  }
 }
