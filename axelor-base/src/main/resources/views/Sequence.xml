@@ -32,10 +32,12 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 			<label title="%WY : Week number" />
 		</panel>
 		<panel name="sequenceDefinition" title="Sequence Definition" colSpan="12">
+			<field name="sequenceTypeSelect"/>
+			<field name="sequenceLettersTypeSelect" showIf="sequenceTypeSelect == 'LETTERS'" requiredIf="sequenceTypeSelect == 'LETTERS'"/>
+			<field name="padding" onChange="action-sequence-method-compute-fullname" showIf="sequenceTypeSelect == 'NUMBERS'"/>
+			<field name="toBeAdded" showIf="sequenceTypeSelect == 'NUMBERS'"/>
 			<field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" onChange="action-sequence-method-compute-fullname"/>
 			<field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" onChange="action-sequence-method-compute-fullname"/>
-			<field name="padding" onChange="action-sequence-method-compute-fullname"/>
-			<field name="toBeAdded"/>
 			<field name="yearlyResetOk" readonlyIf="monthlyResetOk" />
 			<field name="monthlyResetOk" onChange="action-sequence-monthly-reset" />
 		</panel>
