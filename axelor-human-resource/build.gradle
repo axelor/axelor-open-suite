@@ -6,6 +6,12 @@ apply {
 	version = absVersion
 }
 
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}
+
 axelor {
 	title "Axelor Human Resource"
 	description "Axelor Human Resource Module"
