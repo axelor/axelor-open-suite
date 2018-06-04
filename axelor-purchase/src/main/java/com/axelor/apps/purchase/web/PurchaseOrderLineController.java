@@ -39,6 +39,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class PurchaseOrderLineController {
@@ -84,21 +85,22 @@ public class PurchaseOrderLineController {
     }
 
     try {
-      TaxLine taxLine = purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine);
-      response.setValue("taxLine", taxLine);
+      Optional<TaxLine> taxLine =
+          purchaseOrderLineService.geOptionalTaxLine(purchaseOrder, purchaseOrderLine);
+      response.setValue("taxLine", taxLine.orElse(null));
 
       BigDecimal price =
-          purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
+          purchaseOrderLineService.getUnitPrice(
+              purchaseOrder, purchaseOrderLine, taxLine.orElse(null));
       String productName =
           purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[0];
       String productCode =
           purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[1];
 
       if (price == null || productName == null || productCode == null) {
-        price = BigDecimal.ZERO;
-        productName = "";
-        productCode = "";
         response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
+        resetProductInformation(response);
+        return;
       }
 
       response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
@@ -136,6 +138,26 @@ public class PurchaseOrderLineController {
       response.setValue("price", price);
       response.setValue("productName", productName);
       response.setValue("productCode", productCode);
+
+      if (!taxLine.isPresent()) {
+        String msg;
+
+        if (purchaseOrder.getCompany() != null) {
+          msg =
+              String.format(
+                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ACCOUNT_MANAGEMENT_3),
+                  product.getCode(),
+                  purchaseOrder.getCompany().getName());
+        } else {
+          msg =
+              String.format(
+                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ACCOUNT_MANAGEMENT_2),
+                  product.getCode());
+        }
+
+        response.setFlash(msg);
+      }
+
     } catch (Exception e) {
       this.resetProductInformation(response);
       response.setFlash(e.getMessage());
@@ -205,7 +227,7 @@ public class PurchaseOrderLineController {
         response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 
         if (discounts.get("price") != null) {
-          response.setValue("price", (BigDecimal) discounts.get("price"));
+          response.setValue("price", discounts.get("price"));
         }
       }
     } catch (Exception e) {

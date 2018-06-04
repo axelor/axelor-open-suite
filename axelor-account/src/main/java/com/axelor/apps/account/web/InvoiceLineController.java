@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -134,6 +135,23 @@ public class InvoiceLineController {
     if (invoice != null && product != null) {
       try {
         productInformation = invoiceLineService.fillProductInformation(invoice, invoiceLine);
+
+        if (productInformation.get("taxLine") == null) {
+          String msg;
+
+          if (invoice.getCompany() != null) {
+            msg =
+                String.format(
+                    I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3),
+                    product.getCode(),
+                    invoice.getCompany().getName());
+          } else {
+            msg =
+                String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode());
+          }
+
+          response.setFlash(msg);
+        }
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }
@@ -163,7 +181,7 @@ public class InvoiceLineController {
         response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 
         if (discounts.get("price") != null) {
-          response.setValue("price", (BigDecimal) discounts.get("price"));
+          response.setValue("price", discounts.get("price"));
         }
       }
     } catch (Exception e) {

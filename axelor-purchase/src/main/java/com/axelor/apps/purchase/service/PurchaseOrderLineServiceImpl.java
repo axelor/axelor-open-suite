@@ -48,6 +48,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Deprecated private int sequence = 0;
 
+  @Override
   public Map<String, BigDecimal> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
@@ -259,6 +261,16 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
+  public Optional<TaxLine> geOptionalTaxLine(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+    try {
+      return Optional.of(getTaxLine(purchaseOrder, purchaseOrderLine));
+    } catch (AxelorException e) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
   public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine) {
 
     return purchaseOrderLine.getExTaxTotal();
@@ -445,6 +457,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     return price;
   }
 
+  @Override
   public Map<String, Object> getDiscount(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal price) {
 
@@ -504,6 +517,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     return 0;
   }
 
+  @Override
   public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine) {
     Unit unit = purchaseOrderLine.getProduct().getPurchasesUnit();
     if (unit == null) {
@@ -512,6 +526,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     return unit;
   }
 
+  @Override
   public boolean unitPriceShouldBeUpdate(PurchaseOrder purchaseOrder, Product product) {
 
     if (product != null && product.getInAti() != purchaseOrder.getInAti()) {
@@ -526,6 +541,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
   }
 
+  @Override
   public void checkMinQty(
       PurchaseOrder purchaseOrder,
       PurchaseOrderLine purchaseOrderLine,
@@ -551,6 +567,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     }
   }
 
+  @Override
   public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response) {
 
     Product product = purchaseOrderLine.getProduct();
