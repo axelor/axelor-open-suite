@@ -11,6 +11,7 @@
 			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 			<button name="advancedExport" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
+    <field name="partnerSeq"/>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
@@ -26,6 +27,7 @@
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
+    <field name="partnerSeq"/>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -42,6 +44,7 @@
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
+    <field name="partnerSeq"/>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -56,6 +59,7 @@
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
+    <field name="partnerSeq"/>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -67,6 +71,7 @@
 	</grid>
 
 	<grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
+    <field name="partnerSeq"/>
 		<field name="fullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -133,7 +138,7 @@
 			</panel>
 			<panel colSpan="9">
 				<panel colSpan="12">
-					<field name="fullName" colSpan="9" showTitle="false">
+					<field name="fullName" colSpan="5" showTitle="false">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
 							<field name="partnerTypeSelect" showTitle="false" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="4" placeholder="Partner Type"/>
@@ -143,6 +148,7 @@
 							<field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
 						</editor>
 					</field>
+          <field name="partnerSeq" showTitle="false" colSpan="4"/>
 					<button if="__config__.app.isApp('account')" name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" hideIf="!$readonly()"/>
 					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
@@ -247,7 +253,6 @@
 					</panel>
 				</panel>
 				<panel name="settings" title="Settings" colSpan="12">
-					<field name="partnerSeq" colSpan="6"/>
 					<field name="language" colSpan="6" canEdit="false"/>
 					<panel title="Assigned to" colSpan="12">
 						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
