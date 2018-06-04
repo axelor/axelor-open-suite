@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.user;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -29,6 +30,7 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Optional;
 
 /** UserService is a class that implement all methods for user informations */
 public class UserServiceImpl implements UserService {
@@ -121,6 +123,17 @@ public class UserServiceImpl implements UserService {
     }
 
     return company.getLogo();
+  }
+
+  @Override
+  public Optional<Address> getUserActiveCompanyAddress() {
+    Company company = getUserActiveCompany();
+
+    if (company != null) {
+      return Optional.ofNullable(company.getAddress());
+    }
+
+    return Optional.empty();
   }
 
   /**

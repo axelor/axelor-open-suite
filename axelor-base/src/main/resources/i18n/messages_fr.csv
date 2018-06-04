@@ -737,7 +737,7 @@
 "MapRest.PinCharDefault",,,
 "MapRest.PinCharDelivery","L",,
 "MapRest.PinCharInvoicing","F",,
-"MapRest.Zero results","Nous n'avons pas pu calculer l'itinéraire.",,
+"MapRest.ZERO_RESULTS","Nous n'avons pas pu calculer l'itinéraire.",,
 "Mapping","Correspondance",,
 "Mapping service provider","API pour cartes",,
 "Maps","Cartes",,

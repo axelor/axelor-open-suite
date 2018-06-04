@@ -120,7 +120,7 @@
 	</action-method>
 	
 	<action-method name="action-base-address-method-check-lat-lang">
-		<call class="com.axelor.apps.base.web.AddressController" method="checkLatLang"/>
+		<call class="com.axelor.apps.base.web.AddressController" method="checkLatLong"/>
 	</action-method>
 	
 	<action-method name="action-base-address-method-create-partner-address">

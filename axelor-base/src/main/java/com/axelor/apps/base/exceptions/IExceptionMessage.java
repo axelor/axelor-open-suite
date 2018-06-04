@@ -210,6 +210,7 @@ public interface IExceptionMessage {
       "%s SIRET Number required. Please configure SIRET Number for partner %s" /*)*/;
   public static final String PARTNER_3 = /*$$(*/
       "Can’t convert into an individual partner from scratch." /*)*/;
+  public static final String PARTNER_NOT_FOUND = /*$$(*/ "Partner not found." /*)*/;
 
   /** Product controller */
   public static final String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
