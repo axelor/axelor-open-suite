@@ -63,7 +63,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -99,7 +99,7 @@ public class InventoryService {
 			ProductFamily productFamily, ProductCategory productCategory) throws AxelorException  {
 
 		if (stockLocation == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
 		}
 
 		Inventory inventory = new Inventory();
@@ -132,7 +132,7 @@ public class InventoryService {
 
 		String ref = sequenceService.getSequenceNumber(SequenceRepository.INVENTORY, company);
 		if (ref == null)
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_2)+" "+company.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_2)+" "+company.getName());
 
 		return ref;
 
@@ -150,7 +150,7 @@ public class InventoryService {
 
 		for (String[] line : data) {
 			if (line.length < 6)
-				throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_LINE_LENGHT)), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
+				throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_LINE_LENGHT)), inventory, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 
 			String code = line[1].replace("\"", "");
 			String rack = line[2].replace("\"", "");
@@ -160,7 +160,7 @@ public class InventoryService {
 			try {
 				realQty = new BigDecimal(line[5].replace("\"", ""));
 			} catch (NumberFormatException e) {
-				throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
+				throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)), inventory, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 			}
 
 			String description = line[6].replace("\"", "");
@@ -173,19 +173,19 @@ public class InventoryService {
 				try {
 					currentQty = new BigDecimal(line[4].replace("\"", ""));
 				} catch (NumberFormatException e) {
-					throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)), inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
+					throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)), inventory, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 				}
 
 				InventoryLine inventoryLine = new InventoryLine();
 				List<Product> productList = productRepo.all().filter("self.code = :code").bind("code", code).fetch();
 				if (productList != null && !productList.isEmpty()){
 					if (productList.size() > 1) {
-						throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_12)+" "+code);
+						throw new AxelorException(inventory, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_12)+" "+code);
 					}
 				}
 				Product product = productList.get(0);
 				if (product == null || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))
-					throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_4)+" "+code);
+					throw new AxelorException(inventory, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_4)+" "+code);
 				inventoryLine.setProduct(product);
 				inventoryLine.setInventory(inventory);
 				inventoryLine.setRack(rack);
@@ -210,11 +210,11 @@ public class InventoryService {
 		try {
 			data = CsvTool.cSVFileReader(filePath.toString(), separator);
 		} catch (Exception e) {
-			throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_5));
+			throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_5));
 		}
 
 		if (data == null || data.isEmpty()) {
-			throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_DATA_NULL_OR_EMPTY)), IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
+			throw new AxelorException(new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_DATA_NULL_OR_EMPTY)), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_3));
 		}
 		
 		data.remove(0); /* Skip headers */
@@ -334,7 +334,7 @@ public class InventoryService {
 		StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 
 		if (company == null) {
-			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_6), toStockLocation.getName());
+			throw new AxelorException(inventory, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_6), toStockLocation.getName());
 		}
 
 		String inventorySeq = inventory.getInventorySeq();
@@ -356,7 +356,7 @@ public class InventoryService {
 						product.getCostPrice(),
 						product.getUnit(), stockMove, StockMoveLineService.TYPE_NULL, false, BigDecimal.ZERO);
 				if (stockMoveLine == null) {
-					throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_7)+" "+inventorySeq);
+					throw new AxelorException(inventory, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_7)+" "+inventorySeq);
 				}
 				if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
 					stockMoveLine.setTrackingNumber(trackingNumber);
@@ -404,7 +404,7 @@ public class InventoryService {
 	public Boolean fillInventoryLineList(Inventory inventory) throws AxelorException {
 
 		if (inventory.getStockLocation() == null) {
-			throw new AxelorException(inventory, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
+			throw new AxelorException(inventory, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVENTORY_1));
 		}
 
 		this.initInventoryLines(inventory);

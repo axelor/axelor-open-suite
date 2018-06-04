@@ -45,7 +45,7 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.apps.tool.xml.Marschaller;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 
@@ -100,7 +100,7 @@ public class BankOrderFileService {
 		Address senderAddress = this.senderCompany.getAddress();
 		
 		if (senderAddress == null || Strings.isNullOrEmpty(senderAddress.getFullName())) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_SENDER_ADDRESS), senderCompany.getName());	
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_SENDER_ADDRESS), senderCompany.getName());	
 		}
 		
 		return senderAddress.getFullName();	
@@ -112,7 +112,7 @@ public class BankOrderFileService {
 		String folderPath = paymentMode.getBankOrderExportFolderPath();
 		
 		if (Strings.isNullOrEmpty(folderPath)) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH), paymentMode.getName());		
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH), paymentMode.getName());		
 		}
 		
 		return folderPath;	
@@ -138,11 +138,11 @@ public class BankOrderFileService {
 			try {
 				return FileTool.writer(this.getFolderPath(), this.computeFileName(), (List<String>) fileToCreate);
 			} catch (IOException e) {
-				throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CFONB_EXPORT_2), AppBaseServiceImpl.EXCEPTION,e);
+				throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CFONB_EXPORT_2), AppBaseServiceImpl.EXCEPTION,e);
 			}
 
 		default:
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT), paymentMode.getName());
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT), paymentMode.getName());
 		}
 		
 		

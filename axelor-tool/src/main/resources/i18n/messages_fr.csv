@@ -6,6 +6,7 @@
 "Templating can not be empty","Le modèle ne peut pas être vide",,
 "The collection of IDs cannot be null.",,,
 "The consumer cannot be null.",,,
+"The parameter copyNumber should be superior to 0.","Le paramètre copyNumber devrait être plus grand que 0.",,
 "This field needs to be unique.","Ce champ doit être unique.",,
 "Url %s is malformed.","l'url %s est malformé",,
 "Years in 360 days","L'année en 360 jours",,

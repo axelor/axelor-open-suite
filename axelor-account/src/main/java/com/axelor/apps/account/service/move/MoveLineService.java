@@ -60,7 +60,7 @@ import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -125,7 +125,7 @@ public class MoveLineService {
 	 *
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amountInSpecificMoveCurrency, boolean isDebit, LocalDate date,
-			LocalDate dueDate, int counter, String origin) throws AxelorException  {
+			LocalDate dueDate, int counter, String origin, String description) throws AxelorException  {
 		
 		log.debug("Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",  
 				new Object[]{account.getName(), amountInSpecificMoveCurrency, isDebit, date, counter, origin});
@@ -141,7 +141,7 @@ public class MoveLineService {
 			account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
 		}
 
-		return this.createMoveLine(move, partner, account, amountInSpecificMoveCurrency, amountConvertedInCompanyCurrency, currencyRate, isDebit, date, dueDate, counter, origin, null);
+		return this.createMoveLine(move, partner, account, amountInSpecificMoveCurrency, amountConvertedInCompanyCurrency, currencyRate, isDebit, date, dueDate, counter, origin, description);
 		
 	}
 	
@@ -220,9 +220,10 @@ public class MoveLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date, int ref, String origin) throws AxelorException{
+	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, LocalDate date, int ref, String origin, String description) throws AxelorException{
 
-		return this.createMoveLine(move, partner, account, amount, isDebit, date, date, ref, origin);
+		return this.createMoveLine(move, partner, account, amount, isDebit, date, date, ref, origin, description);
+		
 	}
 
 
@@ -245,10 +246,10 @@ public class MoveLineService {
 		int moveLineId = 1;
 
 		if (partner == null) {
-			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_1), invoice.getInvoiceId());
+			throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_1), invoice.getInvoiceId());
 		}
 		if (partnerAccount == null) {
-			throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_2), invoice.getInvoiceId());
+			throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_LINE_2), invoice.getInvoiceId());
 		}
 		
 		// Creation of partner move line
@@ -270,7 +271,7 @@ public class MoveLineService {
 				Account account = invoiceLine.getAccount();
 				
 				if(account == null)  {
-					throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_4), invoiceLine.getName(), company.getName());
+					throw new AxelorException(move, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_4), invoiceLine.getName(), company.getName());
 				}
 	
 				companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
@@ -286,6 +287,7 @@ public class MoveLineService {
 						analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 						analyticMoveLine.setInvoiceLine(null);
 						analyticMoveLine.setAccount(moveLine.getAccount());
+						analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
 						moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
 					}
 				}
@@ -313,7 +315,7 @@ public class MoveLineService {
 				Account account = taxAccountService.getAccount(tax, company);
 	
 				if (account == null) {
-					throw new AxelorException(move, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_6), tax.getName(), company.getName());
+					throw new AxelorException(move, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_6), tax.getName(), company.getName());
 				}
 
 				MoveLine moveLine = this.createMoveLine(move, partner, account, invoiceLineTax.getTaxTotal(), companyTaxTotal, null, !isDebitCustomer, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId(), null);

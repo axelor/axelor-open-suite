@@ -27,7 +27,7 @@ import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -59,17 +59,17 @@ public class InvoicingProjectController {
 		if(invoicingProject.getSaleOrderLineSet().isEmpty() && invoicingProject.getPurchaseOrderLineSet().isEmpty()
 				&& invoicingProject.getLogTimesSet().isEmpty() && invoicingProject.getExpenseLineSet().isEmpty() && invoicingProject.getElementsToInvoiceSet().isEmpty()
 				&& invoicingProject.getProjectSet().isEmpty()){
-			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_EMPTY));
+			throw new AxelorException(invoicingProject, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_EMPTY));
 		}
 		if(invoicingProject.getProject() == null){
-			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
+			throw new AxelorException(invoicingProject, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
 		}
 		if(invoicingProject.getProject().getClientPartner() == null){
-			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER));
+			throw new AxelorException(invoicingProject, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER));
 		}
 
 		if(invoicingProject.getProject().getAssignedTo() == null){
-			throw new AxelorException(invoicingProject, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_USER));
+			throw new AxelorException(invoicingProject, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_USER));
 		}
 		Invoice invoice = invoicingProjectService.generateInvoice(invoicingProject);
 		response.setReload(true);
@@ -85,7 +85,7 @@ public class InvoicingProjectController {
 		InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
 		Project project = invoicingProject.getProject();
 		if(project == null){
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
 		}
 		invoicingProjectService.clearLines(invoicingProject);
 		invoicingProjectService.setLines(invoicingProject,project,0);

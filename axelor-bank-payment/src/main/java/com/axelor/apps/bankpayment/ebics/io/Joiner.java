@@ -25,7 +25,7 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 
 
@@ -52,7 +52,7 @@ public class Joiner {
       buffer.write(data);
       buffer.flush();
     } catch (IOException e) {
-    	throw new AxelorException(e.getCause(), IException.TECHNICAL, e.getMessage());
+    	throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_TECHNICAL, e.getMessage());
     }
   }
 
@@ -71,9 +71,9 @@ public class Joiner {
 		  output.write(EbicsUtils.unzip(decrypted));
 		  output.close();
 	  } catch (GeneralSecurityException e) {
-		  throw new AxelorException(e.getCause(), IException.INCONSISTENCY, e.getMessage());
+		  throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
 	  } catch (IOException e) {
-		  throw new AxelorException(e.getCause(), IException.TECHNICAL, e.getMessage());
+		  throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_TECHNICAL, e.getMessage());
 	  }
   }
 

@@ -20,9 +20,12 @@ package com.axelor.apps.supplychain.service.batch;
 import java.util.List;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.db.JPA;
@@ -45,11 +48,14 @@ public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
 
 	@Override
 	protected void process() {
+		SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
 		List<Long> anomalyList = Lists.newArrayList(0L);
 		Query<StockMove> query = Beans.get(StockMoveRepository.class).all();
 		query.filter("self.statusSelect = :statusSelect AND self.saleOrder IS NOT NULL "
-				+ "AND (self.invoice IS NULL OR self.invoice.statusSelect = :invoiceStatusSelect)"
-				+ "AND self.id NOT IN (:anomalyList)");
+				+ "AND (self.invoice IS NULL OR self.invoice.statusSelect = :invoiceStatusSelect) "
+				+ "AND self.id NOT IN (:anomalyList) "
+				+ "AND self.partner.id NOT IN (" + Beans.get(BlockingService.class).listOfBlockedPartner(supplychainBatch.getCompany(), BlockingRepository.INVOICING_BLOCKING) + ")");
+
 		query.bind("statusSelect", StockMoveRepository.STATUS_REALIZED);
 		query.bind("invoiceStatusSelect", InvoiceRepository.STATUS_CANCELED);
 		query.bind("anomalyList", anomalyList);

@@ -65,7 +65,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.repo.MailFollowerRepository;
@@ -107,32 +107,32 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		if (brankOrderDate != null) {
 			if (brankOrderDate.isBefore(LocalDate.now())) {
-				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_DATE));
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_DATE));
 			}
 		} else {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_DATE_MISSING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_DATE_MISSING));
 		}
 
 		if (bankOrder.getOrderTypeSelect() == 0) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_TYPE_MISSING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_TYPE_MISSING));
 		}
 		if (bankOrder.getPartnerTypeSelect() == 0) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING));
 		}
 		if (bankOrder.getPaymentMode() == null) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_PAYMENT_MODE_MISSING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_PAYMENT_MODE_MISSING));
 		}
 		if (bankOrder.getSenderCompany() == null) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_MISSING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_MISSING));
 		}
 		if (bankOrder.getSenderBankDetails() == null) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING));
 		}
 		if (!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderCurrency() == null) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_CURRENCY_MISSING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_CURRENCY_MISSING));
 		}
 		if (bankOrder.getSignatoryUser() == null) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_SIGNATORY_MISSING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_SIGNATORY_MISSING));
 		}
 
 	}
@@ -200,7 +200,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 	public void checkLines(BankOrder bankOrder) throws AxelorException {
 		List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
 		if (bankOrderLines.isEmpty()) {
-			throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINES_MISSING));
+			throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINES_MISSING));
 		} else {
 			validateBankOrderLines(bankOrderLines, bankOrder.getOrderTypeSelect(), bankOrder.getArithmeticTotal());
 		}
@@ -217,7 +217,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
 		}
 		if (!totalAmount.equals(arithmeticTotal)) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_TOTAL_AMOUNT_INVALID));
 		}
 	}
 
@@ -293,11 +293,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
         if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
             if (bankOrder.getSignatoryEbicsUser() == null) {
-                throw new AxelorException(bankOrder, IException.MISSING_FIELD,
+                throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_MISSING_FIELD,
                         I18n.get(IExceptionMessage.EBICS_MISSING_SIGNATORY_EBICS_USER));
             }
             if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
-                throw new AxelorException(bankOrder.getSignatoryEbicsUser().getEbicsPartner(), IException.MISSING_FIELD,
+                throw new AxelorException(bankOrder.getSignatoryEbicsUser().getEbicsPartner(), TraceBackRepository.CATEGORY_MISSING_FIELD,
                         I18n.get(IExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
             }
 
@@ -315,7 +315,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 		if(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)  {
             if (bankOrder.getSignedMetaFile() == null) {
                 throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED),
-                        IException.NO_VALUE);
+                        TraceBackRepository.CATEGORY_NO_VALUE);
             }
 
 			signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
@@ -468,19 +468,19 @@ public class BankOrderServiceImpl implements BankOrderService {
 	@Override
 	public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder) throws AxelorException {
 		if (bankDetails == null) {
-			throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING));
+			throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING));
 		}
 		if (!bankDetails.getActive()) {
-			throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_NOT_ACTIVE));
+			throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_NOT_ACTIVE));
 		}
 
 		if (bankOrder.getBankOrderFileFormat() != null) {
 			if (!this.checkBankDetailsTypeCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE));
 			}
 			if (!bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
 					&& !this.checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
 			}
 		}
 
@@ -488,7 +488,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 				&& bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
 				&& bankDetails.getCurrency() == null) {
 			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY),
-					IException.MISSING_FIELD);
+					TraceBackRepository.CATEGORY_MISSING_FIELD);
 		}
 	}
 
@@ -572,11 +572,11 @@ public class BankOrderServiceImpl implements BankOrderService {
                 break;
 
             default:
-            	throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT));
+            	throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_FORMAT));
 		}
 
 		if (file == null) {
-			throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_ISSUE_DURING_FILE_GENERATION), bankOrder.getBankOrderSeq());
+			throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_ISSUE_DURING_FILE_GENERATION), bankOrder.getBankOrderSeq());
 		}
 
 		MetaFiles metaFiles = Beans.get(MetaFiles.class);
@@ -625,7 +625,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 			return;
 		}
 
-		throw new AxelorException(bankOrder, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_NO_SEQUENCE), bankOrder.getSenderCompany().getName());
+		throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_COMPANY_NO_SEQUENCE), bankOrder.getSenderCompany().getName());
 	}
 
 	/**

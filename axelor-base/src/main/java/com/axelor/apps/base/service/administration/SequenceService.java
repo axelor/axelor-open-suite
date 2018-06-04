@@ -17,8 +17,22 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.IsoFields;
+
+import javax.annotation.concurrent.ThreadSafe;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.SequenceLettersTypeSelect;
+import com.axelor.apps.base.db.SequenceTypeSelect;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
@@ -27,7 +41,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
@@ -36,16 +50,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.concurrent.ThreadSafe;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
-import java.time.temporal.IsoFields;
 
 @ThreadSafe
 @Singleton
@@ -194,10 +198,16 @@ public class SequenceService {
 		String
 			seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
 			seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-			padLeft = StringUtils.leftPad( sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING );
+			sequenceValue;
+		
+		if(sequence.getSequenceTypeSelect() == SequenceTypeSelect.NUMBERS) {
+			sequenceValue = StringUtils.leftPad( sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING );
+		} else {
+			sequenceValue = findNextLetterSequence(sequenceVersion);
+		}
+		sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
 
-
-		String nextSeq = ( seqPrefixe + padLeft + seqSuffixe )
+		String nextSeq = ( seqPrefixe + sequenceValue + seqSuffixe )
 				.replaceAll( PATTERN_FULL_YEAR, Integer.toString( refDate.get(ChronoField.YEAR_OF_ERA) ) )
 				.replaceAll( PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")) )
 				.replaceAll( PATTERN_MONTH, Integer.toString( refDate.getMonthValue() ) )
@@ -207,10 +217,24 @@ public class SequenceService {
 
 		log.debug( "nextSeq : : : : {}" ,nextSeq );
 
-		sequenceVersion.setNextNum( sequenceVersion.getNextNum() + sequence.getToBeAdded() );
 		sequenceVersionRepository.save( sequenceVersion );
 		return nextSeq;
 	}
+
+  private String findNextLetterSequence(SequenceVersion sequenceVersion) {
+    long n = sequenceVersion.getNextNum();
+    char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26))];
+    for (int i = buf.length - 1; i >= 0; i--) {
+      n--;
+      buf[i] = (char) ('A' + n % 26);
+      n /= 26;
+    }
+    if (sequenceVersion.getSequence().getSequenceLettersTypeSelect()
+        == SequenceLettersTypeSelect.UPPERCASE) {
+      return new String(buf);
+    }
+    return new String(buf).toLowerCase();
+  }
 
 	protected SequenceVersion getVersion( Sequence sequence, LocalDate refDate ){
 
@@ -269,7 +293,7 @@ public class SequenceService {
      */
     public String getDraftSequenceNumber(Model model) throws AxelorException {
         if (model.getId() == null) {
-            throw new AxelorException(model, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+            throw new AxelorException(model, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
         }
         return String.format("%s%d", DRAFT_PREFIX, model.getId());
     }
@@ -283,7 +307,7 @@ public class SequenceService {
      */
     public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
         if (model.getId() == null) {
-            throw new AxelorException(model, IException.INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
+            throw new AxelorException(model, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
         }
         return String.format("%s%s", DRAFT_PREFIX,
                 StringTool.fillStringLeft(String.valueOf(model.getId()), '0', zeroPadding));

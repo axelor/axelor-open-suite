@@ -27,7 +27,7 @@ import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
@@ -63,7 +63,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
                                                  Product generatedProduct) throws AxelorException {
         level++;
         if (level > MAX_LEVEL) {
-            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS));
+            throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS));
         }
         String name;
         Product product;

@@ -56,7 +56,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
@@ -249,7 +249,7 @@ public class PayboxService {
 	 */
 	public void checkPayboxPaymentVoucherFields(PaymentVoucher paymentVoucher) throws AxelorException  {
 		if (paymentVoucher.getPaidAmount() == null || paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) > 1)  {
-			throw new AxelorException(paymentVoucher, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_1), AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef());
+			throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_1), AppAccountServiceImpl.EXCEPTION, paymentVoucher.getRef());
 		}
 	}
 
@@ -268,7 +268,7 @@ public class PayboxService {
 		BigDecimal partnerBalance = accountingSituation.getBalanceCustAccount();
 
 		if (paidAmount.compareTo(partnerBalance) > 0) {
-			throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_2), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(partner, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_2), AppAccountServiceImpl.EXCEPTION);
 		}
 
 	}
@@ -276,7 +276,7 @@ public class PayboxService {
 
 	public void checkPaidAmount(PaymentVoucher paymentVoucher) throws AxelorException {
 		if (paymentVoucher.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0) {
-			throw new AxelorException(paymentVoucher, IException.INCONSISTENCY, I18n.get(IExceptionMessage.PAYBOX_3), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PAYBOX_3), AppAccountServiceImpl.EXCEPTION);
 		}
 	}
 
@@ -288,7 +288,7 @@ public class PayboxService {
 	 */
 	public void checkPayboxPartnerFields(Partner partner) throws AxelorException  {
 		if (partner.getEmailAddress().getAddress() == null || partner.getEmailAddress().getAddress().isEmpty())  {
-			throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_4), AppAccountServiceImpl.EXCEPTION, partner.getName());
+			throw new AxelorException(partner, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYBOX_4), AppAccountServiceImpl.EXCEPTION, partner.getName());
 		}
 	}
 
@@ -323,7 +323,7 @@ public class PayboxService {
 			return s.toUpperCase();
 
 		} catch (InvalidKeyException | NoSuchAlgorithmException | UnsupportedEncodingException e) {
-			throw new AxelorException(e.getCause(), IException.INCONSISTENCY, "%s :\n %s", AppAccountServiceImpl.EXCEPTION, e);
+			throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, "%s :\n %s", AppAccountServiceImpl.EXCEPTION, e);
 		}
 	}
 

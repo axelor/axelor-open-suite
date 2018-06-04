@@ -104,11 +104,11 @@ public class ForecastRecapService {
 	public void populateWithOpportunities(ForecastRecap forecastRecap) throws AxelorException{
 		List<Opportunity> opportunityList = new ArrayList<Opportunity>();
 		if(forecastRecap.getBankDetails() != null){
-			opportunityList = Beans.get(OpportunityRepository.class).all().filter("self.company = ?1 AND self.bankDetails = ?2 AND self.expectedCloseDate BETWEEN ?3 AND ?4 AND self.saleOrder = null",
+			opportunityList = Beans.get(OpportunityRepository.class).all().filter("self.company = ?1 AND self.bankDetails = ?2 AND self.expectedCloseDate BETWEEN ?3 AND ?4 AND self.saleOrderList IS EMPTY",
 								forecastRecap.getCompany(),forecastRecap.getBankDetails(), forecastRecap.getFromDate(), forecastRecap.getToDate()).fetch();
 		}
 		else{
-			opportunityList = Beans.get(OpportunityRepository.class).all().filter("self.company = ?1 AND self.expectedCloseDate BETWEEN ?2 AND ?3 AND self.saleOrder = null",
+			opportunityList = Beans.get(OpportunityRepository.class).all().filter("self.company = ?1 AND self.expectedCloseDate BETWEEN ?2 AND ?3 AND self.saleOrderList IS EMPTY",
 								forecastRecap.getCompany(), forecastRecap.getFromDate(), forecastRecap.getToDate()).fetch();
 		}
 		for (Opportunity opportunity : opportunityList) {
@@ -143,11 +143,11 @@ public class ForecastRecapService {
 	public void getOpportunities(ForecastRecap forecastRecap, Map<LocalDate, BigDecimal> mapExpected, Map<LocalDate, BigDecimal> mapConfirmed) throws AxelorException{
 		List<Opportunity> opportunityList = new ArrayList<Opportunity>();
 		if(forecastRecap.getBankDetails() != null){
-			opportunityList = Beans.get(OpportunityRepository.class).all().filter("self.company = ?1 AND self.bankDetails = ?2 AND self.expectedCloseDate BETWEEN ?3 AND ?4 AND self.saleOrder = null",
+			opportunityList = Beans.get(OpportunityRepository.class).all().filter("self.company = ?1 AND self.bankDetails = ?2 AND self.expectedCloseDate BETWEEN ?3 AND ?4 AND self.saleOrderList IS EMPTY",
 								forecastRecap.getCompany(),forecastRecap.getBankDetails(), forecastRecap.getFromDate(), forecastRecap.getToDate()).fetch();
 		}
 		else{
-			opportunityList = Beans.get(OpportunityRepository.class).all().filter("self.company = ?1 AND self.expectedCloseDate BETWEEN ?2 AND ?3 AND self.saleOrder = null",
+			opportunityList = Beans.get(OpportunityRepository.class).all().filter("self.company = ?1 AND self.expectedCloseDate BETWEEN ?2 AND ?3 AND self.saleOrderList IS EMPTY",
 								forecastRecap.getCompany(), forecastRecap.getFromDate(), forecastRecap.getToDate()).fetch();
 		}
 		for (Opportunity opportunity : opportunityList) {

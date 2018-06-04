@@ -41,7 +41,7 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -87,7 +87,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
 				Partner supplierPartner = saleOrderLine.getSupplierPartner();
 
 				if (supplierPartner == null) {
-					throw new AxelorException(saleOrderLine, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_PURCHASE_1), saleOrderLine.getProductName());
+					throw new AxelorException(saleOrderLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SO_PURCHASE_1), saleOrderLine.getProductName());
 				}
 
 				if(!saleOrderLinesBySupplierPartner.containsKey(supplierPartner))  {

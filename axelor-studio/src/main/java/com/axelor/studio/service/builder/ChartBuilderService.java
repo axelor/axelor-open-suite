@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -99,7 +99,7 @@ public class ChartBuilderService {
 	public void build(ChartBuilder chartBuilder) throws JAXBException, AxelorException {
 		
 		if (chartBuilder.getName().contains(" ")) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.CHART_BUILDER_1));
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.CHART_BUILDER_1));
 		}
 		
 		searchFields = new ArrayList<String>();

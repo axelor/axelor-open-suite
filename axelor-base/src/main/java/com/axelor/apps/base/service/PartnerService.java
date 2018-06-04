@@ -47,7 +47,7 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -285,7 +285,7 @@ public class PartnerService {
 	public String getSIRENNumber(Partner partner) throws AxelorException {
 		char[] Str = new char[9];
 		if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
-			throw new AxelorException(partner, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_2), AppBaseServiceImpl.EXCEPTION,partner.getName());
+			throw new AxelorException(partner, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_2), AppBaseServiceImpl.EXCEPTION,partner.getName());
 		} else {
             String registrationCode = partner.getRegistrationCode();
 			//remove whitespace in the registration code before using it

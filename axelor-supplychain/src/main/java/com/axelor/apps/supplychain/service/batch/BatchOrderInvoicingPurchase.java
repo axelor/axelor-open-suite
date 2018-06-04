@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
@@ -84,6 +86,9 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
 				+ "AND (invoice.purchaseOrder = self "
 				+ "OR invoice.purchaseOrder IS NULL AND EXISTS (SELECT 1 FROM invoice.invoiceLineList invoiceLine "
 				+ "WHERE invoiceLine.purchaseOrderLine MEMBER OF self.purchaseOrderLineList)))");
+
+		filterList.add("self.partner.id NOT IN (" + Beans.get(BlockingService.class).listOfBlockedPartner(supplychainBatch.getCompany(), BlockingRepository.INVOICING_BLOCKING) + ")");
+
 		query.bind("invoiceStatusSelect", InvoiceRepository.STATUS_CANCELED);
 
 		List<Long> anomalyList = Lists.newArrayList(0L);

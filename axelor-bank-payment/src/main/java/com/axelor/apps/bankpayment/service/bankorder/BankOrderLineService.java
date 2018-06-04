@@ -41,7 +41,7 @@ import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -144,17 +144,17 @@ public class BankOrderLineService {
 
 		if (bankOrderLine.getBankOrder().getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			if (bankOrderLine.getReceiverCompany() == null ) {
-				throw new AxelorException(bankOrderLine, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_COMPANY_MISSING));
+				throw new AxelorException(bankOrderLine, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_COMPANY_MISSING));
 			}
 		}
 		if(bankOrderLine.getPartner() == null) {
-			throw new AxelorException(bankOrderLine, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_PARTNER_MISSING));
+			throw new AxelorException(bankOrderLine, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_PARTNER_MISSING));
 		}
 		if (bankOrderLine.getReceiverBankDetails() == null ) {
-			throw new AxelorException(bankOrderLine, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
+			throw new AxelorException(bankOrderLine, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
 		}
 		if(bankOrderLine.getBankOrderAmount().compareTo(BigDecimal.ZERO) <= 0) {
-			throw new AxelorException(bankOrderLine, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_AMOUNT_NEGATIVE));
+			throw new AxelorException(bankOrderLine, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_AMOUNT_NEGATIVE));
 		}
 		
 	}
@@ -271,12 +271,12 @@ public class BankOrderLineService {
 
 	public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder) throws AxelorException {
 		if (bankDetails == null) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
 		}
 
 		//check if the bank details is active
 		if (!bankDetails.getActive()) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE));
 		}
 
 		//filter on the result from bankPartner if the option is active.
@@ -288,14 +288,14 @@ public class BankOrderLineService {
 		if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 
 			if (!ebicsPartner.getReceiverBankDetailsSet().contains(bankDetails)) {
-				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN));
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN));
 			}
 		}
 
 		//filter on the bank details identifier type from the bank order file format
 		if (bankOrder.getBankOrderFileFormat() != null) {
 			if (!Beans.get(BankOrderService.class).checkBankDetailsTypeCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
-				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE));
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE));
 			}
 		}
 
@@ -305,7 +305,7 @@ public class BankOrderLineService {
 				&& bankOrder.getBankOrderCurrency() != null
 				&& bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
 			if (!Beans.get(BankOrderService.class).checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
-				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
+				throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
 			}
 		}
 	}

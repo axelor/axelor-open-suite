@@ -26,20 +26,7 @@ package com.axelor.exception.db;
 @Deprecated
 public interface IException {
 	
-	/**
-	 * Type select
-	 */
-	public static final int TECHNICAL = 0;
-	public static final int FUNCTIONNAL = 1;
-	
-	/**
-	 * Category select
-	 */
-	public static final int MISSING_FIELD = 1;
-	public static final int NO_UNIQUE_KEY = 2;
-	public static final int NO_VALUE = 3;
-	public static final int CONFIGURATION_ERROR = 4;
-	public static final int INCONSISTENCY = 5;
+
 	
 	/**
 	 * Origin select

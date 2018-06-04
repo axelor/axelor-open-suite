@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.activation.DataSource;
@@ -50,8 +51,9 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.service.CipherService;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.mail.ImapAccount;
 import com.axelor.mail.MailConstants;
@@ -86,48 +88,63 @@ public class MailAccountServiceImpl implements MailAccountService {
 	private MetaFiles metaFiles;
 	
 	@Override
-	public boolean checkDefaultMailAccount(EmailAccount mailAccount) {
+	public void checkDefaultMailAccount(EmailAccount mailAccount) throws AxelorException {
+		
 		if(mailAccount.getIsDefault()){
-			String request = "self.isDefault = true";
+			String query = "self.isDefault = true";
 			List<Object> params = Lists.newArrayList();
 			if(mailAccount.getId() != null){
-				request += " AND self.id != ?1";
+				query += " AND self.id != ?1";
 				params.add(mailAccount.getId());
 			}
-			return mailAccountRepo.all().filter(request, params.toArray()).count() == 0;
+			
+			Integer serverTypeSelect = mailAccount.getServerTypeSelect();
+			if (serverTypeSelect == EmailAccountRepository.SERVER_TYPE_SMTP) {
+				query += " AND self.serverTypeSelect = " 
+						+ EmailAccountRepository.SERVER_TYPE_SMTP + " ";
+			}
+			else if (serverTypeSelect == EmailAccountRepository.SERVER_TYPE_IMAP
+				|| serverTypeSelect == EmailAccountRepository.SERVER_TYPE_POP) {
+				query += " AND (self.serverTypeSelect = " 
+						+ EmailAccountRepository.SERVER_TYPE_IMAP + " OR "
+						+ "self.serverTypeSelect = " 
+						+ EmailAccountRepository.SERVER_TYPE_POP + ") ";
+			}	
+			
+			Long count = mailAccountRepo.all().filter(query, params.toArray()).count();
+			if (count > 0) {
+				throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
+			}
 		}
-		return true;
+		
 	}
 
+
 	@Override
-	public EmailAccount getDefaultMailAccount(int serverType)  {
-		return mailAccountRepo.all().filter("self.isDefault = true and self.serverTypeSelect = ?1", serverType).fetchOne();
+	public EmailAccount getDefaultSender()  {
+		
+		return mailAccountRepo.all().filter("self.isDefault = true AND self.serverTypeSelect = ?1",
+				EmailAccountRepository.SERVER_TYPE_SMTP).fetchOne();
+	}
+	
+	@Override
+	public EmailAccount getDefaultReader()  {
+		
+		return mailAccountRepo.all().filter("self.isDefault = true "
+				+ "AND (self.serverTypeSelect = ?1 OR self.serverTypeSelect = ?2)",
+				EmailAccountRepository.SERVER_TYPE_IMAP, EmailAccountRepository.SERVER_TYPE_POP).fetchOne();
 	}
    
 	@Override
 	public void checkMailAccountConfiguration ( EmailAccount mailAccount ) throws AxelorException, Exception {
 		
-		String port = mailAccount.getPort() <= 0 ? null : mailAccount.getPort().toString();
-		
-		com.axelor.mail.MailAccount account;
-		Integer serverType = mailAccount.getServerTypeSelect();
-		if (serverType.equals(EmailAccountRepository.SERVER_TYPE_SMTP)) {
-			account = new SmtpAccount( mailAccount.getHost(), port, mailAccount.getLogin(), getDecryptPassword(mailAccount.getPassword()), getSecurity( mailAccount ) );
-		}
-		else if (serverType.equals(EmailAccountRepository.SERVER_TYPE_IMAP)) {
-			account = new ImapAccount( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), getDecryptPassword(mailAccount.getPassword()), getSecurity(mailAccount) );
-		}
-		else {
-			account = new Pop3Account( mailAccount.getHost(), mailAccount.getPort().toString(), mailAccount.getLogin(), getDecryptPassword(mailAccount.getPassword()), getSecurity(mailAccount) );
-		}
-		
-		account.setConnectionTimeout( CHECK_CONF_TIMEOUT );
+		com.axelor.mail.MailAccount account = getMailAccount(mailAccount);
 		
 		Session session = account.getSession();
 		
 		try {
 			
-			if (serverType.equals(EmailAccountRepository.SERVER_TYPE_SMTP)) {
+			if ( mailAccount.getServerTypeSelect().equals(EmailAccountRepository.SERVER_TYPE_SMTP)) {
 				Transport transport = session.getTransport( getProtocol( mailAccount ) );
 				transport.connect( mailAccount.getHost(),mailAccount.getPort(),mailAccount.getLogin(),mailAccount.getPassword() );
 				transport.close();
@@ -137,11 +154,38 @@ public class MailAccountServiceImpl implements MailAccountService {
 			}
 			
 		} catch ( AuthenticationFailedException e ) {
-			throw new AxelorException(e, mailAccount, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_1));
+			throw new AxelorException(e, mailAccount, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_1));
 		} catch ( NoSuchProviderException e ) {
-			throw new AxelorException(e, mailAccount, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_2));
+			throw new AxelorException(e, mailAccount, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MAIL_ACCOUNT_2));
 		}
 
+	}
+	
+	@Override
+	public com.axelor.mail.MailAccount getMailAccount(EmailAccount mailAccount) {
+		
+		Integer serverType  = mailAccount.getServerTypeSelect();
+		
+		String port = mailAccount.getPort() <= 0 ? null : mailAccount.getPort().toString();
+		
+		com.axelor.mail.MailAccount account;
+		
+		if (serverType == EmailAccountRepository.SERVER_TYPE_SMTP) {
+			account = new SmtpAccount( mailAccount.getHost(), port, mailAccount.getLogin(),
+					getDecryptPassword(mailAccount.getPassword()), getSecurity( mailAccount ) );
+		}
+		else if (serverType == EmailAccountRepository.SERVER_TYPE_IMAP) {
+			account = new ImapAccount( mailAccount.getHost(), mailAccount.getPort().toString(), 
+					mailAccount.getLogin(), getDecryptPassword(mailAccount.getPassword()), getSecurity(mailAccount) );
+		}
+		else {
+			account = new Pop3Account( mailAccount.getHost(), mailAccount.getPort().toString(),
+					mailAccount.getLogin(), getDecryptPassword(mailAccount.getPassword()), getSecurity(mailAccount) );
+		}
+		
+		account.setConnectionTimeout( CHECK_CONF_TIMEOUT );
+		
+		return account;
 	}
 	
 	

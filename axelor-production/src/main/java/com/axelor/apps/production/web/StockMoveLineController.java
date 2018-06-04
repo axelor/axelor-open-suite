@@ -26,7 +26,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -64,7 +64,7 @@ public class StockMoveLineController {
                     }
                     company = operationOrder.getManufOrder().getCompany();
                 } else {
-                    throw new AxelorException(IException.TECHNICAL,
+                    throw new AxelorException(TraceBackRepository.TYPE_TECHNICAL,
                             IExceptionMessage.STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT);
                 }
             } else {

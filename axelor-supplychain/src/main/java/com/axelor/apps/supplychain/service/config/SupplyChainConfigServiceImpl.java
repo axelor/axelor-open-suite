@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class SupplyChainConfigServiceImpl implements SupplyChainConfigService {
@@ -33,7 +33,7 @@ public class SupplyChainConfigServiceImpl implements SupplyChainConfigService {
 		
 		if (supplyChainConfig == null) {
 			
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SUPPLY_CHAIN_CONFIG), company.getName());
+			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SUPPLY_CHAIN_CONFIG), company.getName());
 		}
 		
 		return supplyChainConfig;

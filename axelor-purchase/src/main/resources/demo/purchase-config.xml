@@ -34,5 +34,9 @@
  		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" column="orderDate"/>
  	</input>
  	
+ 	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" >
+		<bind to="language" search="self.code = :languageCode"/>
+	</input>
+ 	
 </csv-inputs>
 

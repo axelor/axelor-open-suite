@@ -33,7 +33,7 @@
         </panel>
         <panel-tabs>
 	        <panel title="Description">
-	            <field name="Description" colSpan="12" widget="html" showTitle="false"/>
+	            <field name="description" colSpan="12" widget="html" showTitle="false"/>
 	        </panel>
 	        <panel title="Organization">
 	            <field name="location"/>
@@ -69,7 +69,7 @@
 	
     <action-view name="action-icalendar-view-ievent-dashlet" title="Events" model="com.axelor.apps.base.db.ICalendarEvent">
         <view type="grid" name="calendar-event-grid"/>
-        <view type="form" name="calendar-event-calendar-grid"/>
+        <view type="form" name="calendar-event-form"/>
         <domain>self.calendar.id = :calendarId</domain>
         <context name="calendarId" expr="eval:id"/>
     </action-view>

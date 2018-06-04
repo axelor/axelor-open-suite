@@ -154,7 +154,7 @@ public class ImportSupplyChain {
 					product.setMassUnit(stockConfigService.getStockConfig(saleOrder.getCompany()).getCustomsMassUnit());
 				}
 			}
-			if(saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED){
+			if(saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION){
 				//taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation of tasks in project module
 				saleOrderWorkflowService.confirmSaleOrder(saleOrder);
 				saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);

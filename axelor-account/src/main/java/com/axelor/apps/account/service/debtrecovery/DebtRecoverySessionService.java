@@ -31,7 +31,7 @@ import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -230,7 +230,7 @@ public class DebtRecoverySessionService {
 		if(debtRecovery.getDebtRecoveryMethod() == null
 				|| debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList() == null
 				|| debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList().isEmpty())  {
-			throw new AxelorException(debtRecovery, IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: +"+I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
+			throw new AxelorException(debtRecovery, TraceBackRepository.CATEGORY_MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: +"+I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
 		}
 		for(DebtRecoveryMethodLine debtRecoveryMethodLine : debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList())  {
 			if(debtRecoveryMethodLine.getDebtRecoveryLevel().getName().equals(debtRecoveryLevel))  {

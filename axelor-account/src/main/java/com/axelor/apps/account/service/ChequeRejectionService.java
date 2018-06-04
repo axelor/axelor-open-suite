@@ -39,7 +39,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -124,7 +124,7 @@ public class ChequeRejectionService {
 
 			if(moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
 				// Debit MoveLine
-				MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getCredit(), true, rejectionDate, ref, null);
+				MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getCredit(), true, rejectionDate, ref, chequeRejection.getName(), chequeRejection.getDescription());
 				move.getMoveLineList().add(debitMoveLine);
 				debitMoveLine.setInterbankCodeLine(interbankCodeLine);
 				debitMoveLine.setDescription(description);
@@ -132,7 +132,7 @@ public class ChequeRejectionService {
 			}
 			else  {
 				// Credit MoveLine
-				MoveLine creditMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getDebit(), false, rejectionDate, ref, null);
+				MoveLine creditMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getDebit(), false, rejectionDate, ref, chequeRejection.getName(), chequeRejection.getDescription());
 				move.getMoveLineList().add(creditMoveLine);
 				creditMoveLine.setInterbankCodeLine(interbankCodeLine);
 				creditMoveLine.setDescription(description);
@@ -173,7 +173,7 @@ public class ChequeRejectionService {
 		String seq = sequenceService.getSequenceNumber(SequenceRepository.CHEQUE_REJECT, chequeRejection.getCompany());
 
 		if (seq == null) {
-			throw new AxelorException(chequeRejection, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHECK_REJECTION_1), AppAccountServiceImpl.EXCEPTION,chequeRejection.getCompany().getName());
+			throw new AxelorException(chequeRejection, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHECK_REJECTION_1), AppAccountServiceImpl.EXCEPTION,chequeRejection.getCompany().getName());
 		}
 
 		chequeRejection.setName(seq);

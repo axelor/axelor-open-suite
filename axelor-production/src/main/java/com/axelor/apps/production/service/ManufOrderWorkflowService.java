@@ -17,6 +17,16 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
@@ -34,13 +44,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.collections.CollectionUtils;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ManufOrderWorkflowService {
 	protected OperationOrderWorkflowService operationOrderWorkflowService;
@@ -204,6 +207,7 @@ public class ManufOrderWorkflowService {
 		manufOrderStockMoveService.finish(manufOrder);
 		manufOrder.setRealEndDateT(Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 		manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
+		manufOrder.setEndTimeDifference(new BigDecimal(ChronoUnit.MINUTES.between(manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
 		manufOrderRepo.save(manufOrder);
 	}
 

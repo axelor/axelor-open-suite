@@ -42,7 +42,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -153,7 +153,7 @@ public class PaymentVoucherLoadService {
         if (paymentVoucherContext.getPayVoucherElementToPayList() != null) {
 
             if (paymentVoucherContext.getPaidAmount() == null) {
-                throw new AxelorException(paymentVoucher, IException.MISSING_FIELD,
+                throw new AxelorException(paymentVoucher, TraceBackRepository.CATEGORY_MISSING_FIELD,
                         I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1), AppAccountServiceImpl.EXCEPTION);
             }
 

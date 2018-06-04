@@ -79,6 +79,8 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationService;
@@ -95,6 +97,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
+import com.axelor.apps.account.service.umr.UmrNumberService;
+import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
@@ -134,6 +138,8 @@ public class AccountModule extends AxelorModule {
         bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
 
         bind(InvoiceService.class).to(InvoiceServiceImpl.class);
+
+        bind(InvoicePrintService.class).to(InvoicePrintServiceImpl.class);
 
         bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
         
@@ -193,6 +199,8 @@ public class AccountModule extends AxelorModule {
         bind(TemplateMessageAccountService.class).to(TemplateMessageAccountServiceImpl.class);
 
         PartnerAddressRepository.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
+
+        bind(UmrNumberService.class).to(UmrNumberServiceImpl.class);
     }
     
     

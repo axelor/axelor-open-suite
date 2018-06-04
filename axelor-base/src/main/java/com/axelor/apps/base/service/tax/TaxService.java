@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class TaxService {
@@ -57,7 +57,7 @@ public class TaxService {
 	public TaxLine getTaxLine(Tax tax, LocalDate localDate) throws AxelorException  {
 		
 		if (tax == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TAX_2));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TAX_2));
 		}
 		
 		if(tax.getActiveTaxLine() != null)  {  return tax.getActiveTaxLine();  }
@@ -72,7 +72,7 @@ public class TaxService {
 			}
 		}
 		
-		throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TAX_1), tax.getName());
+		throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TAX_1), tax.getName());
 	}
 	
 	

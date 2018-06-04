@@ -10,10 +10,11 @@
         <field name="isDefault"/>
     </grid>
     
-    <form name="mail-account-form" title="Mail account" model="com.axelor.apps.message.db.EmailAccount">
+    <form name="mail-account-form" title="Mail account" model="com.axelor.apps.message.db.EmailAccount"
+    	onSave="action-mail-account-method-check-default-mail-account">
     	<panel name="informations" title="Informations">
             <field name="name"/>
-			<field name="isDefault" onChange="action-mail-account-validate-is-default"/>
+			<field name="isDefault" onChange="action-mail-account-method-check-default-mail-account"/>
         	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>
         </panel>
         <panel name="configPanel" title="Configurations" readonlyIf="isValid">
@@ -38,7 +39,7 @@
 		<call class="com.axelor.apps.message.web.MailAccountController" method="validateSmtpAccount"/>
 	</action-method>
     
-	<action-method name="action-mail-account-validate-is-default">
+	<action-method name="action-mail-account-method-check-default-mail-account">
 		<call class="com.axelor.apps.message.web.MailAccountController" method="checkDefaultMailAccount"/>
 	</action-method>
 	

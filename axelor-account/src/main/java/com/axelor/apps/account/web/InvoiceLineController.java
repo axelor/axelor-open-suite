@@ -28,7 +28,7 @@ import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagem
 import com.axelor.apps.base.db.Product;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -55,7 +55,7 @@ public class InvoiceLineController {
 			invoiceLine = invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
 			response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
 		} else {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 	

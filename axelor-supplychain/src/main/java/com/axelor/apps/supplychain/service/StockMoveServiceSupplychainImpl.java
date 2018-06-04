@@ -103,7 +103,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 
                 if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED
                         && appSupplychain.getTerminateSaleOrderOnDelivery()) {
-                    Beans.get(SaleOrderWorkflowServiceImpl.class).finishSaleOrder(saleOrder);
+                    Beans.get(SaleOrderWorkflowServiceImpl.class).completeSaleOrder(saleOrder);
                 }
             }
 
@@ -154,8 +154,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
 			}
 		}
 
-		if (so.getStatusSelect() == SaleOrderRepository.STATUS_FINISHED  && Beans.get(AppSupplychainService.class).getAppSupplychain().getTerminateSaleOrderOnDelivery()){
-			so.setStatusSelect(SaleOrderRepository.STATUS_CONFIRMED);
+		if (so.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_COMPLETED  && Beans.get(AppSupplychainService.class).getAppSupplychain().getTerminateSaleOrderOnDelivery()){
+			so.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 		}
 		updateSaleOrderLines(stockMove, false);
 	}

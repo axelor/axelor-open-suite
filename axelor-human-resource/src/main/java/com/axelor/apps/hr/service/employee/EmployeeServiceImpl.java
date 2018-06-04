@@ -31,7 +31,7 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -52,7 +52,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			Period period = Period.between(employee.getSeniorityDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
 			return period.getYears();
 		} catch (IllegalArgumentException e) {
-			throw new AxelorException(e.getCause(), employee, IException.NO_VALUE, I18n.get(IExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE ), employee.getName());
+			throw new AxelorException(e.getCause(), employee, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE ), employee.getName());
 		}
 		
 	}
@@ -63,7 +63,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 			Period period = Period.between(employee.getBirthDate(), refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate );
 			return period.getYears();
 		} catch (IllegalArgumentException e) {
-			throw new AxelorException(e.getCause(), employee, IException.NO_VALUE, I18n.get( IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE ), employee.getName());
+			throw new AxelorException(e.getCause(), employee, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get( IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE ), employee.getName());
 		}
 	}
 
@@ -81,7 +81,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		}
 		
 		if (weeklyPlanning == null) {
-			throw new AxelorException(employee, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), employee.getName());
+			throw new AxelorException(employee, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PLANNING), employee.getName());
 		}
 		
 		EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
@@ -93,7 +93,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 		}
 		
 		if (publicHolidayPlanning == null) {
-			throw new AxelorException(employee, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY), employee.getName());
+			throw new AxelorException(employee, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY), employee.getName());
 		}
 
 		LocalDate itDate = fromDate;

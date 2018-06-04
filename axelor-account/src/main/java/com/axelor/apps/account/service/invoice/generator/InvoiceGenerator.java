@@ -50,10 +50,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ContextEntity;
@@ -148,7 +151,7 @@ public abstract class InvoiceGenerator  {
 			case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
 				return InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 			default:
-				throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_1), AppAccountServiceImpl.EXCEPTION);
+				throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_1), AppAccountServiceImpl.EXCEPTION);
 		}
 
 	}
@@ -166,7 +169,10 @@ public abstract class InvoiceGenerator  {
 		invoice.setOperationTypeSelect(operationType);
 
 		if (partner == null) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_2), AppAccountServiceImpl.EXCEPTION);
+		}
+		if(Beans.get(BlockingService.class).getBlocking(partner, company, BlockingRepository.INVOICING_BLOCKING) != null) {
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
 		}
 		invoice.setPartner(partner);
 
@@ -182,7 +188,7 @@ public abstract class InvoiceGenerator  {
 			paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
 		}
 		if (paymentCondition == null) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_3), AppAccountServiceImpl.EXCEPTION);
 		}
 		invoice.setPaymentCondition(paymentCondition);
 
@@ -190,7 +196,7 @@ public abstract class InvoiceGenerator  {
 			paymentMode = InvoiceToolService.getPaymentMode(invoice);
 		}
 		if (paymentMode == null) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_4), AppAccountServiceImpl.EXCEPTION);
 		}
 		invoice.setPaymentMode(paymentMode);
 
@@ -198,7 +204,7 @@ public abstract class InvoiceGenerator  {
 			mainInvoicingAddress = Beans.get(PartnerService.class).getInvoicingAddress(partner);
 		}
 		if (mainInvoicingAddress == null && partner.getIsCustomer()) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_5), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_5), AppAccountServiceImpl.EXCEPTION);
 		}
 
 		invoice.setAddress(mainInvoicingAddress);
@@ -209,7 +215,7 @@ public abstract class InvoiceGenerator  {
 			currency = partner.getCurrency();
 		}
 		if (currency == null) {
-			throw new AxelorException(IException.MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_6), AppAccountServiceImpl.EXCEPTION);
+			throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_GENERATOR_6), AppAccountServiceImpl.EXCEPTION);
 		}
 		invoice.setCurrency(currency);
 
@@ -243,10 +249,10 @@ public abstract class InvoiceGenerator  {
 		// Set Company bank details
 		if(companyBankDetails == null)  {
 			if(accountingSituation != null)  {
-				if(partner.getOutPaymentMode().equals(paymentMode)) {
+				if(paymentMode.equals(partner.getOutPaymentMode())) {
 					companyBankDetails = accountingSituation.getCompanyOutBankDetails();
 				}
-				else if (partner.getInPaymentMode().equals(paymentMode)) {
+				else if(paymentMode.equals(partner.getInPaymentMode())) {
 					companyBankDetails = accountingSituation.getCompanyInBankDetails();
 				}
 			}

@@ -36,7 +36,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -61,7 +61,7 @@ public class ProdProcessService {
 		for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
 			for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
 				if (!bomMap.containsKey(prodProduct.getProduct())) {
-					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROD_PROCESS_USELESS_PRODUCT), prodProduct.getProduct().getName());
+					throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROD_PROCESS_USELESS_PRODUCT), prodProduct.getProduct().getName());
 				}
 				bomMap.put(prodProduct.getProduct(), bomMap.get(prodProduct.getProduct()).subtract(prodProduct.getQty()));
 			}
@@ -76,7 +76,7 @@ public class ProdProcessService {
 			}
 		}
 		if (!copyMap.isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROD_PROCESS_MISS_PRODUCT), Joiner.on(",").join(nameProductList));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROD_PROCESS_MISS_PRODUCT), Joiner.on(",").join(nameProductList));
 		}
 	}
 

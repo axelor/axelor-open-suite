@@ -26,7 +26,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class JournalService {
@@ -96,7 +96,7 @@ public class JournalService {
 				}
 			
 			default:
-				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId());
+				throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.JOURNAL_1), invoice.getInvoiceId());
 			}	
 		}
 		

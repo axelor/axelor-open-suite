@@ -38,7 +38,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
@@ -68,7 +68,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService  {
 		
 		
 		if (bankOrders == null || bankOrders.size() <= 1) {  
-			throw new AxelorException(IException.INCONSISTENCY, IExceptionMessage.BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS);
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, IExceptionMessage.BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS);
 		}
 
 		this.checkSameElements(bankOrders);
@@ -121,35 +121,35 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService  {
 			
 			int statusSelect = bankOrder.getStatusSelect();
 			if (statusSelect != BankOrderRepository.STATUS_DRAFT && statusSelect != BankOrderRepository.STATUS_AWAITING_SIGNATURE) {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_STATUS));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_STATUS));
 			}
 			
 			if (statusSelect != refStatusSelect) {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_STATUS));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_STATUS));
 			}
 			
 			if (!bankOrder.getOrderTypeSelect().equals(orderTypeSelect)) {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_ORDER_TYPE_SELECT));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_ORDER_TYPE_SELECT));
 			}
 			
 			if (!bankOrder.getPaymentMode().equals(refPaymentMode)) {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_PAYMENT_MODE));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_PAYMENT_MODE));
 			}
 			
 			if (!bankOrder.getPartnerTypeSelect().equals(refPartnerTypeSelect)) {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_PARTNER_TYPE_SELECT));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_PARTNER_TYPE_SELECT));
 			}
 						
 			if (!bankOrder.getSenderCompany().equals(refSenderCompany)) {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_SENDER_COMPANY));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_SENDER_COMPANY));
 			}
 			
 			if(!bankOrder.getSenderBankDetails().equals(refSenderBankDetails))  {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS));
 			}
 			
 			if (bankOrder.getIsMultiCurrency() != isMultiCurrency || !bankOrder.getIsMultiCurrency() && !bankOrder.getBankOrderCurrency().equals(refCurrency)) {
-				throw new AxelorException(bankOrder, IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_CURRENCY));
+				throw new AxelorException(bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_SAME_CURRENCY));
 			}
 			
 		}
@@ -177,7 +177,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService  {
 	public BankOrder mergeFromInvoicePayments(Collection<InvoicePayment> invoicePayments) throws AxelorException {
 
 		if (invoicePayments == null || invoicePayments.isEmpty()) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
 		}
 
 		Collection<InvoicePayment> invoicePaymentsWithBankOrders = new ArrayList<>();
@@ -206,7 +206,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService  {
 			return bankOrders.iterator().next();
 		}
 
-		throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
+		throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
 	}
 
 }

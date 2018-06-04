@@ -132,6 +132,7 @@ public class AppController {
 		try {
 			appService.refreshApp();
 			response.setNotify(I18n.get(IAppExceptionMessages.REFRESH_APP_SUCCESS));
+			response.setReload(true);
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			response.setNotify(I18n.get(IAppExceptionMessages.REFRESH_APP_ERROR));

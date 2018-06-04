@@ -112,7 +112,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 			if (accountingSituation.getCompany().equals(saleOrder.getCompany())) {
 				// Update UsedCredit
 				accountingSituation = this.computeUsedCredit(accountingSituation);
-				if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT) {
+				if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
 				    BigDecimal inTaxInvoicedAmount =
 							Beans.get(SaleOrderInvoiceService.class)
 									.getInTaxInvoicedAmount(saleOrder);
@@ -145,7 +145,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 		List<SaleOrder> saleOrderList = Beans.get(SaleOrderRepository.class)
 											 .all()
 											 .filter("self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4", 
-													 accountingSituation.getCompany(), accountingSituation.getPartner(), SaleOrderRepository.STATUS_DRAFT, SaleOrderRepository.STATUS_CANCELED)
+													 accountingSituation.getCompany(), accountingSituation.getPartner(), SaleOrderRepository.STATUS_DRAFT_QUOTATION, SaleOrderRepository.STATUS_CANCELED)
 											 .fetch();
 		for (SaleOrder saleOrder : saleOrderList) {
 			sum = sum.add(saleOrder.getInTaxTotal()

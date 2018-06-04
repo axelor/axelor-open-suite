@@ -22,7 +22,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -60,7 +60,7 @@ public class PurchaseOrderLineController {
 			purchaseOrderLine = purchaseOrderLineServiceSupplychainImpl.createAnalyticDistributionWithTemplate(purchaseOrderLine);
 			response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
 		} else {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get("No template selected"));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("No template selected"));
 		}
 	}
 }

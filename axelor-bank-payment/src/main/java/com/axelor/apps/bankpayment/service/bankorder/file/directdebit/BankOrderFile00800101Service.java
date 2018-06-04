@@ -62,7 +62,7 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.ServiceLevel3Choice;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -297,7 +297,7 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
                 localInstrument1Choice.setCd(SEPA_TYPE_SBB);
                 break;
             default:
-                throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE));
+                throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE));
         }
         paymentTypeInformation2.setLclInstrm(localInstrument1Choice);
 

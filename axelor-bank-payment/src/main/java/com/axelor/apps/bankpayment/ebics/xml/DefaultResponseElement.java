@@ -28,7 +28,7 @@ import com.axelor.apps.bankpayment.ebics.exception.ReturnCode;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 
 
@@ -61,7 +61,7 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
     try {
       document = XmlObject.Factory.parse(factory.getContent());
     } catch (XmlException | IOException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

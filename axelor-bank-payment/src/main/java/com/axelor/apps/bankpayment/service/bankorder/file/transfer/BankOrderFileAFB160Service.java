@@ -34,7 +34,7 @@ import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -204,7 +204,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 	protected String getDetailD1Area(BankOrderLine bankOrderLine) throws AxelorException {
 
 	    if (bankOrderLine.getReceiverBankDetails().getBankAddress() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS), IException.MISSING_FIELD);
+			throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS), TraceBackRepository.CATEGORY_MISSING_FIELD);
 		}
 		return bankOrderLine.getReceiverBankDetails().getBankAddress().getAddress();
 	}
@@ -342,7 +342,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return senderRecord;
 		
 		} catch (Exception e) {
-			throw new AxelorException(e, IException.MISSING_FIELD, 
+			throw new AxelorException(e, TraceBackRepository.CATEGORY_MISSING_FIELD, 
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_SENDER_RECORD) + ": " + e.getMessage(), bankOrderSeq);
 		}
 	}
@@ -408,7 +408,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return detailRecord;
 		
 		} catch (Exception e) {
-			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD, 
+			throw new AxelorException(e, bankOrderLine, TraceBackRepository.CATEGORY_MISSING_FIELD, 
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_MAIN_DETAIL_RECORD)
 					+ ": " + e.getMessage(), bankOrderLine.getSequence());
 		}
@@ -446,7 +446,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			
 			// Zone D1 : Domiciliation
 			if (bankOrderLine.getReceiverBankDetails().getBankAddress() == null) {
-				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS), IException.MISSING_FIELD);
+				throw new AxelorException(I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS), TraceBackRepository.CATEGORY_MISSING_FIELD);
 			}
 			totalRecord += cfonbToolService.createZone(I18n.get("D1 - Bank address"), receiverBankDetails.getBankAddress().getAddress(), cfonbToolService.STATUS_DEPENDENT, cfonbToolService.FORMAT_ALPHA_NUMERIC, 24);
 			
@@ -478,7 +478,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return totalRecord;
 		
 		} catch (Exception e) {
-			throw new AxelorException(e, bankOrderLine, IException.MISSING_FIELD, 
+			throw new AxelorException(e, bankOrderLine, TraceBackRepository.CATEGORY_MISSING_FIELD, 
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD)
 					+ ": " + e.getMessage(), bankOrderLine.getSequence());
 		}
@@ -545,7 +545,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService  {
 			return totalRecord;
 			
 		} catch (Exception e) {
-			throw new AxelorException(e, IException.MISSING_FIELD,
+			throw new AxelorException(e, TraceBackRepository.CATEGORY_MISSING_FIELD,
 					I18n.get(IExceptionMessage.BANK_ORDER_WRONG_TOTAL_RECORD)
 					+ ": " + e.getMessage(), bankOrderSeq);
 		}

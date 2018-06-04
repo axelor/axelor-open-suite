@@ -22,17 +22,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import com.google.inject.Inject;
 import javax.persistence.Query;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -43,24 +41,26 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportLineRepository;
+import com.axelor.apps.tool.NammingTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSelect;
-import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
-import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
+import com.google.inject.Inject;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -93,75 +93,46 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 	@Inject
 	private MetaFiles metaFiles;
 	
-	@Inject
-	private MetaTranslationRepository metaTranslationRepo;
-	
-	private LinkedHashSet<String> joinFieldSet = new LinkedHashSet<String>();
-	
+	private LinkedHashSet<String> joinFieldSet = new LinkedHashSet<>();
 	private List<String> selectJoinFieldList = new ArrayList<>();
-	
-	private LinkedHashSet<String> selectionJoinFieldSet = new LinkedHashSet<String>();
-	
-	private LinkedHashSet<String> selectionRelationalJoinFieldSet = new LinkedHashSet<String>();
+	private LinkedHashSet<String> selectionJoinFieldSet = new LinkedHashSet<>();
+	private LinkedHashSet<String> selectionRelationalJoinFieldSet = new LinkedHashSet<>();
 	
 	private String language = "";
 	
 	private String selectNormalField = "";
-	
 	private String selectSelectionField = "";
 	
 	private String temp = "";
 	
 	private int counter = 0;
-	
 	private int counter2 = 0;
-	
 	private int counter3 = 0;
-	
 	private int nbrField = 0;
 	
 	private boolean isSelectionField = false;
 	
 	private int msi = 0;
-	
 	private int mt = 0;
 	
 	private List<Object> params = null;
 	
-	
 	@Override
 	public String getTargetField(Context context, MetaField metaField, String targetField, MetaModel parentMetaModel) {
 		
-		if (metaField.getRelationship() == null) {
-			
-			targetField = (String) context.get("targetField");
-			String[] splitField = targetField.split("\\.");
-			
-			MetaField metaField2 = this.checkLastMetaField(splitField, 0, parentMetaModel, metaField);
-			
-			if (metaField2.getRelationship() != null) {
-				targetField += "." + metaField.getName();
-				return targetField;
-				
-			} else {
-				return targetField.replace(splitField[splitField.length - 1], metaField.getName());
-			}
-			
-		} else {
-			
-			targetField = (String) context.get("targetField");
-			String[] splitField = targetField.split("\\.");
-			
-			MetaField metaField2 = this.checkLastMetaField(splitField, 0, parentMetaModel, metaField);
-			
-			if (metaField2.getRelationship() != null) {
-				targetField += "." + metaField.getName();
-				return targetField;
-				
-			} else {
-				return targetField.replace(splitField[splitField.length - 1], metaField.getName());
-			}
-		}
+        targetField = (String) context.get("targetField");
+        String[] splitField = targetField.split("\\.");
+
+        MetaField metaField2 = this.checkLastMetaField(splitField, 0, parentMetaModel, metaField);
+
+        if (metaField2.getRelationship() != null) {
+            targetField += "." + metaField.getName();
+            return targetField;
+
+        } else {
+            return targetField.replace(splitField[splitField.length - 1], metaField.getName());
+        }
+
 	}
 	
 	private MetaField checkLastMetaField(String[] splitField, int i, MetaModel parentMetaModel, MetaField metaField) {
@@ -187,10 +158,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		return metaField3;
 	}
 	
-	@SuppressWarnings("rawtypes")
-	@Override
-	public List<Map> showAdvancedExportData(List<Map<String, Object>> advancedExportLines, MetaModel metaModel, String criteria)
-			throws ClassNotFoundException {
+	private Query getAdvancedExportData(List<Map<String, Object>> advancedExportLines, MetaModel metaModel,
+			String criteria) throws ClassNotFoundException, DocumentException, IOException, AxelorException {
 
 		int col = 0;
 		String selectField = "";
@@ -205,6 +174,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		List<String> orderByColumns = new ArrayList<>();
 		selectJoinFieldList.clear();
 		joinFieldSet.clear();
+		selectionJoinFieldSet.clear();
+		selectionRelationalJoinFieldSet.clear();
 		counter = 0;
 		
 		language = AuthUtils.getUser().getLanguage();
@@ -218,14 +189,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
 			int cnt = this.getExportData(splitField, 0, metaModel);
 
-			if (joinFieldSet.size() > 0 && (!selectNormalField.equals("") || selectNormalField.indexOf(0) == '.')) {
+			if (!joinFieldSet.isEmpty() && (!selectNormalField.equals("") || selectNormalField.indexOf(0) == '.')) {
 				selectJoinFieldList.add(temp + selectNormalField + " AS " + ("Col_" + (col)));
 			}
 
-			if (!selectSelectionField.equals("") && selectionJoinFieldSet.size() > 0) {
+			if (!selectSelectionField.equals("") && !selectionJoinFieldSet.isEmpty()) {
 				selectionFieldList.add(selectSelectionField + " AS " + ("Col_" + (col)));
 				
-			} else if (!selectSelectionField.equals("") && selectionRelationalJoinFieldSet.size() > 0) {
+			} else if (!selectSelectionField.equals("") && !selectionRelationalJoinFieldSet.isEmpty()) {
 				selectionFieldList.add(selectSelectionField + " AS " + ("Col_" + (col)));
 				
 			} else if (cnt == 0 && selectSelectionField.equals("") && !selectNormalField.equals("")) {
@@ -238,7 +209,6 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			selectNormalField = "";
 			selectSelectionField = "";
 			temp = "";
-			cnt = 0;
 			counter2 = 0;
 			counter3 = 0;
 			nbrField++;
@@ -255,7 +225,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		params = null;
 		criteria = getCriteria(metaModel, criteria);
 		
-		if (orderByColumns.size() > 0)
+		if (!orderByColumns.isEmpty())
 			orderByCol = " ORDER BY " + String.join(",", orderByColumns);
 		
 		return this.createQuery(metaModel, selectField, joinField, selectJoinField, selectionField,
@@ -304,11 +274,10 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		return null;
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List<Map> createQuery(MetaModel metaModel, String selectField, String joinField,
-			String selectJoinField, String selectionField, String selectionJoinField,
-			String selectionRelationalJoinField, String criteria, String orderByCol) {
-		
+	private Query createQuery(MetaModel metaModel, String selectField, String joinField, String selectJoinField,
+			String selectionField, String selectionJoinField, String selectionRelationalJoinField, String criteria,
+			String orderByCol) {
+
 		Query query = null;
 
 		if (!selectField.equals("") && !selectJoinField.equals("") && !selectionField.equals("") && !selectionRelationalJoinField.equals("")) {
@@ -416,8 +385,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 				query.setParameter(i, params.get(i));
 			}
 		}
-
-		return query.getResultList();
+		
+		return query;
 	}
 	
 	private void checkSelectionField(String[] fieldName, int i, MetaModel metaModel) throws ClassNotFoundException {
@@ -427,7 +396,6 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		MetaSelect metaSelect = metaSelectRepo.findByName(mapper.getProperty(fieldName[i]).getSelection());
 		
 		if (metaSelect != null) {
-			MetaField metaField = metaFieldRepo.all().filter("self.name = ?1 AND self.metaModel = ?2", fieldName[i], metaModel).fetchOne();
 			isSelectionField = true;
 			msi++;
 			mt++;
@@ -436,64 +404,29 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 				
 				if (language.equals("fr")) {
 					
-					if (metaField.getTypeName().equals("String")) {
+					selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST("
+							+ temp + "." + fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND "
+							+ ("msi_" + (msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
+							+ ("mt_" + (mt)) + " ON " + ("msi_" + (msi)) + ".title = " + ("mt_" + (mt)) + ".key AND "
+							+ ("mt_"+(mt)) + ".language = \'" + language + "\'");
 						
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp
-								+ "." + fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-						
-					} else {
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp
-								+ "." + fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-					}
 				} else {
-					if (metaField.getTypeName().equals("String")) {
-						
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp + "."
-								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-						
-					} else {
-						selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON " + temp + "."
-								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-					}
+					selectionRelationalJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST("
+							+ temp + "." + fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND "
+							+ ("msi_" + (msi)) + ".select = " + metaSelect.getId());
 				}
 			} else {
 				if (language.equals("fr")) {
 					
-					if (metaField.getTypeName().equals("String")) {
+					selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST(self."
+							+ fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND " + ("msi_" + (msi))
+							+ ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation " + ("mt_" + (mt))
+							+ " ON " + ("msi_" + (msi)) + ".title = " + ("mt_" + (mt)) + ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
 						
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-						
-					} else {
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND "
-								+ ("msi_"+(msi)) + ".select = " + metaSelect.getId() + " LEFT JOIN MetaTranslation "
-								+ ("mt_"+(mt)) + " ON " + ("msi_"+(msi)) + ".title = " + ("mt_"+(mt))
-								+ ".key AND " + ("mt_"+(mt)) + ".language = \'" + language + "\'");
-					}
 				} else {
-					if (metaField.getTypeName().equals("String")) {
-						
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = " + ("msi_"+(msi)) + ".value AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-						
-					} else {
-						selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_"+(msi)) + " ON self."
-								+ fieldName[i] + " = CAST(" + ("msi_"+(msi)) + ".value AS int) AND " + ("msi_"+(msi))
-								+ ".select = " + metaSelect.getId());
-					}
+					selectionJoinFieldSet.add("LEFT JOIN MetaSelectItem " + ("msi_" + (msi)) + " ON CAST(self."
+							+ fieldName[i] + " AS text) = " + ("msi_" + (msi)) + ".value AND " + ("msi_" + (msi))
+							+ ".select = " + metaSelect.getId());
 				}
 			}
 		}
@@ -509,41 +442,37 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			MetaModel subMetaModel = metaModelRepo.all()
 					.filter("self.name = ?1", relationalField.getTypeName()).fetchOne();
 			
-			if (!relationalField.getPackageName().startsWith("java")) {
+			if (relationalField.getPackageName() != null && !relationalField.getPackageName().startsWith("java")) {
 				
+				String alias = "";
 				counter++;
 				if (counter2 != 0 || counter3 != 0) {
 					selectNormalField = "";
 				}
 				if (i != 0) {
-					for (int j = 0; j <= i; j++) {
-						if (j == 0) {
-							if (nbrField > 0 && joinFieldSet.size() > 0) {
-								joinFieldSet.add("LEFT JOIN self." + splitField[j] + " " + splitField[j]);
-								temp = splitField[j];
-							} else {
-								joinFieldSet.add("self." + splitField[j] + " " + splitField[j]);
-								temp = splitField[j];
-							}
-						} else {
-							if (!temp.equals(splitField[i])) {
-								joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + splitField[j]);
-								temp = splitField[j];
-							}
-						}
-					}
+                    alias = isKeyword(splitField, 0);
+                    if (nbrField > 0 && !joinFieldSet.isEmpty()) {
+                        joinFieldSet.add("LEFT JOIN ");
+                    }
+                    joinFieldSet.add("self." + splitField[0] + " " + alias);
+                    temp = alias;
+
+                    for (int j = 1; j <= i; j++) {
+                        alias = isKeyword(splitField, j);
+                        if (!temp.equals(splitField[i])) {
+                            joinFieldSet.add("LEFT JOIN " + temp + "." + splitField[j] + " " + alias);
+                            temp = alias;
+                        }
+                    }
 				} else {
-					if (nbrField > 0 && joinFieldSet.size() > 0) {
-						if (!joinFieldSet.contains("self." + splitField[i] + " " + splitField[i])) {
-							joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + splitField[i]);
-							temp = splitField[i];
-						} else {
-							temp = splitField[i];
-						}
+					alias = isKeyword(splitField, i);
+					if (nbrField > 0 && !joinFieldSet.isEmpty() &&
+					        !joinFieldSet.contains("self." + splitField[i] + " " + alias)) {
+					    joinFieldSet.add("LEFT JOIN self." + splitField[i] + " " + alias);
 					} else {
-						joinFieldSet.add("self." + splitField[i] + " " + splitField[i]);
-						temp = splitField[i];
+						joinFieldSet.add("self." + splitField[i] + " " + alias);
 					}
+					temp = alias;
 				}
 					
 			} else {
@@ -552,32 +481,23 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 				
 				if (isSelectionField) {
 					if (i == 0) {
-						
-						selectSelectionField = "";
-						if (language.equals("fr")) {
-							selectSelectionField += ("mt_"+(mt)) + ".message";
-							
-						} else {
-							selectSelectionField += ("msi_"+(msi)) + ".title";
-						}
-					} else {
-						
-						if (language.equals("fr")) {
-							selectSelectionField += ("mt_"+(mt)) + ".message";
-							
-						} else {
-							selectSelectionField += ("msi_"+(msi)) + ".title";
-						}
+                        selectSelectionField = "";
 					}
+                    if (language.equals("fr")) {
+                        selectSelectionField += ("mt_" + (mt)) + ".message";
+
+                    } else {
+                        selectSelectionField += ("msi_" + (msi)) + ".title";
+                    }
+
 					isSelectionField = false;
 				} else {
 
 					if (i == 0) {
 						selectNormalField = "";
-						selectNormalField += "self." + splitField[i];
-					} else {
-						selectNormalField += "." + splitField[i];
+						selectNormalField += "self";
 					}
+                    selectNormalField += "." + splitField[i];
 				}
 			}
 			getExportData(splitField, i+1, subMetaModel);
@@ -585,47 +505,64 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 		return counter;
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public MetaFile advancedExportPDF(MetaFile exportFile, List<Map<String, Object>> advancedExportLines,
-			List<Map> allFieldDataList, MetaModel metaModel) throws DocumentException, IOException {
+	private String isKeyword(String[] fieldNames, int ind) {
 
+		if (NammingTool.isKeyword(fieldNames[ind])) {
+			return fieldNames[ind] + "_id";
+		}
+		return fieldNames[ind];
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public MetaFile advancedExportPDF(List<Map<String, Object>> advancedExportLines, MetaModel metaModel,
+			String criteria, Integer maxExportLimit, Integer queryFetchLimit) throws DocumentException, IOException, ClassNotFoundException, AxelorException {
+
+		int startPosition = 0;
+		Query query = this.getAdvancedExportData(advancedExportLines, metaModel, criteria);
+		query.setFirstResult(startPosition);
+		query.setMaxResults(queryFetchLimit);
+		List<Map> dataList = query.getResultList();
+		
+		File pdfFile = File.createTempFile(metaModel.getName(), ".pdf");
+		FileOutputStream outStream = new FileOutputStream(pdfFile);
 		Document document = new Document();
-		
-		File file = File.createTempFile("Export", ".pdf");
-		FileOutputStream  outStream = new FileOutputStream(file);
+		PdfPTable table = new PdfPTable(advancedExportLines.size());
 		PdfWriter.getInstance(document, outStream);
-		
 		document.open();
 		
-		PdfPTable table = new PdfPTable(advancedExportLines.size());
-		PdfPCell headerCell;
-		PdfPCell cell;
+		createPDFHeader(advancedExportLines, table);
 		
-		for (Map<String, Object> fieldLine : advancedExportLines) {
+		while (startPosition < maxExportLimit) {
+			createPDfData(table, dataList);
+			log.debug("File processing: {}", pdfFile.getName());
 			
-			AdvancedExportLine advancedExportLine = advancedExportLineRepo.find(Long.parseLong(fieldLine.get("id").toString()));
-			
-			MetaTranslation metaTranslation = metaTranslationRepo.all().filter("self.key = ?1 and self.language = ?2",advancedExportLine.getTitle(), language).fetchOne();
-			if (metaTranslation != null) {
-				if (!metaTranslation.getMessage().equals("")) {
-					headerCell = new PdfPCell(new Phrase(metaTranslation.getMessage(), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
-				} else {
-					headerCell = new PdfPCell(new Phrase(advancedExportLine.getTitle(), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
-				}
-			} else {
-				headerCell = new PdfPCell(new Phrase(advancedExportLine.getTitle(), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
-			}
-			
-			headerCell.setBackgroundColor(BaseColor.GRAY);
-			headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			table.addCell(headerCell);
+			startPosition = startPosition + queryFetchLimit;
+			query.setFirstResult(startPosition);
+			dataList = query.getResultList();
+			if (dataList.isEmpty())
+				break;
 		}
 		
+		document.add(table);
+		document.close();
+		
+		FileInputStream inStream = new FileInputStream(pdfFile);
+		MetaFile exportFile = metaFiles.upload(inStream, metaModel.getName() + ".pdf");
+		inStream.close();
+		pdfFile.delete();
+		
+		return exportFile;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void createPDfData(PdfPTable table, List<Map> dataList) {
+		
+		PdfPCell cell;
 		Font font = new Font();
 		font.setSize(7);
 		
-		for (Map<String, Object> field : allFieldDataList) {
+		for (Map<String, Object> field : dataList) {
 			String[] allCols = field.keySet().toArray(new String[field.size()]);
 			Integer[] allColIndices = new Integer[allCols.length];
 			
@@ -636,7 +573,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			Arrays.sort(allColIndices);
 			
 			for(Integer colIndex: allColIndices) {
-				String colName = "Col_" + String.valueOf(colIndex);
+				String colName = "Col_" + colIndex;
 				Object value = field.get(colName);
 				if (value == null) {
 					cell = new PdfPCell(new Phrase(null, font));
@@ -646,62 +583,66 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 				table.addCell(cell);
 			}
 		}
-		document.add(table);
-		document.close();
-		
-		return exportPDFFile(exportFile, metaModel, file);
 	}
-	
-	private MetaFile exportPDFFile(MetaFile inputFile, MetaModel metaModel, File file) throws DocumentException, IOException {
-		
-		String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy HH:mm:ss"));
-		String fileName = metaModel.getName() + "-" + date + ".pdf";
-		
-		log.debug("File created: {}, Size: {}", file.getName(), file.getTotalSpace());
-		log.debug("Meta files: {}", metaFiles);
-		
-		FileInputStream inStream = new FileInputStream(file);
-		inputFile = metaFiles.upload(inStream, fileName);
-		
-		inStream.close();
-		
-		file.delete();
-		
-		return inputFile;
-	}
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public MetaFile advancedExportExcel(MetaFile exportFile, MetaModel metaModel, List<Map> allFieldDataList,
-			List<Map<String, Object>> advancedExportLines) throws IOException {
 
-		Workbook workbook = new XSSFWorkbook();
+	private void createPDFHeader(List<Map<String, Object>> advancedExportLines, PdfPTable table) throws DocumentException, IOException {
 		
-		Sheet sheet = workbook.createSheet();
-		int rowNum = 0;
-		
-		Row headerRow = sheet.createRow(rowNum++);
-		int colHeaderNum = 0;
+		PdfPCell headerCell;
 		
 		for (Map<String, Object> fieldLine : advancedExportLines) {
-			
 			AdvancedExportLine advancedExportLine = advancedExportLineRepo.find(Long.parseLong(fieldLine.get("id").toString()));
+			headerCell = new PdfPCell(new Phrase(I18n.get(advancedExportLine.getTitle()), new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
+			headerCell.setBackgroundColor(BaseColor.GRAY);
+			headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(headerCell);
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public MetaFile advancedExportExcel(List<Map<String, Object>> advancedExportLines, MetaModel metaModel,
+			String criteria, Integer maxExportLimit, Integer queryFetchLimit)
+			throws IOException, ClassNotFoundException, DocumentException, AxelorException, InvalidFormatException {
+
+		int startPosition = 0;
+		Query query = this.getAdvancedExportData(advancedExportLines, metaModel, criteria);
+		query.setFirstResult(startPosition);
+		query.setMaxResults(queryFetchLimit);
+		List<Map> dataList = query.getResultList();
+		
+		File excelFile = File.createTempFile(metaModel.getName(), ".xlsx");
+		Workbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet(metaModel.getName());
+		
+		createExcelHeader(advancedExportLines, metaModel, sheet);
+		
+		while (startPosition < maxExportLimit) {
+			createExcelData(dataList, sheet);
+			log.debug("File processing: {}", excelFile.getName());
 			
-			Cell headerCell = headerRow.createCell(colHeaderNum++);
-			
-			MetaTranslation metaTranslation = metaTranslationRepo.all().filter("self.key = ?1 and self.language = ?2",advancedExportLine.getTitle(), language).fetchOne();
-			if (metaTranslation != null) {
-				if (!metaTranslation.getMessage().equals("")) {
-					headerCell.setCellValue(metaTranslation.getMessage());
-				} else {
-					headerCell.setCellValue(advancedExportLine.getTitle());
-				}
-			} else {
-				headerCell.setCellValue(advancedExportLine.getTitle());
-			}
+			startPosition = startPosition + queryFetchLimit;
+			query.setFirstResult(startPosition);
+			dataList = query.getResultList();
+			if (dataList.isEmpty())
+				break;
 		}
 		
-		for (Map<String, Object> field : allFieldDataList) {
+		FileOutputStream fout = new FileOutputStream(excelFile);
+		workbook.write(fout);
+		fout.close();
+		
+		FileInputStream inStream = new FileInputStream(excelFile);
+		MetaFile exportFile = metaFiles.upload(inStream, metaModel.getName() + ".xlsx");
+		inStream.close();
+		excelFile.delete();
+		
+		return exportFile;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void createExcelData(List<Map> dataList, Sheet sheet) {
+		
+		for (Map<String, Object> field : dataList) {
 			String[] allCols = field.keySet().toArray(new String[field.size()]);
 			Integer[] allColIndices = new Integer[allCols.length];
 			
@@ -711,11 +652,10 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 			}
 			Arrays.sort(allColIndices);
 			
-			Row row = sheet.createRow(rowNum++);
+			Row row = sheet.createRow(sheet.getLastRowNum() + 1);
 			int colNum = 0;
-
 			for (Integer colIndex : allColIndices) {
-				String colName = "Col_" + String.valueOf(colIndex);
+				String colName = "Col_" + colIndex;
 				Object value = field.get(colName);
 				Cell cell = row.createCell(colNum++);
 				if (value == null)
@@ -723,92 +663,95 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 				cell.setCellValue(value.toString());
 			}
 		}
-		return exportExcelFile(exportFile, metaModel, workbook);
 	}
 	
-	private MetaFile exportExcelFile(MetaFile inputFile, MetaModel metaModel, Workbook workbook) throws IOException {
+	private void createExcelHeader(List<Map<String, Object>> advancedExportLines, MetaModel metaModel, Sheet sheet) {
 		
-		String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy HH:mm:ss"));
-		String fileName = metaModel.getName() + "-" + date + ".xlsx";
-		
-		File file = File.createTempFile("Export", ".xlsx");
-		FileOutputStream  outStream = new FileOutputStream(file);
-		workbook.write(outStream);
-		outStream.close();
-		
-		log.debug("File created: {}, Size: {}", file.getName(), file.getTotalSpace());
-		log.debug("Meta files: {}", metaFiles);
-		
-		FileInputStream inStream = new FileInputStream(file);
-		inputFile = metaFiles.upload(inStream, fileName);
-
-		inStream.close();
-		
-		file.delete();
-		
-		return inputFile;
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public MetaFile advancedExportCSV(MetaFile exportFile, MetaModel metaModel, List<Map> allFieldDataList,
-			List<Map<String, Object>> advancedExportLines) throws IOException {
-		
-		File csvFile = File.createTempFile("Export", ".csv");
-		CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile, true), ';');
-		String[] totalCols = new String[advancedExportLines.size()];
-		int i = 0;
+		Row headerRow = sheet.createRow(sheet.getFirstRowNum());
+		int colHeaderNum = 0;
 		
 		for (Map<String, Object> fieldLine : advancedExportLines) {
 			AdvancedExportLine advancedExportLine = advancedExportLineRepo.find(Long.parseLong(fieldLine.get("id").toString()));
-			totalCols[i++] = advancedExportLine.getTargetField();
+			Cell headerCell = headerRow.createCell(colHeaderNum++);
+			headerCell.setCellValue(I18n.get(advancedExportLine.getTitle()));
 		}
-		csvWriter.writeNext(totalCols);
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public MetaFile advancedExportCSV(List<Map<String, Object>> advancedExportLines, MetaModel metaModel,
+			String criteria, Integer maxExportLimit, Integer queryFetchLimit)
+			throws IOException, ClassNotFoundException, DocumentException, AxelorException {
 		
-		i = 0;
-		for (Map<String, Object> field : allFieldDataList) {
-			String[] allCols = field.keySet().toArray(new String[field.size()]);
-			Integer[] allColIndices = new Integer[allCols.length];
+		int startPosition = 0;
+		int index = 0;
+		Query query = this.getAdvancedExportData(advancedExportLines, metaModel, criteria);
+		
+		query.setFirstResult(startPosition);
+		query.setMaxResults(queryFetchLimit);
+		List<Map> dataList = query.getResultList();
+		
+		File csvFile = File.createTempFile(metaModel.getName(), ".csv");
+		CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile, true), ';');
+		String[] totalCols = new String[advancedExportLines.size()];
+		
+		createCsvHeader(advancedExportLines, totalCols, index, csvWriter, csvFile);
+		
+		while (startPosition < maxExportLimit) {
+			createCsvData(dataList, totalCols, index, csvWriter);
+			log.debug("File processing: {}", csvFile.getName());
 			
-			for (int j = 0; j < allCols.length; j++) {
-				String col = allCols[j];
-				allColIndices[j] = Integer.parseInt(col.replace("Col_", ""));
-			}
-			Arrays.sort(allColIndices);
-			
-			for(Integer colIndex: allColIndices) {
-				String colName = "Col_" + String.valueOf(colIndex);
-				Object value = field.get(colName);
-				if (value == null || value == "") {
-					totalCols[i++] = null;
-				} else {
-					totalCols[i++] = value.toString();
-				}
-			}
-			csvWriter.writeNext(totalCols);
-			i = 0;
+			startPosition = startPosition + queryFetchLimit;
+			query.setFirstResult(startPosition);
+			dataList = query.getResultList();
+			if (dataList.isEmpty())
+				break;
 		}
 		csvWriter.close();
 		
-		return exportCSVFile(exportFile, metaModel, csvFile);
-	}
-	
-	private MetaFile exportCSVFile(MetaFile inputFile, MetaModel metaModel, File csvFile) throws IOException {
-		
-		String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy HH:mm:ss"));
-		String fileName = metaModel.getName() + "-" + date + ".csv";
-		
-		log.debug("File created: {}, Size: {}", csvFile.getName(), csvFile.getTotalSpace());
-		log.debug("Meta files: {}", metaFiles);
-		
 		FileInputStream inStream = new FileInputStream(csvFile);
-		inputFile = metaFiles.upload(inStream, fileName);
-		
+		MetaFile exportFile = metaFiles.upload(inStream, metaModel.getName() + ".csv");
 		inStream.close();
-		
 		csvFile.delete();
-		
-		return inputFile;
+
+        return exportFile;
 	}
 	
+	private void createCsvHeader(List<Map<String, Object>> advancedExportLines, String[] totalCols, int index,
+			CSVWriter csvWriter, File csvFile) throws IOException {
+		
+        for (Map<String, Object> fieldLine : advancedExportLines) {
+            AdvancedExportLine advancedExportLine = advancedExportLineRepo.find(Long.parseLong(fieldLine.get("id").toString()));
+            totalCols[index++] = I18n.get(advancedExportLine.getTitle());
+        }
+        csvWriter.writeNext(totalCols);
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void createCsvData(List<Map> dataList, String[] totalCols, int index, CSVWriter csvWriter) {
+		
+		index = 0;
+        for (Map<String, Object> field : dataList) {
+            String[] allCols = field.keySet().toArray(new String[field.size()]);
+            Integer[] allColIndices = new Integer[allCols.length];
+
+            for (int j = 0; j < allCols.length; j++) {
+                String col = allCols[j];
+                allColIndices[j] = Integer.parseInt(col.replace("Col_", ""));
+            }
+            Arrays.sort(allColIndices);
+
+            for (Integer colIndex : allColIndices) {
+                String colName = "Col_" + colIndex;
+                Object value = field.get(colName);
+                if (value == null || value == "") {
+                    totalCols[index++] = null;
+                } else {
+                    totalCols[index++] = value.toString();
+                }
+            }
+            csvWriter.writeNext(totalCols);
+            index = 0;
+        }
+	}
 }

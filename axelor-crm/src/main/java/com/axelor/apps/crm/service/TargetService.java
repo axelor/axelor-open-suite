@@ -36,7 +36,7 @@ import com.axelor.apps.crm.db.repo.TargetRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
@@ -80,7 +80,7 @@ public class TargetService {
 				
 					oldDate = date;
 				} else {
-					throw new AxelorException(targetConfiguration, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TARGET_1), target2.getCode(), targetConfiguration.getCode());
+					throw new AxelorException(targetConfiguration, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TARGET_1), target2.getCode(), targetConfiguration.getCode());
 				}
 			}
 		}

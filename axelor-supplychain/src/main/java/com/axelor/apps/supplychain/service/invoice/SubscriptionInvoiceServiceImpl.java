@@ -67,7 +67,7 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
 						+ "AND :subScriptionDate >= self.nextInvoicingDate "
 						+ "AND (self.contractEndDate IS NULL OR self.contractEndDate >= :subScriptionDate)")
 				.bind("saleOrderType", SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION)
-				.bind("saleOrderStatus", SaleOrderRepository.STATUS_CONFIRMED)
+				.bind("saleOrderStatus", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
 				.bind("subScriptionDate", appBaseService.getTodayDate());
 				
 		if (limit != null) {

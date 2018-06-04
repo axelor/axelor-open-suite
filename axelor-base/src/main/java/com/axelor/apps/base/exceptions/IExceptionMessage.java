@@ -173,7 +173,7 @@ public interface IExceptionMessage {
 	static final public String ADDRESS_4 = /*$$(*/ "NA" /*)*/;
 	static final public String ADDRESS_5 = /*$$(*/ "<B>%s</B> not found" /*)*/;
 	static final public String ADDRESS_6 = /*$$(*/ "Feature currently not available with Open Street Maps." /*)*/;
-	static final public String ADDRESS_7 = /*$$(*/ "Current user's partner delivery address not set" /*)*/;
+	static final public String ADDRESS_7 = /*$$(*/ "Current user's active company address is not set" /*)*/;
 
 	/**
 	 * Bank details controller
@@ -191,8 +191,10 @@ public interface IExceptionMessage {
 	static final public String GENERAL_5 = /*$$(*/ "Export Object" /*)*/;
 	static final public String GENERAL_6 = /*$$(*/ "Connection successful" /*)*/;
 	static final public String GENERAL_7 = /*$$(*/ "Error in Connection" /*)*/;
-	static final public String GENERAL_8 = /*$$(*/ "There is no records to check duplicate" /*)*/;
-
+	static final public String GENERAL_8 = /*$$(*/ "Duplicate finder field '%s' is not found inside model '%s'" /*)*/;
+	static final public String GENERAL_9 = /*$$(*/ "Invalid duplicate finder field '%s'. Field type ManyToMany or OneToMany is not supported for duplicate check" /*)*/;
+	static final public String GENERAL_10 = /*$$(*/ "No duplicate finder field configured." /*)*/;
+	static final public String GENERAL_11 = /*$$(*/ "There is no records to check duplicate" /*)*/;
 	/**
 	 * Messsage controller
 	 */
@@ -231,7 +233,8 @@ public interface IExceptionMessage {
 	 */
 	static final String ADVANCED_EXPORT_1 = /*$$(*/ "Please select fields for export." /*)*/;
 	static final String ADVANCED_EXPORT_2 = /*$$(*/ "There is no records to export." /*)*/;
-
+	static final String ADVANCED_EXPORT_3 = /*$$(*/ "Warning : Exported maximum export limit records." /*)*/;
+    static final String ADVANCED_EXPORT_FILE_TYPE_UNKNOWN = /*$$(*/ "The file type is unknown." /*)*/;
 
 	/**
 	 * Barcode Generator Service

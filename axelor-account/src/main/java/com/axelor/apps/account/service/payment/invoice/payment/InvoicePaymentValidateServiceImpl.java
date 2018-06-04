@@ -177,10 +177,10 @@ public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValida
 		Move move = moveService.getMoveCreateService().createMove(journal, company, invoicePayment.getCurrency(), partner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 		
 		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails), 
-				paymentAmount, isDebitInvoice, paymentDate, null, 1, ""));
+				paymentAmount, isDebitInvoice, paymentDate, null, 1, invoicePayment.getInvoicePaymentRef(), null));
 
 		MoveLine customerMoveLine = moveLineService.createMoveLine(move, partner, customerAccount,
-				paymentAmount, !isDebitInvoice, paymentDate, null, 2, "");
+				paymentAmount, !isDebitInvoice, paymentDate, null, 2, invoicePayment.getInvoicePaymentRef(), null);
 		customerMoveLine.setTaxAmount(invoice.getTaxTotal());
 
 		move.addMoveLineListItem(customerMoveLine);

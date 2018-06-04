@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -107,7 +107,7 @@ public class CurrencyConversionService {
 
 		} else {
 			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_7), date.plus(Period.ofDays(1)),
-					appBaseService.getTodayDate()), IException.CONFIGURATION_ERROR);
+					appBaseService.getTodayDate()), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
 		}
 
 		if (response.getContentAsString().isEmpty()) {

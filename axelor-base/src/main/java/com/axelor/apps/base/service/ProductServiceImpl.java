@@ -33,7 +33,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService  {
 		String seq = sequenceService.getSequenceNumber(SequenceRepository.PRODUCT);
 
 		if (seq == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCT_NO_SEQUENCE));
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCT_NO_SEQUENCE));
 		}
 
 		return seq;

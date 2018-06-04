@@ -52,7 +52,7 @@ public class AxelorException extends Exception {
 	 * <li>2: No unique key</li>
 	 * <li>3: No value</li>
 	 * <li>4: configuration error</li>
-	 * <li>5: Inconsistency</li>
+	 * <li>5: CATEGORY_INCONSISTENCY</li>
 	 * </ul>
 	 */
 	@Deprecated
@@ -88,7 +88,7 @@ public class AxelorException extends Exception {
 	 * <li>2: No unique key</li>
 	 * <li>3: No value</li>
 	 * <li>4: configuration error</li>
-	 * <li>5: Inconsistency</li>
+	 * <li>5: CATEGORY_INCONSISTENCY</li>
 	 * </ul>
 	 * 
 	 * @see Throwable
@@ -114,7 +114,7 @@ public class AxelorException extends Exception {
 	 * <li>2: No unique key</li>
 	 * <li>3: No value</li>
 	 * <li>4: configuration error</li>
-	 * <li>5: Inconsistency</li>
+	 * <li>5: CATEGORY_INCONSISTENCY</li>
 	 * </ul>
 	 * 
 	 * @see Throwable
@@ -242,7 +242,7 @@ public class AxelorException extends Exception {
 	 * <li>2: No unique key</li>
 	 * <li>3: No value</li>
 	 * <li>4: configuration error</li>
-	 * <li>5: Inconsistency</li>
+	 * <li>5: CATEGORY_INCONSISTENCY</li>
 	 * </ul>
 	 */
 	public int getCategory() {

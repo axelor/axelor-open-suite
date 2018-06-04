@@ -3,7 +3,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
-    <form onSave="action-year-check-date" onLoad="action-attrs-account-year-read-only-dates"
+    <form onSave="action-year-check-date"
           onNew="action-year-record-new,action-year-hr-record-new"
           name="year-hr-form" title="Payroll Year" model="com.axelor.apps.base.db.Year">
         <panel name="main">
@@ -11,8 +11,8 @@
             <field name="code" colSpan="3"/>
             <field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
             <panel name="dates" title="Dates" colSpan="12">
-                <field name="fromDate" colSpan="3"/>
-                <field name="toDate" colSpan="3"/>
+                <field name="fromDate" colSpan="3" readonlyIf="periodList.length > 0"/>
+                <field name="toDate" colSpan="3" readonlyIf="periodList.length > 0"/>
             </panel>
         </panel>
         <panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>

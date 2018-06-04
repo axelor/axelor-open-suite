@@ -8,6 +8,9 @@
     <many-to-one name="purchasesUnit" ref="com.axelor.apps.base.db.Unit" title="Purchases unit" initParam="true" massUpdate="true" />
 	<one-to-many name="supplierCatalogList" ref="com.axelor.apps.purchase.db.SupplierCatalog" mappedBy="product" title="Supplier Catalog Lines" />
   	
+    <track on="UPDATE">
+        <field name="purchasesUnit" />
+    </track>
   </entity>
 
 </domain-models>

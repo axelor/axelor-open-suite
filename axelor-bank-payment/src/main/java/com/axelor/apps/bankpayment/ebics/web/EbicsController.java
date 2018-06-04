@@ -55,7 +55,7 @@ import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -314,7 +314,7 @@ public class EbicsController {
 			
 		} catch (CertificateException | IOException e) {
 			e.printStackTrace();
-			throw new AxelorException(e, IException.CONFIGURATION_ERROR, I18n.get("Error in adding bank certificate"));
+			throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("Error in adding bank certificate"));
 		}
 		
 		response.setCanClose(true);
@@ -422,7 +422,7 @@ public class EbicsController {
 		}
 		
 		if (certIds.isEmpty()) {
-			throw new AxelorException(ebicsUser, IException.MISSING_FIELD, I18n.get(IExceptionMessage.EBICS_MISSING_CERTIFICATES));
+			throw new AxelorException(ebicsUser, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.EBICS_MISSING_CERTIFICATES));
 		}
 		
 		String title = I18n.get("EbicsCertificate");

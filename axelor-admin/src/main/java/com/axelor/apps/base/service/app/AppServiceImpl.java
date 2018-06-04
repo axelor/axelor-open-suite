@@ -48,7 +48,7 @@ import com.axelor.data.csv.CSVInput;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaModel;
@@ -98,7 +98,7 @@ public class AppServiceImpl implements AppService {
 		
 		String lang = getLanguage(app);
 		if (lang == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR,
+			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
 					I18n.get(IAppExceptionMessages.NO_LANGAUAGE_SELECTED));
 		}
 		
@@ -119,6 +119,9 @@ public class AppServiceImpl implements AppService {
 	private void importData(App app, String dataDir) {
 		
 		String modules = app.getModules();
+		if (modules == null) {
+			return;
+		}
 		String code = app.getCode();
 		String lang = getLanguage(app);
 		
@@ -395,7 +398,7 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public void refreshApp() throws IOException, ClassNotFoundException {
+	public void refreshApp() throws IOException {
 
 		File dataDir = Files.createTempDir();
 		File imgDir = new File(dataDir, "img");
@@ -411,7 +414,12 @@ public class AppServiceImpl implements AppService {
 		
 		log.debug("Total app models: {}", metaModels.size());
 		for (MetaModel metaModel : metaModels) {
-			Class<?> klass = Class.forName(metaModel.getFullName());
+			Class<?> klass;
+			try {
+				klass = Class.forName(metaModel.getFullName());
+			} catch (ClassNotFoundException e) {
+				continue;
+			}
 			if (!App.class.isAssignableFrom(klass)){
 				log.debug("Not a App class : {}", metaModel.getName());
 				continue;
@@ -470,7 +478,7 @@ public class AppServiceImpl implements AppService {
 		List<App> children = getChildren(app, true);
 		if (!children.isEmpty()) {
 			List<String> childrenNames = getNames(children);
-			throw new AxelorException(IException.INCONSISTENCY, 
+			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, 
 					IAppExceptionMessages.APP_IN_USE, childrenNames);
 		}
 		
