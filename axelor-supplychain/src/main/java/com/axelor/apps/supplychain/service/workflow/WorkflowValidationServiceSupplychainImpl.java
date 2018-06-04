@@ -23,19 +23,19 @@ import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class WorkflowValidationServiceSupplychainImpl extends WorkflowValidationServiceImpl{
+public class WorkflowValidationServiceSupplychainImpl extends WorkflowValidationServiceImpl {
 
-    protected IntercoService intercoService;
+  protected IntercoService intercoService;
 
-    @Inject
-    public WorkflowValidationServiceSupplychainImpl(IntercoService intercoService) {
-        this.intercoService = intercoService;
+  @Inject
+  public WorkflowValidationServiceSupplychainImpl(IntercoService intercoService) {
+    this.intercoService = intercoService;
+  }
+
+  @Override
+  public void afterValidation(Invoice invoice) throws AxelorException {
+    if (invoice.getInterco()) {
+      intercoService.generateIntercoInvoice(invoice);
     }
-
-    @Override
-    public void afterValidation(Invoice invoice) throws AxelorException {
-        if (invoice.getInterco()) {
-            intercoService.generateIntercoInvoice(invoice);
-        }
-    }
+  }
 }

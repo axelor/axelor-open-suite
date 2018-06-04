@@ -22,8 +22,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface QualityControlService {
-	
-	@Transactional
-	public void preFillOperations(QualityControl control) throws AxelorException;
 
+  @Transactional
+  public void preFillOperations(QualityControl control) throws AxelorException;
 }

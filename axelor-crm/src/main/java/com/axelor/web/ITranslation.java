@@ -19,7 +19,6 @@ package com.axelor.web;
 
 public interface ITranslation {
 
-    public static final String PIN_CHAR_LEAD = /*$$(*/ "MapRest.PinCharLead" /*)*/;
-    public static final String PIN_CHAR_OPPORTUNITY = /*$$(*/ "MapRest.PinCharOpportunity" /*)*/;
-
+  public static final String PIN_CHAR_LEAD = /*$$(*/ "MapRest.PinCharLead" /*)*/;
+  public static final String PIN_CHAR_OPPORTUNITY = /*$$(*/ "MapRest.PinCharOpportunity" /*)*/;
 }

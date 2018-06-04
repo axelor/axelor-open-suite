@@ -6,6 +6,12 @@ apply {
 	version = absVersion
 }
 
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}
+
 axelor {
 	title "Axelor Base"
 	description "Axelor Base Module"

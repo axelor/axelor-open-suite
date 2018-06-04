@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.supplychain.service.invoice;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
@@ -43,87 +36,102 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
-	@Inject
-	public InvoiceServiceSupplychainImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory,
-			CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo,
-			AppAccountService appAccountService) {
-		super(validateFactory, ventilateFactory, cancelFactory, alarmEngineService, invoiceRepo, appAccountService);
-	}
+  @Inject
+  public InvoiceServiceSupplychainImpl(
+      ValidateFactory validateFactory,
+      VentilateFactory ventilateFactory,
+      CancelFactory cancelFactory,
+      AlarmEngineService<Invoice> alarmEngineService,
+      InvoiceRepository invoiceRepo,
+      AppAccountService appAccountService) {
+    super(
+        validateFactory,
+        ventilateFactory,
+        cancelFactory,
+        alarmEngineService,
+        invoiceRepo,
+        appAccountService);
+  }
 
-	@Override
-	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
-		SaleOrder saleOrder = invoice.getSaleOrder();
-		Company company = invoice.getCompany();
-		Currency currency = invoice.getCurrency();
-	    if (company == null || saleOrder == null) {
-	    	return super.getDefaultAdvancePaymentInvoice(invoice);
-		}
-		boolean generateMoveForInvoicePayment = Beans
-				.get(AccountConfigService.class)
-				.getAccountConfig(company)
-				.getGenerateMoveForInvoicePayment();
+  @Override
+  public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
+    SaleOrder saleOrder = invoice.getSaleOrder();
+    Company company = invoice.getCompany();
+    Currency currency = invoice.getCurrency();
+    if (company == null || saleOrder == null) {
+      return super.getDefaultAdvancePaymentInvoice(invoice);
+    }
+    boolean generateMoveForInvoicePayment =
+        Beans.get(AccountConfigService.class)
+            .getAccountConfig(company)
+            .getGenerateMoveForInvoicePayment();
 
-		String filter = writeGeneralFilterForAdvancePayment();
-		filter += " AND self.saleOrder = :_saleOrder";
+    String filter = writeGeneralFilterForAdvancePayment();
+    filter += " AND self.saleOrder = :_saleOrder";
 
-		if (!generateMoveForInvoicePayment) {
-			filter += " AND self.currency = :_currency";
-		}
-		Query<Invoice> query = Beans.get(InvoiceRepository.class).all()
-				.filter(filter)
-				.bind("_status", InvoiceRepository.STATUS_VALIDATED)
-				.bind("_operationSubType",
-						InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-                .bind("_saleOrder", saleOrder);
+    if (!generateMoveForInvoicePayment) {
+      filter += " AND self.currency = :_currency";
+    }
+    Query<Invoice> query =
+        Beans.get(InvoiceRepository.class)
+            .all()
+            .filter(filter)
+            .bind("_status", InvoiceRepository.STATUS_VALIDATED)
+            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind("_saleOrder", saleOrder);
 
-		if (!generateMoveForInvoicePayment) {
-		    if (currency == null) {
-		    	return new HashSet<>();
-			}
-			query.bind("_currency", currency);
-		}
-
-		Set<Invoice> advancePaymentInvoices = new HashSet<>(
-		        query.fetch()
-		);
-		filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
-		return advancePaymentInvoices;
+    if (!generateMoveForInvoicePayment) {
+      if (currency == null) {
+        return new HashSet<>();
+      }
+      query.bind("_currency", currency);
     }
 
-	@Override
-	public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
-		//search sale order in the invoice
-        SaleOrder saleOrder = invoice.getSaleOrder();
-        //search sale order in invoice lines
-		List<SaleOrder> saleOrderList = invoice.getInvoiceLineList()
-				.stream()
-				.map(InvoiceLine::getSaleOrder)
-				.collect(Collectors.toList());
-		saleOrderList.add(saleOrder);
+    Set<Invoice> advancePaymentInvoices = new HashSet<>(query.fetch());
+    filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
+    return advancePaymentInvoices;
+  }
 
-		//remove null value and duplicates
-		saleOrderList = saleOrderList.stream()
-				.filter(Objects::nonNull)
-				.distinct()
-				.collect(Collectors.toList());
+  @Override
+  public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
+    // search sale order in the invoice
+    SaleOrder saleOrder = invoice.getSaleOrder();
+    // search sale order in invoice lines
+    List<SaleOrder> saleOrderList =
+        invoice
+            .getInvoiceLineList()
+            .stream()
+            .map(InvoiceLine::getSaleOrder)
+            .collect(Collectors.toList());
+    saleOrderList.add(saleOrder);
 
-		if (saleOrderList.isEmpty()) {
-			return new ArrayList<>();
-		} else {
-			//get move lines from sale order
-			return saleOrderList
-					.stream()
-					.flatMap(saleOrder1 -> saleOrder1.getAdvancePaymentList().stream())
-					.filter(Objects::nonNull)
-					.distinct()
-					.map(AdvancePayment::getMove)
-					.filter(Objects::nonNull)
-					.distinct()
-					.flatMap(move -> move.getMoveLineList().stream())
-					.collect(Collectors.toList());
-		}
-	}
+    // remove null value and duplicates
+    saleOrderList =
+        saleOrderList.stream().filter(Objects::nonNull).distinct().collect(Collectors.toList());
+
+    if (saleOrderList.isEmpty()) {
+      return new ArrayList<>();
+    } else {
+      // get move lines from sale order
+      return saleOrderList
+          .stream()
+          .flatMap(saleOrder1 -> saleOrder1.getAdvancePaymentList().stream())
+          .filter(Objects::nonNull)
+          .distinct()
+          .map(AdvancePayment::getMove)
+          .filter(Objects::nonNull)
+          .distinct()
+          .flatMap(move -> move.getMoveLineList().stream())
+          .collect(Collectors.toList());
+    }
+  }
 }

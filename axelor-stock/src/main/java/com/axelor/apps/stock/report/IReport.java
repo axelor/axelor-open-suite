@@ -19,11 +19,8 @@ package com.axelor.apps.stock.report;
 
 public interface IReport {
 
-	
-	public static final String STOCK_MOVE = "StockMove.rptdesign";
-	public static final String PICKING_STOCK_MOVE = "PickingStockMove.rptdesign";
-	public static final String INVENTORY = "Inventory.rptdesign";
-	public static final String STOCK_LOCATION = "StockLocation.rptdesign";
-	
-	
+  public static final String STOCK_MOVE = "StockMove.rptdesign";
+  public static final String PICKING_STOCK_MOVE = "PickingStockMove.rptdesign";
+  public static final String INVENTORY = "Inventory.rptdesign";
+  public static final String STOCK_LOCATION = "StockLocation.rptdesign";
 }

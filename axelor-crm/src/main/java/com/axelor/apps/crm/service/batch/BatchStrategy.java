@@ -28,45 +28,43 @@ import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
-	protected MessageServiceCrmImpl messageServiceCrmImpl;
-	protected MailAccountService mailAccountService;
-	protected TargetService targetService;
-	
-	
-	@Inject
-	protected EventReminderRepository eventReminderRepo;
+  protected MessageServiceCrmImpl messageServiceCrmImpl;
+  protected MailAccountService mailAccountService;
+  protected TargetService targetService;
 
-	protected BatchStrategy(MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
-		super();
-		this.messageServiceCrmImpl = messageServiceCrmImpl;
-		this.mailAccountService = mailAccountService;
-	}
+  @Inject protected EventReminderRepository eventReminderRepo;
 
-	protected BatchStrategy(TargetService targetService) {
-		super();
-		this.targetService = targetService;
-	}
+  protected BatchStrategy(
+      MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
+    super();
+    this.messageServiceCrmImpl = messageServiceCrmImpl;
+    this.mailAccountService = mailAccountService;
+  }
 
-	protected void updateEventReminder( EventReminder eventReminder ){
+  protected BatchStrategy(TargetService targetService) {
+    super();
+    this.targetService = targetService;
+  }
 
-		eventReminder.addBatchSetItem( batchRepo.find( batch.getId() ) );
+  protected void updateEventReminder(EventReminder eventReminder) {
 
-		incrementDone();
-//		eventReminderService.save(eventReminder);
-	}
+    eventReminder.addBatchSetItem(batchRepo.find(batch.getId()));
 
-//	protected void updateEvent( Event event ){
-//
-//		event.addBatchSetItem( batchRepo.find( batch.getId() ) );
-//
-//		incrementDone();
-//	}
+    incrementDone();
+    //		eventReminderService.save(eventReminder);
+  }
 
-	protected void updateTargetConfiguration( TargetConfiguration targetConfiguration ){
+  //	protected void updateEvent( Event event ){
+  //
+  //		event.addBatchSetItem( batchRepo.find( batch.getId() ) );
+  //
+  //		incrementDone();
+  //	}
 
-		targetConfiguration.addBatchSetItem( batchRepo.find( batch.getId() ) );
+  protected void updateTargetConfiguration(TargetConfiguration targetConfiguration) {
 
-		incrementDone();
-	}
+    targetConfiguration.addBatchSetItem(batchRepo.find(batch.getId()));
 
+    incrementDone();
+  }
 }

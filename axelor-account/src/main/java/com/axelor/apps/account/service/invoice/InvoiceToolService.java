@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.time.LocalDate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -30,171 +29,162 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
-/**
- * InvoiceService est une classe implémentant l'ensemble des services de
- * facturations.
- *
- */
+/** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public class InvoiceToolService {
 
+  public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate) {
 
-	public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate)  {
-		
-		LocalDate nDaysDate = invoiceDate.plusDays(paymentCondition.getPaymentTime());
-		
-		switch (paymentCondition.getTypeSelect()) {
-		case PaymentConditionRepository.TYPE_NET:
-			
-			return invoiceDate.plusDays(paymentCondition.getPaymentTime());
-			
-		case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
-					
-			return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusDays(paymentCondition.getPaymentTime());
-					
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
-			
-			return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth());
-			
-		case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-			
-			return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusDays(paymentCondition.getDaySelect());
+    LocalDate nDaysDate = invoiceDate.plusDays(paymentCondition.getPaymentTime());
 
-		default:
-			return invoiceDate;
-		}
-		
-	}
-	
-	/**
-	 * 
-	 * @param invoice
-	 * 
-	 * OperationTypeSelect
-	 *  1 : Achat fournisseur
-	 *	2 : Avoir fournisseur
-	 *	3 : Vente client
-	 *	4 : Avoir client
-	 * @return
-	 * @throws AxelorException
-	 */
-	public static boolean isPurchase(Invoice invoice) throws AxelorException  {
-		
-		boolean isPurchase;
-		
-		switch(invoice.getOperationTypeSelect())  {
-		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE :
-			isPurchase = true;
-			break;
-		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND :
-			isPurchase = true;
-			break;
-		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE :
-			isPurchase = false;
-			break;
-		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND :
-			isPurchase = false;
-			break;
-		
-		default:
-			throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId());
-		}	
-		
-		return isPurchase;
-	}
-	
-	
-	/**
-	 * 
-	 * @param invoice
-	 * 
-	 * OperationTypeSelect
-	 *  1 : Achat fournisseur
-	 *	2 : Avoir fournisseur
-	 *	3 : Vente client
-	 *	4 : Avoir client
-	 * @return
-	 * @throws AxelorException
-	 */
-	public static boolean isRefund(Invoice invoice) throws AxelorException  {
-		
-		boolean isRefund;
-		
-		switch(invoice.getOperationTypeSelect())  {
-		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE :
-			isRefund = false;
-			break;
-		case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND :
-			isRefund = true;
-			break;
-		case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE :
-			isRefund = false;
-			break;
-		case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND :
-			isRefund = true;
-			break;
-		
-		default:
-			throw new AxelorException(invoice, TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.MOVE_1), invoice.getInvoiceId());
-		}	
-		
-		return isRefund;
-	}
-	
-	
-	/**
-	 * @param invoice
-	 * @return
-	 * @throws AxelorException
-	 */
-	public static boolean isOutPayment(Invoice invoice) throws AxelorException {
-		if (invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) >= 0) {
-			// result of XOR operator, we could also have written "bool1 ^ bool2"
-			return (isPurchase(invoice) != isRefund(invoice));
-		} else {
-			// return opposite if total amount is negative
-			return (isPurchase(invoice) == isRefund(invoice));
-		}
-	}
+    switch (paymentCondition.getTypeSelect()) {
+      case PaymentConditionRepository.TYPE_NET:
+        return invoiceDate.plusDays(paymentCondition.getPaymentTime());
 
+      case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
+        return invoiceDate
+            .withDayOfMonth(invoiceDate.lengthOfMonth())
+            .plusDays(paymentCondition.getPaymentTime());
 
-	public static PaymentMode getPaymentMode(Invoice invoice) throws AxelorException {
-		Partner partner = invoice.getPartner();
+      case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
+        return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth());
 
-		if (InvoiceToolService.isOutPayment(invoice)) {
-			if (partner != null) {
-				PaymentMode paymentMode = partner.getOutPaymentMode();
-				if (paymentMode != null) {
-					return paymentMode;
-				}
-			}
-			return Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany()).getOutPaymentMode();
-		} else {
-			if (partner != null) {
-				PaymentMode paymentMode = partner.getInPaymentMode();
-				if (paymentMode != null) {
-					return paymentMode;
-				}
-			}
-			return Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany()).getInPaymentMode();
-		}
-	}
+      case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
+        return nDaysDate
+            .withDayOfMonth(nDaysDate.lengthOfMonth())
+            .plusDays(paymentCondition.getDaySelect());
 
-	public static PaymentCondition getPaymentCondition(Invoice invoice) throws AxelorException {
-		Partner partner = invoice.getPartner();
-		
-		if (partner != null) {
-			PaymentCondition paymentCondition = partner.getPaymentCondition();
-			if (paymentCondition != null) {
-				return paymentCondition;
-			}
-		}
-		return Beans.get(AccountConfigService.class).
-				getAccountConfig(invoice.getCompany()).getDefPaymentCondition();
-		
-	}
-	
-	
+      default:
+        return invoiceDate;
+    }
+  }
+
+  /**
+   * @param invoice
+   *     <p>OperationTypeSelect 1 : Achat fournisseur 2 : Avoir fournisseur 3 : Vente client 4 :
+   *     Avoir client
+   * @return
+   * @throws AxelorException
+   */
+  public static boolean isPurchase(Invoice invoice) throws AxelorException {
+
+    boolean isPurchase;
+
+    switch (invoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+        isPurchase = true;
+        break;
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+        isPurchase = true;
+        break;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        isPurchase = false;
+        break;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        isPurchase = false;
+        break;
+
+      default:
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.MOVE_1),
+            invoice.getInvoiceId());
+    }
+
+    return isPurchase;
+  }
+
+  /**
+   * @param invoice
+   *     <p>OperationTypeSelect 1 : Achat fournisseur 2 : Avoir fournisseur 3 : Vente client 4 :
+   *     Avoir client
+   * @return
+   * @throws AxelorException
+   */
+  public static boolean isRefund(Invoice invoice) throws AxelorException {
+
+    boolean isRefund;
+
+    switch (invoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+        isRefund = false;
+        break;
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+        isRefund = true;
+        break;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        isRefund = false;
+        break;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        isRefund = true;
+        break;
+
+      default:
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.MOVE_1),
+            invoice.getInvoiceId());
+    }
+
+    return isRefund;
+  }
+
+  /**
+   * @param invoice
+   * @return
+   * @throws AxelorException
+   */
+  public static boolean isOutPayment(Invoice invoice) throws AxelorException {
+    if (invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) >= 0) {
+      // result of XOR operator, we could also have written "bool1 ^ bool2"
+      return (isPurchase(invoice) != isRefund(invoice));
+    } else {
+      // return opposite if total amount is negative
+      return (isPurchase(invoice) == isRefund(invoice));
+    }
+  }
+
+  public static PaymentMode getPaymentMode(Invoice invoice) throws AxelorException {
+    Partner partner = invoice.getPartner();
+
+    if (InvoiceToolService.isOutPayment(invoice)) {
+      if (partner != null) {
+        PaymentMode paymentMode = partner.getOutPaymentMode();
+        if (paymentMode != null) {
+          return paymentMode;
+        }
+      }
+      return Beans.get(AccountConfigService.class)
+          .getAccountConfig(invoice.getCompany())
+          .getOutPaymentMode();
+    } else {
+      if (partner != null) {
+        PaymentMode paymentMode = partner.getInPaymentMode();
+        if (paymentMode != null) {
+          return paymentMode;
+        }
+      }
+      return Beans.get(AccountConfigService.class)
+          .getAccountConfig(invoice.getCompany())
+          .getInPaymentMode();
+    }
+  }
+
+  public static PaymentCondition getPaymentCondition(Invoice invoice) throws AxelorException {
+    Partner partner = invoice.getPartner();
+
+    if (partner != null) {
+      PaymentCondition paymentCondition = partner.getPaymentCondition();
+      if (paymentCondition != null) {
+        return paymentCondition;
+      }
+    }
+    return Beans.get(AccountConfigService.class)
+        .getAccountConfig(invoice.getCompany())
+        .getDefPaymentCondition();
+  }
 }

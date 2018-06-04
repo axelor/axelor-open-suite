@@ -17,60 +17,50 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 
 public interface SaleOrderComputeService {
 
-	public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
+  public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 
+  public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
-	
+  /**
+   * Peupler un devis.
+   *
+   * <p>Cette fonction permet de déterminer les tva d'un devis.
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  public void _populateSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-	/**
-	 * Peupler un devis.
-	 * <p>
-	 * Cette fonction permet de déterminer les tva d'un devis.
-	 * </p>
-	 *
-	 * @param saleOrder
-	 *
-	 * @throws AxelorException
-	 */
-	public void _populateSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  /**
+   * Calculer le montant d'une facture.
+   *
+   * <p>Le calcul est basé sur les lignes de TVA préalablement créées.
+   *
+   * @param invoice
+   * @param vatLines
+   * @throws AxelorException
+   */
+  public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
+  /**
+   * Permet de réinitialiser la liste des lignes de TVA
+   *
+   * @param saleOrder Un devis
+   */
+  public void initSaleOrderLineTaxList(SaleOrder saleOrder);
 
-	/**
-	 * Calculer le montant d'une facture.
-	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
-	 *
-	 * @param invoice
-	 * @param vatLines
-	 * @throws AxelorException
-	 */
-	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
-
-
-	/**
-	 * Permet de réinitialiser la liste des lignes de TVA
-	 * @param saleOrder
-	 * 			Un devis
-	 */
-	public void initSaleOrderLineTaxList(SaleOrder saleOrder);
-
-
-	/**
-	 * Return the total price, computed from the lines.
-	 * This price is usually equals to {@link SaleOrder#exTaxTotal} but not
-	 * in all cases.
-	 * @param saleOrder
-	 * @return  total price from the sale order lines
-	 */
-	public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder);
-
+  /**
+   * Return the total price, computed from the lines. This price is usually equals to {@link
+   * SaleOrder#exTaxTotal} but not in all cases.
+   *
+   * @param saleOrder
+   * @return total price from the sale order lines
+   */
+  public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder);
 }

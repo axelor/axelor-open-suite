@@ -17,22 +17,22 @@
  */
 package com.axelor.apps.purchase.script;
 
-import java.util.Map;
-
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.util.Map;
 
 public class ImportPurchaseOrderLine {
 
-	public Object importPurchaseOrderLine(Object bean, Map<String,Object> values) throws AxelorException {
-		assert bean instanceof PurchaseOrderLine;
+  public Object importPurchaseOrderLine(Object bean, Map<String, Object> values)
+      throws AxelorException {
+    assert bean instanceof PurchaseOrderLine;
 
-		PurchaseOrderLine purchaseOrderLine = (PurchaseOrderLine) bean;
-		PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
+    PurchaseOrderLine purchaseOrderLine = (PurchaseOrderLine) bean;
+    PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
 
-		purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
-		return purchaseOrderLine;
-	}
+    purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
+    return purchaseOrderLine;
+  }
 }

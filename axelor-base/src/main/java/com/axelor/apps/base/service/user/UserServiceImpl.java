@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.base.service.user;
 
-import java.util.Optional;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -32,187 +30,186 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Optional;
 
-/**
- * UserService is a class that implement all methods for user informations
- * 
- */
-public class UserServiceImpl implements UserService  {
+/** UserService is a class that implement all methods for user informations */
+public class UserServiceImpl implements UserService {
 
-	@Inject
-	private UserRepository userRepo;
-	
-	public static String DEFAULT_LOCALE = "en";
+  @Inject private UserRepository userRepo;
 
-	/**
-	 * Method that return the current connected user
-	 * 
-	 * @return user
-	 * 		the current connected user
-	 */
-	@Override
-    public User getUser() {
-		User user = null;
-		try{
-			user = AuthUtils.getUser();
-		}
-		catch(Exception ex){}
-		if(user == null) {
-			user = userRepo.findByCode("admin");			
-		}
-		return user;
-	}
-	
-	/**
-	 * Method that return the id of the current connected user
-	 * 
-	 * @return user
-	 * 		the id of current connected user
-	 */
-	@Override
-    public Long getUserId() {
-		
-		final User user = this.getUser();
-	
-		if(user == null)  {  return null;  }
-		
-		return user.getId();
-	}
-	
-	/**
-	 * Method that return the active company of the current connected user
-	 * 
-	 * @return Company
-	 * 		the active company
-	 */
-	@Override
-    public Company getUserActiveCompany() {
-		
-		User user = getUser();
-		
-		if(user == null)  {  return null;  }
-		
-		return user.getActiveCompany();
-	}
-	
-	/**
-	 * Method that return the active company id of the current connected user
-	 * 
-	 * @return Company
-	 * 		the active company id
-	 */
-	@Override
-    public Long getUserActiveCompanyId() {
-		
-		final Company company = this.getUserActiveCompany();
-		
-		if(company == null)  {  return null;  }
-	
-		return company.getId();
-	}
-	
-	/**
-	 * Method that return the active team of the current connected user
-	 * 
-	 * @return Team
-	 * 		the active team
-	 */
-	@Override
-    public MetaFile getUserActiveCompanyLogo() {
+  public static String DEFAULT_LOCALE = "en";
 
-		final Company company = this.getUserActiveCompany();
-		
-		if(company == null)  {  return null;  }
-		
-		return company.getLogo();
-		
-	}
+  /**
+   * Method that return the current connected user
+   *
+   * @return user the current connected user
+   */
+  @Override
+  public User getUser() {
+    User user = null;
+    try {
+      user = AuthUtils.getUser();
+    } catch (Exception ex) {
+    }
+    if (user == null) {
+      user = userRepo.findByCode("admin");
+    }
+    return user;
+  }
 
-    @Override
-    public Optional<Address> getUserActiveCompanyAddress() {
-        Company company = getUserActiveCompany();
+  /**
+   * Method that return the id of the current connected user
+   *
+   * @return user the id of current connected user
+   */
+  @Override
+  public Long getUserId() {
 
-        if (company != null) {
-            return Optional.ofNullable(company.getAddress());
-        }
+    final User user = this.getUser();
 
-        return Optional.empty();
+    if (user == null) {
+      return null;
     }
 
-    /**
-	 * Method that return the active team of the current connected user
-	 * 
-	 * @return Team
-	 * 		the active team
-	 */
-	@Override
-    public Team getUserActiveTeam() {
-		
-		final User user = getUser();
-		
-		if(user == null)  {  return null;  }
-	
-		return user.getActiveTeam();
-	}
-	
-	/**
-	 * Method that return the active team of the current connected user
-	 * 
-	 * @return Team
-	 * 		the active team id
-	 */
-	@Override
-    public Long getUserActiveTeamId() {
-		
-		final Team team = this.getUserActiveTeam();
-		
-		if(team == null)  {  return null;  }
-		
-		return team.getId();
-	}
-	
-	/**
-	 * Method that return the partner of the current connected user
-	 * 
-	 * @return Partner
-	 * 		the user partner
-	 */
-	@Override
-    public Partner getUserPartner() {
-		
-		final User user = getUser();
+    return user.getId();
+  }
 
-		if (user == null)  {  return null;  }
-			
-		return user.getPartner();
-	}
+  /**
+   * Method that return the active company of the current connected user
+   *
+   * @return Company the active company
+   */
+  @Override
+  public Company getUserActiveCompany() {
 
-	@Override
-    @Transactional
-	public void createPartner(User user) {
-		Partner partner = new Partner();
-		partner.setPartnerTypeSelect(2);
-		partner.setIsContact(true);
-		partner.setName(user.getName());
-		partner.setFullName(user.getName());
-		partner.setTeam(user.getActiveTeam());
-		partner.setUser(user);
-		Beans.get(PartnerRepository.class).save(partner);
+    User user = getUser();
 
-		user.setPartner(partner);
-		userRepo.save(user);
-	}
-	
-	@Override
-    public String getLanguage()  {
-		
-		User user = getUser();
-		if (user != null && !Strings.isNullOrEmpty(user.getLanguage())) {
-			return user.getLanguage();
-		}
-		return DEFAULT_LOCALE;
-		
-	}
+    if (user == null) {
+      return null;
+    }
 
+    return user.getActiveCompany();
+  }
+
+  /**
+   * Method that return the active company id of the current connected user
+   *
+   * @return Company the active company id
+   */
+  @Override
+  public Long getUserActiveCompanyId() {
+
+    final Company company = this.getUserActiveCompany();
+
+    if (company == null) {
+      return null;
+    }
+
+    return company.getId();
+  }
+
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team
+   */
+  @Override
+  public MetaFile getUserActiveCompanyLogo() {
+
+    final Company company = this.getUserActiveCompany();
+
+    if (company == null) {
+      return null;
+    }
+
+    return company.getLogo();
+  }
+
+  @Override
+  public Optional<Address> getUserActiveCompanyAddress() {
+    Company company = getUserActiveCompany();
+
+    if (company != null) {
+      return Optional.ofNullable(company.getAddress());
+    }
+
+    return Optional.empty();
+  }
+
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team
+   */
+  @Override
+  public Team getUserActiveTeam() {
+
+    final User user = getUser();
+
+    if (user == null) {
+      return null;
+    }
+
+    return user.getActiveTeam();
+  }
+
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team id
+   */
+  @Override
+  public Long getUserActiveTeamId() {
+
+    final Team team = this.getUserActiveTeam();
+
+    if (team == null) {
+      return null;
+    }
+
+    return team.getId();
+  }
+
+  /**
+   * Method that return the partner of the current connected user
+   *
+   * @return Partner the user partner
+   */
+  @Override
+  public Partner getUserPartner() {
+
+    final User user = getUser();
+
+    if (user == null) {
+      return null;
+    }
+
+    return user.getPartner();
+  }
+
+  @Override
+  @Transactional
+  public void createPartner(User user) {
+    Partner partner = new Partner();
+    partner.setPartnerTypeSelect(2);
+    partner.setIsContact(true);
+    partner.setName(user.getName());
+    partner.setFullName(user.getName());
+    partner.setTeam(user.getActiveTeam());
+    partner.setUser(user);
+    Beans.get(PartnerRepository.class).save(partner);
+
+    user.setPartner(partner);
+    userRepo.save(user);
+  }
+
+  @Override
+  public String getLanguage() {
+
+    User user = getUser();
+    if (user != null && !Strings.isNullOrEmpty(user.getLanguage())) {
+      return user.getLanguage();
+    }
+    return DEFAULT_LOCALE;
+  }
 }
- 

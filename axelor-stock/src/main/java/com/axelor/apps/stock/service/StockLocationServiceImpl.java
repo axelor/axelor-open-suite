@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -41,182 +34,219 @@ import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 @RequestScoped
 public class StockLocationServiceImpl implements StockLocationService {
-	
-	protected StockLocationRepository stockLocationRepo;
-	
-	protected StockLocationLineService stockLocationLineService;
-	
-	protected ProductRepository productRepo;
-	
-	protected Set<Long> locationIdSet= new HashSet<>();
 
-	@Inject
-	public StockLocationServiceImpl(StockLocationRepository stockLocationRepo, StockLocationLineService stockLocationLineService, ProductRepository productRepo) {
-		this.stockLocationRepo = stockLocationRepo;
-		this.stockLocationLineService = stockLocationLineService;
-		this.productRepo = productRepo;
-	}
+  protected StockLocationRepository stockLocationRepo;
 
-    @Override
-    public StockLocation getDefaultReceiptStockLocation(Company company) {
-        try {
-            StockConfigService stockConfigService = Beans.get(StockConfigService.class);
-            StockConfig stockConfig = stockConfigService.getStockConfig(company);
-            return stockConfigService.getReceiptDefaultStockLocation(stockConfig);
-        } catch (Exception e) {
-            return null;
+  protected StockLocationLineService stockLocationLineService;
+
+  protected ProductRepository productRepo;
+
+  protected Set<Long> locationIdSet = new HashSet<>();
+
+  @Inject
+  public StockLocationServiceImpl(
+      StockLocationRepository stockLocationRepo,
+      StockLocationLineService stockLocationLineService,
+      ProductRepository productRepo) {
+    this.stockLocationRepo = stockLocationRepo;
+    this.stockLocationLineService = stockLocationLineService;
+    this.productRepo = productRepo;
+  }
+
+  @Override
+  public StockLocation getDefaultReceiptStockLocation(Company company) {
+    try {
+      StockConfigService stockConfigService = Beans.get(StockConfigService.class);
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      return stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  @Override
+  public StockLocation getPickupDefaultStockLocation(Company company) {
+    try {
+      StockConfigService stockConfigService = Beans.get(StockConfigService.class);
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      return stockConfigService.getPickupDefaultStockLocation(stockConfig);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public List<StockLocation> getNonVirtualStockLocations() {
+    return stockLocationRepo
+        .all()
+        .filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL)
+        .fetch();
+  }
+
+  @Override
+  public BigDecimal getQty(Long productId, Long locationId, String qtyType) {
+    if (productId != null) {
+      if (locationId == null) {
+        List<StockLocation> stockLocations = getNonVirtualStockLocations();
+        if (!stockLocations.isEmpty()) {
+          BigDecimal qty = BigDecimal.ZERO;
+          for (StockLocation stockLocation : stockLocations) {
+            StockLocationLine stockLocationLine =
+                stockLocationLineService.getOrCreateStockLocationLine(
+                    stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
+
+            if (stockLocationLine != null) {
+              qty =
+                  qty.add(
+                      qtyType.equals("real")
+                          ? stockLocationLine.getCurrentQty()
+                          : stockLocationLine.getFutureQty());
+            }
+          }
+          return qty;
         }
+      } else {
+        StockLocationLine stockLocationLine =
+            stockLocationLineService.getOrCreateStockLocationLine(
+                stockLocationRepo.find(locationId), productRepo.find(productId));
+
+        if (stockLocationLine != null) {
+          return qtyType.equals("real")
+              ? stockLocationLine.getCurrentQty()
+              : stockLocationLine.getFutureQty();
+        }
+      }
     }
 
-    @Override
-    public StockLocation getPickupDefaultStockLocation(Company company) {
-        try {
-            StockConfigService stockConfigService = Beans.get(StockConfigService.class);
-            StockConfig stockConfig = stockConfigService.getStockConfig(company);
-            return stockConfigService.getPickupDefaultStockLocation(stockConfig);
-        } catch (Exception e) {
-            return null;
-        }
+    return null;
+  }
+
+  @Override
+  public BigDecimal getRealQty(Long productId, Long locationId) {
+    return getQty(productId, locationId, "real");
+  }
+
+  @Override
+  public BigDecimal getFutureQty(Long productId, Long locationId) {
+    return getQty(productId, locationId, "future");
+  }
+
+  @Override
+  public void computeAvgPriceForProduct(Product product) {
+    Long productId = product.getId();
+    String query =
+        "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM StockLocationLine as self "
+            + "WHERE self.product.id = "
+            + productId
+            + " AND self.stockLocation.typeSelect != "
+            + StockLocationRepository.TYPE_VIRTUAL;
+    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+    BigDecimal productAvgPrice = BigDecimal.ZERO;
+    BigDecimal qtyTot = BigDecimal.ZERO;
+    List<List<Object>> results = JPA.em().createQuery(query).getResultList();
+    if (results.isEmpty()) {
+      return;
+    }
+    for (List<Object> result : results) {
+      BigDecimal avgPrice = (BigDecimal) result.get(1);
+      BigDecimal qty = (BigDecimal) result.get(2);
+      productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
+      qtyTot = qtyTot.add(qty);
+    }
+    if (qtyTot.compareTo(BigDecimal.ZERO) == 0) {
+      return;
+    }
+    productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
+    product.setAvgPrice(productAvgPrice);
+    if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
+      product.setCostPrice(productAvgPrice);
+      if (product.getAutoUpdateSalePrice()) {
+        Beans.get(ProductService.class).updateSalePrice(product);
+      }
+    }
+    productRepo.save(product);
+  }
+
+  public List<Long> getBadStockLocationLineId() {
+
+    List<StockLocationLine> stockLocationLineList =
+        Beans.get(StockLocationLineRepository.class)
+            .all()
+            .filter("self.stockLocation.typeSelect = 1 OR self.stockLocation.typeSelect = 2")
+            .fetch();
+
+    List<Long> idList = new ArrayList<>();
+
+    StockRulesRepository stockRulesRepository = Beans.get(StockRulesRepository.class);
+
+    for (StockLocationLine stockLocationLine : stockLocationLineList) {
+      StockRules stockRules =
+          stockRulesRepository
+              .all()
+              .filter(
+                  "self.stockLocation = ?1 AND self.product = ?2",
+                  stockLocationLine.getStockLocation(),
+                  stockLocationLine.getProduct())
+              .fetchOne();
+      if (stockRules != null
+          && stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
+        idList.add(stockLocationLine.getId());
+      }
     }
 
-	public List<StockLocation> getNonVirtualStockLocations() {
-		return stockLocationRepo.all().filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL).fetch();
-	}
-	
-	@Override
-	public BigDecimal getQty(Long productId, Long locationId, String qtyType) {
-		if (productId != null) {
-			if (locationId == null) {
-				List<StockLocation> stockLocations = getNonVirtualStockLocations();
-				if (!stockLocations.isEmpty()) {
-					BigDecimal qty = BigDecimal.ZERO;
-					for (StockLocation stockLocation : stockLocations) {
-						StockLocationLine stockLocationLine = stockLocationLineService.getOrCreateStockLocationLine(stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
-						
-						if (stockLocationLine != null) {
-							qty = qty.add(qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty());
-						}
-					}
-					return qty;
-				}
-			} else {
-				StockLocationLine stockLocationLine = stockLocationLineService.getOrCreateStockLocationLine(stockLocationRepo.find(locationId), productRepo.find(productId));
-				
-				if (stockLocationLine != null) {
-					return qtyType.equals("real") ? stockLocationLine.getCurrentQty() : stockLocationLine.getFutureQty();
-				}
-			}
-		}
-		
-		return null;
-	}
+    if (idList.isEmpty()) {
+      idList.add(0L);
+    }
 
-	@Override
-	public BigDecimal getRealQty(Long productId, Long locationId) {
-		return getQty(productId, locationId, "real");
-	}
+    return idList;
+  }
 
-	@Override
-	public BigDecimal getFutureQty(Long productId, Long locationId) {
-		return getQty(productId, locationId, "future");
-	}
+  private void findLocationIds(List<StockLocation> childStockLocations) {
 
-	@Override
-	public void computeAvgPriceForProduct(Product product) {
-		Long productId = product.getId();
-		String query = "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM StockLocationLine as self "
-				+ "WHERE self.product.id = " + productId + " AND self.stockLocation.typeSelect != "
-				+ StockLocationRepository.TYPE_VIRTUAL;
-		int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
-		BigDecimal productAvgPrice = BigDecimal.ZERO;
-		BigDecimal qtyTot = BigDecimal.ZERO;
-		List<List<Object>> results = JPA.em().createQuery(query).getResultList();
-		if (results.isEmpty()) {
-			return;
-		}
-		for (List<Object> result : results) {
-			BigDecimal avgPrice = (BigDecimal) result.get(1);
-			BigDecimal qty = (BigDecimal) result.get(2);
-			productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
-			qtyTot = qtyTot.add(qty);
-		}
-		if (qtyTot.compareTo(BigDecimal.ZERO) == 0) {
-			return;
-		}
-		productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
-		product.setAvgPrice(productAvgPrice);
-		if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
-		    product.setCostPrice(productAvgPrice);
-			if (product.getAutoUpdateSalePrice()) {
-				Beans.get(ProductService.class).updateSalePrice(product);
-			}
-		}
-		productRepo.save(product);
-	}
+    Long id;
 
-	public List<Long> getBadStockLocationLineId() {
+    childStockLocations =
+        Beans.get(StockLocationRepository.class)
+            .all()
+            .filter("self.parentStockLocation IN ?", childStockLocations)
+            .fetch();
 
-		List<StockLocationLine> stockLocationLineList = Beans.get(StockLocationLineRepository.class)
-				.all().filter("self.stockLocation.typeSelect = 1 OR self.stockLocation.typeSelect = 2").fetch();
+    Iterator<StockLocation> it = childStockLocations.iterator();
 
-		List<Long> idList = new ArrayList<>();
+    while (it.hasNext()) {
 
-		StockRulesRepository stockRulesRepository = Beans.get(StockRulesRepository.class);
-		
-		for (StockLocationLine stockLocationLine : stockLocationLineList) {
-			StockRules stockRules = stockRulesRepository.all()
-					.filter("self.stockLocation = ?1 AND self.product = ?2", stockLocationLine.getStockLocation(), stockLocationLine.getProduct()).fetchOne();
-			if (stockRules != null
-					&& stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
-				idList.add(stockLocationLine.getId());
-			}
-		}
+      id = it.next().getId();
+      if (locationIdSet.contains(id)) {
+        it.remove();
+      } else {
+        locationIdSet.add(id);
+      }
+    }
 
-		if (idList.isEmpty()) {
-			idList.add(0L);
-		}
+    if (!childStockLocations.isEmpty()) findLocationIds(childStockLocations);
+  }
 
-		return idList;
-	}
-	
-	private void findLocationIds(List<StockLocation> childStockLocations) {
-		
-		Long id;
-		
-		childStockLocations = Beans.get(StockLocationRepository.class).all().filter("self.parentStockLocation IN ?", childStockLocations).fetch();
-			
-		Iterator<StockLocation> it = childStockLocations.iterator();
-		
-		while (it.hasNext()) {
+  @Override
+  public Set<Long> getContentStockLocationIds(StockLocation stockLocation) {
 
-			id = it.next().getId();
-			if(locationIdSet.contains(id)) {
-				it.remove();
-			} else {
-				locationIdSet.add(id);
-			}
-		}
+    List<StockLocation> stockLocations = new ArrayList<>();
 
-		if(!childStockLocations.isEmpty()) 
-			findLocationIds(childStockLocations);
-	}
-	
-	@Override
-	public Set<Long> getContentStockLocationIds(StockLocation stockLocation) {
-		
-		List<StockLocation> stockLocations = new ArrayList<>();
+    if (stockLocation != null) {
+      stockLocations.add(stockLocation);
+      locationIdSet.add(stockLocation.getId());
+      findLocationIds(stockLocations);
+    } else {
+      locationIdSet.add(0L);
+    }
 
-		if(stockLocation != null) {
-			stockLocations.add(stockLocation);
-			locationIdSet.add(stockLocation.getId());
-			findLocationIds(stockLocations);
-		} else {
-			locationIdSet.add(0L);
-		}
-		
-		return locationIdSet;
-	}
+    return locationIdSet;
+  }
 }

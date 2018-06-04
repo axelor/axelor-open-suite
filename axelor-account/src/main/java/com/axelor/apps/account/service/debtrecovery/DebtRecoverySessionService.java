@@ -35,212 +35,208 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DebtRecoverySessionService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected DebtRecoveryRepository debtRecoveryRepo;
+  protected DebtRecoveryRepository debtRecoveryRepo;
 
-	protected AppAccountService appAccountService;
+  protected AppAccountService appAccountService;
 
-	@Inject
-	public DebtRecoverySessionService(DebtRecoveryRepository debtRecoveryRepo, AppAccountService appAccountService) {
+  @Inject
+  public DebtRecoverySessionService(
+      DebtRecoveryRepository debtRecoveryRepo, AppAccountService appAccountService) {
 
-		this.appAccountService = appAccountService;
-		this.debtRecoveryRepo = debtRecoveryRepo;
+    this.appAccountService = appAccountService;
+    this.debtRecoveryRepo = debtRecoveryRepo;
+  }
 
-	}
+  /**
+   * Fonction permettant de récupérer une méthode de relance en fonction de la categorie du tiers et
+   * d'une société
+   *
+   * @param debtRecovery Une relance
+   * @return
+   */
+  public DebtRecoveryMethod getDebtRecoveryMethod(DebtRecovery debtRecovery) {
 
+    AccountingSituation accountingSituation = debtRecovery.getAccountingSituation();
+    Company company = accountingSituation.getCompany();
+    Partner partner = accountingSituation.getPartner();
+    List<DebtRecoveryConfigLine> debtRecoveryConfigLines =
+        company.getAccountConfig().getDebtRecoveryConfigLineList();
 
+    for (DebtRecoveryConfigLine debtRecoveryConfigLine : debtRecoveryConfigLines) {
+      if (debtRecoveryConfigLine.getPartnerCategory().equals(partner.getPartnerCategory())) {
 
-	/**
-	 * Fonction permettant de récupérer une méthode de relance en fonction de la categorie du tiers et d'une société
-	 * @param debtRecovery
-	 * 			Une relance
-	 * @return
-	 */
-	public DebtRecoveryMethod getDebtRecoveryMethod(DebtRecovery debtRecovery)  {
+        log.debug("méthode de relance determinée ");
+        return debtRecoveryConfigLine.getDebtRecoveryMethod();
+      }
+    }
 
-		AccountingSituation accountingSituation = debtRecovery.getAccountingSituation();
-		Company company = accountingSituation.getCompany();
-		Partner partner = accountingSituation.getPartner();
-		List<DebtRecoveryConfigLine> debtRecoveryConfigLines = company.getAccountConfig().getDebtRecoveryConfigLineList();
+    log.debug("méthode de relance non determinée ");
 
-		for(DebtRecoveryConfigLine debtRecoveryConfigLine : debtRecoveryConfigLines)  {
-			if(debtRecoveryConfigLine.getPartnerCategory().equals(partner.getPartnerCategory()))  {
+    return null;
+  }
 
-				log.debug("méthode de relance determinée ");
-				return debtRecoveryConfigLine.getDebtRecoveryMethod();
-			}
-		}
+  /**
+   * Session de relance
+   *
+   * @param debtRecovery Une relance
+   * @throws AxelorException
+   */
+  public DebtRecovery debtRecoverySession(DebtRecovery debtRecovery) throws AxelorException {
 
-		log.debug("méthode de relance non determinée ");
+    log.debug("Begin debtRecoverySession service...");
 
-		return null;
-	}
+    LocalDate referenceDate = debtRecovery.getReferenceDate();
+    BigDecimal balanceDueDebtRecovery = debtRecovery.getBalanceDueDebtRecovery();
 
+    int debtRecoveryLevel = 0;
+    if (debtRecovery.getDebtRecoveryMethodLine() != null
+        && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName() != null) {
+      debtRecoveryLevel = debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName();
+    }
 
+    int theoricalDebtRecoveryLevel;
 
-	/**
-	 * Session de relance
-	 *
-	 * @param debtRecovery
-	 * 				Une relance
-	 * @throws AxelorException
-	 */
-	public DebtRecovery debtRecoverySession(DebtRecovery debtRecovery) throws AxelorException  {
+    int levelMax = this.getMaxLevel(debtRecovery);
 
-		log.debug("Begin debtRecoverySession service...");
+    // Test inutile... à verifier
+    if ((appAccountService.getTodayDate().isAfter(referenceDate)
+            || appAccountService.getTodayDate().isEqual(referenceDate))
+        && balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0) {
+      log.debug(
+          "Si la date actuelle est égale ou ultérieur à la date de référence et le solde due relançable positif");
+      // Pour les client à haut risque vital, on passe directement du niveau de relance 2 au niveau
+      // de relance 4
+      if (debtRecoveryLevel < levelMax) {
+        log.debug("Sinon ce n'est pas un client à haut risque vital");
+        theoricalDebtRecoveryLevel = debtRecoveryLevel + 1;
+      } else {
+        log.debug("Sinon c'est un client à un haut risque vital");
+        theoricalDebtRecoveryLevel = levelMax;
+      }
 
-		LocalDate referenceDate = debtRecovery.getReferenceDate();
-		BigDecimal balanceDueDebtRecovery = debtRecovery.getBalanceDueDebtRecovery();
+      DebtRecoveryMethodLine debtRecoveryMethodLine =
+          this.getDebtRecoveryMethodLine(debtRecovery, theoricalDebtRecoveryLevel);
 
-		int debtRecoveryLevel=0;
-		if(debtRecovery.getDebtRecoveryMethodLine()!=null && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName()!=null)  {
-			debtRecoveryLevel = debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName();
-		}
+      if ((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline()))
+              .isAfter(appAccountService.getTodayDate()))
+          && balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0) {
+        log.debug("Si le seuil du solde exigible relançable est respecté et le délai est respecté");
 
-		int theoricalDebtRecoveryLevel;
+        if (!debtRecoveryMethodLine.getManualValidationOk()) {
+          log.debug("Si le niveau ne necessite pas de validation manuelle");
+          debtRecovery.setDebtRecoveryMethodLine(
+              debtRecoveryMethodLine); // Afin d'afficher la ligne de niveau sur le tiers
+          debtRecovery.setWaitDebtRecoveryMethodLine(null);
+          // et lancer les autres actions du niveau
+        } else {
+          log.debug("Si le niveau necessite une validation manuelle");
+          debtRecovery.setWaitDebtRecoveryMethodLine(
+              debtRecoveryMethodLine); // Si le passage est manuel
+        }
+      }
 
-		int levelMax = this.getMaxLevel(debtRecovery);
+    } else {
+      log.debug("Sinon on lance une réinitialisation");
+      this.debtRecoveryInitialization(debtRecovery);
+    }
+    log.debug("End debtRecoverySession service");
+    return debtRecovery;
+  }
 
-		// Test inutile... à verifier
-		if((appAccountService.getTodayDate().isAfter(referenceDate)  ||  appAccountService.getTodayDate().isEqual(referenceDate))  &&  balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0  )  {
-			log.debug("Si la date actuelle est égale ou ultérieur à la date de référence et le solde due relançable positif");
-			//Pour les client à haut risque vital, on passe directement du niveau de relance 2 au niveau de relance 4
-			if(debtRecoveryLevel < levelMax)  {
-				log.debug("Sinon ce n'est pas un client à haut risque vital");
-				theoricalDebtRecoveryLevel = debtRecoveryLevel+1;
-			}
-			else  {
-				log.debug("Sinon c'est un client à un haut risque vital");
-				theoricalDebtRecoveryLevel = levelMax;
-			}
+  public int getMaxLevel(DebtRecovery debtRecovery) {
 
-			DebtRecoveryMethodLine debtRecoveryMethodLine = this.getDebtRecoveryMethodLine(debtRecovery, theoricalDebtRecoveryLevel);
+    DebtRecoveryMethod debtRecoveryMethod = debtRecovery.getDebtRecoveryMethod();
 
+    int levelMax = 0;
 
-			if((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline())).isAfter(appAccountService.getTodayDate()))
-					&&  balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0 )  {
-				log.debug("Si le seuil du solde exigible relançable est respecté et le délai est respecté");
+    if (debtRecoveryMethod != null && debtRecoveryMethod.getDebtRecoveryMethodLineList() != null) {
+      for (DebtRecoveryMethodLine debtRecoveryMethodLine :
+          debtRecoveryMethod.getDebtRecoveryMethodLineList()) {
+        int currentLevel = debtRecoveryMethodLine.getDebtRecoveryLevel().getName();
+        if (currentLevel > levelMax) {
+          levelMax = currentLevel;
+        }
+      }
+    }
 
-				if(!debtRecoveryMethodLine.getManualValidationOk())  {
-					log.debug("Si le niveau ne necessite pas de validation manuelle");
-					debtRecovery.setDebtRecoveryMethodLine(debtRecoveryMethodLine);		// Afin d'afficher la ligne de niveau sur le tiers
-					debtRecovery.setWaitDebtRecoveryMethodLine(null);
-					// et lancer les autres actions du niveau
-				}
-				else  {
-					log.debug("Si le niveau necessite une validation manuelle");
-					debtRecovery.setWaitDebtRecoveryMethodLine(debtRecoveryMethodLine);  // Si le passage est manuel
-				}
-			}
+    return levelMax;
+  }
 
-		}
-		else  {
-			log.debug("Sinon on lance une réinitialisation");
-			this.debtRecoveryInitialization(debtRecovery);
-		}
-		log.debug("End debtRecoverySession service");
-		return debtRecovery;
-	}
+  /**
+   * Fonction réinitialisant la relance
+   *
+   * @throws AxelorException
+   * @param relance
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void debtRecoveryInitialization(DebtRecovery debtRecovery) throws AxelorException {
 
+    log.debug("Begin debtRecoveryInitialization service...");
 
+    debtRecovery.setDebtRecoveryMethodLine(null);
+    debtRecovery.setWaitDebtRecoveryMethodLine(null);
+    debtRecovery.setBalanceDue(BigDecimal.ZERO);
+    debtRecovery.setBalanceDueDebtRecovery(BigDecimal.ZERO);
+    debtRecovery.setInvoiceDebtRecoverySet(new HashSet<Invoice>());
+    debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
 
-	public int getMaxLevel(DebtRecovery debtRecovery)  {
+    log.debug("End debtRecoveryInitialization service");
 
-		DebtRecoveryMethod debtRecoveryMethod = debtRecovery.getDebtRecoveryMethod();
+    debtRecoveryRepo.save(debtRecovery);
+  }
 
-		int levelMax = 0;
+  /**
+   * Fonction permetant de récupérer l'ensemble des lignes de relance de la matrice de relance pour
+   * un tiers
+   *
+   * @param debtRecovery Une relance
+   * @return Une liste de ligne de matrice de relance
+   */
+  public List<DebtRecoveryMethodLine> getDebtRecoveryMethodLineList(DebtRecovery debtRecovery) {
+    return debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList();
+  }
 
-		if(debtRecoveryMethod!=null && debtRecoveryMethod.getDebtRecoveryMethodLineList()!=null)  {
-			for(DebtRecoveryMethodLine debtRecoveryMethodLine : debtRecoveryMethod.getDebtRecoveryMethodLineList())  {
-				int currentLevel = debtRecoveryMethodLine.getDebtRecoveryLevel().getName();
-				if(currentLevel > levelMax)  {
-					levelMax = currentLevel;
-				}
-			}
-		}
-
-		return levelMax;
-
-	}
-
-
-
-
-	/**
-	 * Fonction réinitialisant la relance
-	 * @throws AxelorException
-	 * @param relance
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void debtRecoveryInitialization (DebtRecovery debtRecovery) throws AxelorException  {
-
-		log.debug("Begin debtRecoveryInitialization service...");
-
-		debtRecovery.setDebtRecoveryMethodLine(null);
-		debtRecovery.setWaitDebtRecoveryMethodLine(null);
-		debtRecovery.setBalanceDue(BigDecimal.ZERO);
-		debtRecovery.setBalanceDueDebtRecovery(BigDecimal.ZERO);
-		debtRecovery.setInvoiceDebtRecoverySet(new HashSet<Invoice>());
-		debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
-
-		log.debug("End debtRecoveryInitialization service");
-
-		debtRecoveryRepo.save(debtRecovery);
-	}
-
-
-
-	/**
-	 * Fonction permetant de récupérer l'ensemble des lignes de relance de la matrice de relance pour un tiers
-	 *
-	 * @param debtRecovery
-	 *			Une relance
-	 * @return
-	 *			Une liste de ligne de matrice de relance
-	 */
-	public List<DebtRecoveryMethodLine>  getDebtRecoveryMethodLineList(DebtRecovery debtRecovery)  {
-		return debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList();
-	}
-
-
-	/**
-	 * Fonction permettant de récupérer une ligne de relance de la matrice de relance pour un tiers
-	 *
-	 * @param debtRecovery
-	 *			Une relance
-	 * @param debtRecoveryLevel
-	 * 			Un niveau de relance
-	 * @return
-	 *			Une ligne de matrice de relance
-	 * @throws AxelorException
-	 */
-	public DebtRecoveryMethodLine getDebtRecoveryMethodLine(DebtRecovery debtRecovery, int debtRecoveryLevel) throws AxelorException  {
-		if(debtRecovery.getDebtRecoveryMethod() == null
-				|| debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList() == null
-				|| debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList().isEmpty())  {
-			throw new AxelorException(debtRecovery, TraceBackRepository.CATEGORY_MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: +"+I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
-		}
-		for(DebtRecoveryMethodLine debtRecoveryMethodLine : debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList())  {
-			if(debtRecoveryMethodLine.getDebtRecoveryLevel().getName().equals(debtRecoveryLevel))  {
-				return debtRecoveryMethodLine;
-			}
-		}
-		return null;
-	}
-
-
-
-
+  /**
+   * Fonction permettant de récupérer une ligne de relance de la matrice de relance pour un tiers
+   *
+   * @param debtRecovery Une relance
+   * @param debtRecoveryLevel Un niveau de relance
+   * @return Une ligne de matrice de relance
+   * @throws AxelorException
+   */
+  public DebtRecoveryMethodLine getDebtRecoveryMethodLine(
+      DebtRecovery debtRecovery, int debtRecoveryLevel) throws AxelorException {
+    if (debtRecovery.getDebtRecoveryMethod() == null
+        || debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList() == null
+        || debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList().isEmpty()) {
+      throw new AxelorException(
+          debtRecovery,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          "%s :\n"
+              + I18n.get("Partner")
+              + " %s: +"
+              + I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1),
+          AppAccountServiceImpl.EXCEPTION,
+          debtRecovery.getAccountingSituation().getPartner().getName());
+    }
+    for (DebtRecoveryMethodLine debtRecoveryMethodLine :
+        debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList()) {
+      if (debtRecoveryMethodLine.getDebtRecoveryLevel().getName().equals(debtRecoveryLevel)) {
+        return debtRecoveryMethodLine;
+      }
+    }
+    return null;
+  }
 }

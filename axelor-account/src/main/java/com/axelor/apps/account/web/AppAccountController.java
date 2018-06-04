@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
 import com.axelor.exception.service.TraceBackService;
@@ -29,19 +28,19 @@ import com.google.inject.Singleton;
 @Singleton
 public class AppAccountController {
 
-	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
+  public void payerQualityProcess(ActionRequest request, ActionResponse response) {
 
-		try  {
-			Beans.get(PayerQualityService.class).payerQualityProcess();
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
+    try {
+      Beans.get(PayerQualityService.class).payerQualityProcess();
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	public void generateAccountConfigurations(ActionRequest request, ActionResponse response)  {
+  public void generateAccountConfigurations(ActionRequest request, ActionResponse response) {
 
-		Beans.get(AppAccountService.class).generateAccountConfigurations();
+    Beans.get(AppAccountService.class).generateAccountConfigurations();
 
-		response.setReload(true);
-
-	}
+    response.setReload(true);
+  }
 }

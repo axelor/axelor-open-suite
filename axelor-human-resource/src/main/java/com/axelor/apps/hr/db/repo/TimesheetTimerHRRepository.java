@@ -23,34 +23,33 @@ import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class TimesheetTimerHRRepository extends TSTimerRepository{
+public class TimesheetTimerHRRepository extends TSTimerRepository {
 
-	@Inject
-	private TimesheetTimerService tsTimerService;
-	
-	@Override
-	public TSTimer save(TSTimer tsTimer){
-		if(tsTimer.getStatusSelect() == TSTimerRepository.STATUS_STOP){
-			if(tsTimer.getTimesheetLine() != null)
-				updateTimesheetLine(tsTimer);
-			else{
-				if(tsTimer.getDuration() > 59){ tsTimerService.generateTimesheetLine(tsTimer); }
-			}
-				
-		}
-		
-		return super.save(tsTimer);
-	}
-	
-	public void updateTimesheetLine(TSTimer tsTimer){
-		TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
-		
-		timesheetLine.setProject(tsTimer.getProject());
-		timesheetLine.setProduct(tsTimer.getProduct());
-		timesheetLine.setHoursDuration(tsTimerService.convertSecondDurationInHours(tsTimer.getDuration()));
-		timesheetLine.setComments(tsTimer.getComments());
-		
-		Beans.get(TimesheetLineRepository.class).save(timesheetLine);
-	}
-	
+  @Inject private TimesheetTimerService tsTimerService;
+
+  @Override
+  public TSTimer save(TSTimer tsTimer) {
+    if (tsTimer.getStatusSelect() == TSTimerRepository.STATUS_STOP) {
+      if (tsTimer.getTimesheetLine() != null) updateTimesheetLine(tsTimer);
+      else {
+        if (tsTimer.getDuration() > 59) {
+          tsTimerService.generateTimesheetLine(tsTimer);
+        }
+      }
+    }
+
+    return super.save(tsTimer);
+  }
+
+  public void updateTimesheetLine(TSTimer tsTimer) {
+    TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
+
+    timesheetLine.setProject(tsTimer.getProject());
+    timesheetLine.setProduct(tsTimer.getProduct());
+    timesheetLine.setHoursDuration(
+        tsTimerService.convertSecondDurationInHours(tsTimer.getDuration()));
+    timesheetLine.setComments(tsTimer.getComments());
+
+    Beans.get(TimesheetLineRepository.class).save(timesheetLine);
+  }
 }

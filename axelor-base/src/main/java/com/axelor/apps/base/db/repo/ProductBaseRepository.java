@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.base.db.repo;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.persistence.PersistenceException;
-import javax.validation.ValidationException;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
@@ -35,85 +28,92 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.persistence.PersistenceException;
+import javax.validation.ValidationException;
 
-public class ProductBaseRepository extends ProductRepository{
-	
-	@Inject
-	private MetaFiles metaFiles;
+public class ProductBaseRepository extends ProductRepository {
 
-	@Inject
-	protected AppBaseService appBaseService;
+  @Inject private MetaFiles metaFiles;
 
-	@Inject
-    protected TranslationService translationService;
+  @Inject protected AppBaseService appBaseService;
 
-    protected static final String FULL_NAME_FORMAT = "[%s] %s";
+  @Inject protected TranslationService translationService;
 
-    @Inject
-    protected BarcodeGeneratorService barcodeGeneratorService;
-    
-	@Override
-	public Product save(Product product){
-        product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
+  protected static final String FULL_NAME_FORMAT = "[%s] %s";
 
-        if (product.getId() != null) {
-            Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
-            translationService.updateFormatedValueTranslations(oldProduct.getFullName(), FULL_NAME_FORMAT,
-                    product.getCode(), product.getName());
+  @Inject protected BarcodeGeneratorService barcodeGeneratorService;
+
+  @Override
+  public Product save(Product product) {
+    product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
+
+    if (product.getId() != null) {
+      Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
+      translationService.updateFormatedValueTranslations(
+          oldProduct.getFullName(), FULL_NAME_FORMAT, product.getCode(), product.getName());
+    } else {
+      translationService.createFormatedValueTranslations(
+          FULL_NAME_FORMAT, product.getCode(), product.getName());
+    }
+
+    product = super.save(product);
+    if (product.getBarCode() == null
+        && appBaseService.getAppBase().getActivateBarCodeGeneration()) {
+      try {
+        boolean addPadding = false;
+        InputStream inStream;
+        if (!appBaseService.getAppBase().getEditProductBarcodeType()) {
+          inStream =
+              barcodeGeneratorService.createBarCode(
+                  product.getSerialNumber(),
+                  appBaseService.getAppBase().getBarcodeTypeConfig(),
+                  addPadding);
         } else {
-            translationService.createFormatedValueTranslations(FULL_NAME_FORMAT, product.getCode(), product.getName());
+          inStream =
+              barcodeGeneratorService.createBarCode(
+                  product.getSerialNumber(), product.getBarcodeTypeConfig(), addPadding);
         }
+        if (inStream != null) {
+          MetaFile barcodeFile =
+              metaFiles.upload(inStream, String.format("ProductBarCode%d.png", product.getId()));
+          product.setBarCode(barcodeFile);
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (AxelorException e) {
+        throw new ValidationException(e.getMessage());
+      }
+    }
 
-		product = super.save(product);
-		if(product.getBarCode() == null &&  appBaseService.getAppBase().getActivateBarCodeGeneration()) {
-			try {
-				boolean addPadding=false;
-				InputStream inStream;
-				if (!appBaseService.getAppBase().getEditProductBarcodeType()) {
-					inStream = barcodeGeneratorService.createBarCode(product.getSerialNumber(),
-							appBaseService.getAppBase().getBarcodeTypeConfig(), addPadding);
-				} else {
-					inStream = barcodeGeneratorService.createBarCode(product.getSerialNumber(),
-							product.getBarcodeTypeConfig(), addPadding);
-				}
-				if (inStream != null) {
-			    	MetaFile barcodeFile =  metaFiles.upload(inStream, String.format("ProductBarCode%d.png", product.getId()));
-					product.setBarCode(barcodeFile);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			catch (AxelorException  e) {
-				throw new ValidationException(e.getMessage());
-			}
-		}
+    try {
+      if (Strings.isNullOrEmpty(product.getSequence())
+          && appBaseService.getAppBase().getGenerateProductSequence()) {
+        product.setSequence(Beans.get(ProductService.class).getSequence());
+      }
 
-		try {
-			if (Strings.isNullOrEmpty(product.getSequence()) && appBaseService.getAppBase().getGenerateProductSequence()) {
-				product.setSequence(Beans.get(ProductService.class).getSequence());
-			}
+      return super.save(product);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 
-			return super.save(product);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-	
-	@Override
-	public Product copy(Product product, boolean deep) {
-		
-		Product copy = super.copy(product, deep);
-		copy.setBarCode(null);
-		try {
-			if (product.getPicture() != null) {
-				File file = MetaFiles.getPath(product.getPicture()).toFile();
-				copy.setPicture(metaFiles.upload(file));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return copy;
-		
-	}
+  @Override
+  public Product copy(Product product, boolean deep) {
+
+    Product copy = super.copy(product, deep);
+    copy.setBarCode(null);
+    try {
+      if (product.getPicture() != null) {
+        File file = MetaFiles.getPath(product.getPicture()).toFile();
+        copy.setPicture(metaFiles.upload(file));
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return copy;
+  }
 }

@@ -21,12 +21,11 @@ import com.axelor.apps.production.db.OperationOrder;
 
 public interface OperationOrderValidateBusinessService {
 
-    /**
-     * Check timesheet lines on operation order.
-     * @param operationOrder
-     * @return the number of timesheets waiting validation
-     *         linked to the operation order.
-     */
-    long checkTimesheet(OperationOrder operationOrder);
-
+  /**
+   * Check timesheet lines on operation order.
+   *
+   * @param operationOrder
+   * @return the number of timesheets waiting validation linked to the operation order.
+   */
+  long checkTimesheet(OperationOrder operationOrder);
 }

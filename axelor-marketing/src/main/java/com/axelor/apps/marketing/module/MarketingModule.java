@@ -23,11 +23,11 @@ import com.axelor.apps.marketing.service.CampaignServiceImpl;
 import com.axelor.apps.marketing.service.TargetListService;
 import com.axelor.apps.marketing.service.TargetListServiceImpl;
 
-public class MarketingModule extends AxelorModule{
+public class MarketingModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(CampaignService.class).to(CampaignServiceImpl.class);
-		bind(TargetListService.class).to(TargetListServiceImpl.class);
-	}
+  @Override
+  protected void configure() {
+    bind(CampaignService.class).to(CampaignServiceImpl.class);
+    bind(TargetListService.class).to(TargetListServiceImpl.class);
+  }
 }

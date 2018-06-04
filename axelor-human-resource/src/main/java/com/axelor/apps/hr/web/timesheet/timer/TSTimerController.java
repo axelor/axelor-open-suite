@@ -30,80 +30,75 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TSTimerController{
-	
-	@Inject
-	protected TSTimerRepository TsTimerRepo;
-	
-	@Inject
-	protected TimesheetTimerService tsTimerService;
-	
-	public void editTimesheetTimer(ActionRequest request, ActionResponse response){
-		TSTimer tsTimer = tsTimerService.getCurrentTSTimer();
-		if(tsTimer == null){
-			response.setView(ActionView
-									.define(I18n.get("TSTimer"))
-									.model(TSTimer.class.getName())
-									.add("form", "ts-timer-form")
-									.map());
-		}
-		else{
-			response.setView(ActionView
-					.define(I18n.get("TSTimer"))
-					.model(TSTimer.class.getName())
-					.add("form", "ts-timer-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(tsTimer.getId())).map());
-		}
-	}
-	
-	public void editTimesheetTimerFromTimesheet(ActionRequest request, ActionResponse response){
-		
-		ActionViewBuilder actionView = ActionView
-				.define(I18n.get("TSTimer"))
-				.model(TSTimer.class.getName())
-				.add("form", "ts-timer-form")
-				.param("popup", "reload")
-				.param("forceEdit", "true")
-				.param("width", "800")
-				.param("show-confirm", "true")
-				.param("show-toolbar", "false")
-				.param("popup-save", "true");
-		
-		TSTimer tsTimer = tsTimerService.getCurrentTSTimer();
-		if(tsTimer != null){
-			actionView.context("_showRecord", String.valueOf(tsTimer.getId()));
-		}
-		
-		response.setView(actionView.map());
+public class TSTimerController {
 
-	}
-	
-	
-	public void pause(ActionRequest request, ActionResponse response){
-		try {
-			TSTimer timerView = request.getContext().asType(TSTimer.class);
-			TSTimer timer = TsTimerRepo.find(timerView.getId());
+  @Inject protected TSTimerRepository TsTimerRepo;
 
-			tsTimerService.pause(timer);
+  @Inject protected TimesheetTimerService tsTimerService;
 
-			response.setReload(true);
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
-	public void stop(ActionRequest request, ActionResponse response){
-		try {
-			TSTimer timerView = request.getContext().asType(TSTimer.class);
-			TSTimer timer = TsTimerRepo.find(timerView.getId());
+  public void editTimesheetTimer(ActionRequest request, ActionResponse response) {
+    TSTimer tsTimer = tsTimerService.getCurrentTSTimer();
+    if (tsTimer == null) {
+      response.setView(
+          ActionView.define(I18n.get("TSTimer"))
+              .model(TSTimer.class.getName())
+              .add("form", "ts-timer-form")
+              .map());
+    } else {
+      response.setView(
+          ActionView.define(I18n.get("TSTimer"))
+              .model(TSTimer.class.getName())
+              .add("form", "ts-timer-form")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(tsTimer.getId()))
+              .map());
+    }
+  }
 
-			tsTimerService.stop(timer);
+  public void editTimesheetTimerFromTimesheet(ActionRequest request, ActionResponse response) {
 
-			response.setReload(true);
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
+    ActionViewBuilder actionView =
+        ActionView.define(I18n.get("TSTimer"))
+            .model(TSTimer.class.getName())
+            .add("form", "ts-timer-form")
+            .param("popup", "reload")
+            .param("forceEdit", "true")
+            .param("width", "800")
+            .param("show-confirm", "true")
+            .param("show-toolbar", "false")
+            .param("popup-save", "true");
+
+    TSTimer tsTimer = tsTimerService.getCurrentTSTimer();
+    if (tsTimer != null) {
+      actionView.context("_showRecord", String.valueOf(tsTimer.getId()));
+    }
+
+    response.setView(actionView.map());
+  }
+
+  public void pause(ActionRequest request, ActionResponse response) {
+    try {
+      TSTimer timerView = request.getContext().asType(TSTimer.class);
+      TSTimer timer = TsTimerRepo.find(timerView.getId());
+
+      tsTimerService.pause(timer);
+
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void stop(ActionRequest request, ActionResponse response) {
+    try {
+      TSTimer timerView = request.getContext().asType(TSTimer.class);
+      TSTimer timer = TsTimerRepo.find(timerView.getId());
+
+      tsTimerService.stop(timer);
+
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -27,15 +27,13 @@ import com.google.inject.Singleton;
 @Singleton
 public class CompanyController {
 
-	/**
-	 * @see com.axelor.apps.base.service.CompanyService#checkMultiBanks
-	 * 
-	 * @param request
-	 * @param response
-	 */
-	public void checkMultiBanks(ActionRequest request, ActionResponse response) {
-		Company company = request.getContext().asType(Company.class);
-		Beans.get(CompanyService.class).checkMultiBanks(company);
-	}
-
+  /**
+   * @see com.axelor.apps.base.service.CompanyService#checkMultiBanks
+   * @param request
+   * @param response
+   */
+  public void checkMultiBanks(ActionRequest request, ActionResponse response) {
+    Company company = request.getContext().asType(Company.class);
+    Beans.get(CompanyService.class).checkMultiBanks(company);
+  }
 }

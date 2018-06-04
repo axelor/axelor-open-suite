@@ -17,27 +17,29 @@
  */
 package com.axelor.apps.hr.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.hr.db.TimesheetLine;
+import javax.persistence.PersistenceException;
 
 public class TimesheetLineHRRepository extends TimesheetLineRepository {
 
-	@Override
-	public TimesheetLine save(TimesheetLine timesheetLine){
-		try{
-			computeFullName(timesheetLine);
-			
-			return super.save(timesheetLine);
-		}
-		catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-	
-	public void computeFullName(TimesheetLine timesheetLine){
-		
-		timesheetLine.setFullName(timesheetLine.getTimesheet().getFullName() + " " + timesheetLine.getDate() + " " + timesheetLine.getId());
-		
-	}
+  @Override
+  public TimesheetLine save(TimesheetLine timesheetLine) {
+    try {
+      computeFullName(timesheetLine);
+
+      return super.save(timesheetLine);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
+
+  public void computeFullName(TimesheetLine timesheetLine) {
+
+    timesheetLine.setFullName(
+        timesheetLine.getTimesheet().getFullName()
+            + " "
+            + timesheetLine.getDate()
+            + " "
+            + timesheetLine.getId());
+  }
 }

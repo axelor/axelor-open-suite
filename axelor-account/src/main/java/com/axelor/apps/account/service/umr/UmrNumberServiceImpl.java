@@ -17,11 +17,9 @@
  */
 package com.axelor.apps.account.service.umr;
 
+import com.axelor.apps.base.db.Partner;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-
-import com.axelor.apps.base.db.Partner;
-
 import net.fortuna.ical4j.model.Date;
 
 public class UmrNumberServiceImpl implements UmrNumberService {
@@ -36,15 +34,14 @@ public class UmrNumberServiceImpl implements UmrNumberService {
 
     String rumNumber = "";
 
-    if(isRecovery) {
+    if (isRecovery) {
       rumNumber += "++";
     }
 
     rumNumber += partner.getPartnerSeq();
 
-    rumNumber += "/"+new SimpleDateFormat("yyyyMMdd").format(Date.from(Instant.now()));
+    rumNumber += "/" + new SimpleDateFormat("yyyyMMdd").format(Date.from(Instant.now()));
 
     return rumNumber;
   }
-
 }
