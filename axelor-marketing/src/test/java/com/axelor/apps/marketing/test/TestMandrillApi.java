@@ -17,16 +17,14 @@
  */
 package com.axelor.apps.marketing.test;
 
-import static org.junit.Assert.*;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.microtripit.mandrillapp.lutung.MandrillApi;
 import com.microtripit.mandrillapp.lutung.model.MandrillApiError;
 import com.microtripit.mandrillapp.lutung.view.MandrillSender;
 import com.microtripit.mandrillapp.lutung.view.MandrillUserInfo;
-import edu.emory.mathcs.backport.java.util.Arrays;
 import java.io.IOException;
+import java.util.Arrays;
 import org.junit.Test;
 
 public class TestMandrillApi {
