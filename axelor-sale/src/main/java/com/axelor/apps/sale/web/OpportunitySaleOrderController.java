@@ -30,21 +30,22 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class OpportunitySaleOrderController{
-	
-	@Inject 
-	private OpportunitySaleOrderService opportunitySaleOrderService;
-	
-	public void generateSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException{
-		Opportunity opportunity = request.getContext().asType(Opportunity.class);
-		opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
-		SaleOrder saleOrder = opportunitySaleOrderService.createSaleOrderFromOpportunity(opportunity);
-		response.setReload(true);
-		response.setView(ActionView
-				.define("Sale order")
-				.model(SaleOrder.class.getName())
-				.add("form", "sale-order-form")
-				.param("forceEdit", "true")
-				.context("_showRecord", String.valueOf(saleOrder.getId())).map());
-	}
+public class OpportunitySaleOrderController {
+
+  @Inject private OpportunitySaleOrderService opportunitySaleOrderService;
+
+  public void generateSaleOrder(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
+    SaleOrder saleOrder = opportunitySaleOrderService.createSaleOrderFromOpportunity(opportunity);
+    response.setReload(true);
+    response.setView(
+        ActionView.define("Sale order")
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form")
+            .param("forceEdit", "true")
+            .context("_showRecord", String.valueOf(saleOrder.getId()))
+            .map());
+  }
 }

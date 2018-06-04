@@ -17,54 +17,52 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.script.ScriptHelper;
+import java.math.BigDecimal;
 
 public interface LogisticalFormLineService {
 
-	/**
-	 * Get domain for stockMoveLine.
-	 * 
-	 * @param logisticalFormLine
-	 * @return
-	 */
-	String getStockMoveLineDomain(LogisticalFormLine logisticalFormLine);
+  /**
+   * Get domain for stockMoveLine.
+   *
+   * @param logisticalFormLine
+   * @return
+   */
+  String getStockMoveLineDomain(LogisticalFormLine logisticalFormLine);
 
-	/**
-	 * Get unspread quantity.
-	 * 
-	 * @param logisticalFormLine
-	 * @return
-	 */
-	BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine);
+  /**
+   * Get unspread quantity.
+   *
+   * @param logisticalFormLine
+   * @return
+   */
+  BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine);
 
-	/**
-	 * Validate dimensions
-	 * 
-	 * @param logisticalFormLine
-	 * @throws LogisticalFormError
-	 */
-	void validateDimensions(LogisticalFormLine logisticalFormLine) throws LogisticalFormError;
+  /**
+   * Validate dimensions
+   *
+   * @param logisticalFormLine
+   * @throws LogisticalFormError
+   */
+  void validateDimensions(LogisticalFormLine logisticalFormLine) throws LogisticalFormError;
 
-	/**
-	 * Evaluate volume.
-	 * 
-	 * @param logisticalFormLine
-	 * @param scriptHelper
-	 * @return
-	 * @throws LogisticalFormError
-	 */
-	BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
-			throws LogisticalFormError;
+  /**
+   * Evaluate volume.
+   *
+   * @param logisticalFormLine
+   * @param scriptHelper
+   * @return
+   * @throws LogisticalFormError
+   */
+  BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)
+      throws LogisticalFormError;
 
-	/**
-	 * Initialize parcel/pallet line.
-	 * 
-	 * @param logisticalFormLine
-	 */
-	void initParcelPallet(LogisticalFormLine logisticalFormLine);
-
+  /**
+   * Initialize parcel/pallet line.
+   *
+   * @param logisticalFormLine
+   */
+  void initParcelPallet(LogisticalFormLine logisticalFormLine);
 }

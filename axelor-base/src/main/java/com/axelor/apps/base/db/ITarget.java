@@ -17,20 +17,14 @@
  */
 package com.axelor.apps.base.db;
 
-/**
- * Interface of Administration package. Enum all static variable of packages.
- */
+/** Interface of Administration package. Enum all static variable of packages. */
 @Deprecated
 public interface ITarget {
 
+  /** Static select PeriodTypeSelect */
+  static final int NONE = 0;
 
-	/**
-	 * Static select PeriodTypeSelect
-	 */
-
-	static final int NONE = 0;
-	static final int MONTHLY = 1;
-	static final int WEEKLY = 2;
-	static final int DAILY = 3;
-
+  static final int MONTHLY = 1;
+  static final int WEEKLY = 2;
+  static final int DAILY = 3;
 }

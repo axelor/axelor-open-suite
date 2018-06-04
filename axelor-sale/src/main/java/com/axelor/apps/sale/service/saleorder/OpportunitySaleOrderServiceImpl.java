@@ -30,46 +30,53 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService  {
+public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService {
 
-	@Inject
-	protected SaleOrderCreateService saleOrderCreateService;
+  @Inject protected SaleOrderCreateService saleOrderCreateService;
 
-	@Inject
-	protected SaleOrderRepository saleOrderRepo;
+  @Inject protected SaleOrderRepository saleOrderRepo;
 
-	@Inject
-	protected AppBaseService appBaseService;
+  @Inject protected AppBaseService appBaseService;
 
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException {
+    Currency currency;
+    if (opportunity.getCurrency() != null) {
+      currency = opportunity.getCurrency();
+    } else if (opportunity.getPartner() != null && opportunity.getPartner().getCurrency() != null) {
+      currency = opportunity.getPartner().getCurrency();
+    } else {
+      currency = opportunity.getCompany().getCurrency();
+    }
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException  {
-		Currency currency;
-		if (opportunity.getCurrency() != null) {
-			currency = opportunity.getCurrency();
-		} else if (opportunity.getPartner() != null && opportunity.getPartner().getCurrency() != null) {
-			currency = opportunity.getPartner().getCurrency();
-		} else {
-			currency = opportunity.getCompany().getCurrency();
-		}
+    SaleOrder saleOrder = createSaleOrder(opportunity, currency);
 
-		SaleOrder saleOrder = createSaleOrder(opportunity, currency);
+    opportunity.addSaleOrderListItem(saleOrder);
 
-		opportunity.addSaleOrderListItem(saleOrder);
+    if (opportunity.getSalesStageSelect() < OpportunityRepository.SALES_STAGE_PROPOSITION) {
+      opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_PROPOSITION);
+    }
 
-        if (opportunity.getSalesStageSelect() < OpportunityRepository.SALES_STAGE_PROPOSITION) {
-            opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_PROPOSITION);
-        }
+    saleOrderRepo.save(saleOrder);
 
-		saleOrderRepo.save(saleOrder);
+    return saleOrder;
+  }
 
-		return saleOrder;
-	}
-
-	protected SaleOrder createSaleOrder(Opportunity opportunity, Currency currency) throws AxelorException {
-		return saleOrderCreateService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, currency, null, opportunity.getName(), null,
-				appBaseService.getTodayDate(), Beans.get(PartnerPriceListService.class).getDefaultPriceList(opportunity.getPartner(), PriceListRepository.TYPE_SALE), opportunity.getPartner(), opportunity.getTeam());
-	}
-
+  protected SaleOrder createSaleOrder(Opportunity opportunity, Currency currency)
+      throws AxelorException {
+    return saleOrderCreateService.createSaleOrder(
+        opportunity.getUser(),
+        opportunity.getCompany(),
+        null,
+        currency,
+        null,
+        opportunity.getName(),
+        null,
+        appBaseService.getTodayDate(),
+        Beans.get(PartnerPriceListService.class)
+            .getDefaultPriceList(opportunity.getPartner(), PriceListRepository.TYPE_SALE),
+        opportunity.getPartner(),
+        opportunity.getTeam());
+  }
 }

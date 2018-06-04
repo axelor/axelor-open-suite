@@ -27,25 +27,25 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class EmploymentContractService {
-	
-	@Inject
-	private EmploymentContractRepository employmentContractRepo;
-	
-	@Transactional
-    public int addAmendment( EmploymentContract EmploymentContract ) throws AxelorException  {
-    	String name = EmploymentContract.getFullName() + "_" + EmploymentContract.getEmploymentContractVersion();
-		
-    	ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name+"-${date}")
-				.addParam("ContractId", EmploymentContract.getId())
-				.addParam("Locale", ReportSettings.getPrintingLocale(null))
-				.toAttach(EmploymentContract)
-				.generate()
-				.getFileLink();
 
-    	int version = EmploymentContract.getEmploymentContractVersion() + 1;
-    	EmploymentContract.setEmploymentContractVersion( version );
-    	employmentContractRepo.save(EmploymentContract);
+  @Inject private EmploymentContractRepository employmentContractRepo;
 
-    	return version;
-	}
+  @Transactional
+  public int addAmendment(EmploymentContract EmploymentContract) throws AxelorException {
+    String name =
+        EmploymentContract.getFullName() + "_" + EmploymentContract.getEmploymentContractVersion();
+
+    ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name + "-${date}")
+        .addParam("ContractId", EmploymentContract.getId())
+        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .toAttach(EmploymentContract)
+        .generate()
+        .getFileLink();
+
+    int version = EmploymentContract.getEmploymentContractVersion() + 1;
+    EmploymentContract.setEmploymentContractVersion(version);
+    employmentContractRepo.save(EmploymentContract);
+
+    return version;
+  }
 }

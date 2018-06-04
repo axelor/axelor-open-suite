@@ -17,23 +17,6 @@
  */
 package com.axelor.studio.service.wkf;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.invoke.MethodHandles;
-import java.util.*;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.Inflector;
 import com.axelor.inject.Beans;
@@ -46,250 +29,253 @@ import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.db.repo.WkfTransitionRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.invoke.MethodHandles;
+import java.util.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
- * Service class handle bpmn xml processing of workflow. It create/remove
- * workflow nodes and transitions using bpmn xml. *
- * 
- * @author axelor
+ * Service class handle bpmn xml processing of workflow. It create/remove workflow nodes and
+ * transitions using bpmn xml. *
  *
+ * @author axelor
  */
 public class WkfDesignerService {
-	
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	protected static final String WKF_STATUS = "wkfStatus";
 
-	protected MetaField statusField = null;
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected String dasherizeModel = null;
+  protected static final String WKF_STATUS = "wkfStatus";
 
-	protected String modelName = null;
+  protected MetaField statusField = null;
 
-	protected Inflector inflector;
+  protected String dasherizeModel = null;
 
-	protected String defaultStatus = null;
+  protected String modelName = null;
 
-	private Set<WkfNode> nodes = new LinkedHashSet<>();
+  protected Inflector inflector;
 
-	private Set<WkfTransition> transitions = new LinkedHashSet<>();
+  protected String defaultStatus = null;
 
-	private Wkf instance;
-	
-	private List<Integer> nodeSequences;
-	
-	@Inject
-	protected RoleRepository roleRepo;
-	
-	@Inject
-	private WkfRepository wkfRepo;
-	
-	@Inject
-	private WkfService wkfService;
+  private Set<WkfNode> nodes = new LinkedHashSet<>();
 
-	/**
-	 * Method parse xml doc to create workflow nodes from it. It set incoming
-	 * and outgoing transitions of node.
-	 * 
-	 * @param doc
-	 */
-	public void traverseXMLElement(Document doc) {
-		
-		nodeSequences = new ArrayList<Integer>();
+  private Set<WkfTransition> transitions = new LinkedHashSet<>();
 
-		NodeList list = doc.getElementsByTagName("*");
+  private Wkf instance;
 
-		int nodeCount = 1;
-		
-		Map<String, WkfNode> nodeMap = getNodeMap();
-		
-		for (int i = 0; i < list.getLength(); i++) {
+  private List<Integer> nodeSequences;
 
-			Element element = (Element) list.item(i);
+  @Inject protected RoleRepository roleRepo;
 
-			if ((!element.getParentNode().getNodeName().equals("process"))
-					|| element.getNodeName().equals("sequenceFlow")) {
-				continue;
-			}
+  @Inject private WkfRepository wkfRepo;
 
-			String elementName = element.getTagName();
+  @Inject private WkfService wkfService;
 
-			WkfNode node = nodeMap.get(element.getAttribute("id"));
+  /**
+   * Method parse xml doc to create workflow nodes from it. It set incoming and outgoing transitions
+   * of node.
+   *
+   * @param doc
+   */
+  public void traverseXMLElement(Document doc) {
 
-			if (node == null) {
-				node = new WkfNode();
-				node.setXmlId(element.getAttribute("id"));
-				node.setName(element.getAttribute("name"));
-				node.setTitle(node.getName());
-				node.setWkf(instance);
-				while(nodeSequences.contains(nodeCount)) {
-					nodeCount += 10;
-				}
-				node.setSequence(nodeCount);
-				nodeCount += 10;
-				if (elementName == "startEvent")
-					node.setStartNode(true);
-				else if (elementName == "endEvent")
-					node.setEndNode(true);
-			} else {
-				node.setName(element.getAttribute("name"));
-				nodeMap.remove(node);
-			}
-			
-			wkfService.clearNodes(nodeMap.values());
-			NodeList incomings = element.getElementsByTagName("incoming");
+    nodeSequences = new ArrayList<Integer>();
 
-			for (int j = 0; j < incomings.getLength(); j++) {
-				Element incElement = (Element) incomings.item(j);
-				String innerText = incElement.getTextContent();
+    NodeList list = doc.getElementsByTagName("*");
 
-				for (WkfTransition trn : transitions) {
-					if (trn.getXmlId().equals(innerText)) {
-						Set<WkfTransition> existIncomings = node.getIncomming();
+    int nodeCount = 1;
 
-						if (existIncomings == null)
-							existIncomings = new HashSet<>();
+    Map<String, WkfNode> nodeMap = getNodeMap();
 
-						existIncomings.add(trn);
-						node.setIncomming(existIncomings);
-						trn.setTarget(node);
-					}
-				}
-			}
+    for (int i = 0; i < list.getLength(); i++) {
 
-			NodeList outgoings = element.getElementsByTagName("outgoing");
+      Element element = (Element) list.item(i);
 
-			for (int j = 0; j < outgoings.getLength(); j++) {
-				Element outElement = (Element) outgoings.item(j);
-				String innerText = outElement.getTextContent();
+      if ((!element.getParentNode().getNodeName().equals("process"))
+          || element.getNodeName().equals("sequenceFlow")) {
+        continue;
+      }
 
-				for (WkfTransition trn : transitions) {
-					if (trn.getXmlId().equals(innerText)) {
-						Set<WkfTransition> existOutgoings = node.getOutgoing();
+      String elementName = element.getTagName();
 
-						if (existOutgoings == null)
-							existOutgoings = new HashSet<>();
+      WkfNode node = nodeMap.get(element.getAttribute("id"));
 
-						existOutgoings.add(trn);
-						node.setOutgoing(existOutgoings);
-						trn.setSource(node);
-					}
-				}
-			}
-			nodes.add(node);
-		}
-	}
+      if (node == null) {
+        node = new WkfNode();
+        node.setXmlId(element.getAttribute("id"));
+        node.setName(element.getAttribute("name"));
+        node.setTitle(node.getName());
+        node.setWkf(instance);
+        while (nodeSequences.contains(nodeCount)) {
+          nodeCount += 10;
+        }
+        node.setSequence(nodeCount);
+        nodeCount += 10;
+        if (elementName == "startEvent") node.setStartNode(true);
+        else if (elementName == "endEvent") node.setEndNode(true);
+      } else {
+        node.setName(element.getAttribute("name"));
+        nodeMap.remove(node);
+      }
 
-	private Map<String, WkfNode> getNodeMap() {
-		
-		WkfNodeRepository wkfNodeRepository = Beans
-				.get(WkfNodeRepository.class);
-		
-		Map<String, WkfNode> nodeMap = new HashMap<String, WkfNode>();
-		if (instance != null) {
-			List<WkfNode> nodes = wkfNodeRepository.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
-			for (WkfNode node : nodes) {
-				nodeMap.put(node.getXmlId(), node);
-				nodeSequences.add(node.getSequence());
-			}
-		}
-		
-		return nodeMap;
-	}
-	
-	private Map<String, WkfTransition> getTransitionMap() {
-		
-		WkfTransitionRepository wkfTransitionRepo = Beans
-				.get(WkfTransitionRepository.class);
-		
-		Map<String, WkfTransition> transitionMap = new HashMap<String, WkfTransition>();
-		if (instance != null) {
-			List<WkfTransition> transitions = wkfTransitionRepo.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
-			for (WkfTransition transition : transitions) {
-				transitionMap.put(transition.getXmlId(), transition);
-			}
-		}
-		
-		return transitionMap;
-	}
+      wkfService.clearNodes(nodeMap.values());
+      NodeList incomings = element.getElementsByTagName("incoming");
 
-	/**
-	 * Method fetch bpmn xml from workflow. It generate document from xml using
-	 * dom parser. From dom document generates transitions and call method to
-	 * creat nodes. *
-	 * 
-	 * @param instance
-	 *            Workflow instance
-	 * @throws ParserConfigurationException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 * @throws Exception
-	 */
-	@Transactional
-	public Wkf processXml(Wkf instance) throws ParserConfigurationException, SAXException, IOException{
-		
-		this.instance = instance;
-		String bpmnXml = instance.getBpmnXml();
-		if (bpmnXml != null) {
-			DocumentBuilder db = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
-			InputSource is = new InputSource();
-			is.setCharacterStream(new StringReader(bpmnXml));
+      for (int j = 0; j < incomings.getLength(); j++) {
+        Element incElement = (Element) incomings.item(j);
+        String innerText = incElement.getTextContent();
 
-			Document doc = db.parse(is);
+        for (WkfTransition trn : transitions) {
+          if (trn.getXmlId().equals(innerText)) {
+            Set<WkfTransition> existIncomings = node.getIncomming();
 
-			NodeList list;
-			
-			Map<String, WkfTransition> transitionMap = getTransitionMap(); 
-			list = doc.getElementsByTagName("sequenceFlow");
-			for (int i = 0; i < list.getLength(); i++) {
-				Element element = (Element) list.item(i);
-				
-				WkfTransition transition = transitionMap.get(element.getAttribute("id"));
+            if (existIncomings == null) existIncomings = new HashSet<>();
 
-				if (transition == null) {
-					transition = new WkfTransition();
-					transition.setXmlId(element.getAttribute("id"));
-					transition.setName(element.getAttribute("name"));
-					transition.setWkf(instance);
-					log.debug("New transition : {}, Version: {}", transition.getName(), transition.getVersion());
-				} else {
-					transition.setName(element.getAttribute("name"));
-				}
+            existIncomings.add(trn);
+            node.setIncomming(existIncomings);
+            trn.setTarget(node);
+          }
+        }
+      }
 
-				transitions.add(transition);
-			}
-			
-			List<WkfNode> allRemoveNodes = instance.getNodes();
+      NodeList outgoings = element.getElementsByTagName("outgoing");
 
-			if (allRemoveNodes.size() > 0) {
-				for (WkfNode tempNode : allRemoveNodes) {
-					tempNode.getIncomming().clear();
-					tempNode.getOutgoing().clear();
-				}
-			}
-			
-			instance.getTransitions().clear();
-			
-			for (WkfTransition transition : transitions) {
-				if (transition.getVersion() == null) {
-					transition.setIsButton(true);
-					transition.setButtonTitle(transition.getName());
-				}
-				instance.addTransition(transition);
-			}
-			
-			traverseXMLElement(doc);
-			
-			instance.getNodes().clear();
+      for (int j = 0; j < outgoings.getLength(); j++) {
+        Element outElement = (Element) outgoings.item(j);
+        String innerText = outElement.getTextContent();
 
-			for (WkfNode node : nodes) {
-				instance.addNode(node);
-			}
-		}
-		
-		return wkfRepo.save(instance);
-	}
+        for (WkfTransition trn : transitions) {
+          if (trn.getXmlId().equals(innerText)) {
+            Set<WkfTransition> existOutgoings = node.getOutgoing();
 
+            if (existOutgoings == null) existOutgoings = new HashSet<>();
 
+            existOutgoings.add(trn);
+            node.setOutgoing(existOutgoings);
+            trn.setSource(node);
+          }
+        }
+      }
+      nodes.add(node);
+    }
+  }
+
+  private Map<String, WkfNode> getNodeMap() {
+
+    WkfNodeRepository wkfNodeRepository = Beans.get(WkfNodeRepository.class);
+
+    Map<String, WkfNode> nodeMap = new HashMap<String, WkfNode>();
+    if (instance != null) {
+      List<WkfNode> nodes =
+          wkfNodeRepository.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
+      for (WkfNode node : nodes) {
+        nodeMap.put(node.getXmlId(), node);
+        nodeSequences.add(node.getSequence());
+      }
+    }
+
+    return nodeMap;
+  }
+
+  private Map<String, WkfTransition> getTransitionMap() {
+
+    WkfTransitionRepository wkfTransitionRepo = Beans.get(WkfTransitionRepository.class);
+
+    Map<String, WkfTransition> transitionMap = new HashMap<String, WkfTransition>();
+    if (instance != null) {
+      List<WkfTransition> transitions =
+          wkfTransitionRepo.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
+      for (WkfTransition transition : transitions) {
+        transitionMap.put(transition.getXmlId(), transition);
+      }
+    }
+
+    return transitionMap;
+  }
+
+  /**
+   * Method fetch bpmn xml from workflow. It generate document from xml using dom parser. From dom
+   * document generates transitions and call method to creat nodes. *
+   *
+   * @param instance Workflow instance
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
+   * @throws Exception
+   */
+  @Transactional
+  public Wkf processXml(Wkf instance)
+      throws ParserConfigurationException, SAXException, IOException {
+
+    this.instance = instance;
+    String bpmnXml = instance.getBpmnXml();
+    if (bpmnXml != null) {
+      DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      InputSource is = new InputSource();
+      is.setCharacterStream(new StringReader(bpmnXml));
+
+      Document doc = db.parse(is);
+
+      NodeList list;
+
+      Map<String, WkfTransition> transitionMap = getTransitionMap();
+      list = doc.getElementsByTagName("sequenceFlow");
+      for (int i = 0; i < list.getLength(); i++) {
+        Element element = (Element) list.item(i);
+
+        WkfTransition transition = transitionMap.get(element.getAttribute("id"));
+
+        if (transition == null) {
+          transition = new WkfTransition();
+          transition.setXmlId(element.getAttribute("id"));
+          transition.setName(element.getAttribute("name"));
+          transition.setWkf(instance);
+          log.debug(
+              "New transition : {}, Version: {}", transition.getName(), transition.getVersion());
+        } else {
+          transition.setName(element.getAttribute("name"));
+        }
+
+        transitions.add(transition);
+      }
+
+      List<WkfNode> allRemoveNodes = instance.getNodes();
+
+      if (allRemoveNodes.size() > 0) {
+        for (WkfNode tempNode : allRemoveNodes) {
+          tempNode.getIncomming().clear();
+          tempNode.getOutgoing().clear();
+        }
+      }
+
+      instance.getTransitions().clear();
+
+      for (WkfTransition transition : transitions) {
+        if (transition.getVersion() == null) {
+          transition.setIsButton(true);
+          transition.setButtonTitle(transition.getName());
+        }
+        instance.addTransition(transition);
+      }
+
+      traverseXMLElement(doc);
+
+      instance.getNodes().clear();
+
+      for (WkfNode node : nodes) {
+        instance.addNode(node);
+      }
+    }
+
+    return wkfRepo.save(instance);
+  }
 }

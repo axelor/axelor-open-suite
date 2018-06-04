@@ -17,35 +17,31 @@
  */
 package com.axelor.apps.purchase.script;
 
-import java.util.Map;
-
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.google.inject.Inject;
+import java.util.Map;
 
 public class ImportPurchaseOrder {
-	
-	@Inject
-	private SequenceService sequenceService;
-	
-	@Inject
-	private PurchaseOrderService purchaseOrderService;
-	
-	public Object importPurchaseOrder(Object bean, Map<String,Object> values) throws Exception {
-		assert bean instanceof PurchaseOrder;
 
-		PurchaseOrder purchaseOrder = (PurchaseOrder) bean;
+  @Inject private SequenceService sequenceService;
 
-		purchaseOrder = purchaseOrderService.computePurchaseOrder(purchaseOrder);
-		
-		if (purchaseOrder.getStatusSelect() == 1) {
-			purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
-		} else {
-			purchaseOrderService.requestPurchaseOrder(purchaseOrder);
-		}
-		
-		return purchaseOrder;	
-	}
+  @Inject private PurchaseOrderService purchaseOrderService;
 
+  public Object importPurchaseOrder(Object bean, Map<String, Object> values) throws Exception {
+    assert bean instanceof PurchaseOrder;
+
+    PurchaseOrder purchaseOrder = (PurchaseOrder) bean;
+
+    purchaseOrder = purchaseOrderService.computePurchaseOrder(purchaseOrder);
+
+    if (purchaseOrder.getStatusSelect() == 1) {
+      purchaseOrder.setPurchaseOrderSeq(sequenceService.getDraftSequenceNumber(purchaseOrder));
+    } else {
+      purchaseOrderService.requestPurchaseOrder(purchaseOrder);
+    }
+
+    return purchaseOrder;
+  }
 }

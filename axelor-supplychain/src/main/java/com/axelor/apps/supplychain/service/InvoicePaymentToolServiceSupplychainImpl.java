@@ -30,19 +30,20 @@ import com.google.inject.persist.Transactional;
 
 public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentToolServiceImpl {
 
-    @Inject
-    public InvoicePaymentToolServiceSupplychainImpl(InvoiceRepository invoiceRepo, MoveToolService moveToolService)  {
-        super(invoiceRepo, moveToolService);
-    }
+  @Inject
+  public InvoicePaymentToolServiceSupplychainImpl(
+      InvoiceRepository invoiceRepo, MoveToolService moveToolService) {
+    super(invoiceRepo, moveToolService);
+  }
 
-    @Override
-    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    public void updateAmountPaid(Invoice invoice) throws AxelorException  {
-        super.updateAmountPaid(invoice);
-        SaleOrder saleOrder = invoice.getSaleOrder();
-        if (saleOrder != null) {
-            //compute sale order totals
-            Beans.get(SaleOrderComputeService.class)._computeSaleOrder(saleOrder);
-        }
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateAmountPaid(Invoice invoice) throws AxelorException {
+    super.updateAmountPaid(invoice);
+    SaleOrder saleOrder = invoice.getSaleOrder();
+    if (saleOrder != null) {
+      // compute sale order totals
+      Beans.get(SaleOrderComputeService.class)._computeSaleOrder(saleOrder);
     }
+  }
 }

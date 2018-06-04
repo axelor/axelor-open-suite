@@ -23,37 +23,30 @@ import com.axelor.apps.account.db.TaxAccount;
 import com.axelor.apps.base.db.Company;
 
 public class TaxAccountService {
-	
-	
-	public Account getAccount(Tax tax, Company company)  {
-		
-		TaxAccount taxAccount =  this.getTaxAccount(tax, company);
-		
-		if(taxAccount != null)  {
-			return taxAccount.getAccount();
-		}
-		
-		return null;
-		
-	}
-	
-	
-	public TaxAccount getTaxAccount(Tax tax, Company company)  {
-		
-		if(tax.getTaxAccountList() != null)  {
-			
-			
-			for(TaxAccount taxAccount : tax.getTaxAccountList())  {
-				
-				if(taxAccount.getCompany().equals(company))  {
-					return taxAccount;
-				}
-			}
-		}
-		
-		return null;
-		
-	}
-	
-	
+
+  public Account getAccount(Tax tax, Company company) {
+
+    TaxAccount taxAccount = this.getTaxAccount(tax, company);
+
+    if (taxAccount != null) {
+      return taxAccount.getAccount();
+    }
+
+    return null;
+  }
+
+  public TaxAccount getTaxAccount(Tax tax, Company company) {
+
+    if (tax.getTaxAccountList() != null) {
+
+      for (TaxAccount taxAccount : tax.getTaxAccountList()) {
+
+        if (taxAccount.getCompany().equals(company)) {
+          return taxAccount;
+        }
+      }
+    }
+
+    return null;
+  }
 }

@@ -21,8 +21,8 @@ import com.axelor.apps.base.db.AppPurchase;
 import com.axelor.apps.base.service.app.AppBaseService;
 
 public interface AppPurchaseService extends AppBaseService {
-	
-	public AppPurchase getAppPurchase();
-	
-	public void generatePurchaseConfigurations();
+
+  public AppPurchase getAppPurchase();
+
+  public void generatePurchaseConfigurations();
 }

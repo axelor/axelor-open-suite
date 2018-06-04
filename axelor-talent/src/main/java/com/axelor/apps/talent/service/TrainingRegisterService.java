@@ -23,15 +23,14 @@ import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
 
 public interface TrainingRegisterService {
-	
-	public Event plan(TrainingRegister trainingRegister);
-	
-	public void complete(TrainingRegister trainingRegister);
-	
-	public void cancel(TrainingRegister trainingRegister);
-	
-	public Training updateTrainingRating(Training training, Long excludeId);
-	
-	public TrainingSession updateSessionRating(TrainingSession trainingSession, Long excludeId);
-	
+
+  public Event plan(TrainingRegister trainingRegister);
+
+  public void complete(TrainingRegister trainingRegister);
+
+  public void cancel(TrainingRegister trainingRegister);
+
+  public Training updateTrainingRating(Training training, Long excludeId);
+
+  public TrainingSession updateSessionRating(TrainingSession trainingSession, Long excludeId);
 }

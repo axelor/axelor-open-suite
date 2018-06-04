@@ -17,22 +17,21 @@
  */
 package com.axelor.apps.hr.service.employee;
 
-import java.math.BigDecimal;
-
-import java.time.LocalDate;
-
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
-public interface EmployeeService extends UserService{
+public interface EmployeeService extends UserService {
 
-    public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException;
-	public int getAge(Employee employee, LocalDate refDate) throws AxelorException;
-	
-	public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
-	
-	public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
+  public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException;
 
+  public int getAge(Employee employee, LocalDate refDate) throws AxelorException;
+
+  public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
+
+  public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
 }

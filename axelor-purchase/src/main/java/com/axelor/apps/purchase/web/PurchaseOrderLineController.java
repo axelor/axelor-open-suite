@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.purchase.web;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
@@ -40,240 +37,265 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
+import java.math.BigDecimal;
+import java.util.Map;
 
 @Singleton
 public class PurchaseOrderLineController {
 
-	@Inject
-	private PurchaseOrderLineService purchaseOrderLineService;
+  @Inject private PurchaseOrderLineService purchaseOrderLineService;
 
-	@Inject
-	private FiscalPositionService fiscalPositionService;
+  @Inject private FiscalPositionService fiscalPositionService;
 
-	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		try{
-			Context context = request.getContext();
-			PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-			PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
+    try {
+      Context context = request.getContext();
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
 
-			Map<String, BigDecimal> map = purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
-			response.setValues(map);
-			response.setAttr("priceDiscounted", "hidden", map.getOrDefault("priceDiscounted", BigDecimal.ZERO).compareTo(purchaseOrderLine.getPrice()) == 0);
-		}
-		catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
+      Map<String, BigDecimal> map =
+          purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+      response.setValues(map);
+      response.setAttr(
+          "priceDiscounted",
+          "hidden",
+          map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
+                  .compareTo(purchaseOrderLine.getPrice())
+              == 0);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	public void getProductInformation(ActionRequest request, ActionResponse response){
+  public void getProductInformation(ActionRequest request, ActionResponse response) {
 
-		Context context = request.getContext();
-		
-		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+    Context context = request.getContext();
 
-		PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
-		
-		Product product = purchaseOrderLine.getProduct();
+    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 
-		if(purchaseOrder == null || product == null) { 
-			this.resetProductInformation(response);
-			return;
-		}
+    PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
 
-		try {
-			TaxLine taxLine = purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine);
-			response.setValue("taxLine", taxLine);
-			
-			BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
-			String productName = purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[0];
-			String productCode = purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[1];
+    Product product = purchaseOrderLine.getProduct();
 
-			if (price == null || productName == null || productCode == null) {
-				price = BigDecimal.ZERO;
-				productName = "";
-				productCode = "";
-				response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
-			}
+    if (purchaseOrder == null || product == null) {
+      this.resetProductInformation(response);
+      return;
+    }
 
-			response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
-			response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrder,purchaseOrderLine));
+    try {
+      TaxLine taxLine = purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine);
+      response.setValue("taxLine", taxLine);
 
-			Tax tax = Beans.get(AccountManagementService.class).getProductTax(Beans.get(AccountManagementService.class).getAccountManagement(product, purchaseOrder.getCompany()),true);
-			TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(purchaseOrder.getSupplierPartner().getFiscalPosition(), tax);
-			response.setValue("taxEquiv", taxEquiv);
+      BigDecimal price =
+          purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
+      String productName =
+          purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[0];
+      String productCode =
+          purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[1];
 
-			response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
-			response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getProduct(),price));
+      if (price == null || productName == null || productCode == null) {
+        price = BigDecimal.ZERO;
+        productName = "";
+        productCode = "";
+        response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
+      }
 
-			Map<String,Object> discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
-			
-			if(discounts != null) {
-				response.setValue("discountAmount", discounts.get("discountAmount"));
-				response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-				if(discounts.get("price") != null) {
-					price = (BigDecimal) discounts.get("price");
-				}
-			}
-			response.setValue("price", price);
-			response.setValue("productName", productName);
-			response.setValue("productCode", productCode);
-		}
-		catch(Exception e) {
-			this.resetProductInformation(response);
-			response.setFlash(e.getMessage());
-		}
-	}
+      response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
+      response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrder, purchaseOrderLine));
 
+      Tax tax =
+          Beans.get(AccountManagementService.class)
+              .getProductTax(
+                  Beans.get(AccountManagementService.class)
+                      .getAccountManagement(product, purchaseOrder.getCompany()),
+                  true);
+      TaxEquiv taxEquiv =
+          Beans.get(FiscalPositionService.class)
+              .getTaxEquiv(purchaseOrder.getSupplierPartner().getFiscalPosition(), tax);
+      response.setValue("taxEquiv", taxEquiv);
 
-	public void resetProductInformation(ActionResponse response)  {
+      response.setValue(
+          "saleMinPrice",
+          purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
+      response.setValue(
+          "salePrice",
+          purchaseOrderLineService.getSalePrice(
+              purchaseOrder, purchaseOrderLine.getProduct(), price));
 
-		response.setValue("taxLine", null);
-		response.setValue("productName", null);
-		response.setValue("unit", null);
-		response.setValue("discountAmount", null);
-		response.setValue("discountTypeSelect", null);
-		response.setValue("price", null);
-		response.setValue("saleMinPrice", null);
-		response.setValue("salePrice", null);
-		response.setValue("exTaxTotal", null);
-		response.setValue("inTaxTotal", null);
-		response.setValue("companyInTaxTotal", null);
-		response.setValue("companyExTaxTotal", null);
-		response.setValue("productCode", null);
-		response.setAttr("minQtyNotRespectedLabel", "hidden", true);
-		response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
+      Map<String, Object> discounts =
+          purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
 
-	}
+      if (discounts != null) {
+        response.setValue("discountAmount", discounts.get("discountAmount"));
+        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+        if (discounts.get("price") != null) {
+          price = (BigDecimal) discounts.get("price");
+        }
+      }
+      response.setValue("price", price);
+      response.setValue("productName", productName);
+      response.setValue("productCode", productCode);
+    } catch (Exception e) {
+      this.resetProductInformation(response);
+      response.setFlash(e.getMessage());
+    }
+  }
 
-	public void getTaxEquiv(ActionRequest request, ActionResponse response) {
+  public void resetProductInformation(ActionResponse response) {
 
-		Context context = request.getContext();
-		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-		PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+    response.setValue("taxLine", null);
+    response.setValue("productName", null);
+    response.setValue("unit", null);
+    response.setValue("discountAmount", null);
+    response.setValue("discountTypeSelect", null);
+    response.setValue("price", null);
+    response.setValue("saleMinPrice", null);
+    response.setValue("salePrice", null);
+    response.setValue("exTaxTotal", null);
+    response.setValue("inTaxTotal", null);
+    response.setValue("companyInTaxTotal", null);
+    response.setValue("companyExTaxTotal", null);
+    response.setValue("productCode", null);
+    response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+    response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
+  }
 
-		response.setValue("taxEquiv", null);
+  public void getTaxEquiv(ActionRequest request, ActionResponse response) {
 
-		if(purchaseOrder == null || purchaseOrderLine == null ||
-				purchaseOrder.getSupplierPartner() == null || purchaseOrderLine.getTaxLine() == null) return;
+    Context context = request.getContext();
+    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = getPurchaseOrder(context);
 
-		response.setValue("taxEquiv", fiscalPositionService.getTaxEquiv(purchaseOrder.getSupplierPartner().getFiscalPosition(), purchaseOrderLine.getTaxLine().getTax()));
+    response.setValue("taxEquiv", null);
 
-	}
+    if (purchaseOrder == null
+        || purchaseOrderLine == null
+        || purchaseOrder.getSupplierPartner() == null
+        || purchaseOrderLine.getTaxLine() == null) return;
 
-	public void getDiscount(ActionRequest request, ActionResponse response){
+    response.setValue(
+        "taxEquiv",
+        fiscalPositionService.getTaxEquiv(
+            purchaseOrder.getSupplierPartner().getFiscalPosition(),
+            purchaseOrderLine.getTaxLine().getTax()));
+  }
 
-		Context context = request.getContext();
-		
-		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+  public void getDiscount(ActionRequest request, ActionResponse response) {
 
-		PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
+    Context context = request.getContext();
 
-		if(purchaseOrder == null || purchaseOrderLine.getProduct() == null) {  return;  }
+    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 
-		try  {
-			BigDecimal price = purchaseOrderLine.getPrice();
+    PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
 
-			Map<String, Object> discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
-			
-			if(discounts != null)  {
+    if (purchaseOrder == null || purchaseOrderLine.getProduct() == null) {
+      return;
+    }
 
-				response.setValue("discountAmount", discounts.get("discountAmount"));
-				response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-				
-				if(discounts.get("price") != null)  {
-					response.setValue("price", (BigDecimal) discounts.get("price"));
-				}
-			}
-		}
-		catch(Exception e) {
-			response.setFlash(e.getMessage());
-		}
-	}
+    try {
+      BigDecimal price = purchaseOrderLine.getPrice();
 
-	
-	public void convertUnitPrice(ActionRequest request, ActionResponse response) {
+      Map<String, Object> discounts =
+          purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
 
-		Context context = request.getContext();
-		
-		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      if (discounts != null) {
 
-		PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
+        response.setValue("discountAmount", discounts.get("discountAmount"));
+        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 
-		if(purchaseOrder == null || purchaseOrderLine.getProduct() == null || !purchaseOrderLineService.unitPriceShouldBeUpdate(purchaseOrder, purchaseOrderLine.getProduct())) {  return;  }
+        if (discounts.get("price") != null) {
+          response.setValue("price", (BigDecimal) discounts.get("price"));
+        }
+      }
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
 
-		try  {
+  public void convertUnitPrice(ActionRequest request, ActionResponse response) {
 
-			BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine());
-			
-			Map<String,Object> discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
-			
-			if(discounts != null)  {  
-			
-				response.setValue("discountAmount", discounts.get("discountAmount"));
-				response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-				if(discounts.get("price") != null)  {
-					price = (BigDecimal) discounts.get("price");
-				}
-			}
-			
-			response.setValue("price", price);
+    Context context = request.getContext();
 
-		}
-		catch(Exception e)  {
-			response.setFlash(e.getMessage());
-		}
-	}
-	
-	public PurchaseOrder getPurchaseOrder(Context context)  {
+    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 
-		Context parentContext = context.getParent();
-		PurchaseOrder purchaseOrder = null;
-		
-		if(parentContext != null && parentContext.getContextClass() == PurchaseOrder.class) {
+    PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
 
-			purchaseOrder = parentContext.asType(PurchaseOrder.class);
-			if(!parentContext.getContextClass().toString().equals(PurchaseOrder.class.toString())){
+    if (purchaseOrder == null
+        || purchaseOrderLine.getProduct() == null
+        || !purchaseOrderLineService.unitPriceShouldBeUpdate(
+            purchaseOrder, purchaseOrderLine.getProduct())) {
+      return;
+    }
 
-				PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+    try {
 
-				purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-			}
-			
-		} else {
-			PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-			purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-		}
-		
-		return purchaseOrder;
-	}
-	
-	public void emptyLine(ActionRequest request, ActionResponse response){
-		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-		if(purchaseOrderLine.getIsTitleLine()){
-			PurchaseOrderLine newPurchaseOrderLine = new PurchaseOrderLine();
-			newPurchaseOrderLine.setIsTitleLine(true);
-			newPurchaseOrderLine.setQty(BigDecimal.ZERO);
-			newPurchaseOrderLine.setId(purchaseOrderLine.getId());
-			newPurchaseOrderLine.setVersion(purchaseOrderLine.getVersion());
-			response.setValues(Mapper.toMap(purchaseOrderLine));
-		}
-	}
+      BigDecimal price =
+          purchaseOrderLineService.getUnitPrice(
+              purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine());
 
-	public void checkQty(ActionRequest request, ActionResponse response) {
+      Map<String, Object> discounts =
+          purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
 
-		Context context = request.getContext();
-		PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-		PurchaseOrder purchaseOrder = getPurchaseOrder(context);
-		
-		purchaseOrderLineService.checkMinQty(purchaseOrder, purchaseOrderLine, request, response);
-		
-		purchaseOrderLineService.checkMultipleQty(purchaseOrderLine, response);
-		
-	}
-	
-	
-	
+      if (discounts != null) {
+
+        response.setValue("discountAmount", discounts.get("discountAmount"));
+        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+        if (discounts.get("price") != null) {
+          price = (BigDecimal) discounts.get("price");
+        }
+      }
+
+      response.setValue("price", price);
+
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
+
+  public PurchaseOrder getPurchaseOrder(Context context) {
+
+    Context parentContext = context.getParent();
+    PurchaseOrder purchaseOrder = null;
+
+    if (parentContext != null && parentContext.getContextClass() == PurchaseOrder.class) {
+
+      purchaseOrder = parentContext.asType(PurchaseOrder.class);
+      if (!parentContext.getContextClass().toString().equals(PurchaseOrder.class.toString())) {
+
+        PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+
+        purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+      }
+
+    } else {
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    }
+
+    return purchaseOrder;
+  }
+
+  public void emptyLine(ActionRequest request, ActionResponse response) {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    if (purchaseOrderLine.getIsTitleLine()) {
+      PurchaseOrderLine newPurchaseOrderLine = new PurchaseOrderLine();
+      newPurchaseOrderLine.setIsTitleLine(true);
+      newPurchaseOrderLine.setQty(BigDecimal.ZERO);
+      newPurchaseOrderLine.setId(purchaseOrderLine.getId());
+      newPurchaseOrderLine.setVersion(purchaseOrderLine.getVersion());
+      response.setValues(Mapper.toMap(purchaseOrderLine));
+    }
+  }
+
+  public void checkQty(ActionRequest request, ActionResponse response) {
+
+    Context context = request.getContext();
+    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+
+    purchaseOrderLineService.checkMinQty(purchaseOrder, purchaseOrderLine, request, response);
+
+    purchaseOrderLineService.checkMultipleQty(purchaseOrderLine, response);
+  }
 }

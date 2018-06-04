@@ -18,9 +18,8 @@
 package com.axelor.apps.account.translation;
 
 public interface ITranslation {
-	
-	public static final String ACCOUNTING_APP_NAME = /*$$(*/ "value:Accounting"; /*)*/
-	public static final String INVOICING_APP_NAME = /*$$(*/ "value:Invoicing"; /*)*/
-	public static final String BUDGET_APP_NAME = /*$$(*/ "value:Budget"; /*)*/
 
+  public static final String ACCOUNTING_APP_NAME = /*$$(*/ "value:Accounting"; /*)*/
+  public static final String INVOICING_APP_NAME = /*$$(*/ "value:Invoicing"; /*)*/
+  public static final String BUDGET_APP_NAME = /*$$(*/ "value:Budget"; /*)*/
 }

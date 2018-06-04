@@ -17,11 +17,6 @@
  */
 package com.axelor.auth.web;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.PermissionAssistant;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
@@ -33,59 +28,63 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PermissionAssitantController {
 
-	@Inject
-	private PermissionAssistantRepository permissionAssistantRepo;
-	
-	@Inject
-	private PermissionAssistantService permissionAssistantService;
-	
-	@Inject
-	private MetaModelRepository metaModelRepo;
+  @Inject private PermissionAssistantRepository permissionAssistantRepo;
 
-	public void createFile(ActionRequest request, ActionResponse response) {
+  @Inject private PermissionAssistantService permissionAssistantService;
 
-		Long permissionAssistantId = (Long)request.getContext().get("id");
-		permissionAssistantService.createFile(permissionAssistantRepo.find(permissionAssistantId));
-		response.setReload(true);
+  @Inject private MetaModelRepository metaModelRepo;
 
-	}
+  public void createFile(ActionRequest request, ActionResponse response) {
 
-	public void importPermissions(ActionRequest request, ActionResponse response) {
+    Long permissionAssistantId = (Long) request.getContext().get("id");
+    permissionAssistantService.createFile(permissionAssistantRepo.find(permissionAssistantId));
+    response.setReload(true);
+  }
 
-		Long permissionAssistantId = (Long)request.getContext().get("id");
-		String errors = permissionAssistantService.importPermissions(permissionAssistantRepo.find(permissionAssistantId));
-		response.setValue("importDate", LocalDateTime.now());
-		response.setValue("log", errors);
+  public void importPermissions(ActionRequest request, ActionResponse response) {
 
-		if(errors.equals("")){
-			response.setFlash(I18n.get(IMessage.IMPORT_OK));
-		}
-		else{
-			response.setFlash(I18n.get(IMessage.ERR_IMPORT));
-		}
+    Long permissionAssistantId = (Long) request.getContext().get("id");
+    String errors =
+        permissionAssistantService.importPermissions(
+            permissionAssistantRepo.find(permissionAssistantId));
+    response.setValue("importDate", LocalDateTime.now());
+    response.setValue("log", errors);
 
-	}
-	
-	public void fillObjects(ActionRequest request, ActionResponse response) {
-		
-		PermissionAssistant assistant = request.getContext().asType(PermissionAssistant.class);
-		
-		MetaField metaField = assistant.getMetaField();
-		
-		if (metaField != null && (assistant.getObjectSet() == null || assistant.getObjectSet().isEmpty())) {
-			
-			List<MetaModel> models = metaModelRepo.all()
-					.filter("self.metaFields.relationship = 'ManyToOne'"
-							+ " and self.metaFields.typeName = ?1", 
-							metaField.getTypeName()).fetch();
-			
-			Set<MetaModel> objectSet = new HashSet<MetaModel>();
-			objectSet.addAll(models);
-			response.setValue("objectSet", objectSet);
-		}
-	}
+    if (errors.equals("")) {
+      response.setFlash(I18n.get(IMessage.IMPORT_OK));
+    } else {
+      response.setFlash(I18n.get(IMessage.ERR_IMPORT));
+    }
+  }
 
+  public void fillObjects(ActionRequest request, ActionResponse response) {
+
+    PermissionAssistant assistant = request.getContext().asType(PermissionAssistant.class);
+
+    MetaField metaField = assistant.getMetaField();
+
+    if (metaField != null
+        && (assistant.getObjectSet() == null || assistant.getObjectSet().isEmpty())) {
+
+      List<MetaModel> models =
+          metaModelRepo
+              .all()
+              .filter(
+                  "self.metaFields.relationship = 'ManyToOne'"
+                      + " and self.metaFields.typeName = ?1",
+                  metaField.getTypeName())
+              .fetch();
+
+      Set<MetaModel> objectSet = new HashSet<MetaModel>();
+      objectSet.addAll(models);
+      response.setValue("objectSet", objectSet);
+    }
+  }
 }

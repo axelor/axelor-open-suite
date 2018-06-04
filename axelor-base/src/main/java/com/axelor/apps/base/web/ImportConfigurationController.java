@@ -29,22 +29,21 @@ import com.google.inject.Singleton;
 @Singleton
 public class ImportConfigurationController {
 
-	@Inject
-	private ImportService importService;
+  @Inject private ImportService importService;
 
-	public void run(ActionRequest request,ActionResponse response){
+  public void run(ActionRequest request, ActionResponse response) {
 
-		ImportConfiguration importConfiguration = request.getContext().asType( ImportConfiguration.class );
-		
-		try{
-			
-			ImportHistory importHistory = importService.run(importConfiguration);
-			response.setAttr("importHistoryList", "value:add", importHistory);
-			response.setNotify( importHistory.getLog().replaceAll("(\r\n|\n\r|\r|\n)", "<br />") );
-			
-			
-		} catch( Exception e ){ TraceBackService.trace( response, e ); }
+    ImportConfiguration importConfiguration =
+        request.getContext().asType(ImportConfiguration.class);
 
-	}
+    try {
 
+      ImportHistory importHistory = importService.run(importConfiguration);
+      response.setAttr("importHistoryList", "value:add", importHistory);
+      response.setNotify(importHistory.getLog().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -24,19 +24,20 @@ import com.axelor.exception.AxelorException;
 
 public interface PartnerStockSettingsService {
 
-    /**
-     * get the mail settings from the partner and the company,
-     * create if not found
-     * @param partner
-     * @param company
-     */
-    PartnerStockSettings getOrCreateMailSettings(Partner partner, Company company) throws AxelorException;
+  /**
+   * get the mail settings from the partner and the company, create if not found
+   *
+   * @param partner
+   * @param company
+   */
+  PartnerStockSettings getOrCreateMailSettings(Partner partner, Company company)
+      throws AxelorException;
 
-    /**
-     * Create PartnerStockSettings in the given partner
-     * @param partner
-     * @param company
-     */
-    PartnerStockSettings createMailSettings(Partner partner, Company company) throws AxelorException;
-
+  /**
+   * Create PartnerStockSettings in the given partner
+   *
+   * @param partner
+   * @param company
+   */
+  PartnerStockSettings createMailSettings(Partner partner, Company company) throws AxelorException;
 }

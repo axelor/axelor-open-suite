@@ -23,45 +23,46 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ShippingCoef;
 import com.axelor.apps.base.db.repo.ShippingCoefRepository;
 import com.google.inject.Inject;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 public class ShippingCoefService {
 
-    protected ShippingCoefRepository shippingCoefRepo;
+  protected ShippingCoefRepository shippingCoefRepo;
 
-    @Inject
-    public ShippingCoefService(ShippingCoefRepository shippingCoefRepo) {
-        this.shippingCoefRepo = shippingCoefRepo;
+  @Inject
+  public ShippingCoefService(ShippingCoefRepository shippingCoefRepo) {
+    this.shippingCoefRepo = shippingCoefRepo;
+  }
+
+  /**
+   * @param product
+   * @param partner
+   * @param company
+   * @return the shipping coefficient for the given product, partner and company.
+   */
+  public BigDecimal getShippingCoef(Product product, Partner partner, Company company) {
+    BigDecimal shippingCoef = BigDecimal.ZERO;
+    List<ShippingCoef> shippingCoefList =
+        shippingCoefRepo
+            .all()
+            .filter(
+                "self.supplierCatalog.product = ?1"
+                    + " AND self.supplierCatalog.supplierPartner = ?2",
+                product,
+                partner)
+            .fetch();
+
+    if (shippingCoefList == null || shippingCoefList.isEmpty()) {
+      return shippingCoef;
     }
 
-    /**
-     *
-     * @param product
-     * @param partner
-     * @param company
-     * @return the shipping coefficient for the given product, partner and
-     *         company.
-     */
-    public BigDecimal getShippingCoef(Product product, Partner partner, Company company) {
-        BigDecimal shippingCoef = BigDecimal.ZERO;
-        List<ShippingCoef> shippingCoefList = shippingCoefRepo.all()
-                .filter("self.supplierCatalog.product = ?1" +
-                        " AND self.supplierCatalog.supplierPartner = ?2",
-                        product, partner)
-                .fetch();
-
-        if (shippingCoefList == null || shippingCoefList.isEmpty()) {
-            return shippingCoef;
-        }
-
-        for (ShippingCoef shippingCoefObject : shippingCoefList) {
-            if (shippingCoefObject.getCompany().equals(company)) {
-                shippingCoef = shippingCoefObject.getShippingCoef();
-            }
-        }
-
-        return shippingCoef;
+    for (ShippingCoef shippingCoefObject : shippingCoefList) {
+      if (shippingCoefObject.getCompany().equals(company)) {
+        shippingCoef = shippingCoefObject.getShippingCoef();
+      }
     }
+
+    return shippingCoef;
+  }
 }

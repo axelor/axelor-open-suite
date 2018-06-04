@@ -25,8 +25,12 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 
 public interface AccountManagementAccountService extends AccountManagementService {
-	
-	public Account getProductAccount(AccountManagement accountManagement, boolean isPurchase);
-	public void generateAccountManagementException(Product product, Company company) throws AxelorException;
-	public Account getProductAccount(Product product, Company company, boolean isPurchase) throws AxelorException;
+
+  public Account getProductAccount(AccountManagement accountManagement, boolean isPurchase);
+
+  public void generateAccountManagementException(Product product, Company company)
+      throws AxelorException;
+
+  public Account getProductAccount(Product product, Company company, boolean isPurchase)
+      throws AxelorException;
 }

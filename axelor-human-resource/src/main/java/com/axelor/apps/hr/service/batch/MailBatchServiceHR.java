@@ -28,29 +28,30 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
-public class MailBatchServiceHR extends MailBatchService{
-	@Override
-	public Batch run(Model batchModel) throws AxelorException {
-		Batch batch = super.run(batchModel);
-		MailBatch mailBatch = (MailBatch) batchModel;
-		
-		switch (mailBatch.getActionSelect()) {
-		case MailBatchRepository.ACTION_REMIN_TIMESHEET:
-			batch = reminderTimesheet(mailBatch);
-			break;
-		
-		default:
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), mailBatch.getActionSelect(), mailBatch.getCode());
-		}
-		
-		return batch;
-	}
-	
-	
-	public Batch reminderTimesheet(MailBatch mailBatch) {
-		
-		return Beans.get(BatchReminderTimesheet.class).run(mailBatch);
-		
-	}
-	
+public class MailBatchServiceHR extends MailBatchService {
+  @Override
+  public Batch run(Model batchModel) throws AxelorException {
+    Batch batch = super.run(batchModel);
+    MailBatch mailBatch = (MailBatch) batchModel;
+
+    switch (mailBatch.getActionSelect()) {
+      case MailBatchRepository.ACTION_REMIN_TIMESHEET:
+        batch = reminderTimesheet(mailBatch);
+        break;
+
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            mailBatch.getActionSelect(),
+            mailBatch.getCode());
+    }
+
+    return batch;
+  }
+
+  public Batch reminderTimesheet(MailBatch mailBatch) {
+
+    return Beans.get(BatchReminderTimesheet.class).run(mailBatch);
+  }
 }

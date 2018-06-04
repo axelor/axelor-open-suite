@@ -17,28 +17,30 @@
  */
 package com.axelor.apps.bankpayment.ebics.service;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.exception.AxelorException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 public interface EbicsPartnerService {
 
-    List<BankStatement> getBankStatements(EbicsPartner ebicsPartner) throws AxelorException, IOException;
+  List<BankStatement> getBankStatements(EbicsPartner ebicsPartner)
+      throws AxelorException, IOException;
 
-    List<BankStatement> getBankStatements(EbicsPartner ebicsPartner,
-            Collection<BankStatementFileFormat> bankStatementFileFormatCollection) throws AxelorException, IOException;
+  List<BankStatement> getBankStatements(
+      EbicsPartner ebicsPartner,
+      Collection<BankStatementFileFormat> bankStatementFileFormatCollection)
+      throws AxelorException, IOException;
 
-    /**
-     * Check if bank details miss mandatory currency
-     * @param ebicsPartner
-     * @throws AxelorException with the name of the bank details missing currency
-     *                         if the currency is mandatory
-     */
-    void checkBankDetailsMissingCurrency(EbicsPartner ebicsPartner) throws AxelorException;
-	
+  /**
+   * Check if bank details miss mandatory currency
+   *
+   * @param ebicsPartner
+   * @throws AxelorException with the name of the bank details missing currency if the currency is
+   *     mandatory
+   */
+  void checkBankDetailsMissingCurrency(EbicsPartner ebicsPartner) throws AxelorException;
 }

@@ -26,47 +26,45 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class QualityControlServiceImpl  implements QualityControlService {
+public class QualityControlServiceImpl implements QualityControlService {
 
-	@Inject
-	ControlPointRepository controlPointRepo;
-	
-	/**
-	 * Copy control point model to control point and set it to the quality control.
-	 * @param qualityControl Set control point model to control point of this object.
-	 * @throws AxelorException
-	 * 
-	 */
-	@Override
-	@Transactional
-	public void preFillOperations(QualityControl qualityControl) throws AxelorException {
-		
-		if (qualityControl.getQualityProcess() != null) {
-			QualityProcess process = qualityControl.getQualityProcess();
-			
-			if (process != null && process.getControlPointModelList() != null) {
-				qualityControl.getControlPointList().clear();
-				for(ControlPointModel model : process.getControlPointModelList() ) {
-					ControlPoint point = new ControlPoint();
-					point.setStatusSelect(1);
-					point.setName(model.getName());
-					point.setPriority(model.getPriority());
-					point.setProduct(model.getProduct());
-					point.setTeam(model.getTeam());
-					point.setResponsible(model.getResponsible());
-					point.setControlTypeSelect(model.getControlTypeSelect());
-					point.setTestTypeSelect(model.getTestTypeSelect());
-					point.setInstructions(model.getInstructions());
-					point.setNotes(model.getNotes());
-					point.setMessageIfFailure(model.getMessageIfFailure());
-					point.setControlFrequency(model.getControlFrequency());
-					point.setControlPointDate(qualityControl.getStartDate());
-					point.setQualityControl(qualityControl);
-					controlPointRepo.save(point);
-					qualityControl.addControlPointListItem(point);
-				}
-			}
-		}
-	}
-		
+  @Inject ControlPointRepository controlPointRepo;
+
+  /**
+   * Copy control point model to control point and set it to the quality control.
+   *
+   * @param qualityControl Set control point model to control point of this object.
+   * @throws AxelorException
+   */
+  @Override
+  @Transactional
+  public void preFillOperations(QualityControl qualityControl) throws AxelorException {
+
+    if (qualityControl.getQualityProcess() != null) {
+      QualityProcess process = qualityControl.getQualityProcess();
+
+      if (process != null && process.getControlPointModelList() != null) {
+        qualityControl.getControlPointList().clear();
+        for (ControlPointModel model : process.getControlPointModelList()) {
+          ControlPoint point = new ControlPoint();
+          point.setStatusSelect(1);
+          point.setName(model.getName());
+          point.setPriority(model.getPriority());
+          point.setProduct(model.getProduct());
+          point.setTeam(model.getTeam());
+          point.setResponsible(model.getResponsible());
+          point.setControlTypeSelect(model.getControlTypeSelect());
+          point.setTestTypeSelect(model.getTestTypeSelect());
+          point.setInstructions(model.getInstructions());
+          point.setNotes(model.getNotes());
+          point.setMessageIfFailure(model.getMessageIfFailure());
+          point.setControlFrequency(model.getControlFrequency());
+          point.setControlPointDate(qualityControl.getStartDate());
+          point.setQualityControl(qualityControl);
+          controlPointRepo.save(point);
+          qualityControl.addControlPointListItem(point);
+        }
+      }
+    }
+  }
 }

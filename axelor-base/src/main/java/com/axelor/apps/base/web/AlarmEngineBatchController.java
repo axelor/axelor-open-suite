@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.base.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.axelor.apps.base.db.AlarmEngineBatch;
 import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -32,37 +29,41 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class AlarmEngineBatchController {
 
-	@Inject
-	private AlarmEngineBatchService alarmEngineBatchService;
+  @Inject private AlarmEngineBatchService alarmEngineBatchService;
 
-	@Inject
-	private AlarmEngineBatchRepository alarmEngineBatchRepo;
+  @Inject private AlarmEngineBatchRepository alarmEngineBatchRepo;
 
-	public void launch(ActionRequest request, ActionResponse response) {
+  public void launch(ActionRequest request, ActionResponse response) {
 
-		AlarmEngineBatch alarmEngineBatch = request.getContext().asType(AlarmEngineBatch.class);
-		alarmEngineBatch = alarmEngineBatchRepo.find(alarmEngineBatch.getId());
+    AlarmEngineBatch alarmEngineBatch = request.getContext().asType(AlarmEngineBatch.class);
+    alarmEngineBatch = alarmEngineBatchRepo.find(alarmEngineBatch.getId());
 
-		response.setFlash(alarmEngineBatchService.run(alarmEngineBatch).getComments());
-		response.setReload(true);
-	}
+    response.setFlash(alarmEngineBatchService.run(alarmEngineBatch).getComments());
+    response.setReload(true);
+  }
 
-	// WS
-	public void run(ActionRequest request, ActionResponse response) throws AxelorException {
+  // WS
+  public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		AlarmEngineBatch alarmEngineBatch = alarmEngineBatchRepo.findByCode("code");
+    AlarmEngineBatch alarmEngineBatch = alarmEngineBatchRepo.findByCode("code");
 
-		if (alarmEngineBatch == null) {
-			TraceBackService.trace(new AxelorException(TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_5)+" "+request.getContext().get("code")));
-		}
-		else {
-			Map<String,Object> mapData = new HashMap<String,Object>();
-			mapData.put("anomaly", alarmEngineBatchService.run(alarmEngineBatch).getAnomaly());
-			response.setData(mapData);
-		}
-	}
+    if (alarmEngineBatch == null) {
+      TraceBackService.trace(
+          new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_5)
+                  + " "
+                  + request.getContext().get("code")));
+    } else {
+      Map<String, Object> mapData = new HashMap<String, Object>();
+      mapData.put("anomaly", alarmEngineBatchService.run(alarmEngineBatch).getAnomaly());
+      response.setData(mapData);
+    }
+  }
 }

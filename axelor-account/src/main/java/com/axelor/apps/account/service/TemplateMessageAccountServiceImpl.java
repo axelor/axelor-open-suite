@@ -25,24 +25,26 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.io.IOException;
 
 public class TemplateMessageAccountServiceImpl implements TemplateMessageAccountService {
 
-	protected TemplateMessageService templateMessageService;
+  protected TemplateMessageService templateMessageService;
 
-	@Inject
-	public TemplateMessageAccountServiceImpl(TemplateMessageService templateMessageService) {
-	    this.templateMessageService = templateMessageService;
-	}
+  @Inject
+  public TemplateMessageAccountServiceImpl(TemplateMessageService templateMessageService) {
+    this.templateMessageService = templateMessageService;
+  }
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message generateMessage(DebtRecoveryHistory debtRecoveryHistory, Template template) throws ClassNotFoundException, IOException, InstantiationException, AxelorException, IllegalAccessException {
-        Message message = this.templateMessageService.generateMessage(debtRecoveryHistory, template);
-		message.setRelatedTo2Select(Partner.class.getCanonicalName());
-		message.setRelatedTo2SelectId(debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId());
-		return message;
-	}
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Message generateMessage(DebtRecoveryHistory debtRecoveryHistory, Template template)
+      throws ClassNotFoundException, IOException, InstantiationException, AxelorException,
+          IllegalAccessException {
+    Message message = this.templateMessageService.generateMessage(debtRecoveryHistory, template);
+    message.setRelatedTo2Select(Partner.class.getCanonicalName());
+    message.setRelatedTo2SelectId(
+        debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId());
+    return message;
+  }
 }

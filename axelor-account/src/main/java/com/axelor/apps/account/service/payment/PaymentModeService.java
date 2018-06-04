@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.service.payment;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
@@ -27,21 +25,32 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface PaymentModeService {
 
-	public Account getPaymentModeAccount(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
+  public Account getPaymentModeAccount(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
-	public AccountManagement getAccountManagement(PaymentMode paymentMode, Company company, BankDetails bankDetails);
+  public AccountManagement getAccountManagement(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails);
 
-	public Sequence getPaymentModeSequence(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
+  public Sequence getPaymentModeSequence(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
-    public Journal getPaymentModeJournal(PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
+  public Journal getPaymentModeJournal(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
-	/**
-	 * @param paymentMode
-	 * @param company
-	 * @return list of bankdetails in the payment mode for the given company.
-	 */
-	public List<BankDetails> getCompatibleBankDetailsList(PaymentMode paymentMode, Company company);
+  /**
+   * @param paymentMode
+   * @param company
+   * @return list of bankdetails in the payment mode for the given company.
+   */
+  public List<BankDetails> getCompatibleBankDetailsList(PaymentMode paymentMode, Company company);
+
+  /**
+   * Returns a payment mode with the same type as the given payment mode, but with reversed in or
+   * out status. Return null if no payment mode were found or if the given payment mode is null.
+   */
+  public PaymentMode reverseInOut(PaymentMode paymentMode);
 }

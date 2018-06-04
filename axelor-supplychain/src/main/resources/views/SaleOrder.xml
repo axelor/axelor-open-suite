@@ -118,16 +118,15 @@
 		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 	</action-record>
 
-    <action-record name="action-sale-order-record-interco"
+	<action-record name="action-sale-order-record-interco"
 				   model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="interco" expr="eval: __config__.app.getApp('supplychain').getIntercoFromSale()"/>
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromSale
+            &amp;&amp; !createdByInterco &amp;&amp; clientPartner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne()"/>
 	</action-record>
 
 	<action-attrs name="action-sale-order-attrs-interco">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
-		<attribute for="interco" name="value" expr="eval: false"
-				   if="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
 		<attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 3"/>
 	</action-attrs>

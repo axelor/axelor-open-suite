@@ -17,6 +17,12 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,55 +30,47 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
-import com.google.common.base.Strings;
-import com.google.inject.Inject;
-
 public class ImportPartner {
-	
-	@Inject
-	private PartnerRepository partnerRepo;
 
-	@Inject
-	private MetaFiles metaFiles;
-	
-	public Object importPartner(Object bean, Map<String,Object> values) {
-		
-		assert bean instanceof Partner;
-		
-		Partner partner = (Partner) bean;
-		
-		final Path path = (Path) values.get("__path__");
-	    String fileName = (String) values.get("picture_fileName");
-		if(Strings.isNullOrEmpty((fileName)))  {  return bean;  }
-		
-	    final File image = path.resolve(fileName).toFile(); 
+  @Inject private PartnerRepository partnerRepo;
 
-		try {
-			final MetaFile metaFile = metaFiles.upload(image);
-			partner.setPicture(metaFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+  @Inject private MetaFiles metaFiles;
 
-		return bean;
-	}
-	
-	public Object updateContacts(Object bean, Map<String,Object> values) {
-		
-		assert bean instanceof Partner;
-		
-		Partner partner = (Partner) bean;
-		partner.setContactPartnerSet(new HashSet<Partner>());
-		
-		List<? extends Partner> partnerList = partnerRepo.all().filter("self.mainPartner.id = ?1", partner.getId()).fetch();
-		for(Partner pt : partnerList)
-			partner.getContactPartnerSet().add(pt);
-		
-		return partner;
-	}
+  public Object importPartner(Object bean, Map<String, Object> values) {
 
+    assert bean instanceof Partner;
+
+    Partner partner = (Partner) bean;
+
+    final Path path = (Path) values.get("__path__");
+    String fileName = (String) values.get("picture_fileName");
+    if (Strings.isNullOrEmpty((fileName))) {
+      return bean;
+    }
+
+    final File image = path.resolve(fileName).toFile();
+
+    try {
+      final MetaFile metaFile = metaFiles.upload(image);
+      partner.setPicture(metaFile);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return bean;
+  }
+
+  public Object updateContacts(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof Partner;
+
+    Partner partner = (Partner) bean;
+    partner.setContactPartnerSet(new HashSet<Partner>());
+
+    List<? extends Partner> partnerList =
+        partnerRepo.all().filter("self.mainPartner.id = ?1", partner.getId()).fetch();
+    for (Partner pt : partnerList) partner.getContactPartnerSet().add(pt);
+
+    return partner;
+  }
 }

@@ -22,7 +22,6 @@ import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.exception.AxelorException;
 
 public interface SaleConfigService {
-	
-	public SaleConfig getSaleConfig(Company company) throws AxelorException;
-	
+
+  public SaleConfig getSaleConfig(Company company) throws AxelorException;
 }

@@ -169,7 +169,7 @@
             </panel>
             <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || (operationTypeSelect != 1 &amp;&amp; operationTypeSelect != 3) || $readonly()" showTitle="true"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
-            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1 || partner != null" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
+            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
             <field name="companyBankDetails" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
             <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
@@ -275,7 +275,7 @@
 				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
-				<field name="note" colSpan="12"/>
+				<field name="note" widget="Html" x-lite="true" colSpan="12"/>
 				<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
@@ -749,8 +749,8 @@
 
 	<action-record name="action-invoice-record-interco-supplychain"
 				   model="com.axelor.apps.account.db.Invoice" if-module="axelor-supplychain">
-		<field name="interco"
-			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromInvoice()"/>
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromInvoice
+            &amp;&amp; !createdByInterco &amp;&amp; partner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', partner).fetchOne()"/>
 	</action-record>
 
     <action-record name="action-invoice-record-reset-operationsubtype" model="com.axelor.apps.account.db.Invoice">
@@ -802,8 +802,6 @@
 	<action-attrs name="action-invoice-attrs-interco-supplychain" if-module="axelor-supplychain">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
-		<attribute for="interco" name="value" expr="eval: false"
-				   if="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
 	   <attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 2"/>
 	</action-attrs>

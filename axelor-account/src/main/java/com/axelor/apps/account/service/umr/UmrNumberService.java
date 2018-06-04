@@ -24,5 +24,4 @@ public interface UmrNumberService {
   public String getUmrNumber(Partner partner);
 
   public String getUmrNumber(Partner partner, boolean isRecovery);
-
 }

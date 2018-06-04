@@ -28,18 +28,15 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class MrpLineController {
-	
-	@Inject
-	protected MrpLineService mrpLineService;
-	
-	@Inject
-	protected MrpLineRepository mrpLineRepository;
-	
-	
-	public void generateProposal(ActionRequest request, ActionResponse response) throws AxelorException  {
-		MrpLine mrpLine = request.getContext().asType(MrpLine.class);
-		mrpLineService.generateProposal(mrpLineRepository.find(mrpLine.getId()));
-		response.setReload(true);
-	}
-	
+
+  @Inject protected MrpLineService mrpLineService;
+
+  @Inject protected MrpLineRepository mrpLineRepository;
+
+  public void generateProposal(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    MrpLine mrpLine = request.getContext().asType(MrpLine.class);
+    mrpLineService.generateProposal(mrpLineRepository.find(mrpLine.getId()));
+    response.setReload(true);
+  }
 }

@@ -21,49 +21,49 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
 
 @Singleton
 public class PayVoucherElementController {
 
-    private CurrencyService currencyService;
-    private PayVoucherElementToPayRepository elementToPayRepository;
+  private CurrencyService currencyService;
+  private PayVoucherElementToPayRepository elementToPayRepository;
 
-    @Inject
-    PayVoucherElementController(CurrencyService currencyService,
-                                PayVoucherElementToPayRepository elementToPayRepository) {
-        this.currencyService = currencyService;
-        this.elementToPayRepository = elementToPayRepository;
-    }
+  @Inject
+  PayVoucherElementController(
+      CurrencyService currencyService, PayVoucherElementToPayRepository elementToPayRepository) {
+    this.currencyService = currencyService;
+    this.elementToPayRepository = elementToPayRepository;
+  }
 
-    @Transactional
-    public void updateAmountToPayCurrency(ActionRequest request, ActionResponse response) {
-        PayVoucherElementToPay elementToPayContext = request.getContext().asType(PayVoucherElementToPay.class);
-        PayVoucherElementToPay elementToPay = this.elementToPayRepository.find(elementToPayContext.getId());
-        Currency paymentVoucherCurrency = elementToPay.getPaymentVoucher().getCurrency();
-        BigDecimal amountToPayCurrency = null;
-        try {
-            amountToPayCurrency = currencyService.getAmountCurrencyConvertedAtDate(
-                    elementToPay.getCurrency(),
-                    paymentVoucherCurrency,
-                    elementToPay.getAmountToPay(),
-                    elementToPay.getPaymentVoucher().getPaymentDate()
-            );
-        } catch(Exception e) {
-            TraceBackService.trace(response, e);
-        }
-        if (amountToPayCurrency != null) {
-            elementToPay.setAmountToPayCurrency(amountToPayCurrency);
-            elementToPayRepository.save(elementToPay);
-            response.setReload(true);
-        }
+  @Transactional
+  public void updateAmountToPayCurrency(ActionRequest request, ActionResponse response) {
+    PayVoucherElementToPay elementToPayContext =
+        request.getContext().asType(PayVoucherElementToPay.class);
+    PayVoucherElementToPay elementToPay =
+        this.elementToPayRepository.find(elementToPayContext.getId());
+    Currency paymentVoucherCurrency = elementToPay.getPaymentVoucher().getCurrency();
+    BigDecimal amountToPayCurrency = null;
+    try {
+      amountToPayCurrency =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              elementToPay.getCurrency(),
+              paymentVoucherCurrency,
+              elementToPay.getAmountToPay(),
+              elementToPay.getPaymentVoucher().getPaymentDate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+    if (amountToPayCurrency != null) {
+      elementToPay.setAmountToPayCurrency(amountToPayCurrency);
+      elementToPayRepository.save(elementToPay);
+      response.setReload(true);
+    }
+  }
 }

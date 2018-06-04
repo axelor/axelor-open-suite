@@ -19,8 +19,7 @@ package com.axelor.apps.supplychain.report;
 
 public interface IReport {
 
-	public static final String MRP_WEEKS = "MrpWeeks.rptdesign";
-	public static final String MRP_LIST = "MrpList.rptdesign";
-	public static final String PACKAGING_LIST = "PackagingList.rptdesign";
-
+  public static final String MRP_WEEKS = "MrpWeeks.rptdesign";
+  public static final String MRP_LIST = "MrpList.rptdesign";
+  public static final String PACKAGING_LIST = "PackagingList.rptdesign";
 }

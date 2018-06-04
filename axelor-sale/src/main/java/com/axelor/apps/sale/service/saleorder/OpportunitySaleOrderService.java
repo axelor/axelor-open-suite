@@ -23,8 +23,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface OpportunitySaleOrderService {
-	
-	@Transactional
-	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException;
-	
+
+  @Transactional
+  public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException;
 }

@@ -25,31 +25,27 @@ import com.google.inject.Inject;
 
 public class ActionBuilderRepo extends ActionBuilderRepository {
 
-	@Inject
-	private StudioMetaService metaService;
-	
-	@Inject
-	private ActionBuilderService builderService;
-	
-	@Override
-	public ActionBuilder save(ActionBuilder builder) {
-		
-		builder = super.save(builder);
-		
-		builderService.build(builder);
-		
-		return builder;
-	}
+  @Inject private StudioMetaService metaService;
 
-	@Override
-	public void remove(ActionBuilder actionBuilder) {
-		
-		metaService.removeMetaActions(actionBuilder.getName());
-		
-		MetaStore.clear();
-		
-		super.remove(actionBuilder);
-		
-	}
+  @Inject private ActionBuilderService builderService;
 
+  @Override
+  public ActionBuilder save(ActionBuilder builder) {
+
+    builder = super.save(builder);
+
+    builderService.build(builder);
+
+    return builder;
+  }
+
+  @Override
+  public void remove(ActionBuilder actionBuilder) {
+
+    metaService.removeMetaActions(actionBuilder.getName());
+
+    MetaStore.clear();
+
+    super.remove(actionBuilder);
+  }
 }

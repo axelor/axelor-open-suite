@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.app;
 
-import java.util.List;
-
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentConfigRepository;
 import com.axelor.apps.base.db.AppBankPayment;
@@ -29,37 +27,39 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 @Singleton
 public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements AppBankPaymentService {
 
-    protected AppBankPaymentRepository appBankPaymentRepo;
-    protected BankPaymentConfigRepository bankPaymentConfigRepo;
-    protected CompanyRepository companyRepo;
+  protected AppBankPaymentRepository appBankPaymentRepo;
+  protected BankPaymentConfigRepository bankPaymentConfigRepo;
+  protected CompanyRepository companyRepo;
 
-    @Inject
-    AppBankPaymentServiceImpl(AppBankPaymentRepository appBankPaymentRepo,
-            BankPaymentConfigRepository bankPaymentConfigRepo, CompanyRepository companyRepo) {
-        this.appBankPaymentRepo = appBankPaymentRepo;
-        this.bankPaymentConfigRepo = bankPaymentConfigRepo;
-        this.companyRepo = companyRepo;
+  @Inject
+  AppBankPaymentServiceImpl(
+      AppBankPaymentRepository appBankPaymentRepo,
+      BankPaymentConfigRepository bankPaymentConfigRepo,
+      CompanyRepository companyRepo) {
+    this.appBankPaymentRepo = appBankPaymentRepo;
+    this.bankPaymentConfigRepo = bankPaymentConfigRepo;
+    this.companyRepo = companyRepo;
+  }
+
+  @Override
+  public AppBankPayment getAppBankPayment() {
+    return appBankPaymentRepo.all().fetchOne();
+  }
+
+  @Override
+  @Transactional
+  public void generateBankPaymentConfigurations() {
+    List<Company> companies = companyRepo.all().filter("self.bankPaymentConfig IS NULL").fetch();
+
+    for (Company company : companies) {
+      BankPaymentConfig config = new BankPaymentConfig();
+      config.setCompany(company);
+      bankPaymentConfigRepo.save(config);
     }
-
-    @Override
-    public AppBankPayment getAppBankPayment() {
-        return appBankPaymentRepo.all().fetchOne();
-    }
-
-    @Override
-    @Transactional
-    public void generateBankPaymentConfigurations() {
-        List<Company> companies = companyRepo.all().filter("self.bankPaymentConfig IS NULL").fetch();
-
-        for (Company company : companies) {
-            BankPaymentConfig config = new BankPaymentConfig();
-            config.setCompany(company);
-            bankPaymentConfigRepo.save(config);
-        }
-    }
-
+  }
 }

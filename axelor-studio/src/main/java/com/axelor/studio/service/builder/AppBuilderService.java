@@ -17,9 +17,6 @@
  */
 package com.axelor.studio.service.builder;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.exception.AxelorException;
@@ -29,63 +26,59 @@ import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.exception.IExceptionMessage;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AppBuilderService {
-	
-	@Inject
-	private AppRepository appRepo;
 
-	public AppBuilder build(AppBuilder appBuilder) throws AxelorException {
-		
-		checkCode(appBuilder);
-		
-		App app = appBuilder.getGeneratedApp();
-		
-		if (app == null) {
-			app = new App(appBuilder.getName(), appBuilder.getCode());
-		}
-		else {
-			app.setCode(appBuilder.getCode());
-			app.setName(appBuilder.getName());
-		}
-		
-		app.setImage(appBuilder.getImage());
-		app.setDescription(appBuilder.getDescription());
-		Set<App> depends = new HashSet<App>();
-		if (appBuilder.getDependsOnSet() != null) {
-			depends.addAll(appBuilder.getDependsOnSet());
-			app.setDependsOnSet(depends);
-		}
-		app.setInitDataLoaded(true);
-		app.setDemoDataLoaded(true);
+  @Inject private AppRepository appRepo;
 
-		appBuilder.setGeneratedApp(appRepo.save(app));
-		
-		return appBuilder ;
-	}
+  public AppBuilder build(AppBuilder appBuilder) throws AxelorException {
 
-	private void checkCode(AppBuilder appBuilder) throws AxelorException {
-		
-		App app = appRepo.findByCode(appBuilder.getCode());
-		
-		if (app != null && app != appBuilder.getGeneratedApp()) {
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, 
-					I18n.get(IExceptionMessage.APP_BUILDER_1), 
-					appBuilder.getCode());
-		}
-	}
-	
-	
-	@Transactional
-	public void clean(AppBuilder appBuilder) {
-		
-		if (appBuilder.getGeneratedApp() != null) {
-			appRepo.remove(appBuilder.getGeneratedApp());
-			appBuilder.setGeneratedApp(null);
-		}
-		
-	}
+    checkCode(appBuilder);
 
-	
-	
+    App app = appBuilder.getGeneratedApp();
+
+    if (app == null) {
+      app = new App(appBuilder.getName(), appBuilder.getCode());
+    } else {
+      app.setCode(appBuilder.getCode());
+      app.setName(appBuilder.getName());
+    }
+
+    app.setImage(appBuilder.getImage());
+    app.setDescription(appBuilder.getDescription());
+    Set<App> depends = new HashSet<App>();
+    if (appBuilder.getDependsOnSet() != null) {
+      depends.addAll(appBuilder.getDependsOnSet());
+      app.setDependsOnSet(depends);
+    }
+    app.setInitDataLoaded(true);
+    app.setDemoDataLoaded(true);
+
+    appBuilder.setGeneratedApp(appRepo.save(app));
+
+    return appBuilder;
+  }
+
+  private void checkCode(AppBuilder appBuilder) throws AxelorException {
+
+    App app = appRepo.findByCode(appBuilder.getCode());
+
+    if (app != null && app != appBuilder.getGeneratedApp()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.APP_BUILDER_1),
+          appBuilder.getCode());
+    }
+  }
+
+  @Transactional
+  public void clean(AppBuilder appBuilder) {
+
+    if (appBuilder.getGeneratedApp() != null) {
+      appRepo.remove(appBuilder.getGeneratedApp());
+      appBuilder.setGeneratedApp(null);
+    }
+  }
 }
