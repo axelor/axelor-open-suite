@@ -235,8 +235,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                     purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
             priceDiscounted =
                 unitConversionService.convertWithProduct(
-                    purchaseOrderLine.getUnit(),
                     unit,
+                    purchaseOrderLine.getUnit(),
                     priceDiscounted,
                     purchaseOrderLine.getProduct());
           }
