@@ -93,6 +93,7 @@
 - Fix missing domains in production menu.
 - Fix bank details default value in invoice form.
 - Fix wrong calculation of unit price when create stock move from purchase order and sale order
+- Fix trading name not being imported from opportunity on sale quotation generation
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
