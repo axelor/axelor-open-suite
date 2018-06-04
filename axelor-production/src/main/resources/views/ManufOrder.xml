@@ -96,7 +96,7 @@
 			<field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
 			<field name="company" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
+			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess" onChange="action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>

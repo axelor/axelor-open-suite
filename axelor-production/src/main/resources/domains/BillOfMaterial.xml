@@ -21,7 +21,8 @@
     <boolean name="hasNoManageStock" title="Not manage stock"/>
     <boolean name="personalized" title="Personalized"/>
    	<decimal name="wasteRate" title="Waste rate (%)"/>
-    
+    <integer name="statusSelect" title="Status" readonly="true" selection="production.bill.of.material.status.select" default="1"/>
+
   	<one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheets" mappedBy="billOfMaterial"/>
 
 	<string name="fullName" namecolumn="true" title="Label"/>

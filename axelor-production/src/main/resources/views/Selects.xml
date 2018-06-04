@@ -15,6 +15,13 @@
 		<option value="6">Finished</option>	
 	</selection>
 
+    <selection name="production.bill.of.material.status.select">
+        <option value="1">Draft</option>
+        <option value="2">Validated</option>
+        <option value="3">Applicable</option>
+        <option value="4">Obsolete</option>
+    </selection>
+
 	<selection name="production.manuf.order.stock.move.realize.order.select">
 		<option value="0">On Start</option>
 		<option value="1">On Finish</option>

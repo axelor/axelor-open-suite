@@ -15,6 +15,9 @@
           onSave="save,action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
           onNew="action-bill-of-material-default-record,action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components"
           onLoad="action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components">
+		<toolbar>
+			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageBillOfMaterialVersion" onClick="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"/>
+		</toolbar>
 
 		<menubar>
 			<menu title="Reports">
@@ -32,6 +35,7 @@
 		</menubar>
 
 		<panel name="main">
+            <field name="statusSelect" showTitle="false" colSpan="12" readonly="false" widget="NavSelect"/>
             <field name="$defaultBOMOnProduct" readonly="true" showTitle="false" colSpan="4" colOffset="8">
                 <viewer depends="$defaultBOMOnProduct, product.defaultBillOfMaterial">
                     <![CDATA[
