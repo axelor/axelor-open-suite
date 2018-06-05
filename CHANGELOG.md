@@ -255,6 +255,7 @@ Also, improve the sale order line grid and form views.
 - Timesheet editor: fix java.lang.NullPointerException in TimesheetServiceImpl when delete a line in editor
 - Fix BillOfMaterial copy when creating a personalized BOM.
 - Supplier request : added suggestion filters on selecting supplierPartner 
+- Fix wrong quantity, unit, and exTotal in invoice from supplier arrival's purchase order
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Features

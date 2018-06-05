@@ -125,7 +125,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
-    } else if (stockMoveLine != null) {
+    }
+    if (stockMoveLine != null) {
       this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
       Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
 
@@ -137,7 +138,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
                 .convertWithProduct(this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
         this.priceDiscounted =
             Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
+                .convertWithProduct(saleOrPurchaseUnit, this.unit, this.priceDiscounted, product);
         this.unit = saleOrPurchaseUnit;
       }
     }
