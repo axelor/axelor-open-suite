@@ -2588,7 +2588,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">TotalNetWeight</property>
+                                <property name="name">TotalNetMass</property>
                                 <expression name="expression" type="javascript">row._outer["total_net_mass"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
@@ -2904,13 +2904,13 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
-                                                    <property name="name">ParcelPalletNetWeight</property>
+                                                    <property name="name">ParcelPalletNetMass</property>
                                                     <expression name="expression" type="javascript">row["translation"]</expression>
                                                     <property name="dataType">string</property>
                                                     <property name="allowExport">true</property>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">ParcelPalletNetWeight</property>
+                                            <property name="resultSetColumn">ParcelPalletNetMass</property>
                                         </data>
                                     </cell>
                                     <cell id="251">
@@ -3116,13 +3116,13 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">ParcelPalletNetWeight</property>
+                                                <property name="name">ParcelPalletNetMass</property>
                                                 <expression name="expression" type="javascript">row["translation"]</expression>
                                                 <property name="dataType">string</property>
                                                 <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
-                                        <property name="resultSetColumn">ParcelPalletNetWeight</property>
+                                        <property name="resultSetColumn">ParcelPalletNetMass</property>
                                     </data>
                                 </cell>
                                 <cell id="210">
@@ -3139,7 +3139,7 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                                             <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">TotalNetWeight</property>
+                                        <property name="resultSetColumn">TotalNetMass</property>
                                     </data>
                                 </cell>
                                 <cell id="257">
