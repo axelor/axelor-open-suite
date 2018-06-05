@@ -83,6 +83,7 @@
 - Product: fill information on sale/purchase order and invoice lines even when tax is missing.
 - Fix trading name not being imported from opportunity on sale quotation generation
 - Purchase order: fix doubled stock move total when generating supplier arrival.
+- Fix several errors when creating a production process with management of consumed products on phases.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
