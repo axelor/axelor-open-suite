@@ -12,7 +12,7 @@
 - Fill automatically the description of account move line for some accounting process : expense, doubtful, bank moves, account clearance, move template...
 - Product : procurement method can now be both 'Buy and produce'. Stock rules creation now set a default refill method based on the product's procurement method.
 - Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
-- Copy account type from account in analytic move line.
+- Remove Meeting categories and use now generic Event categories for every event types.
 - Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
 - Improve calendar synchronization speed
 - Advanced export : added warning and help for data export and fetch limits.
