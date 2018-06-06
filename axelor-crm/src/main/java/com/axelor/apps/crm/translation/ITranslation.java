@@ -18,7 +18,6 @@
 package com.axelor.apps.crm.translation;
 
 public interface ITranslation {
-	
-	public static final String CRM_APP_NAME = /*$$(*/ "value:CRM"; /*)*/
 
+  public static final String CRM_APP_NAME = /*$$(*/ "value:CRM"; /*)*/
 }

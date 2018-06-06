@@ -30,22 +30,19 @@ import com.google.inject.Singleton;
 @Singleton
 public class SaleOrderLineController {
 
-	@Inject
-	private BillOfMaterialService billOfMaterialService;
-	
+  @Inject private BillOfMaterialService billOfMaterialService;
 
-	public void customizeBillOfMaterial(ActionRequest request, ActionResponse response) {
+  public void customizeBillOfMaterial(ActionRequest request, ActionResponse response) {
 
-		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-		
-		BillOfMaterial copyBillOfMaterial = billOfMaterialService.customizeBillOfMaterial(saleOrderLine);
-		
-		if(copyBillOfMaterial != null)  {
-		
-			response.setValue("billOfMaterial", copyBillOfMaterial);
-			response.setFlash(I18n.get(IExceptionMessage.SALE_ORDER_LINE_1));
-		}
-		
-	}
-	
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    BillOfMaterial copyBillOfMaterial =
+        billOfMaterialService.customizeBillOfMaterial(saleOrderLine);
+
+    if (copyBillOfMaterial != null) {
+
+      response.setValue("billOfMaterial", copyBillOfMaterial);
+      response.setFlash(I18n.get(IExceptionMessage.SALE_ORDER_LINE_1));
+    }
+  }
 }

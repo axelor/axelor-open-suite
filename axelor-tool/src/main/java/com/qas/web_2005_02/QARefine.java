@@ -24,12 +24,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
+ * Classe Java pour anonymous complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -45,147 +44,117 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "moniker",
-    "refinement",
-    "qaConfig"
-})
+@XmlType(
+  name = "",
+  propOrder = {"moniker", "refinement", "qaConfig"}
+)
 @XmlRootElement(name = "QARefine")
 public class QARefine {
 
-    @XmlElement(name = "Moniker", required = true)
-    protected String moniker;
-    @XmlElement(name = "Refinement", required = true)
-    protected String refinement;
-    @XmlElement(name = "QAConfig")
-    protected QAConfigType qaConfig;
-    @XmlAttribute(name = "Threshold")
-    protected Integer threshold;
-    @XmlAttribute(name = "Timeout")
-    protected Integer timeout;
+  @XmlElement(name = "Moniker", required = true)
+  protected String moniker;
 
-    /**
-     * Obtient la valeur de la propriété moniker.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMoniker() {
-        return moniker;
-    }
+  @XmlElement(name = "Refinement", required = true)
+  protected String refinement;
 
-    /**
-     * Définit la valeur de la propriété moniker.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMoniker(String value) {
-        this.moniker = value;
-    }
+  @XmlElement(name = "QAConfig")
+  protected QAConfigType qaConfig;
 
-    /**
-     * Obtient la valeur de la propriété refinement.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRefinement() {
-        return refinement;
-    }
+  @XmlAttribute(name = "Threshold")
+  protected Integer threshold;
 
-    /**
-     * Définit la valeur de la propriété refinement.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRefinement(String value) {
-        this.refinement = value;
-    }
+  @XmlAttribute(name = "Timeout")
+  protected Integer timeout;
 
-    /**
-     * Obtient la valeur de la propriété qaConfig.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public QAConfigType getQAConfig() {
-        return qaConfig;
-    }
+  /**
+   * Obtient la valeur de la propriété moniker.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getMoniker() {
+    return moniker;
+  }
 
-    /**
-     * Définit la valeur de la propriété qaConfig.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public void setQAConfig(QAConfigType value) {
-        this.qaConfig = value;
-    }
+  /**
+   * Définit la valeur de la propriété moniker.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setMoniker(String value) {
+    this.moniker = value;
+  }
 
-    /**
-     * Obtient la valeur de la propriété threshold.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getThreshold() {
-        return threshold;
-    }
+  /**
+   * Obtient la valeur de la propriété refinement.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getRefinement() {
+    return refinement;
+  }
 
-    /**
-     * Définit la valeur de la propriété threshold.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setThreshold(Integer value) {
-        this.threshold = value;
-    }
+  /**
+   * Définit la valeur de la propriété refinement.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setRefinement(String value) {
+    this.refinement = value;
+  }
 
-    /**
-     * Obtient la valeur de la propriété timeout.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getTimeout() {
-        return timeout;
-    }
+  /**
+   * Obtient la valeur de la propriété qaConfig.
+   *
+   * @return possible object is {@link QAConfigType }
+   */
+  public QAConfigType getQAConfig() {
+    return qaConfig;
+  }
 
-    /**
-     * Définit la valeur de la propriété timeout.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setTimeout(Integer value) {
-        this.timeout = value;
-    }
+  /**
+   * Définit la valeur de la propriété qaConfig.
+   *
+   * @param value allowed object is {@link QAConfigType }
+   */
+  public void setQAConfig(QAConfigType value) {
+    this.qaConfig = value;
+  }
 
+  /**
+   * Obtient la valeur de la propriété threshold.
+   *
+   * @return possible object is {@link Integer }
+   */
+  public Integer getThreshold() {
+    return threshold;
+  }
+
+  /**
+   * Définit la valeur de la propriété threshold.
+   *
+   * @param value allowed object is {@link Integer }
+   */
+  public void setThreshold(Integer value) {
+    this.threshold = value;
+  }
+
+  /**
+   * Obtient la valeur de la propriété timeout.
+   *
+   * @return possible object is {@link Integer }
+   */
+  public Integer getTimeout() {
+    return timeout;
+  }
+
+  /**
+   * Définit la valeur de la propriété timeout.
+   *
+   * @param value allowed object is {@link Integer }
+   */
+  public void setTimeout(Integer value) {
+    this.timeout = value;
+  }
 }

@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -27,24 +24,30 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface PurchaseOrderInvoiceService {
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException;
 
-	public Invoice createInvoice(PurchaseOrder purchaseOrder) throws AxelorException;
+  public Invoice createInvoice(PurchaseOrder purchaseOrder) throws AxelorException;
 
-	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder) throws AxelorException;
+  public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder)
+      throws AxelorException;
 
-	public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder, boolean isRefund) throws AxelorException;
+  public InvoiceGenerator createInvoiceGenerator(PurchaseOrder purchaseOrder, boolean isRefund)
+      throws AxelorException;
 
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException;
+  public List<InvoiceLine> createInvoiceLines(
+      Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException;
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
+  public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException;
 
-	public BigDecimal getInvoicedAmount(PurchaseOrder purchaseOrder);
+  public BigDecimal getInvoicedAmount(PurchaseOrder purchaseOrder);
 
-	public BigDecimal getInvoicedAmount(PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
-
+  public BigDecimal getInvoicedAmount(
+      PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
 }

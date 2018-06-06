@@ -37,7 +37,7 @@
 		<view name="job-application-form" type="form" />
 	</action-view>
 	
-	<menuitem name="recruitment-config" parent="recruitment-root" title="Configuration" />
+	<menuitem name="recruitment-config" parent="recruitment-root" title="Configuration" icon="fa-cog"/>
 	
 	<menuitem name="recruitment-config-education-level" parent="recruitment-config" title="Level of education" action="recruitment.config.education.level"  />
 	
@@ -98,7 +98,7 @@
 		<view type="dashboard" name="training.dashboard"/>
 	</action-view>
 	
-	<menuitem name="training-conf" parent="training-root" title="Configuration" />
+	<menuitem name="training-conf" parent="training-root" title="Configuration" icon="fa-cog"/>
 	
 	<menuitem name="training-category-all" parent="training-conf" title="Categories" action="training.category.all" />	
 	
@@ -163,7 +163,7 @@
 		<domain>self.isTemplate = true</domain>
 	</action-view>
 	
-	<menuitem  name="appraisal-config" title="Configuration" parent="appraisal-root"/>
+	<menuitem  name="appraisal-config" title="Configuration" parent="appraisal-root" icon="fa-cog"/>
 	
 	<menuitem name="appraisal-config-appraisal-type" title="Appraisal types" action="appraisal.config.appraisal.type" parent="appraisal-config" />
 	

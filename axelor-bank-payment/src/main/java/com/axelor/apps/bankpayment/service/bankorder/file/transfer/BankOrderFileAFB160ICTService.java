@@ -21,41 +21,38 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
-public class BankOrderFileAFB160ICTService extends BankOrderFileAFB160Service  {
+public class BankOrderFileAFB160ICTService extends BankOrderFileAFB160Service {
 
-			
-	@Inject
-	public BankOrderFileAFB160ICTService(BankOrder bankOrder) throws AxelorException  {
-		
-		super(bankOrder);
+  @Inject
+  public BankOrderFileAFB160ICTService(BankOrder bankOrder) throws AxelorException {
 
-	}
-	
-	
-	/**
-	 * B1. Code opération
- 	 * La liste des codes opération possibles est indiquée page 4 au paragraphe "types de
-	 * virements pouvant être émis par la clientèle". Les codes utilisés doivent faire l'objet d'un accord
-	 * contractuel avec la banque réceptrice. 
-	 * @return
-	 */
-	@Override
-	protected String getB1Area()  {
-		return OPERATION_TREASURY_TRANSFER;
-	}
-	
-	@Override
-	protected String getSenderEArea() {
-		return null;
-	}
-	
-	@Override
-	protected String getC11Area() {
-		return null;
-	}
-	
-	@Override
-	protected String getB3Area() {
-		return null;
-	}
+    super(bankOrder);
+  }
+
+  /**
+   * B1. Code opération La liste des codes opération possibles est indiquée page 4 au paragraphe
+   * "types de virements pouvant être émis par la clientèle". Les codes utilisés doivent faire
+   * l'objet d'un accord contractuel avec la banque réceptrice.
+   *
+   * @return
+   */
+  @Override
+  protected String getB1Area() {
+    return OPERATION_TREASURY_TRANSFER;
+  }
+
+  @Override
+  protected String getSenderEArea() {
+    return null;
+  }
+
+  @Override
+  protected String getC11Area() {
+    return null;
+  }
+
+  @Override
+  protected String getB3Area() {
+    return null;
+  }
 }

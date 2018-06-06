@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -42,135 +34,155 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BankOrderCreateService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	protected BankOrderRepository bankOrderRepo;
-    protected BankOrderService bankOrderService;
-	protected BankOrderLineService bankOrderLineService;
-	protected InvoiceService invoiceService;
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected BankOrderRepository bankOrderRepo;
+  protected BankOrderService bankOrderService;
+  protected BankOrderLineService bankOrderLineService;
+  protected InvoiceService invoiceService;
 
-	@Inject
-	public BankOrderCreateService(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService,
-			BankOrderLineService bankOrderLineService, InvoiceService invoiceService) {
+  @Inject
+  public BankOrderCreateService(
+      BankOrderRepository bankOrderRepo,
+      BankOrderService bankOrderService,
+      BankOrderLineService bankOrderLineService,
+      InvoiceService invoiceService) {
 
-		this.bankOrderRepo = bankOrderRepo;
-		this.bankOrderService = bankOrderService;
-		this.bankOrderLineService = bankOrderLineService;
-		this.invoiceService = invoiceService;
-	}
+    this.bankOrderRepo = bankOrderRepo;
+    this.bankOrderService = bankOrderService;
+    this.bankOrderLineService = bankOrderLineService;
+    this.invoiceService = invoiceService;
+  }
 
-	/**
-	 * Créer un ordre bancaire avec tous les paramètres
-	 *
-	 * @param 
-	 * @return
-	 * @throws AxelorException
-	 */
-	public BankOrder createBankOrder(PaymentMode paymentMode, Integer partnerType, LocalDate bankOrderDate, 
-			Company senderCompany, BankDetails senderBankDetails, Currency currency,
-			String senderReference, String senderLabel) throws AxelorException  {
-		
-		BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
-		
-		BankOrder bankOrder = new BankOrder();
-		
-		bankOrder.setOrderTypeSelect(paymentMode.getOrderTypeSelect());
-		bankOrder.setPaymentMode(paymentMode);
-		bankOrder.setPartnerTypeSelect(partnerType);
-		
-		if(!bankOrderFileFormat.getIsMultiDate())  {
-			bankOrder.setBankOrderDate(bankOrderDate);
-		}
-		
-		bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
-		bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_NOT_REJECTED);
-		bankOrder.setSenderCompany(senderCompany);
-		bankOrder.setSenderBankDetails(senderBankDetails);
-        EbicsUser signatoryEbicsUser = bankOrderService.getDefaultEbicsUserFromBankDetails(senderBankDetails);
-        User signatoryUser = null;
-        if (signatoryEbicsUser != null) {
-            signatoryUser = signatoryEbicsUser.getAssociatedUser();
-            bankOrder.setSignatoryEbicsUser(signatoryEbicsUser);
-        }
-        if (signatoryUser != null) {
-            bankOrder.setSignatoryUser(signatoryUser);
-        }
+  /**
+   * Créer un ordre bancaire avec tous les paramètres
+   *
+   * @param
+   * @return
+   * @throws AxelorException
+   */
+  public BankOrder createBankOrder(
+      PaymentMode paymentMode,
+      Integer partnerType,
+      LocalDate bankOrderDate,
+      Company senderCompany,
+      BankDetails senderBankDetails,
+      Currency currency,
+      String senderReference,
+      String senderLabel)
+      throws AxelorException {
 
-		if(!bankOrderFileFormat.getIsMultiCurrency())  {
-			bankOrder.setBankOrderCurrency(currency);
-		}
-		bankOrder.setCompanyCurrency(senderCompany.getCurrency());
-		
-		bankOrder.setSenderLabel(senderLabel);
-		bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
-		bankOrder.setBankOrderFileFormat(bankOrderFileFormat);
-		
-		return bankOrder;
-	}
-	
-	
-	/**
-	 * Method to create a bank order for an invoice Payment
-	 * 
-	 * 
-	 * @param invoicePayment
-	 * 			An invoice payment
-	 * 
-	 * @throws AxelorException
-	 * 		
-	 */
-	public BankOrder createBankOrder(InvoicePayment invoicePayment) throws AxelorException {
-		Invoice invoice = invoicePayment.getInvoice();
-		Company company = invoice.getCompany();
-		PaymentMode paymentMode = invoicePayment.getPaymentMode();
-		Partner partner = invoice.getPartner();
-		BigDecimal amount = invoicePayment.getAmount();
-		Currency currency = invoicePayment.getCurrency();
-		LocalDate paymentDate = invoicePayment.getPaymentDate();
-		BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails() != null ? invoicePayment.getCompanyBankDetails()
-				: this.getSenderBankDetails(invoice);
+    BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
 
-		BankOrder bankOrder = this.createBankOrder(
-								paymentMode,
-								this.getBankOrderPartnerType(invoice),
-								paymentDate,
-								company,
-								companyBankDetails,
-								currency,
-								invoice.getInvoiceId(),
-								invoice.getInvoiceId());
+    BankOrder bankOrder = new BankOrder();
 
-		BankDetails receiverBankDetails = invoiceService.getBankDetails(invoice);
-		BankOrderLine bankOrderLine = bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(),
-				null, partner, receiverBankDetails, amount, currency, paymentDate, invoice.getInvoiceId(), null);
-		bankOrder.addBankOrderLineListItem(bankOrderLine);
-		bankOrder = bankOrderRepo.save(bankOrder);
+    bankOrder.setOrderTypeSelect(paymentMode.getOrderTypeSelect());
+    bankOrder.setPaymentMode(paymentMode);
+    bankOrder.setPartnerTypeSelect(partnerType);
 
-		return bankOrder;
+    if (!bankOrderFileFormat.getIsMultiDate()) {
+      bankOrder.setBankOrderDate(bankOrderDate);
+    }
 
-	}
-	
-	public int getBankOrderPartnerType(Invoice invoice)  {
+    bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
+    bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_NOT_REJECTED);
+    bankOrder.setSenderCompany(senderCompany);
+    bankOrder.setSenderBankDetails(senderBankDetails);
+    EbicsUser signatoryEbicsUser =
+        bankOrderService.getDefaultEbicsUserFromBankDetails(senderBankDetails);
+    User signatoryUser = null;
+    if (signatoryEbicsUser != null) {
+      signatoryUser = signatoryEbicsUser.getAssociatedUser();
+      bankOrder.setSignatoryEbicsUser(signatoryEbicsUser);
+    }
+    if (signatoryUser != null) {
+      bankOrder.setSignatoryUser(signatoryUser);
+    }
 
-		if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)  {
-			return BankOrderRepository.PARTNER_TYPE_CUSTOMER;
-		}else{
-			return BankOrderRepository.PARTNER_TYPE_SUPPLIER;
-		}
-		
-	}
-	
-	
-	public BankDetails getSenderBankDetails(Invoice invoice)  {
-		
-		if(invoice.getBankDetails() != null)  {
-			return invoice.getCompanyBankDetails() ;
-		}  
-		
-		return invoice.getCompany().getDefaultBankDetails();
-	}
+    if (!bankOrderFileFormat.getIsMultiCurrency()) {
+      bankOrder.setBankOrderCurrency(currency);
+    }
+    bankOrder.setCompanyCurrency(senderCompany.getCurrency());
 
+    bankOrder.setSenderLabel(senderLabel);
+    bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
+    bankOrder.setBankOrderFileFormat(bankOrderFileFormat);
+
+    return bankOrder;
+  }
+
+  /**
+   * Method to create a bank order for an invoice Payment
+   *
+   * @param invoicePayment An invoice payment
+   * @throws AxelorException
+   */
+  public BankOrder createBankOrder(InvoicePayment invoicePayment) throws AxelorException {
+    Invoice invoice = invoicePayment.getInvoice();
+    Company company = invoice.getCompany();
+    PaymentMode paymentMode = invoicePayment.getPaymentMode();
+    Partner partner = invoice.getPartner();
+    BigDecimal amount = invoicePayment.getAmount();
+    Currency currency = invoicePayment.getCurrency();
+    LocalDate paymentDate = invoicePayment.getPaymentDate();
+    BankDetails companyBankDetails =
+        invoicePayment.getCompanyBankDetails() != null
+            ? invoicePayment.getCompanyBankDetails()
+            : this.getSenderBankDetails(invoice);
+
+    BankOrder bankOrder =
+        this.createBankOrder(
+            paymentMode,
+            this.getBankOrderPartnerType(invoice),
+            paymentDate,
+            company,
+            companyBankDetails,
+            currency,
+            invoice.getInvoiceId(),
+            invoice.getInvoiceId());
+
+    BankDetails receiverBankDetails = invoiceService.getBankDetails(invoice);
+    BankOrderLine bankOrderLine =
+        bankOrderLineService.createBankOrderLine(
+            paymentMode.getBankOrderFileFormat(),
+            null,
+            partner,
+            receiverBankDetails,
+            amount,
+            currency,
+            paymentDate,
+            invoice.getInvoiceId(),
+            null);
+    bankOrder.addBankOrderLineListItem(bankOrderLine);
+    bankOrder = bankOrderRepo.save(bankOrder);
+
+    return bankOrder;
+  }
+
+  public int getBankOrderPartnerType(Invoice invoice) {
+
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+      return BankOrderRepository.PARTNER_TYPE_CUSTOMER;
+    } else {
+      return BankOrderRepository.PARTNER_TYPE_SUPPLIER;
+    }
+  }
+
+  public BankDetails getSenderBankDetails(Invoice invoice) {
+
+    if (invoice.getBankDetails() != null) {
+      return invoice.getCompanyBankDetails();
+    }
+
+    return invoice.getCompany().getDefaultBankDetails();
+  }
 }

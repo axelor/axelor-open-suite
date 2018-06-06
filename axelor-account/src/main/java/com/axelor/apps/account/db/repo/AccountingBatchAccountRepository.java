@@ -21,11 +21,10 @@ import com.axelor.apps.account.db.AccountingBatch;
 
 public class AccountingBatchAccountRepository extends AccountingBatchRepository {
 
-    @Override
-    public AccountingBatch copy(AccountingBatch entity, boolean deep) {
-        AccountingBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public AccountingBatch copy(AccountingBatch entity, boolean deep) {
+    AccountingBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

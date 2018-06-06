@@ -20,14 +20,14 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 
 public class BankReconciliationManagementRepository extends BankReconciliationRepository {
-	@Override
-	public BankReconciliation copy(BankReconciliation entity, boolean deep) {
-		entity.setStatusSelect(STATUS_DRAFT);
-		entity.setStartingBalance(null);
-		entity.setEndingBalance(null);
-		entity.setComputedBalance(null);
-		entity.setBankReconciliationLineList(null);
-		
-		return super.copy(entity, deep);
-	}
+  @Override
+  public BankReconciliation copy(BankReconciliation entity, boolean deep) {
+    entity.setStatusSelect(STATUS_DRAFT);
+    entity.setStartingBalance(null);
+    entity.setEndingBalance(null);
+    entity.setComputedBalance(null);
+    entity.setBankReconciliationLineList(null);
+
+    return super.copy(entity, deep);
+  }
 }

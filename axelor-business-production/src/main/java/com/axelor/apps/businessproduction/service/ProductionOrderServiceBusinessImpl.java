@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import java.math.BigDecimal;
-
-import java.time.LocalDateTime;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -32,37 +28,41 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceImpl  {
-	
-	@Inject
-	public ProductionOrderServiceBusinessImpl(ManufOrderService manufOrderService, SequenceService sequenceService,
-			ProductionOrderRepository productionOrderRepo) {
-		super(manufOrderService, sequenceService, productionOrderRepo);
-	}
+public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceImpl {
 
+  @Inject
+  public ProductionOrderServiceBusinessImpl(
+      ManufOrderService manufOrderService,
+      SequenceService sequenceService,
+      ProductionOrderRepository productionOrderRepo) {
+    super(manufOrderService, sequenceService, productionOrderRepo);
+  }
 
-	public ProductionOrder createProductionOrder(Project project, boolean isToInvoice) throws AxelorException  {
+  public ProductionOrder createProductionOrder(Project project, boolean isToInvoice)
+      throws AxelorException {
 
-		ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
-		productionOrder.setProject(project);
+    ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
+    productionOrder.setProject(project);
 
-		return productionOrder;
+    return productionOrder;
+  }
 
-	}
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public ProductionOrder generateProductionOrder(
+      Product product,
+      BillOfMaterial billOfMaterial,
+      BigDecimal qtyRequested,
+      Project project,
+      LocalDateTime startDate)
+      throws AxelorException {
 
+    ProductionOrder productionOrder = this.createProductionOrder(project, false);
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project project, LocalDateTime startDate) throws AxelorException  {
+    this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate);
 
-		ProductionOrder productionOrder = this.createProductionOrder(project, false);
-
-		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate);
-
-		return productionOrderRepo.save(productionOrder);
-
-	}
-
-
-
+    return productionOrderRepo.save(productionOrder);
+  }
 }

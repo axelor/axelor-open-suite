@@ -21,11 +21,10 @@ import com.axelor.apps.base.db.MailBatch;
 
 public class MailBatchBaseRepository extends MailBatchRepository {
 
-    @Override
-    public MailBatch copy(MailBatch entity, boolean deep) {
-        MailBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public MailBatch copy(MailBatch entity, boolean deep) {
+    MailBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

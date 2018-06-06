@@ -23,13 +23,12 @@ import com.axelor.apps.base.db.AppInvoice;
 import com.axelor.apps.base.service.app.AppBaseService;
 
 public interface AppAccountService extends AppBaseService {
-	
-	public AppAccount getAppAccount();
-	
-	public AppBudget getAppBudget();
-	
-	public AppInvoice getAppInvoice();
-	
-	public void generateAccountConfigurations();
-	
+
+  public AppAccount getAppAccount();
+
+  public AppBudget getAppBudget();
+
+  public AppInvoice getAppInvoice();
+
+  public void generateAccountConfigurations();
 }

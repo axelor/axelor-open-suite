@@ -19,10 +19,4 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
 
-public abstract class BatchStrategy extends AbstractBatch {
-
-	
-	
-	
-	
-}
+public abstract class BatchStrategy extends AbstractBatch {}

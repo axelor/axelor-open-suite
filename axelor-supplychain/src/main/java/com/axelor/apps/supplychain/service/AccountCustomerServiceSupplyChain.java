@@ -28,33 +28,42 @@ import com.google.inject.persist.Transactional;
 
 public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
 
-	@Inject
-	public AccountCustomerServiceSupplyChain(AccountingSituationService accountingSituationService,
-			AccountingSituationRepository accSituationRepo, AppBaseService appBaseService) {
-		super(accountingSituationService, accSituationRepo, appBaseService);
-	}
+  @Inject
+  public AccountCustomerServiceSupplyChain(
+      AccountingSituationService accountingSituationService,
+      AccountingSituationRepository accSituationRepo,
+      AppBaseService appBaseService) {
+    super(accountingSituationService, accSituationRepo, appBaseService);
+  }
 
-	@Override
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void updateCustomerAccount(AccountingSituation accountingSituation) throws AxelorException {
-		super.updateCustomerAccount(accountingSituation);
-		accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
-	}
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateCustomerAccount(AccountingSituation accountingSituation)
+      throws AxelorException {
+    super.updateCustomerAccount(accountingSituation);
+    accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
+  }
 
-	@Override
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation,
-			boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueDebtRecoveryCustAccount)
-			throws AxelorException {
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public AccountingSituation updateAccountingSituationCustomerAccount(
+      AccountingSituation accountingSituation,
+      boolean updateCustAccount,
+      boolean updateDueCustAccount,
+      boolean updateDueDebtRecoveryCustAccount)
+      throws AxelorException {
 
-		accountingSituation = super.updateAccountingSituationCustomerAccount(accountingSituation, updateCustAccount,
-				updateDueCustAccount, updateDueDebtRecoveryCustAccount);
+    accountingSituation =
+        super.updateAccountingSituationCustomerAccount(
+            accountingSituation,
+            updateCustAccount,
+            updateDueCustAccount,
+            updateDueDebtRecoveryCustAccount);
 
-		if (updateCustAccount) {
-			accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
-		}
+    if (updateCustAccount) {
+      accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
+    }
 
-		return accountingSituation;
-	}
-
+    return accountingSituation;
+  }
 }

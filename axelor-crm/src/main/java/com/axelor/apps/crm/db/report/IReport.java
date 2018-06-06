@@ -19,8 +19,5 @@ package com.axelor.apps.crm.db.report;
 
 public interface IReport {
 
-	
-	public static final String LEAD = "Lead.rptdesign";
-	
-	
+  public static final String LEAD = "Lead.rptdesign";
 }

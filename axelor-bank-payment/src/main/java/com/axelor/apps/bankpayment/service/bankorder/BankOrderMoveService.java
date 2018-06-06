@@ -20,37 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.exception.AxelorException;
 
-public interface BankOrderMoveService  {
-	
-	
-	public void generateMoves(BankOrder bankOrder) throws AxelorException;
-	
-	
+public interface BankOrderMoveService {
+
+  public void generateMoves(BankOrder bankOrder) throws AxelorException;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

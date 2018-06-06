@@ -30,17 +30,16 @@ import com.google.inject.Singleton;
 @Singleton
 public class BatchController {
 
-    public void createBankOrder(ActionRequest request, ActionResponse response) {
-        try {
-            Batch batch = request.getContext().asType(Batch.class);
-            batch = Beans.get(BatchRepository.class).find(batch.getId());
+  public void createBankOrder(ActionRequest request, ActionResponse response) {
+    try {
+      Batch batch = request.getContext().asType(Batch.class);
+      batch = Beans.get(BatchRepository.class).find(batch.getId());
 
-            Beans.get(BatchBankPaymentService.class).createBankOrder(batch);
+      Beans.get(BatchBankPaymentService.class).createBankOrder(batch);
 
-            response.setReload(true);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-        }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-
+  }
 }

@@ -30,46 +30,49 @@ import com.axelor.inject.Beans;
 
 public class SupplychainBatchService extends AbstractBatchService {
 
-	@Override
-	protected Class<? extends Model> getModelClass() {
-		return SupplychainBatch.class;
-	}
+  @Override
+  protected Class<? extends Model> getModelClass() {
+    return SupplychainBatch.class;
+  }
 
-	@Override
-	public Batch run(Model batchModel) throws AxelorException {
+  @Override
+  public Batch run(Model batchModel) throws AxelorException {
 
-		Batch batch;
-		SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
+    Batch batch;
+    SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
 
-		switch (supplychainBatch.getActionSelect()) {
-		case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
-			batch = invoiceOutgoingStockMoves(supplychainBatch);
-			break;
-		case SupplychainBatchRepository.ACTION_INVOICE_ORDERS:
-			batch = invoiceOrders(supplychainBatch);
-			break;
-		default:
-			throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), supplychainBatch.getCode());
-		}
+    switch (supplychainBatch.getActionSelect()) {
+      case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
+        batch = invoiceOutgoingStockMoves(supplychainBatch);
+        break;
+      case SupplychainBatchRepository.ACTION_INVOICE_ORDERS:
+        batch = invoiceOrders(supplychainBatch);
+        break;
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            supplychainBatch.getActionSelect(),
+            supplychainBatch.getCode());
+    }
 
-		return batch;
-	}
+    return batch;
+  }
 
+  public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
+    return Beans.get(BatchOutgoingStockMoveInvoicing.class).run(supplychainBatch);
+  }
 
-	public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
-		return Beans.get(BatchOutgoingStockMoveInvoicing.class).run(supplychainBatch);
-	}
-
-	public Batch invoiceOrders(SupplychainBatch supplychainBatch) {
-		switch (supplychainBatch.getInvoiceOrdersTypeSelect()) {
-		case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_SALE:
-			return Beans.get(BatchOrderInvoicingSale.class).run(supplychainBatch);
-		case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_PURCHASE:
-			return Beans.get(BatchOrderInvoicingPurchase.class).run(supplychainBatch);
-		default:
-			throw new IllegalArgumentException(
-					String.format("Unknown invoice orders type: %d", supplychainBatch.getInvoiceOrdersTypeSelect()));
-		}
-	}
-
+  public Batch invoiceOrders(SupplychainBatch supplychainBatch) {
+    switch (supplychainBatch.getInvoiceOrdersTypeSelect()) {
+      case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_SALE:
+        return Beans.get(BatchOrderInvoicingSale.class).run(supplychainBatch);
+      case SupplychainBatchRepository.INVOICE_ORDERS_TYPE_PURCHASE:
+        return Beans.get(BatchOrderInvoicingPurchase.class).run(supplychainBatch);
+      default:
+        throw new IllegalArgumentException(
+            String.format(
+                "Unknown invoice orders type: %d", supplychainBatch.getInvoiceOrdersTypeSelect()));
+    }
+  }
 }

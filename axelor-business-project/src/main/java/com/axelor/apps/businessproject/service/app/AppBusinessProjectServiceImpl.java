@@ -24,14 +24,13 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl implements AppBusinessProjectService {
-	
-	@Inject
-	private AppBusinessProjectRepository appBusinessProjectRepo;
-	
-	@Override
-	public AppBusinessProject getAppBusinessProject() {
-		return appBusinessProjectRepo.all().fetchOne();
-	}
-	
+public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
+    implements AppBusinessProjectService {
+
+  @Inject private AppBusinessProjectRepository appBusinessProjectRepo;
+
+  @Override
+  public AppBusinessProject getAppBusinessProject() {
+    return appBusinessProjectRepo.all().fetchOne();
+  }
 }

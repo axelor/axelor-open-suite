@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigDecimal;
-
-import java.time.LocalDate;
-
 import com.axelor.apps.account.db.ChequeRejection;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Journal;
@@ -43,145 +39,177 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class ChequeRejectionService {
 
-	protected MoveService moveService;
-	protected MoveLineService moveLineService;
-	protected SequenceService sequenceService;
-	protected AccountConfigService accountConfigService;
-	protected ChequeRejectionRepository chequeRejectionRepository;
-	
-	@Inject
-	public ChequeRejectionService(MoveService moveService, MoveLineService moveLineService, SequenceService sequenceService, 
-			AccountConfigService accountConfigService, ChequeRejectionRepository chequeRejectionRepository)  {
-		
-		this.moveService = moveService;
-		this.moveLineService = moveLineService;
-		this.sequenceService = sequenceService;
-		this.accountConfigService = accountConfigService;
-		this.chequeRejectionRepository = chequeRejectionRepository;
-		
-	}
+  protected MoveService moveService;
+  protected MoveLineService moveLineService;
+  protected SequenceService sequenceService;
+  protected AccountConfigService accountConfigService;
+  protected ChequeRejectionRepository chequeRejectionRepository;
 
-	/**
-	 * procédure de validation du rejet de chèque
-	 * @param chequeRejection
-	 * 			Un rejet de chèque brouillon
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validateChequeRejection(ChequeRejection chequeRejection) throws AxelorException   {
+  @Inject
+  public ChequeRejectionService(
+      MoveService moveService,
+      MoveLineService moveLineService,
+      SequenceService sequenceService,
+      AccountConfigService accountConfigService,
+      ChequeRejectionRepository chequeRejectionRepository) {
 
-		Company company = chequeRejection.getCompany();
+    this.moveService = moveService;
+    this.moveLineService = moveLineService;
+    this.sequenceService = sequenceService;
+    this.accountConfigService = accountConfigService;
+    this.chequeRejectionRepository = chequeRejectionRepository;
+  }
 
-		this.testCompanyField(company);
+  /**
+   * procédure de validation du rejet de chèque
+   *
+   * @param chequeRejection Un rejet de chèque brouillon
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validateChequeRejection(ChequeRejection chequeRejection) throws AxelorException {
 
-		this.setSequence(chequeRejection);
+    Company company = chequeRejection.getCompany();
 
-		Move move = this.createChequeRejectionMove(chequeRejection, company);
+    this.testCompanyField(company);
 
-		chequeRejection.setMove(move);
+    this.setSequence(chequeRejection);
 
-		chequeRejection.setStatusSelect(ChequeRejectionRepository.STATUS_VALIDATED);
+    Move move = this.createChequeRejectionMove(chequeRejection, company);
 
-		chequeRejectionRepository.save(chequeRejection);
-	}
+    chequeRejection.setMove(move);
 
-	/**
-	 * Méthode permettant de créer une écriture de rejet de chèque (L'extourne de l'écriture de paiement)
-	 * @param chequeRejection
-	 * 			Un rejet de cheque brouillon
-	 * @param company
-	 * 			Une société
-	 * @return
-	 * 			L'écriture de rejet de chèque
-	 * @throws AxelorException
-	 */
-	public Move createChequeRejectionMove(ChequeRejection chequeRejection, Company company) throws AxelorException  {
-		this.testCompanyField(company);
+    chequeRejection.setStatusSelect(ChequeRejectionRepository.STATUS_VALIDATED);
 
-		Journal journal = company.getAccountConfig().getRejectJournal();
+    chequeRejectionRepository.save(chequeRejection);
+  }
 
-		PaymentVoucher paymentVoucher = chequeRejection.getPaymentVoucher();
+  /**
+   * Méthode permettant de créer une écriture de rejet de chèque (L'extourne de l'écriture de
+   * paiement)
+   *
+   * @param chequeRejection Un rejet de cheque brouillon
+   * @param company Une société
+   * @return L'écriture de rejet de chèque
+   * @throws AxelorException
+   */
+  public Move createChequeRejectionMove(ChequeRejection chequeRejection, Company company)
+      throws AxelorException {
+    this.testCompanyField(company);
 
-		Move paymentMove = paymentVoucher.getGeneratedMove();
+    Journal journal = company.getAccountConfig().getRejectJournal();
 
-		Partner partner =  paymentVoucher.getPartner();
+    PaymentVoucher paymentVoucher = chequeRejection.getPaymentVoucher();
 
-		InterbankCodeLine interbankCodeLine = chequeRejection.getInterbankCodeLine();
+    Move paymentMove = paymentVoucher.getGeneratedMove();
 
-		String description = chequeRejection.getDescription();
+    Partner partner = paymentVoucher.getPartner();
 
-		LocalDate rejectionDate = chequeRejection.getRejectionDate();
+    InterbankCodeLine interbankCodeLine = chequeRejection.getInterbankCodeLine();
 
-		// Move
-		Move move = moveService.getMoveCreateService().createMove(journal, company, null, partner, rejectionDate, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+    String description = chequeRejection.getDescription();
 
-		int ref = 1;
+    LocalDate rejectionDate = chequeRejection.getRejectionDate();
 
-		for(MoveLine moveLine : paymentMove.getMoveLineList())  {
+    // Move
+    Move move =
+        moveService
+            .getMoveCreateService()
+            .createMove(
+                journal,
+                company,
+                null,
+                partner,
+                rejectionDate,
+                null,
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
-			if(moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
-				// Debit MoveLine
-				MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getCredit(), true, rejectionDate, ref, null);
-				move.getMoveLineList().add(debitMoveLine);
-				debitMoveLine.setInterbankCodeLine(interbankCodeLine);
-				debitMoveLine.setDescription(description);
+    int ref = 1;
 
-			}
-			else  {
-				// Credit MoveLine
-				MoveLine creditMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getDebit(), false, rejectionDate, ref, null);
-				move.getMoveLineList().add(creditMoveLine);
-				creditMoveLine.setInterbankCodeLine(interbankCodeLine);
-				creditMoveLine.setDescription(description);
-			}
+    for (MoveLine moveLine : paymentMove.getMoveLineList()) {
 
-			ref++;
-		}
+      if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+        // Debit MoveLine
+        MoveLine debitMoveLine =
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                moveLine.getAccount(),
+                moveLine.getCredit(),
+                true,
+                rejectionDate,
+                ref,
+                chequeRejection.getName(),
+                chequeRejection.getDescription());
+        move.getMoveLineList().add(debitMoveLine);
+        debitMoveLine.setInterbankCodeLine(interbankCodeLine);
+        debitMoveLine.setDescription(description);
 
-		move.setRejectOk(true);
+      } else {
+        // Credit MoveLine
+        MoveLine creditMoveLine =
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                moveLine.getAccount(),
+                moveLine.getDebit(),
+                false,
+                rejectionDate,
+                ref,
+                chequeRejection.getName(),
+                chequeRejection.getDescription());
+        move.getMoveLineList().add(creditMoveLine);
+        creditMoveLine.setInterbankCodeLine(interbankCodeLine);
+        creditMoveLine.setDescription(description);
+      }
 
-		moveService.getMoveValidateService().validateMove(move);
+      ref++;
+    }
 
-		return move;
-	}
+    move.setRejectOk(true);
 
+    moveService.getMoveValidateService().validateMove(move);
 
-	/**
-	 * Procédure permettant de vérifier les champs d'une société
-	 * @param company
-	 * 			Une société
-	 * @throws AxelorException
-	 */
-	public void testCompanyField(Company company) throws AxelorException  {
+    return move;
+  }
 
-		accountConfigService.getRejectJournal(accountConfigService.getAccountConfig(company));
-	}
+  /**
+   * Procédure permettant de vérifier les champs d'une société
+   *
+   * @param company Une société
+   * @throws AxelorException
+   */
+  public void testCompanyField(Company company) throws AxelorException {
 
+    accountConfigService.getRejectJournal(accountConfigService.getAccountConfig(company));
+  }
 
+  /**
+   * Procédure permettant d'assigner une séquence de rejet de chèque
+   *
+   * @param chequeRejection Un rejet de chèque
+   * @throws AxelorException
+   */
+  public void setSequence(ChequeRejection chequeRejection) throws AxelorException {
 
-	/**
-	 * Procédure permettant d'assigner une séquence de rejet de chèque
-	 * @param chequeRejection
-	 *				Un rejet de chèque
-	 * @throws AxelorException
-	 */
-	public void setSequence(ChequeRejection chequeRejection) throws AxelorException  {
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.CHEQUE_REJECT, chequeRejection.getCompany());
 
-		String seq = sequenceService.getSequenceNumber(SequenceRepository.CHEQUE_REJECT, chequeRejection.getCompany());
+    if (seq == null) {
+      throw new AxelorException(
+          chequeRejection,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CHECK_REJECTION_1),
+          AppAccountServiceImpl.EXCEPTION,
+          chequeRejection.getCompany().getName());
+    }
 
-		if (seq == null) {
-			throw new AxelorException(chequeRejection, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CHECK_REJECTION_1), AppAccountServiceImpl.EXCEPTION,chequeRejection.getCompany().getName());
-		}
-
-		chequeRejection.setName(seq);
-	}
-
-
-
-
-
-
+    chequeRejection.setName(seq);
+  }
 }

@@ -17,11 +17,10 @@
  */
 package com.axelor.apps.fleet.service;
 
+import com.axelor.apps.fleet.db.VehicleFuelLog;
 import java.math.BigDecimal;
 
-import com.axelor.apps.fleet.db.VehicleFuelLog;
-
 public interface VehicleFuelLogService {
-	
-	public BigDecimal calculateTotalPrice(VehicleFuelLog vehicleFuelLog);
+
+  public BigDecimal calculateTotalPrice(VehicleFuelLog vehicleFuelLog);
 }

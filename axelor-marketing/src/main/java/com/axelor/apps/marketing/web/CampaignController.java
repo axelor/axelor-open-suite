@@ -31,62 +31,61 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class CampaignController {
-	
-	@Inject
-	private CampaignRepository campaignRepo;
-	
-	@Inject
-	private CampaignService campaignService;
-	
-	public void sendEmail(ActionRequest request, ActionResponse response) {
-		
-		Campaign campaign = request.getContext().asType(Campaign.class);
-		
-		try  {
-			campaign = campaignRepo.find(campaign.getId());
-			
-			if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
-				response.setFlash(I18n.get(IExceptionMessage.EMPTY_TARGET));
-				return;
-			}
-			
-			MetaFile logFile = campaignService.sendEmail(campaign);
-			
-			if (logFile == null) {
-				response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
-			}
-			else {
-				response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
-			}
-			
-			response.setValue("emailLog", logFile);
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
 
-	}
-	
-	public void generateEvents(ActionRequest request, ActionResponse response) {
-		
-		Campaign campaign = request.getContext().asType(Campaign.class);
-		
-		try  {
-			campaign = campaignRepo.find(campaign.getId());
-			campaignService.generateEvents(campaign);
-			response.setAttr("plannedEvents", "refresh", true);
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
-	
-	public void generateTargets(ActionRequest request, ActionResponse response) {
-		
-		Campaign campaign = request.getContext().asType(Campaign.class);
-		
-		try  {
-			campaign = campaignRepo.find(campaign.getId());
-			campaignService.generateTargets(campaign);
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-		
-		response.setReload(true);
-	}
+  @Inject private CampaignRepository campaignRepo;
+
+  @Inject private CampaignService campaignService;
+
+  public void sendEmail(ActionRequest request, ActionResponse response) {
+
+    Campaign campaign = request.getContext().asType(Campaign.class);
+
+    try {
+      campaign = campaignRepo.find(campaign.getId());
+
+      if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
+        response.setFlash(I18n.get(IExceptionMessage.EMPTY_TARGET));
+        return;
+      }
+
+      MetaFile logFile = campaignService.sendEmail(campaign);
+
+      if (logFile == null) {
+        response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
+      }
+
+      response.setValue("emailLog", logFile);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateEvents(ActionRequest request, ActionResponse response) {
+
+    Campaign campaign = request.getContext().asType(Campaign.class);
+
+    try {
+      campaign = campaignRepo.find(campaign.getId());
+      campaignService.generateEvents(campaign);
+      response.setAttr("plannedEvents", "refresh", true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateTargets(ActionRequest request, ActionResponse response) {
+
+    Campaign campaign = request.getContext().asType(Campaign.class);
+
+    try {
+      campaign = campaignRepo.find(campaign.getId());
+      campaignService.generateTargets(campaign);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+
+    response.setReload(true);
+  }
 }

@@ -22,12 +22,14 @@ import com.axelor.inject.Beans;
 
 public class ManufOrderValidateBusinessServiceImpl implements ManufOrderValidateBusinessService {
 
-    @Override
-    public long checkTimesheet(ManufOrder manufOrder) {
-        OperationOrderValidateBusinessService operationOrderValidService =
-                Beans.get(OperationOrderValidateBusinessService.class);
-        return manufOrder.getOperationOrderList().stream()
-                .mapToLong(operationOrderValidService::checkTimesheet)
-                .sum();
-    }
+  @Override
+  public long checkTimesheet(ManufOrder manufOrder) {
+    OperationOrderValidateBusinessService operationOrderValidService =
+        Beans.get(OperationOrderValidateBusinessService.class);
+    return manufOrder
+        .getOperationOrderList()
+        .stream()
+        .mapToLong(operationOrderValidService::checkTimesheet)
+        .sum();
+  }
 }

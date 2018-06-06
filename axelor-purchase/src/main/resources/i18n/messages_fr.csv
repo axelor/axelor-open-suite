@@ -257,7 +257,7 @@
 "Tax","Taxe",,
 "Tax Equiv",,,
 "Tax Lines","Lignes de taxe",,
-"The company %s doesn't have any configured sequence for the purchase orders","La société %s n'a pas de séquence de configurée pour les commandes fournisseur",,
+"The company %s doesn't have any configured sequence for the purchase orders","La société %s n'a pas de séquence configurée pour les commandes fournisseur",,
 "The company is required and must be the same for all purchase orders","La société est requise et doit être la même pour toutes les commandes d'achat",,
 "The currency is required and must be the same for all purchase orders","La devise est requise et doit être la même pour toutes les commandes d'achat",,
 "The field 'Stock Location' must be filled.",,,

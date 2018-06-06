@@ -23,17 +23,16 @@ import com.axelor.apps.talent.db.JobPosition;
 import com.google.inject.Inject;
 
 public class JobPositionTalentRepository extends JobPositionRepository {
-	
-	@Inject
-	private SequenceService sequenceService;
-	
-	@Override
-	public JobPosition save(JobPosition jobPosition) {
-			
-		if (jobPosition.getStatusSelect() > 0 && jobPosition.getJobReference() == null) {
-			jobPosition.setJobReference(sequenceService.getSequenceNumber(ITalent.JOB_POSITION));
-		}
-			
-		return super.save(jobPosition);
-	}
+
+  @Inject private SequenceService sequenceService;
+
+  @Override
+  public JobPosition save(JobPosition jobPosition) {
+
+    if (jobPosition.getStatusSelect() > 0 && jobPosition.getJobReference() == null) {
+      jobPosition.setJobReference(sequenceService.getSequenceNumber(ITalent.JOB_POSITION));
+    }
+
+    return super.save(jobPosition);
+  }
 }

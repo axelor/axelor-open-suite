@@ -52,6 +52,7 @@
 	<selection name='product.procurement.method.select'>
 		<option value='buy'>Buy</option>
 		<option value='produce'>Produce</option>
+		<option value='buyAndProduce'>Buy and produce</option>
 	</selection>
 
 	<selection name="product.sale.supply.select">
@@ -120,6 +121,7 @@
 
 	<selection name='ibase.batch.action.select'>
 		<option value='1'>Target</option>
+		<option value='2'>Calendar synchronization</option>
 	</selection>
 
 	<selection name="base.keyword.type.select">
@@ -374,7 +376,7 @@
 		<option value="4">Leave</option>
 	</selection>
 
-	<selection name="icrm.calendar.synchronization.select">
+	<selection name="icalendar.synchronization.select">
 		<option value="ICalEvent">ICal events only</option>
 	</selection>
 

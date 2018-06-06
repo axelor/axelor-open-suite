@@ -25,16 +25,17 @@ import com.google.inject.Inject;
 
 public class BatchCreditTransferCustomerRefund extends BatchCreditTransferInvoice {
 
-	@Inject
-	public BatchCreditTransferCustomerRefund(AppAccountService appAccountService, InvoiceRepository invoiceRepo,
-			InvoicePaymentCreateService invoicePaymentCreateService,
-			InvoicePaymentRepository invoicePaymentRepository) {
-		super(appAccountService, invoiceRepo, invoicePaymentCreateService, invoicePaymentRepository);
-	}
+  @Inject
+  public BatchCreditTransferCustomerRefund(
+      AppAccountService appAccountService,
+      InvoiceRepository invoiceRepo,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentRepository invoicePaymentRepository) {
+    super(appAccountService, invoiceRepo, invoicePaymentCreateService, invoicePaymentRepository);
+  }
 
-	@Override
-	protected void process() {
-		processInvoices(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
-	}
-
+  @Override
+  protected void process() {
+    processInvoices(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+  }
 }

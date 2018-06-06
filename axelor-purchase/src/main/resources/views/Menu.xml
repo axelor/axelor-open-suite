@@ -110,7 +110,7 @@
 	</action-view>
 	
 	
-	<menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings" order="200"/>
+	<menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings" order="200" icon="fa-bar-chart"/>
 
 	<menuitem name="purchase-maps-partner-suppliers" parent="sc-root-purchase-report" 
 		title="Suppliers Map" action="action-show-suppliers-on-map-page" order="10"/>		
@@ -118,7 +118,7 @@
 	
 	<!-- Purchase request menus -->
 	<menuitem name="sc-root-purchase-request" parent="sc-root-purchase" if="__config__.app.isApp('purchase-request')"
-		title="Purchase requests" order="310" icon="fa-bullhorn" icon-background="#b6473f" />
+		title="Purchase requests" order="190" icon="fa-bullhorn" icon-background="#b6473f" />
 		
 	<menuitem name="sc-root-purchase-request-all" parent="sc-root-purchase-request"
 		title="All purchase requests" action="sc.root.purchase.request.all" order="1"/>
@@ -219,7 +219,7 @@
 	<!--demandeur menus end  -->
 			
 	<menuitem name="sc-root-purchase-conf" parent="sc-root-purchase"
-		title="Configuration" order="300"/>
+		title="Configuration" order="300" icon="fa-cog"/>
 
 	<menuitem name="sc-root-purchase-conf-partner-price-list" parent="sc-root-purchase-conf"
 		title="Partner price lists" action="sc.root.purchase.conf.partner.price.list" />

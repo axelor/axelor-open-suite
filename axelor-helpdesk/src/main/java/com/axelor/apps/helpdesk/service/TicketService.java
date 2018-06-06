@@ -17,18 +17,16 @@
  */
 package com.axelor.apps.helpdesk.service;
 
-import java.util.List;
-
 import com.axelor.apps.helpdesk.db.Ticket;
+import java.util.List;
 
 public interface TicketService {
 
-	public void computeSeq(Ticket ticket);
+  public void computeSeq(Ticket ticket);
 
-	public void computeSLA(Ticket ticket);
+  public void computeSLA(Ticket ticket);
 
-	public void checkSLAcompleted(Ticket ticket);
+  public void checkSLAcompleted(Ticket ticket);
 
-	public void assignToMeTicket(Long id, List<?> ids);
-
+  public void assignToMeTicket(Long id, List<?> ids);
 }

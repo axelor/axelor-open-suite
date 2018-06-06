@@ -22,7 +22,6 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.exception.AxelorException;
 
 public interface SupplyChainConfigService {
-	
-	public SupplyChainConfig getSupplyChainConfig(Company company) throws AxelorException;
 
+  public SupplyChainConfig getSupplyChainConfig(Company company) throws AxelorException;
 }

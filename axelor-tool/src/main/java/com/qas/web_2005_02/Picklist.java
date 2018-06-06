@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
+ * Classe Java pour anonymous complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -40,41 +39,33 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "qaPicklist"
-})
+@XmlType(
+  name = "",
+  propOrder = {"qaPicklist"}
+)
 @XmlRootElement(name = "Picklist")
 public class Picklist {
 
-    @XmlElement(name = "QAPicklist", required = true)
-    protected QAPicklistType qaPicklist;
+  @XmlElement(name = "QAPicklist", required = true)
+  protected QAPicklistType qaPicklist;
 
-    /**
-     * Obtient la valeur de la propriété qaPicklist.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QAPicklistType }
-     *     
-     */
-    public QAPicklistType getQAPicklist() {
-        return qaPicklist;
-    }
+  /**
+   * Obtient la valeur de la propriété qaPicklist.
+   *
+   * @return possible object is {@link QAPicklistType }
+   */
+  public QAPicklistType getQAPicklist() {
+    return qaPicklist;
+  }
 
-    /**
-     * Définit la valeur de la propriété qaPicklist.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QAPicklistType }
-     *     
-     */
-    public void setQAPicklist(QAPicklistType value) {
-        this.qaPicklist = value;
-    }
-
+  /**
+   * Définit la valeur de la propriété qaPicklist.
+   *
+   * @param value allowed object is {@link QAPicklistType }
+   */
+  public void setQAPicklist(QAPicklistType value) {
+    this.qaPicklist = value;
+  }
 }

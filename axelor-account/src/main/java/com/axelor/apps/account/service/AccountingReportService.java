@@ -17,66 +17,54 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.JournalType;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public interface AccountingReportService {
 
+  public String getMoveLineList(AccountingReport accountingReport) throws AxelorException;
 
-	public String getMoveLineList(AccountingReport accountingReport) throws AxelorException;
-	
-	
-	public String buildQuery(AccountingReport accountingReport) throws AxelorException;
+  public String buildQuery(AccountingReport accountingReport) throws AxelorException;
 
+  public String addParams(String paramQuery, Object param);
 
+  public String addParams(String paramQuery);
 
-	public String addParams(String paramQuery, Object param);
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void setSequence(AccountingReport accountingReport, String sequence);
 
-	public String addParams(String paramQuery);
+  public String getSequence(AccountingReport accountingReport) throws AxelorException;
 
+  public JournalType getJournalType(AccountingReport accountingReport) throws AxelorException;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setSequence(AccountingReport accountingReport, String sequence);
+  public Account getAccount(AccountingReport accountingReport);
 
-	public String getSequence(AccountingReport accountingReport) throws AxelorException;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void setStatus(AccountingReport accountingReport);
 
-	public JournalType getJournalType(AccountingReport accountingReport) throws AxelorException;
+  /** @param accountingReport */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void setPublicationDateTime(AccountingReport accountingReport);
 
-	public Account getAccount(AccountingReport accountingReport);
+  /**
+   * @param queryFilter
+   * @return
+   */
+  public BigDecimal getDebitBalance();
 
+  /**
+   * @param queryFilter
+   * @return
+   */
+  public BigDecimal getCreditBalance();
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setStatus(AccountingReport accountingReport);
+  public BigDecimal getDebitBalanceType4();
 
-	/**
-	 * @param accountingReport
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setPublicationDateTime(AccountingReport accountingReport);
+  public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter);
 
-	/**
-	 * @param queryFilter
-	 * @return
-	 */
-	public BigDecimal getDebitBalance();
-
-
-	/**
-	 * @param queryFilter
-	 * @return
-	 */
-	public BigDecimal getCreditBalance();
-
-
-	public BigDecimal getDebitBalanceType4();
-
-
-	public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter);
-
-	public BigDecimal getCreditBalanceType4();
+  public BigDecimal getCreditBalanceType4();
 }

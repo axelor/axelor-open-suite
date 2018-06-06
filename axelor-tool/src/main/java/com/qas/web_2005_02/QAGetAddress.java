@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
+ * Classe Java pour anonymous complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -42,95 +41,75 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "layout",
-    "moniker",
-    "qaConfig"
-})
+@XmlType(
+  name = "",
+  propOrder = {"layout", "moniker", "qaConfig"}
+)
 @XmlRootElement(name = "QAGetAddress")
 public class QAGetAddress {
 
-    @XmlElement(name = "Layout", required = true)
-    protected String layout;
-    @XmlElement(name = "Moniker", required = true)
-    protected String moniker;
-    @XmlElement(name = "QAConfig")
-    protected QAConfigType qaConfig;
+  @XmlElement(name = "Layout", required = true)
+  protected String layout;
 
-    /**
-     * Obtient la valeur de la propriété layout.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLayout() {
-        return layout;
-    }
+  @XmlElement(name = "Moniker", required = true)
+  protected String moniker;
 
-    /**
-     * Définit la valeur de la propriété layout.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLayout(String value) {
-        this.layout = value;
-    }
+  @XmlElement(name = "QAConfig")
+  protected QAConfigType qaConfig;
 
-    /**
-     * Obtient la valeur de la propriété moniker.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMoniker() {
-        return moniker;
-    }
+  /**
+   * Obtient la valeur de la propriété layout.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getLayout() {
+    return layout;
+  }
 
-    /**
-     * Définit la valeur de la propriété moniker.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMoniker(String value) {
-        this.moniker = value;
-    }
+  /**
+   * Définit la valeur de la propriété layout.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setLayout(String value) {
+    this.layout = value;
+  }
 
-    /**
-     * Obtient la valeur de la propriété qaConfig.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public QAConfigType getQAConfig() {
-        return qaConfig;
-    }
+  /**
+   * Obtient la valeur de la propriété moniker.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getMoniker() {
+    return moniker;
+  }
 
-    /**
-     * Définit la valeur de la propriété qaConfig.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public void setQAConfig(QAConfigType value) {
-        this.qaConfig = value;
-    }
+  /**
+   * Définit la valeur de la propriété moniker.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setMoniker(String value) {
+    this.moniker = value;
+  }
 
+  /**
+   * Obtient la valeur de la propriété qaConfig.
+   *
+   * @return possible object is {@link QAConfigType }
+   */
+  public QAConfigType getQAConfig() {
+    return qaConfig;
+  }
+
+  /**
+   * Définit la valeur de la propriété qaConfig.
+   *
+   * @param value allowed object is {@link QAConfigType }
+   */
+  public void setQAConfig(QAConfigType value) {
+    this.qaConfig = value;
+  }
 }

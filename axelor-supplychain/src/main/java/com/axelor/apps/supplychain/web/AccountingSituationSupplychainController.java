@@ -27,19 +27,18 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AccountingSituationSupplychainController {
-	
-	@Inject
-    private AccountingSituationSupplychainServiceImpl accountingSituationService;
-	
-    public void computeUsedCredit(ActionRequest request, ActionResponse response) {
-        AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
-        try {
-            accountingSituation = accountingSituationService.computeUsedCredit(accountingSituation);
-            response.setValue("usedCredit", accountingSituation.getUsedCredit());
-        } catch (Exception e) {
-            TraceBackService.trace(e);
-            response.setError(e.getMessage());
-        }
+
+  @Inject private AccountingSituationSupplychainServiceImpl accountingSituationService;
+
+  public void computeUsedCredit(ActionRequest request, ActionResponse response) {
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    try {
+      accountingSituation = accountingSituationService.computeUsedCredit(accountingSituation);
+      response.setValue("usedCredit", accountingSituation.getUsedCredit());
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      response.setError(e.getMessage());
     }
-    
+  }
 }

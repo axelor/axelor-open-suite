@@ -18,12 +18,14 @@
 package com.axelor.apps.marketing.exception;
 
 public interface IExceptionMessage {
-	
-	static final String EMPTY_TARGET = /*$$(*/ "Please select target" /*)*/;
-	
-	static final String EMAIL_ERROR1 = /*$$(*/ "Error in sending an email to the following targets" /*)*/;
-	
-	static final String EMAIL_ERROR2 = /*$$(*/ "Error in sending emails. Please check the log file generated." /*)*/;
-	
-	static final String EMAIL_SUCCESS = /*$$(*/ "Emails sent successfully" /*)*/;
+
+  static final String EMPTY_TARGET = /*$$(*/ "Please select target" /*)*/;
+
+  static final String EMAIL_ERROR1 = /*$$(*/
+      "Error in sending an email to the following targets" /*)*/;
+
+  static final String EMAIL_ERROR2 = /*$$(*/
+      "Error in sending emails. Please check the log file generated." /*)*/;
+
+  static final String EMAIL_SUCCESS = /*$$(*/ "Emails sent successfully" /*)*/;
 }

@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -33,31 +27,39 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class BatchCreditTransferSupplierPaymentBankPayment extends BatchCreditTransferSupplierPayment {
-	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-	protected final BankOrderMergeService bankOrderMergeService;
+public class BatchCreditTransferSupplierPaymentBankPayment
+    extends BatchCreditTransferSupplierPayment {
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected final BankOrderMergeService bankOrderMergeService;
 
-	@Inject
-	public BatchCreditTransferSupplierPaymentBankPayment(AppAccountService appAccountService,
-			InvoiceRepository invoiceRepo, InvoicePaymentCreateService invoicePaymentCreateService,
-			InvoicePaymentRepository invoicePaymentRepository, BankOrderMergeService bankOrderMergeService) {
-		super(appAccountService, invoiceRepo, invoicePaymentCreateService, invoicePaymentRepository);
-		this.bankOrderMergeService = bankOrderMergeService;
-	}
+  @Inject
+  public BatchCreditTransferSupplierPaymentBankPayment(
+      AppAccountService appAccountService,
+      InvoiceRepository invoiceRepo,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentRepository invoicePaymentRepository,
+      BankOrderMergeService bankOrderMergeService) {
+    super(appAccountService, invoiceRepo, invoicePaymentCreateService, invoicePaymentRepository);
+    this.bankOrderMergeService = bankOrderMergeService;
+  }
 
-	@Override
-	protected void process() {
-		List<InvoicePayment> doneList = processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+  @Override
+  protected void process() {
+    List<InvoicePayment> doneList =
+        processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
 
-		if (!doneList.isEmpty()) {
-			try {
-				bankOrderMergeService.mergeFromInvoicePayments(doneList);
-			} catch (Exception e) {
-				TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
-				LOG.error(e.getMessage());
-			}
-		}
-	}
-
+    if (!doneList.isEmpty()) {
+      try {
+        bankOrderMergeService.mergeFromInvoicePayments(doneList);
+      } catch (Exception e) {
+        TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
+        LOG.error(e.getMessage());
+      }
+    }
+  }
 }

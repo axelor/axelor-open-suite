@@ -25,15 +25,13 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AppSupplychainController {
-		
-	@Inject
-	private AppSupplychainService appSupplychainService;
-	
-	public void generateSupplychainConfigurations(ActionRequest request, ActionResponse response) {
-		
-		appSupplychainService.generateSupplychainConfigurations();
-		
-		response.setReload(true);
-	}
 
+  @Inject private AppSupplychainService appSupplychainService;
+
+  public void generateSupplychainConfigurations(ActionRequest request, ActionResponse response) {
+
+    appSupplychainService.generateSupplychainConfigurations();
+
+    response.setReload(true);
+  }
 }

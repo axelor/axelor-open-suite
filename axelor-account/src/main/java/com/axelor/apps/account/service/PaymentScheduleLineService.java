@@ -17,34 +17,38 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface PaymentScheduleLineService {
 
-	PaymentScheduleLine createPaymentScheduleLine(PaymentSchedule paymentSchedule, BigDecimal inTaxAmount,
-			int scheduleLineSeq, LocalDate scheduleDate);
+  PaymentScheduleLine createPaymentScheduleLine(
+      PaymentSchedule paymentSchedule,
+      BigDecimal inTaxAmount,
+      int scheduleLineSeq,
+      LocalDate scheduleDate);
 
-	List<PaymentScheduleLine> createPaymentScheduleLines(PaymentSchedule paymentSchedule);
+  List<PaymentScheduleLine> createPaymentScheduleLines(PaymentSchedule paymentSchedule);
 
-	/**
-	 * Create a payment move for a payment schedule line with the given company bank details.
-	 * 
-	 * @param paymentScheduleLine
-	 * @param companyBankDetails
-	 * @param paymentMode
-	 * @return
-	 * @throws AxelorException
-	 */
-	Move createPaymentMove(PaymentScheduleLine paymentScheduleLine, BankDetails companyBankDetails, PaymentMode paymentMode)
-			throws AxelorException;
-
+  /**
+   * Create a payment move for a payment schedule line with the given company bank details.
+   *
+   * @param paymentScheduleLine
+   * @param companyBankDetails
+   * @param paymentMode
+   * @return
+   * @throws AxelorException
+   */
+  Move createPaymentMove(
+      PaymentScheduleLine paymentScheduleLine,
+      BankDetails companyBankDetails,
+      PaymentMode paymentMode)
+      throws AxelorException;
 }
