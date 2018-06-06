@@ -4,11 +4,15 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-    	<toolbar>
-    		<button name="mergeQuotations" title="Merge quotations"  onClick="purchase.order.merge"/>
-    		<button name="seeQuotationLines" title="See quotation lines" onClick="purchase-order-see-quotation-lines" />
-            <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
-		</toolbar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="Merge quotations"  action="purchase.order.merge"/>
+                <item title="See quotation lines" action="purchase-order-see-quotation-lines" />
+            </menu>
+        </menubar>
 		<field name="purchaseOrderSeq"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
@@ -21,11 +25,14 @@
     </grid>
 
     <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-    	<toolbar>
-    		<button name="mergePO" title="Merge purchase orders" onClick="purchase.order.merge"/>
-    		<button name="seePOLines" title="See purchase order lines" onClick="purchase-order-see-purchase-order-lines" />
-            <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
-		</toolbar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
+            </menu>
+        </menubar>
 		<field name="purchaseOrderSeq"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
@@ -217,9 +224,6 @@
 	</form>
 
 	<cards name="purchase-quotations-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
-		<toolbar>
-			<button name="seeQuotationLines" title="See quotation lines" onClick="purchase-order-see-quotation-lines"/>
-		</toolbar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
@@ -274,9 +278,6 @@
 	</cards>
 
 	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
-		<toolbar>
-			<button name="seePOLines" title="See purchase order lines" onClick="purchase-order-see-purchase-order-lines"/>
-		</toolbar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>

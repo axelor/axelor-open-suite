@@ -90,13 +90,13 @@
     
     
     <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-        <field name="priority" readonlyIf="defineSubBillOfMaterial" width="71"/>
+        <field name="priority" readonlyIf="!defineSubBillOfMaterial" width="71"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="defineSubBillOfMaterial" readonly="true"/>
         <field name="hasNoManageStock"/>
-        <field name="prodProcess" readonlyIf="defineSubBillOfMaterial" grid-view="prod-process-grid" form-view="prod-process-form"/>
+        <field name="prodProcess" readonlyIf="!defineSubBillOfMaterial" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
 
 
@@ -204,8 +204,7 @@
     </action-attrs>
     
 	<action-attrs name="action-bill-of-material-attrs-product-def-sub-bom">
-		<attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: true" if="product?.productSubTypeSelect == 3"/>
-		<attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: false" if="product?.productSubTypeSelect != 3"/>
+        <attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: product.productSubTypeSelect == 3" if="product"/>
 	</action-attrs>
 	
 	
