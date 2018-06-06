@@ -7,7 +7,7 @@
 
     <entity name="KilometricAllowParam" lang="java" >
     
-        <string name="name" title="Name"/>
+        <string name="name" title="Name" translatable="true"/>
         <string name="code" title="Code" unique="true"/>
         
     </entity>

@@ -27,34 +27,52 @@ import com.axelor.i18n.I18n;
 
 public class StockConfigProductionService extends StockConfigService {
 
-    public StockLocation getProductionVirtualStockLocation(StockConfig stockConfig) throws AxelorException {
+  public StockLocation getProductionVirtualStockLocation(StockConfig stockConfig)
+      throws AxelorException {
 
-        if (stockConfig.getProductionVirtualStockLocation() == null) {
-            throw new AxelorException(stockConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2), stockConfig.getCompany().getName());
-        }
-
-        return stockConfig.getProductionVirtualStockLocation();
-
+    if (stockConfig.getProductionVirtualStockLocation() == null) {
+      throw new AxelorException(
+          stockConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2),
+          stockConfig.getCompany().getName());
     }
 
-    public StockLocation getWasteStockLocation(StockConfig stockConfig) throws AxelorException {
-        if (stockConfig.getWasteStockLocation() == null) {
-            throw new AxelorException(stockConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3), stockConfig.getCompany().getName());
-        }
-        return stockConfig.getWasteStockLocation();
-    }
+    return stockConfig.getProductionVirtualStockLocation();
+  }
 
-    public StockLocation getFinishedProductsDefaultStockLocation(StockConfig stockConfig) throws AxelorException {
-        if (stockConfig.getFinishedProductsDefaultStockLocation() == null) {
-            throw new AxelorException(stockConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_4), stockConfig.getCompany().getName());
-        }
-        return stockConfig.getFinishedProductsDefaultStockLocation();
+  public StockLocation getWasteStockLocation(StockConfig stockConfig) throws AxelorException {
+    if (stockConfig.getWasteStockLocation() == null) {
+      throw new AxelorException(
+          stockConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_3),
+          stockConfig.getCompany().getName());
     }
+    return stockConfig.getWasteStockLocation();
+  }
 
-    public StockLocation getComponentDefaultStockLocation(StockConfig stockConfig) throws AxelorException {
-        if (stockConfig.getComponentDefaultStockLocation() == null) {
-            throw new AxelorException(stockConfig, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_5), stockConfig.getCompany().getName());
-        }
-        return stockConfig.getComponentDefaultStockLocation();
+  public StockLocation getFinishedProductsDefaultStockLocation(StockConfig stockConfig)
+      throws AxelorException {
+    if (stockConfig.getFinishedProductsDefaultStockLocation() == null) {
+      throw new AxelorException(
+          stockConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_4),
+          stockConfig.getCompany().getName());
     }
+    return stockConfig.getFinishedProductsDefaultStockLocation();
+  }
+
+  public StockLocation getComponentDefaultStockLocation(StockConfig stockConfig)
+      throws AxelorException {
+    if (stockConfig.getComponentDefaultStockLocation() == null) {
+      throw new AxelorException(
+          stockConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_5),
+          stockConfig.getCompany().getName());
+    }
+    return stockConfig.getComponentDefaultStockLocation();
+  }
 }

@@ -17,31 +17,25 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.production.db.ProdProduct;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.production.db.ProdProduct;
-
 public class ProdProductService {
 
-	//TODO add conversion unit
-	public BigDecimal computeQuantity(List<ProdProduct> prodProductList)  {
-		
-		BigDecimal qty = BigDecimal.ZERO;
-		
-		if(prodProductList != null)  {
-			
-			for(ProdProduct prodProduct : prodProductList)  {
-				
-				qty = qty.add(prodProduct.getQty());
-				
-			}
-			
-		}
-		
-		return qty;
-		
-	}
-	
-}
+  // TODO add conversion unit
+  public BigDecimal computeQuantity(List<ProdProduct> prodProductList) {
 
+    BigDecimal qty = BigDecimal.ZERO;
+
+    if (prodProductList != null) {
+
+      for (ProdProduct prodProduct : prodProductList) {
+
+        qty = qty.add(prodProduct.getQty());
+      }
+    }
+
+    return qty;
+  }
+}

@@ -35,48 +35,48 @@ import com.axelor.rpc.Context;
 
 public class StockMoveLineController {
 
-    /**
-     * Called from stock move line form.
-     * Fill product info using the company either from the stock move line,
-     * from the parent stock move or the parent manuf order.
-     *
-     * @param request
-     * @param response
-     */
-    public void setProductInfo(ActionRequest request, ActionResponse response) {
-    	StockMoveLine stockMoveLine;
-    	try {
-            stockMoveLine = request.getContext().asType(StockMoveLine.class);
-            Company company;
-            StockMove stockMove = stockMoveLine.getStockMove();
-            if (stockMove == null) {
-                Context parentContext = request.getContext().getParent();
-                if (parentContext.getContextClass().equals(StockMove.class)) {
-                    stockMove = parentContext.asType(StockMove.class);
-                    company = stockMove.getCompany();
-                } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
-                    ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
-                    company = manufOrder.getCompany();
-                } else if (parentContext.getContextClass().equals(OperationOrder.class)) {
-                    OperationOrder operationOrder = parentContext.asType(OperationOrder.class);
-                    if (operationOrder.getManufOrder() == null) {
-                        return;
-                    }
-                    company = operationOrder.getManufOrder().getCompany();
-                } else {
-                    throw new AxelorException(TraceBackRepository.TYPE_TECHNICAL,
-                            IExceptionMessage.STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT);
-                }
-            } else {
-                company = stockMove.getCompany();
-            }
-
-            Beans.get(StockMoveLineService.class).setProductInfo(stockMoveLine, company);
-            response.setValues(stockMoveLine);
-        } catch (Exception e) {
-            stockMoveLine = new StockMoveLine();
-            response.setValues(Mapper.toMap(stockMoveLine));
-            TraceBackService.trace(response, e);
+  /**
+   * Called from stock move line form. Fill product info using the company either from the stock
+   * move line, from the parent stock move or the parent manuf order.
+   *
+   * @param request
+   * @param response
+   */
+  public void setProductInfo(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine;
+    try {
+      stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      Company company;
+      StockMove stockMove = stockMoveLine.getStockMove();
+      if (stockMove == null) {
+        Context parentContext = request.getContext().getParent();
+        if (parentContext.getContextClass().equals(StockMove.class)) {
+          stockMove = parentContext.asType(StockMove.class);
+          company = stockMove.getCompany();
+        } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
+          ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
+          company = manufOrder.getCompany();
+        } else if (parentContext.getContextClass().equals(OperationOrder.class)) {
+          OperationOrder operationOrder = parentContext.asType(OperationOrder.class);
+          if (operationOrder.getManufOrder() == null) {
+            return;
+          }
+          company = operationOrder.getManufOrder().getCompany();
+        } else {
+          throw new AxelorException(
+              TraceBackRepository.TYPE_TECHNICAL,
+              IExceptionMessage.STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT);
         }
+      } else {
+        company = stockMove.getCompany();
+      }
+
+      Beans.get(StockMoveLineService.class).setProductInfo(stockMoveLine, company);
+      response.setValues(stockMoveLine);
+    } catch (Exception e) {
+      stockMoveLine = new StockMoveLine();
+      response.setValues(Mapper.toMap(stockMoveLine));
+      TraceBackService.trace(response, e);
     }
+  }
 }

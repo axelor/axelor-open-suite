@@ -20,6 +20,7 @@ package com.axelor.apps.suppliermanagement.web;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
@@ -32,6 +33,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.stream.Collectors;
 
 @Singleton
 public class PurchaseOrderSupplierLineController {
@@ -70,23 +72,46 @@ public class PurchaseOrderSupplierLineController {
   public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
     PurchaseOrderSupplierLine purchaseOrderSupplierLine =
         request.getContext().asType(PurchaseOrderSupplierLine.class);
-    if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null
-        || purchaseOrderSupplierLine.getPurchaseOrderLine().getPurchaseOrder() == null) {
-      return;
-    }
-    Company company =
-        purchaseOrderSupplierLine.getPurchaseOrderLine().getPurchaseOrder().getCompany();
-    String domain =
-        "self.id != "
-            + company.getPartner().getId()
-            + " AND self.isContact = false AND self.isSupplier = true";
-    String blockedPartnerQuery =
-        Beans.get(BlockingService.class)
-            .listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
 
-    if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
-      domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+    PurchaseOrderLine purchaseOrderLine = purchaseOrderSupplierLine.getPurchaseOrderLine();
+    if (purchaseOrderLine == null) {
+      purchaseOrderLine = request.getContext().getParent().asType(PurchaseOrderLine.class);
     }
+
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    if (purchaseOrder == null) {
+      purchaseOrder = request.getContext().getParent().getParent().asType(PurchaseOrder.class);
+    }
+    Company company = purchaseOrder.getCompany();
+
+    String domain = "";
+    if (purchaseOrderLine.getProduct() != null
+        && !purchaseOrderLine.getProduct().getSupplierCatalogList().isEmpty()) {
+      domain +=
+          "self.id != "
+              + company.getPartner().getId()
+              + " AND self.id IN "
+              + purchaseOrderLine
+                  .getProduct()
+                  .getSupplierCatalogList()
+                  .stream()
+                  .map(s -> s.getSupplierPartner().getId())
+                  .collect(Collectors.toList())
+                  .toString()
+                  .replace('[', '(')
+                  .replace(']', ')');
+
+      String blockedPartnerQuery =
+          Beans.get(BlockingService.class)
+              .listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
+
+      if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+        domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+      }
+    } else {
+      domain += "self.id = 0";
+    }
+
     response.setAttr("supplierPartner", "domain", domain);
   }
 }
