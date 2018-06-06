@@ -17,26 +17,22 @@
  */
 package com.axelor.apps.bankpayment.ebics.io;
 
+import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
-
-
 /**
- * Byte array content factory that delivers the file content
- * as a <code>ByteArrayInputStream</code>. This object is
- * serializable in a way to recover interrupted file transfers.
+ * Byte array content factory that delivers the file content as a <code>ByteArrayInputStream</code>.
+ * This object is serializable in a way to recover interrupted file transfers.
  *
  * @author hachani
- *
  */
 public class ByteArrayContentFactory implements ContentFactory {
 
   /**
-   * Constructs a new <code>ByteArrayContentFactory</code> with
-   * a given byte array content.
+   * Constructs a new <code>ByteArrayContentFactory</code> with a given byte array content.
+   *
    * @param content the byte array content
    */
   public ByteArrayContentFactory(byte[] content) {
@@ -52,5 +48,5 @@ public class ByteArrayContentFactory implements ContentFactory {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private byte[]		content;
+  private byte[] content;
 }

@@ -17,24 +17,6 @@
  */
 package com.axelor.apps.base.service.message;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Set;
-
-import com.google.inject.Inject;
-
-import org.eclipse.birt.core.data.DataTypeUtil;
-import org.eclipse.birt.core.exception.BirtException;
-import org.eclipse.birt.report.model.api.elements.DesignChoiceConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
@@ -50,107 +32,123 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
+import com.google.inject.Inject;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Set;
+import org.eclipse.birt.core.data.DataTypeUtil;
+import org.eclipse.birt.core.exception.BirtException;
+import org.eclipse.birt.report.model.api.elements.DesignChoiceConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	public TemplateMessageServiceBaseImpl(MessageService messageService) {
-		super(messageService);
-	}
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
+  @Inject
+  public TemplateMessageServiceBaseImpl(MessageService messageService) {
+    super(messageService);
+  }
 
-		Set<MetaFile> metaFiles = super.getMetaFiles(template);
-		if ( template.getBirtTemplate() == null ) { return metaFiles; }
+  public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
 
-		metaFiles.add(createMetaFileUsingBirtTemplate( maker, template.getBirtTemplate()));
-		
-		logger.debug("Metafile to attach: {}", metaFiles);
+    Set<MetaFile> metaFiles = super.getMetaFiles(template);
+    if (template.getBirtTemplate() == null) {
+      return metaFiles;
+    }
 
-		return metaFiles;
+    metaFiles.add(createMetaFileUsingBirtTemplate(maker, template.getBirtTemplate()));
 
-	}
+    logger.debug("Metafile to attach: {}", metaFiles);
 
-	public MetaFile createMetaFileUsingBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate) throws AxelorException, IOException {
+    return metaFiles;
+  }
 
-		logger.debug("Generate birt metafile: {}", birtTemplate.getName());
+  public MetaFile createMetaFileUsingBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate)
+      throws AxelorException, IOException {
 
-		String fileName = birtTemplate.getName() + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-		File file = generateBirtTemplate( maker,
-				fileName,
-				birtTemplate.getTemplateLink(),
-				birtTemplate.getFormat(),
-				birtTemplate.getBirtTemplateParameterList());
+    logger.debug("Generate birt metafile: {}", birtTemplate.getName());
 
-		try (InputStream is = new FileInputStream(file)) {
-			return Beans.get(MetaFiles.class).upload(is, fileName + "." + birtTemplate.getFormat());
-		}
+    String fileName =
+        birtTemplate.getName()
+            + "-"
+            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+    File file =
+        generateBirtTemplate(
+            maker,
+            fileName,
+            birtTemplate.getTemplateLink(),
+            birtTemplate.getFormat(),
+            birtTemplate.getBirtTemplateParameterList());
 
-	}
+    try (InputStream is = new FileInputStream(file)) {
+      return Beans.get(MetaFiles.class).upload(is, fileName + "." + birtTemplate.getFormat());
+    }
+  }
 
-	public File generateBirtTemplate( TemplateMaker maker, String fileName, String modelPath, String format, List<BirtTemplateParameter> birtTemplateParameterList) throws AxelorException {
+  public File generateBirtTemplate(
+      TemplateMaker maker,
+      String fileName,
+      String modelPath,
+      String format,
+      List<BirtTemplateParameter> birtTemplateParameterList)
+      throws AxelorException {
 
-		if ( modelPath == null || modelPath.isEmpty() ) { return null; }
+    if (modelPath == null || modelPath.isEmpty()) {
+      return null;
+    }
 
-		ReportSettings reportSettings = ReportFactory.createReport(modelPath, fileName).addFormat(format);
-		
-		for(BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList)  {
-			maker.setTemplate(birtTemplateParameter.getValue());
+    ReportSettings reportSettings =
+        ReportFactory.createReport(modelPath, fileName).addFormat(format);
 
-			try {
-				reportSettings.addParam(birtTemplateParameter.getName(), convertValue(birtTemplateParameter.getType(), maker.make()));
-			} catch (BirtException e) {
-				throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
-			}
-		}
+    for (BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList) {
+      maker.setTemplate(birtTemplateParameter.getValue());
 
-		try {
-			return reportSettings.generate().getFile();
-		} catch (AxelorException e) {
-			throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
-		}
+      try {
+        reportSettings.addParam(
+            birtTemplateParameter.getName(),
+            convertValue(birtTemplateParameter.getType(), maker.make()));
+      } catch (BirtException e) {
+        throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+      }
+    }
 
-	}
+    try {
+      return reportSettings.generate().getFile();
+    } catch (AxelorException e) {
+      throw new AxelorException(
+          e.getCause(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
+    }
+  }
 
-	private Object convertValue(String type, String value) throws BirtException {
+  private Object convertValue(String type, String value) throws BirtException {
 
-		if ( DesignChoiceConstants.PARAM_TYPE_BOOLEAN.equals( type ) )
-		{
-			return DataTypeUtil.toBoolean( value );
-		}
-		else if ( DesignChoiceConstants.PARAM_TYPE_DATETIME.equals( type ) )
-		{
-			return DataTypeUtil.toDate( value );
-		}
-		else if ( DesignChoiceConstants.PARAM_TYPE_DATE.equals( type ) )
-		{
-			return DataTypeUtil.toSqlDate( value );
-		}
-		else if ( DesignChoiceConstants.PARAM_TYPE_TIME.equals( type ) )
-		{
-			return DataTypeUtil.toSqlTime( value );
-		}
-		else if ( DesignChoiceConstants.PARAM_TYPE_DECIMAL.equals( type ) )
-		{
-			return DataTypeUtil.toBigDecimal( value );
-		}
-		else if ( DesignChoiceConstants.PARAM_TYPE_FLOAT.equals( type ) )
-		{
-			return DataTypeUtil.toDouble( value );
-		}
-		else if ( DesignChoiceConstants.PARAM_TYPE_STRING.equals( type ) )
-		{
-			return DataTypeUtil.toLocaleNeutralString( value );
-		}
-		else if ( DesignChoiceConstants.PARAM_TYPE_INTEGER.equals( type ) )
-		{
-			return DataTypeUtil.toInteger( value );
-		}
-		return value;
-
-	}
-	
-		
+    if (DesignChoiceConstants.PARAM_TYPE_BOOLEAN.equals(type)) {
+      return DataTypeUtil.toBoolean(value);
+    } else if (DesignChoiceConstants.PARAM_TYPE_DATETIME.equals(type)) {
+      return DataTypeUtil.toDate(value);
+    } else if (DesignChoiceConstants.PARAM_TYPE_DATE.equals(type)) {
+      return DataTypeUtil.toSqlDate(value);
+    } else if (DesignChoiceConstants.PARAM_TYPE_TIME.equals(type)) {
+      return DataTypeUtil.toSqlTime(value);
+    } else if (DesignChoiceConstants.PARAM_TYPE_DECIMAL.equals(type)) {
+      return DataTypeUtil.toBigDecimal(value);
+    } else if (DesignChoiceConstants.PARAM_TYPE_FLOAT.equals(type)) {
+      return DataTypeUtil.toDouble(value);
+    } else if (DesignChoiceConstants.PARAM_TYPE_STRING.equals(type)) {
+      return DataTypeUtil.toLocaleNeutralString(value);
+    } else if (DesignChoiceConstants.PARAM_TYPE_INTEGER.equals(type)) {
+      return DataTypeUtil.toInteger(value);
+    }
+    return value;
+  }
 }

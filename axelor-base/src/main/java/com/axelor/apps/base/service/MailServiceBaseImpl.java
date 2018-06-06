@@ -19,21 +19,6 @@ package com.axelor.apps.base.service;
 
 import static com.axelor.common.StringUtils.isBlank;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Singleton;
-import javax.mail.internet.InternetAddress;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.message.service.MailServiceMessageImpl;
@@ -51,155 +36,177 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import java.io.UnsupportedEncodingException;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.inject.Singleton;
+import javax.mail.internet.InternetAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
-	private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@Override
-	public Model resolve(String email) {
-		final UserRepository users = Beans.get(UserRepository.class);
-		final User user = users.all().filter("self.partner.emailAddress.address = ?1", email).fetchOne();
-		if (user != null) {
-			return user;
-		}
-		final PartnerRepository partners = Beans.get(PartnerRepository.class);
-		final Partner partner = partners.all().filter("self.emailAddress.address = ?1", email).fetchOne();
-		if (partner != null) {
-			return partner;
-		}
-		return super.resolve(email);
-	}
+  @Override
+  public Model resolve(String email) {
+    final UserRepository users = Beans.get(UserRepository.class);
+    final User user =
+        users.all().filter("self.partner.emailAddress.address = ?1", email).fetchOne();
+    if (user != null) {
+      return user;
+    }
+    final PartnerRepository partners = Beans.get(PartnerRepository.class);
+    final Partner partner =
+        partners.all().filter("self.emailAddress.address = ?1", email).fetchOne();
+    if (partner != null) {
+      return partner;
+    }
+    return super.resolve(email);
+  }
 
-	@Override
-	public List<InternetAddress> findEmails(String matching, List<String> selected, int maxResult) {
+  @Override
+  public List<InternetAddress> findEmails(String matching, List<String> selected, int maxResult) {
 
-		// Users
-		List<String> selectedWithoutNull = new ArrayList<String>(selected);
-		for (int i = 0; i < selected.size(); i++) {
-			if (Strings.isNullOrEmpty(selected.get(i)))
-				selectedWithoutNull.remove(i);
-		}
+    // Users
+    List<String> selectedWithoutNull = new ArrayList<String>(selected);
+    for (int i = 0; i < selected.size(); i++) {
+      if (Strings.isNullOrEmpty(selected.get(i))) selectedWithoutNull.remove(i);
+    }
 
-		final List<String> where = new ArrayList<>();
-		final Map<String, Object> params = new HashMap<>();
+    final List<String> where = new ArrayList<>();
+    final Map<String, Object> params = new HashMap<>();
 
-		where.add("((self.partner is not null AND self.partner.emailAddress is not null) OR (self.email is not null))");
+    where.add(
+        "((self.partner is not null AND self.partner.emailAddress is not null) OR (self.email is not null))");
 
-		if (!isBlank(matching)) {
-			where.add("(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email) OR LOWER(self.email) like LOWER(:email) OR LOWER(self.name) like LOWER(:email))");
-			params.put("email", "%" + matching + "%");
-		}
-		if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
-			where.add("self.partner.emailAddress.address not in (:selected)");
-			params.put("selected", selectedWithoutNull);
-		}
+    if (!isBlank(matching)) {
+      where.add(
+          "(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email) OR LOWER(self.email) like LOWER(:email) OR LOWER(self.name) like LOWER(:email))");
+      params.put("email", "%" + matching + "%");
+    }
+    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
+      where.add("self.partner.emailAddress.address not in (:selected)");
+      params.put("selected", selectedWithoutNull);
+    }
 
-		final String filter = Joiner.on(" AND ").join(where);
-		final Query<User> query = Query.of(User.class);
+    final String filter = Joiner.on(" AND ").join(where);
+    final Query<User> query = Query.of(User.class);
 
-		if (!isBlank(filter)) {
-			query.filter(filter);
-			query.bind(params);
-		}
+    if (!isBlank(filter)) {
+      query.filter(filter);
+      query.bind(params);
+    }
 
-		final List<InternetAddress> addresses = new ArrayList<>();
-		for (User user : query.fetch(maxResult)) {
-			try {
-				if (user.getPartner() != null && user.getPartner().getEmailAddress() != null && !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
-					final InternetAddress item = new InternetAddress(user.getPartner().getEmailAddress().getAddress(), user.getFullName());
-					addresses.add(item);
-					selectedWithoutNull.add(user.getPartner().getEmailAddress().getAddress());
-				} else if (!Strings.isNullOrEmpty(user.getEmail())) {
-					final InternetAddress item = new InternetAddress(user.getEmail(), user.getFullName());
-					addresses.add(item);
-					selectedWithoutNull.add(user.getEmail());
-				}
+    final List<InternetAddress> addresses = new ArrayList<>();
+    for (User user : query.fetch(maxResult)) {
+      try {
+        if (user.getPartner() != null
+            && user.getPartner().getEmailAddress() != null
+            && !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
+          final InternetAddress item =
+              new InternetAddress(
+                  user.getPartner().getEmailAddress().getAddress(), user.getFullName());
+          addresses.add(item);
+          selectedWithoutNull.add(user.getPartner().getEmailAddress().getAddress());
+        } else if (!Strings.isNullOrEmpty(user.getEmail())) {
+          final InternetAddress item = new InternetAddress(user.getEmail(), user.getFullName());
+          addresses.add(item);
+          selectedWithoutNull.add(user.getEmail());
+        }
 
-			} catch (UnsupportedEncodingException e) {
-				TraceBackService.trace(e);
-			}
-		}
+      } catch (UnsupportedEncodingException e) {
+        TraceBackService.trace(e);
+      }
+    }
 
-		// Partners
+    // Partners
 
-		final List<String> where2 = new ArrayList<>();
-		final Map<String, Object> params2 = new HashMap<>();
+    final List<String> where2 = new ArrayList<>();
+    final Map<String, Object> params2 = new HashMap<>();
 
-		where2.add("self.emailAddress is not null");
+    where2.add("self.emailAddress is not null");
 
-		if (!isBlank(matching)) {
-			where2.add("(LOWER(self.emailAddress.address) like LOWER(:email) OR LOWER(self.fullName) like LOWER(:email))");
-			params2.put("email", "%" + matching + "%");
-		}
-		if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
-			where2.add("self.emailAddress.address not in (:selected)");
-			params2.put("selected", selectedWithoutNull);
-		}
+    if (!isBlank(matching)) {
+      where2.add(
+          "(LOWER(self.emailAddress.address) like LOWER(:email) OR LOWER(self.fullName) like LOWER(:email))");
+      params2.put("email", "%" + matching + "%");
+    }
+    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
+      where2.add("self.emailAddress.address not in (:selected)");
+      params2.put("selected", selectedWithoutNull);
+    }
 
-		final String filter2 = Joiner.on(" AND ").join(where2);
-		final Query<Partner> query2 = Query.of(Partner.class);
+    final String filter2 = Joiner.on(" AND ").join(where2);
+    final Query<Partner> query2 = Query.of(Partner.class);
 
-		if (!isBlank(filter2)) {
-			query2.filter(filter2);
-			query2.bind(params2);
-		}
+    if (!isBlank(filter2)) {
+      query2.filter(filter2);
+      query2.bind(params2);
+    }
 
-		for (Partner partner : query2.fetch(maxResult)) {
-			try {
-				if (partner.getEmailAddress() != null && !Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
-					final InternetAddress item = new InternetAddress(partner.getEmailAddress().getAddress(), partner.getFullName());
-					addresses.add(item);
-				}
-			} catch (UnsupportedEncodingException e) {
-				TraceBackService.trace(e);
-			}
-		}
+    for (Partner partner : query2.fetch(maxResult)) {
+      try {
+        if (partner.getEmailAddress() != null
+            && !Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
+          final InternetAddress item =
+              new InternetAddress(partner.getEmailAddress().getAddress(), partner.getFullName());
+          addresses.add(item);
+        }
+      } catch (UnsupportedEncodingException e) {
+        TraceBackService.trace(e);
+      }
+    }
 
-		return addresses;
-	}
+    return addresses;
+  }
 
-	@Override
-	protected Set<String> recipients(MailMessage message, Model entity) {
-		final Set<String> recipients = new LinkedHashSet<>();
-		final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
-		String entityName = entity.getClass().getName();
-		PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
+  @Override
+  protected Set<String> recipients(MailMessage message, Model entity) {
+    final Set<String> recipients = new LinkedHashSet<>();
+    final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
+    String entityName = entity.getClass().getName();
+    PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
 
-		if (message.getRecipients() != null) {
-			for (MailAddress address : message.getRecipients()) {
-				recipients.add(address.getAddress());
-			}
-		}
+    if (message.getRecipients() != null) {
+      for (MailAddress address : message.getRecipients()) {
+        recipients.add(address.getAddress());
+      }
+    }
 
-		for (MailFollower follower : followers.findAll(message)) {
-			if (follower.getArchived()) {
-				continue;
-			}
-			User user = follower.getUser();
-			if (user != null) {
-				if (!(user.getReceiveEmails() && user.getFollowedMetaModelSet().stream().anyMatch(x -> x.getFullName().equals(entityName)))) {
-					continue;
-				} else {
-					Partner partner = partnerRepo.findByUser(user);
-					if (partner != null && partner.getEmailAddress() != null) {
-						recipients.add(partner.getEmailAddress().getAddress());
-					}
-					else if (user.getEmail() != null) {
-						recipients.add(user.getEmail());
-					}
-				}
-			} else {
+    for (MailFollower follower : followers.findAll(message)) {
+      if (follower.getArchived()) {
+        continue;
+      }
+      User user = follower.getUser();
+      if (user != null) {
+        if (!(user.getReceiveEmails()
+            && user.getFollowedMetaModelSet()
+                .stream()
+                .anyMatch(x -> x.getFullName().equals(entityName)))) {
+          continue;
+        } else {
+          Partner partner = partnerRepo.findByUser(user);
+          if (partner != null && partner.getEmailAddress() != null) {
+            recipients.add(partner.getEmailAddress().getAddress());
+          } else if (user.getEmail() != null) {
+            recipients.add(user.getEmail());
+          }
+        }
+      } else {
 
-				if (follower.getEmail() != null) {
-					recipients.add(follower.getEmail().getAddress());
-				} else {
-					log.info("No email address found for follower : " + follower);
-
-				}
-			}
-		}
-		return Sets.filter(recipients, Predicates.notNull());
-	}
-
+        if (follower.getEmail() != null) {
+          recipients.add(follower.getEmail().getAddress());
+        } else {
+          log.info("No email address found for follower : " + follower);
+        }
+      }
+    }
+    return Sets.filter(recipients, Predicates.notNull());
+  }
 }

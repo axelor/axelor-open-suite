@@ -20,15 +20,11 @@ package com.axelor.apps.suppliermanagement.db;
 @Deprecated
 public interface IPurchaseOrderSupplierLine {
 
-	/**
-	 * Static state select
-	 */
+  /** Static state select */
+  static final int REQUESTED = 1;
 
-	static final int REQUESTED = 1;
-	static final int SUBMITTED = 2;
-	static final int ACCEPTED = 3;
-	static final int NOT_ACCEPTED = 4;
-	static final int CANCELED = 5;
-
-
+  static final int SUBMITTED = 2;
+  static final int ACCEPTED = 3;
+  static final int NOT_ACCEPTED = 4;
+  static final int CANCELED = 5;
 }

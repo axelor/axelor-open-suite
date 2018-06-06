@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
-import com.axelor.apps.suppliermanagement.exceptions.IExceptionMessage;
-import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.suppliermanagement.exceptions.IExceptionMessage;
+import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -31,34 +31,35 @@ import com.google.inject.Singleton;
 @Singleton
 public class PurchaseOrderController {
 
-	@Inject
-	private PurchaseOrderSupplierService purchaseOrderSupplierService;
-	
-	@Inject
-	private PurchaseOrderRepository purchaseOrderRepo;
-	
-	public void generateSuppliersPurchaseOrder(ActionRequest request, ActionResponse response){
-		
-		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		
-		try {
-			purchaseOrderSupplierService.generateSuppliersPurchaseOrder(purchaseOrderRepo.find(purchaseOrder.getId()));
-			response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_1));
-			response.setReload(true);
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
-	
-	
-	public void generateSuppliersRequests(ActionRequest request, ActionResponse response){
-		
-		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-		
-		try {
-			purchaseOrderSupplierService.generateAllSuppliersRequests(purchaseOrderRepo.find(purchaseOrder.getId()));
-			response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_2));
-			response.setReload(true);
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
+  @Inject private PurchaseOrderSupplierService purchaseOrderSupplierService;
+
+  @Inject private PurchaseOrderRepository purchaseOrderRepo;
+
+  public void generateSuppliersPurchaseOrder(ActionRequest request, ActionResponse response) {
+
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+    try {
+      purchaseOrderSupplierService.generateSuppliersPurchaseOrder(
+          purchaseOrderRepo.find(purchaseOrder.getId()));
+      response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_1));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateSuppliersRequests(ActionRequest request, ActionResponse response) {
+
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+    try {
+      purchaseOrderSupplierService.generateAllSuppliersRequests(
+          purchaseOrderRepo.find(purchaseOrder.getId()));
+      response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_2));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

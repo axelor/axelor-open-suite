@@ -30,32 +30,33 @@ import com.google.inject.Singleton;
 @Singleton
 public class DepositSlipController {
 
-    public void loadPayments(ActionRequest request, ActionResponse response) {
-        DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
-        depositSlip = Beans.get(DepositSlipRepository.class).find(depositSlip.getId());
-        DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
+  public void loadPayments(ActionRequest request, ActionResponse response) {
+    DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
+    depositSlip = Beans.get(DepositSlipRepository.class).find(depositSlip.getId());
+    DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
 
-        try {
-            depositSlipService.loadPayments(depositSlip);
-            response.setReload(true);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+    try {
+      depositSlipService.loadPayments(depositSlip);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 
-    public void publish(ActionRequest request, ActionResponse response) {
-        DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
-        depositSlip = Beans.get(DepositSlipRepository.class).find(depositSlip.getId());
-        DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
+  public void publish(ActionRequest request, ActionResponse response) {
+    DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
+    depositSlip = Beans.get(DepositSlipRepository.class).find(depositSlip.getId());
+    DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
 
-        try {
-            String fileLink = depositSlipService.publish(depositSlip);
-            response.setReload(true);
-            response.setView(
-                    ActionView.define(depositSlipService.getFilename(depositSlip)).add("html", fileLink).map());
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+    try {
+      String fileLink = depositSlipService.publish(depositSlip);
+      response.setReload(true);
+      response.setView(
+          ActionView.define(depositSlipService.getFilename(depositSlip))
+              .add("html", fileLink)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
+  }
 }

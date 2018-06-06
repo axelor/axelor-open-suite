@@ -25,42 +25,33 @@ import com.axelor.db.Model;
 
 public class HRMenuTagService {
 
-	/**
-	 * 
-	 * @param modelConcerned
-	 *
-	 * @param status
-	 * 			1 : Draft
-	 * 			2 : Confirmed
-	 * 			3 : Validated
-	 * 			4 : Refused
-	 * 			5 : Canceled
-	 * @return
-	 * 		The number of records
-	 */
-	public <T extends Model> String countRecordsTag(Class<T> modelConcerned, int status) {
-		
-		User user = AuthUtils.getUser();
-		Employee employee = user.getEmployee();
+  /**
+   * @param modelConcerned
+   * @param status 1 : Draft 2 : Confirmed 3 : Validated 4 : Refused 5 : Canceled
+   * @return The number of records
+   */
+  public <T extends Model> String countRecordsTag(Class<T> modelConcerned, int status) {
 
-		if(employee != null && employee.getHrManager())  {
-			
-			return Long.toString(JPA.all(modelConcerned)
-					.filter("self.statusSelect = :_statusSelect")
-					.bind("_statusSelect", status)
-					.count());
+    User user = AuthUtils.getUser();
+    Employee employee = user.getEmployee();
 
-		}
-		else  {
-			
-			return Long.toString(JPA.all(modelConcerned)
-					.filter("self.user.employee.managerUser.id = :_userId AND self.statusSelect = :_statusSelect")
-					.bind("_userId", user.getId())
-					.bind("_statusSelect", status)
-					.count());
+    if (employee != null && employee.getHrManager()) {
 
-		}
-	}
-	
+      return Long.toString(
+          JPA.all(modelConcerned)
+              .filter("self.statusSelect = :_statusSelect")
+              .bind("_statusSelect", status)
+              .count());
 
+    } else {
+
+      return Long.toString(
+          JPA.all(modelConcerned)
+              .filter(
+                  "self.user.employee.managerUser.id = :_userId AND self.statusSelect = :_statusSelect")
+              .bind("_userId", user.getId())
+              .bind("_statusSelect", status)
+              .count());
+    }
+  }
 }

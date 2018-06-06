@@ -101,9 +101,9 @@
 	</action-method>
 	
 	
-	<menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="45"/>
+	<menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 				
-	<menuitem name="crm-conf" parent="crm-root" title="Configuration" order="50"/>
+	<menuitem name="crm-conf" parent="crm-root" title="Configuration" order="50" icon="fa-cog"/>
 	
 	<menuitem name="crm-conf-lead-source" parent="crm-conf"
 		title="Leads Source" action="crm.conf.lead.source" />

@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.sale.db.SaleConfig;
@@ -26,20 +24,25 @@ import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
-public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl implements SupplychainSaleConfigService  {
-	
-	@Inject
-	private AccountingSituationRepository accountingSituationRepo;
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateCustomerCredit(SaleConfig saleConfig) {
-		
-		List<AccountingSituation> accountingSituationList = accountingSituationRepo.all().filter("self.partner.isContact = false and self.partner.isCustomer = true").fetch();
-		
-		for (AccountingSituation accountingSituation : accountingSituationList) {
-			accountingSituation.setAcceptedCredit(saleConfig.getAcceptedCredit());
-			accountingSituationRepo.save(accountingSituation);
-		}
-	}
+public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
+    implements SupplychainSaleConfigService {
+
+  @Inject private AccountingSituationRepository accountingSituationRepo;
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateCustomerCredit(SaleConfig saleConfig) {
+
+    List<AccountingSituation> accountingSituationList =
+        accountingSituationRepo
+            .all()
+            .filter("self.partner.isContact = false and self.partner.isCustomer = true")
+            .fetch();
+
+    for (AccountingSituation accountingSituation : accountingSituationList) {
+      accountingSituation.setAcceptedCredit(saleConfig.getAcceptedCredit());
+      accountingSituationRepo.save(accountingSituation);
+    }
+  }
 }

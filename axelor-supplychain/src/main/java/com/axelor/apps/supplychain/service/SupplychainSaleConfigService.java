@@ -22,5 +22,5 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 
 public interface SupplychainSaleConfigService extends SaleConfigService {
 
-	public void updateCustomerCredit(SaleConfig saleConfig);
+  public void updateCustomerCredit(SaleConfig saleConfig);
 }

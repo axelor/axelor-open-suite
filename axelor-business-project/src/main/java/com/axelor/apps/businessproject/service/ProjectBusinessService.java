@@ -26,12 +26,11 @@ import com.axelor.exception.AxelorException;
 
 public interface ProjectBusinessService extends ProjectService {
 
-    SaleOrder generateQuotation(Project project) throws AxelorException;
+  SaleOrder generateQuotation(Project project) throws AxelorException;
 
-    Project generateProject(SaleOrder saleOrder);
+  Project generateProject(SaleOrder saleOrder);
 
-    Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent);
+  Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent);
 
-    void manageInvoiceLine(InvoiceLine invoiceLine, Project project);
-
+  void manageInvoiceLine(InvoiceLine invoiceLine, Project project);
 }

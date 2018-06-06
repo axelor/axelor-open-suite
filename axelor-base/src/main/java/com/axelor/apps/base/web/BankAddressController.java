@@ -27,15 +27,13 @@ import com.google.inject.Singleton;
 @Singleton
 public class BankAddressController {
 
-    @Inject
-    BankAddressService bankAddressService;
+  @Inject BankAddressService bankAddressService;
 
-    public void fillFullName(ActionRequest request, ActionResponse response) {
-          BankAddress bankAddress = request.getContext().asType(BankAddress.class);
-          if (bankAddress.getAddress() != null) {
-              String fullAddress = bankAddressService.computeFullAddress(bankAddress);
-              response.setValue("fullAddress", fullAddress);
-          }
-
+  public void fillFullName(ActionRequest request, ActionResponse response) {
+    BankAddress bankAddress = request.getContext().asType(BankAddress.class);
+    if (bankAddress.getAddress() != null) {
+      String fullAddress = bankAddressService.computeFullAddress(bankAddress);
+      response.setValue("fullAddress", fullAddress);
     }
+  }
 }

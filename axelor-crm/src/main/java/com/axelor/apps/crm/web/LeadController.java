@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.crm.web;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
@@ -46,134 +37,143 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class LeadController {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	LeadRepository leadRepo;
-	
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	/**
-	 * Method to generate Lead as a Pdf
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
-	 */
-	public void print(ActionRequest request, ActionResponse response) throws AxelorException  {
+  @Inject LeadRepository leadRepo;
 
+  /**
+   * Method to generate Lead as a Pdf
+   *
+   * @param request
+   * @param response
+   * @return
+   * @throws BirtException
+   * @throws IOException
+   */
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		Lead lead = request.getContext().asType(Lead.class );
-		String leadIds = "";
+    Lead lead = request.getContext().asType(Lead.class);
+    String leadIds = "";
 
-		@SuppressWarnings("unchecked")
-		List<Integer> lstSelectedleads = (List<Integer>) request.getContext().get("_ids");
-		if(lstSelectedleads != null){
-			for(Integer it : lstSelectedleads) {
-				leadIds+= it.toString()+",";
-			}
-		}	
-			
-		if(!leadIds.equals("")){
-			leadIds = leadIds.substring(0, leadIds.length()-1);	
-			lead = Beans.get(LeadRepository.class).find(new Long(lstSelectedleads.get(0)));
-		}else if(lead.getId() != null){
-			leadIds = lead.getId().toString();			
-		}
-		
-		if(!leadIds.equals("")){
-			String title = " ";
-			if(lead.getFirstName() != null)  {
-				title += lstSelectedleads == null ? "Lead "+lead.getFirstName():"Leads";
-			}
+    @SuppressWarnings("unchecked")
+    List<Integer> lstSelectedleads = (List<Integer>) request.getContext().get("_ids");
+    if (lstSelectedleads != null) {
+      for (Integer it : lstSelectedleads) {
+        leadIds += it.toString() + ",";
+      }
+    }
 
-			String fileLink = ReportFactory.createReport(IReport.LEAD, title+"-${date}")
-					.addParam("LeadId", leadIds)
-					.addParam("Locale", ReportSettings.getPrintingLocale(lead.getPartner()))
-					.generate()
-					.getFileLink();
+    if (!leadIds.equals("")) {
+      leadIds = leadIds.substring(0, leadIds.length() - 1);
+      lead = Beans.get(LeadRepository.class).find(new Long(lstSelectedleads.get(0)));
+    } else if (lead.getId() != null) {
+      leadIds = lead.getId().toString();
+    }
 
-			logger.debug("Printing "+title);
-		
-			response.setView(ActionView
-					.define(title)
-					.add("html", fileLink).map());		
-				
-		}else{
-			response.setFlash(I18n.get(IExceptionMessage.LEAD_1));
-		}	
-	}
+    if (!leadIds.equals("")) {
+      String title = " ";
+      if (lead.getFirstName() != null) {
+        title += lstSelectedleads == null ? "Lead " + lead.getFirstName() : "Leads";
+      }
 
-	public void showLeadsOnMap(ActionRequest request, ActionResponse response) {
-        try {
-            response.setView(ActionView.define(I18n.get("Leads"))
-                    .add("html", Beans.get(MapService.class).getMapURI("lead")).map());
-        } catch (Exception e) {
-            TraceBackService.trace(e);
-        }
-	}	
+      String fileLink =
+          ReportFactory.createReport(IReport.LEAD, title + "-${date}")
+              .addParam("LeadId", leadIds)
+              .addParam("Locale", ReportSettings.getPrintingLocale(lead.getPartner()))
+              .generate()
+              .getFileLink();
 
-	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) throws IOException {
-		
-		Lead lead = request.getContext().asType(Lead.class );
-		Map<String,String> urlMap = Beans.get(LeadService.class).getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
-		response.setAttr("google", "title", urlMap.get("google"));
-		response.setAttr("facebook", "title", urlMap.get("facebook"));
-		response.setAttr("twitter", "title", urlMap.get("twitter"));
-		response.setAttr("linkedin", "title", urlMap.get("linkedin"));
-		response.setAttr("youtube", "title", urlMap.get("youtube"));
-		
-	}
-	
-	public void getLeadImportConfig(ActionRequest request, ActionResponse response){
-		
-		ImportConfiguration leadImportConfig  = Beans.get(ImportConfigurationRepository.class).
-				all().filter("self.bindMetaFile.fileName = ?1",ImportLeadConfiguration.IMPORT_LEAD_CONFIG).fetchOne();
-		
-		logger.debug("ImportConfig for lead: {}",leadImportConfig);
-		
-		if(leadImportConfig == null){
-			response.setFlash(I18n.get(IExceptionMessage.LEAD_4));
-		}
-		else{
-			response.setView(ActionView
-							  .define(I18n.get(IExceptionMessage.LEAD_5))
-							  .model("com.axelor.apps.base.db.ImportConfiguration")
-							  .add("form", "import-configuration-form")
-							  .param("popup", "reload")
-							  .param("forceEdit", "true")
-  					  		  .param("popup-save", "false")
-  					  		  .param("show-toolbar", "false")
-							  .context("_showRecord", leadImportConfig.getId().toString())
-							  .map());
-		}
-	}
+      logger.debug("Printing " + title);
 
-	/**
-	 * Called from lead view on name change and onLoad.
-	 * Call {@link LeadService#isThereDuplicateLead(Lead)}
-	 * @param request
-	 * @param response
-	 */
-	public void checkLeadName(ActionRequest request, ActionResponse response) {
-		Lead lead = request.getContext().asType(Lead.class);
-		response.setAttr("duplicateLeadText",
-				"hidden",
-				!Beans.get(LeadService.class).isThereDuplicateLead(lead));
-	}
-	
-	public void loseLead(ActionRequest request, ActionResponse response) {
-		try {
-			Lead lead = request.getContext().asType(Lead.class);
-			Beans.get(LeadService.class).loseLead(leadRepo.find(lead.getId()), lead.getLostReason());
-			response.setCanClose(true);
-		} catch(Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+      response.setView(ActionView.define(title).add("html", fileLink).map());
+
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.LEAD_1));
+    }
+  }
+
+  public void showLeadsOnMap(ActionRequest request, ActionResponse response) {
+    try {
+      response.setView(
+          ActionView.define(I18n.get("Leads"))
+              .add("html", Beans.get(MapService.class).getMapURI("lead"))
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void setSocialNetworkUrl(ActionRequest request, ActionResponse response)
+      throws IOException {
+
+    Lead lead = request.getContext().asType(Lead.class);
+    Map<String, String> urlMap =
+        Beans.get(LeadService.class)
+            .getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
+    response.setAttr("google", "title", urlMap.get("google"));
+    response.setAttr("facebook", "title", urlMap.get("facebook"));
+    response.setAttr("twitter", "title", urlMap.get("twitter"));
+    response.setAttr("linkedin", "title", urlMap.get("linkedin"));
+    response.setAttr("youtube", "title", urlMap.get("youtube"));
+  }
+
+  public void getLeadImportConfig(ActionRequest request, ActionResponse response) {
+
+    ImportConfiguration leadImportConfig =
+        Beans.get(ImportConfigurationRepository.class)
+            .all()
+            .filter("self.bindMetaFile.fileName = ?1", ImportLeadConfiguration.IMPORT_LEAD_CONFIG)
+            .fetchOne();
+
+    logger.debug("ImportConfig for lead: {}", leadImportConfig);
+
+    if (leadImportConfig == null) {
+      response.setFlash(I18n.get(IExceptionMessage.LEAD_4));
+    } else {
+      response.setView(
+          ActionView.define(I18n.get(IExceptionMessage.LEAD_5))
+              .model("com.axelor.apps.base.db.ImportConfiguration")
+              .add("form", "import-configuration-form")
+              .param("popup", "reload")
+              .param("forceEdit", "true")
+              .param("popup-save", "false")
+              .param("show-toolbar", "false")
+              .context("_showRecord", leadImportConfig.getId().toString())
+              .map());
+    }
+  }
+
+  /**
+   * Called from lead view on name change and onLoad. Call {@link
+   * LeadService#isThereDuplicateLead(Lead)}
+   *
+   * @param request
+   * @param response
+   */
+  public void checkLeadName(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    response.setAttr(
+        "duplicateLeadText", "hidden", !Beans.get(LeadService.class).isThereDuplicateLead(lead));
+  }
+
+  public void loseLead(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      Beans.get(LeadService.class).loseLead(leadRepo.find(lead.getId()), lead.getLostReason());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

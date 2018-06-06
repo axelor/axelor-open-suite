@@ -19,23 +19,16 @@ package com.axelor.apps.account.service.invoice.generator.line;
 
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 
-/**
- * Classe de création de ligne de facture abstraite.
- * Chaine de responsabilité.
- *
- */
+/** Classe de création de ligne de facture abstraite. Chaine de responsabilité. */
 public abstract class InvoiceLineChain extends InvoiceLineGenerator {
 
-	protected InvoiceLineChain next;
-	
-	protected InvoiceLineChain() { }
+  protected InvoiceLineChain next;
 
-	
-	public InvoiceLineChain setNext(InvoiceLineChain abstractInvoiceLine){
-		
-		next = abstractInvoiceLine;
-		return abstractInvoiceLine;
-		
-	}
-	
+  protected InvoiceLineChain() {}
+
+  public InvoiceLineChain setNext(InvoiceLineChain abstractInvoiceLine) {
+
+    next = abstractInvoiceLine;
+    return abstractInvoiceLine;
+  }
 }

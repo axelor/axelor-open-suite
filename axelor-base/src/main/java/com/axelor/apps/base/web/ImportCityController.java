@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.base.web;
 
-import java.util.LinkedHashMap;
-
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.exception.service.TraceBackService;
@@ -29,32 +27,35 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.LinkedHashMap;
 
 @Singleton
 public class ImportCityController {
-	
-	@Inject 
-	private ImportCityService importCityService;
-	
-	/**
-	 * Import cities
-	 * @param request
-	 * @param response
-	 */
-	@SuppressWarnings("unchecked")
-	public void importCity(ActionRequest request,ActionResponse response) {
-		
-		String typeSelect = (String) request.getContext().get("typeSelect");
-		LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
-		MetaFile dataFile = Beans.get(MetaFileRepository.class).find(((Integer)map.get("id")).longValue());
-		
-		try {
-			ImportHistory importHistory = importCityService.importCity(typeSelect, dataFile);
-			response.setAttr("importHistoryList", "value:add", importHistory);
-			response.setNotify( importHistory.getLog().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
-			
-		} catch (Exception e) {
-			TraceBackService.trace( response, e ); 
-		}
-	}
+
+  @Inject private ImportCityService importCityService;
+
+  /**
+   * Import cities
+   *
+   * @param request
+   * @param response
+   */
+  @SuppressWarnings("unchecked")
+  public void importCity(ActionRequest request, ActionResponse response) {
+
+    String typeSelect = (String) request.getContext().get("typeSelect");
+    LinkedHashMap<String, Object> map =
+        (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
+    MetaFile dataFile =
+        Beans.get(MetaFileRepository.class).find(((Integer) map.get("id")).longValue());
+
+    try {
+      ImportHistory importHistory = importCityService.importCity(typeSelect, dataFile);
+      response.setAttr("importHistoryList", "value:add", importHistory);
+      response.setNotify(importHistory.getLog().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

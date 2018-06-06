@@ -25,14 +25,13 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AppProductionController {
-	
-	@Inject
-	private AppProductionService appProductionService;
-	
-	public void generateProductionConfigurations(ActionRequest request, ActionResponse response) {
-		
-		appProductionService.generateProductionConfigurations();
-		
-		response.setReload(true);
-	}
+
+  @Inject private AppProductionService appProductionService;
+
+  public void generateProductionConfigurations(ActionRequest request, ActionResponse response) {
+
+    appProductionService.generateProductionConfigurations();
+
+    response.setReload(true);
+  }
 }

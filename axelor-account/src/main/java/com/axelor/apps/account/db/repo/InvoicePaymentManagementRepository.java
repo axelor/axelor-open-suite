@@ -17,23 +17,22 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import javax.persistence.PersistenceException;
 
 public class InvoicePaymentManagementRepository extends InvoicePaymentRepository {
 
-	@Override
-	public InvoicePayment save(InvoicePayment invoicePayment) {
-		try {
-			Beans.get(InvoicePaymentValidateService.class).validate(invoicePayment);
-			return super.save(invoicePayment);
-		} catch (Exception e) {
-			TraceBackService.trace(e);
-			throw new PersistenceException(e);
-		}
-	}
+  @Override
+  public InvoicePayment save(InvoicePayment invoicePayment) {
+    try {
+      Beans.get(InvoicePaymentValidateService.class).validate(invoicePayment);
+      return super.save(invoicePayment);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      throw new PersistenceException(e);
+    }
+  }
 }

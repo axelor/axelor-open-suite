@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.businessproject.mobile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
@@ -29,50 +24,53 @@ import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BusinessProjectMobileController {
 
-	/*
-	 * This method is used in mobile application.
-	 * It was in ProjectTaskBusinessServiceImpl
-	 * @param request
-	 * @param response
-	 *
-	 * POST /abs-webapp/ws/action/com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects
-	 * Content-Type: application/json
-	 *
-	 * URL: com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects
-	 * fields: no field
-	 *
-	 * payload:
-	 * { "data": {
-	 * 		"action": "com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects"
-	 * } }
-	 */
-	public void getProjects(ActionRequest request, ActionResponse response){
+  /*
+   * This method is used in mobile application.
+   * It was in ProjectTaskBusinessServiceImpl
+   * @param request
+   * @param response
+   *
+   * POST /abs-webapp/ws/action/com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects
+   * Content-Type: application/json
+   *
+   * URL: com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects
+   * fields: no field
+   *
+   * payload:
+   * { "data": {
+   * 		"action": "com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects"
+   * } }
+   */
+  public void getProjects(ActionRequest request, ActionResponse response) {
 
- 		List<Map<String,String>> dataList = new ArrayList<Map<String,String>>();
- 		try{
- 			User user = AuthUtils.getUser();
- 			if(user != null){
- 				List<Project> projectList = Beans.get(ProjectRepository.class).all().filter("self.imputable = true").fetch();
- 				for (Project project : projectList) {
- 					if((project.getMembersUserSet() != null && project.getMembersUserSet().contains(user))
- 							|| user.equals(project.getAssignedTo())){
- 						Map<String, String> map = new HashMap<String,String>();
- 						map.put("name", project.getName());
- 						map.put("id", project.getId().toString());
- 						dataList.add(map);
- 					}
- 				}
- 			}
- 			response.setData(dataList);
- 			response.setTotal(dataList.size());
- 		}
- 		catch(Exception e){
- 			response.setStatus(-1);
- 			response.setError(e.getMessage());
- 		}
-	}
-	
+    List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+    try {
+      User user = AuthUtils.getUser();
+      if (user != null) {
+        List<Project> projectList =
+            Beans.get(ProjectRepository.class).all().filter("self.imputable = true").fetch();
+        for (Project project : projectList) {
+          if ((project.getMembersUserSet() != null && project.getMembersUserSet().contains(user))
+              || user.equals(project.getAssignedTo())) {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("name", project.getName());
+            map.put("id", project.getId().toString());
+            dataList.add(map);
+          }
+        }
+      }
+      response.setData(dataList);
+      response.setTotal(dataList.size());
+    } catch (Exception e) {
+      response.setStatus(-1);
+      response.setError(e.getMessage());
+    }
+  }
 }

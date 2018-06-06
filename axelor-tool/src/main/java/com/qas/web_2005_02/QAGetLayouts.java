@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
+ * Classe Java pour anonymous complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -41,68 +40,54 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "country",
-    "qaConfig"
-})
+@XmlType(
+  name = "",
+  propOrder = {"country", "qaConfig"}
+)
 @XmlRootElement(name = "QAGetLayouts")
 public class QAGetLayouts {
 
-    @XmlElement(name = "Country", required = true)
-    protected String country;
-    @XmlElement(name = "QAConfig")
-    protected QAConfigType qaConfig;
+  @XmlElement(name = "Country", required = true)
+  protected String country;
 
-    /**
-     * Obtient la valeur de la propriété country.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCountry() {
-        return country;
-    }
+  @XmlElement(name = "QAConfig")
+  protected QAConfigType qaConfig;
 
-    /**
-     * Définit la valeur de la propriété country.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCountry(String value) {
-        this.country = value;
-    }
+  /**
+   * Obtient la valeur de la propriété country.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getCountry() {
+    return country;
+  }
 
-    /**
-     * Obtient la valeur de la propriété qaConfig.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public QAConfigType getQAConfig() {
-        return qaConfig;
-    }
+  /**
+   * Définit la valeur de la propriété country.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setCountry(String value) {
+    this.country = value;
+  }
 
-    /**
-     * Définit la valeur de la propriété qaConfig.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public void setQAConfig(QAConfigType value) {
-        this.qaConfig = value;
-    }
+  /**
+   * Obtient la valeur de la propriété qaConfig.
+   *
+   * @return possible object is {@link QAConfigType }
+   */
+  public QAConfigType getQAConfig() {
+    return qaConfig;
+  }
 
+  /**
+   * Définit la valeur de la propriété qaConfig.
+   *
+   * @param value allowed object is {@link QAConfigType }
+   */
+  public void setQAConfig(QAConfigType value) {
+    this.qaConfig = value;
+  }
 }

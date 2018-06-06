@@ -227,7 +227,7 @@
 	  		]]></viewer>
 	    </field>
 		<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement"
-			readonlyIf="statusSelect == 3 || clientPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-sale-method-printing-settings-default-values"/>
+			readonlyIf="statusSelect >= 2" domain=":company MEMBER OF self.companySet" onChange="action-sale-method-printing-settings-default-values"/>
 	    <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect &gt;= 2"/>
           <field name="saleOrderTypeSelect" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" readonlyIf="statusSelect &gt;= 2"/>
 	    <field name="versionNumber" if="__config__.app.getApp('sale').getManageSaleOrderVersion()"/>
@@ -394,7 +394,7 @@
       	<panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
 	        <field name="salemanUser" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
             <field name="team" canEdit="false" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
-	        <field name="opportunity" colSpan="12" readonly="true" form-view="opportunity-form" grid-view="opportunity-grid" />
+	        <field name="opportunity" colSpan="12" readonlyIf="statusSelect &gt;= 2" form-view="opportunity-form" grid-view="opportunity-grid" />
 	    </panel>
 	    <panel name="financialTerms" title="Financial terms" colSpan="12" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')">
 	        <field name="paymentMode" readonlyIf="statusSelect &gt;= 2" canEdit="false" onChange="action-sale-order-method-fill-company-bank-details" domain="self.inOutSelect = 1"  form-view="payment-mode-form" grid-view="payment-mode-grid"/>
@@ -755,8 +755,8 @@
     	<attribute name="domain" for="team" expr="eval: salemanUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salemanUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
     </action-attrs>
 
-    <action-attrs name="action-sale-oder-attrs-generate-stockmove-readonly">
-		<attribute name="readonly" for="generateCustomerStockMove" expr="eval: saleOrderLineList.size() == 0"/>
+    <action-attrs name="action-sale-order-attrs-generate-stockmove-readonly">
+		<attribute name="readonly" for="generateCustomerStockMove" expr="eval: !saleOrderLineList"/>
     </action-attrs>
 
     <action-attrs name="action-sale-order-attrs-hide-generate-tasks">
@@ -811,7 +811,7 @@
     <action-group name="action-group-sale-saleorder-onload">
     	<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
     	<action name="action-partner-attrs-hide-contact-partner" />
-    	<action name="action-sale-oder-attrs-generate-stockmove-readonly"/>
+    	<action name="action-sale-order-attrs-generate-stockmove-readonly"/>
     	<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
     </action-group>
@@ -1037,7 +1037,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-set-client-partner-domain">
- 		<attribute name="domain" for="clientPartner" expr="eval:&quot;self.id != ${company.partner?.id} AND self.isContact = false and self.isCustomer = true&quot;"/>
+ 		<attribute name="domain" for="clientPartner" expr="eval:&quot;self.id != ${company.partner?.id} AND self.isContact = false and (self.isCustomer = true or self.isProspect = true)&quot;"/>
  	</action-attrs>
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">

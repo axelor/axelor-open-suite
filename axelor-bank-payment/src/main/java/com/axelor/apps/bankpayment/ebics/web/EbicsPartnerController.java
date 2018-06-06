@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.bankpayment.ebics.web;
 
-import java.util.List;
-
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
@@ -29,38 +27,36 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class EbicsPartnerController {
-	
-	@Inject
-	EbicsPartnerService ebicsPartnerService;
-	
-	@Inject
-	EbicsPartnerRepository ebicsPartnerRepository;
-	
-	public void getBankStatement(ActionRequest request, ActionResponse response )  {
-		
-		try {
-			EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
-		
-			List<BankStatement> bankStatementList = ebicsPartnerService.getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
-			response.setFlash(String.format(I18n.get("%s bank statements get."), bankStatementList.size()));
-		}
-		catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-		response.setReload(true);
-		
-	}
 
-	public void checkBankDetailsSet(ActionRequest request, ActionResponse response) {
-		EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
-	    try {
-	    	ebicsPartnerService.checkBankDetailsMissingCurrency(ebicsPartner);
-		} catch (Exception e) {
-	    	response.setFlash(e.getMessage());
-		}
-	}
-	
+  @Inject EbicsPartnerService ebicsPartnerService;
+
+  @Inject EbicsPartnerRepository ebicsPartnerRepository;
+
+  public void getBankStatement(ActionRequest request, ActionResponse response) {
+
+    try {
+      EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
+
+      List<BankStatement> bankStatementList =
+          ebicsPartnerService.getBankStatements(ebicsPartnerRepository.find(ebicsPartner.getId()));
+      response.setFlash(
+          String.format(I18n.get("%s bank statements get."), bankStatementList.size()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+    response.setReload(true);
+  }
+
+  public void checkBankDetailsSet(ActionRequest request, ActionResponse response) {
+    EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
+    try {
+      ebicsPartnerService.checkBankDetailsMissingCurrency(ebicsPartner);
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
 }

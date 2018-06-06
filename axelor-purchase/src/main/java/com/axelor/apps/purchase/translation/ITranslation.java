@@ -19,7 +19,6 @@ package com.axelor.apps.purchase.translation;
 
 public interface ITranslation {
 
-	public static final String PURCHASE_APP_NAME = /*$$(*/ "value:Purchase"; /*)*/
-	public static final String PURCHASE_REQUEST_APP_NAME = /*$$(*/ "value:Purchase Request"; /*)*/
-
+  public static final String PURCHASE_APP_NAME = /*$$(*/ "value:Purchase"; /*)*/
+  public static final String PURCHASE_REQUEST_APP_NAME = /*$$(*/ "value:Purchase Request"; /*)*/
 }

@@ -22,5 +22,5 @@ import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 
 public interface TeamTaskService {
-    TeamTask create(String subject, Project project, User assignedTo);
+  TeamTask create(String subject, Project project, User assignedTo);
 }

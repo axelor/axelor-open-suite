@@ -10,27 +10,6 @@
 		<field name="isValid"/>
     </grid>
    	
-   	<grid model="com.axelor.apps.account.db.MoveTemplateLine" name="move-template-line-cusom-grid"  title="Move template line">
-		<field name="name"/>
-		<field name="debitCreditSelect"/>
-		<field name="product" grid-view="product-grid" form-view="product-form"/>
-		<field name="account" grid-view="account-grid" form-view="account-form"/>
-		<field name="percentage"/>
-    </grid>
-    
-	<form model="com.axelor.apps.account.db.MoveTemplateLine" name="move-template-line-cusom-form" title="Move template line">
-		<panel name="main" readonlyIf="isValid">
-			<field name="name"/>
-			<field name="debitCreditSelect" onChange="action-move-template-line-get-account"/>
-			<field name="product" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>
-			<field name="account" onSelect="action-move-template-line-set-account-domain" grid-view="account-grid" form-view="account-form"/>
-			<field name="percentage" placeholder="80" onChange="action-template-move-line-check-percent"/>
-			<field name="hasPartnerToDebit" showIf="debitCreditSelect == '0'"/>
-			<field name="hasPartnerToCredit" showIf="debitCreditSelect == '1'"/>
-			<field name="isValid" readonly="true"/>
-		</panel>
-  	</form>
-    
     <form onNew="action-move-template-set-default" name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
   		<panel name="main" >
 		    <field name="name" readonlyIf="isValid"/>
@@ -39,7 +18,7 @@
 		    <field name="moveTemplateType" readonlyIf="isValid" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
 		    <field name="journal" readonlyIf="isValid" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form"/>
 	 	</panel>
- 	 	<panel-related field="moveTemplateLineList" readonlyIf="isValid" colSpan="12" form-view="move-template-line-cusom-form" grid-view="move-template-line-cusom-grid"/>
+ 	 	<panel-related field="moveTemplateLineList" readonlyIf="isValid" colSpan="12" form-view="move-template-line-move-template-form" grid-view="move-template-line-move-template-grid"/>
      	<panel sidebar="true" name="actions" title="Actions">
     		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid" colSpan="12"/>
     		<button name="checkValidity" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity" colSpan="12"/>
@@ -58,14 +37,15 @@
     	</panel>
     </form>
     
-    <grid model="com.axelor.apps.base.db.Wizard" name="wizard-custom-grid" title="MoveLines content data input" >
+    <grid name="wizard-custom-grid" title="MoveLines content data input" model="com.axelor.apps.base.db.Wizard">
    		<field name="date" type="date" required="true" title="Date" onChange="action-move-template-wizard-check-value"/>
    		<field name="moveBalance" type="decimal" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value" />
    		<field name="debitPartner" target-name="fullName" title="Partner to Debit"   type="many-to-one" domain="self.isContact = false"  target="com.axelor.apps.base.db.Partner"/>
  		<field name="creditPartner" target-name="fullName" title="Partner to Credit" type="many-to-one" domain="self.isContact = false" target="com.axelor.apps.base.db.Partner"/>
    	</grid>
    	
-	<form model="com.axelor.apps.base.db.Wizard" name="wizard-custom-form" title="MoveLine content data input" onLoad="action-move-template-wizard-line-set-move-template" onNew="action-move-template-wizard-line-set-move-template">
+	<form name="wizard-custom-form" title="MoveLine content data input" model="com.axelor.apps.base.db.Wizard" 
+	onLoad="action-move-template-wizard-line-set-move-template" onNew="action-move-template-wizard-line-set-move-template">
 		<panel name="main" >
 	 		<field name="date" type="date" title="Date" required="true" onChange="action-move-template-wizard-check-value"/>
 	 		<field name="moveBalance" type="decimal" precision="20" scale="2"  min="0" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"  />

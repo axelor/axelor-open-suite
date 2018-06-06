@@ -17,23 +17,20 @@
  */
 package com.axelor.apps.helpdesk.db.repo;
 
-import com.google.inject.Inject;
-
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.service.TicketService;
+import com.google.inject.Inject;
 
 public class TicketManagementRepository extends TicketRepository {
 
-	@Inject
-	private TicketService ticketService;
+  @Inject private TicketService ticketService;
 
-	@Override
-	public Ticket save(Ticket ticket) {
+  @Override
+  public Ticket save(Ticket ticket) {
 
-		ticketService.computeSeq(ticket);
-		ticketService.computeSLA(ticket);
-		ticketService.checkSLAcompleted(ticket);
-		return super.save(ticket);
-	}
-
+    ticketService.computeSeq(ticket);
+    ticketService.computeSLA(ticket);
+    ticketService.checkSLAcompleted(ticket);
+    return super.save(ticket);
+  }
 }

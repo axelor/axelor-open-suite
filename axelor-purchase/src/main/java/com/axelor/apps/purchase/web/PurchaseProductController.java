@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.purchase.web;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.exception.service.TraceBackService;
@@ -27,29 +24,30 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.util.Optional;
 
 @Singleton
 public class PurchaseProductController {
 
-	/**
-	 * Called from product form view, on {@link Product#defShipCoefByPartner}
-	 * change.
-	 * Call {@link PurchaseProductService#getShippingCoefFromPartners(Product)}.
-	 * @param request
-	 * @param response
-	 */
-	public void fillShippingCoeff(ActionRequest request, ActionResponse response) {
-		try {
-			Product product = request.getContext().asType(Product.class);
-			if (!product.getDefShipCoefByPartner()) {
-				return;
-			}
-			Optional<BigDecimal> productShippingCoef = Beans.get(PurchaseProductService.class)
-					.getShippingCoefFromPartners(product);
-			response.setValue("shippingCoef",
-					productShippingCoef.orElse(BigDecimal.ONE));
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+  /**
+   * Called from product form view, on {@link Product#defShipCoefByPartner} change. Call {@link
+   * PurchaseProductService#getShippingCoefFromPartners(Product)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void fillShippingCoeff(ActionRequest request, ActionResponse response) {
+    try {
+      Product product = request.getContext().asType(Product.class);
+      if (!product.getDefShipCoefByPartner()) {
+        return;
+      }
+      Optional<BigDecimal> productShippingCoef =
+          Beans.get(PurchaseProductService.class).getShippingCoefFromPartners(product);
+      response.setValue("shippingCoef", productShippingCoef.orElse(BigDecimal.ONE));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

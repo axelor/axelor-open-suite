@@ -21,5 +21,5 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.exception.AxelorException;
 
 public interface WorkflowValidationService {
-    void afterValidation(Invoice invoice) throws AxelorException;
+  void afterValidation(Invoice invoice) throws AxelorException;
 }

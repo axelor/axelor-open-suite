@@ -17,130 +17,119 @@
  */
 package com.axelor.studio.service.filter;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.studio.db.Filter;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FilterGroovyService {
-	
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	private FilterCommonService filterCommonService;
 
-	/**
-	 * Method to convert chart filter list to groovy expression string. Each
-	 * filter of list will be joined by logical operator(logicalOp) selected.
-	 * 
-	 * @param conditions
-	 *            List for chart filters.
-	 * @param parentField
-	 *            Field that represent parent.
-	 * @return Groovy expression string.
-	 */
-	public String getGroovyFilters(List<Filter> conditions, String parentField) {
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		String condition = null;
+  @Inject private FilterCommonService filterCommonService;
 
-		if (conditions == null) {
-			return null;
-		}
+  /**
+   * Method to convert chart filter list to groovy expression string. Each filter of list will be
+   * joined by logical operator(logicalOp) selected.
+   *
+   * @param conditions List for chart filters.
+   * @param parentField Field that represent parent.
+   * @return Groovy expression string.
+   */
+  public String getGroovyFilters(List<Filter> conditions, String parentField) {
 
-		for (Filter filter : conditions) {
-			String activeFilter = createGroovyFilter(filter, parentField);
-			log.debug("Active filter: {}", filter);
+    String condition = null;
 
-			if (condition == null) {
-				condition = "(" + activeFilter;
-			} else if (filter.getLogicOp() > 0) {
-				condition += ") || (" + activeFilter;
-			} else {
-				condition += " && " + activeFilter;
-			}
-		}
+    if (conditions == null) {
+      return null;
+    }
 
-		if (condition == null) {
-			return null;
-		}
+    for (Filter filter : conditions) {
+      String activeFilter = createGroovyFilter(filter, parentField);
+      log.debug("Active filter: {}", filter);
 
-		return condition + ")";
-	}
+      if (condition == null) {
+        condition = "(" + activeFilter;
+      } else if (filter.getLogicOp() > 0) {
+        condition += ") || (" + activeFilter;
+      } else {
+        condition += " && " + activeFilter;
+      }
+    }
 
-	/**
-	 * Method to generate groovy expression for a single chart filter.
-	 * 
-	 * @param chartFilter
-	 *            Chart filter to use .
-	 * @param parentField
-	 *            Parent field.
-	 * @return Groovy expression string.
-	 */
-	private String createGroovyFilter(Filter filter, String parentField) {
-		
-		MetaJsonField metaJsonField = filter.getMetaJsonField();
-		String field = parentField != null ? parentField + "." + metaJsonField.getName() : metaJsonField.getName();
-		String targetField = parentField != null ? parentField + "." + filter.getTargetField() : filter.getTargetField();
-		String value = processValue(filter);
-		String operator = filter.getOperator();
+    if (condition == null) {
+      return null;
+    }
 
-		if (targetField != null) {
-			targetField = targetField.replace(".", "?.");
-			if (metaJsonField.getType().equals("many-to-one")
-					|| metaJsonField.getType().equals("json-many-to-one")) {
-				field = targetField;
-			} else if (metaJsonField.getType().equals("many-to-many")
-					&& !operator.contains("empty")) {
-				targetField = targetField.replace(field + "?.", "it?.");
-				String condition = getConditionExpr(operator, targetField,
-						value);
-				return field + ".findAll{it->" + condition + "}.size() > 0";
-			}
-		}
+    return condition + ")";
+  }
 
-		return getConditionExpr(operator, field, value);
+  /**
+   * Method to generate groovy expression for a single chart filter.
+   *
+   * @param chartFilter Chart filter to use .
+   * @param parentField Parent field.
+   * @return Groovy expression string.
+   */
+  private String createGroovyFilter(Filter filter, String parentField) {
 
-	}
+    MetaJsonField metaJsonField = filter.getMetaJsonField();
+    String field =
+        parentField != null ? parentField + "." + metaJsonField.getName() : metaJsonField.getName();
+    String targetField =
+        parentField != null ? parentField + "." + filter.getTargetField() : filter.getTargetField();
+    String value = processValue(filter);
+    String operator = filter.getOperator();
 
-	
-	private String processValue(Filter filter) {
+    if (targetField != null) {
+      targetField = targetField.replace(".", "?.");
+      if (metaJsonField.getType().equals("many-to-one")
+          || metaJsonField.getType().equals("json-many-to-one")) {
+        field = targetField;
+      } else if (metaJsonField.getType().equals("many-to-many") && !operator.contains("empty")) {
+        targetField = targetField.replace(field + "?.", "it?.");
+        String condition = getConditionExpr(operator, targetField, value);
+        return field + ".findAll{it->" + condition + "}.size() > 0";
+      }
+    }
 
-		String value = filter.getValue();
-		if (value == null) {
-			return value;
-		}
+    return getConditionExpr(operator, field, value);
+  }
 
-		value = value.replace("$$", "_parent.");
+  private String processValue(Filter filter) {
 
-		return filterCommonService.getTagValue(value,false);
-	}
+    String value = filter.getValue();
+    if (value == null) {
+      return value;
+    }
 
-	private String getConditionExpr(String operator, String field, String value) {
+    value = value.replace("$$", "_parent.");
 
-		switch (operator) {
-			case "=":
-				return field + " == " + value;
-			case "isNull":
-				return field + " == null";
-			case "notNull":
-				return field + " != null";
-			case "empty":
-				return field + ".empty";
-			case "notEmpty":
-				return "!" + field + ".empty";
-			case "isTrue":
-				return field;
-			case "isFalse":
-				return "!" + field;
-			default:
-				return field + " " + operator + " " + value;
+    return filterCommonService.getTagValue(value, false);
+  }
 
-		}
+  private String getConditionExpr(String operator, String field, String value) {
 
-	}
+    switch (operator) {
+      case "=":
+        return field + " == " + value;
+      case "isNull":
+        return field + " == null";
+      case "notNull":
+        return field + " != null";
+      case "empty":
+        return field + ".empty";
+      case "notEmpty":
+        return "!" + field + ".empty";
+      case "isTrue":
+        return field;
+      case "isFalse":
+        return "!" + field;
+      default:
+        return field + " " + operator + " " + value;
+    }
+  }
 }

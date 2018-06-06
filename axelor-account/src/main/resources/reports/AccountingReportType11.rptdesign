@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-   <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -348,6 +348,8 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
 left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+
 left outer join public.account_payment_mode as PaymentMode on (Move.payment_mode = PaymentMode.id)
 where 
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
@@ -361,7 +363,8 @@ Move.company = AccountingReport.company  AND
 (AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND 
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND 
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) 
-AND  Move.ignore_in_accounting_ok = false AND Move.status_select = 3
+AND Move.ignore_in_accounting_ok = false 
+AND (Move.status_select = 3 OR (Move.status_select = 2 AND AccountConfig.accounting_daybook = true))
 ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">

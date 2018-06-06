@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -26,6 +24,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public interface TimetableService {
 
@@ -36,7 +35,8 @@ public interface TimetableService {
 
   public void fillInLines(Invoice invoice);
 
-  public List<InvoiceLine> createInvoiceLine(Invoice invoice, Timetable timetable) throws AxelorException;
+  public List<InvoiceLine> createInvoiceLine(Invoice invoice, Timetable timetable)
+      throws AxelorException;
 
   public SaleOrderLine findFirstSaleOrderLine(Timetable timetable);
 

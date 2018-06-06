@@ -30,19 +30,17 @@ import com.google.inject.Singleton;
 @Singleton
 public class ReimbursementController {
 
-	@Inject
-	private ReimbursementService reimbursementService;
-	
-	public void validateReimbursement(ActionRequest request, ActionResponse response) {
-		
-		Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
-		reimbursementService.updatePartnerCurrentRIB(reimbursement);
-		
-		if (reimbursement.getBankDetails() != null) {
-			response.setValue("statusSelect", ReimbursementRepository.STATUS_VALIDATED);
-		}
-		else {
-			response.setFlash(I18n.get(IExceptionMessage.REIMBURSEMENT_4));
-		}
-	}
+  @Inject private ReimbursementService reimbursementService;
+
+  public void validateReimbursement(ActionRequest request, ActionResponse response) {
+
+    Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
+    reimbursementService.updatePartnerCurrentRIB(reimbursement);
+
+    if (reimbursement.getBankDetails() != null) {
+      response.setValue("statusSelect", ReimbursementRepository.STATUS_VALIDATED);
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.REIMBURSEMENT_4));
+    }
+  }
 }

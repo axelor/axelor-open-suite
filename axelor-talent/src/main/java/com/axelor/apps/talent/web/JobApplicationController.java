@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.talent.web;
 
-import java.util.Map;
-
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
@@ -30,43 +28,43 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Map;
 
 @Singleton
 public class JobApplicationController {
-	
-	@Inject
-	private JobApplicationRepository jobApplicationRepo;
-	
-	@Inject
-	private JobApplicationService jobApplicationService;
-	
-	@Inject
-	private PartnerService partnerService;
-	
-	public void hire(ActionRequest request, ActionResponse response) {
-		
-		JobApplication jobApplication = request.getContext().asType(JobApplication.class);
-		
-		jobApplication = jobApplicationRepo.find(jobApplication.getId());
-		
-		Employee employee = jobApplicationService.hire(jobApplication);
-		
-		response.setReload(true);
-		
-		response.setView(ActionView.define(I18n.get("Employee"))
-				.model(Employee.class.getName())
-				.add("grid", "employee-grid")
-				.add("form", "employee-form")
-				.param("search-filters", "employee-filters")
-				.context("_showRecord", employee.getId())
-				.map());
-		
-	}
-	
-	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
-		
-		JobApplication application = request.getContext().asType(JobApplication.class);
-		Map<String,String> urlMap = partnerService.getSocialNetworkUrl(application.getFirstName(), application.getLastName(), 2);
-		response.setAttr("linkedin", "title", urlMap.get("linkedin"));
-	}
+
+  @Inject private JobApplicationRepository jobApplicationRepo;
+
+  @Inject private JobApplicationService jobApplicationService;
+
+  @Inject private PartnerService partnerService;
+
+  public void hire(ActionRequest request, ActionResponse response) {
+
+    JobApplication jobApplication = request.getContext().asType(JobApplication.class);
+
+    jobApplication = jobApplicationRepo.find(jobApplication.getId());
+
+    Employee employee = jobApplicationService.hire(jobApplication);
+
+    response.setReload(true);
+
+    response.setView(
+        ActionView.define(I18n.get("Employee"))
+            .model(Employee.class.getName())
+            .add("grid", "employee-grid")
+            .add("form", "employee-form")
+            .param("search-filters", "employee-filters")
+            .context("_showRecord", employee.getId())
+            .map());
+  }
+
+  public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
+
+    JobApplication application = request.getContext().asType(JobApplication.class);
+    Map<String, String> urlMap =
+        partnerService.getSocialNetworkUrl(
+            application.getFirstName(), application.getLastName(), 2);
+    response.setAttr("linkedin", "title", urlMap.get("linkedin"));
+  }
 }

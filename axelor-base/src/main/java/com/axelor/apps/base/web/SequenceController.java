@@ -23,27 +23,25 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
-
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 @Singleton
 public class SequenceController {
 
-    @Inject
-    public SequenceService sequenceService;
+  @Inject public SequenceService sequenceService;
 
-    public void getDefaultTitle(ActionRequest request, ActionResponse response) {
-        Sequence sequence = request.getContext().asType(Sequence.class);
-        if (!Strings.isNullOrEmpty(sequence.getCode())) {
-            String defautlTitle = sequenceService.getDefaultTitle(sequence);
-            response.setValue("name", I18n.get(defautlTitle));
-        }
+  public void getDefaultTitle(ActionRequest request, ActionResponse response) {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    if (!Strings.isNullOrEmpty(sequence.getCode())) {
+      String defautlTitle = sequenceService.getDefaultTitle(sequence);
+      response.setValue("name", I18n.get(defautlTitle));
     }
+  }
 
-    public void computeFullName(ActionRequest request, ActionResponse response) {
-        Sequence sequence = request.getContext().asType(Sequence.class);
-        String fullName = sequenceService.computeFullName(sequence);
-        response.setValue("fullName", fullName);
-    }
+  public void computeFullName(ActionRequest request, ActionResponse response) {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    String fullName = sequenceService.computeFullName(sequence);
+    response.setValue("fullName", fullName);
+  }
 }

@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.base.web;
 
-import java.util.Map;
-
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -35,45 +33,47 @@ import com.axelor.rpc.Context;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.util.Map;
 
 @Singleton
 public class UserController {
-    protected static final Map<String, String> UNIQUE_MESSAGES = ImmutableMap.of("code",
-            IExceptionMessage.USER_CODE_ALREADY_EXISTS);
+  protected static final Map<String, String> UNIQUE_MESSAGES =
+      ImmutableMap.of("code", IExceptionMessage.USER_CODE_ALREADY_EXISTS);
 
-	@Transactional
-	public void setUserPartner (ActionRequest request, ActionResponse response) throws AxelorException {
-		Context context = request.getContext();
-			
-		if(context.get("user_id") != null){
-			UserRepository userRepo = Beans.get(UserRepository.class);
-			Partner partner = Beans.get(PartnerRepository.class).find(context.asType(Partner.class).getId());
-			User user = userRepo.find(((Integer)context.get("user_id")).longValue());
-			user.setPartner(partner);
-			userRepo.save(user);
-		}		
-	}
-	
-	public void applyApplicationMode(ActionRequest request, ActionResponse response)  {
-		 String applicationMode = AppSettings.get().get("application.mode", "prod");
-		 if ("dev".equals(applicationMode)) {
-			 response.setAttr("testing", "hidden", false);
-		 }
-	}
-	
-    public void validate(ActionRequest request, ActionResponse response) {
-        try {
-            User user = request.getContext().asType(User.class);
-            Map<String, String> errors = ModelTool.getUniqueErrors(user, UNIQUE_MESSAGES);
+  @Transactional
+  public void setUserPartner(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
 
-            if (!errors.isEmpty()) {
-                response.setErrors(errors);
-                return;
-            }
-
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+    if (context.get("user_id") != null) {
+      UserRepository userRepo = Beans.get(UserRepository.class);
+      Partner partner =
+          Beans.get(PartnerRepository.class).find(context.asType(Partner.class).getId());
+      User user = userRepo.find(((Integer) context.get("user_id")).longValue());
+      user.setPartner(partner);
+      userRepo.save(user);
     }
+  }
 
+  public void applyApplicationMode(ActionRequest request, ActionResponse response) {
+    String applicationMode = AppSettings.get().get("application.mode", "prod");
+    if ("dev".equals(applicationMode)) {
+      response.setAttr("testing", "hidden", false);
+    }
+  }
+
+  public void validate(ActionRequest request, ActionResponse response) {
+    try {
+      User user = request.getContext().asType(User.class);
+      Map<String, String> errors = ModelTool.getUniqueErrors(user, UNIQUE_MESSAGES);
+
+      if (!errors.isEmpty()) {
+        response.setErrors(errors);
+        return;
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

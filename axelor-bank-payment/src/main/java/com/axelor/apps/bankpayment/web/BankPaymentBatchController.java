@@ -27,24 +27,22 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class BankPaymentBatchController {
-	
-	@Inject
-	private BankPaymentBatchRepository bankPaymentBatchRepo;
-	
-	@Inject
-	private BatchBankPayment batchBankPayment;
-	
-	public void launchBankPaymentBatch(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		BankPaymentBatch ebicsCertificateBatch = request.getContext().asType(BankPaymentBatch.class);
+  @Inject private BankPaymentBatchRepository bankPaymentBatchRepo;
 
-		Batch batch = null;
-		
-		batch = batchBankPayment.ebicsCertificate(bankPaymentBatchRepo.find(ebicsCertificateBatch.getId()));
+  @Inject private BatchBankPayment batchBankPayment;
 
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
-	
+  public void launchBankPaymentBatch(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    BankPaymentBatch ebicsCertificateBatch = request.getContext().asType(BankPaymentBatch.class);
+
+    Batch batch = null;
+
+    batch =
+        batchBankPayment.ebicsCertificate(bankPaymentBatchRepo.find(ebicsCertificateBatch.getId()));
+
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 }

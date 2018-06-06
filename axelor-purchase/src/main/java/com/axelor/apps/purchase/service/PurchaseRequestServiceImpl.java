@@ -17,40 +17,40 @@
  */
 package com.axelor.apps.purchase.service;
 
-import java.util.List;
-
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class PurchaseRequestServiceImpl implements PurchaseRequestService {
-	
-	@Inject
-	private PurchaseRequestRepository purchaseRequestRepo;
 
-	
-	@Transactional
-	@Override
-	public void confirmCart() {
-		
-		List<PurchaseRequest> purchaseRequests = purchaseRequestRepo.all().filter("self.statusSelect = 1 and self.createdBy = ?1" , AuthUtils.getUser()).fetch();
-		
-		for (PurchaseRequest purchaseRequest : purchaseRequests) {
-			purchaseRequest.setStatusSelect(2);
-			purchaseRequestRepo.save(purchaseRequest);
-		}
-	}
-	
-	@Transactional
-	@Override
-	public void acceptRequest(List<PurchaseRequest> purchaseRequests) {
-		
-		for (PurchaseRequest purchaseRequest : purchaseRequests) {
-			purchaseRequest.setStatusSelect(3);
-			purchaseRequestRepo.save(purchaseRequest);
-		}
-	}
+  @Inject private PurchaseRequestRepository purchaseRequestRepo;
 
+  @Transactional
+  @Override
+  public void confirmCart() {
+
+    List<PurchaseRequest> purchaseRequests =
+        purchaseRequestRepo
+            .all()
+            .filter("self.statusSelect = 1 and self.createdBy = ?1", AuthUtils.getUser())
+            .fetch();
+
+    for (PurchaseRequest purchaseRequest : purchaseRequests) {
+      purchaseRequest.setStatusSelect(2);
+      purchaseRequestRepo.save(purchaseRequest);
+    }
+  }
+
+  @Transactional
+  @Override
+  public void acceptRequest(List<PurchaseRequest> purchaseRequests) {
+
+    for (PurchaseRequest purchaseRequest : purchaseRequests) {
+      purchaseRequest.setStatusSelect(3);
+      purchaseRequestRepo.save(purchaseRequest);
+    }
+  }
 }

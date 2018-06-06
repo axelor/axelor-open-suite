@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.DebtRecoveryHistory;
@@ -44,137 +36,156 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PayerQualityService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected AppAccountService appAccountService;
-	protected PartnerRepository partnerRepository;
+  protected AppAccountService appAccountService;
+  protected PartnerRepository partnerRepository;
 
+  @Inject
+  public PayerQualityService(
+      AppAccountService appAccountService, PartnerRepository partnerRepository) {
 
-	@Inject
-	public PayerQualityService(AppAccountService appAccountService, PartnerRepository partnerRepository) {
+    this.appAccountService = appAccountService;
+    this.partnerRepository = partnerRepository;
+  }
 
-		this.appAccountService = appAccountService;
-		this.partnerRepository = partnerRepository;
+  // TODO : à remplacer par une requête afin de rendre le traitement scalable
+  public List<DebtRecoveryHistory> getDebtRecoveryHistoryList(Partner partner) {
+    List<DebtRecoveryHistory> debtRecoveryHistoryList = new ArrayList<DebtRecoveryHistory>();
+    if (partner.getAccountingSituationList() != null) {
+      for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
+        DebtRecovery debtRecovery = accountingSituation.getDebtRecovery();
+        if (debtRecovery != null
+            && debtRecovery.getDebtRecoveryHistoryList() != null
+            && !debtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
+          for (DebtRecoveryHistory debtRecoveryHistory :
+              debtRecovery.getDebtRecoveryHistoryList()) {
+            if ((debtRecoveryHistory.getDebtRecoveryDate() != null
+                && debtRecoveryHistory
+                    .getDebtRecoveryDate()
+                    .isAfter(appAccountService.getTodayDate().minusYears(1)))) {
+              debtRecoveryHistoryList.add(debtRecoveryHistory);
+            }
+          }
+        }
+      }
+    }
+    return debtRecoveryHistoryList;
+  }
 
-	}
+  public List<MoveLine> getMoveLineRejectList(Partner partner) {
 
-	//TODO : à remplacer par une requête afin de rendre le traitement scalable
-	public List<DebtRecoveryHistory> getDebtRecoveryHistoryList(Partner partner)  {
-		List<DebtRecoveryHistory> debtRecoveryHistoryList = new ArrayList<DebtRecoveryHistory>();
-		if(partner.getAccountingSituationList() != null)  {
-			for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
-				DebtRecovery debtRecovery = accountingSituation.getDebtRecovery();
-				if(debtRecovery != null && debtRecovery.getDebtRecoveryHistoryList()!= null && !debtRecovery.getDebtRecoveryHistoryList().isEmpty())  {
-					for(DebtRecoveryHistory debtRecoveryHistory : debtRecovery.getDebtRecoveryHistoryList())  {
-						if((debtRecoveryHistory.getDebtRecoveryDate() != null && debtRecoveryHistory.getDebtRecoveryDate().isAfter(appAccountService.getTodayDate().minusYears(1))))  {
-							debtRecoveryHistoryList.add(debtRecoveryHistory);
-						}
-					}
-				}
-			}
-		}
-		return debtRecoveryHistoryList;
-	}
+    MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 
+    return moveLineRepo
+        .all()
+        .filter(
+            "self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL",
+            partner,
+            appAccountService.getTodayDate().minusYears(1))
+        .fetch();
+  }
 
-	public List<MoveLine> getMoveLineRejectList(Partner partner)  {
-		
-		MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
-		
-		return moveLineRepo.all().filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, appAccountService.getTodayDate().minusYears(1)).fetch();
-	}
+  public BigDecimal getPayerQualityNote(
+      Partner partner, List<PayerQualityConfigLine> payerQualityConfigLineList) {
+    BigDecimal burden = BigDecimal.ZERO;
 
+    List<DebtRecoveryHistory> debtRecoveryHistoryList = this.getDebtRecoveryHistoryList(partner);
+    List<MoveLine> moveLineList = this.getMoveLineRejectList(partner);
 
-	public BigDecimal getPayerQualityNote(Partner partner, List<PayerQualityConfigLine> payerQualityConfigLineList)  {
-		BigDecimal burden = BigDecimal.ZERO;
+    log.debug(
+        "Tiers {} : Nombre de relance concernée : {}",
+        partner.getName(),
+        debtRecoveryHistoryList.size());
+    log.debug("Tiers {} : Nombre de rejets concernée : {}", partner.getName(), moveLineList.size());
 
-		List<DebtRecoveryHistory> debtRecoveryHistoryList = this.getDebtRecoveryHistoryList(partner);
-		List<MoveLine> moveLineList = this.getMoveLineRejectList(partner);
+    for (DebtRecoveryHistory debtRecoveryHistory : debtRecoveryHistoryList) {
+      burden =
+          burden.add(this.getPayerQualityNote(debtRecoveryHistory, payerQualityConfigLineList));
+    }
+    for (MoveLine moveLine : moveLineList) {
+      burden = burden.add(this.getPayerQualityNote(moveLine, payerQualityConfigLineList));
+    }
+    log.debug("Tiers {} : Qualité payeur : {}", partner.getName(), burden);
+    return burden;
+  }
 
-		log.debug("Tiers {} : Nombre de relance concernée : {}",partner.getName(), debtRecoveryHistoryList.size());
-		log.debug("Tiers {} : Nombre de rejets concernée : {}", partner.getName(), moveLineList.size());
+  public BigDecimal getPayerQualityNote(
+      DebtRecoveryHistory debtRecoveryHistory,
+      List<PayerQualityConfigLine> payerQualityConfigLineList) {
+    DebtRecoveryLevel debtRecoveryLevel = this.getDebtRecoveryLevel(debtRecoveryHistory);
+    if (debtRecoveryLevel != null) {
+      for (PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList) {
+        if (payerQualityConfigLine.getIncidentTypeSelect() == 0
+            && payerQualityConfigLine.getDebtRecoveryLevel().equals(debtRecoveryLevel)) {
+          return payerQualityConfigLine.getBurden();
+        }
+      }
+    }
+    return BigDecimal.ZERO;
+  }
 
-		for(DebtRecoveryHistory debtRecoveryHistory : debtRecoveryHistoryList)  {
-			burden = burden.add(this.getPayerQualityNote(debtRecoveryHistory, payerQualityConfigLineList));
-		}
-		for(MoveLine moveLine : moveLineList)  {
-			burden = burden.add(this.getPayerQualityNote(moveLine, payerQualityConfigLineList));
-		}
-		log.debug("Tiers {} : Qualité payeur : {}", partner.getName(), burden);
-		return burden;
-	}
+  public BigDecimal getPayerQualityNote(
+      MoveLine moveLine, List<PayerQualityConfigLine> payerQualityConfigLineList) {
+    for (PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList) {
+      if (payerQualityConfigLine.getIncidentTypeSelect() == 1
+          && !moveLine.getInterbankCodeLine().getTechnicalRejectOk()) {
+        return payerQualityConfigLine.getBurden();
+      }
+    }
+    return BigDecimal.ZERO;
+  }
 
+  public DebtRecoveryLevel getDebtRecoveryLevel(DebtRecoveryHistory debtRecoveryHistory) {
+    DebtRecoveryMethodLine debtRecoveryMethodLine = null;
 
-	public BigDecimal getPayerQualityNote(DebtRecoveryHistory debtRecoveryHistory, List<PayerQualityConfigLine> payerQualityConfigLineList)  {
-		DebtRecoveryLevel debtRecoveryLevel = this.getDebtRecoveryLevel(debtRecoveryHistory);
-		if(debtRecoveryLevel != null)  {
-			for(PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList)  {
-				if(payerQualityConfigLine.getIncidentTypeSelect() == 0
-						&& payerQualityConfigLine.getDebtRecoveryLevel().equals(debtRecoveryLevel))  {
-					return payerQualityConfigLine.getBurden();
-				}
-			}
-		}
-		return BigDecimal.ZERO;
-	}
+    if (debtRecoveryHistory.getDebtRecoveryDate() != null) {
 
+      debtRecoveryMethodLine = debtRecoveryHistory.getDebtRecoveryMethodLine();
+    }
 
-	public BigDecimal getPayerQualityNote(MoveLine moveLine, List<PayerQualityConfigLine> payerQualityConfigLineList)  {
-		for(PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList)  {
-			if(payerQualityConfigLine.getIncidentTypeSelect() == 1
-					&& !moveLine.getInterbankCodeLine().getTechnicalRejectOk())  {
-				return payerQualityConfigLine.getBurden();
-			}
-		}
-		return BigDecimal.ZERO;
-	}
+    if (debtRecoveryMethodLine != null) {
+      return debtRecoveryMethodLine.getDebtRecoveryLevel();
+    } else {
+      return null;
+    }
+  }
 
+  public List<Partner> getPartnerList() {
+    return partnerRepository.all().filter("self.isCustomer = true").fetch();
+  }
 
-	public DebtRecoveryLevel getDebtRecoveryLevel(DebtRecoveryHistory debtRecoveryHistory)  {
-		DebtRecoveryMethodLine debtRecoveryMethodLine = null;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void payerQualityProcess() throws AxelorException {
+    List<PayerQualityConfigLine> payerQualityConfigLineList =
+        appAccountService.getAppAccount().getPayerQualityConfigLineList();
+    if (payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYER_QUALITY_1),
+          AppAccountServiceImpl.EXCEPTION);
+    }
 
-		if(debtRecoveryHistory.getDebtRecoveryDate() != null)  {
+    List<Partner> partnerList = this.getPartnerList();
+    if (partnerList != null && partnerList.size() != 0) {
+      for (Partner partner : partnerList) {
+        BigDecimal burden = this.getPayerQualityNote(partner, payerQualityConfigLineList);
 
-			debtRecoveryMethodLine = debtRecoveryHistory.getDebtRecoveryMethodLine();
-
-		}
-
-		if(debtRecoveryMethodLine != null)  {
-			return debtRecoveryMethodLine.getDebtRecoveryLevel();
-		}
-		else  {
-			return null;
-		}
-	}
-
-
-	public List<Partner> getPartnerList()  {
-		return  partnerRepository.all().filter("self.isCustomer = true").fetch();
-	}
-
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void payerQualityProcess() throws AxelorException  {
-		List<PayerQualityConfigLine> payerQualityConfigLineList = appAccountService.getAppAccount().getPayerQualityConfigLineList();
-		if(payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0)  {
-			throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PAYER_QUALITY_1), AppAccountServiceImpl.EXCEPTION);
-		}
-
-		List<Partner> partnerList = this.getPartnerList();
-		if(partnerList != null && partnerList.size() != 0)  {
-			for(Partner partner : partnerList)  {
-				BigDecimal burden = this.getPayerQualityNote(partner, payerQualityConfigLineList);
-
-				if(burden.compareTo(BigDecimal.ZERO) == 1)  {
-					partner.setPayerQuality(burden);
-					partnerRepository.save(partner);
-					log.debug("Tiers payeur {} : Qualité payeur : {}",partner.getName(), burden);
-				}
-			}
-		}
-	}
-
+        if (burden.compareTo(BigDecimal.ZERO) == 1) {
+          partner.setPayerQuality(burden);
+          partnerRepository.save(partner);
+          log.debug("Tiers payeur {} : Qualité payeur : {}", partner.getName(), burden);
+        }
+      }
+    }
+  }
 }

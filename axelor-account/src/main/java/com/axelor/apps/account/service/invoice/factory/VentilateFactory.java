@@ -25,16 +25,14 @@ import com.axelor.inject.Beans;
 
 public class VentilateFactory {
 
-	public VentilateState getVentilator(Invoice invoice){
-	    VentilateState ventilateState;
-		if (invoice.getOperationSubTypeSelect()
-				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-			ventilateState = Beans.get(VentilateAdvancePaymentState.class);
-		} else {
-			ventilateState = Beans.get(VentilateState.class);
-		}
-		ventilateState.init(invoice);
-		return ventilateState;
-	}
-
+  public VentilateState getVentilator(Invoice invoice) {
+    VentilateState ventilateState;
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      ventilateState = Beans.get(VentilateAdvancePaymentState.class);
+    } else {
+      ventilateState = Beans.get(VentilateState.class);
+    }
+    ventilateState.init(invoice);
+    return ventilateState;
+  }
 }

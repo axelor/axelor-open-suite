@@ -31,57 +31,56 @@ import com.google.inject.Singleton;
 
 /**
  * This controller class use to get filtered Partners and Leads.
- * 
- * @author axelor
  *
+ * @author axelor
  */
 @Singleton
 public class TargetListController {
 
-	@Inject
-	private TargetListService targetListService;
+  @Inject private TargetListService targetListService;
 
-	public void openFilteredLeads(ActionRequest request, ActionResponse response) {
+  public void openFilteredLeads(ActionRequest request, ActionResponse response) {
 
-		TargetList targetList = request.getContext().asType(TargetList.class);
-		String leadFilters = null;
+    TargetList targetList = request.getContext().asType(TargetList.class);
+    String leadFilters = null;
 
-		try { 
-			leadFilters = targetListService.getLeadQuery(targetList);
-			
-			if (leadFilters != null) {
-				response.setView(ActionView.define(I18n.get("Leads"))
-						.model(Lead.class.getName())
-						.add("grid", "lead-grid")
-						.add("form", "lead-form")
-						.domain(leadFilters)
-						.map());
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+    try {
+      leadFilters = targetListService.getLeadQuery(targetList);
 
+      if (leadFilters != null) {
+        response.setView(
+            ActionView.define(I18n.get("Leads"))
+                .model(Lead.class.getName())
+                .add("grid", "lead-grid")
+                .add("form", "lead-form")
+                .domain(leadFilters)
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	public void openFilteredPartners(ActionRequest request, ActionResponse response) {
+  public void openFilteredPartners(ActionRequest request, ActionResponse response) {
 
-		TargetList targetList = request.getContext().asType(TargetList.class);
-		String partnerFilters = null;
-		
-		try {
-			partnerFilters = targetListService.getPartnerQuery(targetList);
-			
-			if (partnerFilters != null) {
-				response.setView(ActionView.define(I18n.get("Partners"))
-						.model(Partner.class.getName())
-						.add("grid", "partner-grid")
-						.add("form", "partner-form")
-						.domain(partnerFilters)
-						.map());
-			}
-			
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+    TargetList targetList = request.getContext().asType(TargetList.class);
+    String partnerFilters = null;
+
+    try {
+      partnerFilters = targetListService.getPartnerQuery(targetList);
+
+      if (partnerFilters != null) {
+        response.setView(
+            ActionView.define(I18n.get("Partners"))
+                .model(Partner.class.getName())
+                .add("grid", "partner-grid")
+                .add("form", "partner-form")
+                .domain(partnerFilters)
+                .map());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
