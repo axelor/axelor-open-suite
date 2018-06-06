@@ -25,7 +25,7 @@
         <integer name="accountSelectionToCarrierSelect" selection="logistical.form.account.to.carrier.select" title="Account selection to carrier" default="1" />
         <string name="customerAccountNumberToCarrier" />
 
-        <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines"
+        <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing lines"
             mappedBy="logisticalForm" />
 
         <extra-code>
