@@ -28,6 +28,7 @@
 - Sale order: allow increasing quantity on delivered detail lines.
 - Moved the Partner seq at the top of the Partner form views and set it as the first column in Partner grid views.
 - Make Logistical form printable even in Provision status.
+- Filter trackingNumber in stockMoveLine in function of fromStockLocation as it is done in tab detailsStockLocation of StockLocation
 - Add a counter to limit iterations of while loop in YearService and BudgetService
 - Create an interface for PeriodService
 
