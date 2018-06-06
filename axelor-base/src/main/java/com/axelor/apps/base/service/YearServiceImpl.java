@@ -21,6 +21,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,7 +39,7 @@ public class YearServiceImpl implements YearService {
     this.yearRepo = yearRepo;
   }
 
-  public List<Period> generatePeriods(Year year) {
+	public List<Period> generatePeriods(Year year) throws AxelorException{
 
     List<Period> periods = new ArrayList<Period>();
     Integer duration = year.getPeriodDurationSelect();
@@ -43,9 +47,14 @@ public class YearServiceImpl implements YearService {
     LocalDate toDate = year.getToDate();
     LocalDate periodToDate = fromDate;
     Integer periodNumber = 1;
-
+    int c = 0;
+    int loopLimit = 1000;
     while (periodToDate.isBefore(toDate)) {
       if (periodNumber != 1) fromDate = fromDate.plusMonths(duration);
+      if(c >= loopLimit) {
+        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PERIOD_3));
+      }
+      c += 1;
       periodToDate = fromDate.plusMonths(duration).minusDays(1);
       if (periodToDate.isAfter(toDate)) periodToDate = toDate;
       if (fromDate.isAfter(toDate)) continue;
