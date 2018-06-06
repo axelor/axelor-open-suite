@@ -75,6 +75,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.analyticMoveLineService = analyticMoveLineService;
   }
 
+  @Override
   public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException {
 
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
@@ -101,6 +102,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     return invoiceLine;
   }
 
+  @Override
   public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, InvoiceLine invoiceLine) {
 
     analyticMoveLine.setInvoiceLine(invoiceLine);
@@ -109,6 +111,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
   }
 
+  @Override
   public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine)
       throws AxelorException {
     List<AnalyticMoveLine> analyticMoveLineList = null;
@@ -124,6 +127,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     return invoiceLine;
   }
 
+  @Override
   public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException {
 
@@ -135,6 +139,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         isPurchase);
   }
 
+  @Override
   public BigDecimal getUnitPrice(
       Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
       throws AxelorException {
@@ -158,6 +163,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
+  @Override
   public boolean isPurchase(Invoice invoice) {
     int operation = invoice.getOperationTypeSelect();
     if (operation == 1 || operation == 2) {
@@ -167,6 +173,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
   }
 
+  @Override
   public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice)
       throws AxelorException {
 
@@ -179,6 +186,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
+  @Override
   public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice)
       throws AxelorException {
 
@@ -191,12 +199,14 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
+  @Override
   public PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList) {
 
     return priceListService.getPriceListLine(
         invoiceLine.getProduct(), invoiceLine.getQty(), priceList);
   }
 
+  @Override
   public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice) {
     BigDecimal unitPrice = invoiceLine.getPrice();
 
@@ -204,12 +214,14 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         unitPrice, invoiceLine.getDiscountTypeSelect(), invoiceLine.getDiscountAmount());
   }
 
+  @Override
   public BigDecimal computeDiscount(
       int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice, Invoice invoice) {
 
     return priceListService.computeDiscount(unitPrice, discountTypeSelect, discountAmount);
   }
 
+  @Override
   public BigDecimal convertUnitPrice(
       Product product, TaxLine taxLine, BigDecimal price, Invoice invoice) {
 
@@ -225,6 +237,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     return price;
   }
 
+  @Override
   public Map<String, Object> getDiscount(
       Invoice invoice, InvoiceLine invoiceLine, BigDecimal price) {
 
@@ -237,6 +250,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     return priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
   }
 
+  @Override
   public int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine) {
     PriceList priceList = invoice.getPriceList();
     if (priceList != null) {
@@ -247,10 +261,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     return 0;
   }
 
+  @Override
   public Unit getUnit(Product product, boolean isPurchase) {
     return product.getUnit();
   }
 
+  @Override
   public boolean unitPriceShouldBeUpdate(Invoice invoice, Product product) {
 
     if (product != null && product.getInAti() != invoice.getInAti()) {
@@ -285,20 +301,37 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     Product product = invoiceLine.getProduct();
     boolean isPurchase = this.isPurchase(invoice);
+    TaxLine taxLine;
 
-    TaxLine taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
-    productInformation.put("taxLine", taxLine);
-    productInformation.put("taxRate", taxLine.getValue());
-    productInformation.put("taxCode", taxLine.getTax().getCode());
+    try {
+      taxLine = getTaxLine(invoice, invoiceLine, isPurchase);
+      productInformation.put("taxLine", taxLine);
+      productInformation.put("taxRate", taxLine.getValue());
+      productInformation.put("taxCode", taxLine.getTax().getCode());
 
-    Tax tax =
-        accountManagementAccountService.getProductTax(
-            accountManagementAccountService.getAccountManagement(product, invoice.getCompany()),
-            isPurchase);
-    TaxEquiv taxEquiv =
-        Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
-    productInformation.put("taxEquiv", taxEquiv);
+      Tax tax =
+          accountManagementAccountService.getProductTax(
+              accountManagementAccountService.getAccountManagement(product, invoice.getCompany()),
+              isPurchase);
+      TaxEquiv taxEquiv =
+          Beans.get(FiscalPositionService.class)
+              .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+      productInformation.put("taxEquiv", taxEquiv);
+
+      // getting correct account for the product
+      AccountManagement accountManagement =
+          accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
+      Account account =
+          accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
+      productInformation.put("account", account);
+    } catch (AxelorException e) {
+      taxLine = null;
+      productInformation.put("taxLine", null);
+      productInformation.put("taxRate", null);
+      productInformation.put("taxCode", null);
+      productInformation.put("taxEquiv", null);
+      productInformation.put("account", null);
+    }
 
     BigDecimal price = this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
 

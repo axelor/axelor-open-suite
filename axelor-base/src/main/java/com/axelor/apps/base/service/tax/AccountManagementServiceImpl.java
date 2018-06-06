@@ -46,6 +46,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @return
    * @throws AxelorException
    */
+  @Override
   public AccountManagement getAccountManagement(Product product, Company company)
       throws AxelorException {
 
@@ -67,6 +68,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
     return accountManagement;
   }
 
+  @Override
   public void generateAccountManagementException(Product product, Company company)
       throws AxelorException {
 
@@ -85,6 +87,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @return
    * @throws AxelorException
    */
+  @Override
   public AccountManagement getAccountManagement(ProductFamily productFamily, Company company)
       throws AxelorException {
 
@@ -103,6 +106,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @param company
    * @return
    */
+  @Override
   public AccountManagement getAccountManagement(
       List<AccountManagement> accountManagements, Company company) {
 
@@ -159,6 +163,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @param isPurchase
    * @return
    */
+  @Override
   public Tax getProductTax(AccountManagement accountManagement, boolean isPurchase) {
 
     if (isPurchase) {
@@ -176,6 +181,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @return
    * @throws AxelorException
    */
+  @Override
   public TaxLine getTaxLine(
       LocalDate date,
       Product product,

@@ -52,6 +52,12 @@ public interface AddressService {
 
   public boolean checkAddressUsed(Long addressId);
 
+  public Address checkLatLong(Address address) throws AxelorException, JSONException;
+
+  public Address checkLatLong(Address address, boolean forceUpdate)
+      throws AxelorException, JSONException;
+
+  @Deprecated
   public Address checkLatLang(Address address, boolean forceUpdate)
       throws AxelorException, JSONException;
 

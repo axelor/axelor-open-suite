@@ -49,21 +49,24 @@ public class AddressServiceImpl implements AddressService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Override
   public boolean check(String wsdlUrl) {
     return ads.doCanSearch(wsdlUrl);
   }
 
+  @Override
   public Map<String, Object> validate(String wsdlUrl, String search) {
-    return (Map<String, Object>) ads.doSearch(wsdlUrl, search);
+    return ads.doSearch(wsdlUrl, search);
   }
 
+  @Override
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker) {
     return ads.doGetAddress(wsdlUrl, moniker);
   }
 
+  @Override
   public int export(String path) throws IOException {
-    List<Address> addresses =
-        (List<Address>) addressRepo.all().filter("self.certifiedOk IS FALSE").fetch();
+    List<Address> addresses = addressRepo.all().filter("self.certifiedOk IS FALSE").fetch();
 
     CSVWriter csv =
         new CSVWriter(new java.io.FileWriter(path), "|".charAt(0), CSVWriter.NO_QUOTE_CHARACTER);
@@ -98,6 +101,7 @@ public class AddressServiceImpl implements AddressService {
     return addresses.size();
   }
 
+  @Override
   public Address createAddress(
       String addressL2,
       String addressL3,
@@ -117,6 +121,7 @@ public class AddressServiceImpl implements AddressService {
     return address;
   }
 
+  @Override
   public Address getAddress(
       String addressL2,
       String addressL3,
@@ -139,6 +144,7 @@ public class AddressServiceImpl implements AddressService {
         .fetchOne();
   }
 
+  @Override
   public boolean checkAddressUsed(Long addressId) {
     LOG.debug("Address Id to be checked = {}", addressId);
     if (addressId != null) {
@@ -152,8 +158,15 @@ public class AddressServiceImpl implements AddressService {
     return false;
   }
 
+  @Override
   @Transactional
-  public Address checkLatLang(Address address, boolean forceUpdate)
+  public Address checkLatLong(Address address) throws AxelorException, JSONException {
+    return checkLatLong(address, false);
+  }
+
+  @Override
+  @Transactional
+  public Address checkLatLong(Address address, boolean forceUpdate)
       throws AxelorException, JSONException {
 
     address = addressRepo.find(address.getId());
@@ -173,6 +186,14 @@ public class AddressServiceImpl implements AddressService {
     return address;
   }
 
+  // TODO: remove this misspelled method.
+  @Override
+  public Address checkLatLang(Address address, boolean forceUpdate)
+      throws AxelorException, JSONException {
+    return checkLatLong(address, forceUpdate);
+  }
+
+  @Override
   public String computeFullName(Address address) {
 
     String l2 = address.getAddressL2();

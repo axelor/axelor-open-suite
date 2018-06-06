@@ -29,5 +29,5 @@ public interface ITranslation {
   public static final String INVOICING = /*$$(*/ "MapRest.Invoicing" /*)*/;
   public static final String DELIVERY = /*$$(*/ "MapRest.Delivery" /*)*/;
 
-  public static final String MAP_ZERO_RESULTS = /*$$(*/ "MapRest.Zero results" /*)*/;
+  public static final String MAP_ZERO_RESULTS = /*$$(*/ "MapRest.ZERO_RESULTS" /*)*/;
 }

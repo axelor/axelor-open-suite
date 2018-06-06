@@ -31,6 +31,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 public interface PurchaseOrderLineService {
 
@@ -46,6 +47,16 @@ public interface PurchaseOrderLineService {
 
   public TaxLine getTaxLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException;
+
+  /**
+   * Get optional tax line.
+   *
+   * @param purchaseOrder
+   * @param purchaseOrderLine
+   * @return
+   */
+  Optional<TaxLine> geOptionalTaxLine(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
   public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine);
 

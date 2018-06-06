@@ -25,17 +25,19 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class ProductionConfigService {
-	
-	public ProductionConfig getProductionConfig(Company company) throws AxelorException  {
-		
-		ProductionConfig productionConfig = company.getProductionConfig(); 
-		
-		if(productionConfig == null)  {
-			throw new AxelorException(company, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_1), company.getName());
-		}
-		
-		return productionConfig;
-		
-	}
 
+  public ProductionConfig getProductionConfig(Company company) throws AxelorException {
+
+    ProductionConfig productionConfig = company.getProductionConfig();
+
+    if (productionConfig == null) {
+      throw new AxelorException(
+          company,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_1),
+          company.getName());
+    }
+
+    return productionConfig;
+  }
 }

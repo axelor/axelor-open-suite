@@ -15,22 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.web;
 
-import com.axelor.apps.production.db.BillOfMaterial;
+public interface ITranslation {
 
-public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
-
-  @Override
-  public BillOfMaterial save(BillOfMaterial billOfMaterial) {
-
-    if (billOfMaterial.getVersionNumber() != null && billOfMaterial.getVersionNumber() > 1) {
-      billOfMaterial.setFullName(
-          billOfMaterial.getName() + " - v" + billOfMaterial.getVersionNumber());
-    } else {
-      billOfMaterial.setFullName(billOfMaterial.getName());
-    }
-
-    return super.save(billOfMaterial);
-  }
+  public static final String PIN_CHAR_LEAD = /*$$(*/ "MapRest.PinCharLead" /*)*/;
+  public static final String PIN_CHAR_OPPORTUNITY = /*$$(*/ "MapRest.PinCharOpportunity" /*)*/;
 }

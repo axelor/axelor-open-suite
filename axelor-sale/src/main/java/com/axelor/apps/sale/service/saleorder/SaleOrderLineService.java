@@ -42,6 +42,18 @@ public interface SaleOrderLineService {
       throws AxelorException;
 
   /**
+   * Compute product information.
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @param taxLineIsOptional
+   * @throws AxelorException
+   */
+  void computeProductInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean taxLineIsOptional)
+      throws AxelorException;
+
+  /**
    * Compute totals from a sale order line
    *
    * @param saleOrder
