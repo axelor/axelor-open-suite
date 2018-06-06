@@ -54,6 +54,7 @@
 - Sales : perform calculation of margin when we apply discount on sale order line.
 - Fix permissions for role.manager and role.crm
 - Fix line adding with having multiple project on timesheet editor.
+- Add filter on the Fiscal year field in the Fiscal Period form view to select only Fiscal years.
 - Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c. 
 - Fix partner data for 'admin' and 'demo' users on demo data.
 - Fix error on 'Import demo data' for apps without modules. 
