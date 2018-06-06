@@ -81,6 +81,7 @@
 - Fix missing domains in production menu.
 - Fix bank details default value in invoice form.
 - Fix wrong calculation of unit price when create stock move from purchase order and sale order
+- Switch Expense Birt report from portrait to landscape, fix and display the currency, set kilometric allowance to translatable and refactor elements positions.
 - Product: fill information on sale/purchase order and invoice lines even when tax is missing.
 - Fix trading name not being imported from opportunity on sale quotation generation
 - Purchase order: fix doubled stock move total when generating supplier arrival.
