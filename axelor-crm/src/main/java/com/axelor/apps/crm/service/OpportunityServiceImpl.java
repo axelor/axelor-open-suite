@@ -55,10 +55,7 @@ public class OpportunityServiceImpl implements OpportunityService {
           I18n.get(IExceptionMessage.LEAD_PARTNER));
     }
 
-    String name = lead.getCompanyName();
-    if (Strings.isNullOrEmpty(name)) {
-      name = lead.getFullName();
-    }
+    String name = lead.getFullName();
 
     Address address = null;
     if (lead.getPrimaryAddress() != null) {

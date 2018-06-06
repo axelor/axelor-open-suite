@@ -89,6 +89,7 @@
 - Product: fill information on sale/purchase order and invoice lines even when tax is missing.
 - Fix trading name not being imported from opportunity on sale quotation generation
 - Purchase order: fix doubled stock move total when generating supplier arrival.
+- Remove companyName from Leads (fullName already has namecolumn attribute).
 - Fix several errors when creating a production process with management of consumed products on phases.
 - Bill of materials: fix filters using define sub-bill of materials
 - Logistical form is now printed in customer language and not in user language.
