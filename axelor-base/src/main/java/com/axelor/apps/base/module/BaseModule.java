@@ -52,6 +52,8 @@ import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
+import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -108,5 +110,6 @@ public class BaseModule extends AxelorModule {
         bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
         bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
         bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
+        bind(PeriodService.class).to(PeriodServiceImpl.class);
     }
 }

@@ -3,6 +3,8 @@
 ## [Unreleased 4.x]
 ### Improvements
 - Fiscal Position interface reworked and moved from Account to Base module
+- Add a counter to limit iterations of while loop in YearService and BudgetService
+- Create an interface for PeriodService
 - Accounting export, use 1000 for administration and 1001 for FEC
 - Move every method of mobile service in HumanRessourceMobileController + fix some and change parameters
 - Web service mobile, create getKilometricAllowParam
