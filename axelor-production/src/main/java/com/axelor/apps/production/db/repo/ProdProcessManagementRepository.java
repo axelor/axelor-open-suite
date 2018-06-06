@@ -21,14 +21,14 @@ import com.axelor.apps.production.db.ProdProcess;
 
 public class ProdProcessManagementRepository extends ProdProcessRepository {
 
-	@Override
-	public ProdProcess save(ProdProcess prodProcess) {
-		
-		if (prodProcess.getVersionNumber() != null && prodProcess.getVersionNumber() > 1)
-			prodProcess.setFullName( prodProcess.getName() + " - v" + String.valueOf(prodProcess.getVersionNumber()) );
-		else
-			prodProcess.setFullName( prodProcess.getName() );
-		
-		return super.save(prodProcess);
-	}
+  @Override
+  public ProdProcess save(ProdProcess prodProcess) {
+
+    if (prodProcess.getVersionNumber() != null && prodProcess.getVersionNumber() > 1)
+      prodProcess.setFullName(
+          prodProcess.getName() + " - v" + String.valueOf(prodProcess.getVersionNumber()));
+    else prodProcess.setFullName(prodProcess.getName());
+
+    return super.save(prodProcess);
+  }
 }
