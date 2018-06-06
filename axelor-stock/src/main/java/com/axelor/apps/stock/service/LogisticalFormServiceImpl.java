@@ -489,12 +489,12 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
               totalNetMass.add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetMass()));
         }
       }
-    }
 
-    totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 10, RoundingMode.HALF_UP);
-    logisticalForm.setTotalNetMass(totalNetMass);
-    logisticalForm.setTotalGrossMass(totalGrossMass);
-    logisticalForm.setTotalVolume(totalVolume);
+      totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 10, RoundingMode.HALF_UP);
+      logisticalForm.setTotalNetMass(totalNetMass);
+      logisticalForm.setTotalGrossMass(totalGrossMass);
+      logisticalForm.setTotalVolume(totalVolume);
+    }
   }
 
   protected ScriptHelper getScriptHelper(LogisticalForm logisticalForm) {

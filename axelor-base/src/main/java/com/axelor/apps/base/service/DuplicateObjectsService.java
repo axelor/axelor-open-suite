@@ -44,11 +44,9 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class DuplicateObjectsService {
 
-  private final Logger log = LoggerFactory.getLogger(DuplicateObjectsService.class);
-
-  @Inject private MetaFieldRepository metaFieldRepo;
-
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final Logger log = LoggerFactory.getLogger(DuplicateObjectsService.class);
+  @Inject private MetaFieldRepository metaFieldRepo;
 
   @Transactional
   public void removeDuplicate(List<Long> selectedIds, String modelName) {
@@ -184,7 +182,6 @@ public class DuplicateObjectsService {
   public List<?> findDuplicatedRecordIds(
       Set<String> fieldSet, Class<? extends Model> modelClass, String filter)
       throws AxelorException {
-
     if (fieldSet == null || fieldSet.isEmpty()) {
       return null;
     }
@@ -199,8 +196,8 @@ public class DuplicateObjectsService {
 
   /*
    * get all records for duplicate records
-   */
-  private String concatFields(Class<?> modelClass, Set<String> fieldSet) throws AxelorException {
+   */ private String concatFields(Class<?> modelClass, Set<String> fieldSet)
+      throws AxelorException {
 
     StringBuilder fields = new StringBuilder("concat(");
     Mapper mapper = Mapper.of(modelClass);

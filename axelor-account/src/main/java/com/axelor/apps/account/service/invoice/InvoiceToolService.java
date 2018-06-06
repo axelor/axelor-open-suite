@@ -62,7 +62,6 @@ public class InvoiceToolService {
               .withDayOfMonth(invoiceDate.lengthOfMonth())
               .plusMonths(paymentCondition.getPaymentTime());
         }
-
       case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
         return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth());
 

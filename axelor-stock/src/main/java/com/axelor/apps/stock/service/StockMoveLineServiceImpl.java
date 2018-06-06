@@ -54,10 +54,9 @@ import java.util.stream.Collectors;
 @RequestScoped
 public class StockMoveLineServiceImpl implements StockMoveLineService {
 
-  private TrackingNumberService trackingNumberService;
-
   protected AppBaseService appBaseService;
   protected StockMoveService stockMoveService;
+  private TrackingNumberService trackingNumberService;
 
   @Inject
   public StockMoveLineServiceImpl(

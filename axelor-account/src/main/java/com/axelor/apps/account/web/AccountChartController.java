@@ -65,6 +65,7 @@ public class AccountChartController {
         response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_1));
       else response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_2));
       response.setReload(true);
+
     } else response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_3));
   }
 }

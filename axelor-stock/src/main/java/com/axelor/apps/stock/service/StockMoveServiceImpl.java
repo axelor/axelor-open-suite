@@ -80,11 +80,11 @@ public class StockMoveServiceImpl implements StockMoveService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected StockMoveLineService stockMoveLineService;
-  private SequenceService sequenceService;
-  private StockMoveLineRepository stockMoveLineRepo;
   protected AppBaseService appBaseService;
   protected StockMoveRepository stockMoveRepo;
   protected PartnerProductQualityRatingService partnerProductQualityRatingService;
+  private SequenceService sequenceService;
+  private StockMoveLineRepository stockMoveLineRepo;
 
   @Inject
   public StockMoveServiceImpl(
@@ -255,6 +255,11 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
 
     StockMove stockMove = new StockMove();
+
+    if (stockMove.getStockMoveLineList() == null) {
+      stockMove.setStockMoveLineList(new ArrayList<>());
+    }
+
     stockMove.setFromAddress(fromAddress);
     stockMove.setToAddress(toAddress);
     this.computeAddressStr(stockMove);

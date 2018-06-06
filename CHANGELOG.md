@@ -41,6 +41,7 @@
 - Change generated accounting report file name to be more explicit.
 - Sale order: allow increasing quantity on delivered detail lines.
 - Moved the Partner seq at the top of the Partner form views and set it as the first column in Partner grid views.
+- Make Logistical form printable even in Provision status.
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
@@ -96,6 +97,7 @@
 - Fix wrong calculation of unit price when create stock move from purchase order and sale order
 - Product: fill information on sale/purchase order and invoice lines even when tax is missing.
 - Fix trading name not being imported from opportunity on sale quotation generation
+- Purchase order: fix doubled stock move total when generating supplier arrival.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

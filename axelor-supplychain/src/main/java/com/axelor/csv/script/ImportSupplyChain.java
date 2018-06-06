@@ -119,6 +119,7 @@ public class ImportSupplyChain {
             Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
         if (purchaseOrder.getValidationDate() != null) {
           invoice.setInvoiceDate(purchaseOrder.getValidationDate());
+
         } else {
           invoice.setInvoiceDate(LocalDate.now());
         }
@@ -150,7 +151,7 @@ public class ImportSupplyChain {
         }
       }
       if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-        // taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation
+        // taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation//
         // of tasks in project module
         saleOrderWorkflowService.confirmSaleOrder(saleOrder);
         saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
@@ -161,6 +162,7 @@ public class ImportSupplyChain {
         Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
         if (saleOrder.getConfirmationDate() != null) {
           invoice.setInvoiceDate(saleOrder.getConfirmationDate());
+
         } else {
           invoice.setInvoiceDate(LocalDate.now());
         }
