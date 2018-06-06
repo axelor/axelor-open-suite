@@ -23,65 +23,68 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
-
 import java.math.BigDecimal;
 
-public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdProcessLineService{
+public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdProcessLineService {
 
-    protected ConfiguratorService configuratorService;
+  protected ConfiguratorService configuratorService;
 
-    @Inject
-    ConfiguratorProdProcessLineServiceImpl(ConfiguratorService configuratorService) {
-        this.configuratorService = configuratorService;
+  @Inject
+  ConfiguratorProdProcessLineServiceImpl(ConfiguratorService configuratorService) {
+    this.configuratorService = configuratorService;
+  }
+
+  @Override
+  public ProdProcessLine generateProdProcessLine(
+      ConfiguratorProdProcessLine confProdProcessLine, JsonContext attributes)
+      throws AxelorException {
+    if (confProdProcessLine == null) {
+      return null;
+    }
+    ProdProcessLine prodProcessLine = new ProdProcessLine();
+    BigDecimal minCapacityPerCycle;
+    BigDecimal maxCapacityPerCycle;
+    long durationPerCycle;
+
+    if (confProdProcessLine.getDefMinCapacityFormula()) {
+      minCapacityPerCycle =
+          new BigDecimal(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getMinCapacityPerCycleFormula(), attributes)
+                  .toString());
+    } else {
+      minCapacityPerCycle = confProdProcessLine.getMinCapacityPerCycle();
+    }
+    if (confProdProcessLine.getDefMaxCapacityFormula()) {
+      maxCapacityPerCycle =
+          new BigDecimal(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getMaxCapacityPerCycleFormula(), attributes)
+                  .toString());
+    } else {
+      maxCapacityPerCycle = confProdProcessLine.getMaxCapacityPerCycle();
+    }
+    if (confProdProcessLine.getDefDurationFormula()) {
+      durationPerCycle =
+          Long.decode(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getDurationPerCycleFormula(), attributes)
+                  .toString());
+    } else {
+      durationPerCycle = confProdProcessLine.getDurationPerCycle();
     }
 
-    @Override
-    public ProdProcessLine generateProdProcessLine(ConfiguratorProdProcessLine
-                                                           confProdProcessLine,
-                                                   JsonContext attributes)
-            throws AxelorException {
-        if (confProdProcessLine == null) {
-            return null;
-        }
-        ProdProcessLine prodProcessLine = new ProdProcessLine();
-        BigDecimal minCapacityPerCycle;
-        BigDecimal maxCapacityPerCycle;
-        long durationPerCycle;
+    prodProcessLine.setName(confProdProcessLine.getName());
+    prodProcessLine.setPriority(confProdProcessLine.getPriority());
+    prodProcessLine.setWorkCenter(confProdProcessLine.getWorkCenter());
+    prodProcessLine.setOutsourcing(confProdProcessLine.getOutsourcing());
+    prodProcessLine.setStockLocation(confProdProcessLine.getStockLocation());
+    prodProcessLine.setDescription(confProdProcessLine.getDescription());
 
-        if (confProdProcessLine.getDefMinCapacityFormula()) {
-            minCapacityPerCycle =  new BigDecimal(configuratorService
-                    .computeFormula(confProdProcessLine.getMinCapacityPerCycleFormula(),
-                            attributes).toString());
-        } else {
-            minCapacityPerCycle = confProdProcessLine.getMinCapacityPerCycle();
-        }
-        if (confProdProcessLine.getDefMaxCapacityFormula()) {
-            maxCapacityPerCycle = new BigDecimal(configuratorService
-                    .computeFormula(confProdProcessLine.getMaxCapacityPerCycleFormula(),
-                            attributes).toString());
-        } else {
-            maxCapacityPerCycle = confProdProcessLine.getMaxCapacityPerCycle();
-        }
-        if (confProdProcessLine.getDefDurationFormula()) {
-            durationPerCycle = Long.decode(configuratorService
-                    .computeFormula(confProdProcessLine.getDurationPerCycleFormula(),
-                            attributes).toString());
-        } else {
-            durationPerCycle = confProdProcessLine.getDurationPerCycle();
-        }
+    prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
+    prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
+    prodProcessLine.setDurationPerCycle(durationPerCycle);
 
-        prodProcessLine.setName(confProdProcessLine.getName());
-        prodProcessLine.setPriority(confProdProcessLine.getPriority());
-        prodProcessLine.setWorkCenter(confProdProcessLine.getWorkCenter());
-        prodProcessLine.setOutsourcing(confProdProcessLine.getOutsourcing());
-        prodProcessLine.setStockLocation(confProdProcessLine.getStockLocation());
-        prodProcessLine.setDescription(confProdProcessLine.getDescription());
-
-        prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
-        prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
-        prodProcessLine.setDurationPerCycle(durationPerCycle);
-
-
-        return prodProcessLine;
-    }
+    return prodProcessLine;
+  }
 }

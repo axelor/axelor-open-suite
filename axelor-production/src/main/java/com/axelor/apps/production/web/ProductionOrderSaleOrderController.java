@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.production.web;
 
-import java.util.List;
-
-import com.google.inject.Inject;
-
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.ProductionOrderSaleOrderService;
@@ -31,32 +27,32 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class ProductionOrderSaleOrderController {
 
-	@Inject
-	ProductionOrderSaleOrderService productionOrderSaleOrderService;
+  @Inject ProductionOrderSaleOrderService productionOrderSaleOrderService;
 
-	public void createProductionOrders(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void createProductionOrders(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-		SaleOrder saleOrder = request.getContext().asType( SaleOrder.class );
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		List<Long> productionOrderIdList = productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-		if (!productionOrderIdList.isEmpty()){
-			response.setView(ActionView
-							.define(I18n.get("Production order"))
-				            .model(ProductionOrder.class.getName())
-				            .add("grid", "production-order-grid")
-				            .add("form", "production-order-form")
-				            .domain("self.id in ("+Joiner.on(",").join(productionOrderIdList)+")")
-				            .map());
-		}else{
-			response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
-		}
-
-	}
-
-
+    List<Long> productionOrderIdList =
+        productionOrderSaleOrderService.generateProductionOrder(saleOrder);
+    if (!productionOrderIdList.isEmpty()) {
+      response.setView(
+          ActionView.define(I18n.get("Production order"))
+              .model(ProductionOrder.class.getName())
+              .add("grid", "production-order-grid")
+              .add("form", "production-order-form")
+              .domain("self.id in (" + Joiner.on(",").join(productionOrderIdList) + ")")
+              .map());
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
+    }
+  }
 }

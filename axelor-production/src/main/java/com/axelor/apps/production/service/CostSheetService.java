@@ -25,11 +25,9 @@ import com.google.inject.persist.Transactional;
 
 public interface CostSheetService {
 
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public CostSheet computeCostPrice(ManufOrder manufOrder) throws AxelorException;
-
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public CostSheet computeCostPrice(ManufOrder manufOrder) throws AxelorException;
 }
