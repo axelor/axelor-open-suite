@@ -17,38 +17,46 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-
-import java.time.LocalDateTime;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public interface ProductionOrderService {
 
-	
-	public ProductionOrder createProductionOrder() throws AxelorException;
-	
-	public String getProductionOrderSeq() throws AxelorException;
+  public ProductionOrder createProductionOrder() throws AxelorException;
 
-	/**
-	 * Generate a Production Order
-	 * @param product
-	 * 		Product must be passed in param because product can be different of bill of material product (Product variant)
-	 * @param billOfMaterial
-	 * @param qtyRequested
-	 * @param businessProject
-	 * @param startDate
-	 * @return
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, LocalDateTime startDate) throws AxelorException;
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder addManufOrder(ProductionOrder productionOrder, Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, LocalDateTime startDate) throws AxelorException;
-	
+  public String getProductionOrderSeq() throws AxelorException;
+
+  /**
+   * Generate a Production Order
+   *
+   * @param product Product must be passed in param because product can be different of bill of
+   *     material product (Product variant)
+   * @param billOfMaterial
+   * @param qtyRequested
+   * @param businessProject
+   * @param startDate
+   * @return
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public ProductionOrder generateProductionOrder(
+      Product product,
+      BillOfMaterial billOfMaterial,
+      BigDecimal qtyRequested,
+      LocalDateTime startDate)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public ProductionOrder addManufOrder(
+      ProductionOrder productionOrder,
+      Product product,
+      BillOfMaterial billOfMaterial,
+      BigDecimal qtyRequested,
+      LocalDateTime startDate)
+      throws AxelorException;
 }

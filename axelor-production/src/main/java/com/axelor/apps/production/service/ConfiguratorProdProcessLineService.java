@@ -24,13 +24,15 @@ import com.axelor.rpc.JsonContext;
 
 public interface ConfiguratorProdProcessLineService {
 
-    /**
-     * Generate a prod process line from a configurator prod process line
-     * and a JsonContext holding the custom values
-     * @param confProdProcessLine
-     * @param attributes
-     * @return
-     */
-    ProdProcessLine generateProdProcessLine(ConfiguratorProdProcessLine confProdProcessLine,
-                                            JsonContext attributes) throws AxelorException;
+  /**
+   * Generate a prod process line from a configurator prod process line and a JsonContext holding
+   * the custom values
+   *
+   * @param confProdProcessLine
+   * @param attributes
+   * @return
+   */
+  ProdProcessLine generateProdProcessLine(
+      ConfiguratorProdProcessLine confProdProcessLine, JsonContext attributes)
+      throws AxelorException;
 }

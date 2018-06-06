@@ -52,7 +52,6 @@ public class DuplicateObjectsController {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject private DuplicateObjectsService duplicateObjectService;
-
   @Inject private MetaModelRepository metaModelRepo;
 
   public void removeDuplicate(ActionRequest request, ActionResponse response) {
@@ -227,7 +226,6 @@ public class DuplicateObjectsController {
 
     return (Class<? extends Model>) JPA.model(model);
   }
-
   /**
    * call check duplicate wizard
    *

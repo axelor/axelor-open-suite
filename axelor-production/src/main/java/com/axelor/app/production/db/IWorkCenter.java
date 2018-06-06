@@ -19,29 +19,21 @@ package com.axelor.app.production.db;
 
 /**
  * Interface of Event package. Enum all static variable of packages.
- * 
+ *
  * @author dubaux
- * 
  */
 @Deprecated
 public interface IWorkCenter {
 
+  /** Static work center type select */
+  static final int WORK_CENTER_HUMAN = 1;
 
-	/**
-	 * Static work center type select
-	 */
+  static final int WORK_CENTER_MACHINE = 2;
+  static final int WORK_CENTER_BOTH = 3;
 
-	static final int WORK_CENTER_HUMAN = 1;
-	static final int WORK_CENTER_MACHINE = 2;
-	static final int WORK_CENTER_BOTH = 3;
-	
-	/**
-	 * Static cost type select
-	 */
+  /** Static cost type select */
+  static final int COST_PER_HOUR = 1;
 
-	static final int COST_PER_HOUR = 1;
-	static final int COST_PER_CYCLE = 2;
-	static final int COST_PER_PIECE = 3;
-
-	
+  static final int COST_PER_CYCLE = 2;
+  static final int COST_PER_PIECE = 3;
 }

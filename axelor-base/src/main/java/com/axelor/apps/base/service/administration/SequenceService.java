@@ -78,6 +78,53 @@ public class SequenceService {
     this.appBaseService = appBaseService;
   }
 
+  public static boolean isYearValid(Sequence sequence) {
+
+    boolean yearlyResetOk = sequence.getYearlyResetOk();
+
+    if (!yearlyResetOk) {
+      return true;
+    }
+
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
+        seq = seqPrefixe + seqSuffixe;
+
+    if (yearlyResetOk && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public static boolean isMonthValid(Sequence sequence) {
+
+    boolean monthlyResetOk = sequence.getMonthlyResetOk();
+
+    if (!monthlyResetOk) {
+      return true;
+    }
+
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
+        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
+        seq = seqPrefixe + seqSuffixe;
+
+    if (monthlyResetOk
+        && ((!seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH))
+            || (!seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR)))) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public static boolean isSequenceLengthValid(Sequence sequence) {
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replaceAll("%", "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replaceAll("%", "");
+
+    return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
+  }
+
   /**
    * Retourne une sequence en fonction du code, de la sté
    *
@@ -131,53 +178,6 @@ public class SequenceService {
     return getSequence(code, company) != null;
   }
 
-  public static boolean isYearValid(Sequence sequence) {
-
-    boolean yearlyResetOk = sequence.getYearlyResetOk();
-
-    if (!yearlyResetOk) {
-      return true;
-    }
-
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        seq = seqPrefixe + seqSuffixe;
-
-    if (yearlyResetOk && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR)) {
-      return false;
-    }
-
-    return true;
-  }
-
-  public static boolean isMonthValid(Sequence sequence) {
-
-    boolean monthlyResetOk = sequence.getMonthlyResetOk();
-
-    if (!monthlyResetOk) {
-      return true;
-    }
-
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        seq = seqPrefixe + seqSuffixe;
-
-    if (monthlyResetOk
-        && ((!seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH))
-            || (!seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR)))) {
-      return false;
-    }
-
-    return true;
-  }
-
-  public static boolean isSequenceLengthValid(Sequence sequence) {
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replaceAll("%", "");
-    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replaceAll("%", "");
-
-    return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
-  }
-
   public String getSequenceNumber(Sequence sequence) {
     return getSequenceNumber(sequence, appBaseService.getTodayDate());
   }
@@ -205,7 +205,6 @@ public class SequenceService {
       sequenceValue = findNextLetterSequence(sequenceVersion);
     }
     sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
-
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
             .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))

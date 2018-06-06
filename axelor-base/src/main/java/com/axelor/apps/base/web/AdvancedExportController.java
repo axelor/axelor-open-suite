@@ -61,19 +61,13 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class AdvancedExportController {
 
-  @Inject private AdvancedExportService advancedExportService;
-
-  @Inject private MetaModelRepository metaModelRepo;
-
-  @Inject private AdvancedExportRepository advancedExportRepo;
-
-  @Inject private AdvancedExportLineRepository advancedExportLineRepo;
-
-  @Inject private MetaFieldRepository metaFieldRepo;
-
-  private Inflector inflector;
-
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  @Inject private AdvancedExportService advancedExportService;
+  @Inject private MetaModelRepository metaModelRepo;
+  @Inject private AdvancedExportRepository advancedExportRepo;
+  @Inject private AdvancedExportLineRepository advancedExportLineRepo;
+  @Inject private MetaFieldRepository metaFieldRepo;
+  private Inflector inflector;
 
   public void getModelAllFields(ActionRequest request, ActionResponse response)
       throws ClassNotFoundException {

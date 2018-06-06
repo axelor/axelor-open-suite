@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1416,6 +1416,7 @@ group by AdvanceInvoice.id]]></xml-property>
             <property name="type">a4</property>
             <property name="topMargin">0.47625cm</property>
             <property name="leftMargin">0.4in</property>
+            <property name="bottomMargin">0in</property>
             <property name="rightMargin">0.15625in</property>
             <property name="headerHeight">0cm</property>
             <property name="footerHeight">2.4cm</property>
