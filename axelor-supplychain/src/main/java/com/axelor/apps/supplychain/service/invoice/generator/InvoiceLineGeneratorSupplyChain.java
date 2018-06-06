@@ -117,16 +117,18 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.taxLine = saleOrderLine.getTaxLine();
       this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
       this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
+      this.unit = saleOrderLine.getUnit();
+      this.qty = saleOrderLine.getQty();
     } else if (purchaseOrderLine != null) {
       this.isTitleLine = purchaseOrderLine.getIsTitleLine();
-      this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
-    }
-    if (stockMoveLine != null) {
+      this.unit = purchaseOrderLine.getUnit();
+      this.qty = purchaseOrderLine.getQty();
+    } else if (stockMoveLine != null) {
       this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
       Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
 
