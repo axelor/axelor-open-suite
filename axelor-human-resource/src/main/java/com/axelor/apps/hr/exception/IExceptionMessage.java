@@ -79,6 +79,8 @@ public interface IExceptionMessage {
       "Please, enter an activity for the employee %s" /*)*/;
   static final String TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING = /*$$(*/
       "Please add an employee's public holiday events planning related to user %s" /*)*/;
+  static final String TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY = /*$$(*/
+      "Timesheet line list is empty, please add a timesheet line list" /*)*/;
 
   static final String LEAVE_USER_EMPLOYEE = /*$$(*/
       "Please create an employee for the user %s" /*)*/;

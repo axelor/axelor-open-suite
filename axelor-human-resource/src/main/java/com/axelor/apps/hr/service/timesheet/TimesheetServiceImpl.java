@@ -145,9 +145,15 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     if (timesheet.getToDate() == null) {
       List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+      if (timesheetLineList.isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
+      }
       LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
       for (TimesheetLine timesheetLine : timesheetLineList.subList(1, timesheetLineList.size())) {
-        if (timesheetLine.getDate().compareTo(timesheetLineLastDate) > 0) {
+        LocalDate timesheetLineDate = timesheetLine.getDate();
+        if (timesheetLineDate != null && timesheetLineDate.compareTo(timesheetLineLastDate) > 0) {
           timesheetLineLastDate = timesheetLine.getDate();
         }
       }
@@ -157,6 +163,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Message sendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -173,6 +180,15 @@ public class TimesheetServiceImpl implements TimesheetService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
+    confirm(timesheet);
+    return sendConfirmationEmail(timesheet);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void validate(Timesheet timesheet) throws AxelorException {
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
@@ -181,6 +197,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Message sendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -198,6 +215,15 @@ public class TimesheetServiceImpl implements TimesheetService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Message validateAndSendValidationEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
+    validate(timesheet);
+    return sendValidationEmail(timesheet);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void refuse(Timesheet timesheet) throws AxelorException {
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
@@ -206,6 +232,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Message sendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -222,12 +249,22 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Message refuseAndSendRefusalEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
+    refuse(timesheet);
+    return sendRefusalEmail(timesheet);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void cancel(Timesheet timesheet) {
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -241,6 +278,15 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
 
     return null;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Message cancelAndSendCancellationEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
+    cancel(timesheet);
+    return sendCancellationEmail(timesheet);
   }
 
   @Override
@@ -695,24 +741,15 @@ public class TimesheetServiceImpl implements TimesheetService {
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE));
-    } else if (timesheet.getToDate() != null) {
-      if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
-        for (TimesheetLine timesheetLine : timesheetLineList) {
-          count++;
-          if (timesheetLine.getDate().isAfter(timesheet.getToDate())) {
-            listId.add(count);
-          } else if (timesheetLine.getDate().isBefore(timesheet.getFromDate())) {
-            listId.add(count);
-          }
-        }
-      }
-    } else {
-      if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
-        for (TimesheetLine timesheetLine : timesheetLineList) {
-          count++;
-          if (timesheetLine.getDate().isBefore(timesheet.getFromDate())) {
-            listId.add(count);
-          }
+    } else if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        count++;
+        if (timesheetLine.getDate() != null
+            && ((timesheet.getToDate() != null
+                    && (timesheetLine.getDate().isAfter(timesheet.getToDate())
+                        || (timesheetLine.getDate().isBefore(timesheet.getFromDate()))))
+                || (timesheetLine.getDate().isBefore(timesheet.getFromDate())))) {
+          listId.add(count);
         }
       }
     }

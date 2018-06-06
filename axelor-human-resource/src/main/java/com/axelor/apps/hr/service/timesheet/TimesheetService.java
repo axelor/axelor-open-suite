@@ -46,10 +46,18 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
+  public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException;
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void validate(Timesheet timesheet) throws AxelorException;
 
   public Message sendValidationEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException;
+
+  public Message validateAndSendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
@@ -60,10 +68,18 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
+  public Message refuseAndSendRefusalEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException;
+
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(Timesheet timesheet) throws AxelorException;
 
   public Message sendCancellationEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException;
+
+  public Message cancelAndSendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
