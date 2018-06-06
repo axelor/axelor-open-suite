@@ -30,11 +30,13 @@
     <!-- <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?sensor=false&region=FR">
     </script> -->
-    <script type="text/javascript">
-   
+	<script src="../lib/jquery.ui/js/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/apphome.js"></script>
+	<script type="text/javascript">
+
 		var query = window.location.search.substring(1);
 		query = decodeURIComponent(query);
-		
+
 		function loadGoogleMapAPIJS(key, callback) {
 			if (!key) {
 				throw 'Google Maps API key is missing.';
@@ -57,7 +59,7 @@
 	        }
 	        return (false);
 	    }
-		
+
 		function computeTotalDistance(result) {
 		  var total = 0;
 		  var myroute = result.routes[0];
@@ -67,9 +69,21 @@
 		  total = total / 1000.
 		  document.getElementById('total').innerHTML = total + ' km';
 		}
-		
-		
-		
+
+		function translateResult(element, status) {
+			var url = getAppHome() + "/ws/map/translation/" + "MapRest." + status;
+			$.get(url)
+				.done(function(data) {
+					element.innerHTML = data.translation;
+				})
+				.fail(function (jqXHR, textStatus, errorThrown) {
+					console.log(jqXHR);
+					console.log(textStatus);
+					console.log(errorThrown );
+					element.innerHTML = status;
+				});
+		}
+
 		function initialize() {
 		 	var directionsDisplay;
 			var directionsService = new google.maps.DirectionsService();
@@ -78,11 +92,11 @@
 			var dy = getQueryVariable("dy");
 			var ax = getQueryVariable("ax");
 			var ay = getQueryVariable("ay");
-		
+
 		  var rendererOptions = {
 		    draggable: true
 		  };
-		
+
 		  directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 		  var start = new google.maps.LatLng(dx, dy);
 		  var end = new google.maps.LatLng(ax, ay);
@@ -94,7 +108,9 @@
 		  directionsService.route(request, function(response, status) {
 		    if (status == google.maps.DirectionsStatus.OK) {
 		      directionsDisplay.setDirections(response);
-		    }
+		  } else {
+			  translateResult(document.getElementById('directionsPanel') , status);
+		  }
 		  });
 		  var mapOptions = {
 		    zoom:7,
@@ -104,13 +120,13 @@
 		  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 		  directionsDisplay.setMap(map);
 		  directionsDisplay.setPanel(document.getElementById('directionsPanel'));
-		
+
 		  google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
 		    computeTotalDistance(directionsDisplay.directions);
 		  });
-		
+
 		}
-		
+
 		window.onload = function() {
 			try {
 		        loadGoogleMapAPIJS(getQueryVariable('key'), function() {
