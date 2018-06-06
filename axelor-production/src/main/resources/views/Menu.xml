@@ -228,6 +228,6 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
-		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false</domain>
+		<domain>self.defineSubBillOfMaterial = true AND self.personalized = false</domain>
 	</action-view>
 </object-views>

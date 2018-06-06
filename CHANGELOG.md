@@ -29,6 +29,8 @@
 - Moved the Partner seq at the top of the Partner form views and set it as the first column in Partner grid views.
 - Make Logistical form printable even in Provision status.
 - Filter trackingNumber in stockMoveLine in function of fromStockLocation as it is done in tab detailsStockLocation of StockLocation
+- Add a counter to limit iterations of while loop in YearService and BudgetService
+- Create an interface for PeriodService
 
 ## Bug Fixes
 - Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
@@ -82,10 +84,14 @@
 - Fix missing domains in production menu.
 - Fix bank details default value in invoice form.
 - Fix wrong calculation of unit price when create stock move from purchase order and sale order
+- Switch Expense Birt report from portrait to landscape, fix and display the currency, set kilometric allowance to translatable and refactor elements positions.
 - Product: fill information on sale/purchase order and invoice lines even when tax is missing.
 - Fix trading name not being imported from opportunity on sale quotation generation
 - Purchase order: fix doubled stock move total when generating supplier arrival.
+- Fix several errors when creating a production process with management of consumed products on phases.
+- Bill of materials: fix filters using define sub-bill of materials
 - Logistical form is now printed in customer language and not in user language.
+- Timesheet editor: fix java.lang.NullPointerException in TimesheetServiceImpl when delete a line in editor
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements
