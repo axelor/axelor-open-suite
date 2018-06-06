@@ -307,9 +307,7 @@ public class TimesheetController {
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
       TimesheetService timesheetService = timesheetServiceProvider.get();
 
-      timesheetService.cancel(timesheet);
-
-      Message message = timesheetService.sendCancellationEmail(timesheet);
+      Message message = timesheetService.cancelAndSendCancellationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
             String.format(
@@ -336,9 +334,7 @@ public class TimesheetController {
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
       TimesheetService timesheetService = timesheetServiceProvider.get();
 
-      timesheetService.confirm(timesheet);
-
-      Message message = timesheetService.sendConfirmationEmail(timesheet);
+      Message message = timesheetService.confirmAndSendConfirmationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
             String.format(
@@ -386,10 +382,9 @@ public class TimesheetController {
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
       TimesheetService timesheetService = timesheetServiceProvider.get();
 
-      timesheetService.validate(timesheet);
       computeTimeSpent(request, response);
 
-      Message message = timesheetService.sendValidationEmail(timesheet);
+      Message message = timesheetService.validateAndSendValidationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
             String.format(
@@ -413,9 +408,7 @@ public class TimesheetController {
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
       TimesheetService timesheetService = timesheetServiceProvider.get();
 
-      timesheetService.refuse(timesheet);
-
-      Message message = timesheetService.sendRefusalEmail(timesheet);
+      Message message = timesheetService.refuseAndSendRefusalEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
             String.format(
