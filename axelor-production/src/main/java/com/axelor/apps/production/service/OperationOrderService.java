@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
@@ -29,64 +25,70 @@ import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 public interface OperationOrderService {
 
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine) throws AxelorException;
-	
-	
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public OperationOrder createOperationOrder(ManufOrder manufOrder, int priority, WorkCenter workCenter, WorkCenter machineWorkCenter,
-			ProdProcessLine prodProcessLine) throws AxelorException;
-	
-	
-	
-	public String computeName(ManufOrder manufOrder, int priority, String operationName);
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
+      throws AxelorException;
 
-	/**
-     * Generate {@link OperationOrder#toConsumeProdProductList} from
-	 * the prod process line in param.
-	 * @param operationOrder
-	 *
-	 */
-	void createToConsumeProdProductList(OperationOrder operationOrder);
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public OperationOrder createOperationOrder(
+      ManufOrder manufOrder,
+      int priority,
+      WorkCenter workCenter,
+      WorkCenter machineWorkCenter,
+      ProdProcessLine prodProcessLine)
+      throws AxelorException;
 
+  public String computeName(ManufOrder manufOrder, int priority, String operationName);
 
-	/**
-	 * Updates the diff prod product list.
-	 * @param operationOrder
-	 * @return the updated operation order
-	 * @throws AxelorException
-	 */
-	OperationOrder updateDiffProdProductList(OperationOrder operationOrder) throws AxelorException;
+  /**
+   * Generate {@link OperationOrder#toConsumeProdProductList} from the prod process line in param.
+   *
+   * @param operationOrder
+   */
+  void createToConsumeProdProductList(OperationOrder operationOrder);
 
+  /**
+   * Updates the diff prod product list.
+   *
+   * @param operationOrder
+   * @return the updated operation order
+   * @throws AxelorException
+   */
+  OperationOrder updateDiffProdProductList(OperationOrder operationOrder) throws AxelorException;
 
-	List<Map<String, Object>> chargeByMachineHours(LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException;
-	List<Map<String, Object>> chargeByMachineDays(LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException;
+  List<Map<String, Object>> chargeByMachineHours(
+      LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException;
 
-	/**
-	 * Compute the difference between the two lists for the given operation
-	 * order.
-	 * @param operationOrder
-	 * @param prodProductList
-	 * @param stockMoveLineList
-	 * @return
-	 * @throws AxelorException
-	 */
-	List<ProdProduct> createDiffProdProductList(OperationOrder operationOrder, List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList) throws AxelorException;
+  List<Map<String, Object>> chargeByMachineDays(
+      LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException;
 
+  /**
+   * Compute the difference between the two lists for the given operation order.
+   *
+   * @param operationOrder
+   * @param prodProductList
+   * @param stockMoveLineList
+   * @return
+   * @throws AxelorException
+   */
+  List<ProdProduct> createDiffProdProductList(
+      OperationOrder operationOrder,
+      List<ProdProduct> prodProductList,
+      List<StockMoveLine> stockMoveLineList)
+      throws AxelorException;
 
-	/**
-	 * On changing {@link OperationOrder#consumedStockMoveLineList},
-	 * we update {@link OperationOrder#diffConsumeProdProductList}, and also
-	 * the stock move.
-	 *
-	 * @param operationOrder
-	 */
-	void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder) throws AxelorException;
+  /**
+   * On changing {@link OperationOrder#consumedStockMoveLineList}, we update {@link
+   * OperationOrder#diffConsumeProdProductList}, and also the stock move.
+   *
+   * @param operationOrder
+   */
+  void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
+      throws AxelorException;
 }
-

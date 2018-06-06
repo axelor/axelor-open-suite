@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
@@ -35,34 +32,69 @@ import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychainImpl {
-	
-	@Inject
-	public StockRulesServiceProductionImpl(StockRulesRepository stockRuleRepo, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, PurchaseOrderLineService purchaseOrderLineService, 
-			PurchaseOrderRepository purchaseOrderRepo, TemplateRepository templateRepo, TemplateMessageService templateMessageService, MessageRepository messageRepo) {
-		super(stockRuleRepo, purchaseOrderServiceSupplychainImpl, purchaseOrderLineService, 
-				purchaseOrderRepo, templateRepo, templateMessageService, messageRepo);
-		
-	}
-	
-	public void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException {
-		StockLocation stockLocation = stockLocationLine.getStockLocation();
-		if (stockLocation == null) {return;}
-		StockRules stockRules = this.getStockRules(product, stockLocation, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
-		if (stockRules == null) {return;}
-	    if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
-	    	this.generateProductionOrder(product, qty, stockLocationLine, type, stockRules);
-		}
-		else {
-			this.generatePurchaseOrder(product, qty, stockLocationLine, type);
-		}
-    }
 
-    public void generateProductionOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules) throws AxelorException {
-		if(this.useMinStockRules(stockLocationLine, this.getStockRules(product, stockLocationLine.getStockLocation(), type, StockRulesRepository.USE_CASE_STOCK_CONTROL), qty, type)) {
-			BigDecimal qtyToProduce = this.getQtyToOrder(qty, stockLocationLine, type, stockRules);
-			Beans.get(ProductionOrderService.class).generateProductionOrder(product, null, qtyToProduce, LocalDateTime.now());
-		}
-	}
+  @Inject
+  public StockRulesServiceProductionImpl(
+      StockRulesRepository stockRuleRepo,
+      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
+      PurchaseOrderLineService purchaseOrderLineService,
+      PurchaseOrderRepository purchaseOrderRepo,
+      TemplateRepository templateRepo,
+      TemplateMessageService templateMessageService,
+      MessageRepository messageRepo) {
+    super(
+        stockRuleRepo,
+        purchaseOrderServiceSupplychainImpl,
+        purchaseOrderLineService,
+        purchaseOrderRepo,
+        templateRepo,
+        templateMessageService,
+        messageRepo);
+  }
+
+  public void generateOrder(
+      Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
+      throws AxelorException {
+    StockLocation stockLocation = stockLocationLine.getStockLocation();
+    if (stockLocation == null) {
+      return;
+    }
+    StockRules stockRules =
+        this.getStockRules(
+            product, stockLocation, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
+    if (stockRules == null) {
+      return;
+    }
+    if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
+      this.generateProductionOrder(product, qty, stockLocationLine, type, stockRules);
+    } else {
+      this.generatePurchaseOrder(product, qty, stockLocationLine, type);
+    }
+  }
+
+  public void generateProductionOrder(
+      Product product,
+      BigDecimal qty,
+      StockLocationLine stockLocationLine,
+      int type,
+      StockRules stockRules)
+      throws AxelorException {
+    if (this.useMinStockRules(
+        stockLocationLine,
+        this.getStockRules(
+            product,
+            stockLocationLine.getStockLocation(),
+            type,
+            StockRulesRepository.USE_CASE_STOCK_CONTROL),
+        qty,
+        type)) {
+      BigDecimal qtyToProduce = this.getQtyToOrder(qty, stockLocationLine, type, stockRules);
+      Beans.get(ProductionOrderService.class)
+          .generateProductionOrder(product, null, qtyToProduce, LocalDateTime.now());
+    }
+  }
 }
