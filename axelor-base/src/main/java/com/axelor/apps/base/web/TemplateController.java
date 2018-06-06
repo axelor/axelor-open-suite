@@ -27,16 +27,15 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class TemplateController {
-	
-	@Inject
-	private TemplateService templateService;
-	
-	public void checkTargetReceptor(ActionRequest request, ActionResponse response){
-		
-		try {
-			templateService.checkTargetReceptor(request.getContext().asType(Template.class));
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
 
+  @Inject private TemplateService templateService;
+
+  public void checkTargetReceptor(ActionRequest request, ActionResponse response) {
+
+    try {
+      templateService.checkTargetReceptor(request.getContext().asType(Template.class));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

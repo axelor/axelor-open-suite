@@ -17,44 +17,36 @@
  */
 package com.axelor.apps.base.service;
 
-import java.math.BigDecimal;
-
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Singleton
-public class DurationServiceImpl implements DurationService  {
-	
-	
-	public LocalDate computeDuration(Duration duration, LocalDate date)  {
-		
-		if(duration == null)  {  return date;  }
-			
-		switch (duration.getTypeSelect()) {
-		
-		case DurationRepository.TYPE_MONTH:
-			
-			return date.plusMonths(duration.getValue());
-			
-		case DurationRepository.TYPE_DAY:
-			
-			return date.plusDays(duration.getValue());
+public class DurationServiceImpl implements DurationService {
 
-		default:
-			
-			return date;
-		}
-		
-		
-	}
-	
-	public BigDecimal computeDurationInDays(ZonedDateTime startDate, ZonedDateTime endDate){
-		return new BigDecimal(ChronoUnit.DAYS.between(startDate, endDate));
-	}
-	
+  public LocalDate computeDuration(Duration duration, LocalDate date) {
+
+    if (duration == null) {
+      return date;
+    }
+
+    switch (duration.getTypeSelect()) {
+      case DurationRepository.TYPE_MONTH:
+        return date.plusMonths(duration.getValue());
+
+      case DurationRepository.TYPE_DAY:
+        return date.plusDays(duration.getValue());
+
+      default:
+        return date;
+    }
+  }
+
+  public BigDecimal computeDurationInDays(ZonedDateTime startDate, ZonedDateTime endDate) {
+    return new BigDecimal(ChronoUnit.DAYS.between(startDate, endDate));
+  }
 }

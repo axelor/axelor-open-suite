@@ -28,17 +28,14 @@ import com.google.inject.Singleton;
 @Singleton
 public class InventoryLineController {
 
-	@Inject
-	InventoryLineService inventoryLineService;
-	
-	public void updateInventoryLine(ActionRequest request, ActionResponse response) throws AxelorException {
-				
-		InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
-		inventoryLine = inventoryLineService.updateInventoryLine(inventoryLine);
-		response.setValue("rack",inventoryLine.getRack());
-		response.setValue("currentQty",inventoryLine.getCurrentQty());
-	}
-	
-}
+  @Inject InventoryLineService inventoryLineService;
 
-  
+  public void updateInventoryLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+    inventoryLine = inventoryLineService.updateInventoryLine(inventoryLine);
+    response.setValue("rack", inventoryLine.getRack());
+    response.setValue("currentQty", inventoryLine.getCurrentQty());
+  }
+}

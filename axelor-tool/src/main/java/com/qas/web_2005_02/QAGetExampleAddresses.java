@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
+ * Classe Java pour anonymous complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -42,95 +41,75 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "country",
-    "layout",
-    "qaConfig"
-})
+@XmlType(
+  name = "",
+  propOrder = {"country", "layout", "qaConfig"}
+)
 @XmlRootElement(name = "QAGetExampleAddresses")
 public class QAGetExampleAddresses {
 
-    @XmlElement(name = "Country", required = true)
-    protected String country;
-    @XmlElement(name = "Layout", required = true)
-    protected String layout;
-    @XmlElement(name = "QAConfig")
-    protected QAConfigType qaConfig;
+  @XmlElement(name = "Country", required = true)
+  protected String country;
 
-    /**
-     * Obtient la valeur de la propriété country.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCountry() {
-        return country;
-    }
+  @XmlElement(name = "Layout", required = true)
+  protected String layout;
 
-    /**
-     * Définit la valeur de la propriété country.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCountry(String value) {
-        this.country = value;
-    }
+  @XmlElement(name = "QAConfig")
+  protected QAConfigType qaConfig;
 
-    /**
-     * Obtient la valeur de la propriété layout.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLayout() {
-        return layout;
-    }
+  /**
+   * Obtient la valeur de la propriété country.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getCountry() {
+    return country;
+  }
 
-    /**
-     * Définit la valeur de la propriété layout.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLayout(String value) {
-        this.layout = value;
-    }
+  /**
+   * Définit la valeur de la propriété country.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setCountry(String value) {
+    this.country = value;
+  }
 
-    /**
-     * Obtient la valeur de la propriété qaConfig.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public QAConfigType getQAConfig() {
-        return qaConfig;
-    }
+  /**
+   * Obtient la valeur de la propriété layout.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getLayout() {
+    return layout;
+  }
 
-    /**
-     * Définit la valeur de la propriété qaConfig.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public void setQAConfig(QAConfigType value) {
-        this.qaConfig = value;
-    }
+  /**
+   * Définit la valeur de la propriété layout.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setLayout(String value) {
+    this.layout = value;
+  }
 
+  /**
+   * Obtient la valeur de la propriété qaConfig.
+   *
+   * @return possible object is {@link QAConfigType }
+   */
+  public QAConfigType getQAConfig() {
+    return qaConfig;
+  }
+
+  /**
+   * Définit la valeur de la propriété qaConfig.
+   *
+   * @param value allowed object is {@link QAConfigType }
+   */
+  public void setQAConfig(QAConfigType value) {
+    this.qaConfig = value;
+  }
 }

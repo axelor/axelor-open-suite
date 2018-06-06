@@ -30,9 +30,6 @@
 	
 <!-- Call -->
     <integer name="callTypeSelect" title="Call type" selection="crm.event.call.type.select"/>  
-    
-<!-- Meeting -->
-	<many-to-one name="meetingType" ref="com.axelor.apps.crm.db.MeetingType" title="Meeting type"/>
 
 <!-- Task -->
   	<boolean name="isRecurrent" title="Recurrent"/>

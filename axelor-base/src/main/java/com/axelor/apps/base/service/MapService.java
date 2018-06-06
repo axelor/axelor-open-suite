@@ -17,37 +17,38 @@
  */
 package com.axelor.apps.base.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.utils.URIBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-
 import groovy.util.XmlSlurper;
 import groovy.util.slurpersupport.GPathResult;
 import groovy.util.slurpersupport.Node;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wslite.json.JSONArray;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
@@ -57,377 +58,434 @@ import wslite.rest.Response;
 
 public class MapService {
 
-	@Inject
-	protected AppBaseService appBaseService;
+  @Inject protected AppBaseService appBaseService;
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	public JSONObject geocodeGoogle(String qString) throws AxelorException, JSONException {
-		if(qString == null){
-			return null;
-		}
-		//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
+  public JSONObject geocodeGoogle(String qString) throws AxelorException, JSONException {
+    if (qString == null) {
+      return null;
+    }
+    // http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
 
-		// TODO inject the rest client, or better, run it in the browser
-		RESTClient restClient = new RESTClient("https://maps.googleapis.com");
-		Map<String,Object> responseQuery = new HashMap<String,Object>();
-		responseQuery.put("address", qString.trim());
-		responseQuery.put("sensor", "false");
-        responseQuery.put("key", getGoogleMapsApiKey());
-		Map<String,Object> responseMap = new HashMap<String,Object>();
-		responseMap.put("path", "/maps/api/geocode/json");
-		responseMap.put("accept", ContentType.JSON);
-		responseMap.put("query", responseQuery);
+    // TODO inject the rest client, or better, run it in the browser
+    RESTClient restClient = new RESTClient("https://maps.googleapis.com");
+    Map<String, Object> responseQuery = new HashMap<>();
+    responseQuery.put("address", qString.trim());
+    responseQuery.put("sensor", "false");
+    responseQuery.put("key", getGoogleMapsApiKey());
+    Map<String, Object> responseMap = new HashMap<>();
+    responseMap.put("path", "/maps/api/geocode/json");
+    responseMap.put("accept", ContentType.JSON);
+    responseMap.put("query", responseQuery);
 
-		responseMap.put("connectTimeout", 5000);
-		responseMap.put("readTimeout", 10000);
-		responseMap.put("followRedirects", false);
-		responseMap.put("useCaches", false);
-		responseMap.put("sslTrustAllCerts", true);
+    responseMap.put("connectTimeout", 5000);
+    responseMap.put("readTimeout", 10000);
+    responseMap.put("followRedirects", false);
+    responseMap.put("useCaches", false);
+    responseMap.put("sslTrustAllCerts", true);
 
-		JSONObject restResponse = getJSON(restClient.get(responseMap));
-        LOG.debug("Gmap response: {}", restResponse);
-		
-        if (restResponse.containsKey("results")) {
-            JSONArray results = (JSONArray) restResponse.get("results");
-            
-            if (CollectionUtils.isNotEmpty(results)) {
-                JSONObject result = (JSONObject) results.iterator().next();
-                
-                if (result != null && result.containsKey("geometry")) {
-                    return (JSONObject)((JSONObject) result.get("geometry")).get("location");
-                }
-            }
+    JSONObject restResponse = getJSON(restClient.get(responseMap));
+    LOG.debug("Gmap response: {}", restResponse);
+
+    if (restResponse.containsKey("results")) {
+      JSONArray results = (JSONArray) restResponse.get("results");
+
+      if (CollectionUtils.isNotEmpty(results)) {
+        JSONObject result = (JSONObject) results.iterator().next();
+
+        if (result != null && result.containsKey("geometry")) {
+          return (JSONObject) ((JSONObject) result.get("geometry")).get("location");
         }
+      }
+    }
 
-        throw new AxelorException(appBaseService.getAppBase(), TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.MAP_RESPONSE_ERROR), restResponse);
+    throw new AxelorException(
+        appBaseService.getAppBase(),
+        TraceBackRepository.CATEGORY_NO_VALUE,
+        I18n.get(IExceptionMessage.MAP_RESPONSE_ERROR),
+        restResponse);
 
-		/*
-		log.debug("restResponse = {}", restResponse)
-		log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
-		 */
-		//def searchresults = new JsonSlurper().parseText(restResponse.parsedResponseContent.text);
-		/*
-		LOG.debug("searchresults.status = {}", searchresults.status);
-		if (searchresults.status == "OK") {
-			/*
-			log.debug("searchresults.results.size() = {}", searchresults.results.size())
-			log.debug("searchresults.results[0] = {}", searchresults.results[0])
-			log.debug("searchresults.results[0].address_components = {}", searchresults.results[0].address_components)
-			log.debug("searchresults.results[0].geometry.location = {}", searchresults.results[0].geometry.location)
-		 */
-		/*
-		def results = searchresults.results;
+    /*
+    log.debug("restResponse = {}", restResponse)
+    log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
+     */
+    // def searchresults = new JsonSlurper().parseText(restResponse.parsedResponseContent.text);
+    /*
+    LOG.debug("searchresults.status = {}", searchresults.status);
+    if (searchresults.status == "OK") {
+    	/*
+    	log.debug("searchresults.results.size() = {}", searchresults.results.size())
+    	log.debug("searchresults.results[0] = {}", searchresults.results[0])
+    	log.debug("searchresults.results[0].address_components = {}", searchresults.results[0].address_components)
+    	log.debug("searchresults.results[0].geometry.location = {}", searchresults.results[0].geometry.location)
+     */
+    /*
+    	def results = searchresults.results;
 
-		if (results.size() > 1) {
-			response.put("multiple", true);
-		}
-		def firstPlaceFound = results[0];
+    	if (results.size() > 1) {
+    		response.put("multiple", true);
+    	}
+    	def firstPlaceFound = results[0];
 
-		if (firstPlaceFound) {
-			BigDecimal lat = new BigDecimal(firstPlaceFound.geometry.location.lat);
-			BigDecimal lng = new BigDecimal(firstPlaceFound.geometry.location.lng);
+    	if (firstPlaceFound) {
+    		BigDecimal lat = new BigDecimal(firstPlaceFound.geometry.location.lat);
+    		BigDecimal lng = new BigDecimal(firstPlaceFound.geometry.location.lng);
 
-			response.put("lat", lat.setScale(10, RoundingMode.HALF_EVEN));
-			response.put("lng", lng.setScale(10, RoundingMode.HALF_EVEN));
-		}
-	*/
-	//}
-	}
+    		response.put("lat", lat.setScale(10, RoundingMode.HALF_EVEN));
+    		response.put("lng", lng.setScale(10, RoundingMode.HALF_EVEN));
+    	}
+    */
+    // }
+  }
 
-	public HashMap<String,Object> getMapGoogle(String qString){
-		LOG.debug("Query string: {}",qString);
-		try {
-				JSONObject googleResponse = geocodeGoogle(qString);
-				LOG.debug("Google response: {}",googleResponse);
-				if(googleResponse != null){
-					HashMap<String,Object> result = new HashMap<String,Object>();
-					BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
-					BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
-					LOG.debug("URL:"+"map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
-					result.put("url","map/gmaps.html?key=" + getGoogleMapsApiKey()
-							+  "&x="+latitude+"&y="+longitude+"&z=18");
-					result.put("latitude", latitude);
-					result.put("longitude",longitude);
-					return result;
-				}
+  public Map<String, Object> getMapGoogle(String qString) throws AxelorException, JSONException {
+    LOG.debug("Query string: {}", qString);
+    JSONObject googleResponse = geocodeGoogle(qString);
+    LOG.debug("Google response: {}", googleResponse);
+    if (googleResponse != null) {
+      Map<String, Object> result = new HashMap<>();
+      BigDecimal latitude = new BigDecimal(googleResponse.get("lat").toString());
+      BigDecimal longitude = new BigDecimal(googleResponse.get("lng").toString());
+      LOG.debug("URL:" + "map/gmaps.html?x=" + latitude + "&y=" + longitude + "&z=18");
+      result.put(
+          "url",
+          "map/gmaps.html?key="
+              + getGoogleMapsApiKey()
+              + "&x="
+              + latitude
+              + "&y="
+              + longitude
+              + "&z=18");
+      result.put("latitude", latitude);
+      result.put("longitude", longitude);
+      return result;
+    }
 
-		}catch(Exception e){
-			TraceBackService.trace(e);
-		}
-		return null;
-	}
+    return null;
+  }
 
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public Map<String, Object> getMapOsm(String qString) {
+    Map<String, Object> result = new HashMap<>();
+    try {
+      BigDecimal latitude = BigDecimal.ZERO;
+      BigDecimal longitude = BigDecimal.ZERO;
+      RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
+      Map<String, Object> mapQuery = new HashMap<>();
+      mapQuery.put("q", qString);
+      mapQuery.put("format", "xml");
+      mapQuery.put("polygon", true);
+      mapQuery.put("addressdetails", true);
+      Map<String, Object> mapHeaders = new HashMap<>();
+      mapHeaders.put("HTTP referrer", "axelor");
+      Map<String, Object> mapResponse = new HashMap<>();
+      mapResponse.put("path", "/search");
+      mapResponse.put("accept", ContentType.JSON);
+      mapResponse.put("query", mapQuery);
+      mapResponse.put("headers", mapHeaders);
+      mapResponse.put("connectTimeout", 5000);
+      mapResponse.put("readTimeout", 10000);
+      mapResponse.put("followRedirects", false);
+      mapResponse.put("useCaches", false);
+      mapResponse.put("sslTrustAllCerts", true);
+      Response restResponse = restClient.get(mapResponse);
+      GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
+      Iterator<Node> iterator = searchresults.childNodes();
+      if (iterator.hasNext()) {
+        Node node = iterator.next();
+        Map attributes = node.attributes();
+        if (attributes.containsKey("lat") && attributes.containsKey("lon")) {
+          if (BigDecimal.ZERO.compareTo(latitude) == 0)
+            latitude = new BigDecimal(node.attributes().get("lat").toString());
+          if (BigDecimal.ZERO.compareTo(longitude) == 0)
+            longitude = new BigDecimal(node.attributes().get("lon").toString());
+        }
+      }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public HashMap<String,Object> getMapOsm(String qString){
-		HashMap<String,Object> result = new HashMap<String,Object>();
-		try {
-			BigDecimal latitude = BigDecimal.ZERO;
-			BigDecimal longitude = BigDecimal.ZERO;
-			RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
-			Map<String,Object> mapQuery = new HashMap<String,Object>();
-			mapQuery.put("q", qString);
-			mapQuery.put("format", "xml");
-			mapQuery.put("polygon", true);
-			mapQuery.put("addressdetails", true);
-			Map<String,Object> mapHeaders = new HashMap<String,Object>();
-			mapHeaders.put("HTTP referrer", "axelor");
-			Map<String,Object> mapResponse = new HashMap<String,Object>();
-			mapResponse.put("path", "/search");
-			mapResponse.put("accept", ContentType.JSON);
-			mapResponse.put("query", mapQuery);
-			mapResponse.put("headers", mapHeaders);
-			mapResponse.put("connectTimeout", 5000);
-			mapResponse.put("readTimeout", 10000);
-			mapResponse.put("followRedirects", false);
-			mapResponse.put("useCaches", false);
-			mapResponse.put("sslTrustAllCerts", true);
-			Response restResponse = restClient.get(mapResponse);
-			GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
-			Iterator<Node> iterator = searchresults.childNodes();
-			if(iterator.hasNext()){
-				Node node = iterator.next();
-				Map attributes = node.attributes();
-				if(attributes.containsKey("lat") && attributes.containsKey("lon")){
-					if(BigDecimal.ZERO.compareTo(latitude) == 0)
-						latitude = new BigDecimal(node.attributes().get("lat").toString());
-					if(BigDecimal.ZERO.compareTo(longitude) == 0)
-						longitude = new BigDecimal(node.attributes().get("lon").toString());
-				}
-			}
-			
-			LOG.debug("OSMap qString: {}, latitude: {}, longitude: {}", qString, latitude, longitude);
-			
-			if(BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0){
-				result.put("url","map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18");
-				result.put("latitude", latitude);
-				result.put("longitude",longitude);
-				return result;
-			}
+      LOG.debug("OSMap qString: {}, latitude: {}, longitude: {}", qString, latitude, longitude);
 
-		}catch(Exception e)  {
-			TraceBackService.trace(e);
-		}
-		return null;
-	}
+      if (BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0) {
+        result.put("url", "map/oneMarker.html?x=" + latitude + "&y=" + longitude + "&z=18");
+        result.put("latitude", latitude);
+        result.put("longitude", longitude);
+        return result;
+      }
 
-	public HashMap<String,Object> getMap(String qString)  {
-		LOG.debug("qString = {}", qString);
-		
-		switch (appBaseService.getAppBase().getMapApiSelect()) {
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    return null;
+  }
+
+  public Map<String, Object> getMap(String qString) throws AxelorException, JSONException {
+    LOG.debug("qString = {}", qString);
+
+    switch (appBaseService.getAppBase().getMapApiSelect()) {
       case AppBaseRepository.MAP_API_GOOGLE:
-        
         return getMapGoogle(qString);
-        
+
       case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
-        
         return getMapOsm(qString);
 
       default:
         return null;
     }
-	}
+  }
 
-    public String getMapUrl(BigDecimal latitude, BigDecimal longitude) {
-        return getMapUrl(latitude, longitude, null);
+  public String getMapUrl(BigDecimal latitude, BigDecimal longitude) {
+    return getMapUrl(latitude, longitude, null);
+  }
+
+  public String getMapUrl(BigDecimal latitude, BigDecimal longitude, String title) {
+    try {
+      switch (appBaseService.getAppBase().getMapApiSelect()) {
+        case AppBaseRepository.MAP_API_GOOGLE:
+          final String uri = "map/gmaps.html";
+          URIBuilder ub = new URIBuilder(uri);
+          ub.addParameter("key", getGoogleMapsApiKey());
+          ub.addParameter("x", String.valueOf(latitude));
+          ub.addParameter("y", String.valueOf(longitude));
+          ub.addParameter("z", String.valueOf(18));
+          ub.addParameter("title", title);
+          return ub.toString();
+
+        case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+          return "map/oneMarker.html?x=" + latitude + "&y=" + longitude + "&z=18";
+
+        default:
+          return null;
+      }
+    } catch (URISyntaxException e) {
+      TraceBackService.trace(e);
+      return getErrorURI(e.getMessage());
+    }
+  }
+
+  public String getDirectionUrl(
+      String key, BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon) {
+    return "map/directions.html?dx="
+        + dLat
+        + "&dy="
+        + dLon
+        + "&ax="
+        + aLat
+        + "&ay="
+        + aLon
+        + "&key="
+        + key;
+  }
+
+  @SuppressWarnings("unchecked")
+  public Map<String, Object> getDirectionMapGoogle(
+      String dString,
+      BigDecimal dLat,
+      BigDecimal dLon,
+      String aString,
+      BigDecimal aLat,
+      BigDecimal aLon) {
+    LOG.debug("departureString = {}", dString);
+    LOG.debug("arrivalString = {}", aString);
+    Map<String, Object> result = new HashMap<>();
+    try {
+      if (BigDecimal.ZERO.compareTo(dLat) == 0 || BigDecimal.ZERO.compareTo(dLon) == 0) {
+        Map<String, Object> googleResponse = geocodeGoogle(dString);
+        if (googleResponse != null) {
+          dLat = new BigDecimal(googleResponse.get("lat").toString());
+          dLon = new BigDecimal(googleResponse.get("lng").toString());
+        }
+      }
+      LOG.debug("departureLat = {}, departureLng={}", dLat, dLon);
+      if (BigDecimal.ZERO.compareTo(aLat) == 0 || BigDecimal.ZERO.compareTo(aLon) == 0) {
+        Map<String, Object> googleResponse = geocodeGoogle(aString);
+        if (googleResponse != null) {
+          aLat = new BigDecimal(googleResponse.get("lat").toString());
+          aLon = new BigDecimal(googleResponse.get("lng").toString());
+        }
+      }
+      LOG.debug("arrivalLat = {}, arrivalLng={}", aLat, aLon);
+      if (BigDecimal.ZERO.compareTo(dLat) != 0 && BigDecimal.ZERO.compareTo(dLon) != 0) {
+        if (BigDecimal.ZERO.compareTo(aLat) != 0 && BigDecimal.ZERO.compareTo(aLon) != 0) {
+          result.put(
+              "url",
+              "map/directions.html?key="
+                  + getGoogleMapsApiKey()
+                  + "&dx="
+                  + dLat
+                  + "&dy="
+                  + dLon
+                  + "&ax="
+                  + aLat
+                  + "&ay="
+                  + aLon);
+          result.put("aLat", aLat);
+          result.put("dLat", dLat);
+          return result;
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
 
-    public String getMapUrl(BigDecimal latitude, BigDecimal longitude, String title) {
-        try {
-            switch (appBaseService.getAppBase().getMapApiSelect()) {
-            case AppBaseRepository.MAP_API_GOOGLE:
-                final String uri = "map/gmaps.html";
-                URIBuilder ub = new URIBuilder(uri);
-                ub.addParameter("key", getGoogleMapsApiKey());
-                ub.addParameter("x", String.valueOf(latitude));
-                ub.addParameter("y", String.valueOf(longitude));
-                ub.addParameter("z", String.valueOf(18));
-                ub.addParameter("title", title);
-                return ub.toString();
+    return null;
+  }
 
-            case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+  public String makeAddressString(Address address, ObjectNode objectNode)
+      throws AxelorException, JSONException {
 
-                return "map/oneMarker.html?x=" + latitude + "&y=" + longitude + "&z=18";
+    address = Beans.get(AddressService.class).checkLatLong(address, false);
+    BigDecimal latit = address.getLatit();
+    BigDecimal longit = address.getLongit();
+    if (BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0) {
+      return null;
+    }
+    objectNode.put("latit", latit);
+    objectNode.put("longit", longit);
 
-            default:
-                return null;
-            }
-        } catch (URISyntaxException e) {
-            TraceBackService.trace(e);
-            return getErrorURI(e.getMessage());
-        }
+    return makeAddressString(address);
+  }
+
+  public void setData(ObjectNode mainNode, ArrayNode arrayNode)
+      throws AxelorException, JSONException {
+    mainNode.put("status", 0);
+    mainNode.set("data", arrayNode);
+
+    Optional<Address> optionalAddress = Beans.get(UserService.class).getUserActiveCompanyAddress();
+
+    if (optionalAddress.isPresent()) {
+      Address address = Beans.get(AddressService.class).checkLatLong(optionalAddress.get(), false);
+
+      JsonNodeFactory factory = JsonNodeFactory.instance;
+      ObjectNode objectNode = factory.objectNode();
+      objectNode.put("lat", address.getLatit());
+      objectNode.put("lng", address.getLongit());
+      mainNode.set("company", objectNode);
+    }
+  }
+
+  public void setError(ObjectNode mainNode, Exception e) {
+    TraceBackService.trace(e);
+    mainNode.put("status", -1);
+    mainNode.put("errorMsg", e.getLocalizedMessage());
+  }
+
+  public String makeAddressString(Address address) {
+    StringBuilder addressString = new StringBuilder();
+
+    if (address.getAddressL2() != null) {
+      addressString.append(address.getAddressL2() + "<br/>");
+    }
+    if (address.getAddressL3() != null) {
+      addressString.append(address.getAddressL3() + "<br/>");
+    }
+    if (address.getAddressL4() != null) {
+      addressString.append(address.getAddressL4() + "<br/>");
+    }
+    if (address.getAddressL5() != null) {
+      addressString.append(address.getAddressL5() + "<br/>");
+    }
+    if (address.getAddressL6() != null) {
+      addressString.append(address.getAddressL6());
+    }
+    if (address.getAddressL7Country() != null) {
+      addressString = addressString.append("<br/>" + address.getAddressL7Country().getName());
     }
 
-	public String getDirectionUrl(BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon){
-			return "map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon+"&key="+getGoogleMapsApiKey();
-	}
+    return addressString.toString();
+  }
 
-	@SuppressWarnings("unchecked")
-	public HashMap<String,Object> getDirectionMapGoogle(String dString, BigDecimal dLat, BigDecimal dLon, String aString, BigDecimal aLat, BigDecimal aLon){
-		LOG.debug("departureString = {}", dString);
-		LOG.debug("arrivalString = {}", aString);
-		HashMap<String,Object> result = new HashMap<String,Object>();
-		try {
-			if (BigDecimal.ZERO.compareTo(dLat) == 0 || BigDecimal.ZERO.compareTo(dLon) == 0) {
-				Map<String,Object> googleResponse = geocodeGoogle(dString);
-				if(googleResponse != null){
-					dLat = new BigDecimal(googleResponse.get("lat").toString());
-					dLon = new BigDecimal(googleResponse.get("lng").toString());
-				}
-			}
-			LOG.debug("departureLat = {}, departureLng={}", dLat,dLon);
-			if (BigDecimal.ZERO.compareTo(aLat) == 0  || BigDecimal.ZERO.compareTo(aLon) == 0 ) {
-				Map<String,Object> googleResponse = geocodeGoogle(aString);
-				if(googleResponse != null){
-					aLat = new BigDecimal(googleResponse.get("lat").toString());
-					aLon = new BigDecimal(googleResponse.get("lng").toString());
-				}
-			}
-			LOG.debug("arrivalLat = {}, arrivalLng={}", aLat,aLon);
-			if(BigDecimal.ZERO.compareTo(dLat) != 0  && BigDecimal.ZERO.compareTo(dLon) != 0){
-				if(BigDecimal.ZERO.compareTo(aLat) != 0 && BigDecimal.ZERO.compareTo(aLon) != 0){
-					result.put("url","map/directions.html?key=" + getGoogleMapsApiKey()
-							+ "&dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon);
-					result.put("aLat", aLat);
-					result.put("dLat", dLat);
-					return result;
-				}
-			}
-		}catch(Exception e)  {
-			TraceBackService.trace(e);
-		}
+  public void testGMapService() throws AxelorException, JSONException {
+    RESTClient restClient = new RESTClient("https://maps.googleapis.com");
 
-		return null;
-	}
+    Map<String, Object> responseQuery = new HashMap<>();
+    responseQuery.put("address", "google");
+    responseQuery.put("sensor", "false");
+    responseQuery.put("key", getGoogleMapsApiKey());
 
-	public String makeAddressString(Address address, ObjectNode objectNode) {
+    Map<String, Object> responseMap = new HashMap<>();
+    responseMap.put("path", "/maps/api/geocode/json");
+    responseMap.put("accept", ContentType.JSON);
+    responseMap.put("query", responseQuery);
 
-		address = Beans.get(AddressService.class).checkLatLang(address,false);
-		BigDecimal latit = address.getLatit();
-		BigDecimal longit = address.getLongit();
-		if(BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0){
-			return null;
-		}
-		objectNode.put("latit",latit);
-		objectNode.put("longit",longit);
+    responseMap.put("connectTimeout", 5000);
+    responseMap.put("readTimeout", 10000);
+    responseMap.put("followRedirects", false);
+    responseMap.put("useCaches", false);
+    responseMap.put("sslTrustAllCerts", true);
 
-        return makeAddressString(address);
+    Response response = restClient.get(responseMap);
+    getJSON(response);
+  }
+
+  private JSONObject getJSON(Response response) throws AxelorException, JSONException {
+    LOG.debug(
+        "Gmap connection status code: {}, message: {}",
+        response.getStatusCode(),
+        response.getStatusMessage());
+
+    AppBase appBase = appBaseService.getAppBase();
+
+    if (response.getStatusCode() != HttpStatus.SC_OK) {
+      String msg = String.format("%d: %s", response.getStatusCode(), response.getStatusMessage());
+      throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
     }
 
-    public String makeAddressString(Address address) {
-        StringBuilder addressString = new StringBuilder();
+    JSONObject json = new JSONObject(response.getContentAsString());
+    String status = json.getString("status");
 
-        if (address.getAddressL2() != null) {
-            addressString.append(address.getAddressL2() + "<br/>");
-        }
-        if (address.getAddressL3() != null) {
-            addressString.append(address.getAddressL3() + "<br/>");
-        }
-        if (address.getAddressL4() != null) {
-            addressString.append(address.getAddressL4() + "<br/>");
-        }
-        if (address.getAddressL5() != null) {
-            addressString.append(address.getAddressL5() + "<br/>");
-        }
-        if (address.getAddressL6() != null) {
-            addressString.append(address.getAddressL6());
-        }
-        if (address.getAddressL7Country() != null) {
-            addressString = addressString.append("<br/>" + address.getAddressL7Country().getName());
-        }
-
-        return addressString.toString();
+    if (!"OK".equalsIgnoreCase(status)) {
+      String msg =
+          json.has("error_message")
+              ? String.format("%s: %s", status, json.getString("error_message"))
+              : status;
+      throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
     }
 
-    public void testGMapService() throws AxelorException, JSONException {
-        RESTClient restClient = new RESTClient("https://maps.googleapis.com");
+    return json;
+  }
 
-        Map<String, Object> responseQuery = new HashMap<>();
-        responseQuery.put("address", "google");
-        responseQuery.put("sensor", "false");
-        responseQuery.put("key", getGoogleMapsApiKey());
+  public String getMapURI(String name) {
+    return getMapURI(name, null);
+  }
 
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("path", "/maps/api/geocode/json");
-        responseMap.put("accept", ContentType.JSON);
-        responseMap.put("query", responseQuery);
+  public String getMapURI(String name, Long id) {
+    final String uri = "map/gmap-objs.html";
 
-        responseMap.put("connectTimeout", 5000);
-        responseMap.put("readTimeout", 10000);
-        responseMap.put("followRedirects", false);
-        responseMap.put("useCaches", false);
-        responseMap.put("sslTrustAllCerts", true);
+    try {
+      URIBuilder ub = new URIBuilder(uri);
+      ub.addParameter("key", getGoogleMapsApiKey());
+      ub.addParameter("object", name);
 
-        Response response = restClient.get(responseMap);
-        getJSON(response);
+      if (id != null) {
+        ub.addParameter("id", String.valueOf(id));
+      }
+
+      return ub.toString();
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      return getErrorURI(e.getMessage());
+    }
+  }
+
+  private String getErrorURI(String msg) {
+    final String uri = "map/error.html";
+
+    try {
+      URIBuilder ub = new URIBuilder(uri);
+      ub.addParameter("msg", msg);
+
+      return ub.toString();
+    } catch (URISyntaxException e) {
+      TraceBackService.trace(e);
     }
 
-    private JSONObject getJSON(Response response) throws AxelorException, JSONException {
-        LOG.debug("Gmap connection status code: {}, message: {}", response.getStatusCode(),
-                response.getStatusMessage());
+    return uri;
+  }
 
-        AppBase appBase = appBaseService.getAppBase();
-
-        if (response.getStatusCode() != HttpStatus.SC_OK) {
-            String msg = String.format("%d: %s", response.getStatusCode(), response.getStatusMessage());
-            throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
-        }
-
-        JSONObject json = new JSONObject(response.getContentAsString());
-        String status = json.getString("status");
-
-        if (!"OK".equalsIgnoreCase(status)) {
-            String msg = json.has("error_message") ? String.format("%s: %s", status, json.getString("error_message"))
-                    : status;
-            throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
-        }
-        
-        return json;
-    }
-
-    public String getMapURI(String name) {
-        return getMapURI(name, null);
-    }
-
-    public String getMapURI(String name, Long id) {
-        final String uri = "map/gmap-objs.html";
-
-        try {
-            URIBuilder ub = new URIBuilder(uri);
-            ub.addParameter("key", getGoogleMapsApiKey());
-            ub.addParameter("object", name);
-
-            if (id != null) {
-                ub.addParameter("id", String.valueOf(id));
-            }
-
-            return ub.toString();
-        } catch (Exception e) {
-            TraceBackService.trace(e);
-            return getErrorURI(e.getMessage());
-        }
-    }
-
-    private String getErrorURI(String msg) {
-        final String uri = "map/error.html";
-
-        try {
-            URIBuilder ub = new URIBuilder(uri);
-            ub.addParameter("msg", msg);
-
-            return ub.toString();
-        } catch (URISyntaxException e) {
-            TraceBackService.trace(e);
-        }
-
-        return uri;
-    }
-
-    public String getGoogleMapsApiKey() {
-        Preconditions.checkArgument(StringUtils.notBlank(appBaseService.getAppBase().getGoogleMapsApiKey()),
-                I18n.get(IExceptionMessage.MAP_GOOGLE_MAPS_API_KEY_MISSING));
-        return appBaseService.getAppBase().getGoogleMapsApiKey();
-    }
-
+  public String getGoogleMapsApiKey() {
+    Preconditions.checkArgument(
+        StringUtils.notBlank(appBaseService.getAppBase().getGoogleMapsApiKey()),
+        I18n.get(IExceptionMessage.MAP_GOOGLE_MAPS_API_KEY_MISSING));
+    return appBaseService.getAppBase().getGoogleMapsApiKey();
+  }
 }

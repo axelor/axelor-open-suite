@@ -13,6 +13,8 @@
         <boolean name="manageMultipleSaleQuantity" title="Manage multiple sale quantity"/>
         <boolean name="timetableInvoicing" title="Time table invoicing"/>
         <boolean name="printingConfigPerSaleOrder" title="Printing config per Sale Order"/>
+        <boolean name="closeOpportunityUponSaleOrderConfirmation"
+            title="Close opportunity when one of the linked sale orders is confirmed"/>
 	</entity>
 
 </domain-models>

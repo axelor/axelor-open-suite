@@ -27,11 +27,10 @@ import com.axelor.apps.quality.service.QualityControlServiceImpl;
 
 public class QualityModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(QualityControlService.class).to(QualityControlServiceImpl.class);
-		bind(QualityAlertRepository.class).to(QualityAlertManagementRepository.class);
-		bind(QualityControlRepository.class).to(QualityControlManagementRepository.class);
-	}
-
+  @Override
+  protected void configure() {
+    bind(QualityControlService.class).to(QualityControlServiceImpl.class);
+    bind(QualityAlertRepository.class).to(QualityAlertManagementRepository.class);
+    bind(QualityControlRepository.class).to(QualityControlManagementRepository.class);
+  }
 }

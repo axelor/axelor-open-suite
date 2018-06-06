@@ -25,11 +25,9 @@ import com.axelor.apps.tool.service.TranslationServiceImpl;
 
 public class ToolModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(CipherService.class).to(CipherServiceImpl.class);
-        bind(TranslationService.class).to(TranslationServiceImpl.class);
-    }
-
+  @Override
+  protected void configure() {
+    bind(CipherService.class).to(CipherServiceImpl.class);
+    bind(TranslationService.class).to(TranslationServiceImpl.class);
+  }
 }
-

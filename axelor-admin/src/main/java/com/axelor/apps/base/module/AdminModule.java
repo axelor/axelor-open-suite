@@ -23,8 +23,8 @@ import com.axelor.apps.base.service.app.AppServiceImpl;
 
 public class AdminModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(AppService.class).to(AppServiceImpl.class);
-    }
+  @Override
+  protected void configure() {
+    bind(AppService.class).to(AppServiceImpl.class);
+  }
 }

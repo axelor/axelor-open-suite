@@ -21,7 +21,5 @@ import com.axelor.apps.sale.db.SaleOrder;
 
 public interface SaleOrderMarginService {
 
-	public void computeMarginSaleOrder(SaleOrder saleOrder);
-
-
+  public void computeMarginSaleOrder(SaleOrder saleOrder);
 }

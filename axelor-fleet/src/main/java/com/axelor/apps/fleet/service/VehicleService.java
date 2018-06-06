@@ -20,6 +20,6 @@ package com.axelor.apps.fleet.service;
 import com.axelor.apps.fleet.db.Vehicle;
 
 public interface VehicleService {
-	
-	public String setVehicleName(Vehicle vehicle);
+
+  public String setVehicleName(Vehicle vehicle);
 }

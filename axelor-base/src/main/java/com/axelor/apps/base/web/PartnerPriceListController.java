@@ -28,28 +28,28 @@ import com.google.inject.Singleton;
 @Singleton
 public class PartnerPriceListController {
 
-    /**
-     * Called from partner price list form view
-     * call {@link PartnerPriceListService#checkDates(PartnerPriceList)}
-     * return a warning with the response if dates validation fails for
-     * the price list set.
-     * @param request
-     * @param response
-     */
-    public void checkDates(ActionRequest request, ActionResponse response) {
-        PartnerPriceList partnerPriceList;
-        Class partnerOrPriceLists = request.getContext().getContextClass();
-        if (partnerOrPriceLists.equals(Partner.class)) {
-            partnerPriceList = request.getContext().asType(Partner.class).getSalePartnerPriceList();
-        } else if (partnerOrPriceLists.equals(PartnerPriceList.class)) {
-            partnerPriceList = request.getContext().asType(PartnerPriceList.class);
-        } else {
-            return;
-        }
-        try {
-            Beans.get(PartnerPriceListService.class).checkDates(partnerPriceList);
-        } catch (Exception e) {
-            response.setAlert(e.getMessage());
-        }
+  /**
+   * Called from partner price list form view call {@link
+   * PartnerPriceListService#checkDates(PartnerPriceList)} return a warning with the response if
+   * dates validation fails for the price list set.
+   *
+   * @param request
+   * @param response
+   */
+  public void checkDates(ActionRequest request, ActionResponse response) {
+    PartnerPriceList partnerPriceList;
+    Class partnerOrPriceLists = request.getContext().getContextClass();
+    if (partnerOrPriceLists.equals(Partner.class)) {
+      partnerPriceList = request.getContext().asType(Partner.class).getSalePartnerPriceList();
+    } else if (partnerOrPriceLists.equals(PartnerPriceList.class)) {
+      partnerPriceList = request.getContext().asType(PartnerPriceList.class);
+    } else {
+      return;
     }
+    try {
+      Beans.get(PartnerPriceListService.class).checkDates(partnerPriceList);
+    } catch (Exception e) {
+      response.setAlert(e.getMessage());
+    }
+  }
 }

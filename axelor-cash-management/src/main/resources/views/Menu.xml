@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<menuitem name="forecast-root" title="Forecasts" order="-86"  if="__config__.app.isApp('cash-management')"
+	<menuitem name="forecast-root" title="Cash management" order="-86"  if="__config__.app.isApp('cash-management')"
 		icon="fa-money"  icon-background="#e0a83c"/>
 	
 	<menuitem name="forecast-root-forecast" order="10" parent="forecast-root"
@@ -25,8 +25,7 @@
 		<domain>self.isReport != true</domain>
 	</action-view>
 	
-	<menuitem name="forecast-root-forecast-report" order="30" parent="forecast-root"
-		title="Forecast Reports" action="forecast.root.forecast.report" />
+	<menuitem name="forecast-root-forecast-report" order="30" parent="forecast-root" title="Forecast Reports" action="forecast.root.forecast.report" icon="fa-bar-chart"/>
 
 	<action-view name="forecast.root.forecast.report" title="Forecast Reports"
 		model="com.axelor.apps.cash.management.db.ForecastRecap" >
@@ -35,7 +34,7 @@
 		<domain>self.isReport = true</domain>
 	</action-view>
 		
-	<menuitem name="forecast-conf" title="Configuration" order="200" parent="forecast-root"/>
+	<menuitem name="forecast-conf" title="Configuration" order="200" parent="forecast-root" icon="fa-cog"/>
 	
 	<menuitem name="forecast-conf-forecast-generator" order="10" parent="forecast-conf"
 		title="Forecast Assistants" action="forecast.conf.forecast.generator" />

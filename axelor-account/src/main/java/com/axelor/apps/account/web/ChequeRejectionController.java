@@ -29,21 +29,20 @@ import com.google.inject.Singleton;
 @Singleton
 public class ChequeRejectionController {
 
-	@Inject
-	private ChequeRejectionService chequeRejectionService;
-	
-	@Inject
-	private ChequeRejectionRepository chequeRejectionRepo;
-	
-	public void validateChequeRejection(ActionRequest request, ActionResponse response)  {
-		
-		ChequeRejection chequeRejection = request.getContext().asType(ChequeRejection.class);
-		chequeRejection = chequeRejectionRepo.find(chequeRejection.getId());
-		
-		try {
-			chequeRejectionService.validateChequeRejection(chequeRejection);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }		
-	}
+  @Inject private ChequeRejectionService chequeRejectionService;
+
+  @Inject private ChequeRejectionRepository chequeRejectionRepo;
+
+  public void validateChequeRejection(ActionRequest request, ActionResponse response) {
+
+    ChequeRejection chequeRejection = request.getContext().asType(ChequeRejection.class);
+    chequeRejection = chequeRejectionRepo.find(chequeRejection.getId());
+
+    try {
+      chequeRejectionService.validateChequeRejection(chequeRejection);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -35,44 +35,41 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class EmployeeBonusController {
-	
-	@Inject
-	EmployeeBonusMgtRepository employeeBonusMgtRepo;
-	
-	@Inject
-	EmployeeBonusService employeeBonusService;
-	
 
-	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
-		EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
-		
-		try {
-			employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
-			employeeBonusService.compute(employeeBonusMgt);
-			response.setReload(true);
-			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getPayPeriod());
-			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getLeavePeriod());
-		} catch (Exception e) {
-			response.setFlash(e.getMessage());
-		}
-	}
-	
-	public void print(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		EmployeeBonusMgt bonus = employeeBonusMgtRepo.find( request.getContext().asType( EmployeeBonusMgt.class ).getId());
+  @Inject EmployeeBonusMgtRepository employeeBonusMgtRepo;
 
-		String name = I18n.get("Employee bonus management") + " :  " + bonus.getEmployeeBonusType().getLabel();
-		
-		String fileLink = ReportFactory.createReport(IReport.EMPLOYEE_BONUS_MANAGEMENT, name)
-				.addParam("EmployeeBonusMgtId", bonus.getId())
-				.addParam("Locale", ReportSettings.getPrintingLocale(null))
-				.toAttach(bonus)
-				.generate()
-				.getFileLink();
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
-	}
+  @Inject EmployeeBonusService employeeBonusService;
 
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
+    EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
+
+    try {
+      employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
+      employeeBonusService.compute(employeeBonusMgt);
+      response.setReload(true);
+      Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getPayPeriod());
+      Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getLeavePeriod());
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
+
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    EmployeeBonusMgt bonus =
+        employeeBonusMgtRepo.find(request.getContext().asType(EmployeeBonusMgt.class).getId());
+
+    String name =
+        I18n.get("Employee bonus management") + " :  " + bonus.getEmployeeBonusType().getLabel();
+
+    String fileLink =
+        ReportFactory.createReport(IReport.EMPLOYEE_BONUS_MANAGEMENT, name)
+            .addParam("EmployeeBonusMgtId", bonus.getId())
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .toAttach(bonus)
+            .generate()
+            .getFileLink();
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 }

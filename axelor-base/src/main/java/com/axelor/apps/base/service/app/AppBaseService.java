@@ -17,69 +17,61 @@
  */
 package com.axelor.apps.base.service.app;
 
+import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.Unit;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.Unit;
-
 public interface AppBaseService extends AppService {
-	
-	public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
-	public AppBase getAppBase();
+  public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
-// Date du jour
+  public AppBase getAppBase();
 
-	/**
-	 * Récupérer la date du jour avec l'heure.
-	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
-	 * sinon récupère celle de l'administration générale,
-	 * sinon date du jour.
-	 * private
-	 * @return
-	 */
-	public ZonedDateTime getTodayDateTime();
+  // Date du jour
 
-	/**
-	 * Récupérer la date du jour.
-	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
-	 * sinon récupère celle de l'administration générale,
-	 * sinon date du jour.
-	 *
-	 * @return
-	 */
-	public LocalDate getTodayDate();
+  /**
+   * Récupérer la date du jour avec l'heure. Retourne la date du jour paramétré dans l'utilisateur
+   * si existe, sinon récupère celle de l'administration générale, sinon date du jour. private
+   *
+   * @return
+   */
+  public ZonedDateTime getTodayDateTime();
 
-	public Unit getUnit();
+  /**
+   * Récupérer la date du jour. Retourne la date du jour paramétré dans l'utilisateur si existe,
+   * sinon récupère celle de l'administration générale, sinon date du jour.
+   *
+   * @return
+   */
+  public LocalDate getTodayDate();
 
+  public Unit getUnit();
 
-	public int getNbDecimalDigitForUnitPrice();
-	
-	public String getDefaultPartnerLanguageCode();
+  public int getNbDecimalDigitForUnitPrice();
 
+  public String getDefaultPartnerLanguageCode();
 
-// Conversion de devise
+  // Conversion de devise
 
-	/**
-	 * Obtenir la tva à 0%
-	 *
-	 * @return
-	 */
-	public List<CurrencyConversionLine> getCurrencyConfigurationLineList();
+  /**
+   * Obtenir la tva à 0%
+   *
+   * @return
+   */
+  public List<CurrencyConversionLine> getCurrencyConfigurationLineList();
 
-	public BigDecimal getDurationHours(BigDecimal duration);
+  public BigDecimal getDurationHours(BigDecimal duration);
 
-	public BigDecimal getGeneralDuration(BigDecimal duration);
+  public BigDecimal getGeneralDuration(BigDecimal duration);
 
-	/**
-	 * Set the manageMultiBanks boolean in the general object.
-	 * 
-	 * @param manageMultiBanks the new value for the manageMultiBanks boolean
-	 */
-	void setManageMultiBanks(boolean manageMultiBanks);
-
+  /**
+   * Set the manageMultiBanks boolean in the general object.
+   *
+   * @param manageMultiBanks the new value for the manageMultiBanks boolean
+   */
+  void setManageMultiBanks(boolean manageMultiBanks);
 }

@@ -19,8 +19,7 @@ package com.axelor.apps.talent.translation;
 
 public interface ITranslation {
 
-	public static final String TRAINING_APP_NAME = /*$$(*/ "value:Training"; /*)*/
-	public static final String RECRUITMENT_APP_NAME = /*$$(*/ "value:Recruitment"; /*)*/
-	public static final String APPRAISAL_APP_NAME = /*$$(*/ "value:Appraisal"; /*)*/
-
+  public static final String TRAINING_APP_NAME = /*$$(*/ "value:Training"; /*)*/
+  public static final String RECRUITMENT_APP_NAME = /*$$(*/ "value:Recruitment"; /*)*/
+  public static final String APPRAISAL_APP_NAME = /*$$(*/ "value:Appraisal"; /*)*/
 }

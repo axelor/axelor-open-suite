@@ -17,55 +17,48 @@
  */
 package com.axelor.apps.base.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public interface ProductService {
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateProductPrice(Product product);
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateProductPrice(Product product);
+  public String getSequence() throws AxelorException;
 
-	public String getSequence() throws AxelorException;
+  /**
+   * Retourne le prix d'un produit à une date t.
+   *
+   * @param product
+   * @param date
+   * @return
+   */
+  public BigDecimal getPrice(Product product, boolean isPurchase);
 
-	/**
-	 * Retourne le prix d'un produit à une date t.
-	 *
-	 * @param product
-	 * @param date
-	 * @return
-	 */
-	public BigDecimal getPrice(Product product, boolean isPurchase);
+  public void updateSalePrice(Product product);
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generateProductVariants(Product productModel);
 
-	public void updateSalePrice(Product product);
+  public Product createProduct(Product productModel, ProductVariant productVariant, int seq);
 
+  /**
+   * @param productVariant
+   * @param applicationPriceSelect - 1 : Sale price - 2 : Cost price
+   * @return
+   */
+  public BigDecimal getProductExtraPrice(ProductVariant productVariant, int applicationPriceSelect);
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generateProductVariants(Product productModel);
-
-	public Product createProduct(Product productModel, ProductVariant productVariant, int seq);
-
-
-	/**
-	 *
-	 * @param productVariant
-	 * @param applicationPriceSelect
-	 * 		- 1 : Sale price
-	 * 		- 2 : Cost price
-	 * @return
-	 */
-	public BigDecimal getProductExtraPrice(ProductVariant productVariant, int applicationPriceSelect);
-
-
-
-	public ProductVariant createProductVariant(ProductVariantConfig productVariantConfig, ProductVariantValue productVariantValue1, ProductVariantValue productVariantValue2,
-			ProductVariantValue productVariantValue3, ProductVariantValue productVariantValue4);
-
+  public ProductVariant createProductVariant(
+      ProductVariantConfig productVariantConfig,
+      ProductVariantValue productVariantValue1,
+      ProductVariantValue productVariantValue2,
+      ProductVariantValue productVariantValue3,
+      ProductVariantValue productVariantValue4);
 }

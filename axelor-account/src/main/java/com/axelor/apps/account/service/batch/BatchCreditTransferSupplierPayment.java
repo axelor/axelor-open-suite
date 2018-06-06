@@ -25,16 +25,17 @@ import com.google.inject.Inject;
 
 public class BatchCreditTransferSupplierPayment extends BatchCreditTransferInvoice {
 
-	@Inject
-	public BatchCreditTransferSupplierPayment(AppAccountService appAccountService, InvoiceRepository invoiceRepo,
-			InvoicePaymentCreateService invoicePaymentCreateService,
-			InvoicePaymentRepository invoicePaymentRepository) {
-		super(appAccountService, invoiceRepo, invoicePaymentCreateService, invoicePaymentRepository);
-	}
+  @Inject
+  public BatchCreditTransferSupplierPayment(
+      AppAccountService appAccountService,
+      InvoiceRepository invoiceRepo,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentRepository invoicePaymentRepository) {
+    super(appAccountService, invoiceRepo, invoicePaymentCreateService, invoicePaymentRepository);
+  }
 
-	@Override
-	protected void process() {
-		processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
-	}
-
+  @Override
+  protected void process() {
+    processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+  }
 }

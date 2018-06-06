@@ -24,18 +24,20 @@ import com.axelor.meta.db.MetaField;
 
 public interface ConfiguratorFormulaService {
 
-   /**
-    * Get the filled MetaField
-    * @param configuratorFormula
-    * @return
-    */
-   MetaField getMetaField(ConfiguratorFormula configuratorFormula);
+  /**
+   * Get the filled MetaField
+   *
+   * @param configuratorFormula
+   * @return
+   */
+  MetaField getMetaField(ConfiguratorFormula configuratorFormula);
 
-   /**
-    * Check if the written formula is valid.
-    * @param formula
-    * @param creator
-    */
-   void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException;
-
+  /**
+   * Check if the written formula is valid.
+   *
+   * @param formula
+   * @param creator
+   */
+  void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator)
+      throws AxelorException;
 }

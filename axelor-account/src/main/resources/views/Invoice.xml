@@ -119,7 +119,9 @@
 
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null"/>
+                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect != 3 || printedPDF == null"/>
+                <item title="Show stored copy" action="action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
+                <item title="Print updated copy" action="save,action-invoice-validate-regenerate-invoice,action-invoice-method-regenerate-and-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
                 <item title="Print annex" action="action-invoice-business-project-method-print-annex" showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)" if-module="axelor-business-project"/>
             </menu>
 
@@ -129,6 +131,7 @@
         </menubar>
 
 		<panel>
+			<field name="printedPDF" hidden="true"/><!-- Needed to be able to use it in menu -->
             <panel colSpan="7" stacked="true">
                 <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect != 2" showTitle="false"/>
                 <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect == 2" showTitle="false" selection-in="[1,2,4]"/>
@@ -169,7 +172,7 @@
             </panel>
             <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || (operationTypeSelect != 1 &amp;&amp; operationTypeSelect != 3) || $readonly()" showTitle="true"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
-            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1 || partner != null" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
+            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
             <field name="companyBankDetails" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
             <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
@@ -275,7 +278,7 @@
 				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
-				<field name="note" colSpan="12"/>
+				<field name="note" widget="Html" x-lite="true" colSpan="12"/>
 				<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
@@ -286,13 +289,16 @@
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
             <button name="validate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
-            <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+            <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
             <button name="validateAndVentilate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/>
             <button name="cancel" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-            <field name="validatedByUser" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
+            <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
+			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
+			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
         </panel>
 
         <panel-stack sidebar="true" hideIf="partner == null">
@@ -301,7 +307,7 @@
 				<field name="externalReference"/>
 			</panel>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-attrs-ventilate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -450,7 +456,7 @@
 				<field name="externalReference"/>
 			</panel>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-attrs-ventilate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -458,14 +464,17 @@
 
 	    <panel sidebar="true" name="actions" title="Actions" >
 	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-validate"/>
-	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
 	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
         	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
-	        <field name="validatedByUser" grid-view="user-grid" form-view="user-form" canNew="false" canEdit="false" canView="false"/>
+			<field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
+			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
+			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
 	    </panel>
 
 		<panel sidebar="true" name="totals" title="Totals" itemSpan="6">
@@ -615,7 +624,7 @@
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
-	    <action name="action-invoice-record-printing-fields"/>
+	    <action name="action-invoice-record-printing-fields" if="__config__.app.isApp('business-project')"/>
         <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
     </action-group>
 
@@ -625,7 +634,6 @@
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
-		<action name="action-invoice-attrs-ventilate"/>
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
@@ -677,10 +685,6 @@
     	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     </action-attrs>
 
-    <action-attrs name="action-invoice-attrs-ventilate">
-    	<attribute name="readonly" for="ventilate" expr="eval: invoiceDate > __date__"/>
-    </action-attrs>
-
 	<!-- ACTION RECORD -->
 
 	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
@@ -720,7 +724,7 @@
     	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
 		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     	<field name="currency" expr="eval: partner?.currency"/>
-		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
+		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null" />
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     	<field name="project" expr="eval: null"/>
@@ -748,14 +752,9 @@
 
 	<action-record name="action-invoice-record-interco-supplychain"
 				   model="com.axelor.apps.account.db.Invoice" if-module="axelor-supplychain">
-		<field name="interco"
-			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromInvoice()"/>
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromInvoice
+            &amp;&amp; !createdByInterco &amp;&amp; partner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', partner).fetchOne()"/>
 	</action-record>
-
-    <action-record name="action-invoice-record-printing-fields" model="com.axelor.apps.account.db.Invoice">
-    	<field name="displayTimesheetOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"/>
-    	<field name="displayExpenseOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
-    </action-record>
 
     <action-record name="action-invoice-record-reset-operationsubtype" model="com.axelor.apps.account.db.Invoice">
         <field name="operationSubTypeSelect" expr="eval: null"/>
@@ -806,8 +805,6 @@
 	<action-attrs name="action-invoice-attrs-interco-supplychain" if-module="axelor-supplychain">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
-		<attribute for="interco" name="value" expr="eval: false"
-				   if="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
 	   <attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 2"/>
 	</action-attrs>
@@ -841,7 +838,6 @@
 		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
     </action-validate>
 
-
 	<!-- ACTION METHOD -->
 
 	<action-method name="action-method-invoice-address-str" model="com.axelor.apps.account.db.Invoice">
@@ -867,6 +863,14 @@
 	<action-method name="action-invoice-method-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
 	</action-method>
+
+	<action-method name="action-invoice-method-regenerate-and-show-invoice">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="regenerateAndShowInvoice"/>
+	</action-method>
+
+	<action-validate name="action-invoice-validate-regenerate-invoice">
+		<alert message="Regenerating the printed copy can lead to several conflicting copies to be distributed. Do you still want to regenerate the printed copy?"/>
+	</action-validate>
 
 	<action-method name="action-invoice-method-validate">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="validate"/>

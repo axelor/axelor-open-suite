@@ -25,11 +25,10 @@ import com.axelor.apps.helpdesk.service.TicketServiceImpl;
 
 public class HelpdeskModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
+  @Override
+  protected void configure() {
 
-		bind(TicketRepository.class).to(TicketManagementRepository.class);
-		bind(TicketService.class).to(TicketServiceImpl.class);
-	}
-
+    bind(TicketRepository.class).to(TicketManagementRepository.class);
+    bind(TicketService.class).to(TicketServiceImpl.class);
+  }
 }

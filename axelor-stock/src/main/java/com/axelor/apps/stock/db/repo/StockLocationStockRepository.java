@@ -23,14 +23,15 @@ import com.axelor.inject.Beans;
 
 public class StockLocationStockRepository extends StockLocationRepository {
 
-    /**
-     * Override to remove incompatible stock locations in partners
-     * @param entity
-     * @return
-     */
-    @Override
-    public StockLocation save(StockLocation entity) {
-        Beans.get(StockLocationSaveService.class).removeForbiddenDefaultStockLocation(entity);
-        return super.save(entity);
-    }
+  /**
+   * Override to remove incompatible stock locations in partners
+   *
+   * @param entity
+   * @return
+   */
+  @Override
+  public StockLocation save(StockLocation entity) {
+    Beans.get(StockLocationSaveService.class).removeForbiddenDefaultStockLocation(entity);
+    return super.save(entity);
+  }
 }

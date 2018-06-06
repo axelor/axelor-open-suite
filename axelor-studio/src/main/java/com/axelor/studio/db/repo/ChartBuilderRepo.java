@@ -17,11 +17,6 @@
  */
 package com.axelor.studio.db.repo;
 
-import java.util.List;
-
-import javax.validation.ValidationException;
-import javax.xml.bind.JAXBException;
-
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
@@ -29,44 +24,46 @@ import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.service.builder.ChartBuilderService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
+import javax.validation.ValidationException;
+import javax.xml.bind.JAXBException;
 
 public class ChartBuilderRepo extends ChartBuilderRepository {
 
-	@Inject
-	private MetaViewRepository metaViewRepo;
-	
-	@Inject
-	private ChartBuilderService chartBuilderService;
+  @Inject private MetaViewRepository metaViewRepo;
 
-	@Override
-	public ChartBuilder save(ChartBuilder chartBuilder) throws ValidationException {
-		
-		try {
-			chartBuilderService.build(chartBuilder);
-		} catch (AxelorException | JAXBException e) {
-			refresh(chartBuilder);
-			throw new ValidationException(e.getMessage());
-		}
+  @Inject private ChartBuilderService chartBuilderService;
 
-		return super.save(chartBuilder);
-	}
+  @Override
+  public ChartBuilder save(ChartBuilder chartBuilder) throws ValidationException {
 
-	@Override
-	@Transactional
-	public void remove(ChartBuilder chartBuilder) {
+    try {
+      chartBuilderService.build(chartBuilder);
+    } catch (AxelorException | JAXBException e) {
+      refresh(chartBuilder);
+      throw new ValidationException(e.getMessage());
+    }
 
-		MetaView metaView = chartBuilder.getMetaViewGenerated();
-		List<ChartBuilder> chartBuilders = all().filter("self.metaViewGenerated = ?1 and self.id != ?2"
-				, metaView, chartBuilder.getId()).fetch();
-		for (ChartBuilder builder : chartBuilders) {
-			builder.setMetaViewGenerated(null);
-		}
-		
-		if (metaView != null) {
-			metaViewRepo.remove(metaView);
-		}
+    return super.save(chartBuilder);
+  }
 
-		super.remove(chartBuilder);
-	}
+  @Override
+  @Transactional
+  public void remove(ChartBuilder chartBuilder) {
 
+    MetaView metaView = chartBuilder.getMetaViewGenerated();
+    List<ChartBuilder> chartBuilders =
+        all()
+            .filter("self.metaViewGenerated = ?1 and self.id != ?2", metaView, chartBuilder.getId())
+            .fetch();
+    for (ChartBuilder builder : chartBuilders) {
+      builder.setMetaViewGenerated(null);
+    }
+
+    if (metaView != null) {
+      metaViewRepo.remove(metaView);
+    }
+
+    super.remove(chartBuilder);
+  }
 }

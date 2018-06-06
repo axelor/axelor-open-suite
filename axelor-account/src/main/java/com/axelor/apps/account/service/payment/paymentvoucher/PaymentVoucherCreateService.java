@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
@@ -42,119 +33,149 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PaymentVoucherCreateService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected MoveToolService moveToolService;
-	protected PayVoucherElementToPayService payVoucherElementToPayService;
-	protected PaymentVoucherConfirmService paymentVoucherConfirmService;
-	protected PaymentVoucherSequenceService paymentVoucherSequenceService;
-	protected PaymentVoucherRepository paymentVoucherRepository;
-	protected AppAccountService appAccountService;
+  protected MoveToolService moveToolService;
+  protected PayVoucherElementToPayService payVoucherElementToPayService;
+  protected PaymentVoucherConfirmService paymentVoucherConfirmService;
+  protected PaymentVoucherSequenceService paymentVoucherSequenceService;
+  protected PaymentVoucherRepository paymentVoucherRepository;
+  protected AppAccountService appAccountService;
 
-	@Inject
-	public PaymentVoucherCreateService(AppAccountService appAccountService, MoveToolService moveToolService, PayVoucherElementToPayService payVoucherElementToPayService, 
-			PaymentVoucherConfirmService paymentVoucherConfirmService, PaymentVoucherSequenceService paymentVoucherSequenceService,
-			PaymentVoucherRepository paymentVoucherRepository) {
+  @Inject
+  public PaymentVoucherCreateService(
+      AppAccountService appAccountService,
+      MoveToolService moveToolService,
+      PayVoucherElementToPayService payVoucherElementToPayService,
+      PaymentVoucherConfirmService paymentVoucherConfirmService,
+      PaymentVoucherSequenceService paymentVoucherSequenceService,
+      PaymentVoucherRepository paymentVoucherRepository) {
 
-		this.moveToolService = moveToolService;
-		this.payVoucherElementToPayService = payVoucherElementToPayService;
-		this.paymentVoucherConfirmService = paymentVoucherConfirmService;
-		this.paymentVoucherSequenceService = paymentVoucherSequenceService;
-		this.paymentVoucherRepository = paymentVoucherRepository;
-		this.appAccountService = appAccountService;
+    this.moveToolService = moveToolService;
+    this.payVoucherElementToPayService = payVoucherElementToPayService;
+    this.paymentVoucherConfirmService = paymentVoucherConfirmService;
+    this.paymentVoucherSequenceService = paymentVoucherSequenceService;
+    this.paymentVoucherRepository = paymentVoucherRepository;
+    this.appAccountService = appAccountService;
+  }
 
-	}
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public PaymentVoucher createPaymentVoucherIPO(
+      Invoice invoice, LocalDate date, BigDecimal amount, PaymentMode paymentMode)
+      throws AxelorException {
+    MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
 
+    log.debug(
+        "Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",
+        invoice.getInvoiceId());
+    log.debug(
+        "Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",
+        paymentMode.getCode());
+    log.debug(
+        "Création d'une saisie paiement par TIP ou TIP chèque - société : {}",
+        invoice.getCompany().getName());
+    log.debug(
+        "Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",
+        invoice.getPartner().getName());
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public PaymentVoucher createPaymentVoucherIPO(Invoice invoice, LocalDate date, BigDecimal amount, PaymentMode paymentMode) throws AxelorException  {
-		MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
+    PaymentVoucher paymentVoucher =
+        this.createPaymentVoucher(
+            invoice.getCompany(),
+            null,
+            paymentMode,
+            date,
+            invoice.getPartner(),
+            amount,
+            null,
+            invoice,
+            null,
+            null,
+            null);
 
-		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());
-		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",paymentMode.getCode());
-		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - société : {}",invoice.getCompany().getName());
-		log.debug("Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",invoice.getPartner().getName());
+    paymentVoucher.setHasAutoInput(true);
 
-		PaymentVoucher paymentVoucher = this.createPaymentVoucher(
-				invoice.getCompany(),
-				null,
-				paymentMode,
-				date,
-				invoice.getPartner(),
-				amount,
-				null,
-				invoice,
-				null,
-				null,
-				null);
+    List<PayVoucherElementToPay> lines = new ArrayList<PayVoucherElementToPay>();
 
-		paymentVoucher.setHasAutoInput(true);
+    lines.add(
+        payVoucherElementToPayService.createPayVoucherElementToPay(
+            paymentVoucher,
+            1,
+            invoice,
+            customerMoveLine,
+            customerMoveLine.getDebit(),
+            customerMoveLine.getAmountRemaining(),
+            amount));
 
-		List<PayVoucherElementToPay> lines = new ArrayList<PayVoucherElementToPay>();
+    paymentVoucher.setPayVoucherElementToPayList(lines);
 
-		lines.add(payVoucherElementToPayService.createPayVoucherElementToPay(paymentVoucher,
-				1,
-				invoice,
-				customerMoveLine,
-				customerMoveLine.getDebit(),
-				customerMoveLine.getAmountRemaining(),
-				amount));
+    paymentVoucherRepository.save(paymentVoucher);
 
-		paymentVoucher.setPayVoucherElementToPayList(lines);
+    paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher);
+    return paymentVoucher;
+  }
 
-		paymentVoucherRepository.save(paymentVoucher);
+  /**
+   * Generic method to create a payment voucher
+   *
+   * @param seq
+   * @param pm
+   * @param partner
+   * @return
+   * @throws AxelorException
+   */
+  public PaymentVoucher createPaymentVoucher(
+      Company company,
+      User user,
+      PaymentMode paymentMode,
+      LocalDate date,
+      Partner partner,
+      BigDecimal amount,
+      MoveLine moveLine,
+      Invoice invoiceToPay,
+      MoveLine rejectToPay,
+      PaymentScheduleLine scheduleToPay,
+      PaymentSchedule paymentScheduleToPay)
+      throws AxelorException {
 
-		paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher);
-		return paymentVoucher;
-	}
+    log.debug("\n\n createPaymentVoucher ....");
+    LocalDate date2 = date;
+    if (date2 == null) {
+      date2 = appAccountService.getTodayDate();
+    }
 
+    BigDecimal amount2 = amount;
+    if (amount2 == null) {
+      amount2 = BigDecimal.ZERO;
+    }
 
-	/**
-	 * Generic method to create a payment voucher
-	 * @param seq
-	 * @param pm
-	 * @param partner
-	 * @return
-	 * @throws AxelorException
-	 */
-	public PaymentVoucher createPaymentVoucher(Company company, User user, PaymentMode paymentMode, LocalDate date, Partner partner,
-			BigDecimal amount, MoveLine moveLine, Invoice invoiceToPay, MoveLine rejectToPay,
-			PaymentScheduleLine scheduleToPay, PaymentSchedule paymentScheduleToPay) throws AxelorException  {
+    // create the move
+    PaymentVoucher paymentVoucher = new PaymentVoucher();
+    if (company != null && paymentMode != null && partner != null) {
+      paymentVoucher.setCompany(company);
+      paymentVoucher.setUser(user);
+      paymentVoucher.setPaymentDate(date2);
 
-		log.debug("\n\n createPaymentVoucher ....");
-		LocalDate date2 = date;
-		if(date2 == null)  {
-			date2 = appAccountService.getTodayDate();
-		}
+      paymentVoucher.setPaymentMode(paymentMode);
+      paymentVoucher.setPartner(partner);
 
-		BigDecimal amount2 = amount;
-		if(amount2 == null )  {
-			amount2 = BigDecimal.ZERO;
-		}
+      paymentVoucher.setPaidAmount(amount2);
+      paymentVoucher.setMoveLine(moveLine);
 
-		//create the move
-		PaymentVoucher paymentVoucher= new PaymentVoucher();
-		if (company != null && paymentMode != null && partner != null)  {
-			paymentVoucher.setCompany(company);
-			paymentVoucher.setUser(user);
-			paymentVoucher.setPaymentDate(date2);
+      paymentVoucherSequenceService.setReference(paymentVoucher);
 
-			paymentVoucher.setPaymentMode(paymentMode);
-			paymentVoucher.setPartner(partner);
+      return paymentVoucher;
+    }
 
-			paymentVoucher.setPaidAmount(amount2);
-			paymentVoucher.setMoveLine(moveLine);
-
-			paymentVoucherSequenceService.setReference(paymentVoucher);
-
-			return paymentVoucher;
-		}
-
-		return null;
-	}
-
-
+    return null;
+  }
 }

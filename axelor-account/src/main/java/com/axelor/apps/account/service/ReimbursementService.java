@@ -26,37 +26,33 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ReimbursementService {
-	
-	protected PartnerRepository partnerRepository;
-	protected PartnerService partnerService;
 
-	@Inject
-	public ReimbursementService(PartnerRepository partnerRepository, PartnerService partnerService)  {
-		
-		this.partnerRepository = partnerRepository;
-		this.partnerService = partnerService;
-	}
-	
-	/**
-	 * Procédure permettant de mettre à jour la liste des RIBs du tiers
-	 * @param reimbursement
-	 * 				Un remboursement
-	 */
-	@Transactional
-	public void updatePartnerCurrentRIB(Reimbursement reimbursement)  {
-		BankDetails bankDetails = reimbursement.getBankDetails();
-		Partner partner = reimbursement.getPartner();
-		BankDetails defaultBankDetails = partnerService.getDefaultBankDetails(partner);
-		
-		if(bankDetails != null && partner != null && !bankDetails.equals(defaultBankDetails))  {
-			defaultBankDetails.setIsDefault(false);
-			bankDetails.setIsDefault(true);
-			partner.addBankDetailsListItem(bankDetails);
-			partnerRepository.save(partner);
-		}
-	}
-	
-	
-	
-	
+  protected PartnerRepository partnerRepository;
+  protected PartnerService partnerService;
+
+  @Inject
+  public ReimbursementService(PartnerRepository partnerRepository, PartnerService partnerService) {
+
+    this.partnerRepository = partnerRepository;
+    this.partnerService = partnerService;
+  }
+
+  /**
+   * Procédure permettant de mettre à jour la liste des RIBs du tiers
+   *
+   * @param reimbursement Un remboursement
+   */
+  @Transactional
+  public void updatePartnerCurrentRIB(Reimbursement reimbursement) {
+    BankDetails bankDetails = reimbursement.getBankDetails();
+    Partner partner = reimbursement.getPartner();
+    BankDetails defaultBankDetails = partnerService.getDefaultBankDetails(partner);
+
+    if (bankDetails != null && partner != null && !bankDetails.equals(defaultBankDetails)) {
+      defaultBankDetails.setIsDefault(false);
+      bankDetails.setIsDefault(true);
+      partner.addBankDetailsListItem(bankDetails);
+      partnerRepository.save(partner);
+    }
+  }
 }

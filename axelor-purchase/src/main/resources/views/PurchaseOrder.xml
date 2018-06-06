@@ -105,7 +105,7 @@
 			<field name="versionNumber"
 				if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
 			<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement"
-				   readonlyIf="statusSelect >= 3 || supplierPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-printing-settings-default-value"/>
+				   readonlyIf="statusSelect >= 3" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-printing-settings-default-value"/>
 			<field name="companyBankDetails" widget="SuggestBox"
 					onSelect="action-invoice-attrs-domain-company-bank-details"
 					form-view="bank-details-form" grid-view="bank-details-grid"
@@ -599,6 +599,11 @@
 	<action-method name="action-set-supplier-partner-domain">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="supplierPartnerDomain"/>
 	</action-method>
+	
+	<action-method name="action-purchase-order-method-fill-company-bank-details">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="fillCompanyBankDetails"/>
+	</action-method>
+	
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">

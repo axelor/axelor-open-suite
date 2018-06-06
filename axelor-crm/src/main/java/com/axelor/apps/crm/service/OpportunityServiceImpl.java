@@ -34,47 +34,60 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class OpportunityServiceImpl implements OpportunityService {
-	
-	@Inject
-	protected OpportunityRepository opportunityRepo;
-	
-	@Inject
-	protected AddressService addressService;
 
-	@Transactional
-	public void saveOpportunity(Opportunity opportunity){
-		opportunityRepo.save(opportunity);
-	}
+  @Inject protected OpportunityRepository opportunityRepo;
 
-	@Override
-	@Transactional
-	public Partner createClientFromLead(Opportunity opportunity) throws AxelorException{
-		Lead lead = opportunity.getLead();
-		if (lead == null) {
-			throw new AxelorException(opportunity, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.LEAD_PARTNER));
-		}
+  @Inject protected AddressService addressService;
 
-		String name = lead.getCompanyName();
-		if(Strings.isNullOrEmpty(name)){
-			name = lead.getFullName();
-		}
+  @Transactional
+  public void saveOpportunity(Opportunity opportunity) {
+    opportunityRepo.save(opportunity);
+  }
 
-		Address address = null;
-		if (lead.getPrimaryAddress() != null) {
-			// avoids printing 'null'
-			String addressL6 = lead.getPrimaryPostalCode() == null ? "" : lead.getPrimaryPostalCode() + " ";
-			addressL6 += lead.getPrimaryCity() == null ? "" : lead.getPrimaryCity();
+  @Override
+  @Transactional
+  public Partner createClientFromLead(Opportunity opportunity) throws AxelorException {
+    Lead lead = opportunity.getLead();
+    if (lead == null) {
+      throw new AxelorException(
+          opportunity,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.LEAD_PARTNER));
+    }
 
-			address = addressService.createAddress(null, null, lead.getPrimaryAddress(), null, addressL6, lead.getPrimaryCountry());
-			address.setFullName(addressService.computeFullName(address));
-		}
+    String name = lead.getCompanyName();
+    if (Strings.isNullOrEmpty(name)) {
+      name = lead.getFullName();
+    }
 
-		Partner partner = Beans.get(PartnerService.class).createPartner(name, null, lead.getFixedPhone(), lead.getMobilePhone(), lead.getEmailAddress(), opportunity.getCurrency(), address, address);
+    Address address = null;
+    if (lead.getPrimaryAddress() != null) {
+      // avoids printing 'null'
+      String addressL6 =
+          lead.getPrimaryPostalCode() == null ? "" : lead.getPrimaryPostalCode() + " ";
+      addressL6 += lead.getPrimaryCity() == null ? "" : lead.getPrimaryCity();
 
-		opportunity.setPartner(partner);
-		opportunityRepo.save(opportunity);
+      address =
+          addressService.createAddress(
+              null, null, lead.getPrimaryAddress(), null, addressL6, lead.getPrimaryCountry());
+      address.setFullName(addressService.computeFullName(address));
+    }
 
-		return partner;
-	}
-	
+    Partner partner =
+        Beans.get(PartnerService.class)
+            .createPartner(
+                name,
+                null,
+                lead.getFixedPhone(),
+                lead.getMobilePhone(),
+                lead.getEmailAddress(),
+                opportunity.getCurrency(),
+                address,
+                address);
+
+    opportunity.setPartner(partner);
+    opportunityRepo.save(opportunity);
+
+    return partner;
+  }
 }

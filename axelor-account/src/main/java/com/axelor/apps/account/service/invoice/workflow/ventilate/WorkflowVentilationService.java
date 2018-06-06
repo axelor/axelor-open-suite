@@ -22,5 +22,5 @@ import com.axelor.exception.AxelorException;
 
 public interface WorkflowVentilationService {
 
-    void afterVentilation(Invoice invoice) throws AxelorException;
+  void afterVentilation(Invoice invoice) throws AxelorException;
 }

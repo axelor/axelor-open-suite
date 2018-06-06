@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
@@ -30,163 +27,162 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class AccountingBatchController {
 
-	@Inject
-	private AccountingBatchService accountingBatchService;
-	
-	@Inject
-	private AccountingBatchRepository accountingBatchRepo;
+  @Inject private AccountingBatchService accountingBatchService;
 
-	/**
-	 * Lancer le batch de relance
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionDebtRecovery(ActionRequest request, ActionResponse response){
+  @Inject private AccountingBatchRepository accountingBatchRepo;
 
-		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+  /**
+   * Lancer le batch de relance
+   *
+   * @param request
+   * @param response
+   */
+  public void actionDebtRecovery(ActionRequest request, ActionResponse response) {
 
-		Batch batch = null;
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
-		if(accountingBatch.getActionSelect() == AccountingBatchRepository.ACTION_DEBT_RECOVERY)  {
-			batch = accountingBatchService.debtRecovery(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+    Batch batch = null;
 
-	/**
-	 * Lancer le batch de détermination des créances douteuses
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionDoubtfulCustomer(ActionRequest request, ActionResponse response){
+    if (accountingBatch.getActionSelect() == AccountingBatchRepository.ACTION_DEBT_RECOVERY) {
+      batch =
+          accountingBatchService.debtRecovery(accountingBatchRepo.find(accountingBatch.getId()));
+    }
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+  /**
+   * Lancer le batch de détermination des créances douteuses
+   *
+   * @param request
+   * @param response
+   */
+  public void actionDoubtfulCustomer(ActionRequest request, ActionResponse response) {
 
-		Batch batch = null;
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
-		batch = accountingBatchService.doubtfulCustomer(accountingBatchRepo.find(accountingBatch.getId()));
+    Batch batch = null;
 
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+    batch =
+        accountingBatchService.doubtfulCustomer(accountingBatchRepo.find(accountingBatch.getId()));
 
-	/**
-	 * Lancer le batch de remboursement
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionReimbursement(ActionRequest request, ActionResponse response){
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+  /**
+   * Lancer le batch de remboursement
+   *
+   * @param request
+   * @param response
+   */
+  public void actionReimbursement(ActionRequest request, ActionResponse response) {
 
-		Batch batch = null;
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
-		if(accountingBatch.getReimbursementTypeSelect() == AccountingBatchRepository.REIMBURSEMENT_TYPE_EXPORT)  {
-			batch = accountingBatchService.reimbursementExport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
-		else if(accountingBatch.getReimbursementTypeSelect() == AccountingBatchRepository.REIMBURSEMENT_TYPE_IMPORT)  {
-			batch = accountingBatchService.reimbursementImport(accountingBatchRepo.find(accountingBatch.getId()));
-		}
+    Batch batch = null;
 
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+    if (accountingBatch.getReimbursementTypeSelect()
+        == AccountingBatchRepository.REIMBURSEMENT_TYPE_EXPORT) {
+      batch =
+          accountingBatchService.reimbursementExport(
+              accountingBatchRepo.find(accountingBatch.getId()));
+    } else if (accountingBatch.getReimbursementTypeSelect()
+        == AccountingBatchRepository.REIMBURSEMENT_TYPE_IMPORT) {
+      batch =
+          accountingBatchService.reimbursementImport(
+              accountingBatchRepo.find(accountingBatch.getId()));
+    }
 
-	/**
-	 * Lancer le batch de prélèvement
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionDirectDebit(ActionRequest request, ActionResponse response){
-	    try {
-	        AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
-	        accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
-	        Batch batch = accountingBatchService.directDebit(accountingBatch);
-	        response.setFlash(batch.getComments());
-	    } catch (Exception e) {
-	        TraceBackService.trace(response, e);
-        } finally {
-            response.setReload(true);
-        }
-	}
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
+  /**
+   * Lancer le batch de prélèvement
+   *
+   * @param request
+   * @param response
+   */
+  public void actionDirectDebit(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+      accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+      Batch batch = accountingBatchService.directDebit(accountingBatch);
+      response.setFlash(batch.getComments());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
+  }
 
-	/**
-	 * Lancer le batch de calcul du compte client
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionAccountingCustomer(ActionRequest request, ActionResponse response){
+  /**
+   * Lancer le batch de calcul du compte client
+   *
+   * @param request
+   * @param response
+   */
+  public void actionAccountingCustomer(ActionRequest request, ActionResponse response) {
 
-		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
-		Batch batch = null;
+    Batch batch = null;
 
-		batch = accountingBatchService.accountCustomer(accountingBatchRepo.find(accountingBatch.getId()));
+    batch =
+        accountingBatchService.accountCustomer(accountingBatchRepo.find(accountingBatch.getId()));
 
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-	}
+  /**
+   * Lancer le batch de calcul du compte client
+   *
+   * @param request
+   * @param response
+   */
+  public void actionMoveLineExport(ActionRequest request, ActionResponse response) {
 
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
 
+    Batch batch = null;
 
-	/**
-	 * Lancer le batch de calcul du compte client
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionMoveLineExport(ActionRequest request, ActionResponse response){
+    batch =
+        accountingBatchService.moveLineExport(accountingBatchRepo.find(accountingBatch.getId()));
 
-		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-		Batch batch = null;
+  public void actionCreditTransfer(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+    Batch batch = accountingBatchService.creditTransfer(accountingBatch);
+    response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-		batch = accountingBatchService.moveLineExport(accountingBatchRepo.find(accountingBatch.getId()));
+  // WS
 
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
+  /**
+   * Lancer le batch à travers un web service.
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
-	}
-
-	public void actionCreditTransfer(ActionRequest request, ActionResponse response) {
-		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
-		accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
-		Batch batch = accountingBatchService.creditTransfer(accountingBatch);
-		response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
-
-	// WS
-
-	/**
-	 * Lancer le batch à travers un web service.
-	 *
-	 * @param request
-	 * @param response
-	 * @throws AxelorException
-	 */
-	public void run(ActionRequest request, ActionResponse response) throws AxelorException{
-
-		Batch batch = accountingBatchService.run((String) request.getContext().get("code"));
-	    Map<String,Object> mapData = new HashMap<String,Object>();
-		mapData.put("anomaly", batch.getAnomaly());
-		response.setData(mapData);
-	}
+    Batch batch = accountingBatchService.run((String) request.getContext().get("code"));
+    Map<String, Object> mapData = new HashMap<String, Object>();
+    mapData.put("anomaly", batch.getAnomaly());
+    response.setData(mapData);
+  }
 }

@@ -22,6 +22,5 @@ import com.axelor.exception.AxelorException;
 
 public interface InvoiceStrategy {
 
-	Invoice generate() throws AxelorException;
-	
+  Invoice generate() throws AxelorException;
 }

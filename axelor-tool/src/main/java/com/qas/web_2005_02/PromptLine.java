@@ -24,12 +24,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour PromptLine complex type.
- * 
+ * Classe Java pour PromptLine complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType name="PromptLine">
  *   &lt;complexContent>
@@ -43,95 +42,75 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PromptLine", propOrder = {
-    "prompt",
-    "suggestedInputLength",
-    "example"
-})
+@XmlType(
+  name = "PromptLine",
+  propOrder = {"prompt", "suggestedInputLength", "example"}
+)
 public class PromptLine {
 
-    @XmlElement(name = "Prompt", required = true)
-    protected String prompt;
-    @XmlElement(name = "SuggestedInputLength", required = true)
-    @XmlSchemaType(name = "nonNegativeInteger")
-    protected BigInteger suggestedInputLength;
-    @XmlElement(name = "Example", required = true)
-    protected String example;
+  @XmlElement(name = "Prompt", required = true)
+  protected String prompt;
 
-    /**
-     * Obtient la valeur de la propriété prompt.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPrompt() {
-        return prompt;
-    }
+  @XmlElement(name = "SuggestedInputLength", required = true)
+  @XmlSchemaType(name = "nonNegativeInteger")
+  protected BigInteger suggestedInputLength;
 
-    /**
-     * Définit la valeur de la propriété prompt.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPrompt(String value) {
-        this.prompt = value;
-    }
+  @XmlElement(name = "Example", required = true)
+  protected String example;
 
-    /**
-     * Obtient la valeur de la propriété suggestedInputLength.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getSuggestedInputLength() {
-        return suggestedInputLength;
-    }
+  /**
+   * Obtient la valeur de la propriété prompt.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getPrompt() {
+    return prompt;
+  }
 
-    /**
-     * Définit la valeur de la propriété suggestedInputLength.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setSuggestedInputLength(BigInteger value) {
-        this.suggestedInputLength = value;
-    }
+  /**
+   * Définit la valeur de la propriété prompt.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setPrompt(String value) {
+    this.prompt = value;
+  }
 
-    /**
-     * Obtient la valeur de la propriété example.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getExample() {
-        return example;
-    }
+  /**
+   * Obtient la valeur de la propriété suggestedInputLength.
+   *
+   * @return possible object is {@link BigInteger }
+   */
+  public BigInteger getSuggestedInputLength() {
+    return suggestedInputLength;
+  }
 
-    /**
-     * Définit la valeur de la propriété example.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setExample(String value) {
-        this.example = value;
-    }
+  /**
+   * Définit la valeur de la propriété suggestedInputLength.
+   *
+   * @param value allowed object is {@link BigInteger }
+   */
+  public void setSuggestedInputLength(BigInteger value) {
+    this.suggestedInputLength = value;
+  }
 
+  /**
+   * Obtient la valeur de la propriété example.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getExample() {
+    return example;
+  }
+
+  /**
+   * Définit la valeur de la propriété example.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setExample(String value) {
+    this.example = value;
+  }
 }

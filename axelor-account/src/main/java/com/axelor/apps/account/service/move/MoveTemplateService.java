@@ -17,98 +17,128 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MoveTemplateService {
-	
-	protected MoveService moveService;
-	protected MoveRepository moveRepo;
-	protected MoveLineService moveLineService;
-	protected PartnerRepository partnerRepo;
-	
-	@Inject
-	protected MoveTemplateRepository moveTemplateRepo;
-	
-	@Inject
-	public MoveTemplateService(MoveService moveService, MoveRepository moveRepo, MoveLineService moveLineService, PartnerRepository partnerRepo)  {
-		this.moveService = moveService;
-		this.moveRepo = moveRepo;
-		this.moveLineService = moveLineService;
-		this.partnerRepo = partnerRepo;
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validateMoveTemplateLine(MoveTemplate moveTemplate){
-		moveTemplate.setIsValid(true);
-		for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList())
-			line.setIsValid(true);
-		moveTemplateRepo.save(moveTemplate);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public List<Long> generateMove(MoveTemplate moveTemplate, List<HashMap<String,Object>> dataList){
-		try {
-			List<Long> moveList = new ArrayList<Long>();
-			BigDecimal hundred = new BigDecimal(100);
-			for(HashMap<String,Object> data : dataList){
-				LocalDate moveDate = LocalDate.parse(data.get("date").toString(), DateTimeFormatter.ISO_DATE);
-				Partner debitPartner = null;
-				Partner creditPartner = null;
-				BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());
-				Partner partner = null;
-				if(data.get("debitPartner") != null){
-					debitPartner = partnerRepo.find(Long.parseLong(((HashMap<String,Object>) data.get("debitPartner")).get("id").toString()));
-					partner = debitPartner;
-				}	
-				if(data.get("creditPartner") != null){
-					creditPartner = partnerRepo.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
-					partner = creditPartner;
-				}
-				Move move = moveService.getMoveCreateService().createMove(moveTemplate.getJournal(), moveTemplate.getJournal().getCompany(), null, partner,moveDate, null, MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
-				int counter = 1;
-				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
-					partner = null;
-					if(line.getDebitCreditSelect().equals("0")){
-						if(line.getHasPartnerToDebit())
-							partner = debitPartner;
-						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), true, moveDate, moveDate, counter, line.getName());
-						move.getMoveLineList().add(moveLine);
-					}
-					else{
-						if(line.getHasPartnerToCredit())
-							partner = creditPartner;
-						MoveLine moveLine = moveLineService.createMoveLine(move, partner, line.getAccount(), moveBalance.multiply(line.getPercentage()).divide(hundred), false, moveDate, moveDate, counter, line.getName());
-						move.getMoveLineList().add(moveLine);
-					}
-					counter++;
-				}
-				moveRepo.save(move);
-				moveList.add(move.getId());
-			}
-			return moveList;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
+  protected MoveService moveService;
+  protected MoveRepository moveRepo;
+  protected MoveLineService moveLineService;
+  protected PartnerRepository partnerRepo;
+
+  @Inject protected MoveTemplateRepository moveTemplateRepo;
+
+  @Inject
+  public MoveTemplateService(
+      MoveService moveService,
+      MoveRepository moveRepo,
+      MoveLineService moveLineService,
+      PartnerRepository partnerRepo) {
+    this.moveService = moveService;
+    this.moveRepo = moveRepo;
+    this.moveLineService = moveLineService;
+    this.partnerRepo = partnerRepo;
+  }
+
+  @Transactional
+  public void validateMoveTemplateLine(MoveTemplate moveTemplate) {
+    moveTemplate.setIsValid(true);
+
+    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+      line.setIsValid(true);
+    }
+
+    moveTemplateRepo.save(moveTemplate);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public List<Long> generateMove(MoveTemplate moveTemplate, List<HashMap<String, Object>> dataList)
+      throws AxelorException {
+    List<Long> moveList = new ArrayList<Long>();
+    BigDecimal hundred = new BigDecimal(100);
+    for (HashMap<String, Object> data : dataList) {
+      LocalDate moveDate = LocalDate.parse(data.get("date").toString(), DateTimeFormatter.ISO_DATE);
+      Partner debitPartner = null;
+      Partner creditPartner = null;
+      BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());
+      Partner partner = null;
+      if (data.get("debitPartner") != null) {
+        debitPartner =
+            partnerRepo.find(
+                Long.parseLong(
+                    ((HashMap<String, Object>) data.get("debitPartner")).get("id").toString()));
+        partner = debitPartner;
+      }
+      if (data.get("creditPartner") != null) {
+        creditPartner =
+            partnerRepo.find(
+                Long.parseLong(
+                    ((HashMap<String, Object>) data.get("creditPartner")).get("id").toString()));
+        partner = creditPartner;
+      }
+      Move move =
+          moveService
+              .getMoveCreateService()
+              .createMove(
+                  moveTemplate.getJournal(),
+                  moveTemplate.getJournal().getCompany(),
+                  null,
+                  partner,
+                  moveDate,
+                  null,
+                  MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
+      int counter = 1;
+
+      for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
+        partner = null;
+        if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)
+            && moveTemplateLine.getHasPartnerToDebit()) {
+          partner = debitPartner;
+        } else if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.CREDIT)
+            && moveTemplateLine.getHasPartnerToCredit()) {
+          partner = creditPartner;
+        }
+
+        MoveLine moveLine =
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                moveTemplateLine.getAccount(),
+                moveBalance
+                    .multiply(moveTemplateLine.getPercentage())
+                    .divide(hundred, RoundingMode.HALF_EVEN),
+                false,
+                moveDate,
+                moveDate,
+                counter,
+                moveTemplate.getFullName(),
+                moveTemplateLine.getName());
+        move.getMoveLineList().add(moveLine);
+
+        counter++;
+      }
+      moveRepo.save(move);
+      moveList.add(move.getId());
+    }
+    return moveList;
+  }
 }

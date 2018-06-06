@@ -17,39 +17,57 @@
  */
 package com.axelor.apps.base.service;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
+import com.axelor.exception.AxelorException;
+import java.io.IOException;
+import java.util.Map;
+import wslite.json.JSONException;
 
 public interface AddressService {
-	
-	
-	public boolean check(String wsdlUrl);
-	
-	public Map<String,Object> validate(String wsdlUrl, String search);
-	
-	public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
-	
-	public int export(String path) throws IOException;
-	
-	public Address createAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, 	Country addressL7Country); 
-		
-	
-	public Address getAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, Country addressL7Country); 
-	
-	public boolean checkAddressUsed(Long addressId);
-	
-	public Address checkLatLang(Address address, boolean forceUpdate);
-	
-	public String computeFullName(Address address);
 
-	/**
-	 * Used to fill the string field in invoice, sale/purchase order
-	 * and stock move
-	 * @param address
-	 * @return  the string field corresponding to the given address.
-	 */
-	String computeAddressStr(Address address);
+  public boolean check(String wsdlUrl);
+
+  public Map<String, Object> validate(String wsdlUrl, String search);
+
+  public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
+
+  public int export(String path) throws IOException;
+
+  public Address createAddress(
+      String addressL2,
+      String addressL3,
+      String addressL4,
+      String addressL5,
+      String addressL6,
+      Country addressL7Country);
+
+  public Address getAddress(
+      String addressL2,
+      String addressL3,
+      String addressL4,
+      String addressL5,
+      String addressL6,
+      Country addressL7Country);
+
+  public boolean checkAddressUsed(Long addressId);
+
+  public Address checkLatLong(Address address) throws AxelorException, JSONException;
+
+  public Address checkLatLong(Address address, boolean forceUpdate)
+      throws AxelorException, JSONException;
+
+  @Deprecated
+  public Address checkLatLang(Address address, boolean forceUpdate)
+      throws AxelorException, JSONException;
+
+  public String computeFullName(Address address);
+
+  /**
+   * Used to fill the string field in invoice, sale/purchase order and stock move
+   *
+   * @param address
+   * @return the string field corresponding to the given address.
+   */
+  String computeAddressStr(Address address);
 }

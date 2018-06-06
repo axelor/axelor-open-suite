@@ -28,7 +28,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-readonly-create-production-order">
-		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.defineSubBillOfMaterial = false', parentProduct?.id, id).fetch().isEmpty()"/>
+		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.defineSubBillOfMaterial = true', parentProduct?.id, id).fetch().isEmpty()"/>
 	</action-attrs>
 	
     <action-record name="action-product-record-default-production" model="com.axelor.apps.base.db.Product" if-module="axelor-production">

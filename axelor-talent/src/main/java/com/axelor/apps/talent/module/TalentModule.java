@@ -41,20 +41,18 @@ import com.axelor.apps.talent.service.TrainingSessionServiceImpl;
 
 public class TalentModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		
-		bind(TrainingRegisterRepository.class).to(TrainingRegisterTalentRepository.class);
-		bind(TrainingRegisterService.class).to(TrainingRegisterServiceImpl.class);
-		bind(TrainingSessionService.class).to(TrainingSessionServiceImpl.class);
-		bind(TrainingSessionRepository.class).to(TrainingSessionTalentRepository.class);
-		bind(JobPositionRepository.class).to(JobPositionTalentRepository.class);
-		bind(JobApplicationService.class).to(JobApplicationServiceImpl.class);
-		bind(JobApplicationRepository.class).to(JobApplicationTalentRepository.class);
-		bind(MailAccountServiceBaseImpl.class).to(MailAccountServiceTalentImpl.class);
-		bind(JobPositionService.class).to(JobPositionServiceImpl.class);
-		bind(AppraisalService.class).to(AppraisalServiceImpl.class);
-		
-	}
+  @Override
+  protected void configure() {
 
+    bind(TrainingRegisterRepository.class).to(TrainingRegisterTalentRepository.class);
+    bind(TrainingRegisterService.class).to(TrainingRegisterServiceImpl.class);
+    bind(TrainingSessionService.class).to(TrainingSessionServiceImpl.class);
+    bind(TrainingSessionRepository.class).to(TrainingSessionTalentRepository.class);
+    bind(JobPositionRepository.class).to(JobPositionTalentRepository.class);
+    bind(JobApplicationService.class).to(JobApplicationServiceImpl.class);
+    bind(JobApplicationRepository.class).to(JobApplicationTalentRepository.class);
+    bind(MailAccountServiceBaseImpl.class).to(MailAccountServiceTalentImpl.class);
+    bind(JobPositionService.class).to(JobPositionServiceImpl.class);
+    bind(AppraisalService.class).to(AppraisalServiceImpl.class);
+  }
 }

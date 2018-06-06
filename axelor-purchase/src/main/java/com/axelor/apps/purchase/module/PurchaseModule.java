@@ -29,15 +29,14 @@ import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.app.AppPurchaseServiceImpl;
 
-
 public class PurchaseModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-    	bind(PurchaseOrderRepository.class).to(PurchaseOrderManagementRepository.class);
-        bind(PurchaseOrderService.class).to(PurchaseOrderServiceImpl.class);
-        bind(AppPurchaseService.class).to(AppPurchaseServiceImpl.class);
-        bind(PurchaseRequestService.class).to(PurchaseRequestServiceImpl.class);
-        bind(PurchaseProductService.class).to(PurchaseProductServiceImpl.class);
-    }
+  @Override
+  protected void configure() {
+    bind(PurchaseOrderRepository.class).to(PurchaseOrderManagementRepository.class);
+    bind(PurchaseOrderService.class).to(PurchaseOrderServiceImpl.class);
+    bind(AppPurchaseService.class).to(AppPurchaseServiceImpl.class);
+    bind(PurchaseRequestService.class).to(PurchaseRequestServiceImpl.class);
+    bind(PurchaseProductService.class).to(PurchaseProductServiceImpl.class);
+  }
 }

@@ -29,17 +29,16 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class QuerieController {
-	
-	@Inject
-	private QuerieService querieService;
-	
-	public void checkQuerie(ActionRequest request, ActionResponse response){
-		
-		try {
-			querieService.checkQuerie(request.getContext().asType(Querie.class));
-			response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
 
+  @Inject private QuerieService querieService;
+
+  public void checkQuerie(ActionRequest request, ActionResponse response) {
+
+    try {
+      querieService.checkQuerie(request.getContext().asType(Querie.class));
+      response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
