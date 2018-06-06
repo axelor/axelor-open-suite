@@ -83,6 +83,7 @@
 - Product: fill information on sale/purchase order and invoice lines even when tax is missing.
 - Fix trading name not being imported from opportunity on sale quotation generation
 - Purchase order: fix doubled stock move total when generating supplier arrival.
+- Logistical form is now printed in customer language and not in user language.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

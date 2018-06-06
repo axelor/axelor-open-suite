@@ -41,7 +41,9 @@ public class LogisticalFormController {
       String fileLink =
           ReportFactory.createReport(IReport.PACKAGING_LIST, name + " - ${date}")
               .addParam("LogisticalFormId", logisticalForm.getId())
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam(
+                  "Locale",
+                  ReportSettings.getPrintingLocale(logisticalForm.getDeliverToCustomerPartner()))
               .generate()
               .getFileLink();
 
