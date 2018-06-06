@@ -8,6 +8,7 @@
 ## Improvements
 - Sale order form : improve timetable and printing settings tabs.
 - Employee : Removed social security number field in advanced search.
+- Rework toolbar in Partner, PuchaseOrder and SaleOrder grid and cards views.
 - Default configuration added for lead import. 
 - Fill automatically the description of account move line for some accounting process : expense, doubtful, bank moves, account clearance, move template...
 - Product : procurement method can now be both 'Buy and produce'. Stock rules creation now set a default refill method based on the product's procurement method.
