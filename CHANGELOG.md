@@ -5,7 +5,9 @@
 - Improved the way to sort the accounting grand ledger per account, date, and moveLine ref.
 - General data protection regulation: data export and anonymize feature added.  
 ## Bug Fixes
-
+- Fix : wrong domain for the bill of material field in the 'add manuf order' popup form in a production order
+- Fix : errors when trying to generate production orders from sale orders with products lacking a stock unit or bill of materials lacking a production process.
+- Fix : error when add a manufacturing order lacking a production process to a production process.
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features
@@ -103,7 +105,6 @@
 - Timesheet editor: fix java.lang.NullPointerException in TimesheetServiceImpl when delete a line in editor
 - Fix BillOfMaterial copy when creating a personalized BOM.
 - Supplier request : added suggestion filters on selecting supplierPartner 
-
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

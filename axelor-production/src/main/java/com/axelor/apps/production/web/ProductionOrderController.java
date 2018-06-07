@@ -89,8 +89,12 @@ public class ProductionOrderController {
       ProductionOrder productionOrder =
           productionOrderRepo.find(Long.parseLong(request.getContext().get("_id").toString()));
 
-      productionOrderService.addManufOrder(
-          productionOrder, product, billOfMaterial, qty, startDate.toLocalDateTime());
+      if (billOfMaterial.getProdProcess() != null) {
+        productionOrderService.addManufOrder(
+            productionOrder, product, billOfMaterial, qty, startDate.toLocalDateTime());
+      } else {
+        response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_GENERATION));
+      }
 
       response.setCanClose(true);
     }
