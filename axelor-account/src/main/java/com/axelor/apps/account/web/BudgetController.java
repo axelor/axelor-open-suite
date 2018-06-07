@@ -48,8 +48,10 @@ public class BudgetController {
 
   public void generatePeriods(ActionRequest request, ActionResponse response) {
     try {
-    Budget budget = request.getContext().asType(Budget.class);
-    response.setValue("budgetLineList", budgetService.generatePeriods(budget));
-    } catch (Exception e) { TraceBackService.trace(response, e); }
+      Budget budget = request.getContext().asType(Budget.class);
+      response.setValue("budgetLineList", budgetService.generatePeriods(budget));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

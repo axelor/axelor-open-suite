@@ -17,21 +17,11 @@
  */
 package com.axelor.apps.base.service;
 
-import java.time.LocalDate;
-
-import javax.inject.Singleton;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import javax.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public interface PeriodService {
 
@@ -52,10 +42,10 @@ public interface PeriodService {
   public void testOpenPeriod(Period period) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void close(Period period);
+  public void close(Period period);
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void adjust(Period period);
+  public void adjust(Period period);
 
   /**
    * Check if the period corresponding to the date and the company is closed
@@ -73,7 +63,8 @@ public interface PeriodService {
    * @param fromDate
    * @param toDate
    */
-	public void checkPeriod(Company company, LocalDate fromDate, LocalDate toDate) throws AxelorException;
+  public void checkPeriod(Company company, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
 
   /**
    * @param period

@@ -77,7 +77,7 @@ public class BudgetService {
     return budget.getBudgetLineList();
   }
 
-	public List<BudgetLine> generatePeriods(Budget budget) throws AxelorException{
+  public List<BudgetLine> generatePeriods(Budget budget) throws AxelorException {
 
     if (budget.getBudgetLineList() != null && !budget.getBudgetLineList().isEmpty()) {
       List<BudgetLine> budgetLineList = budget.getBudgetLineList();
@@ -95,8 +95,9 @@ public class BudgetService {
     int loopLimit = 1000;
     while (budgetLineToDate.isBefore(toDate)) {
       if (budgetLineNumber != 1) fromDate = fromDate.plusMonths(duration);
-      if(c >= loopLimit) {
-        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BUDGET_1));
+      if (c >= loopLimit) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BUDGET_1));
       }
       c += 1;
       budgetLineToDate = fromDate.plusMonths(duration).minusDays(1);

@@ -89,6 +89,7 @@ public interface IExceptionMessage {
   /** Bill of material service */
   static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/
       "The product cost cannot be changed because the product cost type is not manual" /*)*/;
+
   static final String MAX_DEPTH_REACHED = /*$$(*/ "Max depth reached when copying BOM." /*)*/;
 
   /** Configurator Controller */

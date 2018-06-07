@@ -55,8 +55,10 @@ public class YearController {
 
   public void generatePeriods(ActionRequest request, ActionResponse response) {
     try {
-    Year year = request.getContext().asType(Year.class);
-    response.setValue("periodList", yearServiceAccountImpl.generatePeriods(year));
-    } catch (Exception e) { TraceBackService.trace(response, e); }
+      Year year = request.getContext().asType(Year.class);
+      response.setValue("periodList", yearServiceAccountImpl.generatePeriods(year));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

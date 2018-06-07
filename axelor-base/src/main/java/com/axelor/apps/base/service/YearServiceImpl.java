@@ -39,7 +39,7 @@ public class YearServiceImpl implements YearService {
     this.yearRepo = yearRepo;
   }
 
-	public List<Period> generatePeriods(Year year) throws AxelorException{
+  public List<Period> generatePeriods(Year year) throws AxelorException {
 
     List<Period> periods = new ArrayList<Period>();
     Integer duration = year.getPeriodDurationSelect();
@@ -51,8 +51,9 @@ public class YearServiceImpl implements YearService {
     int loopLimit = 1000;
     while (periodToDate.isBefore(toDate)) {
       if (periodNumber != 1) fromDate = fromDate.plusMonths(duration);
-      if(c >= loopLimit) {
-        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PERIOD_3));
+      if (c >= loopLimit) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.PERIOD_3));
       }
       c += 1;
       periodToDate = fromDate.plusMonths(duration).minusDays(1);
