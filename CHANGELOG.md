@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.0.0]
 ## Improvements
+- Improved the way to sort the accounting grand ledger per account, date, and moveLine ref.
 
 ## Bug Fixes
 

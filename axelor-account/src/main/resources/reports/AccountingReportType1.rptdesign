@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -346,7 +346,9 @@ Move.company = AccountingReport.company AND
 (AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) AND
-Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR (Move.status_select = 2 AND AccountConfig.accounting_daybook = true))]]></xml-property>
+Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR (Move.status_select = 2 AND AccountConfig.accounting_daybook = true))
+
+order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1577,18 +1579,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
-                            </structure>
-                        </list-property>
-                        <list-property name="sort">
-                            <structure>
-                                <expression name="key" type="javascript">row["account"]</expression>
-                                <property name="direction">asc</property>
-                                <property name="strength">-1</property>
-                            </structure>
-                            <structure>
-                                <expression name="key" type="javascript">row["date_val"]</expression>
-                                <property name="direction">asc</property>
-                                <property name="strength">-1</property>
                             </structure>
                         </list-property>
                         <column id="4147">
