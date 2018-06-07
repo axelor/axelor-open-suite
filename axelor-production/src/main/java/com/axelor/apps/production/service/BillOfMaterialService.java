@@ -37,7 +37,7 @@ public interface BillOfMaterialService {
   public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException;
+  public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException;
 
   public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
 
@@ -54,5 +54,6 @@ public interface BillOfMaterialService {
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth) throws AxelorException;
+  BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
+      throws AxelorException;
 }

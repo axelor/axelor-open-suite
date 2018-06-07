@@ -99,47 +99,47 @@ import com.axelor.base.service.ical.ICalendarEventServiceImpl;
 
 public class BaseModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(AddressService.class).to(AddressServiceImpl.class);
-        bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
-        bind(UserService.class).to(UserServiceImpl.class);
-        bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
-        bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
-        bind(AccountManagementService.class).to(AccountManagementServiceImpl.class);
-        bind(FiscalPositionService.class).to(FiscalPositionServiceImpl.class);
-        bind(ProductService.class).to(ProductServiceImpl.class);
-        bind(TemplateService.class).to(TemplateBaseService.class);
-        bind(TemplateMessageServiceImpl.class).to(TemplateMessageServiceBaseImpl.class);
-        bind(PartnerRepository.class).to(PartnerBaseRepository.class);
-        bind(DurationRepository.class).to(DurationBaseRepository.class);
-        bind(DurationService.class).to(DurationServiceImpl.class);
-        bind(AppBaseService.class).to(AppBaseServiceImpl.class);
-        bind(SequenceRepository.class).to(SequenceBaseRepository.class);
-        bind(ProductRepository.class).to(ProductBaseRepository.class);
-        bind(WeeklyPlanningService.class).to(WeeklyPlanningServiceImp.class);
-        bind(MailServiceMessageImpl.class).to(MailServiceBaseImpl.class);
-        bind(AddressRepository.class).to(AddressBaseRepository.class);
-        bind(YearRepository.class).to(YearBaseRepository.class);
-        bind(AppServiceImpl.class).to(AppBaseServiceImpl.class);
-        bind(AppService.class).to(AppServiceImpl.class);
-        bind(BankService.class).to(BankServiceImpl.class);
-        bind(BankRepository.class).to(BankBaseRepository.class);
-        bind(CompanyService.class).to(CompanyServiceImpl.class);
-        bind(BankAddressRepository.class).to(BankAddressBaseRepository.class);
-        bind(UserRepository.class).to(UserBaseRepository.class);
-        bind(BankDetailsService.class).to(BankDetailsServiceImpl.class);
-        bind(ImportCityService.class).to(ImportCityServiceImpl.class);
-        bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
-        bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
-        bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
-        bind(TradingNameService.class).to(TradingNameServiceImpl.class);
-        bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
-        bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
-        bind(ICalendarEventRepository.class).to(ICalendarEventManagementRepository.class);
-        bind(ProductMultipleQtyService.class).to(ProductMultipleQtyServiceImpl.class);
-        bind(BarcodeGeneratorService.class).to(BarcodeGeneratorServiceImpl.class);
-        PartnerAddressRepository.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
-        bind(PeriodService.class).to(PeriodServiceImpl.class);
-    }
+  @Override
+  protected void configure() {
+    bind(AddressService.class).to(AddressServiceImpl.class);
+    bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
+    bind(UserService.class).to(UserServiceImpl.class);
+    bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
+    bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
+    bind(AccountManagementService.class).to(AccountManagementServiceImpl.class);
+    bind(FiscalPositionService.class).to(FiscalPositionServiceImpl.class);
+    bind(ProductService.class).to(ProductServiceImpl.class);
+    bind(TemplateService.class).to(TemplateBaseService.class);
+    bind(TemplateMessageServiceImpl.class).to(TemplateMessageServiceBaseImpl.class);
+    bind(PartnerRepository.class).to(PartnerBaseRepository.class);
+    bind(DurationRepository.class).to(DurationBaseRepository.class);
+    bind(DurationService.class).to(DurationServiceImpl.class);
+    bind(AppBaseService.class).to(AppBaseServiceImpl.class);
+    bind(SequenceRepository.class).to(SequenceBaseRepository.class);
+    bind(ProductRepository.class).to(ProductBaseRepository.class);
+    bind(WeeklyPlanningService.class).to(WeeklyPlanningServiceImp.class);
+    bind(MailServiceMessageImpl.class).to(MailServiceBaseImpl.class);
+    bind(AddressRepository.class).to(AddressBaseRepository.class);
+    bind(YearRepository.class).to(YearBaseRepository.class);
+    bind(AppServiceImpl.class).to(AppBaseServiceImpl.class);
+    bind(AppService.class).to(AppServiceImpl.class);
+    bind(BankService.class).to(BankServiceImpl.class);
+    bind(BankRepository.class).to(BankBaseRepository.class);
+    bind(CompanyService.class).to(CompanyServiceImpl.class);
+    bind(BankAddressRepository.class).to(BankAddressBaseRepository.class);
+    bind(UserRepository.class).to(UserBaseRepository.class);
+    bind(BankDetailsService.class).to(BankDetailsServiceImpl.class);
+    bind(ImportCityService.class).to(ImportCityServiceImpl.class);
+    bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
+    bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
+    bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
+    bind(TradingNameService.class).to(TradingNameServiceImpl.class);
+    bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
+    bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
+    bind(ICalendarEventRepository.class).to(ICalendarEventManagementRepository.class);
+    bind(ProductMultipleQtyService.class).to(ProductMultipleQtyServiceImpl.class);
+    bind(BarcodeGeneratorService.class).to(BarcodeGeneratorServiceImpl.class);
+    PartnerAddressRepository.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
+    bind(PeriodService.class).to(PeriodServiceImpl.class);
+  }
 }
