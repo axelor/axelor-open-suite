@@ -85,6 +85,8 @@
 - Fix trading name not being imported from opportunity on sale quotation generation
 - Purchase order: fix doubled stock move total when generating supplier arrival.
 - Logistical form is now printed in customer language and not in user language.
+- Fix : errors when trying to generate production orders from sale orders with products lacking a stock unit or bill of materials lacking a production process.
+- Fix : error when add a manufacturing order lacking a production process to a production process.
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Improvements

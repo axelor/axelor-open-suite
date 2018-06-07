@@ -75,7 +75,7 @@ public interface IExceptionMessage {
 
   /** Production Order Controller */
   static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
-      "No production order has been generated" /*)*/;
+      "No production order could be generated. Make sure that everything has been configured correctly. Reminder: check that the order lines that should be produced have their supply method set to 'produce' and that the chosen BoM has a production process associated to it." /*)*/;
 
   /** ProdProcess service */
   static final String PROD_PROCESS_USELESS_PRODUCT = /*$$(*/
@@ -99,4 +99,8 @@ public interface IExceptionMessage {
 
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
+
+  /** Production Order Controller */
+  static final String MANUF_ORDER_NO_GENERATION = /*$$(*/
+      "Cannot add a manufacturing order without a production process. Please check that your chosen bill of material has a valid production process." /*)*/;
 }

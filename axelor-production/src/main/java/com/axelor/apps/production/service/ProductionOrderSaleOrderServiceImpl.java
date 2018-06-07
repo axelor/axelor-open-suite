@@ -84,6 +84,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     Product product = saleOrderLine.getProduct();
 
     if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE
+        && saleOrderLine.getBillOfMaterial() != null
+        && saleOrderLine.getBillOfMaterial().getProdProcess() != null
         && product != null
         && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
       Unit unit = saleOrderLine.getProduct().getUnit();
