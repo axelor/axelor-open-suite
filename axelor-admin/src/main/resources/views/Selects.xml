@@ -7,5 +7,25 @@
 		<option value="1">Groups</option>
 		<option value="2">Roles</option>
 	</selection>
+	
+	<selection name="object.data.config.model.select">
+		<option value="com.axelor.auth.db.User">User</option>
+	</selection>
+	
+	<selection name="object.data.export.format.select">
+		<option value="csv">CSV</option>
+		<option value="xlsx">Excel</option>
+	</selection>
+	
+	<selection name="data.config.line.type.select">
+		<option value="0">Path</option>
+		<option value="1">Query</option>
+	</selection>
+	
+	<selection name="data.config.line.reset.path.select">
+		<option value="0">None</option>	
+		<option value="1">Replace</option>
+		<option value="2">Delete</option>
+	</selection>
 
 </object-views>

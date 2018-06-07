@@ -3,7 +3,7 @@
 ## [Unreleased 5.0.0]
 ## Improvements
 - Improved the way to sort the accounting grand ledger per account, date, and moveLine ref.
-
+- General data protection regulation: data export and anonymize feature added.  
 ## Bug Fixes
 
 
