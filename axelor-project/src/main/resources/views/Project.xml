@@ -8,6 +8,7 @@
 		<menu title="Tools" icon="fa-wrench" showTitle="true">
 				<item title="Gantt with user" action="action-project-open-popup-select-users"/>
 				<item title="Gantt with project" action="action-project-open-popup-select-projects"/>
+                <item title="Planning editor" action="project.planning"/>
 		</menu>
 	</menubar>
 		<hilite background="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
