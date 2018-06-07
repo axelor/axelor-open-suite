@@ -110,15 +110,33 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
 
-    if (saleOrderLine != null) {
+    if (stockMoveLine != null) {
+      this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
+      Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
+      if (saleOrPurchaseUnit != null) {
+        if (saleOrPurchaseUnit.equals(product.getSalesUnit())) {
+          this.price = saleOrderLine.getPrice();
+        } else if (saleOrPurchaseUnit.equals(product.getPurchasesUnit())) {
+          this.price = purchaseOrderLine.getPrice();
+        }
+        if (this.unit != null && !this.unit.equals(saleOrPurchaseUnit)) {
+          this.qty =
+              Beans.get(UnitConversionService.class)
+                  .convertWithProduct(
+                      this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
+          this.priceDiscounted =
+              Beans.get(UnitConversionService.class)
+                  .convertWithProduct(saleOrPurchaseUnit, this.unit, this.priceDiscounted, product);
+          this.unit = saleOrPurchaseUnit;
+        }
+      }
+    } else if (saleOrderLine != null) {
       this.discountAmount = saleOrderLine.getDiscountAmount();
       this.price = saleOrderLine.getPrice();
       this.priceDiscounted = saleOrderLine.getPriceDiscounted();
       this.taxLine = saleOrderLine.getTaxLine();
       this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
       this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
-      this.unit = saleOrderLine.getUnit();
-      this.qty = saleOrderLine.getQty();
     } else if (purchaseOrderLine != null) {
       this.isTitleLine = purchaseOrderLine.getIsTitleLine();
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
@@ -126,23 +144,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
-      this.unit = purchaseOrderLine.getUnit();
-      this.qty = purchaseOrderLine.getQty();
-    } else if (stockMoveLine != null) {
-      this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
-      Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
-
-      if (saleOrPurchaseUnit != null
-          && this.unit != null
-          && !this.unit.equals(saleOrPurchaseUnit)) {
-        this.qty =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
-        this.priceDiscounted =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(saleOrPurchaseUnit, this.unit, this.priceDiscounted, product);
-        this.unit = saleOrPurchaseUnit;
-      }
     }
   }
 
