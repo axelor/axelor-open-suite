@@ -27,7 +27,6 @@ import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.db.repo.EventManagementRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadManagementRepository;
-import com.axelor.apps.crm.db.repo.LeadCrmRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
@@ -55,6 +54,5 @@ public class CrmModule extends AxelorModule {
     bind(CrmBatchRepository.class).to(CrmBatchCrmRepository.class);
     bind(LeadService.class).to(LeadServiceImpl.class);
     ICalendarEventFactory.register(ICalendarRepository.CRM_SYNCHRO, Event::new);
-    bind(LeadRepository.class).to(LeadCrmRepository.class);
   }
 }

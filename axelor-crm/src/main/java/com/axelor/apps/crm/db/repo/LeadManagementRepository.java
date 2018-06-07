@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.crm.db.Lead;
+import com.google.common.base.Strings;
 
 public class LeadManagementRepository extends LeadRepository {
 
@@ -29,6 +30,24 @@ public class LeadManagementRepository extends LeadRepository {
     } else if (entity.getUser() == null && entity.getStatusSelect() == LEAD_STATUS_ASSIGNED) {
       entity.setStatusSelect(LEAD_STATUS_NEW);
     }
+
+    StringBuilder fullName = new StringBuilder();
+
+    if (!Strings.isNullOrEmpty(entity.getEnterpriseName())) {
+      fullName.append(entity.getEnterpriseName());
+      if (!Strings.isNullOrEmpty(entity.getName()) || !Strings.isNullOrEmpty(entity.getFirstName()))
+        fullName.append(", ");
+    }
+    if (!Strings.isNullOrEmpty(entity.getName()) && !Strings.isNullOrEmpty(entity.getFirstName())) {
+      fullName.append(entity.getFirstName());
+      fullName.append(" ");
+      fullName.append(entity.getName());
+    } else if (!Strings.isNullOrEmpty(entity.getFirstName()))
+      fullName.append(entity.getFirstName());
+    else if (!Strings.isNullOrEmpty(entity.getName())) fullName.append(entity.getName());
+
+    entity.setFullName(fullName.toString());
+
     return super.save(entity);
   }
 }
