@@ -4,15 +4,15 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="sale-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
-    	<toolbar>
-    		<button name="mergeQuotations" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
-    		<button name="seeQuotationLines" title="See quotation lines" onClick="action-view-open-quotation-lines"/>
-    	</toolbar>
-    	<menubar>
-	        <menu title="Schedule Event" icon="img/16px/create_16px.png" showTitle="true" if-module="axelor-crm">
-	            <item title="Schedule Event" action="action-sale-order-view-schedule-event"/>
-	        </menu>
-	    </menubar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-placeholder-print"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
+                <item title="See quotation lines" action="action-view-open-quotation-lines"/>
+            </menu>
+        </menubar>
 	    <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
 	    <hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
         <field name="endOfValidityDate" hidden="true"/>
@@ -32,14 +32,14 @@
 
 	<grid name="sale-order-grid" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
-		<menubar>
-			<menu title="Plan" icon="img/16px/create_16px.png" showTitle="true"
-				if-module="axelor-crm">
-				<item title="Plan a meeting" action="action-sale-order-view-plan-meeting" />
-				<item title="Plan a call" action="action-sale-order-view-plan-call" />
-				<item title="Plan a task" action="action-sale-order-view-plan-task" />
-			</menu>
-		</menubar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-placeholder-print"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
+            </menu>
+        </menubar>
 		<hilite background="warning"
 			if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)" />
 		<hilite background="danger"
@@ -63,12 +63,14 @@
 
 	<grid name="sale-order-partner-grid" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
-		<menubar>
-			<menu title="Schedule Event" icon="img/16px/create_16px.png" showTitle="true"
-				if-module="axelor-crm">
-				<item title="Schedule Event" action="action-sale-order-view-schedule-event" />
-			</menu>
-		</menubar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-placeholder-print"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
+            </menu>
+        </menubar>
 		<field name="saleOrderSeq" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
@@ -689,11 +691,7 @@
 		</template>
 	</cards>
 
-	<cards name="sale-order-quotation-cards" title="Sale quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
-		<toolbar>
-			<button name="mergeQuotations" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
-			<button name="seeQuotationLines" title="See quotation lines" onClick="action-view-open-quotation-lines"/>
-		</toolbar>
+	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="clientPartner.fullName"/>

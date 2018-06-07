@@ -22,6 +22,10 @@ import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -73,7 +77,7 @@ public class BudgetService {
     return budget.getBudgetLineList();
   }
 
-  public List<BudgetLine> generatePeriods(Budget budget) {
+  public List<BudgetLine> generatePeriods(Budget budget) throws AxelorException {
 
     if (budget.getBudgetLineList() != null && !budget.getBudgetLineList().isEmpty()) {
       List<BudgetLine> budgetLineList = budget.getBudgetLineList();
@@ -87,8 +91,15 @@ public class BudgetService {
     LocalDate budgetLineToDate = fromDate;
     Integer budgetLineNumber = 1;
 
+    int c = 0;
+    int loopLimit = 1000;
     while (budgetLineToDate.isBefore(toDate)) {
       if (budgetLineNumber != 1) fromDate = fromDate.plusMonths(duration);
+      if (c >= loopLimit) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BUDGET_1));
+      }
+      c += 1;
       budgetLineToDate = fromDate.plusMonths(duration).minusDays(1);
       if (budgetLineToDate.isAfter(toDate)) budgetLineToDate = toDate;
       if (fromDate.isAfter(toDate)) continue;

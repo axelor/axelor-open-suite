@@ -76,4 +76,6 @@ public interface LeadService {
    * @param lostReason the specified lost reason
    */
   public void loseLead(Lead lead, LostReason lostReason);
+
+  public String processFullName(String enterpriseName, String name, String firstName);
 }

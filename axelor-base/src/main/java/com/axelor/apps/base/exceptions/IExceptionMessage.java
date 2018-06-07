@@ -74,6 +74,7 @@ public interface IExceptionMessage {
       "No period found or it has been closed for the company %s" /*)*/;
 
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
+  public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;
   static final String PAY_PERIOD_CLOSED = /*$$(*/ "Warning : the pay period %s is closed." /*)*/;
   /** Abstract batch */
   String ABSTRACT_BATCH_1 = /*$$(*/ "This batch is not runnable!" /*)*/;

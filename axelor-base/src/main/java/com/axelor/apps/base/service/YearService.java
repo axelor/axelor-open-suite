@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
+import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,5 +28,5 @@ public interface YearService {
 
   public Year getYear(LocalDate date, Company company);
 
-  List<Period> generatePeriods(Year year);
+  List<Period> generatePeriods(Year year) throws AxelorException;
 }

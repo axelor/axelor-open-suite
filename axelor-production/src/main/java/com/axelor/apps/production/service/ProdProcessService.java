@@ -32,12 +32,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,11 +57,19 @@ public class ProdProcessService {
   public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom)
       throws AxelorException {
     Map<Product, BigDecimal> bomMap = new HashMap<Product, BigDecimal>();
-    for (BillOfMaterial bomIt : bom.getBillOfMaterialSet()) {
+
+    Set<BillOfMaterial> setBoM =
+        MoreObjects.firstNonNull(bom.getBillOfMaterialSet(), Collections.emptySet());
+    for (BillOfMaterial bomIt : setBoM) {
       bomMap.put(bomIt.getProduct(), bomIt.getQty());
     }
-    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
-      for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
+    List<ProdProcessLine> listPPL =
+        MoreObjects.firstNonNull(prodProcess.getProdProcessLineList(), Collections.emptyList());
+    for (ProdProcessLine prodProcessLine : listPPL) {
+      List<ProdProduct> listPP =
+          MoreObjects.firstNonNull(
+              prodProcessLine.getToConsumeProdProductList(), Collections.emptyList());
+      for (ProdProduct prodProduct : listPP) {
         if (!bomMap.containsKey(prodProduct.getProduct())) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

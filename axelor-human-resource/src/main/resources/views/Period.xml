@@ -20,7 +20,7 @@
 			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
 			<field name="fromDate" colSpan="3"/>
 			<field name="toDate" colSpan="3"/>
-			<field name="year" title="Payroll year" form-view="year-hr-form" grid-view="year-grid"/>
+			<field name="year" title="Payroll year" form-view="year-hr-form" grid-view="year-grid" domain="self.typeSelect = 2"/>
 		</panel>
 		<panel>
 			<panel colSpan="6">

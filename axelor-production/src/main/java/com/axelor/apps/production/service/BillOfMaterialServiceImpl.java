@@ -39,7 +39,9 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,9 +88,29 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine) {
+  public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine)
+      throws AxelorException {
 
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+    return customizeBillOfMaterial(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial)
+      throws AxelorException {
+    return customizeBillOfMaterial(billOfMaterial, 0);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
+      throws AxelorException {
+    if (depth > 1000) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MAX_DEPTH_REACHED));
+    }
 
     if (billOfMaterial != null) {
       BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
@@ -101,6 +123,12 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               + personalizedBOM.getId()
               + ")");
       personalizedBOM.setPersonalized(true);
+      Set<BillOfMaterial> personalizedBOMSet = new HashSet<BillOfMaterial>();
+      for (BillOfMaterial childBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
+        personalizedBOMSet.add(customizeBillOfMaterial(childBillOfMaterial, depth + 1));
+      }
+      personalizedBOM.setBillOfMaterialSet(personalizedBOMSet);
+
       return personalizedBOM;
     }
 

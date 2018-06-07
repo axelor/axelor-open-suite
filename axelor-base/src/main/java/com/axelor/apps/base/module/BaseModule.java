@@ -62,6 +62,8 @@ import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
+import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
@@ -138,5 +140,6 @@ public class BaseModule extends AxelorModule {
     bind(ProductMultipleQtyService.class).to(ProductMultipleQtyServiceImpl.class);
     bind(BarcodeGeneratorService.class).to(BarcodeGeneratorServiceImpl.class);
     PartnerAddressRepository.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
+    bind(PeriodService.class).to(PeriodServiceImpl.class);
   }
 }

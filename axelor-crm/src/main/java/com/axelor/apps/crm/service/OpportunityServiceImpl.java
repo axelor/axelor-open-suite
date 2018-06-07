@@ -29,7 +29,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -55,10 +54,7 @@ public class OpportunityServiceImpl implements OpportunityService {
           I18n.get(IExceptionMessage.LEAD_PARTNER));
     }
 
-    String name = lead.getCompanyName();
-    if (Strings.isNullOrEmpty(name)) {
-      name = lead.getFullName();
-    }
+    String name = lead.getFullName();
 
     Address address = null;
     if (lead.getPrimaryAddress() != null) {
