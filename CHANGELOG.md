@@ -9,6 +9,7 @@
 - Add ISPM15 feature on Picking stock move report.
 
 ## Improvements
+- Move "Planning Editor" menu link to project grid view tools buttons.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
