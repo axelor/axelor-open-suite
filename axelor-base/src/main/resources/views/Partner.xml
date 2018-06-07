@@ -772,13 +772,13 @@
 		<field name="partnerTypeSelect" expr="#{2}" />
 		<field name="isContact" expr="#{false}"/>
 		<field name="isEmployee" expr="#{true}"/>
-		<field name="companySet" expr="#{_parent.companySet}"/>
-		<field name="language" expr="#{_parent != null ? _parent.language : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
-		<field name="user"  expr="#{_parent.user}" if="#{_parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="team"  expr="#{_parent.team}" if="#{_parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent?._model != 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent?._model != 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent.id != null &amp;&amp; _parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="companySet" expr="#{__parent__.companySet}"/>
+		<field name="language" expr="#{__parent__ != null ? __parent__.language : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
+		<field name="user"  expr="#{__parent__.user}" if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="team"  expr="#{__parent__.team}" if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="user"  expr="#{__user__}" if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="team"  expr="#{__user__.activeTeam}" if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="mainPartner" expr="#{__repo__(Partner).find(__parent__.id)}" if="#{__parent__ &amp;&amp; __parent__.id != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-record>
 
     <action-method name="action-partner-method-normalize-fixedPhone">

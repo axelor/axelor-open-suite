@@ -8,7 +8,9 @@
         type="com.axelor.apps.base.db.Language"
         search="self.code = :code"/>
   	
-  	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"  call="com.axelor.csv.script.ImportApp:importApp"  />
+    <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"  search="self.name = :name"  />
+
+  	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp"  />
   	
 <!--   	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId"/> -->
   	
@@ -33,8 +35,6 @@
     <input file="base_birtTemplate.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId"  />
 	
 	<input file="base_birtTemplateParameter.csv" separator=";" type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"  />
-	     
-	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"  search="self.name = :name"  />
     
 <!-- 	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source" search="self.code = :code"/> -->
 	
