@@ -243,9 +243,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setCompanyInTaxTotal(null);
     line.setCompanyExTaxTotal(null);
     line.setProductCode(null);
-	    if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
-    line.setDescription(null);
-		}
+    if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
+      line.setDescription(null);
+    }
     return line;
   }
 
