@@ -430,5 +430,10 @@
 		<option value="QR_CODE">QR_CODE</option>
 		<option value="UPC_A">UPC_A</option>
     </selection>
-    
+   
+    <selection name="base.sharing.setting.rights.select">
+        <option value="1">Read only</option>
+        <option value="2">Modification</option>
+    </selection>
+
 </object-views>

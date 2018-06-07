@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -45,6 +37,13 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ProdProcessService {
 
@@ -58,15 +57,19 @@ public class ProdProcessService {
   public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom)
       throws AxelorException {
     Map<Product, BigDecimal> bomMap = new HashMap<Product, BigDecimal>();
-		
-		Set<BillOfMaterial> setBoM = MoreObjects.firstNonNull(bom.getBillOfMaterialSet(), Collections.emptySet());
-		for (BillOfMaterial bomIt : setBoM) {
+
+    Set<BillOfMaterial> setBoM =
+        MoreObjects.firstNonNull(bom.getBillOfMaterialSet(), Collections.emptySet());
+    for (BillOfMaterial bomIt : setBoM) {
       bomMap.put(bomIt.getProduct(), bomIt.getQty());
     }
-		List<ProdProcessLine> listPPL = MoreObjects.firstNonNull(prodProcess.getProdProcessLineList(), Collections.emptyList());
-		for (ProdProcessLine prodProcessLine : listPPL) {
-			List<ProdProduct> listPP = MoreObjects.firstNonNull(prodProcessLine.getToConsumeProdProductList(), Collections.emptyList());
-			for (ProdProduct prodProduct : listPP) {
+    List<ProdProcessLine> listPPL =
+        MoreObjects.firstNonNull(prodProcess.getProdProcessLineList(), Collections.emptyList());
+    for (ProdProcessLine prodProcessLine : listPPL) {
+      List<ProdProduct> listPP =
+          MoreObjects.firstNonNull(
+              prodProcessLine.getToConsumeProdProductList(), Collections.emptyList());
+      for (ProdProduct prodProduct : listPP) {
         if (!bomMap.containsKey(prodProduct.getProduct())) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

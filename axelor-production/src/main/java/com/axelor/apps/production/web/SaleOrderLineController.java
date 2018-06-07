@@ -36,12 +36,12 @@ public class SaleOrderLineController {
   public void customizeBillOfMaterial(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-  
+
       BillOfMaterial copyBillOfMaterial =
           billOfMaterialService.customizeBillOfMaterial(saleOrderLine);
-  
+
       if (copyBillOfMaterial != null) {
-  
+
         response.setValue("billOfMaterial", copyBillOfMaterial);
         response.setFlash(I18n.get(IExceptionMessage.SALE_ORDER_LINE_1));
       }

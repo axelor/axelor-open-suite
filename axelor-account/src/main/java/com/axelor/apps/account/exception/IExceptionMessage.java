@@ -681,9 +681,7 @@ public interface IExceptionMessage {
   static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
   static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
 
-  /**
-   * Budget service
-   */
+  /** Budget service */
   static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
 
   static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
