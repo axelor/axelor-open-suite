@@ -18,7 +18,8 @@
 package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.crm.db.Lead;
-import com.google.common.base.Strings;
+import com.axelor.apps.crm.service.LeadService;
+import com.axelor.inject.Beans;
 
 public class LeadManagementRepository extends LeadRepository {
 
@@ -31,22 +32,10 @@ public class LeadManagementRepository extends LeadRepository {
       entity.setStatusSelect(LEAD_STATUS_NEW);
     }
 
-    StringBuilder fullName = new StringBuilder();
-
-    if (!Strings.isNullOrEmpty(entity.getEnterpriseName())) {
-      fullName.append(entity.getEnterpriseName());
-      if (!Strings.isNullOrEmpty(entity.getName()) || !Strings.isNullOrEmpty(entity.getFirstName()))
-        fullName.append(", ");
-    }
-    if (!Strings.isNullOrEmpty(entity.getName()) && !Strings.isNullOrEmpty(entity.getFirstName())) {
-      fullName.append(entity.getFirstName());
-      fullName.append(" ");
-      fullName.append(entity.getName());
-    } else if (!Strings.isNullOrEmpty(entity.getFirstName()))
-      fullName.append(entity.getFirstName());
-    else if (!Strings.isNullOrEmpty(entity.getName())) fullName.append(entity.getName());
-
-    entity.setFullName(fullName.toString());
+    String fullName =
+        Beans.get(LeadService.class)
+            .processFullName(entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
+    entity.setFullName(fullName);
 
     return super.save(entity);
   }
