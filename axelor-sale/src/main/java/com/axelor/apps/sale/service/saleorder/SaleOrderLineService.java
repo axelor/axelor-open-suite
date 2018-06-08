@@ -38,7 +38,8 @@ public interface SaleOrderLineService {
    * @param saleOrderLine
    * @param saleOrder
    */
-  void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  void computeProductInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException;
 
   /**
@@ -50,7 +51,10 @@ public interface SaleOrderLineService {
    * @throws AxelorException
    */
   void computeProductInformation(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean taxLineIsOptional)
+      SaleOrderLine saleOrderLine,
+      SaleOrder saleOrder,
+      boolean taxLineIsOptional,
+      Integer packPriceSelect)
       throws AxelorException;
 
   SaleOrderLine resetProductInformation(SaleOrderLine line);
@@ -115,4 +119,16 @@ public interface SaleOrderLineService {
   public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
 
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
+
+  /**
+   * Fill price based on packPriceSelect only for packLine or subline. Works normal for standard
+   * line.
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @param packPriceSelect
+   * @throws AxelorException
+   */
+  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
+      throws AxelorException;
 }

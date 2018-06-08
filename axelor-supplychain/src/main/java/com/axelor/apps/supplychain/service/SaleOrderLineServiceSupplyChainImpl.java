@@ -58,9 +58,10 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Inject protected AnalyticMoveLineService analyticMoveLineService;
 
   @Override
-  public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public void computeProductInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException {
-    super.computeProductInformation(saleOrderLine, saleOrder);
+    super.computeProductInformation(saleOrderLine, saleOrder, packPriceSelect);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
   }
 

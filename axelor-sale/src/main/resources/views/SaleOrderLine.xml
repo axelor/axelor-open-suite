@@ -324,7 +324,6 @@
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
     	<action name="action-sale-order-line-method-get-product-information" />
-    	<action name="action-sale-order-line-method-create-pack-lines"  if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()"/>
     	<action name="action-sale-order-line-method-compute" />
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-get-production-information"/>
@@ -336,7 +335,6 @@
 		<action name="action-sale-order-line-compute-total-pack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
 		<action name="action-method-sale-order-line-available-stock" />
 		<action name="action-sale-order-line-price-attrs-readonly"  if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
-		<action name="action-sale-order-line-record-reset-price-on-select-sub-line"  if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
@@ -367,8 +365,9 @@
     
     <action-group name="action-group-sale-order-line-pack-price-select-onchange">
     	<action name="action-sale-order-line-price-attrs-readonly"/>
-    	<action name="action-sale-order-line-record-reset-price-on-select-sub-line"/>
-    	<action name="action-sale-order-subline-method-reset-data-on-select-pack-line"/>
+    	<action name="action-sale-order-line-method-reset-pack-line"/>
+    	<action name="action-sale-order-line-method-reset-pack-subline"/>
+    	<action name="action-sale-order-line-compute-total-pack" />
     </action-group>
     
     <action-attrs name="action-sale-order-attrs-hide-ati">
@@ -435,12 +434,12 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="getDiscount"/>
 	</action-method>
 	
-	<action-method name="action-sale-order-line-method-create-pack-lines">
-		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="createPackLines"/>
+	<action-method name="action-sale-order-line-method-reset-pack-line">
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="resetPackLine"/>
 	</action-method>
-
-	<action-method name="action-sale-order-subline-method-reset-data-on-select-pack-line">
-		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="resetSubLines"/>
+	
+	<action-method name="action-sale-order-line-method-reset-pack-subline">
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="resetPackSubLine"/>
 	</action-method>
 
 	<action-method name="action-sale-order-line-method-supplier-partner-domain" if-module="axelor-supplychain">
@@ -525,14 +524,6 @@
 		<attribute if="eval: __parent__.packPriceSelect == 0" name="readonly" expr="eval: true" for="priceDiscounted"/>
 	</action-attrs>
 	
-	<action-record name="action-sale-order-line-record-reset-price-on-select-sub-line" model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="price" expr="eval: 0.00" if="packPriceSelect == 1 &amp;&amp; !isSubLine" />
-		<field name="priceDiscounted" expr="eval: 0.00" if="packPriceSelect == 1 &amp;&amp; !isSubLine" />
-		<field name="exTaxTotal" expr="eval: 0.00" if="packPriceSelect == 1 &amp;&amp; !isSubLine" />
-		<field name="inTaxTotal" expr="eval: 0.00" if="packPriceSelect == 1 &amp;&amp; !isSubLine" />
-		<field name="totalPack" expr="eval: 0.00" if="packPriceSelect == 0 &amp;&amp; !isSubLine" />
-	</action-record>
-
 <!-- 	ACTION VIEW -->
 	<action-view name="action-sale-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">
   		<view type="grid" name="stock-move-line-all-grid"/>
