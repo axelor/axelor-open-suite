@@ -21,6 +21,7 @@ dependencies {
     compile project(":modules:axelor-admin")
 	compile project(":modules:axelor-message")
 	compile "org.apache.commons:commons-lang3:3.2"
+	compile "org.apache.commons:commons-math3:3.6.1"
 	compile "commons-validator:commons-validator:1.4.0"
 	compile "org.mnode.ical4j:ical4j:2.2.0"
 	compile "org.mnode.ical4j:ical4j-extensions:1.0.3"
