@@ -317,6 +317,7 @@
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode"/>
                 <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true"/>
 				<field name="isIspmRequired" hidden="true" showIf="isCustomer || isProspect"/>
+							<field name="isNeedingConformityCertificate" showIf="isCustomer || isProspect"/>
 				<field name="partnerStockSettingsList" colSpan="12"
 					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
                 <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form"/>

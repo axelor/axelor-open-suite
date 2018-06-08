@@ -21,6 +21,7 @@ public interface IReport {
 
   public static final String STOCK_MOVE = "StockMove.rptdesign";
   public static final String PICKING_STOCK_MOVE = "PickingStockMove.rptdesign";
+  public static final String CONFORMITY_CERTIFICATE = "ConformityCertificate.rptdesign";
   public static final String INVENTORY = "Inventory.rptdesign";
   public static final String STOCK_LOCATION = "StockLocation.rptdesign";
 }
