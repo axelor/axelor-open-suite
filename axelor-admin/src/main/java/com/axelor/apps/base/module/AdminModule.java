@@ -18,6 +18,10 @@
 package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.admin.service.ObjectDataAnonymizeService;
+import com.axelor.apps.admin.service.ObjectDataAnonymizeServiceImpl;
+import com.axelor.apps.admin.service.ObjectDataExportService;
+import com.axelor.apps.admin.service.ObjectDataExportServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.app.AppServiceImpl;
 
@@ -26,5 +30,7 @@ public class AdminModule extends AxelorModule {
   @Override
   protected void configure() {
     bind(AppService.class).to(AppServiceImpl.class);
+    bind(ObjectDataExportService.class).to(ObjectDataExportServiceImpl.class);
+    bind(ObjectDataAnonymizeService.class).to(ObjectDataAnonymizeServiceImpl.class);
   }
 }

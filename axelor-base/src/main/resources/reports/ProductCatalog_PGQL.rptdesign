@@ -727,6 +727,69 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AppBaseDS" id="4330">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">nb_decimal_digit_for_unit_price</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">nb_decimal_digit_for_unit_price</text-property>
+                    <text-property name="heading">nb_decimal_digit_for_unit_price</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">nb_decimal_digit_for_unit_price</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">nb_decimal_digit_for_unit_price</property>
+                    <property name="nativeName">nb_decimal_digit_for_unit_price</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_unit_price
+from base_app_base]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>nb_decimal_digit_for_unit_price</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>nb_decimal_digit_for_unit_price</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>nb_decimal_digit_for_unit_price</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <page-setup>
         <simple-master-page name="BlankMP" id="2">
@@ -947,6 +1010,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <image id="3440">
                         <property name="height">2.169583333333333cm</property>
                         <property name="width">6.138333333333333cm</property>
+                        <expression name="altText">""</expression>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
@@ -1692,6 +1756,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                     <image id="3822">
                                         <property name="height">106px</property>
                                         <property name="width">119px</property>
+                                        <expression name="altText">""</expression>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -1710,7 +1775,21 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                         <property name="marginTop">10pt</property>
                                         <property name="marginLeft">auto</property>
                                         <property name="width">6.677083333333333in</property>
+                                        <property name="dataSet">AppBaseDS</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">nb_decimal_digit_for_unit_price</property>
+                                                <text-property name="displayName">nb_decimal_digit_for_unit_price</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_unit_price"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                        </list-property>
                                         <structure name="toc"/>
+                                        <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
+  function(n) {
+    if (n < 0) throw new RangeError("Invalid count value");
+    return new Array(n + 1).join(this.toString());
+  };]]></method>
                                         <column id="257">
                                             <property name="width">6.677083333333333in</property>
                                         </column>
@@ -1724,7 +1803,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'value:'+row["ProductName"]</value>
+                                                                <value type="javascript">'value:'+row._outer._outer["ProductName"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1743,7 +1822,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["ProductName"]}</VALUE-OF></B>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer._outer._outer["ProductName"]}</VALUE-OF></B>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -1775,7 +1854,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B> <VALUE-OF>row._outer._outer["ProductCode"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B> <VALUE-OF>row._outer._outer._outer["ProductCode"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -1818,7 +1897,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'value:'+row["description"]</value>
+                                                                <value type="javascript">'value:'+row._outer._outer["description"]</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1840,8 +1919,8 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<div style=" width: 550px; word-wrap: break-word; ">
 <VALUE-OF>if(row["translation"] != null){row["translation"]}
-				else{ if(row._outer["description"] != null) { 
-					row._outer["description"]
+				else{ if(row._outer._outer._outer["description"] != null) { 
+					row._outer._outer._outer["description"]
 				 }}</VALUE-OF>
 </div>]]></text-property>
                                                 </text>
@@ -1879,7 +1958,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer._outer["sale_price"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["currency"]</VALUE-OF> / <VALUE-OF>row._outer._outer["Unit"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>Formatter.format(row._outer._outer._outer["sale_price"], "#,##0." + "0".repeat(row._outer["nb_decimal_digit_for_unit_price"]))</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer._outer["currency"]</VALUE-OF> / <VALUE-OF>row._outer._outer._outer["Unit"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
