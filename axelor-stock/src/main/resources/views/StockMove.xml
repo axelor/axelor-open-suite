@@ -70,6 +70,9 @@
             <menu title="Reports" icon="fa-files-o">
                 <item title="Print" action="save,action-print-stock-move" readonlyIf="statusSelect == 1"/>
                 <item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
+							<item title="Print certificate of conformity"
+								action="save,action-method-print-conformity-certificate"
+								showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
             </menu>
 
             <menu title="Tools" icon="fa-wrench">
@@ -194,6 +197,9 @@
                         </viewer>
                     </field>
                 </panel>
+							<field name="isNeedingConformityCertificate"/>
+							<field name="isConformityCertifSigned"/>
+							<field name="electronicSignature"/>
             </panel>
 
             <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms"/>
@@ -558,7 +564,11 @@
 	<action-method name="action-stock-move-method-filter-printing-settings">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="filterPrintingSettings"/>
 	</action-method>
-	
+
+	<action-method name="action-method-print-conformity-certificate">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="printConformityCertificate"/>
+	</action-method>
+
 	<action-record name="action-stock-move-record-freight-carrier" model="com.axelor.apps.stock.db.StockMove">
 		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
 	</action-record>

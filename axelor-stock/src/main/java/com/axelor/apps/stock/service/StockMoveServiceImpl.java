@@ -52,7 +52,6 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -1070,7 +1069,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   public String printStockMove(
-      StockMove stockMove, List<Integer> lstSelectedMove, boolean isPicking)
+      StockMove stockMove, List<Integer> lstSelectedMove, String reportType)
       throws AxelorException {
     List<Long> selectedStockMoveListId;
     if (lstSelectedMove != null && !lstSelectedMove.isEmpty()) {
@@ -1125,9 +1124,7 @@ public class StockMoveServiceImpl implements StockMoveService {
               : I18n.get("StockMove(s)");
     }
 
-    String report = isPicking ? IReport.PICKING_STOCK_MOVE : IReport.STOCK_MOVE;
-
-    return ReportFactory.createReport(report, title + "-${date}")
+    return ReportFactory.createReport(reportType, title + "-${date}")
         .addParam("StockMoveId", stockMoveIds)
         .addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
         .generate()

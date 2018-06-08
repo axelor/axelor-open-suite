@@ -62,6 +62,10 @@
     <boolean name="isIspmRequired" title="Is ISPM15 required"/>
     <boolean name="isReversion" readonly="true" />
 
+    <boolean name="isNeedingConformityCertificate" title="Certificate of conformity"/>
+    <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed ?"/>
+    <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" title="Electronic signature"/>
+
     <unique-constraint columns="stockMoveSeq,company"/>
     
     <extra-code><![CDATA[

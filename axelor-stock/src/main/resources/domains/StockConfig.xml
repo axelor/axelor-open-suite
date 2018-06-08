@@ -24,6 +24,9 @@
     <many-to-one name="stockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
     <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" title="Customer account numbers to carriers" mappedBy="stockConfig"/>
 
+    <string name="conformityCertificateTitle" title="Certificate of conformity title" translatable="true"/>
+    <string name="conformityCertificateDescription" title="Text in certificate of conformity" large="true" translatable="true"/>
+
   </entity>
   
 </domain-models>

@@ -127,6 +127,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         stockMove.setFullySpreadOverLogisticalFormsFlag(true);
       }
 
+      stockMove.setIsNeedingConformityCertificate(saleOrder.getIsNeedingConformityCertificate());
+
       stockMove.setEstimatedDate(saleOrder.getDeliveryDate());
       stockMoveService.plan(stockMove);
       return stockMove;

@@ -40,6 +40,10 @@
 				   showIf="stockMoveAutomaticMail"
 				   form-view="template-form" grid-view="template-grid"/>
 		</panel>
+		<panel title="Conformity certificate">
+			<field name="conformityCertificateTitle"/>
+			<field name="conformityCertificateDescription" widget="html"/>
+		</panel>
 	</form>
 	
 	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">
