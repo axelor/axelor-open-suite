@@ -77,6 +77,9 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
   @Override
   public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
+    if (stockMove.getPurchaseOrder() != null || stockMove.getSaleOrder() != null) {
+      return stockMoveLine;
+    }
     BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
     BigDecimal unitPriceTaxed = BigDecimal.ZERO;
     TaxLine taxLine = null;
