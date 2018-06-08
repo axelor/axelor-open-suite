@@ -153,12 +153,16 @@ public class CampaignServiceImpl implements CampaignService {
     for (Partner partner : campaign.getPartnerSet()) {
       Event event = new Event();
       event.setPartner(partner);
-			event.setUser(campaign.getGenerateEventPerPartnerOrLead() ? partner.getUser() : campaign.getEventUser());
+      event.setUser(
+          campaign.getGenerateEventPerPartnerOrLead()
+              ? partner.getUser()
+              : campaign.getEventUser());
       event.setSubject(campaign.getSubject());
       event.setTypeSelect(campaign.getEventTypeSelect());
       event.setStartDateTime(campaign.getEventStartDateTime());
       event.setDuration(campaign.getDuration());
-			event.setTeam(campaign.getGenerateEventPerPartnerOrLead() ? partner.getTeam() : campaign.getTeam());
+      event.setTeam(
+          campaign.getGenerateEventPerPartnerOrLead() ? partner.getTeam() : campaign.getTeam());
       event.setCampaign(campaign);
       event.setStatusSelect(1);
       eventRepo.save(event);
@@ -167,12 +171,14 @@ public class CampaignServiceImpl implements CampaignService {
     for (Lead lead : campaign.getLeadSet()) {
       Event event = new Event();
       event.setLead(lead);
-			event.setUser(campaign.getGenerateEventPerPartnerOrLead() ? lead.getUser() : campaign.getEventUser());
+      event.setUser(
+          campaign.getGenerateEventPerPartnerOrLead() ? lead.getUser() : campaign.getEventUser());
       event.setSubject(campaign.getSubject());
       event.setTypeSelect(campaign.getEventTypeSelect());
       event.setStartDateTime(campaign.getEventStartDateTime());
       event.setDuration(campaign.getDuration());
-			event.setTeam(campaign.getGenerateEventPerPartnerOrLead() ? lead.getTeam() : campaign.getTeam());
+      event.setTeam(
+          campaign.getGenerateEventPerPartnerOrLead() ? lead.getTeam() : campaign.getTeam());
       event.setCampaign(campaign);
       event.setStatusSelect(1);
       eventRepo.save(event);
