@@ -198,13 +198,15 @@ public class PaymentService {
       reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false);
     }
     // End gestion du passage en 580
-
-    reconcileService.confirmReconcile(reconcile, true);
-
-    debitTotalRemaining = debitTotalRemaining.subtract(amount);
-    creditTotalRemaining = creditTotalRemaining.subtract(amount);
-
-    log.debug("Réconciliation : {}", reconcile);
+    
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true);
+      
+      debitTotalRemaining = debitTotalRemaining.subtract(amount);
+      creditTotalRemaining = creditTotalRemaining.subtract(amount);
+      
+      log.debug("Réconciliation : {}", reconcile);
+    }
   }
 
   /**
@@ -287,10 +289,11 @@ public class PaymentService {
             reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, false);
       }
       // End gestion du passage en 580
-
-      reconcileList.add(reconcile);
-
-      remainingPaidAmount2 = remainingPaidAmount2.subtract(amountRemaining);
+      
+      if (reconcile != null) {
+        reconcileList.add(reconcile);
+        remainingPaidAmount2 = remainingPaidAmount2.subtract(amountRemaining);
+      }
     }
 
     for (Reconcile reconcile : reconcileList) {
@@ -395,10 +398,12 @@ public class PaymentService {
                         debitMoveLine, creditMoveLine, amountToPay, false);
               }
               // End gestion du passage en 580
-
-              remainingPaidAmount2 = remainingPaidAmount2.subtract(amountToPay);
-              amountDebit = amountDebit.subtract(amountToPay);
-              reconcileList.add(reconcile);
+              
+              if (reconcile != null) {
+                remainingPaidAmount2 = remainingPaidAmount2.subtract(amountToPay);
+                amountDebit = amountDebit.subtract(amountToPay);
+                reconcileList.add(reconcile);
+              }
             }
           }
         }

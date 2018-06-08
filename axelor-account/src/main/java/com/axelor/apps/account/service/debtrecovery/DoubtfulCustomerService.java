@@ -190,7 +190,9 @@ public class DoubtfulCustomerService {
     Reconcile reconcile =
         reconcileService.createReconcile(
             invoicePartnerMoveLine, creditMoveLine, amountRemaining, false);
-    reconcileService.confirmReconcile(reconcile, true);
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true);
+    }
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
   }
@@ -253,8 +255,10 @@ public class DoubtfulCustomerService {
 
     Reconcile reconcile =
         reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
-    reconcileService.confirmReconcile(reconcile, true);
-
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true);
+    }
+    
     // Ecriture au débit sur le 416 (client douteux)
     MoveLine debitMoveLine =
         moveLineService.createMoveLine(
