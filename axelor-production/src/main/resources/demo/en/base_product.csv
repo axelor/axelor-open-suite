@@ -23,7 +23,7 @@
 301;"Screws set";"CONS-0002";;4;10;"false";"buy";1;"storable";4;"EUR";"3.16";"EUR";70;;;1;4;"false";;"false";;;"1.40";"img/product/CONS-0002_en.jpg";;;1;
 302;"Ink Cartridge";"CONS-0003";"Color : Black, Magenta, Yellow, Blue/ Capacity : 1500 copies";4;10;"false";"buy";1;"storable";"32.9";"EUR";21;"EUR";70;"TODAY[-1M1d]";;1;"24.35";"false";;"false";;;"1.40";"img/product/CONS-0003_en.jpg";;;2;
 303;"Laser Cartridge";"CONS-0004";"Color : Black, Magenta, Yellow, Blue/ Capacity : 2600 copies";4;10;"false";"buy";1;"storable";"84.5";"EUR";54;"EUR";70;"TODAY[-1M1d]";;1;"58.75";"false";;"false";;;"1.40";"img/product/CONS-0004_en.jpg";;;2;
-304;"Paper ream 500 Sheets A4 Standard 80 g";"CONS-0005";"Format : A4 / Quantity : 500 Sheets / Mass : 80 g";4;10;"false";"buy";1;"storable";"6.99";"EUR";"5.4522";"EUR";70;"TODAY[-1M1d]";;1;6;"false";;"false";;;"1.40";"img/product/CONS-0005_en.jpg";;;2;
+304;"Paper ream 500 Sheets A4 Standard 80 g";"CONS-0005";"Format : A4 / Quantity : 500 Sheets / Weight : 80 g";4;10;"false";"buy";1;"storable";"6.99";"EUR";"5.4522";"EUR";70;"TODAY[-1M1d]";;1;6;"false";;"false";;;"1.40";"img/product/CONS-0005_en.jpg";;;2;
 305;"Inkball Pen medium (Box 50)";"CONS-0006";"Available colors : Black, Blue, Red, Green";4;10;"false";"buy";1;"storable";15;"EUR";"10.8";"EUR";70;;;1;14;"false";;"false";;;"1.40";"img/product/CONS-0006_en.png";;1;2;"true"
 306;"Ground coffee 250g";"CONS-0007";"Origin Columbia, 100% pur arabica";4;11;"false";"buy";1;"storable";3;"EUR";"2.49";"EUR";70;;;1;3;"true";;"true";12;;"1.40";"img/product/CONS-0007_en.png";;;2;
 307;"Bottle of Water (1,5L)";"CONS-0008";;4;11;"false";"buy";1;"storable";"0.9";"EUR";"0.684";"EUR";70;;;1;1;"true";;"true";12;;"1.40";"img/product/CONS-0008_en.jpg";;;2;
