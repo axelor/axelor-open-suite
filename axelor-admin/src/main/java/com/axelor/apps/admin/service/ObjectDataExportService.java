@@ -15,18 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.Year;
+package com.axelor.apps.admin.service;
+
+import com.axelor.apps.admin.db.ObjectDataConfig;
 import com.axelor.exception.AxelorException;
-import java.time.LocalDate;
-import java.util.List;
+import com.axelor.meta.db.MetaFile;
 
-public interface YearService {
+public interface ObjectDataExportService {
 
-  public Year getYear(LocalDate date, Company company);
-
-  List<Period> generatePeriods(Year year) throws AxelorException;
+  public MetaFile export(
+      ObjectDataConfig objectDataConfig, Long recorId, String language, String format)
+      throws AxelorException;
 }

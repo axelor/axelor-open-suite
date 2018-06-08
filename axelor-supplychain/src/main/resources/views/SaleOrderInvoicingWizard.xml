@@ -23,7 +23,7 @@
         <panel if-module="axelor-business-project" if="__config__.app.isApp('business-project')" showIf="operationSelect &gt; 4">
 			<field name="deadline" title="Deadline" type="date" colSpan="6"/>
 		</panel>
-		<panel-related field="saleOrderLineList" hideIf="operationSelect != 3"
+		<panel-related field="saleOrderLineList" hideIf="operationSelect != 3" canNew="false"
 					   grid-view="invoicing-wizard-sale-order-line-grid"
 					   editable="true"/>
 
@@ -41,7 +41,7 @@
 		</panel>
 	</form>
 
-	<grid name="invoicing-wizard-sale-order-line-grid" title="Lines to invoice"
+	<grid name="invoicing-wizard-sale-order-line-grid" title="Lines to invoice" edit-icon="false"
 		  model="com.axelor.apps.sale.db.SaleOrderLine">
 		<field name="productName" readonly="true"/>
 		<field name="qty" readonly="true" aggregate="sum"/>

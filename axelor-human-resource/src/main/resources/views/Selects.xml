@@ -170,5 +170,9 @@
 	<selection name="sequence.generic.code.select" id="hr.sequence.generic.code.select">
 		<option value="expense">Expense</option>
 	</selection>
+	
+	<selection id="hr.object.data.config.model.select" name="object.data.config.model.select">
+		<option value="com.axelor.apps.hr.db.Employee">Employee</option>
+	</selection>
 
 </object-views>

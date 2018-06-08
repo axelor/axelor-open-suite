@@ -15,18 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.admin.service;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.Year;
+import com.axelor.apps.admin.db.ObjectDataConfig;
 import com.axelor.exception.AxelorException;
-import java.time.LocalDate;
-import java.util.List;
 
-public interface YearService {
+public interface ObjectDataAnonymizeService {
 
-  public Year getYear(LocalDate date, Company company);
-
-  List<Period> generatePeriods(Year year) throws AxelorException;
+  public void anonymize(ObjectDataConfig objectDataConfig, Long recordId) throws AxelorException;
 }
