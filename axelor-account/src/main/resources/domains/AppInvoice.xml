@@ -8,6 +8,7 @@
 
 		<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines ?"/>
 		<boolean name="isVentilationSkipped" title="Skip ventilation"/>
+		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
 
 	</entity>
 

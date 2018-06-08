@@ -7,6 +7,7 @@
 - Sequences : Add a selection option to use letter sequences.
 - Manuf Order: add status in BOM and create manufacturing order only with "Applicable" BOM
 - Add ISPM15 feature on Picking stock move report.
+- Product description can be copy to Invoice/Order/Purchase line.
 
 ## Improvements
 

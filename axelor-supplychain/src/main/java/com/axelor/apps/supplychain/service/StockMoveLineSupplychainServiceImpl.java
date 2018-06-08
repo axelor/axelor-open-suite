@@ -37,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -62,12 +63,13 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
   public StockMoveLineSupplychainServiceImpl(
       TrackingNumberService trackingNumberService,
       AppBaseService appBaseService,
+      AppStockService appStockService,
       StockMoveService stockMoveService,
       AccountManagementService accountManagementService,
       PriceListService priceListService,
       PurchaseProductService productService,
       UnitConversionService unitConversionService) {
-    super(trackingNumberService, appBaseService, stockMoveService);
+    super(trackingNumberService, appBaseService, appStockService, stockMoveService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.productService = productService;

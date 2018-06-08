@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -30,17 +32,21 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -66,6 +72,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected PurchaseProductService productService;
 
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
+
+  @Inject protected AppPurchaseService appPurchaseService;
 
   @Deprecated private int sequence = 0;
 
@@ -148,7 +156,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     return amount;
   }
 
-  @Override
   public String[] getProductSupplierInfos(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
@@ -165,6 +172,83 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
+  public PurchaseOrderLine fill(PurchaseOrderLine line, Product product) throws AxelorException {
+    Preconditions.checkNotNull(line, I18n.get("The line cannot be null."));
+    Preconditions.checkNotNull(
+        line.getPurchaseOrder(), I18n.get("You need a purchase order associated to line."));
+    PurchaseOrder order = line.getPurchaseOrder();
+
+    TaxLine taxLine = getTaxLine(order, line);
+    line.setTaxLine(taxLine);
+
+    BigDecimal price = getUnitPrice(order, line, taxLine);
+    String productName = getProductSupplierInfos(order, line)[0];
+    String productCode = getProductSupplierInfos(order, line)[1];
+
+    if (price == null || productName == null || productCode == null) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
+    }
+
+    line.setUnit(getPurchaseUnit(line));
+    line.setQty(getQty(order, line));
+
+    Tax tax =
+        Beans.get(AccountManagementService.class)
+            .getProductTax(
+                Beans.get(AccountManagementService.class)
+                    .getAccountManagement(product, order.getCompany()),
+                true);
+    TaxEquiv taxEquiv =
+        Beans.get(FiscalPositionService.class)
+            .getTaxEquiv(order.getSupplierPartner().getFiscalPosition(), tax);
+    line.setTaxEquiv(taxEquiv);
+
+    line.setSaleMinPrice(getMinSalePrice(order, line));
+    line.setSalePrice(getSalePrice(order, line.getProduct(), price));
+
+    Map<String, Object> discounts = getDiscount(order, line, price);
+
+    if (discounts != null) {
+      line.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+      line.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+      if (discounts.get("price") != null) {
+        price = (BigDecimal) discounts.get("price");
+      }
+    }
+    line.setPrice(price);
+    line.setProductName(productName);
+    line.setProductCode(productCode);
+
+    if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
+      line.setDescription(product.getDescription());
+    }
+
+    return line;
+  }
+
+  @Override
+  public PurchaseOrderLine reset(PurchaseOrderLine line) {
+    line.setTaxLine(null);
+    line.setProductName(null);
+    line.setUnit(null);
+    line.setDiscountAmount(null);
+    line.setDiscountTypeSelect(null);
+    line.setPrice(null);
+    line.setSaleMinPrice(null);
+    line.setSalePrice(null);
+    line.setExTaxTotal(null);
+    line.setInTaxTotal(null);
+    line.setCompanyInTaxTotal(null);
+    line.setCompanyExTaxTotal(null);
+    line.setProductCode(null);
+    if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
+      line.setDescription(null);
+    }
+    return line;
+  }
+
   public BigDecimal getUnitPrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
       throws AxelorException {
