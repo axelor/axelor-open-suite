@@ -80,13 +80,13 @@
 	</action-view>
 	
 	<menuitem name="admin-root-general-barcode"
-		parent="admin-root-general" title="Barcode type configuration"
+		parent="admin-root-general" title="Barcode type configurations"
 		action="admin.root.general.barcode"/>
 
 	<action-view name="admin.root.general.barcode"
-		title="Barcode type configuration" model="com.axelor.apps.base.db.BarcodeTypeConfig" >
-		<view type="grid" name="barcodeTypeConfig-grid"/>
-		<view type="form" name="barcodeTypeConfig-form"/>
+		title="Barcode type configurations" model="com.axelor.apps.base.db.BarcodeTypeConfig" >
+		<view type="grid" name="barcode-type-config-grid"/>
+		<view type="form" name="barcode-type-config-form"/>
 	</action-view>
 
     <menuitem name="admin-root-general-language"

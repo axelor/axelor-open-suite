@@ -3,6 +3,7 @@
 ## [Unreleased 5.0.0]
 ## Improvements
 - Improved the way to sort the accounting grand ledger per account, date, and moveLine ref.
+- Rework Journal accounting report.
 - General data protection regulation: data export and anonymize feature added.
 - Use general configurations to determine the number of digits displayed in purchase order, invoice and product catalog reports.
 

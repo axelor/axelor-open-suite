@@ -102,10 +102,10 @@
 		<string name="fullName" title="Full name" namecolumn="true" translatable="true" />
 
 
-		<many-to-one name="weightUnit" ref="com.axelor.apps.base.db.Unit"
-			title="Unit of weight" />
-		<decimal name="grossWeight" title="Gross weight" />
-		<decimal name="netWeight" title="Net weight" />
+		<many-to-one name="massUnit" ref="com.axelor.apps.base.db.Unit"
+			title="Unit of mass" />
+		<decimal name="grossMass" title="Gross mass" />
+		<decimal name="netMass" title="Net mass" />
 
 		<many-to-one name="lengthUnit" ref="com.axelor.apps.base.db.Unit"
 			title="Unit of length" />
