@@ -19,23 +19,22 @@
 		<panel name="main" >
 			<field name="name"/>
 			<field name="campaignType" />
-			<field name="emailing" widget="inline-checkbox" />
+			<field name="emailing" title="Emailing"  widget="inline-checkbox" />
 			<panel showIf="emailing" colSpan="12">
 		    	<field name="partnerTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="leadTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="emailAccount" showIf="emailing"/>
 				<field name="emailLog" widget="binary-link" showIf="emailing"/>
 			</panel>
-			<field name="generateEventPerTarget" widget="inline-checkbox"/>
-			<field name="generateEventPerPartnerOrLead" showIf="generateEventPerTarget" widget="inline-checkbox"/>
+			<field name="generateEventPerTarget" title="Generate event per target" widget="inline-checkbox"/>
 			<panel showIf="generateEventPerTarget" colSpan="12">
-				<field name="team" onChange="action-campaign-attrs-team-value-fill" hideIf="generateEventPerPartnerOrLead" />
-				<field name="eventUser" hideIf="generateEventPerPartnerOrLead" onChange="action-campaign-record-set-team" onSelect="action-campaign-attrs-eventuser-domain" />
-		  		<field name="subject" requiredIf="generateEventPerTarget" />
-		  		<field name="eventTypeSelect" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" />
-		  		<field name="eventStartDateTime" requiredIf="generateEventPerTarget" />
-		  		<field name="duration" widget="duration" x-big="true" />
-		  		<button name="generateEvents" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-method-generate-events" />
+				<field name="team" onChange="action-campaign-attrs-team-value-fill"/>
+				<field name="eventUser" showIf="generateEventPerTarget" onChange="action-campaign-record-set-team" onSelect="action-campaign-attrs-eventuser-domain" />
+		  		<field name="subject" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
+		  		<field name="eventTypeSelect" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" showIf="generateEventPerTarget" />
+		  		<field name="eventStartDateTime" requiredIf="generateEventPerTarget" showIf="generateEventPerTarget" />
+		  		<field name="duration" widget="duration" x-big="true" showIf="generateEventPerTarget" />
+		  		<button name="generateEvents" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-method-generate-events" showIf="generateEventPerTarget" />
 		    </panel>
 		</panel>
 	  <panel-tabs>

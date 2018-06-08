@@ -329,7 +329,7 @@
 	</selection>
 	
 	<selection name="unit.unit.type.select">
-		<option value="1">Mass unit</option>
+		<option value="1">Weight unit</option>
 		<option value="2">Length unit</option>
 		<option value="3">Time unit</option>
 	</selection>

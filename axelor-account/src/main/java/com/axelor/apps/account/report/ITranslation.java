@@ -86,16 +86,6 @@ public interface ITranslation {
       "AccountingReportType1.company"; /*)*/
   public static final String ACCOUNTING_REPORT_1_END_DATE = /*$$(*/
       "AccountingReportType1.endDate"; /*)*/
-  public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
-      "AccountingReport.editionDate"; /*)*/
-  public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/
-      "AccountingReport.recapByAccount"; /*)*/
-  public static final String ACCOUNTING_REPORT_TOTAL_DEBIT_ACCOUNT = /*$$(*/
-      "AccountingReport.totalDebitAccount"; /*)*/
-  public static final String ACCOUNTING_REPORT_TOTAL_CREDIT_ACCOUNT = /*$$(*/
-      "AccountingReport.totalCreditAccount"; /*)*/
-  public static final String ACCOUNTING_REPORT_CONTROL = /*$$(*/ "AccountingReport.control"; /*)*/
-
   public static final String ACCOUNTING_REPORT_1_FROM = /*$$(*/ "AccountingReportType1.from"; /*)*/
   public static final String ACCOUNTING_REPORT_1_TO = /*$$(*/ "AccountingReportType1.to"; /*)*/
   public static final String ACCOUNTING_REPORT_1_PERIOD = /*$$(*/
@@ -153,10 +143,6 @@ public interface ITranslation {
       "AccountingReportType15.company"; /*)*/
   public static final String ACCOUNTING_REPORT_15_FROM = /*$$(*/
       "AccountingReportType15.from"; /*)*/
-
-  public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
-      "AccountingReportType11.daySubTotal"; /*)*/
-
   public static final String ACCOUNTING_REPORT_15_TO = /*$$(*/ "AccountingReportType15.to"; /*)*/
   public static final String ACCOUNTING_REPORT_15_YEAR = /*$$(*/
       "AccountingReportType15.year"; /*)*/

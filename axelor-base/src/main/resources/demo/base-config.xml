@@ -144,9 +144,9 @@
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" call="com.axelor.csv.script.ImportProduct:importProduct">
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
-		<bind to="netMass" eval="1" if="productTypeSelect == 'storable'" />
-        <bind to="grossMass" eval="1" if="productTypeSelect == 'storable'" />
-        <bind to="massUnit" search="self.labelToPrinting = 'kg'" if="productTypeSelect == 'storable'" />
+		<bind to="netWeight" eval="1" if="productTypeSelect == 'storable'" />
+        <bind to="grossWeight" eval="1" if="productTypeSelect == 'storable'" />
+        <bind to="weightUnit" search="self.labelToPrinting = 'kg'" if="productTypeSelect == 'storable'" />
 	</input>
 	
 	<input file="base_productVariantAttr.csv" separator=";" type="com.axelor.apps.base.db.ProductVariantAttr" search="self.code = :code" />
