@@ -58,8 +58,9 @@
 		<boolean name="document" title="Documents" default="true" />
 		
 		<boolean name="enableTradingNamesManagement" default="false"/>
-		
-		
+
+        <many-to-one name="passwordChangedTemplate" ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
+
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
