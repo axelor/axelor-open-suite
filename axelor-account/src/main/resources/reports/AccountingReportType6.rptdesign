@@ -1115,16 +1115,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
             </row>
-            <row id="549">
-                <property name="height">0.1in</property>
-                <cell id="550"/>
-                <cell id="3062"/>
-                <cell id="551"/>
-                <cell id="4117"/>
-                <cell id="4128"/>
-                <cell id="552"/>
-                <cell id="553"/>
-            </row>
             <row id="496">
                 <property name="height">0.2604166666666667in</property>
                 <cell id="497">
@@ -1493,18 +1483,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="509"/>
                 <cell id="510"/>
             </row>
-            <row id="536">
-                <property name="height">0.28125in</property>
-                <cell id="537">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                </cell>
-                <cell id="538"/>
-                <cell id="4124"/>
-                <cell id="4135"/>
-                <cell id="539"/>
-                <cell id="540"/>
-            </row>
             <row id="544">
                 <property name="pageBreakAfter">auto</property>
                 <property name="pageBreakBefore">auto</property>
@@ -1860,8 +1838,8 @@ else  {  0.00 }</expression>
                                 <cell id="4063">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
-                                    <property name="paddingTop">5pt</property>
-                                    <property name="paddingBottom">5pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
                                     <text id="4204">
                                         <property name="fontSize">10pt</property>
                                         <property name="fontWeight">bold</property>
@@ -1899,10 +1877,11 @@ else  {  0.00 }</expression>
                                 </cell>
                             </row>
                             <row id="4162">
+                                <property name="fontSize">9pt</property>
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
                                 <cell id="4167">
-                                    <property name="paddingBottom">5pt</property>
+                                    <property name="paddingBottom">1pt</property>
                                     <property name="paddingRight">1pt</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4202">
@@ -1944,7 +1923,7 @@ else  {  0.00 }</expression>
                                 <cell id="4168">
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
-                                    <property name="paddingBottom">5pt</property>
+                                    <property name="paddingBottom">1pt</property>
                                     <property name="paddingRight">1pt</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4203">
@@ -1985,7 +1964,7 @@ else  {  0.00 }</expression>
                                 </cell>
                                 <cell id="4260">
                                     <property name="paddingLeft">1pt</property>
-                                    <property name="paddingBottom">5pt</property>
+                                    <property name="paddingBottom">1pt</property>
                                     <property name="paddingRight">1pt</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4205">
@@ -2026,7 +2005,7 @@ else  {  0.00 }</expression>
                                     </text>
                                 </cell>
                                 <cell id="4261">
-                                    <property name="paddingBottom">5pt</property>
+                                    <property name="paddingBottom">1pt</property>
                                     <property name="paddingRight">1pt</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4206">
@@ -2077,39 +2056,26 @@ else  {  0.00 }</expression>
                             <property name="hideDetail">false</property>
                             <header>
                                 <row id="4225">
+                                    <property name="fontSize">9pt</property>
                                     <cell id="4226">
                                         <property name="colSpan">2</property>
                                         <property name="rowSpan">1</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
                                         <data id="4239">
                                             <property name="fontWeight">bold</property>
                                             <property name="resultSetColumn">partner_name</property>
                                         </data>
                                     </cell>
                                     <cell id="4228">
+                                        <property name="paddingTop">0pt</property>
                                         <property name="paddingLeft">1pt</property>
-                                        <property name="textAlign">right</property>
-                                    </cell>
-                                    <cell id="4229">
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="paddingRight">10pt</property>
-                                    </cell>
-                                    <cell id="4230"/>
-                                    <cell id="4231"/>
-                                </row>
-                            </header>
-                            <footer>
-                                <row id="4232">
-                                    <cell id="4233"/>
-                                    <cell id="4234"/>
-                                    <cell id="4235">
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">0pt</property>
                                         <property name="textAlign">right</property>
                                         <data id="4244">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="paddingRight">15pt</property>
                                             <structure name="numberFormat">
@@ -2120,11 +2086,14 @@ else  {  0.00 }</expression>
                                             <property name="resultSetColumn">sumGroupDebit</property>
                                         </data>
                                     </cell>
-                                    <cell id="4236">
+                                    <cell id="4229">
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
                                         <property name="paddingRight">10pt</property>
                                         <data id="4245">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="paddingRight">15pt</property>
                                             <structure name="numberFormat">
@@ -2135,8 +2104,11 @@ else  {  0.00 }</expression>
                                             <property name="resultSetColumn">sumGroupCredit</property>
                                         </data>
                                     </cell>
-                                    <cell id="4237">
+                                    <cell id="4230">
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
                                         <data id="4246">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="paddingRight">15pt</property>
                                             <structure name="numberFormat">
@@ -2147,8 +2119,11 @@ else  {  0.00 }</expression>
                                             <property name="resultSetColumn">sumGroupDebitBalance</property>
                                         </data>
                                     </cell>
-                                    <cell id="4238">
+                                    <cell id="4231">
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
                                         <data id="4247">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="paddingRight">15pt</property>
                                             <structure name="numberFormat">
@@ -2160,11 +2135,14 @@ else  {  0.00 }</expression>
                                         </data>
                                     </cell>
                                 </row>
-                            </footer>
+                            </header>
                         </group>
                         <detail>
                             <row id="4067">
+                                <property name="fontSize">9pt</property>
                                 <cell id="4144">
+                                    <property name="paddingTop">0pt</property>
+                                    <property name="paddingBottom">0pt</property>
                                     <property name="textAlign">center</property>
                                     <data id="4170">
                                         <property name="resultSetColumn">account_code</property>
@@ -2173,12 +2151,16 @@ else  {  0.00 }</expression>
                                 <cell id="4068">
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
+                                    <property name="paddingTop">0pt</property>
+                                    <property name="paddingBottom">0pt</property>
                                     <data id="4171">
                                         <property name="resultSetColumn">account_name</property>
                                     </data>
                                 </cell>
                                 <cell id="4070">
+                                    <property name="paddingTop">0pt</property>
                                     <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">0pt</property>
                                     <property name="textAlign">right</property>
                                     <data id="4173">
                                         <property name="paddingRight">15pt</property>
@@ -2193,6 +2175,8 @@ else  {  0.00 }</expression>
                                 <cell id="4072">
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
+                                    <property name="paddingTop">0pt</property>
+                                    <property name="paddingBottom">0pt</property>
                                     <property name="paddingRight">10pt</property>
                                     <data id="4172">
                                         <property name="paddingRight">15pt</property>
@@ -2205,6 +2189,8 @@ else  {  0.00 }</expression>
                                     </data>
                                 </cell>
                                 <cell id="4078">
+                                    <property name="paddingTop">0pt</property>
+                                    <property name="paddingBottom">0pt</property>
                                     <data id="4174">
                                         <property name="paddingRight">15pt</property>
                                         <structure name="numberFormat">
@@ -2216,6 +2202,8 @@ else  {  0.00 }</expression>
                                     </data>
                                 </cell>
                                 <cell id="4080">
+                                    <property name="paddingTop">0pt</property>
+                                    <property name="paddingBottom">0pt</property>
                                     <data id="4175">
                                         <property name="paddingRight">15pt</property>
                                         <structure name="numberFormat">
@@ -2229,33 +2217,19 @@ else  {  0.00 }</expression>
                             </row>
                         </detail>
                         <footer>
-                            <row id="4248">
-                                <property name="height">0.25in</property>
-                                <cell id="4249"/>
-                                <cell id="4250">
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                </cell>
-                                <cell id="4251">
-                                    <property name="paddingLeft">1pt</property>
-                                    <property name="textAlign">right</property>
-                                </cell>
-                                <cell id="4252">
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="paddingRight">10pt</property>
-                                </cell>
-                                <cell id="4253"/>
-                                <cell id="4254"/>
-                            </row>
                             <row id="4082">
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <property name="pageBreakBefore">avoid</property>
-                                <cell id="4146"/>
-                                <cell id="4083"/>
+                                <cell id="4146">
+                                    <property name="paddingBottom">0pt</property>
+                                </cell>
+                                <cell id="4083">
+                                    <property name="paddingBottom">0pt</property>
+                                </cell>
                                 <cell id="4084">
                                     <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">0pt</property>
                                     <property name="textAlign">right</property>
                                     <data id="4176">
                                         <property name="fontWeight">bold</property>
@@ -2269,6 +2243,7 @@ else  {  0.00 }</expression>
                                     </data>
                                 </cell>
                                 <cell id="4085">
+                                    <property name="paddingBottom">0pt</property>
                                     <property name="paddingRight">10pt</property>
                                     <data id="4177">
                                         <property name="fontWeight">bold</property>
@@ -2282,6 +2257,7 @@ else  {  0.00 }</expression>
                                     </data>
                                 </cell>
                                 <cell id="4088">
+                                    <property name="paddingBottom">0pt</property>
                                     <data id="4178">
                                         <property name="fontWeight">bold</property>
                                         <property name="paddingRight">15pt</property>
@@ -2294,6 +2270,7 @@ else  {  0.00 }</expression>
                                     </data>
                                 </cell>
                                 <cell id="4089">
+                                    <property name="paddingBottom">0pt</property>
                                     <data id="4179">
                                         <property name="fontWeight">bold</property>
                                         <property name="paddingRight">15pt</property>
@@ -2305,28 +2282,6 @@ else  {  0.00 }</expression>
                                         <property name="resultSetColumn">sumCreditBalance</property>
                                     </data>
                                 </cell>
-                            </row>
-                            <row id="4262">
-                                <property name="borderTopStyle">solid</property>
-                                <property name="borderTopWidth">thin</property>
-                                <property name="pageBreakBefore">avoid</property>
-                                <property name="height">0.15in</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["sumDebitBalance"]==row["sumCreditBalance"]</expression>
-                                    </structure>
-                                </list-property>
-                                <cell id="4263"/>
-                                <cell id="4264"/>
-                                <cell id="4265">
-                                    <property name="textAlign">center</property>
-                                </cell>
-                                <cell id="4266">
-                                    <property name="textAlign">center</property>
-                                </cell>
-                                <cell id="4267"/>
-                                <cell id="4268"/>
                             </row>
                             <row id="4180">
                                 <property name="pageBreakBefore">avoid</property>
