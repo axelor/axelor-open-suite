@@ -11,13 +11,22 @@
 		<field name="timepercent" widget="SelectProgress"/>
 	</grid>
 
+	<grid title="Planned time" name="project-planning-grid-incl-project" model="com.axelor.apps.project.db.ProjectPlanning">
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="user"/>
+		<field name="task"/>
+		<field name="totalPlannedHrs"/>
+	</grid>
+
 	<grid name="project-planning-db-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanning">
 		<field name="project"/>
 		<field name="task"/>
 		<field name="totalPlannedHrs"/>
 	</grid>
-	
-	<form name="project-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning">
+
+	<form name="project-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
+		onNew="action-project-planning-attrs-fill-project">
 		<panel>
 			<field name="fromDate"/>
 			<field name="toDate"/>
@@ -56,6 +65,11 @@
 	
 	<action-attrs name="action-project-planning-attrs-project-domain">
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.excludePlanning = false and self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-planning-attrs-fill-project">
+		<attribute for="project" name="readonly" expr="eval: __parent__"/>
+		<attribute for="project" name="value" expr="eval: __parent__"/>
 	</action-attrs>
 
 </object-views>
