@@ -228,8 +228,10 @@ public class AccountClearanceService {
     move.getMoveLineList().add(creditMoveLine2);
 
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
-    reconcileService.confirmReconcile(reconcile, true);
-
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true);
+    }
+    
     debitMoveLine.setAccountClearance(accountClearance);
     creditMoveLine1.setAccountClearance(accountClearance);
     creditMoveLine2.setAccountClearance(accountClearance);

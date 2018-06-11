@@ -13,7 +13,8 @@
 - Fix : wrong domain for the bill of material field in the 'add manuf order' popup form in a production order
 - Fix : errors when trying to generate production orders from sale orders with products lacking a stock unit or bill of materials lacking a production process.
 - Fix : error when add a manufacturing order lacking a production process to a production process.
-- Fix : disable create and edit of saleorderline from sale order invoicing wizard.  
+- Fix : disable create and edit of saleorderline from sale order invoicing wizard.
+- Fix account reconcilable issue when ventilate a refund invoice.
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features
