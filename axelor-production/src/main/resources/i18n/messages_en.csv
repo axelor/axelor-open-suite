@@ -386,6 +386,7 @@
 "Stock moves out",,,
 "Stopped by",,,
 "Stopping Date",,,
+"Sub versions",,,
 "Sub-process configuration",,,
 "Subtract the product residuals cost on Cost sheet",,,
 "Surcharge",,,
@@ -445,3 +446,4 @@
 "inOrOut is invalid",,,
 "name",,,
 "value:Manufacturing",,,
+"subVersions",,,

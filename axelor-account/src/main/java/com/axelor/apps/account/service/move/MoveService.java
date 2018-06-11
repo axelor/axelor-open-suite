@@ -340,7 +340,9 @@ public class MoveService {
           Reconcile reconcile =
               reconcileService.createReconcile(
                   invoiceCustomerMoveLine, creditMoveLine, amount, false);
-          reconcileService.confirmReconcile(reconcile, true);
+          if (reconcile != null) {
+            reconcileService.confirmReconcile(reconcile, true);
+          }
         }
       }
 
@@ -411,7 +413,9 @@ public class MoveService {
       // Création de la réconciliation
       Reconcile reconcile =
           reconcileService.createReconcile(debitMoveLine, invoiceCustomerMoveLine, amount, false);
-      reconcileService.confirmReconcile(reconcile, true);
+      if (reconcile != null) {
+        reconcileService.confirmReconcile(reconcile, true);
+      }
     }
     return oDmove;
   }

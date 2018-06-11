@@ -98,31 +98,34 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveLine creditMoveLine,
       BigDecimal amount,
       boolean canBeZeroBalanceOk) {
-
-    log.debug(
-        "Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
-        debitMoveLine.getMove().getCompany(),
-        debitMoveLine.getName(),
-        creditMoveLine.getName(),
-        amount,
-        canBeZeroBalanceOk);
-
-    Reconcile reconcile =
-        new Reconcile(
-            debitMoveLine.getMove().getCompany(),
-            amount.setScale(2, RoundingMode.HALF_EVEN),
-            debitMoveLine,
-            creditMoveLine,
-            ReconcileRepository.STATUS_DRAFT,
-            canBeZeroBalanceOk);
-
-    if (!moveToolService.isDebitMoveLine(debitMoveLine)) {
-
-      reconcile.setDebitMoveLine(creditMoveLine);
-      reconcile.setCreditMoveLine(debitMoveLine);
+    
+    if (ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)) {
+      log.debug(
+          "Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
+          debitMoveLine.getMove().getCompany(),
+          debitMoveLine.getName(),
+          creditMoveLine.getName(),
+          amount,
+          canBeZeroBalanceOk);
+  
+      Reconcile reconcile =
+          new Reconcile(
+              debitMoveLine.getMove().getCompany(),
+              amount.setScale(2, RoundingMode.HALF_EVEN),
+              debitMoveLine,
+              creditMoveLine,
+              ReconcileRepository.STATUS_DRAFT,
+              canBeZeroBalanceOk);
+  
+      if (!moveToolService.isDebitMoveLine(debitMoveLine)) {
+  
+        reconcile.setDebitMoveLine(creditMoveLine);
+        reconcile.setCreditMoveLine(debitMoveLine);
+      }
+  
+      return reconcileRepository.save(reconcile);
     }
-
-    return reconcileRepository.save(reconcile);
+    return null;
   }
 
   /**
@@ -338,10 +341,10 @@ public class ReconcileServiceImpl implements ReconcileService {
           debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
       Reconcile reconcile =
           this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
-
-      this.confirmReconcile(reconcile, updateInvoicePayments);
-
-      return reconcile;
+      if (reconcile != null) {
+        this.confirmReconcile(reconcile, updateInvoicePayments);
+        return reconcile;
+      }
     }
 
     return null;
@@ -423,8 +426,10 @@ public class ReconcileServiceImpl implements ReconcileService {
         // Création de la réconciliation
         Reconcile newReconcile =
             this.createReconcile(debitMoveLine, creditAdjustMoveLine, debitAmountRemaining, false);
-        this.confirmReconcile(newReconcile, true);
-        reconcileRepository.save(newReconcile);
+        if (newReconcile != null) {
+          this.confirmReconcile(newReconcile, true);
+          reconcileRepository.save(newReconcile);
+        }
       }
     }
 
@@ -462,8 +467,10 @@ public class ReconcileServiceImpl implements ReconcileService {
           Reconcile newReconcile =
               this.createReconcile(
                   debitAdjustmentMoveLine, creditMoveLine, creditAmountRemaining, false);
-          this.confirmReconcile(newReconcile, true);
-          reconcileRepository.save(newReconcile);
+          if (newReconcile != null) {
+            this.confirmReconcile(newReconcile, true);
+            reconcileRepository.save(newReconcile);
+          }
         }
       }
     }
