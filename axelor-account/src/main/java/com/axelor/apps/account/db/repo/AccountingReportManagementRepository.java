@@ -17,32 +17,33 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.service.AccountingReportService;
+import com.axelor.db.JPA;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class AccountingReportManagementRepository extends AccountingReportRepository {
 
-	@Inject
-	protected AccountingReportService accountingReportService;
+  @Inject protected AccountingReportService accountingReportService;
 
-	@Override
-	public AccountingReport save(AccountingReport accountingReport) {
-		try {
+  @Override
+  public AccountingReport save(AccountingReport accountingReport) {
+    try {
 
-			if (accountingReport.getRef() == null) {
+      if (accountingReport.getRef() == null) {
 
-				String seq = accountingReportService.getSequence(accountingReport);
-				accountingReportService.setSequence(accountingReport, seq);
-			}
-			
-			return super.save(accountingReport);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-	
+        String seq = accountingReportService.getSequence(accountingReport);
+        accountingReportService.setSequence(accountingReport, seq);
+      }
 
+      return super.save(accountingReport);
+    } catch (Exception e) {
+      JPA.em().getTransaction().rollback();
+      JPA.runInTransaction(() -> TraceBackService.trace(e));
+      JPA.em().getTransaction().begin();
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 }

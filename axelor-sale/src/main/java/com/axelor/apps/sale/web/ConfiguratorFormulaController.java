@@ -30,19 +30,22 @@ import com.google.inject.Singleton;
 @Singleton
 public class ConfiguratorFormulaController {
 
-    /**
-     * Check the groovy script in the context
-     * @param request
-     * @param response
-     */
-    public void checkGroovyFormula(ActionRequest request, ActionResponse response) {
-        ConfiguratorFormula configuratorFormula = request.getContext().asType(ConfiguratorFormula.class);
-        ConfiguratorCreator creator = request.getContext().getParent().asType(ConfiguratorCreator.class);
-        try {
-            Beans.get(ConfiguratorFormulaService.class).checkFormula(configuratorFormula, creator);
-            response.setAlert(I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING));
-        } catch (Exception e) {
-            response.setError(e.getMessage());
-        }
+  /**
+   * Check the groovy script in the context
+   *
+   * @param request
+   * @param response
+   */
+  public void checkGroovyFormula(ActionRequest request, ActionResponse response) {
+    ConfiguratorFormula configuratorFormula =
+        request.getContext().asType(ConfiguratorFormula.class);
+    ConfiguratorCreator creator =
+        request.getContext().getParent().asType(ConfiguratorCreator.class);
+    try {
+      Beans.get(ConfiguratorFormulaService.class).checkFormula(configuratorFormula, creator);
+      response.setAlert(I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING));
+    } catch (Exception e) {
+      response.setError(e.getMessage());
     }
+  }
 }

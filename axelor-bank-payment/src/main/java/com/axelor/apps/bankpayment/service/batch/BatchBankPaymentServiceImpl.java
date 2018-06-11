@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -40,6 +31,7 @@ import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -60,173 +52,291 @@ import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
+  protected AppBaseService appBaseService;
+  protected MoveService moveService;
+  protected InvoicePaymentValidateService invoicePaymentValidateService;
+  protected PaymentScheduleService paymentScheduleService;
 
-    @Override
-    public boolean paymentScheduleLineDoneListExists(Batch batch) {
-        return getPaymentScheduleLineDoneListQuery(batch).fetchOne() != null;
+  protected BankOrderCreateService bankOrderCreateService;
+  protected BankOrderService bankOrderService;
+  protected BankOrderLineService bankOrderLineService;
+  protected BankOrderMergeService bankOrderMergeService;
+
+  protected ReconcileRepository reconcileRepo;
+  protected InvoicePaymentRepository invoicePaymentRepo;
+  protected BankOrderRepository bankOrderRepo;
+  protected BatchRepository batchRepo;
+
+  @Inject
+  public BatchBankPaymentServiceImpl(
+      AppBaseService appBaseService,
+      MoveService moveService,
+      InvoicePaymentValidateService invoicePaymentValidateService,
+      PaymentScheduleService paymentScheduleService,
+      BankOrderCreateService bankOrderCreateService,
+      BankOrderService bankOrderService,
+      BankOrderLineService bankOrderLineService,
+      BankOrderMergeService bankOrderMergeService,
+      ReconcileRepository reconcileRepo,
+      InvoicePaymentRepository invoicePaymentRepo,
+      BankOrderRepository bankOrderRepo,
+      BatchRepository batchRepo) {
+
+    this.appBaseService = appBaseService;
+    this.moveService = moveService;
+    this.invoicePaymentValidateService = invoicePaymentValidateService;
+    this.paymentScheduleService = paymentScheduleService;
+
+    this.bankOrderCreateService = bankOrderCreateService;
+    this.bankOrderService = bankOrderService;
+    this.bankOrderLineService = bankOrderLineService;
+    this.bankOrderMergeService = bankOrderMergeService;
+
+    this.reconcileRepo = reconcileRepo;
+    this.invoicePaymentRepo = invoicePaymentRepo;
+    this.bankOrderRepo = bankOrderRepo;
+    this.batchRepo = batchRepo;
+  }
+
+  @Override
+  public boolean paymentScheduleLineDoneListExists(Batch batch) {
+    return getPaymentScheduleLineDoneListQuery(batch).fetchOne() != null;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public BankOrder createBankOrder(Batch batch)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+
+    PaymentScheduleLine paymentScheduleLine = getPaymentScheduleLineDoneListQuery(batch).fetchOne();
+
+    if (paymentScheduleLine == null) {
+      throw new AxelorException(
+          batch,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_NO_PROCESSED_PAYMENT_SCHEDULE_LINES));
     }
 
-    @Override
-    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
-    public BankOrder createBankOrder(Batch batch)
-            throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+    PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 
-        PaymentScheduleLine paymentScheduleLine = getPaymentScheduleLineDoneListQuery(batch).fetchOne();
+    switch (paymentSchedule.getTypeSelect()) {
+      case PaymentScheduleRepository.TYPE_TERMS:
+        return createBankOrderFromPaymentScheduleLines(batch);
+      case PaymentScheduleRepository.TYPE_MONTHLY:
+        return createBankOrderFromMonthlyPaymentScheduleLines(batch);
+      default:
+        throw new AxelorException(
+            paymentSchedule,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE));
+    }
+  }
 
-        if (paymentScheduleLine == null) {
-            throw new AxelorException(batch, IException.CONFIGURATION_ERROR,
-                    I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_NO_PROCESSED_PAYMENT_SCHEDULE_LINES));
-        }
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public BankOrder createBankOrderFromPaymentScheduleLines(Batch batch)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-        PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
+    List<PaymentScheduleLine> paymentScheduleLineList;
+    int offset = 0;
 
-        switch (paymentSchedule.getTypeSelect()) {
-        case PaymentScheduleRepository.TYPE_TERMS:
-            return mergeBankOrders(batch);
-        case PaymentScheduleRepository.TYPE_MONTHLY:
-            return createBankOrderFromPaymentScheduleLines(batch);
-        default:
-            throw new AxelorException(paymentSchedule, IException.CONFIGURATION_ERROR,
-                    I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE));
-        }
+    while (!(paymentScheduleLineList = fetchPaymentScheduleLineDoneList(batch, offset)).isEmpty()) {
+      createBankOrders(batch, paymentScheduleLineList);
+      offset += paymentScheduleLineList.size();
+      JPA.clear();
+      batch = batchRepo.find(batch.getId());
     }
 
-    @Override
-    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
-    public BankOrder mergeBankOrders(Batch batch) throws AxelorException {
-        MoveService moveService = Beans.get(MoveService.class);
-        BankOrderMergeService bankOrderMergeService = Beans.get(BankOrderMergeService.class);
-        ReconcileRepository reconcileRepo = Beans.get(ReconcileRepository.class);
-        InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
-        List<InvoicePayment> invoicePaymentList = new ArrayList<>();
+    List<BankOrder> bankOrderList;
 
-        for (PaymentScheduleLine paymentScheduleLine : getPaymentScheduleLineDoneList(batch)) {
-            PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
-            MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
-
-            for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-                MoveLine debitMoveLine = moveService.getMoveLineService().getDebitCustomerMoveLine(invoice);
-                Reconcile reconcile = reconcileRepo.findByMoveLines(debitMoveLine, creditMoveLine);
-
-                if (reconcile == null) {
-                    continue;
-                }
-
-                invoicePaymentList.addAll(invoicePaymentRepo.findByReconcile(reconcile).fetch());
-            }
-        }
-
-        BankOrder bankOrder = bankOrderMergeService.mergeFromInvoicePayments(invoicePaymentList);
-        batch.setBankOrder(bankOrder);
-
-        return bankOrder;
+    while ((bankOrderList = fetchLimitedBankOrderList(batch)).size() > 1) {
+      bankOrderMergeService.mergeBankOrders(bankOrderList);
+      JPA.clear();
+      batch = batchRepo.find(batch.getId());
     }
 
-    @Override
-    @Transactional(rollbackOn = { AxelorException.class, Exception.class })
-    public BankOrder createBankOrderFromPaymentScheduleLines(Batch batch)
-            throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+    if (bankOrderList.isEmpty()) {
+      throw new AxelorException(
+          batch,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
+    }
 
-        AccountingBatch accountingBatch = batch.getAccountingBatch();
-        LocalDate bankOrderDate = accountingBatch.getDueDate();
-        Company senderCompany = accountingBatch.getCompany();
-        BankDetails senderBankDetails = accountingBatch.getBankDetails();
+    BankOrder bankOrder = bankOrderRepo.find(bankOrderList.iterator().next().getId());
+    batch.setBankOrder(bankOrder);
 
-        if (senderBankDetails == null) {
-            senderBankDetails = accountingBatch.getCompany().getDefaultBankDetails();
+    return bankOrder;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected void createBankOrders(Batch batch, Collection<PaymentScheduleLine> paymentScheduleLines)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+
+    for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLines) {
+      PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
+      MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
+
+      for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
+        MoveLine debitMoveLine = moveService.getMoveLineService().getDebitCustomerMoveLine(invoice);
+        Reconcile reconcile = reconcileRepo.findByMoveLines(debitMoveLine, creditMoveLine);
+
+        if (reconcile == null) {
+          continue;
         }
 
-        PaymentMode paymentMode = accountingBatch.getPaymentMode();
+        createBankOrders(batch, reconcile);
+      }
+    }
+  }
 
-        PaymentScheduleService paymentScheduleService = Beans.get(PaymentScheduleService.class);
-        BankOrderCreateService bankOrderCreateService = Beans.get(BankOrderCreateService.class);
-        BankOrderService bankOrderService = Beans.get(BankOrderService.class);
-        BankOrderLineService bankOrderLineService = Beans.get(BankOrderLineService.class);
-        BankOrderRepository bankOrderRepo = Beans.get(BankOrderRepository.class);
-        BatchRepository batchRepo = Beans.get(BatchRepository.class);
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected void createBankOrders(Batch batch, Reconcile reconcile)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-        Currency currency = senderCompany.getCurrency();
-        int partnerType = BankOrderRepository.PARTNER_TYPE_CUSTOMER;
-        String senderReference = "";
-        String senderLabel = "";
+    for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
+      if (invoicePayment.getBankOrder() != null) {
+        continue;
+      }
 
-        if (bankOrderDate == null) {
-            AppBaseService appBaseService = Beans.get(AppBaseService.class);
-            bankOrderDate = appBaseService.getTodayDate();
-        }
+      invoicePaymentValidateService.validate(invoicePayment, true);
 
-        BankOrder bankOrder = bankOrderCreateService.createBankOrder(paymentMode, partnerType, bankOrderDate,
-                senderCompany, senderBankDetails, currency, senderReference, senderLabel);
-        bankOrder = JPA.save(bankOrder);
+      if (invoicePayment.getBankOrder() == null) {
+        throw new AxelorException(
+            invoicePayment,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get("Failed to create bank order from invoice payment"));
+      }
 
-        List<PaymentScheduleLine> paymentScheduleLineList;
-        int offset = 0;
+      invoicePayment.getBankOrder().setBatch(batch);
+      bankOrderRepo.save(invoicePayment.getBankOrder());
+    }
+  }
 
-        try {
-            while (!(paymentScheduleLineList = getPaymentScheduleLineDoneList(batch, offset)).isEmpty()) {
-                bankOrder = bankOrderRepo.find(bankOrder.getId());
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public BankOrder createBankOrderFromMonthlyPaymentScheduleLines(Batch batch)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-                for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
-                    PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
-                    Partner partner = paymentSchedule.getPartner();
-                    BankDetails bankDetails = paymentScheduleService.getBankDetails(paymentSchedule);
-                    BigDecimal amount = paymentScheduleLine.getInTaxAmount();
-                    String receiverReference = paymentScheduleLine.getName();
-                    String receiverLabel = paymentScheduleLine.getDebitNumber();
-                    BankOrderLine bankOrderLine = bankOrderLineService.createBankOrderLine(
-                            paymentMode.getBankOrderFileFormat(), null, partner, bankDetails, amount, currency,
-                            bankOrderDate, receiverReference, receiverLabel);
-                    bankOrder.addBankOrderLineListItem(bankOrderLine);
-                }
+    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    LocalDate bankOrderDate = accountingBatch.getDueDate();
+    Company senderCompany = accountingBatch.getCompany();
+    BankDetails senderBankDetails = accountingBatch.getBankDetails();
 
-                bankOrder = JPA.save(bankOrder);
-                offset += AbstractBatch.FETCH_LIMIT;
-                JPA.clear();
-            }
-        } catch (Exception e) {
-            bankOrder = bankOrderRepo.find(bankOrder.getId());
-            bankOrderRepo.remove(bankOrder);
-            throw e;
-        }
+    if (senderBankDetails == null) {
+      senderBankDetails = accountingBatch.getCompany().getDefaultBankDetails();
+    }
 
+    PaymentMode paymentMode = accountingBatch.getPaymentMode();
+
+    Currency currency = senderCompany.getCurrency();
+    int partnerType = BankOrderRepository.PARTNER_TYPE_CUSTOMER;
+    String senderReference = "";
+    String senderLabel = "";
+
+    if (bankOrderDate == null) {
+      bankOrderDate = appBaseService.getTodayDate();
+    }
+
+    BankOrder bankOrder =
+        bankOrderCreateService.createBankOrder(
+            paymentMode,
+            partnerType,
+            bankOrderDate,
+            senderCompany,
+            senderBankDetails,
+            currency,
+            senderReference,
+            senderLabel);
+    bankOrder = JPA.save(bankOrder);
+
+    List<PaymentScheduleLine> paymentScheduleLineList;
+    int offset = 0;
+
+    try {
+      while (!(paymentScheduleLineList = fetchPaymentScheduleLineDoneList(batch, offset))
+          .isEmpty()) {
         bankOrder = bankOrderRepo.find(bankOrder.getId());
-        bankOrder = bankOrderRepo.save(bankOrder);
-        bankOrderService.confirm(bankOrder);
 
-        batch = batchRepo.find(batch.getId());
-        batch.setBankOrder(bankOrder);
+        for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
+          PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
+          Partner partner = paymentSchedule.getPartner();
+          BankDetails bankDetails = paymentScheduleService.getBankDetails(paymentSchedule);
+          BigDecimal amount = paymentScheduleLine.getInTaxAmount();
+          String receiverReference = paymentScheduleLine.getName();
+          String receiverLabel = paymentScheduleLine.getDebitNumber();
+          BankOrderLine bankOrderLine =
+              bankOrderLineService.createBankOrderLine(
+                  paymentMode.getBankOrderFileFormat(),
+                  null,
+                  partner,
+                  bankDetails,
+                  amount,
+                  currency,
+                  bankOrderDate,
+                  receiverReference,
+                  receiverLabel);
+          bankOrder.addBankOrderLineListItem(bankOrderLine);
+        }
 
-        return bankOrder;
+        bankOrder = JPA.save(bankOrder);
+        offset += paymentScheduleLineList.size();
+        JPA.clear();
+      }
+    } catch (Exception e) {
+      bankOrder = bankOrderRepo.find(bankOrder.getId());
+      bankOrderRepo.remove(bankOrder);
+      throw e;
     }
 
-    protected List<PaymentScheduleLine> getPaymentScheduleLineDoneList(Batch batch, int limit, int offset) {
-        return getPaymentScheduleLineDoneListQuery(batch).fetch(limit, offset);
-    }
+    bankOrder = bankOrderRepo.find(bankOrder.getId());
+    bankOrder = bankOrderRepo.save(bankOrder);
+    bankOrderService.confirm(bankOrder);
 
-    protected List<PaymentScheduleLine> getPaymentScheduleLineDoneList(Batch batch, int offset) {
-        return getPaymentScheduleLineDoneListQuery(batch).fetch(AbstractBatch.FETCH_LIMIT, offset);
-    }
+    batch = batchRepo.find(batch.getId());
+    batch.setBankOrder(bankOrder);
 
-    protected List<PaymentScheduleLine> getPaymentScheduleLineDoneList(Batch batch) {
-        return getPaymentScheduleLineDoneListQuery(batch).fetch();
-    }
+    return bankOrder;
+  }
 
-    private Query<PaymentScheduleLine> getPaymentScheduleLineDoneListQuery(Batch batch) {
-        QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);
+  protected List<PaymentScheduleLine> fetchPaymentScheduleLineDoneList(Batch batch, int offset) {
+    return getPaymentScheduleLineDoneListQuery(batch).fetch(AbstractBatch.FETCH_LIMIT, offset);
+  }
 
-        queryBuilder.add(":batch MEMBER OF self.batchSet");
-        queryBuilder.bind("batch", batch);
+  private Query<PaymentScheduleLine> getPaymentScheduleLineDoneListQuery(Batch batch) {
+    QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);
 
-        queryBuilder.add("self.statusSelect = :statusSelect");
-        queryBuilder.bind("statusSelect", PaymentScheduleLineRepository.STATUS_VALIDATED);
+    queryBuilder.add(":batch MEMBER OF self.batchSet");
+    queryBuilder.bind("batch", batch);
 
-        return queryBuilder.build().order("id");
-    }
+    queryBuilder.add("self.statusSelect = :statusSelect");
+    queryBuilder.bind("statusSelect", PaymentScheduleLineRepository.STATUS_VALIDATED);
 
+    return queryBuilder.build().order("id");
+  }
+
+  protected List<BankOrder> fetchLimitedBankOrderList(Batch batch) {
+    return getBankOrderListQuery(batch).fetch(AbstractBatch.FETCH_LIMIT);
+  }
+
+  private Query<BankOrder> getBankOrderListQuery(Batch batch) {
+    QueryBuilder<BankOrder> queryBuilder = QueryBuilder.of(BankOrder.class);
+
+    queryBuilder.add("self.batch = :batch");
+    queryBuilder.bind("batch", batch);
+
+    return queryBuilder.build().order("id");
+  }
 }

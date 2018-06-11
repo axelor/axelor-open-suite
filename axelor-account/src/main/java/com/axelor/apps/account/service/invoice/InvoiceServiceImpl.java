@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -42,7 +28,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -50,6 +35,7 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -62,615 +48,636 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * InvoiceService est une classe implémentant l'ensemble des services de
- * facturation.
- * 
- */
-public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService  {
-	
-	@Inject
-	protected PartnerService partnerService;
-	
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	protected ValidateFactory validateFactory;
-	protected VentilateFactory ventilateFactory;
-	protected CancelFactory cancelFactory;
-	protected AlarmEngineService<Invoice> alarmEngineService;
-	protected InvoiceRepository invoiceRepo;
-	protected AppAccountService appAccountService;
+/** InvoiceService est une classe implémentant l'ensemble des services de facturation. */
+public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService {
 
-	@Inject
-	public InvoiceServiceImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory,
-			CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo,
-			AppAccountService appAccountService) {
+  @Inject protected PartnerService partnerService;
 
-		this.validateFactory = validateFactory;
-		this.ventilateFactory = ventilateFactory;
-		this.cancelFactory = cancelFactory;
-		this.alarmEngineService = alarmEngineService;
-		this.invoiceRepo = invoiceRepo;
-		this.appAccountService = appAccountService;
-	}
-	
-// WKF
-	
-	public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices){
-		return alarmEngineService.get( Invoice.class, invoices );
-	}
-	
-	
-	/**
-	 * Lever l'ensemble des alarmes d'une facture.
-	 * 
-	 * @param invoice
-	 * 			Une facture.
-	 * 
-	 * @throws Exception 
-	 */
-	public void raisingAlarms(Invoice invoice, String alarmEngineCode) {
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		Alarm alarm = alarmEngineService.get(alarmEngineCode, invoice, true);
-		
-		if (alarm != null){
-			
-			alarm.setInvoice(invoice);
-			
-		}
+  protected ValidateFactory validateFactory;
+  protected VentilateFactory ventilateFactory;
+  protected CancelFactory cancelFactory;
+  protected AlarmEngineService<Invoice> alarmEngineService;
+  protected InvoiceRepository invoiceRepo;
+  protected AppAccountService appAccountService;
 
-	}
+  @Inject
+  public InvoiceServiceImpl(
+      ValidateFactory validateFactory,
+      VentilateFactory ventilateFactory,
+      CancelFactory cancelFactory,
+      AlarmEngineService<Invoice> alarmEngineService,
+      InvoiceRepository invoiceRepo,
+      AppAccountService appAccountService) {
 
-	
-	
-	/**
-	 * Fonction permettant de calculer l'intégralité d'une facture :
-	 * <ul>
-	 * 	<li>Détermine les taxes;</li>
-	 * 	<li>Détermine la TVA;</li>
-	 * 	<li>Détermine les totaux.</li>
-	 * </ul>
-	 * (Transaction)
-	 * 
-	 * @param invoice
-	 * 		Une facture.
-	 * 
-	 * @throws AxelorException
-	 */
-	public Invoice compute(final Invoice invoice) throws AxelorException {
+    this.validateFactory = validateFactory;
+    this.ventilateFactory = ventilateFactory;
+    this.cancelFactory = cancelFactory;
+    this.alarmEngineService = alarmEngineService;
+    this.invoiceRepo = invoiceRepo;
+    this.appAccountService = appAccountService;
+  }
 
-		log.debug("Calcul de la facture");
-		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
-			
-			@Override
-			public Invoice generate() throws AxelorException {
+  // WKF
 
-				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-				invoiceLines.addAll(invoice.getInvoiceLineList());
-				
-				populate(invoice, invoiceLines);
-				
-				return invoice;
-			}
-			
-		};
-		
-		Invoice invoice1 = invoiceGenerator.generate();
-		invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
-		return invoice1;
-		
-	}
-	
-	
-	/**
-	 * Validation d'une facture.
-	 * (Transaction)
-	 * 
-	 * @param invoice
-	 * 		Une facture.
-	 * 
-	 * @throws AxelorException
-	 */
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice, boolean compute) throws AxelorException {
+  @Override
+  public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices) {
+    return alarmEngineService.get(Invoice.class, invoices);
+  }
 
-		log.debug("Validation de la facture");
+  /**
+   * Lever l'ensemble des alarmes d'une facture.
+   *
+   * @param invoice Une facture.
+   * @throws Exception
+   */
+  @Override
+  public void raisingAlarms(Invoice invoice, String alarmEngineCode) {
 
-		if (compute) {
-			compute(invoice);
-		}
+    Alarm alarm = alarmEngineService.get(alarmEngineCode, invoice, true);
 
-		validateFactory.getValidator(invoice).process( );
-		if(appAccountService.isApp("budget") && !appAccountService.getAppBudget().getManageMultiBudget()){
-			this.generateBudgetDistribution(invoice);
-		}
-		//if the invoice is an advance payment invoice, we also "ventilate" it
-		//without creating the move
-		if (invoice.getOperationSubTypeSelect()
-				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-		    ventilate(invoice);
-		}
+    if (alarm != null) {
 
-	}
+      alarm.setInvoice(invoice);
+    }
+  }
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Invoice invoice) throws AxelorException {
-		validate(invoice, false);
-	}
+  /**
+   * Fonction permettant de calculer l'intégralité d'une facture :
+   *
+   * <ul>
+   *   <li>Détermine les taxes;
+   *   <li>Détermine la TVA;
+   *   <li>Détermine les totaux.
+   * </ul>
+   *
+   * (Transaction)
+   *
+   * @param invoice Une facture.
+   * @throws AxelorException
+   */
+  @Override
+  public Invoice compute(final Invoice invoice) throws AxelorException {
 
-	@Override
-	public void generateBudgetDistribution(Invoice invoice){
-		if(invoice.getInvoiceLineList() != null){
-			for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-				if(invoiceLine.getBudget() != null && invoiceLine.getBudgetDistributionList().isEmpty()){
-					BudgetDistribution budgetDistribution = new BudgetDistribution();
-					budgetDistribution.setBudget(invoiceLine.getBudget());
-					budgetDistribution.setAmount(invoiceLine.getExTaxTotal());
-					invoiceLine.addBudgetDistributionListItem(budgetDistribution);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Ventilation comptable d'une facture.
-	 * (Transaction)
-	 * 
-	 * @param invoice
-	 * 		Une facture.
-	 * 
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void ventilate( Invoice invoice ) throws AxelorException {
-		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-			if (!invoiceLine.getIsTitleLine() && invoiceLine.getAccount() == null) {
-				throw new AxelorException(invoice, IException.MISSING_FIELD, I18n.get(IExceptionMessage.VENTILATE_STATE_6), invoiceLine.getProductName());
-			}
-		}
+    log.debug("Calcul de la facture");
 
-		log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
-		
-		ventilateFactory.getVentilator(invoice).process();
-		
-		invoiceRepo.save(invoice);
-		
-		if(appAccountService.getAppAccount().getPrintReportOnVentilation()){
-			printInvoice(invoice, true);
-		}
-		
-	}
+    InvoiceGenerator invoiceGenerator =
+        new InvoiceGenerator() {
 
-	/**
-	 * Annuler une facture.
-	 * (Transaction)
-	 * 
-	 * @param invoice
-	 * 		Une facture.
-	 * 
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(Invoice invoice) throws AxelorException {
+          @Override
+          public Invoice generate() throws AxelorException {
 
-		log.debug("Annulation de la facture {}", invoice.getInvoiceId());
-		
-		cancelFactory.getCanceller(invoice).process();
-		
-		invoiceRepo.save(invoice);
-		
-	}
-	
+            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+            invoiceLines.addAll(invoice.getInvoiceLineList());
 
-	
-	/**
-	 * Procédure permettant d'impacter la case à cocher "Passage à l'huissier" sur l'écriture de facture.
-	 * (Transaction)
-	 * 
-	 * @param invoice
-	 * 		Une facture
-	 */
-	@Transactional
-	public void usherProcess(Invoice invoice)  {
-		Move move = invoice.getMove();
-		
-		if(move != null)  {
-			if(invoice.getUsherPassageOk())  {
-				for(MoveLine moveLine : move.getMoveLineList())  {
-					moveLine.setUsherPassageOk(true);
-				}
-			}
-			else  {
-				for(MoveLine moveLine : move.getMoveLineList())  {
-					moveLine.setUsherPassageOk(false);
-				}
-			}
-			
-			Beans.get(MoveRepository.class).save(move);
-		}
-	}
-	
-	/**
-	 * Créer un avoir.
-	 * <p>
-	 * Un avoir est une facture "inversée". Tout le montant sont opposés à la facture originale.
-	 * </p>
-	 * 
-	 * @param invoice
-	 * 
-	 * @return
-	 * @throws AxelorException 
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice createRefund(Invoice invoice) throws AxelorException {
-		
-		log.debug("Créer un avoir pour la facture {}", new Object[] { invoice.getInvoiceId() });
-		Invoice refund = new RefundInvoice(invoice).generate();
-		invoice.addRefundInvoiceListItem( refund );
-		invoiceRepo.save(invoice);
-		
-		return refund;
-		
-	}
-	
-    @Override
-	public void setDraftSequence(Invoice invoice) throws AxelorException {
-		
-		if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId()))  {
-			invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
-		}
-		
-	}
-	
+            populate(invoice, invoiceLines);
 
-	@Override
-	@Transactional
-	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
-			Partner partner, Partner contactPartner, PriceList priceList,
-			PaymentMode paymentMode, PaymentCondition paymentCondition)throws AxelorException {
-		String numSeq = "";
-		String externalRef = "";
-		for (Invoice invoiceLocal : invoiceList) {
-			if (!numSeq.isEmpty()){
-				numSeq += "-";
-			}
-			if (invoiceLocal.getInternalReference() != null){
-				numSeq += invoiceLocal.getInternalReference();
-			}
+            return invoice;
+          }
+        };
 
-			if (!externalRef.isEmpty()){
-				externalRef += "|";
-			}
-			if (invoiceLocal.getExternalReference() != null){
-				externalRef += invoiceLocal.getExternalReference();
-			}
-		}
-		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, company, paymentCondition,
-				paymentMode, partnerService.getInvoicingAddress(partner), partner, contactPartner,
-				currency, priceList, numSeq, externalRef, null, company.getDefaultBankDetails()){
-		
-					@Override
-					public Invoice generate() throws AxelorException {
-						
-						return super.createInvoiceHeader();
-					}
-		};
-		Invoice invoiceMerged = invoiceGenerator.generate();
-		List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
-		invoiceGenerator.populate(invoiceMerged, invoiceLines);
-		this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-		Beans.get(InvoiceRepository.class).save(invoiceMerged);
-		deleteOldInvoices(invoiceList);
-		return invoiceMerged;
-	}
-	
-	@Override
-	public void deleteOldInvoices(List<Invoice> invoiceList) {
-		for(Invoice invoicetemp : invoiceList) {
-			invoiceRepo.remove(invoicetemp);
-		}
-	}
+    Invoice invoice1 = invoiceGenerator.generate();
+    invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    return invoice1;
+  }
 
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validateAndVentilate(Invoice invoice) throws AxelorException {
+    validate(invoice);
+    ventilate(invoice);
+  }
 
-	@Override
-	public List<InvoiceLine>  getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList) {
-		List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-		for(Invoice invoice : invoiceList)  {
-			int countLine = 1;
-			for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-				invoiceLine.setSequence(countLine * 10);
-				invoiceLines.add(invoiceLine);
-				countLine++;
-			}
-		}
-		return invoiceLines;
-	}
-	
-	@Override
-	public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoice) {
-		for(InvoiceLine invoiceLine : invoiceLines)  {
-			invoiceLine.setInvoice(invoice);
-		}
-	}
+  /**
+   * Validation d'une facture. (Transaction)
+   *
+   * @param invoice Une facture.
+   * @throws AxelorException
+   */
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validate(Invoice invoice) throws AxelorException {
 
-	@Override
-	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException {
-		if (invoice.getPrintingSettings() == null) {
-			throw new AxelorException(IException.MISSING_FIELD,
-					String.format(I18n.get(IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS), invoice.getInvoiceId()),
-					invoice
-            );
-		}
-		String locale = ReportSettings.getPrintingLocale(invoice.getPartner());
-		
-		String title = I18n.get("Invoice");
-		if(invoice.getInvoiceId() != null) { title += " " + invoice.getInvoiceId(); }
-		
-		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
-		if (toAttach) { reportSetting.toAttach(invoice); }
-		
-		return reportSetting.addParam("InvoiceId", invoice.getId().toString())
-				.addParam("Locale", locale)
-				.addParam("InvoicesCopy", invoice.getInvoicesCopySelect())
-				.generate();
-	}
-	
-	@Override
-	public ReportSettings printInvoices(List<Long> ids) throws AxelorException {
-		List<Invoice> invoiceList = invoiceRepo.all()
-				.filter("self.id IN (" +
-						ids.stream().map(Object::toString).collect(Collectors.joining(",")) +
-						") AND self.printingSettings IS NULL")
-				.fetch();
-		if (!invoiceList.isEmpty()) {
-		    String exceptionMessage = String.format(I18n.get(IExceptionMessage.INVOICES_MISSING_PRINTING_SETTINGS),
-					"<ul>" + invoiceList.stream()
-									.map(Invoice::getInvoiceId)
-									.collect(Collectors.joining("</li><li>", "<li>", "</li>"))
-							+ "<ul>");
-		    throw new AxelorException(IException.MISSING_FIELD, exceptionMessage);
-		}
-		
-		String title = I18n.get("Invoices");
-		
-		ReportSettings reportSetting = ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");	
-		return reportSetting.addParam("InvoiceId", Joiner.on(",").join(ids))
-				.addParam("Locale", Beans.get(AppBaseService.class).getDefaultPartnerLanguageCode())
-				.addParam("InvoicesCopy", 0)
-				.generate();
-	}
-	
-	
+    log.debug("Validation de la facture");
 
-	/**
-	 * Méthode permettant de récupérer la facture depuis une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
-	 * @param moveLine
-	 * 			Une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
-	 * @return
-	 * 			La facture trouvée
-	 */
-	public Invoice getInvoice(MoveLine moveLine)  {
-		Invoice invoice = null;
-		if(moveLine.getMove().getRejectOk())  {
-			invoice = moveLine.getInvoiceReject();
-		}
-		else  {
-			invoice = moveLine.getMove().getInvoice();
-		}
-		return invoice;
-	}
+    compute(invoice);
 
+    validateFactory.getValidator(invoice).process();
+    if (appAccountService.isApp("budget")
+        && !appAccountService.getAppBudget().getManageMultiBudget()) {
+      this.generateBudgetDistribution(invoice);
+    }
+    // if the invoice is an advance payment invoice, we also "ventilate" it
+    // without creating the move
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      ventilate(invoice);
+    }
+  }
 
-	@Override
-	public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
-		Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(invoice);
-		String domain = "self.id IN (" +
-				StringTool.getIdListString(invoices)
-				+ ")";
-
-		return domain;
-	}
-
-	@Override
-	public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
-	    Set<Invoice> advancePaymentInvoices;
-
-	    Company company = invoice.getCompany();
-		Currency currency = invoice.getCurrency();
-		Partner partner = invoice.getPartner();
-		if (company == null
-				|| currency == null
-				|| partner == null) {
-			return new HashSet<>();
-		}
-		String filter = writeGeneralFilterForAdvancePayment();
-		filter += " AND self.partner = :_partner AND self.currency = :_currency";
-
-		advancePaymentInvoices = new HashSet<>(
-				Beans.get(InvoiceRepository.class).all().filter(filter)
-						.bind("_status", InvoiceRepository.STATUS_VALIDATED)
-						.bind("_operationSubType",
-								InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-						.bind("_partner", partner)
-						.bind("_currency", currency)
-						.fetch()
-		);
-
-		filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
-		return advancePaymentInvoices;
-	}
-
-	@Override
-	public void filterAdvancePaymentInvoice(Invoice invoice,
-											Set<Invoice> advancePaymentInvoices) throws AxelorException {
-		Iterator<Invoice> advPaymentInvoiceIt = advancePaymentInvoices.iterator();
-		while (advPaymentInvoiceIt.hasNext()) {
-			Invoice candidateAdvancePayment = advPaymentInvoiceIt.next();
-			if (removeBecauseOfTotalAmount(invoice, candidateAdvancePayment)
-					|| removeBecauseOfAmountRemaining(invoice, candidateAdvancePayment)) {
-				advPaymentInvoiceIt.remove();
-			}
-		}
-	}
-
-	protected boolean removeBecauseOfTotalAmount(Invoice invoice,
-												 Invoice candidateAdvancePayment) throws AxelorException {
-		if (Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany())
-				.getGenerateMoveForInvoicePayment()) {
-			return false;
-		}
-		BigDecimal invoiceTotal = invoice.getInTaxTotal();
-		List<InvoicePayment> invoicePayments = candidateAdvancePayment
-				.getInvoicePaymentList();
-		if (invoicePayments == null) {
-		    return false;
-		}
-		BigDecimal totalAmount = invoicePayments.stream()
-				.map(InvoicePayment::getAmount)
-				.reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
-		return totalAmount.compareTo(invoiceTotal) > 0;
-	}
-
-	protected boolean removeBecauseOfAmountRemaining(Invoice invoice,
-													 Invoice candidateAdvancePayment) throws AxelorException {
-	    List<InvoicePayment> invoicePayments = candidateAdvancePayment.getInvoicePaymentList();
-	    //no payment : remove the candidate invoice
-	    if (invoicePayments == null || invoicePayments.isEmpty()) {
-	    	return true;
-		}
-
-		// if there is no move generated, we simply check if the payment was
-		// imputed
-		if (!Beans.get(AccountConfigService.class)
-				.getAccountConfig(invoice.getCompany())
-				.getGenerateMoveForInvoicePayment()) {
-			for (InvoicePayment invoicePayment : invoicePayments) {
-				if (invoicePayment.getImputedBy() == null) {
-					return false;
-				}
-			}
-			return true;
+  @Override
+  public void generateBudgetDistribution(Invoice invoice) {
+    if (invoice.getInvoiceLineList() != null) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        if (invoiceLine.getBudget() != null && invoiceLine.getBudgetDistributionList().isEmpty()) {
+          BudgetDistribution budgetDistribution = new BudgetDistribution();
+          budgetDistribution.setBudget(invoiceLine.getBudget());
+          budgetDistribution.setAmount(invoiceLine.getExTaxTotal());
+          invoiceLine.addBudgetDistributionListItem(budgetDistribution);
         }
+      }
+    }
+  }
 
-        // else we check the remaining amount
-		for (InvoicePayment invoicePayment : invoicePayments) {
-	    	Move move = invoicePayment.getMove();
-	    	if (move == null) {
-	    		continue;
-			}
-			List<MoveLine> moveLineList = move.getMoveLineList();
-	    	if (moveLineList == null || moveLineList.isEmpty()) {
-	    		continue;
-			}
-			for (MoveLine moveLine : moveLineList) {
-	    		BigDecimal amountRemaining = moveLine.getAmountRemaining();
-	    		if (amountRemaining != null
-						&& amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
-	    			return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
-		if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
-			return getMoveLinesFromInvoiceAdvancePayments(invoice);
-		} else {
-			return getMoveLinesFromSOAdvancePayments(invoice);
-		}
-	}
-
-	@Override
-	public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) {
-		List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
-
-		Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
-		List<InvoicePayment> invoicePayments;
-		if (advancePayments == null || advancePayments.isEmpty()) {
-			return advancePaymentMoveLines;
-		}
-		InvoicePaymentToolService invoicePaymentToolService =
-				Beans.get(InvoicePaymentToolService.class);
-		for (Invoice advancePayment : advancePayments) {
-			invoicePayments = advancePayment.getInvoicePaymentList();
-			List<MoveLine> creditMoveLines = invoicePaymentToolService
-					.getCreditMoveLinesFromPayments(invoicePayments);
-			advancePaymentMoveLines.addAll(creditMoveLines);
-		}
-		return advancePaymentMoveLines;
-	}
-
-	@Override
-	public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
-		return new ArrayList<>();
-	}
-
-	protected String writeGeneralFilterForAdvancePayment() {
-		return "self.statusSelect = :_status"
-				+ " AND self.operationSubTypeSelect = :_operationSubType";
-	}
-
-	@Override
-    public BankDetails getBankDetails(Invoice invoice) throws AxelorException {
-        BankDetails bankDetails;
-
-        if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
-            bankDetails = invoice.getPaymentSchedule().getBankDetails();
-            if (bankDetails != null) {
-                return bankDetails;
-            }
-        }
-
-        bankDetails = invoice.getBankDetails();
-
-        if (bankDetails != null) {
-            return bankDetails;
-        }
-
-        Partner partner = invoice.getPartner();
-        Preconditions.checkNotNull(partner);
-        bankDetails = Beans.get(BankDetailsRepository.class).findDefaultByPartner(partner);
-
-        if (bankDetails != null) {
-            return bankDetails;
-        }
-
-        throw new AxelorException(invoice, IException.MISSING_FIELD,
-                I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING), partner.getName());
+  /**
+   * Ventilation comptable d'une facture. (Transaction)
+   *
+   * @param invoice Une facture.
+   * @throws AxelorException
+   */
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void ventilate(Invoice invoice) throws AxelorException {
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      if (!invoiceLine.getIsTitleLine() && invoiceLine.getAccount() == null) {
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_6),
+            invoiceLine.getProductName());
+      }
     }
 
-	public int getPurchaseTypeOrSaleType(Invoice invoice) {
-		if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-				|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
-			return PriceListRepository.TYPE_SALE;
-		} else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-				|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-			return PriceListRepository.TYPE_PURCHASE;
-		}
-		return -1;
-	}
+    log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
 
+    ventilateFactory.getVentilator(invoice).process();
+
+    invoiceRepo.save(invoice);
+
+    if (appAccountService.getAppAccount().getPrintReportOnVentilation()) {
+      Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    }
+  }
+
+  /**
+   * Annuler une facture. (Transaction)
+   *
+   * @param invoice Une facture.
+   * @throws AxelorException
+   */
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void cancel(Invoice invoice) throws AxelorException {
+
+    log.debug("Annulation de la facture {}", invoice.getInvoiceId());
+
+    cancelFactory.getCanceller(invoice).process();
+
+    invoiceRepo.save(invoice);
+  }
+
+  /**
+   * Procédure permettant d'impacter la case à cocher "Passage à l'huissier" sur l'écriture de
+   * facture. (Transaction)
+   *
+   * @param invoice Une facture
+   */
+  @Override
+  @Transactional
+  public void usherProcess(Invoice invoice) {
+    Move move = invoice.getMove();
+
+    if (move != null) {
+      if (invoice.getUsherPassageOk()) {
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          moveLine.setUsherPassageOk(true);
+        }
+      } else {
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          moveLine.setUsherPassageOk(false);
+        }
+      }
+
+      Beans.get(MoveRepository.class).save(move);
+    }
+  }
+
+  /**
+   * Créer un avoir.
+   *
+   * <p>Un avoir est une facture "inversée". Tout le montant sont opposés à la facture originale.
+   *
+   * @param invoice
+   * @return
+   * @throws AxelorException
+   */
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Invoice createRefund(Invoice invoice) throws AxelorException {
+
+    log.debug("Créer un avoir pour la facture {}", new Object[] {invoice.getInvoiceId()});
+    Invoice refund = new RefundInvoice(invoice).generate();
+    invoice.addRefundInvoiceListItem(refund);
+    invoiceRepo.save(invoice);
+
+    return refund;
+  }
+
+  @Override
+  public void setDraftSequence(Invoice invoice) throws AxelorException {
+
+    if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId())) {
+      invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
+    }
+  }
+
+  @Override
+  @Transactional
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException {
+    String numSeq = "";
+    String externalRef = "";
+    for (Invoice invoiceLocal : invoiceList) {
+      if (!numSeq.isEmpty()) {
+        numSeq += "-";
+      }
+      if (invoiceLocal.getInternalReference() != null) {
+        numSeq += invoiceLocal.getInternalReference();
+      }
+
+      if (!externalRef.isEmpty()) {
+        externalRef += "|";
+      }
+      if (invoiceLocal.getExternalReference() != null) {
+        externalRef += invoiceLocal.getExternalReference();
+      }
+    }
+
+    InvoiceGenerator invoiceGenerator =
+        new InvoiceGenerator(
+            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+            company,
+            paymentCondition,
+            paymentMode,
+            partnerService.getInvoicingAddress(partner),
+            partner,
+            contactPartner,
+            currency,
+            priceList,
+            numSeq,
+            externalRef,
+            null,
+            company.getDefaultBankDetails()) {
+
+          @Override
+          public Invoice generate() throws AxelorException {
+
+            return super.createInvoiceHeader();
+          }
+        };
+    Invoice invoiceMerged = invoiceGenerator.generate();
+    List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
+    invoiceGenerator.populate(invoiceMerged, invoiceLines);
+    this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
+    Beans.get(InvoiceRepository.class).save(invoiceMerged);
+    deleteOldInvoices(invoiceList);
+    return invoiceMerged;
+  }
+
+  @Override
+  public void deleteOldInvoices(List<Invoice> invoiceList) {
+    for (Invoice invoicetemp : invoiceList) {
+      invoiceRepo.remove(invoicetemp);
+    }
+  }
+
+  @Override
+  public List<InvoiceLine> getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList) {
+    List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+    for (Invoice invoice : invoiceList) {
+      int countLine = 1;
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        invoiceLine.setSequence(countLine * 10);
+        invoiceLines.add(invoiceLine);
+        countLine++;
+      }
+    }
+    return invoiceLines;
+  }
+
+  @Override
+  public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoice) {
+    for (InvoiceLine invoiceLine : invoiceLines) {
+      invoiceLine.setInvoice(invoice);
+    }
+  }
+
+  /**
+   * Méthode permettant de récupérer la facture depuis une ligne d'écriture de facture ou une ligne
+   * d'écriture de rejet de facture
+   *
+   * @param moveLine Une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
+   * @return La facture trouvée
+   */
+  @Override
+  public Invoice getInvoice(MoveLine moveLine) {
+    Invoice invoice = null;
+    if (moveLine.getMove().getRejectOk()) {
+      invoice = moveLine.getInvoiceReject();
+    } else {
+      invoice = moveLine.getMove().getInvoice();
+    }
+    return invoice;
+  }
+
+  @Override
+  public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
+    Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(invoice);
+    String domain = "self.id IN (" + StringTool.getIdListString(invoices) + ")";
+
+    return domain;
+  }
+
+  @Override
+  public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
+    Set<Invoice> advancePaymentInvoices;
+
+    Company company = invoice.getCompany();
+    Currency currency = invoice.getCurrency();
+    Partner partner = invoice.getPartner();
+    if (company == null || currency == null || partner == null) {
+      return new HashSet<>();
+    }
+    String filter = writeGeneralFilterForAdvancePayment();
+    filter += " AND self.partner = :_partner AND self.currency = :_currency";
+
+    advancePaymentInvoices =
+        new HashSet<>(
+            Beans.get(InvoiceRepository.class)
+                .all()
+                .filter(filter)
+                .bind("_status", InvoiceRepository.STATUS_VALIDATED)
+                .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+                .bind("_partner", partner)
+                .bind("_currency", currency)
+                .fetch());
+
+    filterAdvancePaymentInvoice(invoice, advancePaymentInvoices);
+    return advancePaymentInvoices;
+  }
+
+  @Override
+  public void filterAdvancePaymentInvoice(Invoice invoice, Set<Invoice> advancePaymentInvoices)
+      throws AxelorException {
+    Iterator<Invoice> advPaymentInvoiceIt = advancePaymentInvoices.iterator();
+    while (advPaymentInvoiceIt.hasNext()) {
+      Invoice candidateAdvancePayment = advPaymentInvoiceIt.next();
+      if (removeBecauseOfTotalAmount(invoice, candidateAdvancePayment)
+          || removeBecauseOfAmountRemaining(invoice, candidateAdvancePayment)) {
+        advPaymentInvoiceIt.remove();
+      }
+    }
+  }
+
+  protected boolean removeBecauseOfTotalAmount(Invoice invoice, Invoice candidateAdvancePayment)
+      throws AxelorException {
+    if (Beans.get(AccountConfigService.class)
+        .getAccountConfig(invoice.getCompany())
+        .getGenerateMoveForInvoicePayment()) {
+      return false;
+    }
+    BigDecimal invoiceTotal = invoice.getInTaxTotal();
+    List<InvoicePayment> invoicePayments = candidateAdvancePayment.getInvoicePaymentList();
+    if (invoicePayments == null) {
+      return false;
+    }
+    BigDecimal totalAmount =
+        invoicePayments
+            .stream()
+            .map(InvoicePayment::getAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    return totalAmount.compareTo(invoiceTotal) > 0;
+  }
+
+  protected boolean removeBecauseOfAmountRemaining(Invoice invoice, Invoice candidateAdvancePayment)
+      throws AxelorException {
+    List<InvoicePayment> invoicePayments = candidateAdvancePayment.getInvoicePaymentList();
+    // no payment : remove the candidate invoice
+    if (invoicePayments == null || invoicePayments.isEmpty()) {
+      return true;
+    }
+
+    // if there is no move generated, we simply check if the payment was
+    // imputed
+    if (!Beans.get(AccountConfigService.class)
+        .getAccountConfig(invoice.getCompany())
+        .getGenerateMoveForInvoicePayment()) {
+      for (InvoicePayment invoicePayment : invoicePayments) {
+        if (invoicePayment.getImputedBy() == null) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // else we check the remaining amount
+    for (InvoicePayment invoicePayment : invoicePayments) {
+      Move move = invoicePayment.getMove();
+      if (move == null) {
+        continue;
+      }
+      List<MoveLine> moveLineList = move.getMoveLineList();
+      if (moveLineList == null || moveLineList.isEmpty()) {
+        continue;
+      }
+      for (MoveLine moveLine : moveLineList) {
+        BigDecimal amountRemaining = moveLine.getAmountRemaining();
+        if (amountRemaining != null && amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
+    if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+      return getMoveLinesFromInvoiceAdvancePayments(invoice);
+    } else {
+      return getMoveLinesFromSOAdvancePayments(invoice);
+    }
+  }
+
+  @Override
+  public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) {
+    List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
+
+    Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
+    List<InvoicePayment> invoicePayments;
+    if (advancePayments == null || advancePayments.isEmpty()) {
+      return advancePaymentMoveLines;
+    }
+    InvoicePaymentToolService invoicePaymentToolService =
+        Beans.get(InvoicePaymentToolService.class);
+    for (Invoice advancePayment : advancePayments) {
+      invoicePayments = advancePayment.getInvoicePaymentList();
+      List<MoveLine> creditMoveLines =
+          invoicePaymentToolService.getCreditMoveLinesFromPayments(invoicePayments);
+      advancePaymentMoveLines.addAll(creditMoveLines);
+    }
+    return advancePaymentMoveLines;
+  }
+
+  @Override
+  public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
+    return new ArrayList<>();
+  }
+
+  protected String writeGeneralFilterForAdvancePayment() {
+    return "self.statusSelect = :_status" + " AND self.operationSubTypeSelect = :_operationSubType";
+  }
+
+  @Override
+  public BankDetails getBankDetails(Invoice invoice) throws AxelorException {
+    BankDetails bankDetails;
+
+    if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
+      bankDetails = invoice.getPaymentSchedule().getBankDetails();
+      if (bankDetails != null) {
+        return bankDetails;
+      }
+    }
+
+    bankDetails = invoice.getBankDetails();
+
+    if (bankDetails != null) {
+      return bankDetails;
+    }
+
+    Partner partner = invoice.getPartner();
+    Preconditions.checkNotNull(partner);
+    bankDetails = Beans.get(BankDetailsRepository.class).findDefaultByPartner(partner);
+
+    if (bankDetails != null) {
+      return bankDetails;
+    }
+
+    throw new AxelorException(
+        invoice,
+        TraceBackRepository.CATEGORY_MISSING_FIELD,
+        I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
+        partner.getName());
+  }
+
+  @Override
+  public int getPurchaseTypeOrSaleType(Invoice invoice) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      return PriceListRepository.TYPE_SALE;
+    } else if (invoice.getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      return PriceListRepository.TYPE_PURCHASE;
+    }
+    return -1;
+  }
+
+  @Override
+  public Pair<Integer, Integer> massValidate(Collection<? extends Number> invoiceIds) {
+    return massProcess(invoiceIds, this::validate, STATUS_DRAFT);
+  }
+
+  @Override
+  public Pair<Integer, Integer> massValidateAndVentilate(Collection<? extends Number> invoiceIds) {
+    return massProcess(invoiceIds, this::validateAndVentilate, STATUS_DRAFT);
+  }
+
+  @Override
+  public Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds) {
+    return massProcess(invoiceIds, this::ventilate, STATUS_VALIDATED);
+  }
+
+  private Pair<Integer, Integer> massProcess(
+      Collection<? extends Number> invoiceIds, ThrowConsumer<Invoice> consumer, int statusSelect) {
+    IntCounter doneCounter = new IntCounter();
+
+    int errorCount =
+        ModelTool.apply(
+            Invoice.class,
+            invoiceIds,
+            new ThrowConsumer<Invoice>() {
+              @Override
+              public void accept(Invoice invoice) throws Exception {
+                if (invoice.getStatusSelect() == statusSelect) {
+                  consumer.accept(invoice);
+                  doneCounter.increment();
+                }
+              }
+            });
+
+    return Pair.of(doneCounter.intValue(), errorCount);
+  }
+
+  private static class IntCounter extends Number {
+    private static final long serialVersionUID = -5434353935712805399L;
+    private int count = 0;
+
+    public void increment() {
+      ++count;
+    }
+
+    @Override
+    public int intValue() {
+      return count;
+    }
+
+    @Override
+    public long longValue() {
+      return Long.valueOf(count);
+    }
+
+    @Override
+    public float floatValue() {
+      return Float.valueOf(count);
+    }
+
+    @Override
+    public double doubleValue() {
+      return Double.valueOf(count);
+    }
+  }
 }
-
-
-
-

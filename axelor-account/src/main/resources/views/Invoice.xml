@@ -7,19 +7,19 @@
 
     <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
-    		<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
 	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
 	     	</menu>
-			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 	            <item title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
 	            <item title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
 	     	</menu>
 		</menubar>
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
@@ -41,18 +41,18 @@
 
     <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
-    		<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
 	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
 	     	</menu>
-			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 	     	</menu>
 		</menubar>
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="externalReference"/>
@@ -73,19 +73,19 @@
 
     <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
-    		<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
 	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
 	     	</menu>
-			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" />
+	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 	            <item title="Generate subscriptions invoices" action="action-supplychain-method-generate-subscription-invoice" if="__config__.app.isApp('supplychain')"/>
 	     	</menu>
 		</menubar>
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
@@ -102,7 +102,7 @@
     <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
@@ -119,16 +119,19 @@
 
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null"/>
+                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect != 3 || printedPDF == null"/>
+                <item title="Show stored copy" action="action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
+                <item title="Print updated copy" action="save,action-invoice-validate-regenerate-invoice,action-invoice-method-regenerate-and-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
                 <item title="Print annex" action="action-invoice-business-project-method-print-annex" showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)" if-module="axelor-business-project"/>
             </menu>
 
-            <menu title="Tools" icon="fa-cogs" showTitle="true">
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
                 <item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="partner == null"/>
             </menu>
         </menubar>
 
 		<panel>
+			<field name="printedPDF" hidden="true"/><!-- Needed to be able to use it in menu -->
             <panel colSpan="7" stacked="true">
                 <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect != 2" showTitle="false"/>
                 <field name="statusSelect" widget="NavSelect" showIf="operationSubTypeSelect == 2" showTitle="false" selection-in="[1,2,4]"/>
@@ -169,7 +172,7 @@
             </panel>
             <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || (operationTypeSelect != 1 &amp;&amp; operationTypeSelect != 3) || $readonly()" showTitle="true"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
-            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1 || partner != null" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
+            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
             <field name="companyBankDetails" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
             <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
@@ -194,15 +197,15 @@
             <field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
         </panel>
-		
+
 		<panel name="subscriptionPanel" title="Subscription period" showIf="operationSubTypeSelect == 6">
         	<field name="subscriptionFromDate" />
         	<field name="subscriptionToDate" />
         </panel>
-        
+
 		<panel-tabs hideIf="partner == null">
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
@@ -269,13 +272,13 @@
 			<panel title="Automatic mail" hideIf="statusSelect == 3 &amp;&amp; !invoiceAutomaticMail">
 				<field name="invoiceAutomaticMail"/>
 				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
-				<button name="message" title="Show mail" showIf="statusSelect == 3" onClick="action-invoice-view-messages" css="btn-custom" colSpan="3"/>
+				<button name="message" title="Show mail" showIf="statusSelect == 3" onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
 			</panel>
 			<panel title="Printing" name="printing" colSpan="12">
 				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
-				<field name="note" colSpan="12"/>
+				<field name="note" widget="Html" x-lite="true" colSpan="12"/>
 				<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
@@ -286,14 +289,16 @@
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
             <button name="validate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
-            <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+            <button name="ventilate" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
             <button name="validateAndVentilate" hidden="true" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/>
             <button name="cancel" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-            <field name="statusSelect"/>
-            <field name="validatedByUser" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
+            <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
+			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
+			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
         </panel>
 
         <panel-stack sidebar="true" hideIf="partner == null">
@@ -302,7 +307,7 @@
 				<field name="externalReference"/>
 			</panel>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-attrs-ventilate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -323,73 +328,29 @@
 		         </dl>]]>
 				</viewer>
 			</field>
-			<field name="invoicePaymentList" colSpan="12" showTitle="false" readonly="true" css="order-subtotal" if="!__config__.app.getApp('account').paymentVouchersOnInvoice">
-				<viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,paymentMode,companyBankDetails,move"><![CDATA[
-				  <span class="form-item-container">
-         			<dl class="dl-horizontal">
-               			<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-              			
-              			<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-              			
-              			<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-              			
-              			<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-              			
-              			<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-	           		 	<dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
-	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
-	           		</dl> 
-           	      </span>]]>
-				</viewer>
-				<editor layout="table" x-show-titles="false"> <label title="Paid on"/>
-					<field name="paymentDate"/>
-					<field name="amount"/>
-					<field name="currency"/>
-					<field name="paymentMode"/>
-				</editor>
-			</field>
-            <field name="invoicePaymentList" colSpan="12" showTitle="false" readonly="true" css="order-subtotal" if="__config__.app.getApp('account').paymentVouchersOnInvoice">
-                <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol"><![CDATA[
+            <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true" />
+            <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12" css="order-subtotal">
+              <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice">
+                <![CDATA[
                   <span class="form-item-container">
-                    <dl class="dl-horizontal">
-                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
-                        <dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
-                    </dl>
-                  </span>]]>
-                </viewer>
-                <editor layout="table" x-show-titles="false"> <label title="Paid on"/>
-                    <field name="paymentDate"/>
-                    <field name="amount"/>
-                    <field name="currency"/>
-                    <field name="paymentMode"/>
-                </editor>
+                    <dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
+                      <dt>
+                        <a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}">
+                          <i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i>
+                        </a>
+                        <font x-translate ng-if="record.typeSelect == 1 || record.typeSelect == 2">Paid on</font>
+                        <font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
+                        <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
+                        <font x-translate ng-if="record.typeSelect == 5">Other on</font>
+                        <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
+                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/>
+                        <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
+                      </dt>
+                   	</dl>
+                  </span>
+                ]]>
+              </viewer>
+              <editor></editor>
             </field>
 			<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect == 2 || statusSelect == 3">
 				<viewer depends="amountRemaining,currency.symbol"><![CDATA[
@@ -484,7 +445,7 @@
 
 		<panel-tabs>
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-client-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-client-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 		</panel-tabs>
@@ -495,7 +456,7 @@
 				<field name="externalReference"/>
 			</panel>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-attrs-ventilate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -503,15 +464,17 @@
 
 	    <panel sidebar="true" name="actions" title="Actions" >
 	        <button name="validate" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-validate"/>
-	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?" readonly="true"/>
+	        <button name="ventilate" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
 	        <button name="cancel" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
         	<button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPayment" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
-            <field name="statusSelect"/>
-	        <field name="validatedByUser" grid-view="user-grid" form-view="user-form" canNew="false" canEdit="false" canView="false"/>
+			<field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
+			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
+			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
 	    </panel>
 
 		<panel sidebar="true" name="totals" title="Totals" itemSpan="6">
@@ -528,73 +491,28 @@
 		         </dl>]]>
 				</viewer>
 			</field>
-			<field name="invoicePaymentList" colSpan="12" showTitle="false" readonly="true" css="order-subtotal" if="!__config__.app.getApp('account').paymentVouchersOnInvoice">
-				<viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,paymentMode,companyBankDetails,move"><![CDATA[
-				  <span class="form-item-container">
-        			<dl class="dl-horizontal">
-               			<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-              			<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-              			<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-              			<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-              			<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-	              			<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-           		 		<dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-	           		 	<dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
-	           		 	<dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
-	           		</dl>
-           	      </span>]]>
-				</viewer>
-				<editor layout="table" x-show-titles="false"> <label title="Paid on"/>
-					<field name="paymentDate"/>
-					<field name="amount"/>
-					<field name="currency"/>
-					<field name="paymentMode"/>
-				</editor>
-			</field>
-            <field name="invoicePaymentList" colSpan="12" showTitle="false" readonly="true" css="order-subtotal" if="__config__.app.getApp('account').paymentVouchersOnInvoice">
-                <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol"><![CDATA[
+            <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true" />
+            <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12" css="order-subtotal">
+              <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice">
+                <![CDATA[
                   <span class="form-item-container">
-                    <dl class="dl-horizontal">
-                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a>  <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 1 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 2 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Paid on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 3 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Ref. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 4 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Inv. on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 5 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Other on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 1"><a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-                        <dt ng-if="record.typeSelect == 6 &amp;&amp; record.statusSelect == 2" class="hilite-danger-text"> <a href="#/ds/action-invoice-view-register-payment-voucher/edit/{{record.id}}"><i class="fa fa-link"></i></a> <font x-translate>Imputed on</font><font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/></dt>
-
-                        <dd ng-if="record.statusSelect == 1">-{{record.amount}} {{record.currency.symbol}}</dd>
-                        <dd ng-if="record.statusSelect == 2" class="hilite-danger-text">(-{{record.amount}} {{record.currency.symbol}})</dd>
-                    </dl>
-                  </span>]]>
-                </viewer>
-                <editor layout="table" x-show-titles="false"> <label title="Paid on"/>
-                    <field name="paymentDate"/>
-                    <field name="amount"/>
-                    <field name="currency"/>
-                    <field name="paymentMode"/>
-                </editor>
+                    <dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
+                      <dt>
+                        <a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}">
+                          <i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i>
+                        </a>
+                        <font x-translate ng-if="record.typeSelect == 1 || record.typeSelect == 2">Paid on</font>
+                        <font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
+                        <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
+                        <font x-translate ng-if="record.typeSelect == 5">Other on</font>
+                        <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
+                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/>
+                        <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
+                      </dt>
+                   	</dl>
+                  </span>
+                ]]>
+              </viewer>
             </field>
 			<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect == 2 || statusSelect == 3">
 				<viewer depends="amountRemaining,currency.symbol"><![CDATA[
@@ -612,7 +530,6 @@
     <!-- invoice-account  -->
     <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<field name="invoiceId"/>
-		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="operationTypeSelect"/>
 		<field name="operationSubTypeSelect"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
@@ -707,7 +624,8 @@
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
-	    <action name="action-invoice-record-printing-fields"/>
+	    <action name="action-invoice-record-printing-fields" if="__config__.app.isApp('business-project')"/>
+        <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
     </action-group>
 
     <action-group name="action-account-invoice-onload-group" >
@@ -716,12 +634,12 @@
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
 		<action name="action-invoice-attrs-hidden-bank-details"/>
-		<action name="action-invoice-attrs-ventilate"/>
         <action name="action-invoice-attrs-show-validate-button"/>
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
+        <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
     </action-group>
-    
+
     <action-group name="action-group-account-invoice-operationtype-onchange">
 		<action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-partner-change"/>
@@ -767,10 +685,6 @@
     	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     </action-attrs>
 
-    <action-attrs name="action-invoice-attrs-ventilate">
-    	<attribute name="readonly" for="ventilate" expr="eval: invoiceDate > __date__"/>
-    </action-attrs>
-
 	<!-- ACTION RECORD -->
 
 	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
@@ -802,11 +716,15 @@
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
     </action-record>
 
+    <action-record name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice" model="com.axelor.apps.account.db.Invoice">
+        <field name="$paymentVouchersOnInvoice" expr="eval: __config__.app.getApp('account').paymentVouchersOnInvoice"/>
+    </action-record>
+
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
     	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
 		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     	<field name="currency" expr="eval: partner?.currency"/>
-		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : bankDetails" />
+		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null" />
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     	<field name="project" expr="eval: null"/>
@@ -834,14 +752,9 @@
 
 	<action-record name="action-invoice-record-interco-supplychain"
 				   model="com.axelor.apps.account.db.Invoice" if-module="axelor-supplychain">
-		<field name="interco"
-			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromInvoice()"/>
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromInvoice
+            &amp;&amp; !createdByInterco &amp;&amp; partner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', partner).fetchOne()"/>
 	</action-record>
-
-    <action-record name="action-invoice-record-printing-fields" model="com.axelor.apps.account.db.Invoice">
-    	<field name="displayTimesheetOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"/>
-    	<field name="displayExpenseOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
-    </action-record>
 
     <action-record name="action-invoice-record-reset-operationsubtype" model="com.axelor.apps.account.db.Invoice">
         <field name="operationSubTypeSelect" expr="eval: null"/>
@@ -892,8 +805,6 @@
 	<action-attrs name="action-invoice-attrs-interco-supplychain" if-module="axelor-supplychain">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
-		<attribute for="interco" name="value" expr="eval: false"
-				   if="eval: createdByInterco || !partner || __repo__(Company).all().filter('self.partner = ?', partner).fetchOne() == null"/>
 	   <attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 2"/>
 	</action-attrs>
@@ -927,7 +838,6 @@
 		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
     </action-validate>
 
-
 	<!-- ACTION METHOD -->
 
 	<action-method name="action-method-invoice-address-str" model="com.axelor.apps.account.db.Invoice">
@@ -953,6 +863,14 @@
 	<action-method name="action-invoice-method-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
 	</action-method>
+
+	<action-method name="action-invoice-method-regenerate-and-show-invoice">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="regenerateAndShowInvoice"/>
+	</action-method>
+
+	<action-validate name="action-invoice-validate-regenerate-invoice">
+		<alert message="Regenerating the printed copy can lead to several conflicting copies to be distributed. Do you still want to regenerate the printed copy?"/>
+	</action-validate>
 
 	<action-method name="action-invoice-method-validate">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="validate"/>
@@ -1053,23 +971,6 @@
     <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="customer-invoices-merge-form"/>
 	</action-view>
-
-	<action-view name="action-invoice-view-messages"
-		model="com.axelor.apps.message.db.Message"
-		title="Mail">
-		<view name="message-grid" type="grid"/>
-		<view name="message-form" type="form"/>
-		  <domain>
-			self.relatedTo1SelectId = :relatedToSelectId
-				AND self.relatedTo1Select = :relatedToSelect
-			OR self.relatedTo2SelectId = :relatedToSelectId
-				AND self.relatedTo2Select = :relatedToSelect
-		  </domain>
-		<context name="relatedToSelectId" expr="eval: id"/>
-		<context name="relatedToSelect"
-			expr="eval: _model"/>
-	</action-view>
-
 
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">

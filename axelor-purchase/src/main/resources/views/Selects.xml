@@ -26,7 +26,7 @@
 		<option value="3">Accepted</option>
 		<option value="4">Purchased</option>
 		<option value="5">Partial delivery</option>
-		<option value="6">Delivered</option>
+		<option value="6">Received</option>
 		<option value="7">Refused</option>
 		<option value="8">Canceled</option>
 	</selection>
@@ -34,4 +34,10 @@
 	<selection name="base.blocking.select" id="purchase.blocking.select">
 		<option value="6">Purchase blocking</option>
 	</selection>
+	
+	<selection name="sequence.generic.code.select" id="purchase.sequence.generic.code.select">
+		<option value="purchaseOrder">Purchase order</option>
+		
+	</selection>
+	
 </object-views>

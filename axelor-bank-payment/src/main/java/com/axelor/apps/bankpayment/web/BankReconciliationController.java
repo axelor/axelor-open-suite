@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.service.BankReconciliationService;
 import com.axelor.exception.service.TraceBackService;
@@ -29,36 +29,29 @@ import com.google.inject.Singleton;
 @Singleton
 public class BankReconciliationController {
 
-	@Inject
-	BankReconciliationService bankReconciliationService;
-	
-	@Inject
-	BankReconciliationRepository bankReconciliationRepo;
-	
-	public void compute(ActionRequest request, ActionResponse response) {
-		
-		BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+  @Inject BankReconciliationService bankReconciliationService;
 
-		try {
-			
-			bankReconciliationService.compute(bankReconciliationRepo.find(bankStatement.getId()));
-			response.setReload(true);
-			
-		}
-		catch (Exception e){ TraceBackService.trace(response, e); }
-	}
-	
-	public void validate(ActionRequest request, ActionResponse response) {
-		
-		BankStatement bankStatement = request.getContext().asType(BankStatement.class);
-		
-		try {
-			
-			bankReconciliationService.validate(bankReconciliationRepo.find(bankStatement.getId()));
-			response.setReload(true);
-			
-		}
-		catch (Exception e){ TraceBackService.trace(response, e); }
-	}
+  @Inject BankReconciliationRepository bankReconciliationRepo;
 
+  public void compute(ActionRequest request, ActionResponse response) {
+
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliationService.compute(bankReconciliationRepo.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validate(ActionRequest request, ActionResponse response) {
+
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliationService.validate(bankReconciliationRepo.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

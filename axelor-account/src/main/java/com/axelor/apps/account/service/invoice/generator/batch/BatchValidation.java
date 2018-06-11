@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice.generator.batch;
 
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -30,60 +25,68 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BatchValidation extends BatchWkf {
 
-	static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@Inject
-	public BatchValidation(InvoiceService invoiceService) {
-		
-		super(invoiceService);
-		
-	}
+  @Inject
+  public BatchValidation(InvoiceService invoiceService) {
 
-	@Override
-	protected void process() {
-		
-		for (Invoice invoice : invoices(batch.getInvoiceBatch(), true)) {
+    super(invoiceService);
+  }
 
-			try {
+  @Override
+  protected void process() {
 
-				invoiceService.validate( invoiceRepo.find(invoice.getId()) );
-				updateInvoice( invoiceRepo.find(invoice.getId()) );
+    for (Invoice invoice : invoices(batch.getInvoiceBatch(), true)) {
 
-			}  catch (AxelorException e) {
+      try {
 
-				TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Invoice")+" %s", invoice.getInvoiceId()), IException.INVOICE_ORIGIN, batch.getId());
-				incrementAnomaly();
+        invoiceService.validate(invoiceRepo.find(invoice.getId()));
+        updateInvoice(invoiceRepo.find(invoice.getId()));
 
-			} catch (Exception e) {
+      } catch (AxelorException e) {
 
-				TraceBackService.trace(new Exception(String.format(I18n.get("Invoice")+" %s", invoice.getInvoiceId()), e), IException.INVOICE_ORIGIN, batch.getId());
-				incrementAnomaly();
+        TraceBackService.trace(
+            new AxelorException(
+                e, e.getCategory(), I18n.get("Invoice") + " %s", invoice.getInvoiceId()),
+            IException.INVOICE_ORIGIN,
+            batch.getId());
+        incrementAnomaly();
 
-			}  finally {
-				
-				JPA.clear();
-				
-			}
+      } catch (Exception e) {
 
-		}
-		
-	}
+        TraceBackService.trace(
+            new Exception(String.format(I18n.get("Invoice") + " %s", invoice.getInvoiceId()), e),
+            IException.INVOICE_ORIGIN,
+            batch.getId());
+        incrementAnomaly();
 
-	@Override
-	protected void stop() {
-		
-		String comment = I18n.get(IExceptionMessage.BATCH_VALIDATION_1) + "\n";
-		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_VALIDATION_2)+"\n", batch.getDone() );
-		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly() );
-		
-		super.stop();
-		addComment(comment);
-		
-	}	
+      } finally {
 
+        JPA.clear();
+      }
+    }
+  }
+
+  @Override
+  protected void stop() {
+
+    String comment = I18n.get(IExceptionMessage.BATCH_VALIDATION_1) + "\n";
+    comment +=
+        String.format(
+            "\t* %s " + I18n.get(IExceptionMessage.BATCH_VALIDATION_2) + "\n", batch.getDone());
+    comment +=
+        String.format(
+            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
+            batch.getAnomaly());
+
+    super.stop();
+    addComment(comment);
+  }
 }

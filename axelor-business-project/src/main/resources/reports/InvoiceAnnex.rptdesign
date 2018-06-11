@@ -1614,7 +1614,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT line.id, timesheet_user.name AS ts_user, 
 product.name AS ts_activity, 
-line.duration_stored AS ts_duration, 
+line.hours_duration AS ts_duration,
 product_unit.name AS ts_product_unit, 
 line.date_val AS ts_date,
 invproj.invoice AS invoice_id,
@@ -2597,6 +2597,12 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                         <property name="overflow">hidden</property>
                                         <property name="height">71px</property>
                                         <property name="width">309px</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                            </structure>
+                                        </list-property>
                                         <structure name="toc"/>
                                         <property name="source">file</property>
                                         <property name="proportionalScale">true</property>

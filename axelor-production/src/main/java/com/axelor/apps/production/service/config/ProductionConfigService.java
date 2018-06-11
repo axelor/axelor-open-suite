@@ -21,21 +21,23 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class ProductionConfigService {
-	
-	public ProductionConfig getProductionConfig(Company company) throws AxelorException  {
-		
-		ProductionConfig productionConfig = company.getProductionConfig(); 
-		
-		if(productionConfig == null)  {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PRODUCTION_CONFIG_1), company.getName());
-		}
-		
-		return productionConfig;
-		
-	}
 
+  public ProductionConfig getProductionConfig(Company company) throws AxelorException {
+
+    ProductionConfig productionConfig = company.getProductionConfig();
+
+    if (productionConfig == null) {
+      throw new AxelorException(
+          company,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PRODUCTION_CONFIG_1),
+          company.getName());
+    }
+
+    return productionConfig;
+  }
 }

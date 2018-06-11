@@ -22,37 +22,38 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.db.SaleBatch;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class SaleBatchService {
 
-	@Inject
-	private SaleBatchRepository saleBatchRepo;
-	
-	/**
-	 * Lancer un batch à partir de son code.
-	 *
-	 * @param batchCode
-	 * 		Le code du batch souhaité.
-	 *
-	 * @throws AxelorException
-	 */
-	public Batch run(String batchCode) throws AxelorException {
+  @Inject private SaleBatchRepository saleBatchRepo;
 
-		SaleBatch saleBatch = saleBatchRepo.findByCode(batchCode);
+  /**
+   * Lancer un batch à partir de son code.
+   *
+   * @param batchCode Le code du batch souhaité.
+   * @throws AxelorException
+   */
+  public Batch run(String batchCode) throws AxelorException {
 
-		if (saleBatch != null){
-			switch (saleBatch.getActionSelect()) {
+    SaleBatch saleBatch = saleBatchRepo.findByCode(batchCode);
 
-			default:
-				throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), saleBatch.getActionSelect(), batchCode);
-			}
-		} else {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_1), batchCode);
-		}
-
-	}
-
+    if (saleBatch != null) {
+      switch (saleBatch.getActionSelect()) {
+        default:
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.BASE_BATCH_1),
+              saleBatch.getActionSelect(),
+              batchCode);
+      }
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BASE_BATCH_1),
+          batchCode);
+    }
+  }
 }

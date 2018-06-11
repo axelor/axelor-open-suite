@@ -17,33 +17,30 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.db.City;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.City;
-
 public class ImportCity {
-	
-	private final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	public Object importCity(Object bean, Map<String,Object> values) {
-		
-		assert bean instanceof City;
-		
-		City city = (City) bean;
-		
-		try {
-			if (city.getCanton() != null) {
-				city.getCanton().setDepartment(city.getDepartment());
-			}
-		} catch (Exception e) {
-			LOG.error("Error when importing city : {}", e);
-		}
 
-		return city;
-	}
+  private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  public Object importCity(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof City;
+
+    City city = (City) bean;
+
+    try {
+      if (city.getCanton() != null) {
+        city.getCanton().setDepartment(city.getDepartment());
+      }
+    } catch (Exception e) {
+      LOG.error("Error when importing city : {}", e);
+    }
+
+    return city;
+  }
 }

@@ -17,187 +17,153 @@
  */
 package com.axelor.apps.crm.service;
 
-import java.util.Map;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
-import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.util.Map;
 
 public class ConvertLeadWizardService {
 
-	@Inject
-	private LeadService leadService;
+  @Inject private LeadService leadService;
 
-	@Inject
-	private ConvertWizardService convertWizardService;
+  @Inject private ConvertWizardService convertWizardService;
 
-	@Inject
-	private AddressService addressService;
+  @Inject private AddressService addressService;
 
-	@Inject
-	private PartnerService partnerService;
+  @Inject private PartnerService partnerService;
 
-	@Inject
-	private CountryRepository countryRepo;
+  @Inject private CountryRepository countryRepo;
 
-	/**
-	 * Create a partner from a lead
-	 * @param lead
-	 * @return
-	 * @throws AxelorException
-	 */
-	public Partner createPartner(Map<String, Object> context, Address primaryAddress, Address otherAddress) throws AxelorException  {
+  @Inject private AppBaseService appBaseService;
 
-		Mapper mapper = Mapper.of(Partner.class);
-		Partner partner = Mapper.toBean(Partner.class, null);
+  /**
+   * Create a partner from a lead
+   *
+   * @param lead
+   * @return
+   * @throws AxelorException
+   */
+  public Partner createPartner(
+      Map<String, Object> context, Address primaryAddress, Address otherAddress)
+      throws AxelorException {
 
-		partner = (Partner) convertWizardService.createObject(context, partner, mapper);
+    Mapper mapper = Mapper.of(Partner.class);
+    Partner partner = Mapper.toBean(Partner.class, null);
 
-		this.setEmailAddress(partner);
+    partner = (Partner) convertWizardService.createObject(context, partner, mapper);
 
-		partner.setPartnerSeq(leadService.getSequence());
+    this.setEmailAddress(partner);
 
-		partnerService.setPartnerFullName(partner);
+    if (appBaseService.getAppBase().getGeneratePartnerSequence()) {
+      partner.setPartnerSeq(leadService.getSequence());
+    }
 
-		this.setAddress(partner, primaryAddress, otherAddress);
+    partnerService.setPartnerFullName(partner);
 
-		return partner;
-	}
+    this.setAddress(partner, primaryAddress, otherAddress);
 
+    return partner;
+  }
 
+  public void setEmailAddress(Partner partner) {
 
-	public void setEmailAddress(Partner partner)  {
+    EmailAddress emailAddress = partner.getEmailAddress();
 
-		EmailAddress emailAddress = partner.getEmailAddress();
+    if (emailAddress != null) {
+      partner.setEmailAddress(this.createEmailAddress(emailAddress.getAddress(), null, partner));
+    }
+  }
 
-		if(emailAddress != null)  {
-			partner.setEmailAddress(this.createEmailAddress(emailAddress.getAddress(), null, partner));
-		}
-	}
+  public void setAddress(Partner partner, Address primaryAddress, Address otherAddress) {
 
+    if (primaryAddress != null) {
+      primaryAddress.setFullName(addressService.computeFullName(primaryAddress));
+      if (partner.getIsContact()) {
+        partner.setContactAddress(primaryAddress);
+      } else {
+        partnerService.addPartnerAddress(partner, primaryAddress, true, true, otherAddress == null);
+      }
+    }
+    if (otherAddress != null && !partner.getIsContact()) {
+      otherAddress.setFullName(addressService.computeFullName(otherAddress));
+      partnerService.addPartnerAddress(partner, otherAddress, true, false, true);
+    }
+  }
 
-	public void setAddress(Partner partner, Address primaryAddress, Address otherAddress)  {
-		
-		if(primaryAddress != null)  {
-			primaryAddress.setFullName(addressService.computeFullName(primaryAddress));
-			if(partner.getIsContact())  {
-				partner.setContactAddress(primaryAddress);
-			}
-			else  {
-				partnerService.addPartnerAddress(partner, primaryAddress, true, true, otherAddress == null);
-			}
-		}
-		if(otherAddress != null && !partner.getIsContact())  {
-			otherAddress.setFullName(addressService.computeFullName(otherAddress));
-			partnerService.addPartnerAddress(partner, otherAddress, true, false, true);
-		}
-		
-	}
-		
-	@SuppressWarnings("unchecked")
-	public Address createPrimaryAddress(Map<String, Object> context)  {
+  @SuppressWarnings("unchecked")
+  public Address createPrimaryAddress(Map<String, Object> context) {
 
-		String addressL4 = (String) context.get("primaryAddress");
-		if(addressL4 == null){
-			return null;
-		}
-		String addressL5 = (String) context.get("primaryState");
-		String addressL6 = (String) context.get("primaryPostalCode") + " "+ (String) context.get("primaryCity");;
-		Country addressL7Country = null;
-		Map<String, Object> countryContext = (Map<String, Object>) context.get("primaryCountry");
-		if(countryContext!= null)  {
-			addressL7Country = countryRepo.find(((Integer) countryContext.get("id")).longValue());
-		}
+    String addressL4 = (String) context.get("primaryAddress");
+    if (addressL4 == null) {
+      return null;
+    }
+    String addressL5 = (String) context.get("primaryState");
+    String addressL6 =
+        (String) context.get("primaryPostalCode") + " " + (String) context.get("primaryCity");
+    ;
+    Country addressL7Country = null;
+    Map<String, Object> countryContext = (Map<String, Object>) context.get("primaryCountry");
+    if (countryContext != null) {
+      addressL7Country = countryRepo.find(((Integer) countryContext.get("id")).longValue());
+    }
 
-		Address address = addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
+    Address address =
+        addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
 
-		if(address == null)  {
-			address = addressService.createAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
-		}
+    if (address == null) {
+      address =
+          addressService.createAddress(
+              null, null, addressL4, addressL5, addressL6, addressL7Country);
+    }
 
-		return address;
-	}
+    return address;
+  }
 
+  @SuppressWarnings("unchecked")
+  public Address createOtherAddress(Map<String, Object> context) {
 
-	@SuppressWarnings("unchecked")
-	public Address createOtherAddress(Map<String, Object> context)  {
+    String addressL4 = (String) context.get("otherAddress");
+    if (addressL4 == null) {
+      return null;
+    }
+    String addressL5 = (String) context.get("otherState");
+    String addressL6 =
+        (String) context.get("otherPostalCode") + " " + (String) context.get("otherCity");
 
-		String addressL4 = (String) context.get("otherAddress");
-		if(addressL4 == null){
-			return null;
-		}
-		String addressL5 = (String) context.get("otherState");
-		String addressL6 = (String) context.get("otherPostalCode") + " "+ (String) context.get("otherCity");
+    Country addressL7Country = null;
+    Map<String, Object> countryContext = (Map<String, Object>) context.get("otherCountry");
+    if (countryContext != null) {
+      addressL7Country = countryRepo.find(((Integer) countryContext.get("id")).longValue());
+    }
 
-		Country addressL7Country = null;
-		Map<String, Object> countryContext = (Map<String, Object>) context.get("otherCountry");
-		if(countryContext!= null)  {
-			addressL7Country = countryRepo.find(((Integer) countryContext.get("id")).longValue());
-		}
+    Address address =
+        addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
 
-		Address address = addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
+    if (address == null) {
+      address =
+          addressService.createAddress(
+              null, null, addressL4, addressL5, addressL6, addressL7Country);
+    }
 
-		if(address == null)  {
-			address = addressService.createAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
-		}
+    return address;
+  }
 
-		return address;
-	}
+  public EmailAddress createEmailAddress(String address, Lead lead, Partner partner) {
+    EmailAddress emailAddress = new EmailAddress();
+    emailAddress.setAddress(address);
+    emailAddress.setLead(lead);
+    emailAddress.setPartner(partner);
 
-
-
-	public EmailAddress createEmailAddress(String address, Lead lead, Partner partner)  {
-		EmailAddress emailAddress = new EmailAddress();
-		emailAddress.setAddress(address);
-		emailAddress.setLead(lead);
-		emailAddress.setPartner(partner);
-
-		return emailAddress;
-	}
-
-	/**
-	 * Create an opportunity from a lead
-	 * @param lead
-	 * @return
-	 * @throws AxelorException
-	 */
-	public Opportunity createOpportunity(Map<String, Object> context) throws AxelorException  {
-
-		Mapper mapper = Mapper.of(Opportunity.class);
-		Opportunity opportunity = Mapper.toBean(Opportunity.class, null);
-
-		opportunity = (Opportunity) convertWizardService.createObject(context, opportunity, mapper);
-
-		return opportunity;
-	}
-
-
-	/**
-	 * Create an event from a lead (Call, Task or Meeting)
-	 * @param lead
-	 * @return
-	 * @throws AxelorException
-	 */
-	public Event createEvent(Map<String, Object> context) throws AxelorException  {
-
-		Mapper mapper = Mapper.of(Event.class);
-		Event event = Mapper.toBean(Event.class, null);
-
-		event = (Event) convertWizardService.createObject(context, event, mapper);
-
-		return event;
-	}
-
-
+    return emailAddress;
+  }
 }

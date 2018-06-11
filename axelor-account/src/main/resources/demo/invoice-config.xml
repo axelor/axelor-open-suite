@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
   
- 	<input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice">
+ 	<input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice" call="com.axelor.csv.script.ImportInvoice:importInvoice">
  		<bind to="invoiceDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)" column="invoiceDate"/>
  		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
  		<bind to="companyBankDetails" eval="__repo__(Company).all().fetchOne()?.defaultBankDetails"/>
@@ -14,5 +14,9 @@
  	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" >
  		<bind to="paymentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(paymentDate)" column="paymentDate"/>
  	</input>
+ 	
+ 	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" >
+		<bind to="language" search="self.code = :languageCode"/>
+	</input>
  	
 </csv-inputs>

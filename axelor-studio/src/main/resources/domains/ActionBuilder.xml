@@ -32,6 +32,8 @@
      
      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
      
+     <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" />
+     
   </entity>
   
 </domain-models>

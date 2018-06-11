@@ -33,6 +33,7 @@
   	<!--   	Intern message -->
   	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
   	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>
+	<many-to-one name="template" ref="com.axelor.apps.message.db.Template" readonly="true"/>
 
 	<finder-method name="findByRelatedTo"
 		using="long:relatedToSelectId,String:relatedToSelect"

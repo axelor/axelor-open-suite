@@ -6,8 +6,7 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="grade.0.up.to.10.select">
-		<option value="0">0</option>
+	<selection name="grade.1.up.to.10.select">
 		<option value="1">1</option>
 		<option value="2">2</option>
 		<option value="3">3</option>
@@ -53,6 +52,7 @@
 	<selection name='product.procurement.method.select'>
 		<option value='buy'>Buy</option>
 		<option value='produce'>Produce</option>
+		<option value='buyAndProduce'>Buy and produce</option>
 	</selection>
 
 	<selection name="product.sale.supply.select">
@@ -101,38 +101,7 @@
 	
 	<selection name="sequence.generic.code.select">
 		<option value="partner">Partner (Cust/Suppl)</option>
-		<option value="move">Move</option>
-		<option value="invoice">Invoice</option>
-		<option value="paymentSchedule">Payment schedule</option>
-		<option value="paymentVoucher">Payment voucher</option>
-		<option value="debit">Direct debit</option>
-		<option value="accountingReport">Accounting reports</option>
-		<option value="reimbursement">Reimbursements</option>
-		<option value="paymentVoucherReceiptNo">Receipt N°(Payment voucher)</option>
-		<option value="accountClearance">Overpayment clearance</option>
-		<option value="irrecoverable">Shift to irrecoverable</option>
-		<option value="chequeReject">Cheque reject</option>
-		<option value="saleInterface">Sale interface</option>
-		<option value="refundInterface">Refund interface</option>
-		<option value="treasuryInterface">Treasury interface</option>
-		<option value="purchaseInterface">Purchase interface</option>
-		<option value="moveLineExport">Accounting export</option>
-		<option value="saleOrder">Sales order</option>
-		<option value="purchaseOrder">Purchase order</option>
-		<option value="intStockMove">Internal stock move</option>
-		<option value="outStockMove">Delivery stock move</option>
-		<option value="inStockMove">Receipt stock move</option>
-		<option value="inventory">Inventory</option>
-		<option value="productTrackingNumber">Product tracking number</option>
-		<option value="productionOrder">Production order</option>
-		<option value="manufOrder">Manufacturing order</option>
-		<option value="bankOrder">Bank order</option>
-		<option value="reconcile">Reconcile</option>
 		<option value="product">Product</option>
-		<option value="expense">Expense</option>
-		<option value="subrogationRelease">Subrogation release</option>
-        <option value="depositSlip">Deposit slip</option>
-        <option value="logisticalForm">Logistical form</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
@@ -152,6 +121,7 @@
 
 	<selection name='ibase.batch.action.select'>
 		<option value='1'>Target</option>
+		<option value='2'>Calendar synchronization</option>
 	</selection>
 
 	<selection name="base.keyword.type.select">
@@ -168,6 +138,7 @@
 
 	<selection name="base.app.base.map.api.select">
 		<option value="1">Google</option>
+		<option value="2">Open street map</option>
 	</selection>
 	
 	<selection name="base.app.base.currency.api.select">
@@ -405,6 +376,10 @@
 		<option value="4">Leave</option>
 	</selection>
 
+	<selection name="icalendar.synchronization.select">
+		<option value="ICalEvent">ICal events only</option>
+	</selection>
+
 	<selection name="base.birt.template.parameter.type.select">
 		<option value="string">String</option>
 		<option value="float">Float</option>
@@ -455,5 +430,9 @@
 		<option value="QR_CODE">QR_CODE</option>
 		<option value="UPC_A">UPC_A</option>
     </selection>
+    
+    <selection id="base.object.data.config.model.select" name="object.data.config.model.select">
+		<option value="com.axelor.apps.base.db.Partner">Partner</option>
+	</selection>
     
 </object-views>

@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.service.app;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.base.db.AppAccount;
@@ -33,53 +31,46 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 @Singleton
 public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAccountService {
-	
-	@Inject
-	private AppAccountRepository appAccountRepo;
-	
-	@Inject
-	private AppBudgetRepository appBudgetRepo;
-	
-	@Inject
-	private AppInvoiceRepository appInvoiceRepo;
-	
-	@Inject
-	private AccountConfigRepository accountConfigRepo;
-	
-	@Inject
-	private CompanyRepository companyRepo;
-	
-	@Override
-	public AppAccount getAppAccount() {
-		return appAccountRepo.all().fetchOne();
-	}
 
-	@Override
-	public AppBudget getAppBudget() {
-		return appBudgetRepo.all().fetchOne();
-	}
+  @Inject private AppAccountRepository appAccountRepo;
 
-	@Override
-	public AppInvoice getAppInvoice() {
-		return appInvoiceRepo.all().fetchOne();
-	}
-	
-	@Transactional
-	@Override
-	public void generateAccountConfigurations() {
-		
-		List<Company> companies = companyRepo.all().filter("self.accountConfig is null").fetch();
-		
-		for (Company company : companies) {
-			AccountConfig config = new AccountConfig();
-			config.setCompany(company);
-			accountConfigRepo.save(config);
-		}
-		
-	}
+  @Inject private AppBudgetRepository appBudgetRepo;
 
+  @Inject private AppInvoiceRepository appInvoiceRepo;
 
+  @Inject private AccountConfigRepository accountConfigRepo;
+
+  @Inject private CompanyRepository companyRepo;
+
+  @Override
+  public AppAccount getAppAccount() {
+    return appAccountRepo.all().fetchOne();
+  }
+
+  @Override
+  public AppBudget getAppBudget() {
+    return appBudgetRepo.all().fetchOne();
+  }
+
+  @Override
+  public AppInvoice getAppInvoice() {
+    return appInvoiceRepo.all().fetchOne();
+  }
+
+  @Transactional
+  @Override
+  public void generateAccountConfigurations() {
+
+    List<Company> companies = companyRepo.all().filter("self.accountConfig is null").fetch();
+
+    for (Company company : companies) {
+      AccountConfig config = new AccountConfig();
+      config.setCompany(company);
+      accountConfigRepo.save(config);
+    }
+  }
 }

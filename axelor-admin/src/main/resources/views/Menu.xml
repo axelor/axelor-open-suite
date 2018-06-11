@@ -26,12 +26,24 @@
 		
   <menuitem name="admin-root-app-management" parent="admin-root" order="5"
 	title="Apps management" action="admin.root.app.management" />
-
+	
   <action-view name="admin.root.app.management" title="Apps management"
 	model="com.axelor.apps.base.db.App" >
 	<view type="cards" name="app-cards"/>
 	<view type="grid" name="app-grid"/>
 	<view type="form" name="app-form"/>
+  </action-view>
+  
+  <menuitem name="admin-root-maintenance" parent="admin-root" if="__config__.app.isApp('base')"
+		title="Technical maintenance" order="45" />
+  
+  <menuitem name="admin-root-object-data-config" parent="admin-root-maintenance"
+   title="Object data config"  action="admin.root.object.data.config" order="10"/>
+  
+  <action-view name="admin.root.object.data.config" title="Object data config"
+  	model="com.axelor.apps.admin.db.ObjectDataConfig" >
+	<view type="grid" name="object-data-config-grid"/>
+	<view type="form" name="object-data-config-form"/>
   </action-view>
   
 </object-views>

@@ -21,11 +21,11 @@ import com.axelor.apps.production.db.ManufOrder;
 
 public interface ManufOrderValidateBusinessService {
 
-    /**
-     * Check timesheet lines on manuf order.
-     * @param manufOrder
-     * @return the number of timesheets waiting validation
-     *         linked to the operation order.
-     */
-    long checkTimesheet(ManufOrder manufOrder);
+  /**
+   * Check timesheet lines on manuf order.
+   *
+   * @param manufOrder
+   * @return the number of timesheets waiting validation linked to the operation order.
+   */
+  long checkTimesheet(ManufOrder manufOrder);
 }

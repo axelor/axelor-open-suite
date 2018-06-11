@@ -66,32 +66,22 @@
 		<view type="form" name="project-planning-form" />
 	</action-view>
 
-	<menuitem name="project-dasbhoard" parent="menu-project-root" order="30"
-			  title="Dashboard"
-			  action="project.dashboard"/>
-	<action-view name="project.dashboard" title="Dashboard">
-		<view type="dashboard" name="project-dashboard"/>
-	</action-view>
-
-	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki" order="31"/>
+	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki" order="30"/>
 	<action-view name="all.wiki" title="Project Wiki" model="com.axelor.apps.project.db.Wiki">
 		<view type="grid" name="wiki-grid"/>
 		<view type="form" name="wiki-form"/>
 	</action-view>
-	
-	<menuitem name="project-resource-model" title="Resource Models" order="31" parent="menu-project-root" action="project.resource.model" if="__config__.app.getApp('project').getResourceManagement()" />
-	<action-view name="project.resource.model" title="Resource Models" model="com.axelor.apps.project.db.Resource">
-		<view type="grid" name="resource-grid" />
-		<view type="form" name="resource-form" />
-		<domain>self.isModel = true</domain>
-		<context name="_isModel" expr="eval:true"/>
+
+	<menuitem name="project-dasbhoard" parent="menu-project-root" order="31" title="Dashboard" action="project.dashboard" icon="fa-bar-chart"/>
+
+	<action-view name="project.dashboard" title="Dashboard">
+		<view type="dashboard" name="project-dashboard"/>
 	</action-view>
 	
 	<menuitem name="project-resource" title="Resources" order="32" parent="menu-project-root" action="project.resource" if="__config__.app.getApp('project').getResourceManagement()" />
 	<action-view name="project.resource" title="Resources" model="com.axelor.apps.project.db.Resource">
 		<view type="grid" name="resource-grid" />
 		<view type="form" name="resource-form" />
-		<domain>self.isModel = false</domain>
 	</action-view>
 	
 	<menuitem name="project-resource-booking" title="Resource bookings" order="35" parent="menu-project-root" action="project.resource.booking" if="__config__.app.getApp('project').getResourceManagement()" />
@@ -102,14 +92,8 @@
 	</action-view>
 	
 	
-	<menuitem name="project-resource-booking-mgt" title="Resource booking mgt" order="36" parent="menu-project-root" action="project.resource.booking.mgt" if="__config__.app.getApp('project').getResourceManagement()" />
-	<action-view name="project.resource.booking.mgt" title="Resource booking mgt" model="com.axelor.apps.project.db.ResourceBooking">
-		<view type="form" name="resource-booking-mgt-form" />
-		<view-param name="show-toolbar" value="false"/> 
-	</action-view>
-	
     <!-- PROJECT CONFIGURATION -->
-	<menuitem name="project-configurations" parent="menu-project-root" title="Configurations" order="40"/>
+	<menuitem name="project-configurations" parent="menu-project-root" title="Configuration" order="40" icon="fa-cog"/>
 	
 	<menuitem name="project-category" parent="project-configurations" title="Category" action="project-category"/>
 	<action-view name="project-category" title="Project Category" model="com.axelor.apps.project.db.ProjectCategory">

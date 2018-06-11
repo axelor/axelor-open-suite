@@ -22,12 +22,12 @@ import com.axelor.meta.db.MetaFile;
 
 public interface ImportCityService {
 
-	/**
-	 * Import city
-	 * @param typeSelect
-	 * @param dataFile
-	 * @return
-	 */
-	public ImportHistory importCity(String typeSelect, MetaFile dataFile);
-
+  /**
+   * Import city
+   *
+   * @param typeSelect
+   * @param dataFile
+   * @return
+   */
+  public ImportHistory importCity(String typeSelect, MetaFile dataFile);
 }

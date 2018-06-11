@@ -20,7 +20,7 @@
 	
     <form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form" >
         <menubar>
-	        <menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+	        <menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Schedule Event" action="save,action-partner-view-schedule-event" readonlyIf="id == null" if="__config__.app.isApp('crm')"/>
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" if="__config__.app.isApp('crm')"/>
 	            <item title="Create order" action="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1" if-module="axelor-sale" if="__config__.app.isApp('sale')" />
@@ -62,7 +62,7 @@
     <!--     PORTLET -->
     
     <action-view name="action-partner-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
@@ -70,7 +70,7 @@
 	</action-view>
 	
 	<action-view name="action-contact-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>(self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
@@ -78,7 +78,7 @@
 	</action-view>
 	
 	<action-view name="action-partner-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>
@@ -86,7 +86,7 @@
 	</action-view>
 	
 	<action-view name="action-contact-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>(self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime</domain>
 		<context name="id" expr="eval: id"/>

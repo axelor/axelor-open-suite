@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.supplychain.service.invoice;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -33,85 +27,94 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceService {
-	
-	@Inject
-	private AppBaseService appBaseService;
-	
-	@Inject
-	private SaleOrderRepository saleOrderRepo;
-	
-	@Inject
-	private SaleOrderInvoiceService saleOrderInvoiceService;
-	
-	@Override
-	public List<Invoice> generateSubscriptionInvoices() throws AxelorException {
-		
-		List<Invoice> invoices = new ArrayList<Invoice>();
-		
-		for (SaleOrder saleOrder : getSubscriptionOrders(null)) {
-			Invoice invoice = generateSubscriptionInvoice(saleOrder);
-			invoices.add(invoice);
-		}
-		
-		return invoices;
-	}
 
-	@Override
-	public List<SaleOrder> getSubscriptionOrders(Integer limit) {
-		
-		Query<SaleOrder> query = saleOrderRepo.all()
-				.filter("self.saleOrderTypeSelect = :saleOrderType "
-						+ "AND self.statusSelect = :saleOrderStatus "
-						+ "AND :subScriptionDate >= self.nextInvoicingDate "
-						+ "AND (self.contractEndDate IS NULL OR self.contractEndDate >= :subScriptionDate)")
-				.bind("saleOrderType", SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION)
-				.bind("saleOrderStatus", SaleOrderRepository.STATUS_CONFIRMED)
-				.bind("subScriptionDate", appBaseService.getTodayDate());
-				
-		if (limit != null) {
-			return query.fetch(limit);
-		}
-		
-		return query.fetch();
-	}
+  @Inject private AppBaseService appBaseService;
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException {
-		
-		TemporalUnit temporalUnit = ChronoUnit.MONTHS;
-			
-		Invoice invoice = saleOrderInvoiceService.generateInvoice(saleOrderRepo.find(saleOrder.getId()));
+  @Inject private SaleOrderRepository saleOrderRepo;
 
-		if(invoice != null)  {
-			
-			invoice = saleOrderInvoiceService.generateInvoice(saleOrder);
-			if (saleOrder.getPeriodicityTypeSelect() == 1) {
-				temporalUnit = ChronoUnit.DAYS;
-			}
-			invoice.setInvoiceDate(appBaseService.getTodayDate());
-			invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_SUBSCRIPTION);
+  @Inject private SaleOrderInvoiceService saleOrderInvoiceService;
 
-			LocalDate invoicingPeriodStartDate = saleOrder.getNextInvoicingStartPeriodDate();
-			invoice.setSubscriptionFromDate(invoicingPeriodStartDate);
-			invoice.setSubscriptionToDate(saleOrder.getNextInvoicingEndPeriodDate());
-			if (invoicingPeriodStartDate != null) {
-				LocalDate nextInvoicingStartPeriodDate = invoicingPeriodStartDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
-				saleOrder.setNextInvoicingStartPeriodDate(nextInvoicingStartPeriodDate);
-				LocalDate nextInvoicingEndPeriodDate = nextInvoicingStartPeriodDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit).minusDays(1);
-				saleOrder.setNextInvoicingEndPeriodDate(nextInvoicingEndPeriodDate);
-			}
-			
-			LocalDate nextInvoicingDate = saleOrder.getNextInvoicingDate();
-			if (nextInvoicingDate != null) {
-				nextInvoicingDate = nextInvoicingDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
-			}
-			saleOrder.setNextInvoicingDate(nextInvoicingDate);
-			
-		}
-		
-		return invoice;
-	}
+  @Override
+  public List<Invoice> generateSubscriptionInvoices() throws AxelorException {
+
+    List<Invoice> invoices = new ArrayList<Invoice>();
+
+    for (SaleOrder saleOrder : getSubscriptionOrders(null)) {
+      Invoice invoice = generateSubscriptionInvoice(saleOrder);
+      invoices.add(invoice);
+    }
+
+    return invoices;
+  }
+
+  @Override
+  public List<SaleOrder> getSubscriptionOrders(Integer limit) {
+
+    Query<SaleOrder> query =
+        saleOrderRepo
+            .all()
+            .filter(
+                "self.saleOrderTypeSelect = :saleOrderType "
+                    + "AND self.statusSelect = :saleOrderStatus "
+                    + "AND :subScriptionDate >= self.nextInvoicingDate "
+                    + "AND (self.contractEndDate IS NULL OR self.contractEndDate >= :subScriptionDate)")
+            .bind("saleOrderType", SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION)
+            .bind("saleOrderStatus", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
+            .bind("subScriptionDate", appBaseService.getTodayDate());
+
+    if (limit != null) {
+      return query.fetch(limit);
+    }
+
+    return query.fetch();
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException {
+
+    TemporalUnit temporalUnit = ChronoUnit.MONTHS;
+
+    Invoice invoice =
+        saleOrderInvoiceService.generateInvoice(saleOrderRepo.find(saleOrder.getId()));
+
+    if (invoice != null) {
+
+      invoice = saleOrderInvoiceService.generateInvoice(saleOrder);
+      if (saleOrder.getPeriodicityTypeSelect() == 1) {
+        temporalUnit = ChronoUnit.DAYS;
+      }
+      invoice.setInvoiceDate(appBaseService.getTodayDate());
+      invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_SUBSCRIPTION);
+
+      LocalDate invoicingPeriodStartDate = saleOrder.getNextInvoicingStartPeriodDate();
+      invoice.setSubscriptionFromDate(invoicingPeriodStartDate);
+      invoice.setSubscriptionToDate(saleOrder.getNextInvoicingEndPeriodDate());
+      if (invoicingPeriodStartDate != null) {
+        LocalDate nextInvoicingStartPeriodDate =
+            invoicingPeriodStartDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
+        saleOrder.setNextInvoicingStartPeriodDate(nextInvoicingStartPeriodDate);
+        LocalDate nextInvoicingEndPeriodDate =
+            nextInvoicingStartPeriodDate
+                .plus(saleOrder.getNumberOfPeriods(), temporalUnit)
+                .minusDays(1);
+        saleOrder.setNextInvoicingEndPeriodDate(nextInvoicingEndPeriodDate);
+      }
+
+      LocalDate nextInvoicingDate = saleOrder.getNextInvoicingDate();
+      if (nextInvoicingDate != null) {
+        nextInvoicingDate = nextInvoicingDate.plus(saleOrder.getNumberOfPeriods(), temporalUnit);
+      }
+      saleOrder.setNextInvoicingDate(nextInvoicingDate);
+    }
+
+    return invoice;
+  }
 }

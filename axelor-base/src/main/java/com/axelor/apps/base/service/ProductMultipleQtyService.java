@@ -17,20 +17,20 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.ProductMultipleQty;
+import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.base.db.ProductMultipleQty;
-import com.axelor.rpc.ActionResponse;
-
 public interface ProductMultipleQtyService {
 
+  public boolean checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties);
 
-	public boolean checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties);
-	
-	public String toStringMultipleQty(List<ProductMultipleQty> productMultipleQties);
-	
-	public void checkMultipleQty(BigDecimal qty, List<ProductMultipleQty> productMultipleQties, boolean allowToForce, ActionResponse response);
+  public String toStringMultipleQty(List<ProductMultipleQty> productMultipleQties);
 
-
+  public void checkMultipleQty(
+      BigDecimal qty,
+      List<ProductMultipleQty> productMultipleQties,
+      boolean allowToForce,
+      ActionResponse response);
 }

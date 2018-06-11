@@ -19,7 +19,6 @@
 		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isCustomer" expr="true"/>
 		<context name="_domain" expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
 	</action-view>
@@ -66,6 +65,7 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
+        <context name="todayDate" expr="eval: __config__.app.getTodayDate()"/>
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="25"
@@ -83,14 +83,15 @@
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
 		<context name="status" expr="3"/>
+        <context name="todayDate" expr="eval: __config__.app.getTodayDate()"/>
 	</action-view>
 	
 	<menuitem title="Historical" name="sc-root-sale-historical" parent="sc-root-sale" order="30"/>
 	
-	<menuitem title="Finished orders" name="sc-historical-finished-sale-orders" parent="sc-root-sale-historical"
-			action="sc.hist.finished.sale.orders"/>
+	<menuitem title="Completed orders" name="sc-historical-completed-sale-orders" parent="sc-root-sale-historical"
+			action="sc.hist.completed.sale.orders" order="5" />
 			
-	<action-view name="sc.hist.finished.sale.orders" title="Finished orders"
+	<action-view name="sc.hist.completed.sale.orders" title="Completed orders" 
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-cards" />
 		<view type="grid" name="sale-order-grid" />
@@ -106,7 +107,7 @@
 	</action-view>
 	
 	<menuitem title="Canceled orders" name="sc-historical-canceled-sale-orders" parent="sc-root-sale-historical"
-			action="sc.hist.canceled.sale.orders"/>
+			action="sc.hist.canceled.sale.orders" order="10"/>
 			
 	<action-view name="sc.hist.canceled.sale.orders" title="Canceled orders"
 		model="com.axelor.apps.sale.db.SaleOrder">
@@ -143,8 +144,7 @@
 		</filter>
 	</search-filters>
 	
-	<menuitem name="sc-root-sale-report" parent="sc-root-sale"
-		title="Reportings"  order="40"/>
+	<menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"  order="40" icon="fa-bar-chart"/>
 		
 	<menuitem name="sc-root-sale-maps" parent="sc-root-sale-report" title="Maps" order="10"/>
 		
@@ -156,7 +156,7 @@
 		title="Prospects" action="action-show-prospects-on-map-page"/>
 
 	<menuitem name="sc-root-sale-conf" parent="sc-root-sale"
-		title="Configuration"  order="45"/>
+		title="Configuration"  order="45" icon="fa-cog"/>
 
 	<menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf"
 		title="Cancel Reasons" action="sale.conf.cancelreason" />
@@ -330,6 +330,6 @@
 	</action-view>
 
 	<menuitem name="menu-dashboards-customers"  parent="sc-root-sale-report"
-    	title="Customers" icon="fa-bar-chart"  action="customer.list.dashboard.view"/>
+    	title="Customers" action="customer.list.dashboard.view"/>
 
 </object-views>

@@ -17,28 +17,27 @@
  */
 package com.axelor.apps.quality.db.repo;
 
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.quality.db.QualityControl;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class QualityControlManagementRepository extends QualityControlRepository {
-	
-	@Inject
-	private SequenceService sequenceService;
 
-	/**
-	 * Generate and set sequence in reference with predefined prefix.
-	 * @param qualityControl  Overridden quality control object to set reference on onSave event.
-	 * 
-	 */
-	@Override
-	public QualityControl save(QualityControl qualityControl) {
-		
-		if (Strings.isNullOrEmpty(qualityControl.getReference()))
-			qualityControl.setReference(sequenceService.getSequenceNumber(IAdministration.QUALITY_CONTROL, null));
-		return super.save(qualityControl);
-	}
-	
+  @Inject private SequenceService sequenceService;
+
+  /**
+   * Generate and set sequence in reference with predefined prefix.
+   *
+   * @param qualityControl Overridden quality control object to set reference on onSave event.
+   */
+  @Override
+  public QualityControl save(QualityControl qualityControl) {
+
+    if (Strings.isNullOrEmpty(qualityControl.getReference()))
+      qualityControl.setReference(
+          sequenceService.getSequenceNumber(SequenceRepository.QUALITY_CONTROL, null));
+    return super.save(qualityControl);
+  }
 }

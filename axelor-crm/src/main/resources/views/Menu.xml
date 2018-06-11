@@ -18,7 +18,6 @@
 		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isContact = false AND self.isCustomer = true OR self.isProspect = true</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isCustomer" expr="true"/>
 		<context name="_domain" expr="self.isContact = false AND self.isCustomer = true OR self.isProspect = true"/>
 	</action-view>
@@ -102,9 +101,9 @@
 	</action-method>
 	
 	
-	<menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="45"/>
+	<menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 				
-	<menuitem name="crm-conf" parent="crm-root" title="Configuration" order="50"/>
+	<menuitem name="crm-conf" parent="crm-root" title="Configuration" order="50" icon="fa-cog"/>
 	
 	<menuitem name="crm-conf-lead-source" parent="crm-conf"
 		title="Leads Source" action="crm.conf.lead.source" />
@@ -115,15 +114,6 @@
 		<view type="form" name="source-form"/>
 	</action-view>
 
-	<menuitem name="crm-conf-meeting-type" parent="crm-conf"
-		title="Meeting Types" action="crm.conf.meeting.type" />
-
-	<action-view name="crm.conf.meeting.type" title="Meeting Types"
-		model="com.axelor.apps.crm.db.MeetingType" >
-		<view type="grid" name="meeting-type-grid"/>
-		<view type="form" name="meeting-type-form"/>
-	</action-view>
-	
 	<menuitem name="crm-conf-category" parent="crm-conf"
 		title="Event Categories" action="crm.conf.event.category" />
 

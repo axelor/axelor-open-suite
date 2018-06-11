@@ -17,34 +17,30 @@
  */
 package com.axelor.apps.stock.service.app;
 
-import java.util.List;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class AppStockServiceImpl implements AppStockService {
-	
-	@Inject
-	private CompanyRepository companyRepo;
-	
-	@Inject
-	private StockConfigRepository stockConfigRepo;
-	
-	@Override
-	@Transactional
-	public void generateStockConfigurations() {
-		
-		List<Company> companies = companyRepo.all().filter("self.stockConfig is null").fetch();
-		
-		for (Company company : companies) {
-			StockConfig stockConfig = new StockConfig();
-			stockConfig.setCompany(company);
-			stockConfigRepo.save(stockConfig);
-		}
-	}
 
+  @Inject private CompanyRepository companyRepo;
+
+  @Inject private StockConfigRepository stockConfigRepo;
+
+  @Override
+  @Transactional
+  public void generateStockConfigurations() {
+
+    List<Company> companies = companyRepo.all().filter("self.stockConfig is null").fetch();
+
+    for (Company company : companies) {
+      StockConfig stockConfig = new StockConfig();
+      stockConfig.setCompany(company);
+      stockConfigRepo.save(stockConfig);
+    }
+  }
 }

@@ -1,14 +1,20 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../version.gradle"
+
 apply {
-	version = "5.0.0-SNAPSHOT"
+	version = absVersion
+}
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
 }
 
 axelor {
-	title "Axelor :: Supplier Management"
+	title "Axelor Supplier Management"
 	description "Axelor Supplier Management Module"
-
-	removable true
 }
 
 dependencies {

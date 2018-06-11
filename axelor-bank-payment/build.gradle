@@ -1,13 +1,20 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../version.gradle"
+
 apply {
-	version = "5.0.0-SNAPSHOT"
+	version = absVersion
+}
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
 }
 
 axelor {
-	title "Axelor bank payment"
+	title "Axelor Bank Payment"
 	description "Axelor Bank Payment Module"
-	removable true
 }
 
 configurations {

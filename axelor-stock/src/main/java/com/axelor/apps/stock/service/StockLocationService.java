@@ -17,33 +17,42 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.stock.db.StockLocation;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.StockLocation;
-
 public interface StockLocationService {
 
-    /**
-     * Get the default stock location of the given company
-     * @param company
-     * @return the default stock location or null
-     */
-    public StockLocation getDefaultStockLocation(Company company);
+  /**
+   * Get default receipt location for the given company.
+   *
+   * @param company
+   * @return the default stock location if found, null if there was an exception or if the default
+   *     location is empty
+   */
+  StockLocation getDefaultReceiptStockLocation(Company company);
 
-	public BigDecimal getQty(Long productId, Long locationId, String qtyType);
-	
-	public BigDecimal getRealQty(Long productId, Long locationId);
-	
-	public BigDecimal getFutureQty(Long productId, Long locationId);
+  /**
+   * Get default pickup location for the given company.
+   *
+   * @param company
+   * @return the default stock location if found, null if there was an exception or if the default
+   *     location is empty
+   */
+  StockLocation getPickupDefaultStockLocation(Company company);
 
-	public void computeAvgPriceForProduct(Product product);
+  public BigDecimal getQty(Long productId, Long locationId, String qtyType);
 
-	public List<Long> getBadStockLocationLineId();
-	
-	public Set<Long> getContentStockLocationIds(StockLocation stockLocation);
-	
+  public BigDecimal getRealQty(Long productId, Long locationId);
+
+  public BigDecimal getFutureQty(Long productId, Long locationId);
+
+  public void computeAvgPriceForProduct(Product product);
+
+  public List<Long> getBadStockLocationLineId();
+
+  public Set<Long> getContentStockLocationIds(StockLocation stockLocation);
 }

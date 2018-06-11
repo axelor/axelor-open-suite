@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.tool.net;
 
+import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.file.FileTool;
+import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,106 +30,98 @@ import java.io.OutputStream;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.net.URLConnection;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
-import com.axelor.apps.tool.file.FileTool;
-import com.axelor.i18n.I18n;
-import com.google.common.base.Strings;
-
 public final class URLService {
 
-	final static int size = 1024;
+  static final int size = 1024;
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	/**
-	 * Test la validité d'une url.
-	 *
-	 * @param url
-	 * 		L'URL à tester.
-	 *
-	 * @return
-	 */
-	public static String notExist(String url) {
+  /**
+   * Test la validité d'une url.
+   *
+   * @param url L'URL à tester.
+   * @return
+   */
+  public static String notExist(String url) {
 
-		if(Strings.isNullOrEmpty(url)) {
-			return I18n.get(IExceptionMessage.URL_SERVICE_1);
-		}
+    if (Strings.isNullOrEmpty(url)) {
+      return I18n.get(IExceptionMessage.URL_SERVICE_1);
+    }
 
-		try {
-			URL fileURL = new URL(url);
-			fileURL.openConnection().connect();
-			return null;
-		}
-		catch(java.net.MalformedURLException ex) {
-			ex.printStackTrace();
-			return String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url);
-		}
-		catch(java.io.IOException ex) {
-			ex.printStackTrace();
-			return String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url);
-		}
+    try {
+      URL fileURL = new URL(url);
+      fileURL.openConnection().connect();
+      return null;
+    } catch (java.net.MalformedURLException ex) {
+      ex.printStackTrace();
+      return String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url);
+    } catch (java.io.IOException ex) {
+      ex.printStackTrace();
+      return String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url);
+    }
+  }
 
-	}
+  public static void fileUrl(
+      File file, String fAddress, String localFileName, String destinationDir) throws IOException {
+    int ByteRead, ByteWritten = 0;
+    byte[] buf = new byte[size];
 
-	
-	public static void fileUrl(File file, String fAddress, String localFileName, String destinationDir) throws IOException {
-		int ByteRead, ByteWritten = 0;
-		byte[] buf = new byte[size];
+    URL Url = new URL(fAddress);
+    OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
+    URLConnection urlConnection = Url.openConnection();
+    InputStream inputStream = urlConnection.getInputStream();
 
-		URL Url = new URL(fAddress);
-		OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
-		URLConnection urlConnection = Url.openConnection();
-		InputStream inputStream = urlConnection.getInputStream();
-		
-		while ((ByteRead = inputStream.read(buf)) != -1) {
-			outputStream.write(buf, 0, ByteRead);
-			ByteWritten += ByteRead;
-		}
+    while ((ByteRead = inputStream.read(buf)) != -1) {
+      outputStream.write(buf, 0, ByteRead);
+      ByteWritten += ByteRead;
+    }
 
-		LOG.info("Downloaded Successfully.");
-		LOG.debug("No of bytes :" + ByteWritten);
+    LOG.info("Downloaded Successfully.");
+    LOG.debug("No of bytes :" + ByteWritten);
 
-		if ( inputStream != null )  { inputStream.close(); }
-		if ( outputStream != null ) { outputStream.close(); }
+    if (inputStream != null) {
+      inputStream.close();
+    }
+    if (outputStream != null) {
+      outputStream.close();
+    }
+  }
 
-	}
-	
+  public static File fileDownload(String fAddress, String destinationDir, String fileName)
+      throws IOException {
 
-	public static File fileDownload(String fAddress, String destinationDir, String fileName) throws IOException {
+    int slashIndex = fAddress.lastIndexOf('/');
+    int periodIndex = fAddress.lastIndexOf('.');
 
-		int slashIndex = fAddress.lastIndexOf('/');
-		int periodIndex = fAddress.lastIndexOf('.');
+    if (periodIndex >= 1 && slashIndex >= 0 && slashIndex < fAddress.length() - 1) {
+      LOG.debug("Downloading file {} from {} to {}", fileName, fAddress, destinationDir);
 
-		if ( periodIndex >= 1 && slashIndex >= 0 && slashIndex < fAddress.length() - 1 ) {
-			LOG.debug("Downloading file {} from {} to {}", fileName, fAddress, destinationDir);
-			
-			File file = FileTool.create(destinationDir, fileName);
-			
-			fileUrl(file, fAddress, fileName, destinationDir);
-			
-			return file;
-			
-		}  else {
-			LOG.error("Destination path or filename is not well formatted.");
-			return null;
-		}
-	}
-	
-	public static void fileDownload(File file, String fAddress, String destinationDir, String fileName) throws IOException {
+      File file = FileTool.create(destinationDir, fileName);
 
-		int slashIndex = fAddress.lastIndexOf('/');
-		int periodIndex = fAddress.lastIndexOf('.');
+      fileUrl(file, fAddress, fileName, destinationDir);
 
-		if ( periodIndex >= 1 && slashIndex >= 0 && slashIndex < fAddress.length() - 1 ) {
-			LOG.debug("Downloading file {} from {} to {}", fileName, fAddress, destinationDir);
-			fileUrl(file, fAddress, fileName, destinationDir);
-		}  else {
-			LOG.error("Destination path or filename is not well formatted.");
-		}
-	}
+      return file;
 
+    } else {
+      LOG.error("Destination path or filename is not well formatted.");
+      return null;
+    }
+  }
+
+  public static void fileDownload(
+      File file, String fAddress, String destinationDir, String fileName) throws IOException {
+
+    int slashIndex = fAddress.lastIndexOf('/');
+    int periodIndex = fAddress.lastIndexOf('.');
+
+    if (periodIndex >= 1 && slashIndex >= 0 && slashIndex < fAddress.length() - 1) {
+      LOG.debug("Downloading file {} from {} to {}", fileName, fAddress, destinationDir);
+      fileUrl(file, fAddress, fileName, destinationDir);
+    } else {
+      LOG.error("Destination path or filename is not well formatted.");
+    }
+  }
 }

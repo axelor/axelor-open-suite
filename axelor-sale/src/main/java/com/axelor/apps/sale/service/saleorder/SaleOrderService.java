@@ -22,42 +22,42 @@ import com.axelor.exception.AxelorException;
 
 public interface SaleOrderService {
 
-	public String getFileName(SaleOrder saleOrder);
+  public String getFileName(SaleOrder saleOrder);
 
-	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
-	
-	public String getReportLink(SaleOrder saleOrder, String name, String language, boolean proforma, String format) throws AxelorException;
+  public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 
-	/**
-	 * Fill {@link SaleOrder#mainInvoicingAddressStr}
-	 * and {@link SaleOrder#deliveryAddressStr}
-	 * @param saleOrder
-	 */
-	public void computeAddressStr(SaleOrder saleOrder);
+  public String getReportLink(
+      SaleOrder saleOrder, String name, String language, boolean proforma, String format)
+      throws AxelorException;
 
-	/**
-	 * Enable edit order.
-	 * 
-	 * @param saleOrder
-	 * @throws AxelorException
-	 */
-	void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
+  /**
+   * Fill {@link SaleOrder#mainInvoicingAddressStr} and {@link SaleOrder#deliveryAddressStr}
+   *
+   * @param saleOrder
+   */
+  public void computeAddressStr(SaleOrder saleOrder);
 
-    /**
-     * Validate changes.
-     * 
-     * @param saleOrder
-     * @param saleOrderView
-     * @throws AxelorException
-     */
-    void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException;
+  /**
+   * Enable edit order.
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
 
-    /**
-     * Sort detail lines by sequence.
-     * 
-     * @param saleOrder
-     */
-    void sortSaleOrderLineList(SaleOrder saleOrder);
+  /**
+   * Validate changes.
+   *
+   * @param saleOrder
+   * @param saleOrderView
+   * @throws AxelorException
+   */
+  void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException;
 
-
+  /**
+   * Sort detail lines by sequence.
+   *
+   * @param saleOrder
+   */
+  void sortSaleOrderLineList(SaleOrder saleOrder);
 }

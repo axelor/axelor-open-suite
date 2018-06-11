@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Sequence" lang="java">
+
+        <extra-code><![CDATA[
+        
+        //SEQUENCE SELECT
+		public static final String ACCOUNT_CLEARANCE = "accountClearance";
+		public static final String ACCOUNTING_REPORT = "accountingReport";
+		public static final String ANALYTIC_REPORT = "analyticReport";
+		public static final String CHEQUE_REJECT = "chequeReject";
+		public static final String DEPOSIT_SLIP = "depositSlip";
+		public static final String DEBIT = "debit";
+		public static final String INVOICE = "invoice";
+		public static final String IRRECOVERABLE = "irrecoverable";
+		public static final String MOVE = "move";
+		public static final String MOVE_LINE_EXPORT = "moveLineExport";
+		public static final String PAYMENT_SCHEDULE = "paymentSchedule";
+		public static final String PAYMENT_VOUCHER = "paymentVoucher";
+		public static final String PAYMENT_VOUCHER_RECEIPT_NUMBER = "paymentVoucherReceiptNo";
+		public static final String RECONCILE = "reconcile";
+		public static final String REIMBOURSEMENT = "reimbursement";
+		public static final String SALES_INTERFACE = "saleInterface";
+        public static final String REFUND_INTERFACE = "refundInterface";
+        public static final String TREASURY_INTERFACE = "treasuryInterface";
+        public static final String PURCHASE_INTERFACE = "purchaseInterface";
+        public static final String SUB_ROGATION_RELEASE = "subrogationRelease";
+        
+        ]]></extra-code>
+  </entity>
+
+</domain-models>

@@ -196,10 +196,9 @@
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 	</action-view>
 		
-	<menuitem name="stock-root-report" parent="stock-root"
-		title="Reportings" order="45"/>
+	<menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 		
-	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="50"/>
+	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="50" icon="fa-cog"/>
 	
 	<menuitem name="stock-root-incoterm" parent="stock-root-conf"
 		title="Incoterms" action="stock.root.incoterm" />
@@ -219,6 +218,14 @@
 		<view type="form" name="stock-location-form"/>
 	</action-view>
 	
+	<menuitem name="stock-root-stock-location-tree" parent="stock-root-conf"
+		title="Stock Location Tree" action="stock.root.stock.location.tree" />
+	
+	<action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
+		model="com.axelor.apps.stock.db.StockLocation" >
+		<view type="tree" name="stock-location-tree"/>
+	</action-view>
+	
 	<menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf"
 		title="Stock rules" action="stock.root.conf.stock.rules" />
 	
@@ -226,7 +233,7 @@
 		model="com.axelor.apps.stock.db.StockRules" >
 		<view type="grid" name="stock-rules-grid" />
 		<view type="form" name="stock-rules-form" />
-		<context name="searchFields" expr="stockLocation;product"/>
+		<context name="_duplicateFinderFields" expr="stockLocation;product"/>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-stock-tracking-numbers" parent="stock-root-conf"
@@ -251,7 +258,6 @@
 		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isCarrier = true</domain>
 		<context name="user_id" expr="eval:__user__" />
-		<context name="searchFields" expr="name;firstName"/>
 		<context name="_isCarrier" expr="true"/>
 	</action-view>
 	

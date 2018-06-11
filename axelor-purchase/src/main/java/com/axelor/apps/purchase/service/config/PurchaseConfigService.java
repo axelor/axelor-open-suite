@@ -21,22 +21,22 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class PurchaseConfigService {
-	
-	public PurchaseConfig getPurchaseConfig(Company company) throws AxelorException  {
-		
-		PurchaseConfig purchaseConfig = company.getPurchaseConfig();
-		
-		if(purchaseConfig == null)  {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PURCHASE_CONFIG_1), company.getName());
-		}
-		
-		return purchaseConfig;
-		
-	}
-	
-	
+
+  public PurchaseConfig getPurchaseConfig(Company company) throws AxelorException {
+
+    PurchaseConfig purchaseConfig = company.getPurchaseConfig();
+
+    if (purchaseConfig == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PURCHASE_CONFIG_1),
+          company.getName());
+    }
+
+    return purchaseConfig;
+  }
 }

@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -36,110 +29,144 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ProdProcessService {
-	
-	protected ProdProcessRepository prodProcessRepo;
-	
-	@Inject
-	public ProdProcessService(ProdProcessRepository prodProcessRepo)  {
-		this.prodProcessRepo = prodProcessRepo;
-	}
 
-	public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom) throws AxelorException{
-		Map<Product,BigDecimal> bomMap = new HashMap<Product,BigDecimal>();
-		for (BillOfMaterial bomIt : bom.getBillOfMaterialSet()) {
-			bomMap.put(bomIt.getProduct(), bomIt.getQty());
-		}
-		for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
-			for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
-				if (!bomMap.containsKey(prodProduct.getProduct())) {
-					throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROD_PROCESS_USELESS_PRODUCT), prodProduct.getProduct().getName());
-				}
-				bomMap.put(prodProduct.getProduct(), bomMap.get(prodProduct.getProduct()).subtract(prodProduct.getQty()));
-			}
-		}
-		Set<Product> keyList = bomMap.keySet();
-		Map<Product,BigDecimal> copyMap = new HashMap<Product,BigDecimal>();
-		List<String> nameProductList = new ArrayList<String>();
-		for (Product product : keyList) {
-			if(bomMap.get(product).compareTo(BigDecimal.ZERO) > 0){
-				copyMap.put(product, bomMap.get(product));
-				nameProductList.add(product.getName());
-			}
-		}
-		if (!copyMap.isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PROD_PROCESS_MISS_PRODUCT), Joiner.on(",").join(nameProductList));
-		}
-	}
+  protected ProdProcessRepository prodProcessRepo;
 
-	public ProdProcess changeProdProcessListOutsourcing(ProdProcess prodProcess) {
-		for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()){
-			prodProcessLine.setOutsourcing(prodProcess.getOutsourcing());
-		}
-		return prodProcess;
-	}
+  @Inject
+  public ProdProcessService(ProdProcessRepository prodProcessRepo) {
+    this.prodProcessRepo = prodProcessRepo;
+  }
 
-	public String getLanguageToPrinting(ProdProcess prodProcess)  {
+  public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom)
+      throws AxelorException {
+    Map<Product, BigDecimal> bomMap = new HashMap<Product, BigDecimal>();
 
-		User user = AuthUtils.getUser();
+    Set<BillOfMaterial> setBoM =
+        MoreObjects.firstNonNull(bom.getBillOfMaterialSet(), Collections.emptySet());
+    for (BillOfMaterial bomIt : setBoM) {
+      bomMap.put(bomIt.getProduct(), bomIt.getQty());
+    }
+    List<ProdProcessLine> listPPL =
+        MoreObjects.firstNonNull(prodProcess.getProdProcessLineList(), Collections.emptyList());
+    for (ProdProcessLine prodProcessLine : listPPL) {
+      List<ProdProduct> listPP =
+          MoreObjects.firstNonNull(
+              prodProcessLine.getToConsumeProdProductList(), Collections.emptyList());
+      for (ProdProduct prodProduct : listPP) {
+        if (!bomMap.containsKey(prodProduct.getProduct())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.PROD_PROCESS_USELESS_PRODUCT),
+              prodProduct.getProduct().getName());
+        }
+        bomMap.put(
+            prodProduct.getProduct(),
+            bomMap.get(prodProduct.getProduct()).subtract(prodProduct.getQty()));
+      }
+    }
+    Set<Product> keyList = bomMap.keySet();
+    Map<Product, BigDecimal> copyMap = new HashMap<Product, BigDecimal>();
+    List<String> nameProductList = new ArrayList<String>();
+    for (Product product : keyList) {
+      if (bomMap.get(product).compareTo(BigDecimal.ZERO) > 0) {
+        copyMap.put(product, bomMap.get(product));
+        nameProductList.add(product.getName());
+      }
+    }
+    if (!copyMap.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PROD_PROCESS_MISS_PRODUCT),
+          Joiner.on(",").join(nameProductList));
+    }
+  }
 
-		String language = "en";
+  public ProdProcess changeProdProcessListOutsourcing(ProdProcess prodProcess) {
+    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
+      prodProcessLine.setOutsourcing(prodProcess.getOutsourcing());
+    }
+    return prodProcess;
+  }
 
-		if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-			return user.getLanguage();
-		}
+  public String getLanguageToPrinting(ProdProcess prodProcess) {
 
-		if(prodProcess == null)  {  return language;  }
-		Company company = prodProcess.getCompany();
+    User user = AuthUtils.getUser();
 
-		if(company != null && company.getPartner() != null) {
-			language = ReportSettings.getPrintingLocale(company.getPartner());
-		}
+    String language = "en";
 
-		return language;
-	}
+    if (user != null && !Strings.isNullOrEmpty(user.getLanguage())) {
+      return user.getLanguage();
+    }
 
-	@Transactional
-	public ProdProcess generateNewVersion(ProdProcess prodProcess) {
+    if (prodProcess == null) {
+      return language;
+    }
+    Company company = prodProcess.getCompany();
 
-		ProdProcess copy = prodProcessRepo.copy(prodProcess, true);
+    if (company != null && company.getPartner() != null) {
+      language = ReportSettings.getPrintingLocale(company.getPartner());
+    }
 
-		copy.getProdProcessLineList().forEach(list -> list.setProdProcess(copy));
-		copy.setOriginalProdProcess(prodProcess);
-		copy.setVersionNumber(this.getLatestProdProcessVersion(prodProcess, prodProcess.getVersionNumber(), true) + 1);
-		return prodProcessRepo.save(copy);
-	}
+    return language;
+  }
 
-	public int getLatestProdProcessVersion(ProdProcess prodProcess, int latestVersion, boolean deep) {
-		List<ProdProcess> prodProcessSet = Lists.newArrayList();
-		ProdProcess up = prodProcess;
-		Long previousId = Long.valueOf(0);
-		do {
+  @Transactional
+  public ProdProcess generateNewVersion(ProdProcess prodProcess) {
 
-			prodProcessSet = prodProcessRepo.all().filter("self.originalProdProcess = :origin AND self.id != :id")
-					.bind("origin", up).bind("id", previousId).order("-versionNumber").fetch();
-			if (!prodProcessSet.isEmpty()) {
-				latestVersion = (prodProcessSet.get(0).getVersionNumber() > latestVersion)
-						? prodProcessSet.get(0).getVersionNumber()
-						: latestVersion;
-				for (ProdProcess prodProcessIterator : prodProcessSet) {
-					int search = this.getLatestProdProcessVersion(prodProcessIterator, latestVersion, false);
-					latestVersion = (search > latestVersion) ? search : latestVersion;
-				}
-			}
-			previousId = up.getId();
-			up = up.getOriginalProdProcess();
-		} while (up != null && deep);
+    ProdProcess copy = prodProcessRepo.copy(prodProcess, true);
 
-		return latestVersion;
+    copy.getProdProcessLineList().forEach(list -> list.setProdProcess(copy));
+    copy.setOriginalProdProcess(prodProcess);
+    copy.setVersionNumber(
+        this.getLatestProdProcessVersion(prodProcess, prodProcess.getVersionNumber(), true) + 1);
+    return prodProcessRepo.save(copy);
+  }
 
-	}
+  public int getLatestProdProcessVersion(ProdProcess prodProcess, int latestVersion, boolean deep) {
+    List<ProdProcess> prodProcessSet = Lists.newArrayList();
+    ProdProcess up = prodProcess;
+    Long previousId = Long.valueOf(0);
+    do {
+
+      prodProcessSet =
+          prodProcessRepo
+              .all()
+              .filter("self.originalProdProcess = :origin AND self.id != :id")
+              .bind("origin", up)
+              .bind("id", previousId)
+              .order("-versionNumber")
+              .fetch();
+      if (!prodProcessSet.isEmpty()) {
+        latestVersion =
+            (prodProcessSet.get(0).getVersionNumber() > latestVersion)
+                ? prodProcessSet.get(0).getVersionNumber()
+                : latestVersion;
+        for (ProdProcess prodProcessIterator : prodProcessSet) {
+          int search = this.getLatestProdProcessVersion(prodProcessIterator, latestVersion, false);
+          latestVersion = (search > latestVersion) ? search : latestVersion;
+        }
+      }
+      previousId = up.getId();
+      up = up.getOriginalProdProcess();
+    } while (up != null && deep);
+
+    return latestVersion;
+  }
 }

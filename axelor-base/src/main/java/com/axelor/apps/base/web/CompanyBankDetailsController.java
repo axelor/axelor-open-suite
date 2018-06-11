@@ -25,26 +25,23 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 
-/**
- * Controller called from multiple forms,
- */
+/** Controller called from multiple forms, */
 @Singleton
 public class CompanyBankDetailsController {
 
-    /**
-     * Set the domain of company bank details field
-     *
-     * @param request
-     * @param response
-     */
-    public void fillCompanyBankDetailsDomain(ActionRequest request, ActionResponse response) {
-        Company company = (Company) request.getContext().get("company");
-        PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
-        response.setAttr(
-                "companyBankDetails",
-                "domain",
-                Beans.get(BankDetailsServiceImpl.class)
-                        .createCompanyBankDetailsDomain(company, paymentMode)
-        );
-    }
+  /**
+   * Set the domain of company bank details field
+   *
+   * @param request
+   * @param response
+   */
+  public void fillCompanyBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    Company company = (Company) request.getContext().get("company");
+    PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
+    response.setAttr(
+        "companyBankDetails",
+        "domain",
+        Beans.get(BankDetailsServiceImpl.class)
+            .createCompanyBankDetailsDomain(company, paymentMode));
+  }
 }

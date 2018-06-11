@@ -22,8 +22,8 @@ import com.axelor.exception.AxelorException;
 
 public class WorkflowValidationServiceImpl implements WorkflowValidationService {
 
-    @Override
-    public void afterValidation(Invoice invoice) throws AxelorException {
-        //nothing to do without supplychain
-    }
+  @Override
+  public void afterValidation(Invoice invoice) throws AxelorException {
+    // nothing to do without supplychain
+  }
 }

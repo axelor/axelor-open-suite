@@ -21,18 +21,20 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.crm.db.CrmConfig;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class CrmConfigService {
-	
-	public CrmConfig getCrmConfig(Company company) throws AxelorException  {
-		CrmConfig crmConfig = company.getCrmConfig();
 
-		if (crmConfig == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CRM_CONFIG_1), company.getName());
-		}
-		return crmConfig;
-	}
+  public CrmConfig getCrmConfig(Company company) throws AxelorException {
+    CrmConfig crmConfig = company.getCrmConfig();
 
+    if (crmConfig == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CRM_CONFIG_1),
+          company.getName());
+    }
+    return crmConfig;
+  }
 }

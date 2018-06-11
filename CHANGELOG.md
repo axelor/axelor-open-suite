@@ -1,9 +1,181 @@
 # Changelog
 
-## [Unreleased 5.x]
+## [Unreleased 5.0.0]
 ## Features
-- New Inventory view
-- New StockMove view
+- User: configurable password pattern, generate random password, and send email upon password change
+
+## Improvements
+- Improved the way to sort the accounting grand ledger per account, date, and moveLine ref.
+- General data protection regulation: data export and anonymize feature added.
+- Use general configurations to determine the number of digits displayed in purchase order, invoice and product catalog reports.
+- Add sequence to sort stock move lines.
+
+## Bug Fixes
+- Fix : wrong domain for the bill of material field in the 'add manuf order' popup form in a production order
+- Fix : errors when trying to generate production orders from sale orders with products lacking a stock unit or bill of materials lacking a production process.
+- Fix : error when add a manufacturing order lacking a production process to a production process.
+- Fix : disable create and edit of saleorderline from sale order invoicing wizard.
+- Fix account reconcilable issue when ventilate a refund invoice.
+
+## [5.0.0-rc3] - 2018-06-06
+## Features
+- Sale order: option to close linked opportunity upon confirmation.
+- Calendar synchronization batch
+
+## Improvements
+- Sale order form : improve timetable and printing settings tabs.
+- Employee : Removed social security number field in advanced search.
+- Rework toolbar in Partner, PuchaseOrder and SaleOrder grid and cards views.
+- Default configuration added for lead import. 
+- Fill automatically the description of account move line for some accounting process : expense, doubtful, bank moves, account clearance, move template...
+- Product : procurement method can now be both 'Buy and produce'. Stock rules creation now set a default refill method based on the product's procurement method.
+- Product description is not copy to invoice line. Next version, a configuration will be added for this feature to sale/invoice/stock/purchase lines.
+- Remove Meeting categories and use now generic Event categories for every event types.
+- Modify 'Show all events' button on lead,partner and contacts form and make it like 'All tasks' button on project form.
+- Improve calendar synchronization speed
+- Advanced export : added warning and help for data export and fetch limits.
+- Change phonebook title to Contact PhoneBook or Company PhoneBook in view and reports.
+- Opportunity: move to proposition stage when creating a sale order.
+- Add icons to reportings & configurations submenus and harmonize their order among all menus
+- Accounting report : add domain filters on selection fields and resets to maintain consistency.
+- Correctly use daybook moves in accounting reports if the configuration is daybook.
+- Add validate date, ventilation date/user on Invoice.
+- Show alert box instead readonly ventilate button when invoice date is in future. 
+- Opportunity: move to proposition stage when creating a sale order.
+- Change generated accounting report file name to be more explicit.
+- Sale order: allow increasing quantity on delivered detail lines.
+- Moved the Partner seq at the top of the Partner form views and set it as the first column in Partner grid views.
+- Make Logistical form printable even in Provision status.
+- Filter trackingNumber in stockMoveLine in function of fromStockLocation as it is done in tab detailsStockLocation of StockLocation
+- Add a counter to limit iterations of while loop in YearService and BudgetService
+- Create an interface for PeriodService
+
+## Bug Fixes
+- Product : buttons "real qty" and "future qty" will only be display if product is effectively created.
+- Lead: Fix status on creation and on save.
+- Fix timesheet editor duration, it will display duration in hours only. 
+- Fix sale order titles on card and stream messages.
+- Fix custom model editor breaking changes due to adk updates.
+- Fix project planning editor breaking changes due to adk updates.
+- Invoice : allow add/remove lines only on draft state.
+- Timesheet editor: Remove line confirmation message translation fixed.
+- Fix call to getInvoicingAddress of PartnerService in UMR form view.
+- Fix NPE and wrong domain set  on price list (SaleOrder/PurchaseOrder/Invoice).
+- Add missing translation for "Fullscreen Editor".
+- Invoice demo data : Fix import address string field.
+- Invoice demo data: Fix import draft sequence.
+- Fix stack overflow error on duplicate city check. Refactored the code of duplicate check.
+- Fix "Blockings" UI after $moment() helper was fixed, also fixed a bugged onSelect field on blocking.companies on edit mode.
+- Fix NPE that happens when we invoice a stock move with a partner with no in/out payment mode.
+- Add missing translation in Calendars
+- Fix java.lang.NullPointerException by checking if product is null
+- Sales : perform calculation of margin when we apply discount on sale order line.
+- Fix permissions for role.manager and role.crm
+- Fix line adding with having multiple project on timesheet editor.
+- Add filter on the Fiscal year field in the Fiscal Period form view to select only Fiscal years.
+- Event : When create new event from existing event bring values of some fields to new event like lead,type,calendar e.t.c. 
+- Fix partner data for 'admin' and 'demo' users on demo data.
+- Fix error on 'Import demo data' for apps without modules. 
+- Advanced export: Fix crashing server,added parameters for fetch limit and maximum export limt
+- Product : set format of description field as html in product report to support formatting of description.
+- Sale: Add missing translation in subscription
+- Production: fix nb of digits for BOM quantities configuration.
+- Production order : New manufaturing order directly will not be created but with newly created popup wizard for Manufaturing order.
+- Add missing translation for "Print production process"
+- Fix NPE on automatic template message without a model.
+- Fixed issue on amounts computation on general balance report and add a sort on account codes.
+- Sort the general ledger report per account code and date
+- Add missing sequence for analytic report in demo data, and add missing trace for exception in "save" method called in accounting report.
+- Charts : rename action call that action has been renamed earlier.
+- Fix date format in birt report in manufactoring order and operation order
+- Fix some translations in account module.
+- Permission assistant : Fix when import permissions with more than one role or group.
+- Fix the opportunity field of a sale order being readonly
+- Product : reset value of productVariantValue field when we change value of associated productVariantAttr field.
+- Sale order: fix unremovable sale order line and editable invoiced sale order line.
+- Fix set a prospect as the client of a sale order.
+- Stock Move: select stock move with current invoice canceled in multiple sale and purchase invoicing form
+- Set trading name automatically when creating or merging purchase order
+- Fix trading names not being changeable in edit mode when partner was set in sale or purchase orders and invoice forms.
+- Fix bad domain on permission assistant's user field.
+- Fix interco invoice, sale and purchase order generation.
+- Fix missing domains in production menu.
+- Fix bank details default value in invoice form.
+- Fix wrong calculation of unit price when create stock move from purchase order and sale order
+- Switch Expense Birt report from portrait to landscape, fix and display the currency, set kilometric allowance to translatable and refactor elements positions.
+- Product: fill information on sale/purchase order and invoice lines even when tax is missing.
+- Fix trading name not being imported from opportunity on sale quotation generation
+- Purchase order: fix doubled stock move total when generating supplier arrival.
+- Remove companyName from Leads (fullName already has namecolumn attribute).
+- Fix several errors when creating a production process with management of consumed products on phases.
+- Bill of materials: fix filters using define sub-bill of materials
+- Logistical form is now printed in customer language and not in user language.
+- Timesheet editor: fix java.lang.NullPointerException in TimesheetServiceImpl when delete a line in editor
+- Fix BillOfMaterial copy when creating a personalized BOM.
+- Supplier request : added suggestion filters on selecting supplierPartner 
+
+## [5.0.0-rc2] - 2018-05-09
+## Improvements
+- sale order: Allow user to manually define a legal note that will be put on edited orders.
+- sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
+- When we generate a message (using a template or not) from the wizrad, open the form view in edit mode directly and close automatically the wizard.
+- All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
+- Barcode generator code formatting.
+- Split sequences per module and remove unwanted sequences
+- Improve multiple invoices printing.
+- timesheet: Hide create button on if timsheet editor is disabled from configuration.
+- Add en to fr translation in Barcode type configuration
+- Mail Account: If the boolean "isValid" is true, allow user to disabled it 
+- Product: If purchase module is not installed, hide boolean "Define the shipping coef by partner" and "Shipping Coef."
+- Convert Lead: Removed separate panel of prospect and added prospect boolean into partner tab. Removed wrong field from opportunity tab. 
+- Convert Lead: Removed opportunity and events conversion. Just partner and contact created from lead with events and opportunity linked.   
+- Current user password should be required when updating user password 
+- Replaced default grid by simple grid of event and opportunity in partner,contact and lead form. Simple grid does not contains partner,contact and lead field.
+- Convert Lead: Fix translation and default values. 
+- Advanced export wizard : Automatically download the export file on "Export" button and close the wizard.
+- Message Template: Import demo data per module (or per app).
+- Email Service: Default 'EmailAccount' will be used for adk mailing services or stream messages.
+- Product form: Remove account app check from accounting tab to display account management o2m. 
+- Add an advanced synchronization feature for event synchronization with external calendars.
+- Add a monitoring on time differences on manufacturing orders.
+- Renamed all reference to weight by mass.
+- Refactor invoice payment list display in invoice-form and invoice-client-form views
+- Check partner blocking on invoicing, direct debit and reimbursement. 
+- Improved sale order status label.
+- Timesheet editor: No group by on project when unique product is used. 
+
+## Bug Fixes
+- invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
+- Compute the duration according to the start date and time and end date and time for ticket.
+- Fix same image when duplicating products.
+- invoice: fix bank address on birt template
+- Fix BASE DEMO DATA import error
+- Fix custom buttons imported with studio demo data. It will be only displayed if related app is installed.
+- Custom model editor: Fix duplicating field property for relational json fields.
+- timesheet-editor: Fix user value update on timesheet line.
+- Fix Indicator generator language type field in fr demo data import
+- Menu "Product variant attributes" displayed only if the boolean "manageProductVariants" is true in Base app
+- Menus permissions adapted to v5 for demoCRM and demoERP users
+- Fiscal Position interface reworked and moved from Account to Base module
+- Fix empty partner list from batch report.
+- Fix duplicate object wizard translation.
+- Convert Lead: Fix type,call type and lead field of converted events. 
+- Advanced Export: Fix export every fields of model.
+- Advanced export : Fix input issue of selection field for export.
+- Fix Advanced export object and wizard translation.
+- Rename 'Replace duplicate' to 'Merge duplicated' and add translation.
+- Fix pending payment display in Invoice payment total view
+- Advanced export, add translation in CSV export + code improvement
+- Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
+- Fix Forecasts : problem when including opportunities
+- Fix default email account check for user. 
+- Fix timesheet timer not computing durations.
+- Fix sale order line form for 'title' type. 
+- Timesheet editor: Fix blank editor, duration calcuation method, wrong total on group by.
+
+
+## [5.0.0-rc1] - 2018-04-16
+## Features
 - New currency conversion API (ECB)
 - Split accounting report VAT statement in two, VAT on amount received and VAT on invoicing
 - Create sale order from partner and contact
@@ -21,17 +193,16 @@
 - New subscription feature.
 - Add support to dynamically set the number of decimal digit of BOM quantities
 - If there is no template defined for the object, generate an empty draft message for MESSAGE : wizard
-- Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
 - Manage waste rate in bill of material and take it into account on cost sheet
 - Partial manuf order realization
 - Add a wizard to select a cancel reason and cancel a Stock move.
 - Add button to open tasks and task kanban view in project module
 - Manage shipment mode, freight carrier mode, incoterm, carrier partner, forwarder partner on Partner, Sale order, Stock move.
 - New user option to allow notifications to be sent by email on desired entities.
-- Add validation date in Inventory
-- Remove teams app module.
-- Add the number of components on Bill of material form view.
+- Add grid for easily regenerating and resending messages that were not sent.
 - Add a process to force user to respect a quantity that is a multiple quantities on Sale order and Purchase order. 
+- Add multiple default stock locations (receipt, fixup, component, finished products) in stock config instead of a single default stock location.
+- Product sales and production configurator
 
 ## Improvements
 - Label "hours" on Project and Task with the field totalPlannedHrs.
@@ -41,6 +212,7 @@
 - Generate sale order from Opportunity in edit mode directly
 - Improved architecture of Message generation from a template, send email, and manage specific email account in a module without change the original behavior in the others
 - A freight carrier is now a carrier partner
+- Add purchase order line and sale order line import processes to compute tax related fields.
 - Change the title "Delivery date" to "Estimated delivery date" in SaleOrder and PurchaseOrder
 - EndPeriod on currency conversion api
 - Allow to generate bank order file without using bic code in SEPA context.
@@ -49,18 +221,37 @@
 - Change dependency to base instead of CRM,HR and Project of helpdesk module.
 - Update the SaleOrderLine form to look like InvoiceLine form.
 - Update CRM & ICalendar events UI
-- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'. 
+- Removed extra links from tasks to other tasks. Kept only 'Predecessors tasks'.
 - Allow to read the products from production, stock and crm modules
 - Improve manufacturing order workflow.
 - When we treat a component of a manuf order that is not loaded on MRP because there is no default BOM or because the component of manuf order is not a component of the bill of material, we add it with the level of manuf order product + 1.
 - Replaced selection field for language on Partner per a M2O to Language object to be able to add new partner language easily.
 - New select on product to choose if we want real or planned price for last product price or average price.
 - Improve filter for supplier partner in sale order lines.
+- MRP : manage the case where sale order line is partially delivered
+- Moved Sale order Delivery state in Supplychain module
+- If a service is selected on a sale order and we don't generate a stock move for services, the sale order line should be considered as delivered (or for the opposite).
+- Allow to ventilate an invoice without product on the lines (mainly for purchase invoice).
+- Improve timesheet form by adding time logging preferences.
+- Rename "durationStored" to "hoursDuration" and "visibleDuration" to "duration".
+- Add "show partner" button in lead form.
+- Merge invoicing project sale order wizard with invoicing sale order wizard.
+- New Inventory view
+- New StockMove view
+- Put buttons in hidden mode instead of readOnly in invoicing-project-form and put status to invoiced on generating invoice
+- Add validation date in Inventory
+- Add the number of components on Bill of material form view.
+- Use services to get company bank details for better maintenability.
+- Change open fullscreen timesheet editor from tab to popup, for update of lines o2m on close.
+- Browser reload on install and uninstall of the app.
+- Add base app install check on base module's menus.
+- Improved TeamTask gantt view to support upgraded gantt view with colored user per task.
 
 ## Bug Fixes
 - All StockMoveLines now appear in Produced products grid (ManufOrder)
 - Fix the default amount on new invoice payment to use the amount remaining of the invoice.
 - Fix demo data en and fr on AppSuplychain to set the correct value on the field supplStockMoveMgtOnSO
+- Fix purchase order status in demo data.
 - Fix different split methods in StockMove
 - Fix event hide when we create new from calendar and set domain for my calendar and team calendar
 - Fix default logo position
@@ -70,13 +261,25 @@
 - Fix MRP calculation exception
 - Fix manufacturing order stock move generation in unusual case.
 - Fix default supplier in purchase order generation from sale order.
+- Stock location is no more required if supplychain module is not enabled
+- Compute the sale price and min sale price on purchase order line only if the product is saleable
+- Fix hiding total(exTaxTotal or inTaxTotal) based on 'inAti' on sale and purchase orderline.
+- Fix bulk install without demo data error. 
+- Fix language of parent app on child app installation. Now it will install all parent (if not installed) with child app's language. 
+- Fix timesheet and project planning editor according to changes in related models and fields. 
+- Fix custom model form view with latest from adk.
+- Fix resource management from project, removed unwanted menus and views related to it. 
+
 
 ## [Unreleased 4.x]
 
+## [4.1.3] - 2018-02-28
 ### Improvements
 - New assistant in expense form to select payment mode
 - Leave management reset batch now creates a new line with negative quantity
   instead of clearing old lines
+- Password encryption for ICALENDAR and SMTP account.
+- Title "IBAN" became "IBAN / BBAN" in bankdetails
 
 ### Bug Fixes
 - Permission change in most HR form
@@ -87,7 +290,12 @@
 - Hide button in leave request instead of making it readonly
 - Fix count tags in hr menus
 - Remove the wrong process to create an useless move for excess payment on refund invoice ventilation
-
+- Generate a signature user certificate in EBICS TS mode for Transport User
+- LEAD : convert wizard
+- On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
+- On Invoice payment, fix NPE by requiring paymentMode
+- Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
+- Accounting export, fix problem on export FEC
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
@@ -381,8 +589,12 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-[Unreleased 5.x]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...dev
+[Unreleased 5.0.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc3...dev
+[5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
+[5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
+[5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
+[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
+[4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/axelor/axelor-business-suite/compare/v4.0.2...v4.1.0

@@ -99,7 +99,7 @@
 		<many-to-one name="barCode" title="Barcode"
 			ref="com.axelor.meta.db.MetaFile" />
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
-		<string name="fullName" title="Full name" namecolumn="true" />
+		<string name="fullName" title="Full name" namecolumn="true" translatable="true" />
 
 
 		<many-to-one name="weightUnit" ref="com.axelor.apps.base.db.Unit"
@@ -163,7 +163,6 @@
 			<field name="salePrice" />
 			<field name="saleCurrency" />
 			<field name="unit" />
-			<field name="purchasesUnit" />
 			<field name="startDate" />
 			<field name="endDate" />
 			<field name="purchasable" />
@@ -178,7 +177,6 @@
 			<field name="warrantyNbrOfMonths" />
 			<field name="isPerishable" />
 			<field name="perishableNbrOfMonths" />
-			<field name="trackingNumberConfiguration" />
 			<message if="true" on="UPDATE">Product updated</message>
 		</track>
 	</entity>

@@ -28,29 +28,30 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class DebtRecoveryController {
-    private DebtRecoveryRepository debtRecoveryRepository;
-    private DebtRecoveryActionService debtRecoveryActionService;
+  private DebtRecoveryRepository debtRecoveryRepository;
+  private DebtRecoveryActionService debtRecoveryActionService;
 
-    @Inject
-    public DebtRecoveryController(DebtRecoveryRepository debtRecoveryRepository, DebtRecoveryActionService debtRecoveryActionService) {
-        this.debtRecoveryRepository = debtRecoveryRepository;
-        this.debtRecoveryActionService = debtRecoveryActionService;
+  @Inject
+  public DebtRecoveryController(
+      DebtRecoveryRepository debtRecoveryRepository,
+      DebtRecoveryActionService debtRecoveryActionService) {
+    this.debtRecoveryRepository = debtRecoveryRepository;
+    this.debtRecoveryActionService = debtRecoveryActionService;
+  }
+
+  public void runDebtRecovery(ActionRequest request, ActionResponse response) {
+    DebtRecovery debtRecovery = request.getContext().asType(DebtRecovery.class);
+
+    debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
+    try {
+      debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
+      debtRecoveryActionService.runManualAction(debtRecovery);
+      // find the updated debtRecovery
+      debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
+      debtRecoveryActionService.runMessage(debtRecovery);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    public void runDebtRecovery(ActionRequest request, ActionResponse response) {
-        DebtRecovery debtRecovery = request.getContext().asType(DebtRecovery.class);
-
-        debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
-        try {
-        	debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
-        	debtRecoveryActionService.runManualAction(debtRecovery);
-            //find the updated debtRecovery
-        	debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
-        	debtRecoveryActionService.runMessage(debtRecovery);
-            response.setReload(true);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
-
-    }
+  }
 }

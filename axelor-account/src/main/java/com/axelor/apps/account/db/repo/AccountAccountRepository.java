@@ -17,35 +17,42 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import java.util.Set;
-
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.db.JPA;
+import java.util.Set;
+import javax.persistence.PersistenceException;
 
 public class AccountAccountRepository extends AccountRepository {
 
-    @Override
-    public Account save(Account account) {
-        try {
-            if (account.getId() == null) {
-                return super.save(account);
-            }
+  @Override
+  public Account save(Account account) {
+    try {
+      if (account.getId() == null) {
+        return super.save(account);
+      }
 
-            if (account.getReconcileOk()) {
-                Set<Account> accountList = account.getCompatibleAccountSet();
+      if (account.getReconcileOk()) {
+        Set<Account> accountList = account.getCompatibleAccountSet();
 
-                for (Account acc : accountList) {
-                    acc.setReconcileOk(true);
-                    acc.addCompatibleAccountSetItem(account);
-                    JPA.save(acc);
-                }
-            }
-
-            return super.save(account);
-        } catch (Exception e) {
-            throw new PersistenceException(e.getLocalizedMessage());
+        for (Account acc : accountList) {
+          acc.setReconcileOk(true);
+          acc.addCompatibleAccountSetItem(account);
+          JPA.save(acc);
         }
+      } else {
+        
+        for (Account acc : account.getCompatibleAccountSet()) {
+          acc.removeCompatibleAccountSetItem(account);
+          if (acc.getCompatibleAccountSet().size() == 0) {
+            acc.setReconcileOk(false);
+          }
+          JPA.save(acc);
+        }
+        account.getCompatibleAccountSet().clear();
+      }
+      return super.save(account);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
     }
+  }
 }

@@ -24,7 +24,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
-import com.axelor.apps.bankpayment.service.config.AccountConfigBankPaymentService;
+import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -33,25 +33,40 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
-    @Inject
-    public BankOrderServiceHRImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo,
-                                  BankOrderLineService bankOrderLineService, EbicsService ebicsService,
-                                  InvoicePaymentToolService invoicePaymentToolService, AccountConfigBankPaymentService accountConfigBankPaymentService,
-                      			SequenceService sequenceService) {
 
-        super(bankOrderRepo, invoicePaymentRepo, bankOrderLineService, ebicsService, invoicePaymentToolService, accountConfigBankPaymentService, sequenceService);
+  @Inject
+  public BankOrderServiceHRImpl(
+      BankOrderRepository bankOrderRepo,
+      InvoicePaymentRepository invoicePaymentRepo,
+      BankOrderLineService bankOrderLineService,
+      EbicsService ebicsService,
+      InvoicePaymentToolService invoicePaymentToolService,
+      BankPaymentConfigService bankPaymentConfigService,
+      SequenceService sequenceService) {
+    super(
+        bankOrderRepo,
+        invoicePaymentRepo,
+        bankOrderLineService,
+        ebicsService,
+        invoicePaymentToolService,
+        bankPaymentConfigService,
+        sequenceService);
+  }
+
+  @Override
+  public void realize(BankOrder bankOrder) throws AxelorException {
+    super.realize(bankOrder);
+
+    if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
+      Expense expense =
+          Beans.get(ExpenseRepository.class)
+              .all()
+              .filter("self.bankOrder.id = ?", bankOrder.getId())
+              .fetchOne();
+      if (expense != null) {
+        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+      }
     }
-
-    @Override
-    public void realize(BankOrder bankOrder) throws AxelorException {
-        super.realize(bankOrder);
-
-        if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
-            Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.bankOrder.id = ?", bankOrder.getId()).fetchOne();
-            if (expense != null) {
-                expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-                expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-            }
-        }
-    }
+  }
 }

@@ -85,12 +85,6 @@
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
     </action-method>
 
-    <action-group name="action-supplychain-sale-order-group-generate-invoice">
-    	<action name="action-supplychain-sale-order-view-invoicing-wizard"
-				if="eval: !__config__.app.isApp('business-project') ||  !__config__.app.getApp('business-project').getEnableToInvoiceExpense() &amp;&amp; !__config__.app.getApp('business-project').getEnableToInvoiceTimesheet()" />
-    	<action name="action-business-project-sale-order-view-invoicing-wizard" if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getEnableToInvoiceExpense() || __config__.app.getApp('business-project').getEnableToInvoiceTimesheet())" />
-    </action-group>
-
     <action-method name="action-supplychain-sale-order-method-generate-invoice">
  		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
 	</action-method>
@@ -111,10 +105,6 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setNextInvoicingStartPeriodDate" />
 	</action-method>
 	
-	<action-validate name="action-supplychain-sale-order-validate-check-stock-location">
-		<error message="The stock location must be filled." if="stockLocation == null"/>
-	</action-validate>
-
 	<action-validate name="action-supplychain-sale-order-validate-check-amount-timetable">
 		<alert message="The amount to be spread over the timetable is negative." if="amountToBeSpreadOverTheTimetable &lt; 0"/>
 	</action-validate>
@@ -128,16 +118,15 @@
 		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
 	</action-record>
 
-    <action-record name="action-sale-order-record-interco"
+	<action-record name="action-sale-order-record-interco"
 				   model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="interco" expr="eval: __config__.app.getApp('supplychain').getIntercoFromSale()"/>
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromSale
+            &amp;&amp; !createdByInterco &amp;&amp; clientPartner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne()"/>
 	</action-record>
 
 	<action-attrs name="action-sale-order-attrs-interco">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
-		<attribute for="interco" name="value" expr="eval: false"
-				   if="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
 		<attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 3"/>
 	</action-attrs>

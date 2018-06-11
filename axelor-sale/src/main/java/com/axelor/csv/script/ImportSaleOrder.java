@@ -17,8 +17,6 @@
  */
 package com.axelor.csv.script;
 
-import java.util.Map;
-
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -26,43 +24,42 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.util.Map;
 
 public class ImportSaleOrder {
 
-    protected SaleOrderService saleOrderService;
-    protected SaleOrderComputeService saleOrderComputeService;
-    protected SaleOrderWorkflowService saleOrderWorkflowService;
-    protected SequenceService sequenceService;
+  protected SaleOrderService saleOrderService;
+  protected SaleOrderComputeService saleOrderComputeService;
+  protected SaleOrderWorkflowService saleOrderWorkflowService;
+  protected SequenceService sequenceService;
 
-    @Inject
-    public ImportSaleOrder(SaleOrderService saleOrderService, SaleOrderComputeService saleOrderComputeService,
-            SaleOrderWorkflowService saleOrderWorkflowService, SequenceService sequenceService) {
-        this.saleOrderService = saleOrderService;
-        this.saleOrderComputeService = saleOrderComputeService;
-        this.saleOrderWorkflowService = saleOrderWorkflowService;
-        this.sequenceService = sequenceService;
+  @Inject
+  public ImportSaleOrder(
+      SaleOrderService saleOrderService,
+      SaleOrderComputeService saleOrderComputeService,
+      SaleOrderWorkflowService saleOrderWorkflowService,
+      SequenceService sequenceService) {
+    this.saleOrderService = saleOrderService;
+    this.saleOrderComputeService = saleOrderComputeService;
+    this.saleOrderWorkflowService = saleOrderWorkflowService;
+    this.sequenceService = sequenceService;
+  }
+
+  public Object importSaleOrder(Object bean, Map<String, Object> values) throws AxelorException {
+    assert bean instanceof SaleOrder;
+
+    SaleOrder saleOrder = (SaleOrder) bean;
+
+    saleOrderService.computeAddressStr(saleOrder);
+
+    saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
+
+    if (saleOrder.getStatusSelect() == 1) {
+      saleOrder.setSaleOrderSeq(sequenceService.getDraftSequenceNumber(saleOrder));
+    } else {
+      saleOrderWorkflowService.finalizeQuotation(saleOrder);
     }
 
-    public Object importSaleOrder(Object bean, Map<String, Object> values) throws AxelorException {
-        assert bean instanceof SaleOrder;
-
-        SaleOrder saleOrder = (SaleOrder) bean;
-
-        saleOrderService.computeAddressStr(saleOrder);
-
-        if (sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
-            saleOrder.setSaleOrderSeq(saleOrderWorkflowService.getSequence(saleOrder.getCompany()));
-        }
-
-        return saleOrder;
-    }
-
-    public Object computeAmt(Object bean, Map<String, Object> values) throws AxelorException {
-
-        assert bean instanceof SaleOrder;
-
-        SaleOrder saleOrder = (SaleOrder) bean;
-
-        return saleOrderComputeService.computeSaleOrder(saleOrder);
-    }
+    return saleOrder;
+  }
 }

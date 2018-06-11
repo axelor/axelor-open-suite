@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.base.web;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -34,6 +28,8 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -42,96 +38,107 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ProductController {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	private ProductService productService;
-	
-	@Inject
-	private ProductRepository productRepo;
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	public void generateProductVariants(ActionRequest request, ActionResponse response) throws AxelorException {
-		Product product = request.getContext().asType(Product.class);
-		product = productRepo.find(product.getId());
+  @Inject private ProductService productService;
 
-		if(product.getProductVariantConfig() != null)  {
-			productService.generateProductVariants(product);
+  @Inject private ProductRepository productRepo;
 
-			response.setFlash(I18n.get(IExceptionMessage.PRODUCT_1));
-			response.setReload(true);
-		}
-	}
+  public void generateProductVariants(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Product product = request.getContext().asType(Product.class);
+    product = productRepo.find(product.getId());
 
-	public void updateProductsPrices(ActionRequest request, ActionResponse response) throws AxelorException {
-		Product product = request.getContext().asType(Product.class);
+    if (product.getProductVariantConfig() != null) {
+      productService.generateProductVariants(product);
 
-		product = productRepo.find(product.getId());
+      response.setFlash(I18n.get(IExceptionMessage.PRODUCT_1));
+      response.setReload(true);
+    }
+  }
 
-		productService.updateProductPrice(product);
+  public void updateProductsPrices(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Product product = request.getContext().asType(Product.class);
 
-		response.setFlash(I18n.get(IExceptionMessage.PRODUCT_2));
-		response.setReload(true);
-	}
+    product = productRepo.find(product.getId());
 
+    productService.updateProductPrice(product);
 
+    response.setFlash(I18n.get(IExceptionMessage.PRODUCT_2));
+    response.setReload(true);
+  }
 
-	@SuppressWarnings("unchecked")
-	public void printProductCatelog(ActionRequest request, ActionResponse response) throws AxelorException {
+  @SuppressWarnings("unchecked")
+  public void printProductCatelog(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-		User user =  Beans.get(UserService.class).getUser();
+    User user = Beans.get(UserService.class).getUser();
 
-		int currentYear = Beans.get(AppBaseService.class).getTodayDateTime().getYear();
-		String productIds = "";
+    int currentYear = Beans.get(AppBaseService.class).getTodayDateTime().getYear();
+    String productIds = "";
 
-		List<Integer> lstSelectedProduct = (List<Integer>) request.getContext().get("_ids");
-		
-		if(lstSelectedProduct != null) {
-			productIds = Joiner.on(",").join(lstSelectedProduct);
-		}
+    List<Integer> lstSelectedProduct = (List<Integer>) request.getContext().get("_ids");
 
-		if(!productIds.equals("")){
-			productIds = productIds.substring(0, productIds.length()-1);
-		}
+    if (lstSelectedProduct != null) {
+      productIds = Joiner.on(",").join(lstSelectedProduct);
+    }
 
-		String name = I18n.get("Product Catalog");
-		
-		String fileLink = ReportFactory.createReport(IReport.PRODUCT_CATALOG, name+"-${date}")
-				.addParam("UserId", user.getId())
-				.addParam("CurrYear", Integer.toString(currentYear))
-				.addParam("ProductIds", productIds)
-				.addParam("Locale", ReportSettings.getPrintingLocale(null))
-				.generate()
-				.getFileLink();
+    if (!productIds.equals("")) {
+      productIds = productIds.substring(0, productIds.length() - 1);
+    }
 
-		logger.debug("Printing "+name);
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
-	}
+    String name = I18n.get("Product Catalog");
 
-	public void printProductSheet(ActionRequest request, ActionResponse response) throws AxelorException {
+    String fileLink =
+        ReportFactory.createReport(IReport.PRODUCT_CATALOG, name + "-${date}")
+            .addParam("UserId", user.getId())
+            .addParam("CurrYear", Integer.toString(currentYear))
+            .addParam("ProductIds", productIds)
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .generate()
+            .getFileLink();
 
-		Product product = request.getContext().asType(Product.class);
-		User user =  Beans.get(UserService.class).getUser();
+    logger.debug("Printing " + name);
 
-		String name = I18n.get("Product") + " " + product.getCode();
-		
-		String fileLink = ReportFactory.createReport(IReport.PRODUCT_SHEET, name+"-${date}")
-				.addParam("ProductId", product.getId())
-				.addParam("CompanyId", user.getActiveCompany().getId())
-				.addParam("Locale", ReportSettings.getPrintingLocale(null))
-				.generate()
-				.getFileLink();
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-		logger.debug("Printing "+name);
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
-	}
+  public void printProductSheet(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Product product = request.getContext().asType(Product.class);
+      User user = Beans.get(UserService.class).getUser();
+
+      String name = I18n.get("Product") + " " + product.getCode();
+
+      if (user.getActiveCompany() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+      }
+
+      String fileLink =
+          ReportFactory.createReport(IReport.PRODUCT_SHEET, name + "-${date}")
+              .addParam("ProductId", product.getId())
+              .addParam("CompanyId", user.getActiveCompany().getId())
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .generate()
+              .getFileLink();
+
+      logger.debug("Printing " + name);
+
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

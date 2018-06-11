@@ -211,5 +211,13 @@
         <option value="T">Amount in transfer's currency</option>
         <option value="D">Equivalent amount in sender bank details' currency</option>
     </selection>
+    
+    <selection name="bank.payment.batch.action.select">
+		<option value="1">Check the ebics certificate validation date</option>
+	</selection>
+	
+	<selection name="sequence.generic.code.select" id="bankpayment.sequence.generic.code.select">
+		<option value="bankOrder">Bank order</option>
+	</selection>
 
 </object-views>

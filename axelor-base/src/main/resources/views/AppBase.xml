@@ -36,17 +36,19 @@
 		    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>
      			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="editProductBarcodeType==false"/>
 				</panel>
+                <field name="generatePartnerSequence" widget="boolean-switch"/>
 				<field name="generateProductSequence" widget="boolean-switch"/>
 				<field name="manageProductVariants" widget="boolean-switch"/>
 				<field name="manageMultiBanks" widget="boolean-switch"/>
 				<field name="enterpriseCommunication" widget="boolean-switch"/>
 				<field name="document" widget="boolean-switch"/>
+                <field name="passwordChangedTemplate"/>
 			</panel>
 		    <panel name="interfaces" title="Interfaces"  colSpan="12">
 				<panel name="map" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
 					<button name="checkMapApi" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi"/>
-					<field name="googleMapsApiKey"/>
+					<field name="googleMapsApiKey" widget="password"/>
 				</panel>
 				<panel name="qas" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>

@@ -21,7 +21,7 @@
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
 	<boolean name="isDefault" title="Default ?"/>
 	<boolean name="isSystem" title="System ?"/>
-	
+
 	<extra-code><![CDATA[
 		// MEDIA TYPE SELECT
 		public static final int MEDIA_TYPE_MAIL = 1;

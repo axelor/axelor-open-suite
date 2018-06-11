@@ -1,0 +1,5 @@
+"importId";"name";"typeSelect";"label";"code";"elementSelect";"archived";"sequence";"statusSelect"
+3;"PRF - Proposition d'ordre de fabrication";1;"Proposition d'ordre de fabrication";"PRF";8;;"2";
+5;"ORF - Ordre de fabrication";1;"Ordre de fabrication";"ORF";6;;"4";6
+6;"BPF - Besoin / proposition de fabrication";2;"Besoin / proposition de fabrication";"BPF";9;;"5";
+9;"BOF - Besoins / ordre de fabrication";2;"Besoins / ordre de fabrication";"BOF";7;;"8";

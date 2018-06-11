@@ -19,24 +19,22 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.exception.AxelorException;
-
 import java.time.LocalDate;
 
-
 public interface MrpService {
-	
-	public void runCalculation(Mrp mrp) throws AxelorException;
-	
-	public void generateProposals(Mrp mrp) throws AxelorException;
-	
-	public void reset(Mrp mrp);
 
-	/**
-	 * Search for the end date of the mrp.
-	 * If the end date field in mrp is blank, search in the lines the
-	 * last date.
-	 * @param mrp
-	 * @return the mrp end date
-	 */
-	public LocalDate findMrpEndDate(Mrp mrp);
+  public void runCalculation(Mrp mrp) throws AxelorException;
+
+  public void generateProposals(Mrp mrp) throws AxelorException;
+
+  public void reset(Mrp mrp);
+
+  /**
+   * Search for the end date of the mrp. If the end date field in mrp is blank, search in the lines
+   * the last date.
+   *
+   * @param mrp
+   * @return the mrp end date
+   */
+  public LocalDate findMrpEndDate(Mrp mrp);
 }

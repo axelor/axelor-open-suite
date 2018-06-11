@@ -20,8 +20,8 @@ package com.axelor.apps.talent.service;
 import com.axelor.apps.talent.db.TrainingSession;
 
 public interface TrainingSessionService {
-	
-	public void closeSession(TrainingSession trainingSession);
-	
-	public String computeFullName(TrainingSession trainingSession);
+
+  public void closeSession(TrainingSession trainingSession);
+
+  public String computeFullName(TrainingSession trainingSession);
 }

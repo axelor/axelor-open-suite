@@ -21,34 +21,31 @@ package com.axelor.apps.bankpayment.ebics.client;
  * A BCS order type.
  *
  * @author Hachani
- *
  */
 public class OrderType {
 
   /**
    * Constructs new Order type instance
+   *
    * @param orderType the order type
    */
   public OrderType(String orderType) {
     this.orderType = orderType;
   }
 
-  /**
-   * @return the orderType
-   */
+  /** @return the orderType */
   public String getOrderType() {
     return orderType;
   }
 
-  /**
-   * @param orderType the orderType to set
-   */
+  /** @param orderType the orderType to set */
   public void setOrderType(String orderType) {
     this.orderType = orderType;
   }
 
   /**
    * Returns the corresponding <code>OrderType</code> to a given string order type.
+   *
    * @param orderType the given order type.
    * @return the corresponding <code>OrderType</code>
    */
@@ -68,9 +65,9 @@ public class OrderType {
     } else if (orderType.equals("HPD")) {
       return HPD;
     } else if (orderType.equals("PTK")) {
-        return PTK;
+      return PTK;
     } else if (orderType.equals("SPR")) {
-        return SPR;
+      return SPR;
     } else {
       throw new IllegalArgumentException("NOT SUPPORTED ORDER TYPE");
     }
@@ -79,7 +76,7 @@ public class OrderType {
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof OrderType) {
-      return orderType.equals(((OrderType)obj).getOrderType());
+      return orderType.equals(((OrderType) obj).getOrderType());
     }
 
     return false;
@@ -89,49 +86,33 @@ public class OrderType {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private String 			orderType;
+  private String orderType;
 
-  /**
-   * Send the users protocol keys.
-   */
-  public static final OrderType 	HIA;
+  /** Send the users protocol keys. */
+  public static final OrderType HIA;
 
-  /**
-   * Fetch the banks protocol keys.
-   */
-  public static final OrderType 	HPB;
+  /** Fetch the banks protocol keys. */
+  public static final OrderType HPB;
 
-  /**
-   * Return bank parameters.
-   */
-  public static final OrderType 	HPD;
+  /** Return bank parameters. */
+  public static final OrderType HPD;
 
-  /**
-   * Fetch user informations.
-   */
-  public static final OrderType 	HTD;
+  /** Fetch user informations. */
+  public static final OrderType HTD;
 
-  /**
-   * Send the first signature key.
-   */
-  public static final OrderType 	INI;
+  /** Send the first signature key. */
+  public static final OrderType INI;
 
-  /**
-   * File upload
-   */
-  public static final OrderType 	FUL;
+  /** File upload */
+  public static final OrderType FUL;
 
-  /**
-   * File download
-   */
-  public static final OrderType 	FDL;
+  /** File download */
+  public static final OrderType FDL;
 
-  /**
-   * Lock the channel.
-   */
-  public static final OrderType		SPR ;
-  
-  public static final OrderType		PTK ;
+  /** Lock the channel. */
+  public static final OrderType SPR;
+
+  public static final OrderType PTK;
 
   static {
     HIA = new OrderType("HIA");

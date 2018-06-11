@@ -1140,9 +1140,9 @@ group by emp.id,emp.name]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
        emp.name as emp_name,
-       sum(tml.duration_stored) as total_hours,
+       sum(tml.hours_duration) as total_hours,
        emp.hourly_rate as emp_rate,
-       sum(tml.duration_stored)*emp.hourly_rate as emp_cost
+       sum(tml.hours_duration)*emp.hourly_rate as emp_cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
@@ -1710,7 +1710,7 @@ where (task.parent_project = ? or task.id = ?)
 and expense.status_select = 3
 group by month
 union
-select to_char(date_val,'YYYY-MM') as month,sum(tml.duration_stored*emp.hourly_rate) as cost
+select to_char(date_val,'YYYY-MM') as month,sum(tml.hours_duration*emp.hourly_rate) as cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
@@ -2033,6 +2033,12 @@ group by month) CostData group by month)) ChartData group by month order by mont
                     <image id="3419">
                         <property name="height">0.8645833333333334in</property>
                         <property name="width">2.78125in</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                            </structure>
+                        </list-property>
                         <structure name="toc"/>
                         <property name="source">file</property>
                         <property name="proportionalScale">true</property>

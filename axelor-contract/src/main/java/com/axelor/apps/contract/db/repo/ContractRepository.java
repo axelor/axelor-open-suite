@@ -22,47 +22,52 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.db.JpaRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-
 import javax.persistence.PersistenceException;
 
 public class ContractRepository extends JpaRepository<Contract> {
 
-	static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";
-	static final String SUPPLIER_CONTRACT_SEQUENCE = "supplierContract";
+  static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";
+  static final String SUPPLIER_CONTRACT_SEQUENCE = "supplierContract";
 
-	public static final int DRAFT_CONTRACT = 1;
-	public static final int ACTIVE_CONTRACT = 2;
-	public static final int CLOSED_CONTRACT = 3;
+  public static final int DRAFT_CONTRACT = 1;
+  public static final int ACTIVE_CONTRACT = 2;
+  public static final int CLOSED_CONTRACT = 3;
 
-	public ContractRepository() {
-		super(Contract.class);
-	}
+  public ContractRepository() {
+    super(Contract.class);
+  }
 
-	@Override
-	public Contract save(Contract contract) {
-		try {
-			if (contract.getContractId() == null) {
-				contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetType()));
-			}
-			return super.save(contract);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
+  @Override
+  public Contract save(Contract contract) {
+    try {
+      if (contract.getContractId() == null) {
+        contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetType()));
+      }
+      return super.save(contract);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 
-	public String computeSeq(Company company, int type) {
-		try {
-			String seq = Beans.get(SequenceService.class).getSequenceNumber(type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE, company);
-			if (seq == null) {
-				throw new AxelorException(String.format(I18n.get("The company %s doesn't have any configured sequence for contracts"), company.getName()),
-						IException.CONFIGURATION_ERROR);
-			}
-			return seq;
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
+  public String computeSeq(Company company, int type) {
+    try {
+      String seq =
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(
+                  type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE, company);
+      if (seq == null) {
+        throw new AxelorException(
+            String.format(
+                I18n.get("The company %s doesn't have any configured sequence for contracts"),
+                company.getName()),
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+      }
+      return seq;
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 }

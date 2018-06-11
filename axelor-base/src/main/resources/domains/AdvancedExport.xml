@@ -8,9 +8,10 @@
   <entity name="AdvancedExport">
 	 <string name="name"/>
   	 <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"  title="Target model" required="true"/>
-  	 <many-to-one name="advancedExportFile" ref="com.axelor.meta.db.MetaFile" title="Export file"/>
   	 <one-to-many name="advancedExportLineList" ref="com.axelor.apps.base.db.AdvancedExportLine" mappedBy="advancedExport" title="Advanced export line"/>
-  	 <boolean name="isViewData" default="true"/>
+  	 <integer name="maxExportLimit" title="Maximum export limit" default="1000" help="Maximum number of records to export by using this advance export."/>
+  	 <integer name="queryFetchSize" title="Query fetch size" default="100" 
+  	 	help="Number of records to fetch from database on one query run. It will fetch upto 'Maximum export limit'."/>
   </entity>
   
 </domain-models>

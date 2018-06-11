@@ -93,7 +93,7 @@
 			<button name="closed-lost" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
 		</toolbar>
 		<menubar>
-	    	<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+	    	<menu title="Tools" icon="fa-wrench" showTitle="true">
 	    		<item title="Convert into quotation" action="action-sale-group-generate-sale-order"  if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 	    	</menu>
 	  	</menubar>
@@ -302,5 +302,9 @@
 	<action-method name="action-show-opportunities-on-map-page">
 	  <call method="showOpportunitiesOnMap" class="com.axelor.apps.crm.web.OpportunityController"/>
 	</action-method>
-	
+
+    <action-method name="action-opportunity-record-from-lead">
+        <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadIntoOpportunity"/>
+    </action-method>
+
 </object-views>

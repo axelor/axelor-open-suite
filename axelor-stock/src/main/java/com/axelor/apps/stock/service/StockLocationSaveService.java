@@ -25,33 +25,36 @@ import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
-
 import java.util.List;
 
 public class StockLocationSaveService {
 
-	/**
-	 * Remove default stock locations in partner that are not linked with this stock location anymore.
-	 * @param defaultStockLocation
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void removeForbiddenDefaultStockLocation(StockLocation defaultStockLocation) {
-	    Partner currentPartner = defaultStockLocation.getPartner();
-		Company currentCompany = defaultStockLocation.getCompany();
-	    Long partnerId = currentPartner != null ? currentPartner.getId() : 0L;
-		Long companyId = currentCompany != null ? currentCompany.getId() : 0L;
-	    PartnerStockSettingsRepository partnerStockSettingsRepo = Beans.get(PartnerStockSettingsRepository.class);
-		List<PartnerStockSettings> partnerStockSettingsToRemove = partnerStockSettingsRepo.all()
-				.filter("(self.partner.id != :partnerId OR self.company.id != :companyId)"
-						+ " AND (self.defaultStockLocation.id = :stockLocationId)")
-				.bind("partnerId", partnerId)
-				.bind("companyId", companyId)
-				.bind("stockLocationId", defaultStockLocation.getId())
-				.fetch();
-		for (PartnerStockSettings partnerStockSettings : partnerStockSettingsToRemove) {
-			Partner partnerToClean = partnerStockSettings.getPartner();
-			partnerToClean.removePartnerStockSettingsListItem(partnerStockSettings);
-		}
-
-	}
+  /**
+   * Remove default stock locations in partner that are not linked with this stock location anymore.
+   *
+   * @param defaultStockLocation
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void removeForbiddenDefaultStockLocation(StockLocation defaultStockLocation) {
+    Partner currentPartner = defaultStockLocation.getPartner();
+    Company currentCompany = defaultStockLocation.getCompany();
+    Long partnerId = currentPartner != null ? currentPartner.getId() : 0L;
+    Long companyId = currentCompany != null ? currentCompany.getId() : 0L;
+    PartnerStockSettingsRepository partnerStockSettingsRepo =
+        Beans.get(PartnerStockSettingsRepository.class);
+    List<PartnerStockSettings> partnerStockSettingsToRemove =
+        partnerStockSettingsRepo
+            .all()
+            .filter(
+                "(self.partner.id != :partnerId OR self.company.id != :companyId)"
+                    + " AND (self.defaultStockLocation.id = :stockLocationId)")
+            .bind("partnerId", partnerId)
+            .bind("companyId", companyId)
+            .bind("stockLocationId", defaultStockLocation.getId())
+            .fetch();
+    for (PartnerStockSettings partnerStockSettings : partnerStockSettingsToRemove) {
+      Partner partnerToClean = partnerStockSettings.getPartner();
+      partnerToClean.removePartnerStockSettingsListItem(partnerStockSettings);
+    }
+  }
 }

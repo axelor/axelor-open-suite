@@ -79,6 +79,7 @@
 		<view type="calendar" name="operation-order-planned-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
+		<domain>self.statusSelect = 3</domain>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-operation-order-real-calendar" parent="manufacturing-root"
@@ -89,18 +90,18 @@
 		<view type="calendar" name="operation-order-real-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
+		<domain>self.statusSelect = 4 OR self.statusSelect = 5</domain>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
-		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" order="40" />
+		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboard" order="40" />
 
-	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
-		>
+	<action-view name="manufacturing.root.charge.by.machine.dashboard" title="Charge by machine">
 		<view type="dashboard" name="charge.by.machine.dashboard" />
 		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
-	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" />
+	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 
     <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />
 
@@ -115,7 +116,7 @@
         <view type="form" name="manufacturing-dashboard-user"/>
     </action-view>
 		
-	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations" order="50" />
+	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configuration" order="50" icon="fa-cog"/>
 
 	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
 		title="Work centers" action="manufacturing.conf.work.center" />
@@ -227,6 +228,6 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
-		<domain>self.defineSubBillOfMaterial = false AND self.personalized = false</domain>
+		<domain>self.defineSubBillOfMaterial = true AND self.personalized = false</domain>
 	</action-view>
 </object-views>

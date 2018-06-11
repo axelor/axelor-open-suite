@@ -13,11 +13,13 @@
  
     <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch"  
     onLoad="action-base-batch-attrs-action-select" 
-    onNew="action-group-base-basebatch-onnew" width="large">
+    onNew="action-group-base-basebatch-onnew">
     	<panel name="main">
 		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="synchronizationDuration" widget="Integer" readonlyIf="allEvents" showIf="actionSelect == 2"/>
+			<field name="allEvents" widget="boolean-switch" showIf="actionSelect == 2"/>
 		</panel>
 	  	<panel-tabs>
 	    	<panel name="targetPage" title="Target page" >
@@ -31,6 +33,9 @@
 		      <panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid"/>
 		    </panel>
   		</panel-tabs>
+  		<panel sidebar="true">
+  			<button name="synchronize" showIf="actionSelect == 2" title="Batch calendar synchronization" onClick="action-base-batch-method-synchronize-calendars"/>
+  		</panel>
     </form>
     
     <!-- ACTION GROUP -->
@@ -51,6 +56,10 @@
 	<action-method name="action-base-batch-method-action-target">
 		<call class="com.axelor.apps.base.web.BaseBatchController" method="actionTarget"/>
 	</action-method>
+
+	<action-method name="action-base-batch-method-synchronize-calendars">
+		<call class="com.axelor.apps.base.web.BaseBatchController" method="actionSynchronizeCalendars"/>
+	</action-method>
 	
     <!-- ACTION ATTRS -->
     <action-attrs name="action-base-batch-attrs-action-select">
@@ -59,7 +68,7 @@
 	</action-attrs>
 
 	<action-condition name="action-base-batch-condition-check-unique-code">
-		<check field="code" if="eval: __repo__(__this__.class).all().filter('self.code = ?', code).fetchOne()"
+		<check field="code" if="eval: code != null &amp;&amp; __repo__(com.axelor.db.EntityHelper.getEntityClass(__this__)).all().filter('self.code = ?', code).fetchOne()"
 			   error="This code is already use by another batch."/>
 	</action-condition>
 

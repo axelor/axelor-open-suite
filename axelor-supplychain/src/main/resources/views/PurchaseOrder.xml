@@ -23,16 +23,14 @@
 	<action-attrs name="action-purchase-order-attrs-interco">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !supplierPartner || __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne() == null"/>
-		<attribute for="interco" name="value" expr="eval: false"
-				   if="eval: createdByInterco || !supplierPartner || __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne() == null"/>
 		<attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 3"/>
 	</action-attrs>
 
 	<action-record name="action-purchase-order-record-interco"
 				   model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<field name="interco"
-			   expr="eval: __config__.app.getApp('supplychain').getIntercoFromPurchase()"/>
+		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromPurchase
+            &amp;&amp; !createdByInterco &amp;&amp; supplierPartner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne()"/>
 	</action-record>
 
 	<action-view name="action-view-show-invoices-from-purchase-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	

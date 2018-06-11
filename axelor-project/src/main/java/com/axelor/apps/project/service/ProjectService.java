@@ -21,28 +21,33 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanning;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.team.db.Team;
 import com.axelor.team.db.TeamTask;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProjectService {
-	Project generateProject(Project parentProject, String fullName, User assignedTo, Company company, Partner clientPartner);
-	Partner getClientPartnerFromProject(Project project) throws AxelorException;
-	BigDecimal computeDurationFromChildren(Long projectId);
-	List<ProjectPlanning> createPlanning(Project project);
-	ProjectPlanning createPlanning(Project project, TeamTask task);
-	SaleOrder generateQuotation(Project project) throws AxelorException;
+  Project generateProject(
+      Project parentProject,
+      String fullName,
+      User assignedTo,
+      Company company,
+      Partner clientPartner);
 
-	/**
-	 * Generate a project from a partner.
-	 * 
-	 * @param partner
-	 * @return
-	 */
-	Project generateProject(Partner partner);
+  Partner getClientPartnerFromProject(Project project) throws AxelorException;
+
+  BigDecimal computeDurationFromChildren(Long projectId);
+
+  List<ProjectPlanning> createPlanning(Project project);
+
+  ProjectPlanning createPlanning(Project project, TeamTask task);
+
+  /**
+   * Generate a project from a partner.
+   *
+   * @param partner
+   * @return
+   */
+  Project generateProject(Partner partner);
 }

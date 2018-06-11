@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="bank-payment-config-grid" title="Bank payment configurations" model="com.axelor.apps.bankpayment.db.BankPaymentConfig">
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+    </grid>
+
+    <form name="bank-payment-config-form" title="Bank payment configuration" model="com.axelor.apps.bankpayment.db.BankPaymentConfig" onNew="action-bank-payment-config-record-default" width="large">
+        <panel name="bankOrder" title="Bank Order">
+            <panel colSpan="12">
+                <field name="generateMoveOnBankOrderValidation"/>
+                <field name="icsNumber" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
+                <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+                <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+            </panel>
+            <panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageCreditTransferPayment">
+                <field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+            </panel>
+            <panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageDirectDebitPayment">
+                <field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+            </panel>
+            <panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageBankToBankTransferPayment">
+                <field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+            </panel>
+            <panel name="other" title="Other" colSpan="12">
+                <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+            </panel>
+        </panel>
+    </form>
+
+    <action-record name="action-bank-payment-config-record-default" model="com.axelor.apps.bankpayment.db.BankPaymentConfig">
+        <field name="company" expr="eval: _company" if="_company != null"/>
+        <field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
+        <field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="_company == null  &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    </action-record>
+</object-views>

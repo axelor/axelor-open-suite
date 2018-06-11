@@ -17,59 +17,59 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
+import java.io.IOException;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 public interface BatchBankPaymentService {
 
-    /**
-     * Check whether successfully processed payment schedule lines exists in
-     * batch.
-     * 
-     * @param batch
-     * @return
-     */
-    boolean paymentScheduleLineDoneListExists(Batch batch);
+  /**
+   * Check whether successfully processed payment schedule lines exists in batch.
+   *
+   * @param batch
+   * @return
+   */
+  boolean paymentScheduleLineDoneListExists(Batch batch);
 
-    /**
-     * Create bank order.
-     * 
-     * @param batch
-     * @return
-     * @throws AxelorException
-     * @throws JAXBException
-     * @throws IOException
-     * @throws DatatypeConfigurationException
-     */
-    BankOrder createBankOrder(Batch batch)
-            throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
+  /**
+   * Create bank order.
+   *
+   * @param batch
+   * @return
+   * @throws AxelorException
+   * @throws JAXBException
+   * @throws IOException
+   * @throws DatatypeConfigurationException
+   */
+  BankOrder createBankOrder(Batch batch)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 
-    /**
-     * Merge bank orders from processed payment schedule lines.
-     * 
-     * @param paymentScheduleLineList
-     * @return
-     * @throws AxelorException
-     */
-    BankOrder mergeBankOrders(Batch batch) throws AxelorException;
+  /**
+   * Create bank order from processed payment schedule lines.
+   *
+   * @param batch
+   * @return
+   * @throws AxelorException
+   * @throws JAXBException
+   * @throws IOException
+   * @throws DatatypeConfigurationException
+   */
+  BankOrder createBankOrderFromPaymentScheduleLines(Batch batch)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 
-    /**
-     * Create bank order from processed payment schedule lines.
-     * 
-     * @param batch
-     * @return
-     * @throws AxelorException
-     * @throws JAXBException
-     * @throws IOException
-     * @throws DatatypeConfigurationException
-     */
-    BankOrder createBankOrderFromPaymentScheduleLines(Batch batch)
-            throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
-
+  /**
+   * Create bank order from processed monthly payment schedule lines.
+   *
+   * @param batch
+   * @return
+   * @throws AxelorException
+   * @throws JAXBException
+   * @throws IOException
+   * @throws DatatypeConfigurationException
+   */
+  BankOrder createBankOrderFromMonthlyPaymentScheduleLines(Batch batch)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 }

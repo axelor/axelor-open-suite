@@ -23,16 +23,13 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class AppCrmController {
-	
-	@Inject
-	private AppCrmService appCrmService;
-	
-	public void generateCrmConfigurations(ActionRequest request, ActionResponse response)  {
-		
-		appCrmService.generateCrmConfigurations();
-		
-		response.setReload(true);
-		
-	}
-	
+
+  @Inject private AppCrmService appCrmService;
+
+  public void generateCrmConfigurations(ActionRequest request, ActionResponse response) {
+
+    appCrmService.generateCrmConfigurations();
+
+    response.setReload(true);
+  }
 }

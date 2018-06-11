@@ -21,48 +21,52 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class ReconcileSequenceService {
-	
-	protected SequenceService sequenceService;
 
-	@Inject
-	public ReconcileSequenceService(SequenceService sequenceService) {
+  protected SequenceService sequenceService;
 
-		this.sequenceService = sequenceService;
-		
-	}
-	
-	public void setSequence(Reconcile reconcile)  throws AxelorException  {
-		reconcile.setReconcileSeq(this.getSequence(reconcile));
-	}
+  @Inject
+  public ReconcileSequenceService(SequenceService sequenceService) {
 
-	protected String getSequence(Reconcile reconcile) throws AxelorException  {
+    this.sequenceService = sequenceService;
+  }
 
-		SequenceService sequenceService = Beans.get(SequenceService.class);
-		String seq = sequenceService.getSequenceNumber(IAdministration.RECONCILE, reconcile.getDebitMoveLine().getMove().getCompany());
-		if (seq == null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.RECONCILE_6), AppAccountServiceImpl.EXCEPTION, AuthUtils.getUser().getActiveCompany().getName());
-		}
-		return seq;
-	}
+  public void setSequence(Reconcile reconcile) throws AxelorException {
+    reconcile.setReconcileSeq(this.getSequence(reconcile));
+  }
 
-	public void setDraftSequence(Reconcile reconcile) throws AxelorException {
-			
-		if (reconcile.getId() != null && Strings.isNullOrEmpty(reconcile.getReconcileSeq())
-			&& reconcile.getStatusSelect() == ReconcileRepository.STATUS_DRAFT) {
-			reconcile.setReconcileSeq(sequenceService.getDraftSequenceNumber(reconcile));
-		}		
-		
-	}	
-	
+  protected String getSequence(Reconcile reconcile) throws AxelorException {
+
+    SequenceService sequenceService = Beans.get(SequenceService.class);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.RECONCILE, reconcile.getDebitMoveLine().getMove().getCompany());
+    if (seq == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.RECONCILE_6),
+          AppAccountServiceImpl.EXCEPTION,
+          AuthUtils.getUser().getActiveCompany().getName());
+    }
+    return seq;
+  }
+
+  public void setDraftSequence(Reconcile reconcile) throws AxelorException {
+
+    if (reconcile.getId() != null
+        && Strings.isNullOrEmpty(reconcile.getReconcileSeq())
+        && reconcile.getStatusSelect() == ReconcileRepository.STATUS_DRAFT) {
+      reconcile.setReconcileSeq(sequenceService.getDraftSequenceNumber(reconcile));
+    }
+  }
 }

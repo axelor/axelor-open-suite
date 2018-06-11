@@ -17,27 +17,39 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-
 public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
-    /**
-     * Compute undelivered quantity.
-     * 
-     * @param saleOrderLine
-     * @return
-     */
-    BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine);
+  /**
+   * Compute undelivered quantity.
+   *
+   * @param saleOrderLine
+   * @return
+   */
+  BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine);
 
-    /**
-     * Get a list of supplier partner ids available for the product in the sale
-     * order line.
-     *
-     * @param saleOrderLine
-     * @return the list of ids
-     */
-    List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine);
+  /**
+   * Get a list of supplier partner ids available for the product in the sale order line.
+   *
+   * @param saleOrderLine
+   * @return the list of ids
+   */
+  List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine);
+
+  /**
+   * Update delivery state.
+   *
+   * @param saleOrderLine
+   */
+  void updateDeliveryState(SaleOrderLine saleOrderLine);
+
+  /**
+   * Update delivery states.
+   *
+   * @param saleOrderLineList
+   */
+  void updateDeliveryStates(List<SaleOrderLine> saleOrderLineList);
 }

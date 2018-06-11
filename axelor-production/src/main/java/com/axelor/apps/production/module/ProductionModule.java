@@ -18,7 +18,6 @@
 package com.axelor.apps.production.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.production.db.repo.BillOfMaterialManagementRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
@@ -58,40 +57,39 @@ import com.axelor.apps.production.service.app.AppProductionServiceImpl;
 import com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.config.StockConfigSupplychainService;
 
 public class ProductionModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(ManufOrderRepository.class).to(ManufOrderManagementRepository.class);
-		bind(OperationOrderRepository.class).to(OperationOrderManagementRepository.class);
-		bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
-		bind(BillOfMaterialService.class).to(BillOfMaterialServiceImpl.class);
-		bind(ManufOrderService.class).to(ManufOrderServiceImpl.class);
-		bind(OperationOrderService.class).to(OperationOrderServiceImpl.class);
-		bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
-		bind(ProductionOrderWizardService.class).to(ProductionOrderWizardServiceImpl.class);		
-		bind(ProductionOrderSaleOrderService.class).to(ProductionOrderSaleOrderServiceImpl.class);
-		bind(MrpLineServiceImpl.class).to(MrpLineServiceProductionImpl.class);
-		bind(MrpServiceImpl.class).to(MrpServiceProductionImpl.class);
-		bind(CostSheetService.class).to(CostSheetServiceImpl.class);
-		bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
-		bind(SaleOrderWorkflowServiceSupplychainImpl.class).to(SaleOrderWorkflowServiceProductionImpl.class);
-		bind(StockRulesServiceSupplychainImpl.class).to(StockRulesServiceProductionImpl.class);
-		bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
-		bind(StockConfigSupplychainService.class).to(StockConfigProductionService.class);
-		bind(ConfiguratorBomService.class).to(ConfiguratorBomServiceImpl.class);
-		bind(ConfiguratorProdProcessService.class).to(ConfiguratorProdProcessServiceImpl.class);
-		bind(ConfiguratorProdProcessLineService.class).to(ConfiguratorProdProcessLineServiceImpl.class);
-		bind(ConfiguratorServiceImpl.class).to(ConfiguratorServiceProductionImpl.class);
-		bind(AppProductionService.class).to(AppProductionServiceImpl.class);
-		bind(AppBaseServiceImpl.class).to(AppProductionServiceImpl.class);
-		bind(ProdProcessRepository.class).to(ProdProcessManagementRepository.class);
-	}
-
+  @Override
+  protected void configure() {
+    bind(ManufOrderRepository.class).to(ManufOrderManagementRepository.class);
+    bind(OperationOrderRepository.class).to(OperationOrderManagementRepository.class);
+    bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
+    bind(BillOfMaterialService.class).to(BillOfMaterialServiceImpl.class);
+    bind(ManufOrderService.class).to(ManufOrderServiceImpl.class);
+    bind(OperationOrderService.class).to(OperationOrderServiceImpl.class);
+    bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
+    bind(ProductionOrderWizardService.class).to(ProductionOrderWizardServiceImpl.class);
+    bind(ProductionOrderSaleOrderService.class).to(ProductionOrderSaleOrderServiceImpl.class);
+    bind(MrpLineServiceImpl.class).to(MrpLineServiceProductionImpl.class);
+    bind(MrpServiceImpl.class).to(MrpServiceProductionImpl.class);
+    bind(CostSheetService.class).to(CostSheetServiceImpl.class);
+    bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
+    bind(SaleOrderWorkflowServiceSupplychainImpl.class)
+        .to(SaleOrderWorkflowServiceProductionImpl.class);
+    bind(StockRulesServiceSupplychainImpl.class).to(StockRulesServiceProductionImpl.class);
+    bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
+    bind(StockConfigService.class).to(StockConfigProductionService.class);
+    bind(ConfiguratorBomService.class).to(ConfiguratorBomServiceImpl.class);
+    bind(ConfiguratorProdProcessService.class).to(ConfiguratorProdProcessServiceImpl.class);
+    bind(ConfiguratorProdProcessLineService.class).to(ConfiguratorProdProcessLineServiceImpl.class);
+    bind(ConfiguratorServiceImpl.class).to(ConfiguratorServiceProductionImpl.class);
+    bind(AppProductionService.class).to(AppProductionServiceImpl.class);
+    bind(ProdProcessRepository.class).to(ProdProcessManagementRepository.class);
+  }
 }

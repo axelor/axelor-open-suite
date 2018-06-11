@@ -30,9 +30,6 @@
 	
 <!-- Call -->
     <integer name="callTypeSelect" title="Call type" selection="crm.event.call.type.select"/>  
-    
-<!-- Meeting -->
-	<many-to-one name="meetingType" ref="com.axelor.apps.crm.db.MeetingType" title="Meeting type"/>
 
 <!-- Task -->
   	<boolean name="isRecurrent" title="Recurrent"/>
@@ -51,14 +48,6 @@
 	  		public static final Integer TYPE_TASK = 3;
 	  ]]>
     </extra-code>
-      
-    <track subscribe="true">
-      <field name="subject"/>
-      <field name="startDateTime"/>
-      <field name="endDateTime" on="UPDATE"/>
-      <field name="computedAttendeeList"/>
-    </track>
-      
 
   </entity>
 </domain-models>

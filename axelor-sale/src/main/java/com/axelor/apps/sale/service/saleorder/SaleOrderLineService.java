@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -30,70 +27,90 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public interface SaleOrderLineService {
 
+  /**
+   * Update all fields of the sale order line from the product.
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   */
+  void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 
-	/**
-     * Update all fields of the sale order line from the product.
-	 * @param saleOrderLine
-	 * @param saleOrder
-	 */
-	void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+  /**
+   * Compute product information.
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @param taxLineIsOptional
+   * @throws AxelorException
+   */
+  void computeProductInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean taxLineIsOptional)
+      throws AxelorException;
 
-	/**
-	 * Compute totals from a sale order line
-	 * @param saleOrder
-	 * @param saleOrderLine
-	 * @return
-	 * @throws AxelorException
-	 */
-	BigDecimal[] computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+  /**
+   * Compute totals from a sale order line
+   *
+   * @param saleOrder
+   * @param saleOrderLine
+   * @return
+   * @throws AxelorException
+   */
+  public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 
-	/**
-	 * Compute the excluded tax total amount of a sale order line.
-	 *
-	 * @param quantity
-	 *          The quantity.
-	 * @param price
-	 *          The unit price.
-	 * @return
-	 * 			The excluded tax total amount.
-	 */
-	public BigDecimal computeAmount(SaleOrderLine saleOrderLine);
-	
-	public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price);
+  /**
+   * Compute the excluded tax total amount of a sale order line.
+   *
+   * @param quantity The quantity.
+   * @param price The unit price.
+   * @return The excluded tax total amount.
+   */
+  public BigDecimal computeAmount(SaleOrderLine saleOrderLine);
 
-	public BigDecimal getUnitPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+  public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price);
 
-	public TaxLine getTaxLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+  public BigDecimal getUnitPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine)
+      throws AxelorException;
 
-	public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder) throws AxelorException;
+  public TaxLine getTaxLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 
-	public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+  public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder)
+      throws AxelorException;
 
-	public PriceListLine getPriceListLine(SaleOrderLine saleOrderLine, PriceList priceList);
+  public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 
-	public BigDecimal computeDiscount(SaleOrderLine saleOrderLine);
+  public PriceListLine getPriceListLine(SaleOrderLine saleOrderLine, PriceList priceList);
 
-	public BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, SaleOrder saleOrder);
+  public BigDecimal computeDiscount(SaleOrderLine saleOrderLine);
 
-	public Map<String,Object> getDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
+  public BigDecimal convertUnitPrice(
+      Product product, TaxLine taxLine, BigDecimal price, SaleOrder saleOrder);
 
-	public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
-	
-	public Unit getSaleUnit(SaleOrderLine saleOrderLine);
-	
-	public boolean unitPriceShouldBeUpdate(SaleOrder saleOrder, Product product);
-	
-	public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine);
-	
-	public SaleOrder getSaleOrder(Context context);
-	
-	public void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException;
+  public Map<String, Object> getDiscount(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
-	public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
-	
-	public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
+  public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
+  public Unit getSaleUnit(SaleOrderLine saleOrderLine);
+
+  public boolean unitPriceShouldBeUpdate(SaleOrder saleOrder, Product product);
+
+  public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine);
+
+  public SaleOrder getSaleOrder(Context context);
+
+  public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
+
+  public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
 }

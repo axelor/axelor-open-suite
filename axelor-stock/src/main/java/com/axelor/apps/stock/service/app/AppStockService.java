@@ -18,6 +18,6 @@
 package com.axelor.apps.stock.service.app;
 
 public interface AppStockService {
-	
-	public void generateStockConfigurations();
+
+  public void generateStockConfigurations();
 }

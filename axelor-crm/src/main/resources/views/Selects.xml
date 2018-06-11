@@ -11,8 +11,8 @@
 		<option value="2">Assigned</option>
 		<option value="3">In process</option>
 		<option value="4">Converted</option>
-		<option value="5">Recycled</option>
-		<option value="6">Dead</option>
+		<option value="5">Lost</option>
+		<option value="6">Recycled</option>
 	</selection>
 	
 	<selection name="crm.event.related.to.select">
@@ -119,6 +119,20 @@
 
 	<selection name="meta.schedule.batch.service.select" id="crm.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.crm.service.batch.CrmBatchService">com.axelor.apps.crm.service.batch.CrmBatchService</option>
+	</selection>
+	
+	<selection name="crm.convert.lead.wizard.lead.to.partner.select">
+		<option value="1">Create new partner</option>
+		<option value="2">Select existing partner</option>
+	</selection>
+	
+	<selection name="crm.convert.lead.wizard.lead.to.contact.select">
+		<option value="1">Create new contact</option>
+		<option value="2">Select existing contact</option>
+	</selection>
+
+	<selection name="icalendar.synchronization.select" id="crm.icalendar.synchronization.select">
+		<option value="Event">CRM events</option>
 	</selection>
 
 </object-views>

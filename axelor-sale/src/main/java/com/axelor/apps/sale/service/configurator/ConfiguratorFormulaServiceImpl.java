@@ -21,7 +21,7 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -30,28 +30,31 @@ import com.axelor.script.ScriptBindings;
 
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
 
-    @Override
-    public MetaField getMetaField(ConfiguratorFormula configuratorFormula) {
-        ConfiguratorCreator configuratorCreator =configuratorFormula.getCreator();
-        if (configuratorCreator == null) {
-            return null;
-        }
-
-        if (configuratorCreator.getGenerateProduct()) {
-            return configuratorFormula.getProductMetaField();
-        } else {
-            return configuratorFormula.getSaleOrderLineMetaField();
-        }
+  @Override
+  public MetaField getMetaField(ConfiguratorFormula configuratorFormula) {
+    ConfiguratorCreator configuratorCreator = configuratorFormula.getCreator();
+    if (configuratorCreator == null) {
+      return null;
     }
 
-    @Override
-    public void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException {
-        ScriptBindings defaultValueBindings = Beans.get(ConfiguratorCreatorService.class).getTestingValues(creator);
-        Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
-        if (result == null) {
-            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR), formula);
-        }
-
-
+    if (configuratorCreator.getGenerateProduct()) {
+      return configuratorFormula.getProductMetaField();
+    } else {
+      return configuratorFormula.getSaleOrderLineMetaField();
     }
+  }
+
+  @Override
+  public void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator)
+      throws AxelorException {
+    ScriptBindings defaultValueBindings =
+        Beans.get(ConfiguratorCreatorService.class).getTestingValues(creator);
+    Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
+    if (result == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR),
+          formula);
+    }
+  }
 }

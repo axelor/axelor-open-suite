@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -43,110 +38,116 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
-public class InvoicePaymentValidateServiceBankPayImpl  extends  InvoicePaymentValidateServiceImpl  {
-	
-	protected BankOrderCreateService bankOrderCreateService;
-	protected BankOrderService bankOrderService;
+public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentValidateServiceImpl {
 
-	
-	@Inject
-	public InvoicePaymentValidateServiceBankPayImpl(PaymentModeService paymentModeService, MoveService moveService, MoveLineService moveLineService, 
-			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository, 
-			ReconcileService reconcileService, BankOrderCreateService bankOrderCreateService,  
-			BankOrderService bankOrderService, InvoicePaymentToolService invoicePaymentToolService)  {
-		
-		super( paymentModeService,  moveService,  moveLineService, accountConfigService,  invoicePaymentRepository, reconcileService,  invoicePaymentToolService);
+  protected BankOrderCreateService bankOrderCreateService;
+  protected BankOrderService bankOrderService;
 
-		this.bankOrderCreateService = bankOrderCreateService;
-		this.bankOrderService = bankOrderService;
-		
-	}
-	
-	
-	
-	/**
-	 * Method to validate an invoice Payment
-	 * 
-	 * Create the eventual move (depending general configuration) and reconcile it with the invoice move
-	 * Compute the amount paid on invoice
-	 * Change the status to validated
-	 * 
-	 * @param invoicePayment
-	 * 			An invoice payment
-	 * 
-	 * @throws AxelorException
-	 * @throws DatatypeConfigurationException 
-	 * @throws IOException 
-	 * @throws JAXBException 
-	 * 		
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
-		
-		if(invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT)  {  return;  }
-		
-		PaymentMode paymentMode = invoicePayment.getPaymentMode();
-		int typeSelect = paymentMode.getTypeSelect();
-		int inOutSelect = paymentMode.getInOutSelect();
-		
-		if( (typeSelect == PaymentModeRepository.TYPE_DD || typeSelect == PaymentModeRepository.TYPE_TRANSFER) && inOutSelect == PaymentModeRepository.OUT){
-			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
-		}else{
-			invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-		}
-		
-		//TODO assign an automatic reference
-		
-		Company company = invoicePayment.getInvoice().getCompany();
-				
-		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment() && !paymentMode.getGenerateBankOrder())  {
-			this.createMoveForInvoicePayment(invoicePayment);
-		} else {
-			Beans.get(AccountingSituationService.class).updateCustomerCredit(invoicePayment.getInvoice().getPartner());
-		}
-		if(paymentMode.getGenerateBankOrder())  {
-			invoicePayment = invoicePaymentRepository.save(invoicePayment);
-			this.createBankOrder(invoicePayment);
-		}
-		
-		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-		if (invoicePayment.getInvoice() != null
-				&& invoicePayment.getInvoice().getOperationSubTypeSelect()
-				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-			invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
-		}
-		invoicePaymentRepository.save(invoicePayment);
-	}
-	
-	
-	/**
-	 * Method to create a bank order for an invoice Payment
-	 * 
-	 * 
-	 * @param invoicePayment
-	 * 			An invoice payment
-	 * 
-	 * @throws AxelorException
-	 * @throws DatatypeConfigurationException 
-	 * @throws IOException 
-	 * @throws JAXBException 
-	 * 		
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createBankOrder(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
-		
-		BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
-		
-		bankOrderService.confirm(bankOrder);
-		
-		invoicePayment.setBankOrder(bankOrder);
-		
-		invoicePaymentRepository.save(invoicePayment);
-		
-	}
-	
-	
-	
-	
+  @Inject
+  public InvoicePaymentValidateServiceBankPayImpl(
+      PaymentModeService paymentModeService,
+      MoveService moveService,
+      MoveLineService moveLineService,
+      AccountConfigService accountConfigService,
+      InvoicePaymentRepository invoicePaymentRepository,
+      ReconcileService reconcileService,
+      BankOrderCreateService bankOrderCreateService,
+      BankOrderService bankOrderService,
+      InvoicePaymentToolService invoicePaymentToolService) {
+
+    super(
+        paymentModeService,
+        moveService,
+        moveLineService,
+        accountConfigService,
+        invoicePaymentRepository,
+        reconcileService,
+        invoicePaymentToolService);
+
+    this.bankOrderCreateService = bankOrderCreateService;
+    this.bankOrderService = bankOrderService;
+  }
+
+  /**
+   * Method to validate an invoice Payment
+   *
+   * <p>Create the eventual move (depending general configuration) and reconcile it with the invoice
+   * move Compute the amount paid on invoice Change the status to validated
+   *
+   * @param invoicePayment An invoice payment
+   * @throws AxelorException
+   * @throws DatatypeConfigurationException
+   * @throws IOException
+   * @throws JAXBException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validate(InvoicePayment invoicePayment, boolean force)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+
+    if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
+      return;
+    }
+
+    PaymentMode paymentMode = invoicePayment.getPaymentMode();
+    int typeSelect = paymentMode.getTypeSelect();
+    int inOutSelect = paymentMode.getInOutSelect();
+
+    if ((typeSelect == PaymentModeRepository.TYPE_DD
+            || typeSelect == PaymentModeRepository.TYPE_TRANSFER)
+        && inOutSelect == PaymentModeRepository.OUT) {
+      invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+    } else {
+      invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+    }
+
+    // TODO assign an automatic reference
+
+    Company company = invoicePayment.getInvoice().getCompany();
+
+    if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()
+        && !paymentMode.getGenerateBankOrder()) {
+      this.createMoveForInvoicePayment(invoicePayment);
+    } else {
+      Beans.get(AccountingSituationService.class)
+          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+    }
+    if (paymentMode.getGenerateBankOrder()) {
+      invoicePayment = invoicePaymentRepository.save(invoicePayment);
+      this.createBankOrder(invoicePayment);
+    }
+
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+    if (invoicePayment.getInvoice() != null
+        && invoicePayment.getInvoice().getOperationSubTypeSelect()
+            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
+    }
+    invoicePaymentRepository.save(invoicePayment);
+  }
+
+  /**
+   * Method to create a bank order for an invoice Payment
+   *
+   * @param invoicePayment An invoice payment
+   * @throws AxelorException
+   * @throws DatatypeConfigurationException
+   * @throws IOException
+   * @throws JAXBException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void createBankOrder(InvoicePayment invoicePayment)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+
+    BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
+
+    bankOrderService.confirm(bankOrder);
+
+    invoicePayment.setBankOrder(bankOrder);
+
+    invoicePaymentRepository.save(invoicePayment);
+  }
 }

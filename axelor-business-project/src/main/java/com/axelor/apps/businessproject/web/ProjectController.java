@@ -20,14 +20,14 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.report.IReport;
+import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.auth.AuthUtils;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -37,115 +37,157 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ProjectController {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @Inject
-    private ProjectService projectService;
+  @Inject private ProjectBusinessService projectBusinessService;
 
-    @Inject
-    private ProjectBusinessService projectBusinessService;
-	
-	public void printProject(ActionRequest request,ActionResponse response) throws AxelorException  {
-		Project project = request.getContext().asType(Project.class);
+  @Inject private InvoicingProjectService invoicingProjectService;
 
-		String name = I18n.get("Project") + " " + project.getCode();
-		
-		String fileLink = ReportFactory.createReport(IReport.PROJECT, name+"-${date}")
-				.addParam("ProjectId", project.getId())
-				.addParam("Locale", ReportSettings.getPrintingLocale(null))
-				.toAttach(project)
-				.generate()
-				.getFileLink();
+  public void generateQuotation(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+      SaleOrder order = projectBusinessService.generateQuotation(project);
+      response.setView(
+          ActionView.define("Sale Order")
+              .model(SaleOrder.class.getName())
+              .add("form", "sale-order-form")
+              .context("_showRecord", String.valueOf(order.getId()))
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-		logger.debug("Printing "+name);
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
-	}
+  public void printProject(ActionRequest request, ActionResponse response) throws AxelorException {
+    Project project = request.getContext().asType(Project.class);
 
-	public void computeProgress(ActionRequest request,ActionResponse response){
+    String name = I18n.get("Project") + " " + project.getCode();
 
-		Project project = request.getContext().asType(Project.class);
-		
-		BigDecimal duration = BigDecimal.ZERO;
-		if(BigDecimal.ZERO.compareTo(project.getDuration()) != 0){
-			duration = project.getTimeSpent().add(project.getLeadDelay()).divide(project.getDuration(), 2, java.math.RoundingMode.HALF_UP).multiply(new BigDecimal(100));
-		}
-		
-		if(duration.compareTo(BigDecimal.ZERO) == -1 || duration.compareTo(new BigDecimal(100)) == 1){
-			duration = BigDecimal.ZERO;
-		}
+    String fileLink =
+        ReportFactory.createReport(IReport.PROJECT, name + "-${date}")
+            .addParam("ProjectId", project.getId())
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .toAttach(project)
+            .generate()
+            .getFileLink();
 
-		response.setValue("progress", duration);
+    logger.debug("Printing " + name);
 
-	}
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-	public void computeDurationFromChildren(ActionRequest request, ActionResponse response)  {
-		try {
-			Project project = request.getContext().asType(Project.class);
+  public void computeProgress(ActionRequest request, ActionResponse response) {
 
-			BigDecimal duration = projectService.computeDurationFromChildren(project.getId());
+    Project project = request.getContext().asType(Project.class);
 
-			BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration, AuthUtils.getUser(), false);
-
-			response.setValue("duration", duration);
-			response.setValue("$visibleDuration", visibleDuration);
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
-	
-	public void printPlannifAndCost(ActionRequest request,ActionResponse response) throws AxelorException  {
-
-		Project project = request.getContext().asType(Project.class);
-
-		String name = I18n.get("Planification and costs");
-		
-		if (project.getCode() != null) {
-			name += " (" + project.getCode() + ")";
-		}
-		
-		String fileLink = ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
-				.addParam("ProjectId", project.getId())
-				.addParam("Locale", ReportSettings.getPrintingLocale(null))
-				.toAttach(project)
-				.generate()
-				.getFileLink();
-
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
-	}
-
-    public void managePurchaseInvoiceLine(ActionRequest request, ActionResponse response) {
-	    Project project = Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
-	    InvoiceLine purchaseInvoiceLine = Beans.get(InvoiceLineRepository.class).find(Long.valueOf(((Integer) ((Map) request.getContext().get("purchaseInvoiceLine")).get("id"))));
-
-        projectBusinessService.manageInvoiceLine(purchaseInvoiceLine, project);
-
-	    response.setReload(true);
+    BigDecimal duration = BigDecimal.ZERO;
+    if (BigDecimal.ZERO.compareTo(project.getDuration()) != 0) {
+      duration =
+          project
+              .getTimeSpent()
+              .add(project.getLeadDelay())
+              .divide(project.getDuration(), 2, java.math.RoundingMode.HALF_UP)
+              .multiply(new BigDecimal(100));
     }
 
-    public void manageSaleInvoiceLine(ActionRequest request, ActionResponse response) {
-        Project project = Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
-        InvoiceLine saleInvoiceLine = Beans.get(InvoiceLineRepository.class).find(Long.valueOf(((Integer) ((Map) request.getContext().get("saleInvoiceLine")).get("id"))));
-
-        projectBusinessService.manageInvoiceLine(saleInvoiceLine, project);
-
-        response.setReload(true);
+    if (duration.compareTo(BigDecimal.ZERO) == -1 || duration.compareTo(new BigDecimal(100)) == 1) {
+      duration = BigDecimal.ZERO;
     }
+
+    response.setValue("progress", duration);
+  }
+
+  public void computeDurationFromChildren(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+
+      BigDecimal duration = projectBusinessService.computeDurationFromChildren(project.getId());
+
+      response.setValue("duration", duration);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void countToInvoice(ActionRequest request, ActionResponse response) {
+
+    Project project = request.getContext().asType(Project.class);
+
+    int toInvoiceCount = invoicingProjectService.countToInvoice(project);
+
+    response.setValue("$toInvoiceCounter", toInvoiceCount);
+  }
+
+  public void showInvoicingProjects(ActionRequest request, ActionResponse response) {
+
+    Project project = request.getContext().asType(Project.class);
+    project = Beans.get(ProjectRepository.class).find(project.getId());
+
+    response.setView(
+        ActionView.define("Invoice Buisness Project")
+            .model(InvoicingProject.class.getName())
+            .add("form", "invoicing-project-form")
+            .param("forceEdit", "true")
+            .context("_project", project)
+            .map());
+  }
+
+  public void printPlannifAndCost(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Project project = request.getContext().asType(Project.class);
+
+    String name = I18n.get("Planification and costs");
+
+    if (project.getCode() != null) {
+      name += " (" + project.getCode() + ")";
+    }
+
+    String fileLink =
+        ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
+            .addParam("ProjectId", project.getId())
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .toAttach(project)
+            .generate()
+            .getFileLink();
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  public void managePurchaseInvoiceLine(ActionRequest request, ActionResponse response) {
+    Project project =
+        Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
+    InvoiceLine purchaseInvoiceLine =
+        Beans.get(InvoiceLineRepository.class)
+            .find(
+                Long.valueOf(
+                    ((Integer) ((Map) request.getContext().get("purchaseInvoiceLine")).get("id"))));
+
+    projectBusinessService.manageInvoiceLine(purchaseInvoiceLine, project);
+
+    response.setReload(true);
+  }
+
+  public void manageSaleInvoiceLine(ActionRequest request, ActionResponse response) {
+    Project project =
+        Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
+    InvoiceLine saleInvoiceLine =
+        Beans.get(InvoiceLineRepository.class)
+            .find(
+                Long.valueOf(
+                    ((Integer) ((Map) request.getContext().get("saleInvoiceLine")).get("id"))));
+
+    projectBusinessService.manageInvoiceLine(saleInvoiceLine, project);
+
+    response.setReload(true);
+  }
 }

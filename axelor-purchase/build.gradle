@@ -1,14 +1,20 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../version.gradle"
+
 apply {
-	version = "5.0.0-SNAPSHOT"
+	version = absVersion
+}
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
 }
 
 axelor {
-	title "Axelor :: Purchase"
+	title "Axelor Purchase"
 	description "Axelor Purchase Module"
-
-	removable true
 }
 
 dependencies {

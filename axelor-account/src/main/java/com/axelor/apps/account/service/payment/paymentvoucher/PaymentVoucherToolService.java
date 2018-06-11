@@ -21,84 +21,79 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
-public class PaymentVoucherToolService  {
-	
-	/**
-	 * 
-	 * @param paymentVoucher : Une saisie Paiement
-	 * 
-	 * OperationTypeSelect
-	 *  1 : Achat fournisseur
-	 *	2 : Avoir fournisseur
-	 *	3 : Vente client
-	 *	4 : Avoir client
-	 * @return
-	 * @throws AxelorException
-	 */
-	public boolean isDebitToPay(PaymentVoucher paymentVoucher) throws AxelorException  {
-		boolean isDebitToPay;
-		
-		switch(paymentVoucher.getOperationTypeSelect())  {
-		case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-			isDebitToPay = false;
-			break;
-		case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-			isDebitToPay = true;
-			break;
-		case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE:
-			isDebitToPay = true;
-			break;
-		case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND:
-			isDebitToPay = false;
-			break;
-		
-		default:
-			throw new AxelorException(paymentVoucher, IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef());
-		}	
-		
-		return isDebitToPay;
-	}
-	
-	
-	
-	/**
-	 * 
-	 * @param paymentVoucher : Une saisie Paiement
-	 * 
-	 * OperationTypeSelect
-	 *  1 : Achat fournisseur
-	 *	2 : Avoir fournisseur
-	 *	3 : Vente client
-	 *	4 : Avoir client
-	 * @return
-	 * @throws AxelorException
-	 */
-	public boolean isPurchase(PaymentVoucher paymentVoucher) throws AxelorException  {
-		
-		boolean isPurchase;
-		
-		switch(paymentVoucher.getOperationTypeSelect())  {
-		case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-			isPurchase = true;
-			break;
-		case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-			isPurchase = true;
-			break;
-		case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE:
-			isPurchase = false;
-			break;
-		case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND:
-			isPurchase = false;
-			break;
-		
-		default:
-			throw new AxelorException(paymentVoucher, IException.MISSING_FIELD, I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1), paymentVoucher.getRef());
-		}	
-		
-		return isPurchase;
-	}
-	
+public class PaymentVoucherToolService {
+
+  /**
+   * @param paymentVoucher : Une saisie Paiement
+   *     <p>OperationTypeSelect 1 : Achat fournisseur 2 : Avoir fournisseur 3 : Vente client 4 :
+   *     Avoir client
+   * @return
+   * @throws AxelorException
+   */
+  public boolean isDebitToPay(PaymentVoucher paymentVoucher) throws AxelorException {
+    boolean isDebitToPay;
+
+    switch (paymentVoucher.getOperationTypeSelect()) {
+      case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+        isDebitToPay = false;
+        break;
+      case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+        isDebitToPay = true;
+        break;
+      case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE:
+        isDebitToPay = true;
+        break;
+      case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND:
+        isDebitToPay = false;
+        break;
+
+      default:
+        throw new AxelorException(
+            paymentVoucher,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1),
+            paymentVoucher.getRef());
+    }
+
+    return isDebitToPay;
+  }
+
+  /**
+   * @param paymentVoucher : Une saisie Paiement
+   *     <p>OperationTypeSelect 1 : Achat fournisseur 2 : Avoir fournisseur 3 : Vente client 4 :
+   *     Avoir client
+   * @return
+   * @throws AxelorException
+   */
+  public boolean isPurchase(PaymentVoucher paymentVoucher) throws AxelorException {
+
+    boolean isPurchase;
+
+    switch (paymentVoucher.getOperationTypeSelect()) {
+      case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+        isPurchase = true;
+        break;
+      case PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+        isPurchase = true;
+        break;
+      case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE:
+        isPurchase = false;
+        break;
+      case PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND:
+        isPurchase = false;
+        break;
+
+      default:
+        throw new AxelorException(
+            paymentVoucher,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_TOOL_1),
+            paymentVoucher.getRef());
+    }
+
+    return isPurchase;
+  }
 }

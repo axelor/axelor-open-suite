@@ -32,12 +32,12 @@
 					AND _item.select_id = _selection.id	
 				) AS _meta
 			ON
-				_meta._select_value = self.status
+				_meta._select_value = self.status_select
 			WHERE
 				(
-					self.status = 2 
+					self.status_select = 2 
 					OR
-					self.status = 3
+					self.status_select = 3
 				)
 			AND
 				DATE(self.created_on) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)	

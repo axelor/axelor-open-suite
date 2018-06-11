@@ -17,31 +17,29 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import java.lang.invoke.MethodHandles;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
+import java.lang.invoke.MethodHandles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaymentSchedule {
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @Override
-    protected void process() {
-        processPaymentScheduleLines(PaymentScheduleRepository.TYPE_MONTHLY);
+  @Override
+  protected void process() {
+    processPaymentScheduleLines(PaymentScheduleRepository.TYPE_MONTHLY);
 
-        if (batchBankPaymentService.paymentScheduleLineDoneListExists(batch) && generateBankOrderFlag) {
-            try {
-                findBatch();
-                batchBankPaymentService.createBankOrderFromPaymentScheduleLines(batch);
-            } catch (Exception e) {
-                TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
-                logger.error(e.getLocalizedMessage());
-            }
-        }
+    if (batchBankPaymentService.paymentScheduleLineDoneListExists(batch) && generateBankOrderFlag) {
+      try {
+        findBatch();
+        batchBankPaymentService.createBankOrderFromMonthlyPaymentScheduleLines(batch);
+      } catch (Exception e) {
+        TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
+        logger.error(e.getLocalizedMessage());
+      }
     }
-
+  }
 }

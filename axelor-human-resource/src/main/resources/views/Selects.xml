@@ -166,5 +166,13 @@
 	<selection name="meta.schedule.batch.service.select" id="hr.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.hr.service.batch.HrBatchService">com.axelor.apps.hr.service.batch.HrBatchService</option>
 	</selection>
+	
+	<selection name="sequence.generic.code.select" id="hr.sequence.generic.code.select">
+		<option value="expense">Expense</option>
+	</selection>
+	
+	<selection id="hr.object.data.config.model.select" name="object.data.config.model.select">
+		<option value="com.axelor.apps.hr.db.Employee">Employee</option>
+	</selection>
 
 </object-views>

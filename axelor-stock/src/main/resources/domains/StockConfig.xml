@@ -9,7 +9,8 @@
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
-    <many-to-one name="defaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Default stock location"/>
+    <many-to-one name="receiptDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
+    <many-to-one name="pickupDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Pickup default stock location"/>
 
    	<many-to-one name="customerVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"/>
     <many-to-one name="supplierVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>

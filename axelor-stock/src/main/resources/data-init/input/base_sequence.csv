@@ -1,6 +1,0 @@
-"importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk";"company.importId"
-5;"intStockMove";"Internal stock move N°";1;4;"ISM";;1;0;1
-6;"outStockMove";"Delivery order N°";1;4;"DO";;1;0;1
-7;"inStockMove";"Goods receipt order N°";1;4;"RO";;1;0;1
-8;"inventory";"Inventory N°";1;4;"INV%M%YY";;1;0;1
-9;"productTrackingNumber";"Tracking N°";1;5;"TN";;1;0;1

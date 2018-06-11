@@ -7,8 +7,8 @@
 			<toolbar>
 				<button name="showBankStatementLines" title="See bank statement lines" onClick="account.bank.statement.line" />
 			</toolbar>
-		  	<field name="ebicsPartner.ebicsBank" width="250"/>
-		  	<field name="ebicsPartner" width="150"/>
+		  	<field name="ebicsPartner.ebicsBank" width="250" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
+		  	<field name="ebicsPartner" width="150" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		  	<field name="bankStatementFileFormat" />
 		  	<field name="fromDate" width="120"/>
 		  	<field name="toDate" width="120"/>
@@ -29,8 +29,8 @@
                     <field name="bankStatementFile" widget="binary-link" canNew="true"/>
                     <field name="fromDate"/>
                     <field name="toDate"/>
-                    <field name="ebicsPartner"/>
-                    <field name="ebicsPartner.ebicsBank"/>
+                    <field name="ebicsPartner" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
+                    <field name="ebicsPartner.ebicsBank" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
                     <field name="bankStatementFileFormat"/>
                     <field name="bankStatementFileFormat.statementFileFormatSelect" hidden="true"/>
                 </panel>

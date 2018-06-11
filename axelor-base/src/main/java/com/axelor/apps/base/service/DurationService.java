@@ -17,16 +17,14 @@
  */
 package com.axelor.apps.base.service;
 
-import java.math.BigDecimal;
-
-import java.time.ZonedDateTime;
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Duration;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 public interface DurationService {
-	
-	
-	public LocalDate computeDuration(Duration duration, LocalDate date);
-	public BigDecimal computeDurationInDays(ZonedDateTime startDate, ZonedDateTime endDate);
+
+  public LocalDate computeDuration(Duration duration, LocalDate date);
+
+  public BigDecimal computeDurationInDays(ZonedDateTime startDate, ZonedDateTime endDate);
 }

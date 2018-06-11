@@ -6,7 +6,7 @@
 	<chart name="chart.total.hours.per.day" title="" stacked="true">
 		<dataset type="jpql"><![CDATA[
 		SELECT
-			SUM(self.visibleDuration) AS _duration,
+			SUM(self.duration) AS _duration,
 			self.project.fullName AS _project,
 			self.date AS _day
 		FROM

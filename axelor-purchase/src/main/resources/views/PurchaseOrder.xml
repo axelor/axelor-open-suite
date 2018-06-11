@@ -4,11 +4,15 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-    	<toolbar>
-    		<button name="mergeQuotations" title="Merge quotations"  onClick="purchase.order.merge"/>
-    		<button name="seeQuotationLines" title="See quotation lines" onClick="purchase-order-see-quotation-lines" />
-            <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
-		</toolbar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="Merge quotations"  action="purchase.order.merge"/>
+                <item title="See quotation lines" action="purchase-order-see-quotation-lines" />
+            </menu>
+        </menubar>
 		<field name="purchaseOrderSeq"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
@@ -21,11 +25,14 @@
     </grid>
 
     <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-    	<toolbar>
-    		<button name="mergePO" title="Merge purchase orders" onClick="purchase.order.merge"/>
-    		<button name="seePOLines" title="See purchase order lines" onClick="purchase-order-see-purchase-order-lines" />
-            <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
-		</toolbar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
+            </menu>
+        </menubar>
 		<field name="purchaseOrderSeq"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
@@ -67,10 +74,10 @@
 	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-group-purchase-order-on-load-actions"
 	  onNew="action-group-purchase-order-on-new-actions" >
 		<menubar>
-			<menu title="Reports" icon="img/16px/create_16px.png" showTitle="true">
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
 			  <item title="Print" action="save,action-purchase-order-method-show-purchase-order" hideIf="supplierPartner == null"/>
 			</menu>
-			<menu title="Tools" icon="img/16px/create_16px.png" showTitle="true">
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
 			  <item title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
 <!-- 			  <item title="New version" showIf="statusSelect == 2" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" action="save,action-purchase-record-newVersion,save"/> -->
 			  <item title="New version" showIf="statusSelect == 2" action="save,action-purchase-record-newVersion,save" hideIf="supplierPartner == null"/>
@@ -98,7 +105,7 @@
 			<field name="versionNumber"
 				if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
 			<field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement"
-				   readonlyIf="statusSelect >= 3 || supplierPartner != null" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-printing-settings-default-value"/>
+				   readonlyIf="statusSelect >= 3" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-printing-settings-default-value"/>
 			<field name="companyBankDetails" widget="SuggestBox"
 					onSelect="action-invoice-attrs-domain-company-bank-details"
 					form-view="bank-details-form" grid-view="bank-details-grid"
@@ -167,7 +174,8 @@
 			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
 			<button name="completed" title="Completed" showIf="statusSelect == 3"   onClick="action-purchase-order-record-completed,save"/>
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
-			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getSupplStockMoveMgtOnSO() &amp;&amp; !__config__.app.getApp('supplychain').getSupplierStockMoveGenerationAuto()" onClick="save, action-purchase-order-create-stock-move" if-module="axelor-supplychain" />
+			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getSupplStockMoveMgtOnSO() &amp;&amp; !__config__.app.getApp('supplychain').getSupplierStockMoveGenerationAuto()" onClick="save,action-purchase-order-create-stock-move" if-module="axelor-supplychain" />
+            <button name="finishManuallyPurchaseOrder" title="Finish the order" showIf="statusSelect == 3" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))" onClick="save,action-purchase-order-method-finish-purchase-order" if-module="axelor-supplychain" />
 			<spacer/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>
@@ -216,9 +224,6 @@
 	</form>
 
 	<cards name="purchase-quotations-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
-		<toolbar>
-			<button name="seeQuotationLines" title="See quotation lines" onClick="purchase-order-see-quotation-lines"/>
-		</toolbar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
@@ -273,9 +278,6 @@
 	</cards>
 
 	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
-		<toolbar>
-			<button name="seePOLines" title="See purchase order lines" onClick="purchase-order-see-purchase-order-lines"/>
-		</toolbar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
@@ -597,6 +599,11 @@
 	<action-method name="action-set-supplier-partner-domain">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="supplierPartnerDomain"/>
 	</action-method>
+	
+	<action-method name="action-purchase-order-method-fill-company-bank-details">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="fillCompanyBankDetails"/>
+	</action-method>
+	
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
 		<filter title="My RFQs">
@@ -615,6 +622,10 @@
 	<action-method name="action-purchase-order-method-filter-printing-settings">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="filterPrintingSettings"/>
 	</action-method>
+
+        <action-method name="action-purchase-order-method-finish-purchase-order">
+                <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="finishPurchaseOrder"/>
+        </action-method>
 
 	<action-method name="action-purchase-order-method-printing-settings-default-value">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="fillDefaultPrintingSettings"/>

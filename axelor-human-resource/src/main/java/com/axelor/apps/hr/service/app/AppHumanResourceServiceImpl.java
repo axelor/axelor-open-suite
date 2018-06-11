@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.hr.service.app;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.base.db.AppExpense;
 import com.axelor.apps.base.db.AppLeave;
 import com.axelor.apps.base.db.AppTimesheet;
@@ -37,77 +33,79 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
-public class AppHumanResourceServiceImpl extends AppBaseServiceImpl implements AppHumanResourceService {
-	
-	private AppTimesheetRepository appTimesheetRepo;
-	private AppLeaveRepository appLeaveRepo;
-	private AppExpenseRepository appExpenseRepo;
-	
-	@Inject
-	private CompanyRepository companyRepo;
-	
-	@Inject
-	private HRConfigRepository hrConfigRepo;
+public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
+    implements AppHumanResourceService {
 
-	@Inject
-	public AppHumanResourceServiceImpl(AppTimesheetRepository appTimesheetRepo, AppLeaveRepository appLeaveRepo,
-			AppExpenseRepository appExpense) {
-		this.appTimesheetRepo = appTimesheetRepo;
-		this.appLeaveRepo = appLeaveRepo;
-		this.appExpenseRepo = appExpense;
-	}
+  private AppTimesheetRepository appTimesheetRepo;
+  private AppLeaveRepository appLeaveRepo;
+  private AppExpenseRepository appExpenseRepo;
 
-	@Override
-	public AppTimesheet getAppTimesheet() {
-		return appTimesheetRepo.all().fetchOne();
-	}
+  @Inject private CompanyRepository companyRepo;
 
-	@Override
-	public AppLeave getAppLeave() {
-		return appLeaveRepo.all().fetchOne();
-	}
+  @Inject private HRConfigRepository hrConfigRepo;
 
-	@Override
-	public AppExpense getAppExpense() {
-		return appExpenseRepo.all().fetchOne();
-	}
+  @Inject
+  public AppHumanResourceServiceImpl(
+      AppTimesheetRepository appTimesheetRepo,
+      AppLeaveRepository appLeaveRepo,
+      AppExpenseRepository appExpense) {
+    this.appTimesheetRepo = appTimesheetRepo;
+    this.appLeaveRepo = appLeaveRepo;
+    this.appExpenseRepo = appExpense;
+  }
 
-	@Override
-	public void getHrmAppSettings(ActionRequest request, ActionResponse response) {
+  @Override
+  public AppTimesheet getAppTimesheet() {
+    return appTimesheetRepo.all().fetchOne();
+  }
 
-		try {
+  @Override
+  public AppLeave getAppLeave() {
+    return appLeaveRepo.all().fetchOne();
+  }
 
-			Map<String, Object> map = new HashMap<>();
+  @Override
+  public AppExpense getAppExpense() {
+    return appExpenseRepo.all().fetchOne();
+  }
 
-			map.put("hasInvoicingAppEnable", isApp("invoice"));
-			map.put("hasLeaveAppEnable", isApp("leave"));
-			map.put("hasExpenseAppEnable", isApp("expense"));
-			map.put("hasTimesheetAppEnable", isApp("timesheet"));
-			map.put("hasProjectAppEnable", isApp("project"));
+  @Override
+  public void getHrmAppSettings(ActionRequest request, ActionResponse response) {
 
-			response.setData(map);
-			response.setTotal(map.size());
+    try {
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.setException(e);
-		}
-	}
-	
-	@Override
-	@Transactional
-	public void generateHrConfigurations() {
-		
-		List<Company> companies = companyRepo.all().filter("self.hrConfig is null").fetch();
-		
-		for (Company company : companies) {
-			HRConfig hrConfig = new HRConfig();
-			hrConfig.setCompany(company);
-			hrConfigRepo.save(hrConfig);
-		}
-		
-	}
+      Map<String, Object> map = new HashMap<>();
 
+      map.put("hasInvoicingAppEnable", isApp("invoice"));
+      map.put("hasLeaveAppEnable", isApp("leave"));
+      map.put("hasExpenseAppEnable", isApp("expense"));
+      map.put("hasTimesheetAppEnable", isApp("timesheet"));
+      map.put("hasProjectAppEnable", isApp("project"));
+
+      response.setData(map);
+      response.setTotal(map.size());
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      response.setException(e);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void generateHrConfigurations() {
+
+    List<Company> companies = companyRepo.all().filter("self.hrConfig is null").fetch();
+
+    for (Company company : companies) {
+      HRConfig hrConfig = new HRConfig();
+      hrConfig.setCompany(company);
+      hrConfigRepo.save(hrConfig);
+    }
+  }
 }

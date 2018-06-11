@@ -1,14 +1,20 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../version.gradle"
+
 apply {
-	version = "5.0.0-SNAPSHOT"
+	version = absVersion
+}
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
 }
 
 axelor {
-	title "Axelor :: Client Portal"
+	title "Axelor Client Portal"
 	description "Axelor Client Portal Module"
-
-	removable true
 }
 
 dependencies {

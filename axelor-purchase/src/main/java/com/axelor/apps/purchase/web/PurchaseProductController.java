@@ -17,46 +17,37 @@
  */
 package com.axelor.apps.purchase.web;
 
-import java.math.BigDecimal;
-
-import com.axelor.apps.base.db.ShippingCoef;
-
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.util.Optional;
 
 @Singleton
 public class PurchaseProductController {
 
-	@Inject
-	private ProductRepository productRepo;
-
-	public void fillShippingCoeff(ActionRequest request, ActionResponse response) throws AxelorException {
-	    Product product = request.getContext().asType(Product.class);
-	    if (!product.getDefShipCoefByPartner()) {
-	    	return;
-		}
-	    product = productRepo.find(product.getId());
-		BigDecimal productShippingCoef = null;
-	    for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
-	    	if (!supplierCatalog.getSupplierPartner().equals(product.getDefaultSupplierPartner()) ||
-					supplierCatalog.getShippingCoefList() == null) {
-	    		continue;
-			}
-	    	for(ShippingCoef shippingCoef : supplierCatalog.getShippingCoefList()) {
-	    	    if (shippingCoef.getCompany() == Beans.get(UserService.class).getUserActiveCompany()) {
-	    	        productShippingCoef = shippingCoef.getShippingCoef();
-	    	        break;
-				}
-			}
-		}
-	    response.setValue("$shippingCoef", productShippingCoef);
+  /**
+   * Called from product form view, on {@link Product#defShipCoefByPartner} change. Call {@link
+   * PurchaseProductService#getShippingCoefFromPartners(Product)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void fillShippingCoeff(ActionRequest request, ActionResponse response) {
+    try {
+      Product product = request.getContext().asType(Product.class);
+      if (!product.getDefShipCoefByPartner()) {
+        return;
+      }
+      Optional<BigDecimal> productShippingCoef =
+          Beans.get(PurchaseProductService.class).getShippingCoefFromPartners(product);
+      response.setValue("shippingCoef", productShippingCoef.orElse(BigDecimal.ONE));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 }

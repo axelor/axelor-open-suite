@@ -21,37 +21,90 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.tool.ModelTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MessageController {
 
-	@Inject
-	private MessageRepository messageRepo;
-	
-	@Inject
-	private MessageService messageService;
-	
-	public void sendMessage(ActionRequest request, ActionResponse response) throws AxelorException {
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		Message message = request.getContext().asType(Message.class);
+  @Inject private MessageRepository messageRepo;
 
-		message = messageService.sendMessage( messageRepo.find( message.getId() ) );
-		
-		response.setReload(true);
-		
-		if ( message.getStatusSelect() == MessageRepository.STATUS_SENT ) {
+  @Inject private MessageService messageService;
 
-			if ( message.getSentByEmail() ) { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_4 ) ); }
-			else { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_5 ) ); }
+  public void sendMessage(ActionRequest request, ActionResponse response) {
+    Message message = request.getContext().asType(Message.class);
 
-		} else  { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_6 ) );	}
+    try {
+      message = messageService.sendMessage(messageRepo.find(message.getId()));
+      response.setReload(true);
 
-	}
+      if (message.getStatusSelect() == MessageRepository.STATUS_SENT) {
 
+        if (message.getSentByEmail()) {
+          response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
+        } else {
+          response.setFlash(I18n.get(IExceptionMessage.MESSAGE_5));
+        }
+
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.MESSAGE_6));
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void sendMessages(ActionRequest request, ActionResponse response) {
+    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+    try {
+      if (idList == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));
+      }
+      int error =
+          ModelTool.apply(
+              Message.class, idList, model -> messageService.sendMessage((Message) model));
+      response.setFlash(
+          String.format(I18n.get(IExceptionMessage.MESSAGES_SENT), idList.size() - error, error));
+      response.setReload(true);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void regenerateMessages(ActionRequest request, ActionResponse response) {
+    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+    try {
+      if (idList == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));
+      }
+      int error =
+          ModelTool.apply(
+              Message.class, idList, model -> messageService.regenerateMessage((Message) model));
+      response.setFlash(
+          String.format(
+              I18n.get(IExceptionMessage.MESSAGES_REGENERATED), idList.size() - error, error));
+      response.setReload(true);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -28,8 +28,6 @@
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company" massUpdate="true" index="false"/>
     <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress" title="Addresses" mappedBy="partner"/>
     
-    <integer name="deliveryDelay" title="Delivery delay (days)"/>
-    
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
     <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner" title="Main company" index="false"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source" index="false" massUpdate="true"/>

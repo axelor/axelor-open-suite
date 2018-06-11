@@ -1,14 +1,20 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../version.gradle"
+
 apply {
-	version = "5.0.0-SNAPSHOT"
+	version = absVersion
+}
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
 }
 
 axelor {
-	title "Axelor :: Tool"
+	title "Axelor Tool"
 	description "Axelor Tool Module"
-
-	removable false
 }
 
 dependencies {
@@ -16,4 +22,6 @@ dependencies {
 	compile "org.apache.commons:commons-io:1.3.2"
 	compile "org.apache.commons:commons-lang3:3.1"
 	compile "com.sun.xml.bind:jaxb-impl:2.2.2"
+	compile "org.apache.pdfbox:pdfbox:2.0.9"
+	compile project(":modules:axelor-exception")
 }

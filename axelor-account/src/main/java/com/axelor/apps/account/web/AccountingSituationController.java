@@ -34,67 +34,78 @@ import com.google.inject.Singleton;
 @Singleton
 public class AccountingSituationController {
 
-	public void updateCustomerAccount(ActionRequest request, ActionResponse response)  {
-		
-		AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
-		accountingSituation = Beans.get(AccountingSituationRepository.class).find(accountingSituation.getId());
-		
-		try {
-			if(accountingSituation != null)  {
-				Beans.get(AccountCustomerService.class).updateCustomerAccount(accountingSituation);
-			}
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+  public void updateCustomerAccount(ActionRequest request, ActionResponse response) {
 
-	/**
-	 * return the domain of the field companyInBankDetails in the view.
-	 * @see AccountingSituationService#createDomainForBankDetails(AccountingSituation, boolean)
-	 * @param request
-	 * @param response
-	 */
-	public void createInBankDetailsDomain(ActionRequest request, ActionResponse response) {
-		AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
-		String domain = Beans.get(AccountingSituationService.class).createDomainForBankDetails(accountingSituation, true);
-		if (!domain.equals("")) {
-			response.setAttr("companyInBankDetails","domain", domain);
-		}
-		else {
-			response.setAttr("companyInBankDetails", "domain", "self.id in (0)");
-		}
-	}
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    accountingSituation =
+        Beans.get(AccountingSituationRepository.class).find(accountingSituation.getId());
 
-	/**
-	 * return the domain of the field companyOutBankDetails in the view.
-	 * @see AccountingSituationService#createDomainForBankDetails(AccountingSituation, boolean)
-	 * @param request
-	 * @param response
-	 */
-	public void createOutBankDetailsDomain(ActionRequest request, ActionResponse response) {
-		AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
-		String domain = Beans.get(AccountingSituationService.class).createDomainForBankDetails(accountingSituation, false);
-		if (!domain.equals("")) {
-			response.setAttr("companyOutBankDetails","domain", domain);
-		}
-		else {
-			response.setAttr("companyOutBankDetails","domain", "self.id in (0)");
-		}
-	}
+    try {
+      if (accountingSituation != null) {
+        Beans.get(AccountCustomerService.class).updateCustomerAccount(accountingSituation);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	/**
-	 * set default value for automatic invoice printing
-	 * @param request
-	 * @param response
-	 * @throws AxelorException
-	 */
-	public void setDefaultMail(ActionRequest request, ActionResponse response) throws AxelorException{
-		AccountingSituation accountingSituation = request.getContext().asType(AccountingSituation.class);
-		Company company = accountingSituation.getCompany();
-		if (company != null) {
-			AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
-			response.setValue("invoiceAutomaticMail", accountConfig.getInvoiceAutomaticMail());
-			response.setValue("invoiceMessageTemplate", accountConfig.getInvoiceMessageTemplate());
-		}
+  /**
+   * return the domain of the field companyInBankDetails in the view.
+   *
+   * @see AccountingSituationService#createDomainForBankDetails(AccountingSituation, boolean)
+   * @param request
+   * @param response
+   */
+  public void createInBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    String domain =
+        Beans.get(AccountingSituationService.class)
+            .createDomainForBankDetails(accountingSituation, true);
+    if (!domain.equals("")) {
+      response.setAttr("companyInBankDetails", "domain", domain);
+    } else {
+      response.setAttr("companyInBankDetails", "domain", "self.id in (0)");
+    }
+  }
 
-	}
+  /**
+   * return the domain of the field companyOutBankDetails in the view.
+   *
+   * @see AccountingSituationService#createDomainForBankDetails(AccountingSituation, boolean)
+   * @param request
+   * @param response
+   */
+  public void createOutBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    String domain =
+        Beans.get(AccountingSituationService.class)
+            .createDomainForBankDetails(accountingSituation, false);
+    if (!domain.equals("")) {
+      response.setAttr("companyOutBankDetails", "domain", domain);
+    } else {
+      response.setAttr("companyOutBankDetails", "domain", "self.id in (0)");
+    }
+  }
+
+  /**
+   * set default value for automatic invoice printing
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  public void setDefaultMail(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    Company company = accountingSituation.getCompany();
+    if (company != null) {
+      AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+      response.setValue("invoiceAutomaticMail", accountConfig.getInvoiceAutomaticMail());
+      response.setValue("invoiceMessageTemplate", accountConfig.getInvoiceMessageTemplate());
+    }
+  }
 }

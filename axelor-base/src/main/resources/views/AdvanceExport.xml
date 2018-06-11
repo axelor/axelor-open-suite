@@ -9,41 +9,33 @@
   	</grid>
   
   	<form name="advanced-export-form" title="Advanced Export" model="com.axelor.apps.base.db.AdvancedExport" width="large" 
-  		onLoad="action-attr-view-data-button-change-title" onNew="action-advanced-export-record-on-new">
+  		onNew="action-advanced-export-record-on-new">
   		<panel>
   			<field name="name" colSpan="4" required="true"/>
       		<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid" colSpan="4" onChange="action-attr-reset-advanced-export-line" onSelect="action-advanced-export-attr-change-domain-from-model"/>
-    		<button name="selectAll" title="Select all fields" colSpan="3" onClick="save,action-method-get-model-all-fields" hideIf="isViewData"/>
-    		<field name="isViewData" hidden="true" colSpan="1"/>
+    		<button name="selectAll" title="Select all fields" colSpan="3" onClick="save,action-method-get-model-all-fields"/>
+    		<field name="maxExportLimit" colSpan="4" onChange="action-advanced-export-validate-export-limit" required="true"/>
+			<field name="queryFetchSize" colSpan="4" onChange="action-advanced-export-validate-query-fetch-size" required="true"/>
+    		<label name="technicalHelper" title="Warning, modifying those configuration can have technical repercussions." colSpan="12" css="label-bold label-danger"/>
     	</panel>
-     	<panel-related field="advancedExportLineList" title="Fields" hideIf="metaModel == null || isViewData" grid-view="advanced-export-line-grid" form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
-     	<panel-dashlet name="custom-panel-view-export-data" action="custom:custom-view-export-data" colSpan="12" hideIf="!isViewData"/>
+     	<panel-related field="advancedExportLineList" title="Fields" hideIf="metaModel == null" grid-view="advanced-export-line-grid" form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
      	<panel>
      		<button name="exportPDF" title="Export PDF" icon="fa-reply" colSpan="3" onClick="save,action-export-pdf-method,save"/>
     		<button name="exportExcel" title="Export Excel" icon="fa-reply" colSpan="3" onClick="save,action-export-excel-method,save"/>
-    		<button name="exportCSV" title="Export CSV" icon="fa-reply" colSpan="3" onClick="save,action-export-csv-method,save"/>
-    		<field name="advancedExportFile" readonly="true" colSpan="3" widget="binary-link"/>
-     		<button name="viewData" hidden="true" title="View Data" colSpan="3" onClick="action-record-show-field-data,save,action-attr-view-data-button-change-title"/>
+    		<button name="exportCSV" title="advanced.export.button.export.csv" icon="fa-reply" colSpan="3" onClick="save,action-export-csv-method,save"/>
      	</panel>
   	</form>
   	
-  	<custom name="custom-view-export-data" title="Export Data">
-  		<dataset type="rpc"><![CDATA[
-  			com.axelor.apps.base.web.AdvancedExportController:showAdvancedExportData
-  		]]></dataset>
-  		<template><![CDATA[
-  			<report-table data='data' columns=''></report-table>
-  		]]></template>
-  	</custom>
-  	
-  	<action-record name="action-record-show-field-data" model="com.axelor.apps.base.db.AdvancedExport">
-  		<field name="isViewData" expr="false" if="isViewData &amp;&amp; metaModel != null"/>
-  		<field name="isViewData" expr="true" if="!isViewData"/>
-  	</action-record>
-  	
   	<action-record name="action-advanced-export-record-on-new" model="com.axelor.apps.base.db.AdvancedExport">
 		<field name="metaModel" expr="eval: _contextModel" if="_contextModel"/>
-		<field name="isViewData" expr="false"/>
+	</action-record>
+	
+	<action-record name="action-advanced-export-record-set-last-export-limit" model="com.axelor.apps.base.db.AdvancedExport">
+		<field name="maxExportLimit" expr="eval: id == null ? 1000 : __repo__(AdvancedExport).find(id).getMaxExportLimit()" if="maxExportLimit &lt; queryFetchSize || maxExportLimit &lt;= 0"/>
+	</action-record>
+	
+	<action-record name="action-advanced-export-record-set-last-fetch-size" model="com.axelor.apps.base.db.AdvancedExport">
+		<field name="queryFetchSize" expr="eval: id == null ? 100 : __repo__(AdvancedExport).find(id).getQueryFetchSize()" if="queryFetchSize &gt; maxExportLimit || queryFetchSize &lt;= 0"/>
 	</action-record>
   	
   	<action-method name="action-method-get-model-all-fields">
@@ -62,15 +54,6 @@
   		<call class="com.axelor.apps.base.web.AdvancedExportController" method="advancedExportCSV"/>
   	</action-method>
   	
-  	<action-attrs name="action-attr-view-data-button-change-title">
-  		<attribute name="title" for="viewData" expr="Select Field" if="isViewData"/>
-  		<attribute name="title" for="viewData" expr="View Data" if="!isViewData"/>
-  		<attribute name="readonly" for="metaModel" expr="true" if="isViewData"/>
-  		<attribute name="readonly" for="metaModel" expr="false" if="!isViewData"/>
-  		<attribute name="readonly" for="isSelectAll" expr="true" if="isViewData"/>
-  		<attribute name="readonly" for="isSelectAll" expr="false" if="!isViewData"/>
-  	</action-attrs>
-  	
 	<action-attrs name="action-attr-reset-advanced-export-line">
 		<attribute name="value" for="advancedExportLineList" expr="eval: null"/>
 	</action-attrs>
@@ -78,5 +61,15 @@
 	<action-attrs name="action-advanced-export-attr-change-domain-from-model">
 		<attribute name="domain" for="metaModel" expr="eval: &quot; self.id = '${_contextModel.id}' &quot;" if="_contextModel"/>
 	</action-attrs>
+	
+	<action-validate name="action-advanced-export-validate-export-limit">
+		<error message="Export limit must be greater than zero." if="maxExportLimit &lt;= 0" action="action-advanced-export-record-set-last-export-limit"/>
+		<error message="Export limit must be greater than query fetch size." if="maxExportLimit &lt; queryFetchSize" action="action-advanced-export-record-set-last-export-limit"/>
+	</action-validate>
+	
+	<action-validate name="action-advanced-export-validate-query-fetch-size">
+		<error message="Query fetch size must be greater than zero." if="queryFetchSize &lt;= 0" action="action-advanced-export-record-set-last-fetch-size"/>
+		<error message="Query fetch size must be less than export limit." if="queryFetchSize &gt; maxExportLimit" action="action-advanced-export-record-set-last-fetch-size"/>
+	</action-validate>
 	
 </object-views>

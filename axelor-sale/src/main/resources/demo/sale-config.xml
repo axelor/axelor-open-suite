@@ -22,20 +22,24 @@
 	
 	<input file="sale_saleConfig.csv" separator=";" type="com.axelor.apps.sale.db.SaleConfig"  search="self.importId = :importId"/>
 	
-	<input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.sale.db.SaleOrder" call="com.axelor.csv.script.ImportSaleOrder:importSaleOrder">
+	<input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.sale.db.SaleOrder">
 		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
 		<bind to="confirmationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(confirmationDate)" column="confirmationDate"/>
 		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
 	</input>
 	
-	<input file="sale_saleOrderLine.csv" separator=";"  type="com.axelor.apps.sale.db.SaleOrderLine" search="self.importId = :importId">
+	<input file="sale_saleOrderLine.csv" separator=";"  type="com.axelor.apps.sale.db.SaleOrderLine" search="self.importId = :importId" call="com.axelor.csv.script.ImportSaleOrderLine:importSaleOrderLine">
 		<bind to="priceDiscounted" eval="price" />
 	</input>
 	
-	<input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.sale.db.SaleOrder" call="com.axelor.csv.script.ImportSaleOrder:computeAmt">
+	<input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.sale.db.SaleOrder" call="com.axelor.csv.script.ImportSaleOrder:importSaleOrder">
         <bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
         <bind to="confirmationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(confirmationDate)" column="confirmationDate"/>
         <bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
+	</input>
+	
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" >
+		<bind to="language" search="self.code = :languageCode"/>
 	</input>
 	
 </csv-inputs>

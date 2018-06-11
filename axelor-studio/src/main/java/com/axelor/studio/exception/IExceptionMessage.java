@@ -18,20 +18,14 @@
 package com.axelor.studio.exception;
 
 public interface IExceptionMessage {
-	
-	/**
-	 * Check if app builder code is not conflicting with existing app. 
-	 */
-	static final String APP_BUILDER_1 = /*$$(*/ "Please provide unique code. The code '%s' is already used" /*)*/;
-	
-	/**
-	 * Check if chart name doesn't contains any space.
-	 */
-	static final String CHART_BUILDER_1= /*$$(*/ "Name must not contains space" /*)*/;
-	
-	/**
-	 * Message to display on click of edit icon of node or transition if workflow is not saved.
-	 */
-	static final String WKF_1 = /*$$(*/ "Workflow is not saved" /*)*/;
-	
+
+  /** Check if app builder code is not conflicting with existing app. */
+  static final String APP_BUILDER_1 = /*$$(*/
+      "Please provide unique code. The code '%s' is already used" /*)*/;
+
+  /** Check if chart name doesn't contains any space. */
+  static final String CHART_BUILDER_1 = /*$$(*/ "Name must not contains space" /*)*/;
+
+  /** Message to display on click of edit icon of node or transition if workflow is not saved. */
+  static final String WKF_1 = /*$$(*/ "Workflow is not saved" /*)*/;
 }

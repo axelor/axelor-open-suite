@@ -58,13 +58,17 @@
 		<boolean name="document" title="Documents" default="true" />
 		
 		<boolean name="enableTradingNamesManagement" default="false"/>
-		
-		
+
+        <many-to-one name="passwordChangedTemplate" ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
+
 		<extra-code>
 	   		<![CDATA[
-	   			public static final Integer DISCOUNT_SEPARATE = 1;
-	   			public static final Integer INCLUDE_DISCOUNT_REPLACE_ONLY = 2;
-	   			public static final Integer INCLUDE_DISCOUNT = 3;
+	   			public static final int DISCOUNT_SEPARATE = 1;
+	   			public static final int INCLUDE_DISCOUNT_REPLACE_ONLY = 2;
+	   			public static final int INCLUDE_DISCOUNT = 3;
+	   			
+	   			public static final int MAP_API_GOOGLE = 1;
+	   			public static final int MAP_API_OPEN_STREET_MAP = 2;
 	   		]]>
 	   	</extra-code>
    	</entity>

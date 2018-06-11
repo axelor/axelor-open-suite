@@ -17,140 +17,140 @@
  */
 package com.axelor.apps.base.service.imports;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 public class ImportCityServiceImpl implements ImportCityService {
 
-	@Inject
-	private FactoryImporter factoryImporter;
+  @Inject private FactoryImporter factoryImporter;
 
-	@Inject
-	private MetaFiles metaFiles;
+  @Inject private MetaFiles metaFiles;
 
-	/**
-	 * {@inheritDoc}}
-	 */
-	@Override
-	public ImportHistory importCity(String typeSelect, MetaFile dataFile) {
+  /** {@inheritDoc}} */
+  @Override
+  public ImportHistory importCity(String typeSelect, MetaFile dataFile) {
 
-		ImportHistory importHistory = null;
-		try {
-			File configXmlFile = this.getConfigXmlFile(typeSelect);
-			File dataCsvFile = this.getDataCsvFile(dataFile);
-			
-			importHistory = importCityData(configXmlFile, dataCsvFile);
-			this.deleteTempFiles(configXmlFile, dataCsvFile);
+    ImportHistory importHistory = null;
+    try {
+      File configXmlFile = this.getConfigXmlFile(typeSelect);
+      File dataCsvFile = this.getDataCsvFile(dataFile);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return importHistory;
-	}
+      importHistory = importCityData(configXmlFile, dataCsvFile);
+      this.deleteTempFiles(configXmlFile, dataCsvFile);
 
-	/**
-	 * create bind or config file according to typeSelect
-	 * @param typeSelect
-	 * @return
-	 */
-	private File getConfigXmlFile(String typeSelect) {
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return importHistory;
+  }
 
-		File configFile = null;
-		try {
-			configFile = File.createTempFile("input-config", ".xml");
+  /**
+   * create bind or config file according to typeSelect
+   *
+   * @param typeSelect
+   * @return
+   */
+  private File getConfigXmlFile(String typeSelect) {
 
-			InputStream bindFileInputStream = this.getClass().getResourceAsStream("/import-configs/"+typeSelect+"-config.xml");
-			
-			if (bindFileInputStream == null) {
-				throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_3));
-			}
-			
-			FileOutputStream outputStream = new FileOutputStream(configFile);
-			
-			IOUtils.copy(bindFileInputStream, outputStream);
+    File configFile = null;
+    try {
+      configFile = File.createTempFile("input-config", ".xml");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return configFile;
-	}
-	
-	/**
-	* create geonames-city.csv data file from geonames .txt data file
-	* @param dataFile
-	* @return
-	*/
-	private File getDataCsvFile(MetaFile dataFile) {
-	
-		File csvFile = null;
-		try {
-			File tempDir = Files.createTempDir();
-			csvFile = new File(tempDir, "geonames_city.csv");
-	
-			Files.copy(MetaFiles.getPath(dataFile).toFile(), csvFile);
-	
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return csvFile;
-	}
+      InputStream bindFileInputStream =
+          this.getClass().getResourceAsStream("/import-configs/" + typeSelect + "-config.xml");
 
-	/**
-	 * Import city data
-	 * @param configXmlFile
-	 * @param dataCsvFile
-	 * @return
-	 */
-	private ImportHistory importCityData(File configXmlFile, File dataCsvFile) {
+      if (bindFileInputStream == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.IMPORTER_3));
+      }
 
-		ImportHistory importHistory = null;
-		try {
-			ImportConfiguration importConfiguration = new ImportConfiguration();
-			importConfiguration.setBindMetaFile(metaFiles.upload(configXmlFile));
-			importConfiguration.setDataMetaFile(metaFiles.upload(dataCsvFile));
+      FileOutputStream outputStream = new FileOutputStream(configFile);
 
-			importHistory = factoryImporter.createImporter(importConfiguration).run();
+      IOUtils.copy(bindFileInputStream, outputStream);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return importHistory;
-	}
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return configFile;
+  }
 
-	/**
-	 * Delete temporary config & data file
-	 * @param configXmlFile
-	 * @param dataCsvFile
-	 */
-	private void deleteTempFiles(File configXmlFile, File dataCsvFile) {
+  /**
+   * create geonames-city.csv data file from geonames .txt data file
+   *
+   * @param dataFile
+   * @return
+   */
+  private File getDataCsvFile(MetaFile dataFile) {
 
-		try {
-			if (configXmlFile.isDirectory() && dataCsvFile.isDirectory()) {
-				FileUtils.deleteDirectory(configXmlFile);
-				FileUtils.deleteDirectory(dataCsvFile);
-			} else {
-				configXmlFile.delete();
-				dataCsvFile.delete();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    File csvFile = null;
+    try {
+      File tempDir = Files.createTempDir();
+      csvFile = new File(tempDir, "geonames_city.csv");
 
+      Files.copy(MetaFiles.getPath(dataFile).toFile(), csvFile);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return csvFile;
+  }
+
+  /**
+   * Import city data
+   *
+   * @param configXmlFile
+   * @param dataCsvFile
+   * @return
+   */
+  private ImportHistory importCityData(File configXmlFile, File dataCsvFile) {
+
+    ImportHistory importHistory = null;
+    try {
+      ImportConfiguration importConfiguration = new ImportConfiguration();
+      importConfiguration.setBindMetaFile(metaFiles.upload(configXmlFile));
+      importConfiguration.setDataMetaFile(metaFiles.upload(dataCsvFile));
+
+      importHistory = factoryImporter.createImporter(importConfiguration).run();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return importHistory;
+  }
+
+  /**
+   * Delete temporary config & data file
+   *
+   * @param configXmlFile
+   * @param dataCsvFile
+   */
+  private void deleteTempFiles(File configXmlFile, File dataCsvFile) {
+
+    try {
+      if (configXmlFile.isDirectory() && dataCsvFile.isDirectory()) {
+        FileUtils.deleteDirectory(configXmlFile);
+        FileUtils.deleteDirectory(dataCsvFile);
+      } else {
+        configXmlFile.delete();
+        dataCsvFile.delete();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }

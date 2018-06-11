@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -44,126 +39,144 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
-public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl  {
+public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
-	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
-	protected PurchaseOrderLineService purchaseOrderLineService;
-	protected PurchaseOrderRepository purchaseOrderRepo;
-	protected TemplateRepository templateRepo;
-	protected TemplateMessageService templateMessageService;
-	protected MessageRepository messageRepo;
-	
-	@Inject
-	public StockRulesServiceSupplychainImpl(StockRulesRepository stockRuleRepo, PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl, PurchaseOrderLineService purchaseOrderLineService, 
-			PurchaseOrderRepository purchaseOrderRepo, TemplateRepository templateRepo, TemplateMessageService templateMessageService, MessageRepository messageRepo) {
-		super(stockRuleRepo);
-		this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
-		this.purchaseOrderLineService = purchaseOrderLineService;
-		this.purchaseOrderRepo = purchaseOrderRepo;
-		this.templateRepo = templateRepo;
-		this.templateMessageService = templateMessageService;
-		this.messageRepo = messageRepo;
-		
-	}
+  protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  protected PurchaseOrderLineService purchaseOrderLineService;
+  protected PurchaseOrderRepository purchaseOrderRepo;
+  protected TemplateRepository templateRepo;
+  protected TemplateMessageService templateMessageService;
+  protected MessageRepository messageRepo;
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException  {
+  @Inject
+  public StockRulesServiceSupplychainImpl(
+      StockRulesRepository stockRuleRepo,
+      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
+      PurchaseOrderLineService purchaseOrderLineService,
+      PurchaseOrderRepository purchaseOrderRepo,
+      TemplateRepository templateRepo,
+      TemplateMessageService templateMessageService,
+      MessageRepository messageRepo) {
+    super(stockRuleRepo);
+    this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
+    this.purchaseOrderLineService = purchaseOrderLineService;
+    this.purchaseOrderRepo = purchaseOrderRepo;
+    this.templateRepo = templateRepo;
+    this.templateMessageService = templateMessageService;
+    this.messageRepo = messageRepo;
+  }
 
-		StockLocation stockLocation = stockLocationLine.getStockLocation();
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generatePurchaseOrder(
+      Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
+      throws AxelorException {
 
-		//TODO à supprimer après suppression des variantes
-		if(stockLocation == null)  {
-			return;
-		}
+    StockLocation stockLocation = stockLocationLine.getStockLocation();
 
-		StockRules stockRules = this.getStockRules(product, stockLocation, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
+    // TODO à supprimer après suppression des variantes
+    if (stockLocation == null) {
+      return;
+    }
 
-		if(stockRules == null)  {
-			return;
-		}
+    StockRules stockRules =
+        this.getStockRules(
+            product, stockLocation, type, StockRulesRepository.USE_CASE_STOCK_CONTROL);
 
-		if(this.useMinStockRules(stockLocationLine, stockRules, qty, type))  {
+    if (stockRules == null) {
+      return;
+    }
 
-			if(stockRules.getOrderAlertSelect() ==  StockRulesRepository.ORDER_ALERT_ALERT)  {
+    if (this.useMinStockRules(stockLocationLine, stockRules, qty, type)) {
 
-				Template template = templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true",  StockRules.class.getName()).fetchOne();
-				try {
-					Message message = templateMessageService.generateMessage(stockRules, template);
-					messageRepo.save(message);
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
-					throw new AxelorException(e, IException.TECHNICAL);
-				}
-			}
-			else if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {
+      if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_ALERT) {
 
+        Template template =
+            templateRepo
+                .all()
+                .filter(
+                    "self.metaModel.fullName = ?1 AND self.isSystem != true",
+                    StockRules.class.getName())
+                .fetchOne();
+        try {
+          Message message = templateMessageService.generateMessage(stockRules, template);
+          messageRepo.save(message);
+        } catch (ClassNotFoundException
+            | InstantiationException
+            | IllegalAccessException
+            | IOException e) {
+          throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
+        }
+      } else if (stockRules.getOrderAlertSelect()
+          == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
 
-			}
-			else if(stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PURCHASE_ORDER)  {
+      } else if (stockRules.getOrderAlertSelect()
+          == StockRulesRepository.ORDER_ALERT_PURCHASE_ORDER) {
 
-				BigDecimal minReorderQty = getDefaultSupplierMinQty(product);
-				BigDecimal qtyToOrder = this.getQtyToOrder(qty, stockLocationLine, type, stockRules, minReorderQty);
-				Partner supplierPartner = product.getDefaultSupplierPartner();
+        BigDecimal minReorderQty = getDefaultSupplierMinQty(product);
+        BigDecimal qtyToOrder =
+            this.getQtyToOrder(qty, stockLocationLine, type, stockRules, minReorderQty);
+        Partner supplierPartner = product.getDefaultSupplierPartner();
 
-				if(supplierPartner != null)  {
+        if (supplierPartner != null) {
 
-					Company company = stockLocation.getCompany();
-					LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
+          Company company = stockLocation.getCompany();
+          LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
 
-					PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-							AuthUtils.getUser(),
-							company,
-							null,
-							supplierPartner.getCurrency(),
-							today.plusDays(supplierPartner.getDeliveryDelay()),
-							stockRules.getName(),
-							null,
-							stockLocation,
-							today,
-							Beans.get(PartnerPriceListService.class).getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
-							supplierPartner));
+          PurchaseOrder purchaseOrder =
+              purchaseOrderRepo.save(
+                  purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+                      AuthUtils.getUser(),
+                      company,
+                      null,
+                      supplierPartner.getCurrency(),
+                      today.plusDays(supplierPartner.getDeliveryDelay()),
+                      stockRules.getName(),
+                      null,
+                      stockLocation,
+                      today,
+                      Beans.get(PartnerPriceListService.class)
+                          .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
+                      supplierPartner,
+                      null));
 
-					purchaseOrder.addPurchaseOrderLineListItem(
-							purchaseOrderLineService.createPurchaseOrderLine(
-									purchaseOrder,
-									product,
-									null,
-									null,
-									qtyToOrder,
-									product.getUnit()));
+          purchaseOrder.addPurchaseOrderLineListItem(
+              purchaseOrderLineService.createPurchaseOrderLine(
+                  purchaseOrder, product, null, null, qtyToOrder, product.getUnit()));
 
-					purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+          purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
-					purchaseOrderRepo.save(purchaseOrder);
+          purchaseOrderRepo.save(purchaseOrder);
+        }
+      }
+    }
+  }
 
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Get minimum quantity from default supplier.
-	 * 
-	 * @param product
-	 * @return
-	 */
-	private BigDecimal getDefaultSupplierMinQty(Product product) {
-		Partner defaultSupplierPartner = product.getDefaultSupplierPartner();
-		List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();
-		if (defaultSupplierPartner != null && supplierCatalogList != null) {
-			for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-				if (supplierCatalog.getSupplierPartner().equals(defaultSupplierPartner)) {
-					return supplierCatalog.getMinQty();
-				}
-			}
-		}
-		return BigDecimal.ZERO;
-	}
-
+  /**
+   * Get minimum quantity from default supplier.
+   *
+   * @param product
+   * @return
+   */
+  private BigDecimal getDefaultSupplierMinQty(Product product) {
+    Partner defaultSupplierPartner = product.getDefaultSupplierPartner();
+    List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();
+    if (defaultSupplierPartner != null && supplierCatalogList != null) {
+      for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+        if (supplierCatalog.getSupplierPartner().equals(defaultSupplierPartner)) {
+          return supplierCatalog.getMinQty();
+        }
+      }
+    }
+    return BigDecimal.ZERO;
+  }
 }

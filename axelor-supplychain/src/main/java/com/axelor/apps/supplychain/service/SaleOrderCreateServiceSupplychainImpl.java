@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -45,116 +38,174 @@ import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServiceImpl {
-	
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	protected AccountConfigService accountConfigService;
-	protected SaleOrderRepository saleOrderRepository;
 
-	@Inject
-	public SaleOrderCreateServiceSupplychainImpl(PartnerService partnerService, SaleOrderRepository saleOrderRepo, 
-			AppSaleService appSaleService, SaleOrderService saleOrderService, SaleOrderComputeService saleOrderComputeService, 
-			AccountConfigService accountConfigService, SaleOrderRepository saleOrderRepository) {
-		
-		super(partnerService, saleOrderRepo, 
-				appSaleService, saleOrderService, saleOrderComputeService);
-		
-		this.accountConfigService = accountConfigService;
-		this.saleOrderRepository = saleOrderRepository;
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	}
-	
-	
-	
-	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, StockLocation stockLocation, LocalDate orderDate,
-			PriceList priceList, Partner clientPartner, Team team) throws AxelorException  {
+  protected AccountConfigService accountConfigService;
+  protected SaleOrderRepository saleOrderRepository;
 
-		logger.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
-				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
+  @Inject
+  public SaleOrderCreateServiceSupplychainImpl(
+      PartnerService partnerService,
+      SaleOrderRepository saleOrderRepo,
+      AppSaleService appSaleService,
+      SaleOrderService saleOrderService,
+      SaleOrderComputeService saleOrderComputeService,
+      AccountConfigService accountConfigService,
+      SaleOrderRepository saleOrderRepository) {
 
-		SaleOrder saleOrder = super.createSaleOrder(buyerUser, company, contactPartner, currency, deliveryDate, internalReference,
-				externalReference, orderDate, priceList, clientPartner, team);
+    super(partnerService, saleOrderRepo, appSaleService, saleOrderService, saleOrderComputeService);
 
-		if(stockLocation == null)  {
-			stockLocation = Beans.get(StockLocationService.class).getDefaultStockLocation(company);
-		}
-		
-		saleOrder.setStockLocation(stockLocation);
+    this.accountConfigService = accountConfigService;
+    this.saleOrderRepository = saleOrderRepository;
+  }
 
-		saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
-		saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
-		
-		if (saleOrder.getPaymentMode() == null) {
-			saleOrder.setPaymentMode(
-					this.accountConfigService
-					.getAccountConfig(company)
-					.getInPaymentMode()
-				);
-		}
+  @Override
+  public SaleOrder createSaleOrder(
+      User salemanUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      LocalDate orderDate,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team)
+      throws AxelorException {
+    return createSaleOrder(
+        salemanUser,
+        company,
+        contactPartner,
+        currency,
+        deliveryDate,
+        internalReference,
+        externalReference,
+        null,
+        orderDate,
+        priceList,
+        clientPartner,
+        team);
+  }
 
-		if (saleOrder.getPaymentCondition() == null) {
-			saleOrder.setPaymentCondition(
-					this.accountConfigService
-					.getAccountConfig(company)
-					.getDefPaymentCondition()
-				);
-		}
-		
-		saleOrder.setShipmentMode(clientPartner.getShipmentMode());
-		saleOrder.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
+  public SaleOrder createSaleOrder(
+      User salemanUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      StockLocation stockLocation,
+      LocalDate orderDate,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team)
+      throws AxelorException {
 
-		return saleOrder;
-	}
-	
+    logger.debug(
+        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
+        company.getName(),
+        externalReference,
+        clientPartner.getFullName());
 
-	@Transactional
-	public SaleOrder mergeSaleOrders(List<SaleOrder> saleOrderList, Currency currency,
-			Partner clientPartner, Company company, StockLocation stockLocation, Partner contactPartner,
-			PriceList priceList, Team team) throws AxelorException{
-		String numSeq = "";
-		String externalRef = "";
-		for (SaleOrder saleOrderLocal : saleOrderList) {
-			if (!numSeq.isEmpty()){
-				numSeq += "-";
-			}
-			numSeq += saleOrderLocal.getSaleOrderSeq();
+    SaleOrder saleOrder =
+        super.createSaleOrder(
+            salemanUser,
+            company,
+            contactPartner,
+            currency,
+            deliveryDate,
+            internalReference,
+            externalReference,
+            orderDate,
+            priceList,
+            clientPartner,
+            team);
 
-			if (!externalRef.isEmpty()){
-				externalRef += "|";
-			}
-			if (saleOrderLocal.getExternalReference() != null){
-				externalRef += saleOrderLocal.getExternalReference();
-			}
-		}
+    if (stockLocation == null) {
+      stockLocation = Beans.get(StockLocationService.class).getPickupDefaultStockLocation(company);
+    }
 
-		SaleOrder saleOrderMerged = this.createSaleOrder(
-				AuthUtils.getUser(),
-				company,
-				contactPartner,
-				currency,
-				null,
-				numSeq,
-				externalRef,
-				stockLocation,
-				LocalDate.now(),
-				priceList,
-				clientPartner,
-				team);
+    saleOrder.setStockLocation(stockLocation);
 
-		super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
+    saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
+    saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
 
-		saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+    if (saleOrder.getPaymentMode() == null) {
+      saleOrder.setPaymentMode(
+          this.accountConfigService.getAccountConfig(company).getInPaymentMode());
+    }
 
-		saleOrderRepository.save(saleOrderMerged);
+    if (saleOrder.getPaymentCondition() == null) {
+      saleOrder.setPaymentCondition(
+          this.accountConfigService.getAccountConfig(company).getDefPaymentCondition());
+    }
 
-		super.removeOldSaleOrders(saleOrderList);
+    saleOrder.setShipmentMode(clientPartner.getShipmentMode());
+    saleOrder.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
 
-		return saleOrderMerged;
-	}
+    return saleOrder;
+  }
 
+  @Transactional
+  public SaleOrder mergeSaleOrders(
+      List<SaleOrder> saleOrderList,
+      Currency currency,
+      Partner clientPartner,
+      Company company,
+      StockLocation stockLocation,
+      Partner contactPartner,
+      PriceList priceList,
+      Team team)
+      throws AxelorException {
+    String numSeq = "";
+    String externalRef = "";
+    for (SaleOrder saleOrderLocal : saleOrderList) {
+      if (!numSeq.isEmpty()) {
+        numSeq += "-";
+      }
+      numSeq += saleOrderLocal.getSaleOrderSeq();
 
+      if (!externalRef.isEmpty()) {
+        externalRef += "|";
+      }
+      if (saleOrderLocal.getExternalReference() != null) {
+        externalRef += saleOrderLocal.getExternalReference();
+      }
+    }
 
+    SaleOrder saleOrderMerged =
+        this.createSaleOrder(
+            AuthUtils.getUser(),
+            company,
+            contactPartner,
+            currency,
+            null,
+            numSeq,
+            externalRef,
+            stockLocation,
+            LocalDate.now(),
+            priceList,
+            clientPartner,
+            team);
+
+    super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
+
+    saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+
+    saleOrderRepository.save(saleOrderMerged);
+
+    super.removeOldSaleOrders(saleOrderList);
+
+    return saleOrderMerged;
+  }
 }

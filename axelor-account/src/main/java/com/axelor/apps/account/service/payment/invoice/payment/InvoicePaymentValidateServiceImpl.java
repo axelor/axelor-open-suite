@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -49,150 +42,185 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
-public class InvoicePaymentValidateServiceImpl  implements  InvoicePaymentValidateService  {
-	
-	protected PaymentModeService paymentModeService;
-	protected MoveService moveService;
-	protected MoveLineService moveLineService;
-	protected AccountConfigService accountConfigService;
-	protected InvoicePaymentRepository invoicePaymentRepository;
-	protected ReconcileService reconcileService;
-	protected InvoicePaymentToolService invoicePaymentToolService;
+public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidateService {
 
-	
-	@Inject
-	public InvoicePaymentValidateServiceImpl(PaymentModeService paymentModeService, MoveService moveService, MoveLineService moveLineService, 
-			AccountConfigService accountConfigService, InvoicePaymentRepository invoicePaymentRepository,  
-			ReconcileService reconcileService, InvoicePaymentToolService invoicePaymentToolService)  {
-		
-		this.paymentModeService = paymentModeService;
-		this.moveService = moveService;
-		this.moveLineService = moveLineService;
-		this.accountConfigService = accountConfigService;
-		this.invoicePaymentRepository = invoicePaymentRepository;
-		this.reconcileService = reconcileService;
-		this.invoicePaymentToolService = invoicePaymentToolService;
-		
-	}
-	
-	
-	
-	/**
-	 * Method to validate an invoice Payment
-	 * 
-	 * Create the eventual move (depending general configuration) and reconcile it with the invoice move
-	 * Compute the amount paid on invoice
-	 * Change the status to validated
-	 * 
-	 * @param invoicePayment
-	 * 			An invoice payment
-	 * 
-	 * @throws AxelorException
-	 * @throws DatatypeConfigurationException 
-	 * @throws IOException 
-	 * @throws JAXBException 
-	 * 		
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(InvoicePayment invoicePayment) throws AxelorException, JAXBException, IOException, DatatypeConfigurationException  {
-		
-		if(invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT)  {  return;  }
-		
-		invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-		
-		//TODO assign an automatic reference
-		
-		Company company = invoicePayment.getInvoice().getCompany();
-				
-		if(accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment())  {
-			this.createMoveForInvoicePayment(invoicePayment);
-		} else {
-			Beans.get(AccountingSituationService.class).updateCustomerCredit(invoicePayment.getInvoice().getPartner());
-		}
-		
-		invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-		if (invoicePayment.getInvoice() != null
-				&& invoicePayment.getInvoice().getOperationSubTypeSelect()
-				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-			invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
-		}
-		invoicePaymentRepository.save(invoicePayment);
-	}
-	
-	
-	/**
-	 * Method to create a payment move for an invoice Payment
-	 * 
-	 * Create a move and reconcile it with the invoice move
-	 * 
-	 * @param invoicePayment
-	 * 			An invoice payment
-	 * 
-	 * @throws AxelorException
-	 * 		
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException  {
-		
-		Invoice invoice = invoicePayment.getInvoice();
-		Company company = invoice.getCompany();
-		PaymentMode paymentMode = invoicePayment.getPaymentMode();
-		Partner partner = invoice.getPartner();
-		LocalDate paymentDate = invoicePayment.getPaymentDate();
-		BigDecimal paymentAmount = invoicePayment.getAmount();
-		BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
+  protected PaymentModeService paymentModeService;
+  protected MoveService moveService;
+  protected MoveLineService moveLineService;
+  protected AccountConfigService accountConfigService;
+  protected InvoicePaymentRepository invoicePaymentRepository;
+  protected ReconcileService reconcileService;
+  protected InvoicePaymentToolService invoicePaymentToolService;
 
-		Account customerAccount;
+  @Inject
+  public InvoicePaymentValidateServiceImpl(
+      PaymentModeService paymentModeService,
+      MoveService moveService,
+      MoveLineService moveLineService,
+      AccountConfigService accountConfigService,
+      InvoicePaymentRepository invoicePaymentRepository,
+      ReconcileService reconcileService,
+      InvoicePaymentToolService invoicePaymentToolService) {
 
-		Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
-		
-		boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
+    this.paymentModeService = paymentModeService;
+    this.moveService = moveService;
+    this.moveLineService = moveLineService;
+    this.accountConfigService = accountConfigService;
+    this.invoicePaymentRepository = invoicePaymentRepository;
+    this.reconcileService = reconcileService;
+    this.invoicePaymentToolService = invoicePaymentToolService;
+  }
 
-		MoveLine invoiceMoveLine = moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
+  /**
+   * Method to validate an invoice Payment
+   *
+   * <p>Create the eventual move (depending general configuration) and reconcile it with the invoice
+   * move Compute the amount paid on invoice Change the status to validated
+   *
+   * @param invoicePayment An invoice payment
+   * @throws AxelorException
+   * @throws DatatypeConfigurationException
+   * @throws IOException
+   * @throws JAXBException
+   */
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validate(InvoicePayment invoicePayment, boolean force)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-		if (invoice.getOperationSubTypeSelect()
-				== InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
+      return;
+    }
 
-			AccountConfig accountConfig = accountConfigService
-					.getAccountConfig(company);
+    invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
-		    customerAccount = accountConfigService
-					.getAdvancePaymentAccount(accountConfig);
-		} else {
-			if (invoiceMoveLine == null) {
-			    return null;
-			}
-			customerAccount = invoiceMoveLine.getAccount();
-		}
-		
-		Move move = moveService.getMoveCreateService().createMove(journal, company, invoicePayment.getCurrency(), partner, paymentDate, paymentMode, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-		
-		move.addMoveLineListItem(moveLineService.createMoveLine(move, partner, paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails), 
-				paymentAmount, isDebitInvoice, paymentDate, null, 1, ""));
+    // TODO assign an automatic reference
 
-		MoveLine customerMoveLine = moveLineService.createMoveLine(move, partner, customerAccount,
-				paymentAmount, !isDebitInvoice, paymentDate, null, 2, "");
-		customerMoveLine.setTaxAmount(invoice.getTaxTotal());
+    Company company = invoicePayment.getInvoice().getCompany();
 
-		move.addMoveLineListItem(customerMoveLine);
-		
-		moveService.getMoveValidateService().validate(move);
+    if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
+      this.createMoveForInvoicePayment(invoicePayment);
+    } else {
+      Beans.get(AccountingSituationService.class)
+          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+    }
 
-		if (invoice.getOperationSubTypeSelect()
-				!= InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-			Reconcile reconcile = reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+    if (invoicePayment.getInvoice() != null
+        && invoicePayment.getInvoice().getOperationSubTypeSelect()
+            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
+    }
+    invoicePaymentRepository.save(invoicePayment);
+  }
 
-			invoicePayment.setReconcile(reconcile);
-		}
-		invoicePayment.setMove(move);
-		
-		invoicePaymentRepository.save(invoicePayment);
-		
-		return move;
-	}
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validate(InvoicePayment invoicePayment)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+    validate(invoicePayment, false);
+  }
 
-	
+  /**
+   * Method to create a payment move for an invoice Payment
+   *
+   * <p>Create a move and reconcile it with the invoice move
+   *
+   * @param invoicePayment An invoice payment
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException {
 
-	
+    Invoice invoice = invoicePayment.getInvoice();
+    Company company = invoice.getCompany();
+    PaymentMode paymentMode = invoicePayment.getPaymentMode();
+    Partner partner = invoice.getPartner();
+    LocalDate paymentDate = invoicePayment.getPaymentDate();
+    BigDecimal paymentAmount = invoicePayment.getAmount();
+    BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
+
+    Account customerAccount;
+
+    Journal journal =
+        paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
+
+    boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
+
+    MoveLine invoiceMoveLine =
+        moveService.getMoveToolService().getInvoiceCustomerMoveLineByLoop(invoice);
+
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+      customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+    } else {
+      if (invoiceMoveLine == null) {
+        return null;
+      }
+      customerAccount = invoiceMoveLine.getAccount();
+    }
+
+    Move move =
+        moveService
+            .getMoveCreateService()
+            .createMove(
+                journal,
+                company,
+                invoicePayment.getCurrency(),
+                partner,
+                paymentDate,
+                paymentMode,
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+
+    move.addMoveLineListItem(
+        moveLineService.createMoveLine(
+            move,
+            partner,
+            paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+            paymentAmount,
+            isDebitInvoice,
+            paymentDate,
+            null,
+            1,
+            invoicePayment.getInvoicePaymentRef(),
+            null));
+
+    MoveLine customerMoveLine =
+        moveLineService.createMoveLine(
+            move,
+            partner,
+            customerAccount,
+            paymentAmount,
+            !isDebitInvoice,
+            paymentDate,
+            null,
+            2,
+            invoicePayment.getInvoicePaymentRef(),
+            null);
+    customerMoveLine.setTaxAmount(invoice.getTaxTotal());
+
+    move.addMoveLineListItem(customerMoveLine);
+
+    moveService.getMoveValidateService().validate(move);
+
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      Reconcile reconcile =
+          reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
+
+      invoicePayment.setReconcile(reconcile);
+    }
+    invoicePayment.setMove(move);
+
+    invoicePaymentRepository.save(invoicePayment);
+
+    return move;
+  }
 }

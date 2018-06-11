@@ -17,16 +17,6 @@
  */
 package com.axelor.studio.web;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.xmlbeans.impl.common.IOUtil;
-
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
@@ -38,74 +28,82 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.Map;
+import org.apache.commons.io.FileUtils;
+import org.apache.xmlbeans.impl.common.IOUtil;
 
 public class AppBuilderController {
-	
-	@Inject
-	private MetaFileRepository metaFileRepo;
-	
-	@Transactional
-	public void importBpm(ActionRequest request, ActionResponse response) {
-		
-		String config = "/data-import/import-bpm.xml";
-		
-		try {
-			InputStream inputStream = this.getClass().getResourceAsStream(config);
-			File configFile = File.createTempFile("config", ".xml");
-			FileOutputStream fout = new FileOutputStream(configFile);
-			IOUtil.copyCompletely(inputStream, fout);
-			
-			@SuppressWarnings("rawtypes")
-			Path path = MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
-			File tempDir = Files.createTempDir();
-			File importFile = new File(tempDir, "bpm.xml");
-			Files.copy(path.toFile(), importFile);
-			
-			XMLImporter importer = new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
-			final StringBuilder log = new StringBuilder();
-			Listener listner = new Listener() {
-				
-				@Override
-				public void imported(Integer imported, Integer total) {
-//					log.append("Total records: " + total + ", Total imported: " + total);
-					
-				}
-				
-				@Override
-				public void imported(Model arg0) {
-				}
-				
-				@Override
-				public void handle(Model arg0, Exception err) {
-					log.append("Error in import: " + err.getStackTrace().toString());
-				}
-			};
-			
-			importer.addListener(listner);
-			
-			importer.run();
-			
-			FileUtils.forceDelete(configFile);
-			
-			FileUtils.forceDelete(tempDir);
-			
-			FileUtils.forceDelete(path.toFile());
-			
-			@SuppressWarnings("unchecked")
-			Object metaFileId =  ((Map<String,Object>) request.getContext().get("dataFile")).get("id");
-			
-			if (metaFileId != null) {
-				MetaFile metaFile = metaFileRepo.find(Long.parseLong(metaFileId.toString()));
-				if (metaFile != null) {
-					metaFileRepo.remove(metaFile);
-				}
-			}
-			
-			response.setValue("importLog", log.toString());
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-	}
-	
+
+  @Inject private MetaFileRepository metaFileRepo;
+
+  @Transactional
+  public void importBpm(ActionRequest request, ActionResponse response) {
+
+    String config = "/data-import/import-bpm.xml";
+
+    try {
+      InputStream inputStream = this.getClass().getResourceAsStream(config);
+      File configFile = File.createTempFile("config", ".xml");
+      FileOutputStream fout = new FileOutputStream(configFile);
+      IOUtil.copyCompletely(inputStream, fout);
+
+      @SuppressWarnings("rawtypes")
+      Path path =
+          MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
+      File tempDir = Files.createTempDir();
+      File importFile = new File(tempDir, "bpm.xml");
+      Files.copy(path.toFile(), importFile);
+
+      XMLImporter importer =
+          new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
+      final StringBuilder log = new StringBuilder();
+      Listener listner =
+          new Listener() {
+
+            @Override
+            public void imported(Integer imported, Integer total) {
+              //					log.append("Total records: " + total + ", Total imported: " + total);
+
+            }
+
+            @Override
+            public void imported(Model arg0) {}
+
+            @Override
+            public void handle(Model arg0, Exception err) {
+              log.append("Error in import: " + err.getStackTrace().toString());
+            }
+          };
+
+      importer.addListener(listner);
+
+      importer.run();
+
+      FileUtils.forceDelete(configFile);
+
+      FileUtils.forceDelete(tempDir);
+
+      FileUtils.forceDelete(path.toFile());
+
+      @SuppressWarnings("unchecked")
+      Object metaFileId = ((Map<String, Object>) request.getContext().get("dataFile")).get("id");
+
+      if (metaFileId != null) {
+        MetaFile metaFile = metaFileRepo.find(Long.parseLong(metaFileId.toString()));
+        if (metaFile != null) {
+          metaFileRepo.remove(metaFile);
+        }
+      }
+
+      response.setValue("importLog", log.toString());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }

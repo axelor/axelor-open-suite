@@ -78,7 +78,6 @@
     <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
     <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
 	<string name="cancelReasonStr" title="Cancel Reason" large="true"/>
-    <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
     <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
     
     <boolean name="hideDiscount" title="Hide Discount on prints?"/>
@@ -118,17 +117,13 @@
 
  	<unique-constraint columns="saleOrderSeq,company"/>
 
- 	//TODO move into supplychain ?
     <extra-code>
    		<![CDATA[
-   			public static final int STATE_NOT_DELIVERED = 1;
-   			public static final int STATE_PARTIALLY_DELIVERED = 2;
-   			public static final int STATE_DELIVERED = 3;
-
-			public static final int STATUS_DRAFT = 1;
-			public static final int STATUS_FINALIZED = 2;
-			public static final int STATUS_CONFIRMED = 3;
-			public static final int STATUS_FINISHED = 4;
+            // STATUS   
+			public static final int STATUS_DRAFT_QUOTATION = 1;
+			public static final int STATUS_FINALIZED_QUOTATION = 2;
+			public static final int STATUS_ORDER_CONFIRMED = 3;
+			public static final int STATUS_ORDER_COMPLETED = 4;
 			public static final int STATUS_CANCELED = 5;
    		]]>
    	</extra-code>
@@ -140,11 +135,11 @@
       <field name="creationDate" on="CREATE" />
       <field name="confirmationDate" on="UPDATE"/>
       <field name="inTaxTotal" />
-      <message if="true" on="CREATE">Sale order created</message>
-      <message if="statusSelect == 1" tag="important">Draft</message>
-      <message if="statusSelect == 2" tag="info">Finalize</message>
+      <message if="true" on="CREATE">Quotation/sale order created</message>
+      <message if="statusSelect == 1" tag="important">Draft quotation</message>
+      <message if="statusSelect == 2" tag="info">Finalized quotation</message>
       <message if="statusSelect == 3" tag="success">Order confirmed</message>
-      <message if="statusSelect == 4" tag="success">Finished</message>
+      <message if="statusSelect == 4" tag="success">Order completed</message>
       <message if="statusSelect == 5" tag="warning">Canceled</message>
     </track>
     

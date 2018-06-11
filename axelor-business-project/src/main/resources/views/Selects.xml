@@ -24,12 +24,6 @@
 		<option value="3">With percentage</option>
 	</selection>
 	
-	<selection name="business.project.default.invoice.type.select">
-		<option value="1">BusinessProject.Order</option>
-		<option value="2">Timesheet</option>
-		<option value="3">Expense</option>
-	</selection>
-	
 	<selection name="invoicing.project.status.select">
 		<option value="0">Draft</option>
 		<option value="1">Waiting approval</option>
