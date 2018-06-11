@@ -86,8 +86,10 @@
         		<panel-related field="calendarManagementList" colSpan="12"/>
         		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
-		    <panel name="electronicSignature" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')">
+		    <panel name="electronicSignature" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock')">
 		    	<field name="electronicSignature" widget="Image" />
+					<field name="useSignatureForQuotations" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')"/>
+					<field name="useSignatureForStock" if="__config__.app.isApp('stock')"/>
 		    </panel>
 		    <panel-related field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
         </panel-tabs>

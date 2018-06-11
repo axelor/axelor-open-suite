@@ -197,9 +197,9 @@
                         </viewer>
                     </field>
                 </panel>
-							<field name="isNeedingConformityCertificate"/>
-							<field name="isConformityCertifSigned"/>
-							<field name="electronicSignature"/>
+							<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
+							<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-set-electronic-signature"/>
+							<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
             </panel>
 
             <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms"/>
@@ -404,6 +404,15 @@
 	<action-record name="action-stock-move-record-partner-delivery-informations" model="com.axelor.apps.stock.db.StockMove">
     	<field name="shipmentMode" expr="eval: partner?.shipmentMode"/>	
     	<field name="freightCarrierMode" expr="eval: partner?.freightCarrierMode"/>
+	</action-record>
+
+	<action-record name="action-stock-move-record-set-electronic-signature" model="com.axelor.apps.stock.db.StockMove">
+		<field name="electronicSignature" expr="eval: (__user__?.useSignatureForStock &amp;&amp; isConformityCertifSigned) ? __user__.electronicSignature : null"/>
+	</action-record>
+
+	<action-record name="action-stock-move-record-unset-certificate-signed" model="com.axelor.apps.stock.db.StockMove">
+		<field name="isConformityCertifSigned" if="!isNeedingConformityCertificate" expr="eval: false"/>
+		<field name="electronicSignature" if="!isNeedingConformityCertificate" expr="eval:null"/>
 	</action-record>
 	
 	<action-method name="action-stock-move-method-plan">
