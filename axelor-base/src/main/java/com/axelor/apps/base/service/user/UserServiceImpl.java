@@ -37,10 +37,12 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +51,8 @@ import javax.mail.MessagingException;
 import javax.validation.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.exception.TooManyIterationsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** UserService is a class that implement all methods for user informations */
 public class UserServiceImpl implements UserService {
@@ -66,6 +70,9 @@ public class UserServiceImpl implements UserService {
   private static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
   private static final int GEN_LOOP_LIMIT = 1000;
   private static final SecureRandom random = new SecureRandom();
+
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * Method that return the current connected user
@@ -250,6 +257,9 @@ public class UserServiceImpl implements UserService {
   public User changeUserPassword(User user, Map<String, Object> values)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException {
+    Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
+    Preconditions.checkNotNull(values, I18n.get("User context cannot be null."));
+
     final String oldPassword = (String) values.get("oldPassword");
     final String newPassword = (String) values.get("newPassword");
     final String chkPassword = (String) values.get("chkPassword");
@@ -288,23 +298,33 @@ public class UserServiceImpl implements UserService {
   public void processChangedPassword(User user)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException {
+    Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
 
-    if (!user.getSendEmailUponPasswordChange()) {
-      return;
+    try {
+      if (!user.getSendEmailUponPasswordChange()) {
+        return;
+      }
+
+      if (user.equals(AuthUtils.getUser())) {
+        logger.debug("User {} changed own password.", user.getCode());
+        return;
+      }
+
+      Template template = Beans.get(AppBaseService.class).getAppBase().getPasswordChangedTemplate();
+
+      if (template == null) {
+        throw new AxelorException(
+            Template.class,
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get("Template for changed password is missing."));
+      }
+
+      TemplateMessageService templateMessageService = Beans.get(TemplateMessageService.class);
+      templateMessageService.generateAndSendMessage(user, template);
+
+    } finally {
+      user.setTransientPassword(null);
     }
-
-    Template template = Beans.get(AppBaseService.class).getAppBase().getPasswordChangedTemplate();
-
-    if (template == null) {
-      throw new AxelorException(
-          Template.class,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get("Template for changed password is missing."));
-    }
-
-    TemplateMessageService templateMessageService = Beans.get(TemplateMessageService.class);
-    templateMessageService.generateAndSendMessage(user, template);
-    user.setTransientPassword(null);
   }
 
   @Override

@@ -50,8 +50,10 @@
               <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change || !id" validIf="(!change &amp;&amp; id) || newPassword.length >= 4"/>
               <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
             </panel>
-            <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password" colSpan="6"/>
-            <field name="sendEmailUponPasswordChange" colSpan="6"/>
+            <panel name="passwordOptionsPanel" showIf="code != $user">
+              <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
+              <field name="sendEmailUponPasswordChange"/>
+            </panel>
           </panel>
         </panel>
         <panel-tabs>
@@ -109,7 +111,10 @@
                   <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change" validIf="!change || newPassword.length >= 4"/>
                   <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change" validIf="chkPassword === newPassword"/>
                 </panel>
-                <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
+                <panel name="passwordOptionsPanel" hidden="true">
+                  <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
+                  <field name="sendEmailUponPasswordChange"/>
+                </panel>
 			</panel>
 			<field name="email"/>
 			<field name="theme" widget="theme-select"/>
@@ -124,7 +129,6 @@
 		</panel>
 
         <panel hidden="true" colSpan="12">
-          <field name="sendEmailUponPasswordChange"/>
           <field name="transientPassword"/>
         </panel>
 	</form>
