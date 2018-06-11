@@ -22,6 +22,7 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class AccountingReportManagementRepository extends AccountingReportRepository {
@@ -45,5 +46,20 @@ public class AccountingReportManagementRepository extends AccountingReportReposi
       JPA.em().getTransaction().begin();
       throw new PersistenceException(e.getLocalizedMessage());
     }
+  }
+
+  @Override
+  public AccountingReport copy(AccountingReport entity, boolean deep) {
+
+    AccountingReport copy = super.copy(entity, deep);
+
+    copy.setRef(null);
+    copy.setStatusSelect(this.STATUS_DRAFT);
+    copy.setPublicationDateTime(null);
+    copy.setTotalDebit(BigDecimal.ZERO);
+    copy.setTotalCredit(BigDecimal.ZERO);
+    copy.setBalance(BigDecimal.ZERO);
+
+    return copy;
   }
 }
