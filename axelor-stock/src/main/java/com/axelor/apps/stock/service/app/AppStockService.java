@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.stock.service.app;
 
+import com.axelor.apps.base.db.AppStock;
+
 public interface AppStockService {
 
   public void generateStockConfigurations();
+
+  AppStock getAppStock();
 }

@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.stock.service.app;
 
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.AppStockRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
@@ -31,6 +33,8 @@ public class AppStockServiceImpl implements AppStockService {
 
   @Inject private StockConfigRepository stockConfigRepo;
 
+  @Inject private AppStockRepository appStockRepository;
+
   @Override
   @Transactional
   public void generateStockConfigurations() {
@@ -42,5 +46,10 @@ public class AppStockServiceImpl implements AppStockService {
       stockConfig.setCompany(company);
       stockConfigRepo.save(stockConfig);
     }
+  }
+
+  @Override
+  public AppStock getAppStock() {
+    return appStockRepository.all().fetchOne();
   }
 }

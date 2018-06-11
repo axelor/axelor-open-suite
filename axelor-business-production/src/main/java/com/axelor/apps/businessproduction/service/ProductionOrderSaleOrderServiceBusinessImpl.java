@@ -112,9 +112,13 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
             product.getCode());
       }
 
+      if (billOfMaterial.getProdProcess() == null) {
+        return null;
+      }
+
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal qty = saleOrderLine.getQty();
-      if (!unit.equals(saleOrderLine.getUnit())) {
+      if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convertWithProduct(
                 saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());

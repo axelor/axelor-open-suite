@@ -1,0 +1,2 @@
+"modelSelect";"metaModel";"typeSelect";"tabName";"path";"fields";"toDeleteFields"
+"com.axelor.apps.base.db.Partner";"SaleOrder";0;"SaleOrder";"clientPartner";"saleorderSeq,orderDate,statusSelect,contactPartner,mainInvoicingAddress,mainInvoicingAddressStr,deliveryAddress,deliveryAddressStr";"contactPartner,mainInvoicingAddress,mainInvoicingAddressStr,deliveryAddress,deliveryAddressStr"

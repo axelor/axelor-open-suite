@@ -536,9 +536,6 @@
 		<view type="form" name="birt-template-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-maintenance" parent="admin-root" if="__config__.app.isApp('base')"
-		title="Technical maintenance" order="45" />
-
 	<menuitem name="admin-root-maintenance-trace-back" parent="admin-root-maintenance"
 		title="Tracebacks" action="admin.root.maintenance.trace.back" />
 
@@ -581,7 +578,7 @@
 		<view type="grid" name="advanced-export-grid"/>
 		<view type="form" name="advanced-export-form"/>
 	</action-view>
-
+	
 	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"
 			  title="Calendars" order="50"/>
 
