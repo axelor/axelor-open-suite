@@ -158,7 +158,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/50</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -306,6 +306,12 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">gross_mass</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">electronic_signature_file_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">electronic_signature_file_path</text-property>
+                    <text-property name="heading">electronic_signature_file_path</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">conformity_certificate_title</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">conformity_certificate_title</text-property>
@@ -327,6 +333,7 @@ else row["last_modified_by"]</expression>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -445,16 +452,21 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">23</property>
-                        <property name="name">conformity_certificate_title</property>
+                        <property name="name">electronic_signature_file_path</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">24</property>
-                        <property name="name">conformity_certificate_description</property>
+                        <property name="name">conformity_certificate_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">25</property>
+                        <property name="name">conformity_certificate_description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -618,13 +630,20 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">23</property>
+                    <property name="name">electronic_signature_file_path</property>
+                    <property name="nativeName">electronic_signature_file_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
                     <property name="name">conformity_certificate_title</property>
                     <property name="nativeName">conformity_certificate_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">24</property>
+                    <property name="position">25</property>
                     <property name="name">conformity_certificate_description</property>
                     <property name="nativeName">conformity_certificate_description</property>
                     <property name="dataType">string</property>
@@ -642,6 +661,7 @@ StockMove.num_of_packages,
 StockMove.tracking_number,
 StockMove.num_of_palettes,
 StockMove.gross_mass,
+SignatureFile.file_path as "electronic_signature_file_path",
 StockConfig.conformity_certificate_title,
 StockConfig.conformity_certificate_description
 from stock_stock_move as StockMove
@@ -657,6 +677,7 @@ left join auth_user as AuthUserCreate on (StockMove.created_by = AuthUserCreate.
 left join base_printing_settings as PrintingSetting on (StockMove.printing_settings = PrintingSetting.id)
 left join sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
 left join purchase_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
+left join meta_file as SignatureFile on StockMove.electronic_signature = SignatureFile.id
 where StockMove.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1304,6 +1325,15 @@ select * from conformity_certificate_sale_order(cast(? as bigint));]]></xml-prop
             <page-footer>
                 <grid id="4235">
                     <property name="height">1.9314583333333333cm</property>
+                    <property name="dataSet">StockMoveDS</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">electronic_signature_file_path</property>
+                            <text-property name="displayName">electronic_signature_file_path</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["electronic_signature_file_path"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                    </list-property>
                     <column id="4236"/>
                     <column id="4237"/>
                     <column id="4238"/>
@@ -1380,7 +1410,19 @@ select * from conformity_certificate_sale_order(cast(? as bigint));]]></xml-prop
                                 <text-property name="content"><![CDATA[<value-of format="dd/MM/YYYY">new Date()</value-of>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="4252"/>
+                        <cell id="4252">
+                            <image id="4256">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["electronic_signature_file_path"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["electronic_signature_file_path"]</expression>
+                            </image>
+                        </cell>
                         <cell id="4253">
                             <text id="4254">
                                 <property name="dataSet">TranslateDS</property>
