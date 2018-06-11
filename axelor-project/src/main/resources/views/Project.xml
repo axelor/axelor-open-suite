@@ -212,7 +212,7 @@
 			</panel>
 
 			<panel name="wiki" title="Wiki">
-        <panel-dashlet action="action-wiki-view-incl-project" colSpan="12"/>
+				<panel-related field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
 			</panel>
 
 			<panel name="configurations" title="Configurations">
