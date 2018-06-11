@@ -8,6 +8,11 @@
 		<field name="content"/>
 		<field name="project"/>
 	</grid>
+
+	<grid title="Wiki" name="wiki-grid-incl-project" model="com.axelor.apps.project.db.Wiki">
+		<field name="title"/>
+		<field name="content"/>
+	</grid>
 	
 	<form name="wiki-form" title="Wiki"  model="com.axelor.apps.project.db.Wiki" width="large">
 		<panel>
@@ -16,5 +21,12 @@
 			<field name="content" widget="HTML" colSpan="12"/>
 		</panel>
 	</form>
+
+	<action-view name="action-wiki-view-incl-project" title="Wiki" model="com.axelor.apps.project.db.Wiki">
+    <view type="grid" name="wiki-grid-incl-project"/>
+		<view type="form" name="wiki-form"/>
+		<domain>self.project.id = :_project</domain>
+    <context name="_project" expr="eval: id"/>
+	</action-view>
 	
 </object-views>
