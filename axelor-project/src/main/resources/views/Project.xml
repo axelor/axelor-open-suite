@@ -202,7 +202,7 @@
 			</panel>
 
 			<panel title="Planned time">
-				<panel-related field="projectPlanningList" form-view="project-planning-form" grid-view="project-planning-grid-incl-project" colSpan="12"/>
+				<panel-related field="projectPlanningList" title="Planned time" form-view="project-planning-form" grid-view="project-planning-grid-incl-project" colSpan="12"/>
 			</panel>
 
 			<panel if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource" name="logTimes" title="Log Times">
