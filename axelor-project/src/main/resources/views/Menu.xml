@@ -51,7 +51,6 @@
 		<view type="form" name="team-task-form"/>
 	</action-view>
 	
-	<menuitem name="project-planning" title="Project planning" order="25" parent="menu-project-root" action="project.planning" />
 	<action-view name="project.planning" title="Project planning" model="com.axelor.apps.project.db.ProjectPlanning">
 		<view type="form" name="project-planning-user-select-form"/>
 		<view-param name="show-confirm" value="false"/>
