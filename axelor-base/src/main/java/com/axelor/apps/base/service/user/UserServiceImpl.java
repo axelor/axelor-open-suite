@@ -47,6 +47,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.mail.MessagingException;
 import javax.validation.ValidationException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.exception.TooManyIterationsException;
 
 /** UserService is a class that implement all methods for user informations */
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
   private static final String GEN_CHARS =
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-  private static final int GEN_LEN = 12;
+  private static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
   private static final int GEN_LOOP_LIMIT = 1000;
   private static final SecureRandom random = new SecureRandom();
 
@@ -309,9 +310,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public CharSequence generateRandomPassword() {
     for (int genLoopIndex = 0; genLoopIndex < GEN_LOOP_LIMIT; ++genLoopIndex) {
-      StringBuilder sb = new StringBuilder(GEN_LEN);
+      int len = random.ints(GEN_BOUNDS.getLeft(), GEN_BOUNDS.getRight()).findFirst().getAsInt();
+      StringBuilder sb = new StringBuilder(len);
 
-      for (int i = 0; i < GEN_LEN; ++i) {
+      for (int i = 0; i < len; ++i) {
         sb.append(GEN_CHARS.charAt(random.nextInt(GEN_CHARS.length())));
       }
 
