@@ -137,6 +137,9 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_2_GENERAL_BALANCE = /*$$(*/
       "AccountingReportType2.generalBalance"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_6_TITLE = /*$$(*/
+      "AccountingReportType6.title"; /*)*/
+
   public static final String ACCOUNTING_REPORT_15_TITLE = /*$$(*/
       "AccountingReportType15.title"; /*)*/
   public static final String ACCOUNTING_REPORT_15_COMPANY = /*$$(*/

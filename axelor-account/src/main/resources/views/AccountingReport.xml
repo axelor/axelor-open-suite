@@ -47,7 +47,7 @@
 				<field name="dateTo" requiredIf="typeSelect == 12 || typeSelect == 15" />
 				<field name="journal" hideIf="!typeSelect || [0,1,2,3,4,5,10,12,13,14,15].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!typeSelect || [1,2,3,4,5,10,12,13,14,15].indexOf(typeSelect) != -1"/>
-				<field name="accountSet" hideIf="typeSelect == 2000" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" domain="self.company = :company"/>
+				<field name="accountSet" hideIf="typeSelect == 2000" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" domain="self.company = :company AND (:typeSelect &lt;&gt; 6 OR self.useForPartnerBalance = true)"/>
 				<field name="partnerSet" hideIf="typeSelect == 2000" colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect" canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
 				<field name="analyticJournal" showIf="typeSelect == 2000" domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 			</panel>

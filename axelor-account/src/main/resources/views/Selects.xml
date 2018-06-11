@@ -60,6 +60,7 @@
 		<option order="3" value="3">Detailed customers balance</option>
 		<option order="4" value="4">Aged Balance</option>
 		<option order="5" value="5">Cheque deposit slip</option>
+		<option order="6" value="6">Partner balance</option>
 		<option order="10" value="10">Cash payments summary</option>
 		<option order="11" value="11">Journal</option>
 		<option order="12" value="12">VAT Statement on invoices</option>
