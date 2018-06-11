@@ -9,11 +9,11 @@
 - Add ISPM15 feature on Picking stock move report.
 
 ## Improvements
+- Add Partner balance as a new Accounting report.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
 - Timeshee editor: Allows to delete a line when use unique product for the timesheet. 
-
 
 ## [Unreleased 5.0.0]
 ## Improvements
