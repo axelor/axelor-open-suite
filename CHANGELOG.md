@@ -158,6 +158,7 @@ Also, improve the sale order line grid and form views.
 - Partner is readonly on purchase order if there are already lines.
 - Partner is readonly on sale order if there are already lines.
 - Accounting report : Reset some of the fields when copy accounting report and remove 'globalByPost' field.
+- Show purchase order form in partner purchase order (panel Activities)
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features

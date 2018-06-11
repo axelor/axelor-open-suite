@@ -286,6 +286,7 @@
 				<button name="showAllEvents" title="Show all events" css="btn-custom text-left" icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
 				<panel-include view="incl-activities-partner-form" from="axelor-crm" />
 				<panel-include if-module="axelor-supplychain" view="incl-sales-partner-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
+                <panel-include if-module="axelor-supplychain" view="incl-purchases-partner-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 				<field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 				<panel-dashlet action="action-partner-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')" colSpan="12"/>
 			</panel>
