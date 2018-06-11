@@ -198,13 +198,13 @@ public class PaymentService {
       reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false);
     }
     // End gestion du passage en 580
-    
+
     if (reconcile != null) {
       reconcileService.confirmReconcile(reconcile, true);
-      
+
       debitTotalRemaining = debitTotalRemaining.subtract(amount);
       creditTotalRemaining = creditTotalRemaining.subtract(amount);
-      
+
       log.debug("Réconciliation : {}", reconcile);
     }
   }
@@ -289,7 +289,7 @@ public class PaymentService {
             reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, false);
       }
       // End gestion du passage en 580
-      
+
       if (reconcile != null) {
         reconcileList.add(reconcile);
         remainingPaidAmount2 = remainingPaidAmount2.subtract(amountRemaining);
@@ -398,7 +398,7 @@ public class PaymentService {
                         debitMoveLine, creditMoveLine, amountToPay, false);
               }
               // End gestion du passage en 580
-              
+
               if (reconcile != null) {
                 remainingPaidAmount2 = remainingPaidAmount2.subtract(amountToPay);
                 amountDebit = amountDebit.subtract(amountToPay);

@@ -258,7 +258,7 @@ public class DoubtfulCustomerService {
     if (reconcile != null) {
       reconcileService.confirmReconcile(reconcile, true);
     }
-    
+
     // Ecriture au débit sur le 416 (client douteux)
     MoveLine debitMoveLine =
         moveLineService.createMoveLine(
