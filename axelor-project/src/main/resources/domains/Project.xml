@@ -20,7 +20,8 @@
 	  	<boolean name="extendsMembersFromParent" default="false"/>
 		<many-to-one name="parentProject" ref="com.axelor.apps.project.db.Project" title="Parent project"/>
 		<one-to-many name="wikiList" ref="com.axelor.apps.project.db.Wiki" title="Wiki" mappedBy="project"/>
-		
+		<one-to-many name="projectPlanningList" ref="com.axelor.apps.project.db.ProjectPlanning" mappedBy="project"/>
+
 		<string name="code" title="Code" />
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
 		<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>

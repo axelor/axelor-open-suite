@@ -24,8 +24,9 @@
 		<field name="task"/>
 		<field name="totalPlannedHrs"/>
 	</grid>
-	
-	<form name="project-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning">
+
+	<form name="project-planning-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning"
+		onNew="action-project-planning-attrs-fill-project">
 		<panel>
 			<field name="fromDate"/>
 			<field name="toDate"/>
@@ -65,12 +66,10 @@
 	<action-attrs name="action-project-planning-attrs-project-domain">
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.excludePlanning = false and self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
 	</action-attrs>
-
-	<action-view name="action-project-planning-view-incl-project" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanning">
-		<view type="grid" name="project-planning-grid-incl-project"/>
-		<view type="form" name="project-planning-form"/>
-    <domain>self.project.id = :_project</domain>
-		<context name="_project" expr="eval: id"/>
-	</action-view>
+	
+	<action-attrs name="action-project-planning-attrs-fill-project">
+		<attribute for="project" name="readonly" expr="eval: __parent__"/>
+		<attribute for="project" name="value" expr="eval: __parent__"/>
+	</action-attrs>
 
 </object-views>
