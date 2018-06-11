@@ -8,6 +8,7 @@
 - Improved the way to sort the accounting grand ledger per account, date, and moveLine ref.
 - General data protection regulation: data export and anonymize feature added.
 - Use general configurations to determine the number of digits displayed in purchase order, invoice and product catalog reports.
+- Add sequence to sort stock move lines.
 
 ## Bug Fixes
 - Fix : wrong domain for the bill of material field in the 'add manuf order' popup form in a production order
