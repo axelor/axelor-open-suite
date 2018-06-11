@@ -10,6 +10,7 @@
 - Product description can be copy to Invoice/Order/Purchase line.
 
 ## Improvements
+- Move project resource menu entry to project configuration menu.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
