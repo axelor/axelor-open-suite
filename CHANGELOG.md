@@ -23,6 +23,7 @@
 - Demo data: in base, "base_shipmentMode.csv" was deleted because present in stock, and correction of french demo data of "stock_shipmentMode" 
 - Demo data, remove unused "base_scheduler.csv"
 - Bill of material generation from configurator: fixed an exception on using a many-to-one from context in script.
+- Fix wrong quantity, unit, and exTotal in invoice from supplier arrival's purchase order
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
@@ -255,7 +256,6 @@ Also, improve the sale order line grid and form views.
 - Timesheet editor: fix java.lang.NullPointerException in TimesheetServiceImpl when delete a line in editor
 - Fix BillOfMaterial copy when creating a personalized BOM.
 - Supplier request : added suggestion filters on selecting supplierPartner 
-- Fix wrong quantity, unit, and exTotal in invoice from supplier arrival's purchase order
 
 ## [5.0.0-rc2] - 2018-05-09
 ## Features
