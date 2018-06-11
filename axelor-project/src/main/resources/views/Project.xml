@@ -201,6 +201,10 @@
 				<panel-related colSpan="12" field="elementsToInvoiceList" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form"/>
 			</panel>
 
+			<panel title="Planned time">
+        <panel-dashlet action="action-project-planning-view-incl-project" colSpan="12"/>
+			</panel>
+
 			<panel if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource" name="logTimes" title="Log Times">
 				<panel-related colSpan="12" field="timesheetLineList" form-view="timesheet-line-project-form" grid-view="timesheet-line-project-grid"/>
 			</panel>

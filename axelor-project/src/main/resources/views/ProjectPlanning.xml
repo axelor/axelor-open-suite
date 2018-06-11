@@ -11,6 +11,14 @@
 		<field name="timepercent" widget="SelectProgress"/>
 	</grid>
 
+	<grid title="Planned time" name="project-planning-grid-incl-project" model="com.axelor.apps.project.db.ProjectPlanning">
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="user"/>
+		<field name="task"/>
+		<field name="totalPlannedHrs"/>
+	</grid>
+
 	<grid name="project-planning-db-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanning">
 		<field name="project"/>
 		<field name="task"/>
@@ -57,5 +65,12 @@
 	<action-attrs name="action-project-planning-attrs-project-domain">
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.excludePlanning = false and self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
 	</action-attrs>
+
+	<action-view name="action-project-planning-view-incl-project" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanning">
+		<view type="grid" name="project-planning-grid-incl-project"/>
+		<view type="form" name="project-planning-form"/>
+    <domain>self.project.id = :_project</domain>
+		<context name="_project" expr="eval: id"/>
+	</action-view>
 
 </object-views>
