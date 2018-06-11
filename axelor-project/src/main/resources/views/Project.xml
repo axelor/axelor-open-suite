@@ -312,7 +312,7 @@
 	<tree name="project-task-tree" title="Tasks">
     	
     	<column name="name" type="string"/>
-    	<column name="assignedTo" type="reference"/>
+    	<column name="assignedTo" type="string"/>
     	<column name="progress" type="integer"/>
 		<column name="openTask" type="button"/>
 
