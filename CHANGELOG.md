@@ -14,6 +14,7 @@
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
 - Timeshee editor: Allows to delete a line when use unique product for the timesheet. 
+- Hide "Book resource" button in Project view when "Resource management" is false in Project Configuration.
 
 
 ## [Unreleased 5.0.0]

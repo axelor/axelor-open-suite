@@ -42,7 +42,7 @@
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 				<item title="Gantt" action="action-project-open-gantt" showIf="isProject"/>
-				<item title="Book resource" action="save,action-project-book-resource" showIf="isProject"/>
+				<item title="Book resource" action="save,action-project-book-resource" showIf="isProject" if="__config__.app.getApp('project').resourceManagement"/>
 				<item title="Planning the project" action="save,action-project-method-create-planning" showIf="!excludePlanning &amp;&amp; isProject"/>
 				<item title="Generate quotation" action="action-project-method-generate-quotation" showIf="isBusinessProject" if="__config__.app.isApp('business-project')"/>
 			</menu>
