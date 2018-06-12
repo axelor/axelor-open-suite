@@ -36,7 +36,7 @@
       <many-to-one name="mainEmploymentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Main employment contract" />
       <boolean name="profitSharingBeneficiary" title="Profit-sharing beneficiary" default="false" massUpdate="true"/>
       <many-to-one name="imposedDayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Imposed day Planning" massUpdate="true"/>
-      <string name="socialSecurityNumber"  title="Social security number" min="12" max="15"/>
+      <string name="socialSecurityNumber"  title="Social security number" min="12" max="15" encrypted="true"/>
       <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance" title="Employee advances" readonly="true" mappedBy="employee" />
       <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format" selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select" massUpdate="true"/>
       <one-to-many name="lunchVoucherAdvanceList" ref="com.axelor.apps.hr.db.LunchVoucherAdvance" title="Lunch Voucher Advances" mappedBy="employee" orphanRemoval="true"/>
