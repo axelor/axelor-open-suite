@@ -10,6 +10,7 @@
 - Product description can be copy to Invoice/Order/Purchase line.
 
 ## Improvements
+- Project: Rename "Dashboard" menu entry to "My projects" and move it to "Reporting" menu entry.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
