@@ -69,20 +69,23 @@ public class ImportPermission {
 
   @Transactional
   public Object importPermissionToRole(Object bean, Map<String, Object> values) {
-    
-      assert bean instanceof Permission;
-    
-      Permission permission = (Permission) bean;
-      String roleName = values.get("roleName").toString();
-      if ( Strings.isNullOrEmpty(roleName) ){ return bean; }
-      
-      RoleRepository roleRepository = Beans.get(RoleRepository.class);
-      Role role = roleRepository.findByName(roleName);
-      
-      if ( role == null ){ return bean; }
-      
-      role.addPermission(permission);
+
+    assert bean instanceof Permission;
+
+    Permission permission = (Permission) bean;
+    String roleName = values.get("roleName").toString();
+    if (Strings.isNullOrEmpty(roleName)) {
       return bean;
-      
+    }
+
+    RoleRepository roleRepository = Beans.get(RoleRepository.class);
+    Role role = roleRepository.findByName(roleName);
+
+    if (role == null) {
+      return bean;
+    }
+
+    role.addPermission(permission);
+    return bean;
   }
 }
