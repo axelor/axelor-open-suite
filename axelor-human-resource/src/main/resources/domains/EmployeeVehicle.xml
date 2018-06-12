@@ -10,10 +10,11 @@
         <many-to-one name="employee" title="Employee" ref="com.axelor.apps.hr.db.Employee"/>
         <string name="vehicleMake" title="Vehicle Make"/>
         <string name="vehicleModel" title="Vehicle Model"/>
-        <string name="plateNo" namecolumn="true" title="Plate Number"/>
+        <string name="plateNo" namecolumn="true" title="Plate Number" encrypted="true"/>
         <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" />
         <date name="startDate" title="Start Date"/>
         <date name="endDate" title="End Date"/>
+        <binary name="vehicleRegistrationCertificate" encrypted="true"/>
 
     </entity>
 
