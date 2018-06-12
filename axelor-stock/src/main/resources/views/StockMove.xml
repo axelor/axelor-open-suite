@@ -198,7 +198,8 @@
                     </field>
                 </panel>
 							<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
-							<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-set-electronic-signature"/>
+							<field name="signatoryUser"/>
+							<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
 							<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
             </panel>
 
@@ -406,8 +407,10 @@
     	<field name="freightCarrierMode" expr="eval: partner?.freightCarrierMode"/>
 	</action-record>
 
-	<action-record name="action-stock-move-record-set-electronic-signature" model="com.axelor.apps.stock.db.StockMove">
-		<field name="electronicSignature" expr="eval: (__user__?.useSignatureForStock &amp;&amp; isConformityCertifSigned) ? __user__.electronicSignature : null"/>
+	<action-record name="action-stock-move-record-is-conformity-certif-signed-onchange" model="com.axelor.apps.stock.db.StockMove">
+		<field name="electronicSignature" if="!signatoryUser" expr="eval: (__user__?.useSignatureForStock &amp;&amp; isConformityCertifSigned) ? __user__.electronicSignature : null"/>
+		<field name="electronicSignature" if="signatoryUser" expr="eval: (signatoryUser?.useSignatureForStock &amp;&amp; isConformityCertifSigned) ? signatoryUser.electronicSignature : null"/>
+    <field name="signatoryUser" if="isConformityCertifSigned &amp;&amp; !signatoryUser" expr="eval: __user__"/>
 	</action-record>
 
 	<action-record name="action-stock-move-record-unset-certificate-signed" model="com.axelor.apps.stock.db.StockMove">

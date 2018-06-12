@@ -34,6 +34,26 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
+        </structure>
     </list-property>
     <property name="units">cm</property>
     <property name="layoutPreference">fixed layout</property>
@@ -60,6 +80,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">fr</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -169,158 +192,7 @@ else row["last_modified_by"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">id</text-property>
-                    <text-property name="heading">id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">real_date</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">real_date</text-property>
-                    <text-property name="heading">real_date</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">type_select</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">type_select</text-property>
-                    <text-property name="heading">type_select</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">stock_move_seq</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">stock_move_seq</text-property>
-                    <text-property name="heading">stock_move_seq</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">sale_order_seq</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">sale_order_seq</text-property>
-                    <text-property name="heading">sale_order_seq</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">purchase_order_seq</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">purchase_order_seq</text-property>
-                    <text-property name="heading">purchase_order_seq</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">title_select</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">title_select</text-property>
-                    <text-property name="heading">title_select</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">name</text-property>
-                    <text-property name="heading">name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">first_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">first_name</text-property>
-                    <text-property name="heading">first_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">partner_type_select</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">partner_type_select</text-property>
-                    <text-property name="heading">partner_type_select</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">from_address_str</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">from_address_str</text-property>
-                    <text-property name="heading">from_address_str</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">to_address_str</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">to_address_str</text-property>
-                    <text-property name="heading">to_address_str</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">is_ispm_required</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">is_ispm_required</text-property>
-                    <text-property name="heading">is_ispm_required</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">countryName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">countryName</text-property>
-                    <text-property name="heading">countryName</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">pdf_header</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">pdf_header</text-property>
-                    <text-property name="heading">pdf_header</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">last_modified_by</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">last_modified_by</text-property>
-                    <text-property name="heading">last_modified_by</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">createdBy</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">createdBy</text-property>
-                    <text-property name="heading">createdBy</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">num_of_packages</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">num_of_packages</text-property>
-                    <text-property name="heading">num_of_packages</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">tracking_number</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">tracking_number</text-property>
-                    <text-property name="heading">tracking_number</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">num_of_palettes</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">num_of_palettes</text-property>
-                    <text-property name="heading">num_of_palettes</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">gross_mass</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">gross_mass</text-property>
-                    <text-property name="heading">gross_mass</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">electronic_signature_file_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">electronic_signature_file_path</text-property>
-                    <text-property name="heading">electronic_signature_file_path</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">conformity_certificate_title</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">conformity_certificate_title</text-property>
-                    <text-property name="heading">conformity_certificate_title</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">conformity_certificate_description</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">conformity_certificate_description</text-property>
-                    <text-property name="heading">conformity_certificate_description</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="filter"/>
             <list-property name="parameters">
                 <structure>
@@ -464,6 +336,16 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">26</property>
+                        <property name="name">signatory</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">function</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -476,175 +358,162 @@ else row["last_modified_by"]</expression>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">real_date</property>
                     <property name="nativeName">real_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">type_select</property>
                     <property name="nativeName">type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">stock_move_seq</property>
                     <property name="nativeName">stock_move_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">sale_order_seq</property>
                     <property name="nativeName">sale_order_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">purchase_order_seq</property>
                     <property name="nativeName">purchase_order_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">first_name</property>
                     <property name="nativeName">first_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">from_address_str</property>
                     <property name="nativeName">from_address_str</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">to_address_str</property>
                     <property name="nativeName">to_address_str</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">is_ispm_required</property>
                     <property name="nativeName">is_ispm_required</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">countryName</property>
                     <property name="nativeName">countryName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">pdf_header</property>
                     <property name="nativeName">pdf_header</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">last_modified_by</property>
                     <property name="nativeName">last_modified_by</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">createdBy</property>
                     <property name="nativeName">createdBy</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">num_of_packages</property>
                     <property name="nativeName">num_of_packages</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">tracking_number</property>
                     <property name="nativeName">tracking_number</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
                     <property name="name">num_of_palettes</property>
                     <property name="nativeName">num_of_palettes</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
                     <property name="name">gross_mass</property>
                     <property name="nativeName">gross_mass</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">23</property>
                     <property name="name">electronic_signature_file_path</property>
                     <property name="nativeName">electronic_signature_file_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">24</property>
                     <property name="name">conformity_certificate_title</property>
                     <property name="nativeName">conformity_certificate_title</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">25</property>
                     <property name="name">conformity_certificate_description</property>
                     <property name="nativeName">conformity_certificate_description</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">26</property>
+                    <property name="name">signatory</property>
+                    <property name="nativeName">signatory</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">function</property>
+                    <property name="nativeName">function</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id, MetaFile.file_path as logo_path, StockMove.real_date, StockMove.type_select,
@@ -660,7 +529,9 @@ StockMove.num_of_palettes,
 StockMove.gross_mass,
 SignatureFile.file_path as "electronic_signature_file_path",
 StockConfig.conformity_certificate_title,
-StockConfig.conformity_certificate_description
+StockConfig.conformity_certificate_description,
+SignatoryUser.name as "signatory",
+EmploymentContract.position as "function"
 from stock_stock_move as StockMove
 left outer join base_company as Company on (StockMove.company = Company.id)
 left outer join stock_stock_config as StockConfig on (StockConfig.company = Company.id)
@@ -675,6 +546,9 @@ left join base_printing_settings as PrintingSetting on (StockMove.printing_setti
 left join sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
 left join purchase_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
 left join meta_file as SignatureFile on StockMove.electronic_signature = SignatureFile.id
+left join auth_user as SignatoryUser on StockMove.signatory_user = SignatoryUser.id
+left join hr_employee as SignatoryEmployee on SignatoryEmployee.id = SignatoryUser.employee
+left join hr_employment_contract as EmploymentContract on SignatoryEmployee.main_employment_contract = EmploymentContract.id
 where StockMove.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -693,6 +567,9 @@ where StockMove.id = ?]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>
@@ -1321,7 +1198,7 @@ select * from conformity_certificate_sale_order(cast(? as bigint));]]></xml-prop
             <property name="footerHeight">3cm</property>
             <page-footer>
                 <grid id="4235">
-                    <property name="height">1.9314583333333333cm</property>
+                    <property name="height">2.8310416666666667cm</property>
                     <property name="dataSet">StockMoveDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
@@ -1330,18 +1207,184 @@ select * from conformity_certificate_sale_order(cast(? as bigint));]]></xml-prop
                             <expression name="expression" type="javascript">dataSetRow["electronic_signature_file_path"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">id</property>
+                            <text-property name="displayName">id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_path</property>
+                            <text-property name="displayName">logo_path</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">real_date</property>
+                            <text-property name="displayName">real_date</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["real_date"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">type_select</property>
+                            <text-property name="displayName">type_select</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">stock_move_seq</property>
+                            <text-property name="displayName">stock_move_seq</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["stock_move_seq"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">sale_order_seq</property>
+                            <text-property name="displayName">sale_order_seq</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["sale_order_seq"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">purchase_order_seq</property>
+                            <text-property name="displayName">purchase_order_seq</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["purchase_order_seq"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">title_select</property>
+                            <text-property name="displayName">title_select</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">name</property>
+                            <text-property name="displayName">name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">first_name</property>
+                            <text-property name="displayName">first_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["first_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">partner_type_select</property>
+                            <text-property name="displayName">partner_type_select</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["partner_type_select"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">from_address_str</property>
+                            <text-property name="displayName">from_address_str</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["from_address_str"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">to_address_str</property>
+                            <text-property name="displayName">to_address_str</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["to_address_str"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">is_ispm_required</property>
+                            <text-property name="displayName">is_ispm_required</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["is_ispm_required"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">countryName</property>
+                            <text-property name="displayName">countryName</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["countryName"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">pdf_header</property>
+                            <text-property name="displayName">pdf_header</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">last_modified_by</property>
+                            <text-property name="displayName">last_modified_by</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["last_modified_by"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">createdBy</property>
+                            <text-property name="displayName">createdBy</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["createdBy"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">num_of_packages</property>
+                            <text-property name="displayName">num_of_packages</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["num_of_packages"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">tracking_number</property>
+                            <text-property name="displayName">tracking_number</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["tracking_number"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">num_of_palettes</property>
+                            <text-property name="displayName">num_of_palettes</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["num_of_palettes"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">gross_mass</property>
+                            <text-property name="displayName">gross_mass</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["gross_mass"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                        <structure>
+                            <property name="name">conformity_certificate_title</property>
+                            <text-property name="displayName">conformity_certificate_title</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["conformity_certificate_title"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">conformity_certificate_description</property>
+                            <text-property name="displayName">conformity_certificate_description</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["conformity_certificate_description"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">signatory</property>
+                            <text-property name="displayName">signatory</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["signatory"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">function</property>
+                            <text-property name="displayName">function</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["function"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">user_name</property>
+                            <text-property name="displayName">user_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["user_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
                     <column id="4236"/>
                     <column id="4237"/>
                     <column id="4238"/>
                     <row id="4239">
-                        <property name="height">0.873125cm</property>
+                        <property name="height">0.555625cm</property>
                         <cell id="4240">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">2</property>
                             <label id="4247">
                                 <text-property name="text">Date</text-property>
                             </label>
                         </cell>
                         <cell id="4241">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">2</property>
                             <text id="4248">
                                 <property name="dataSet">TranslateDS</property>
                                 <list-property name="paramBindings">
@@ -1372,6 +1415,7 @@ select * from conformity_certificate_sale_order(cast(? as bigint));]]></xml-prop
                         </cell>
                         <cell id="4242">
                             <text id="4249">
+                                <property name="display">block</property>
                                 <property name="dataSet">TranslateDS</property>
                                 <list-property name="paramBindings">
                                     <structure>
@@ -1400,27 +1444,9 @@ select * from conformity_certificate_sale_order(cast(? as bigint));]]></xml-prop
                             </text>
                         </cell>
                     </row>
-                    <row id="4250">
-                        <cell id="4251">
-                            <text id="4255">
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<value-of format="dd/MM/YYYY">new Date()</value-of>]]></text-property>
-                            </text>
-                        </cell>
-                        <cell id="4252">
-                            <image id="4256">
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["electronic_signature_file_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="source">file</property>
-                                <property name="proportionalScale">true</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["electronic_signature_file_path"]</expression>
-                            </image>
-                        </cell>
-                        <cell id="4253">
+                    <row id="4272">
+                        <property name="height">0.5cm</property>
+                        <cell id="4275">
                             <text id="4254">
                                 <property name="dataSet">TranslateDS</property>
                                 <list-property name="paramBindings">
@@ -1450,10 +1476,52 @@ select * from conformity_certificate_sale_order(cast(? as bigint));]]></xml-prop
                             </text>
                         </cell>
                     </row>
+                    <row id="4250">
+                        <property name="height">0.3175cm</property>
+                        <cell id="4251">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">3</property>
+                            <text id="4255">
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<value-of format="dd/MM/YYYY">new Date()</value-of>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4252">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">3</property>
+                            <image id="4256">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["electronic_signature_file_path"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["electronic_signature_file_path"]</expression>
+                            </image>
+                        </cell>
+                        <cell id="4253"/>
+                    </row>
+                    <row id="4276">
+                        <property name="height">0.79375cm</property>
+                        <cell id="4279">
+                            <text id="4266">
+                                <property name="fontWeight">bold</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["signatory"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                    </row>
                     <row id="4243">
-                        <cell id="4244"/>
-                        <cell id="4245"/>
-                        <cell id="4246"/>
+                        <property name="height">0.6879166666666666cm</property>
+                        <cell id="4246">
+                            <text id="4280">
+                                <property name="fontWeight">normal</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["function"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
                     </row>
                 </grid>
             </page-footer>

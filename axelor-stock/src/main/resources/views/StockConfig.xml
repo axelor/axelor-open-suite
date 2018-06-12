@@ -43,6 +43,7 @@
 		<panel title="Conformity certificate">
 			<field name="conformityCertificateTitle"/>
 			<field name="conformityCertificateDescription" widget="html"/>
+			<field name="signatoryUser"/>
 		</panel>
 	</form>
 	
