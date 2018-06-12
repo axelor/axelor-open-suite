@@ -20,6 +20,7 @@
 - Fix trading name form seemingly allowing to create new companies.
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Fix missing address in Birt report for internal stock move + show it on the view
+- Change domain in real operation order domain grid and calendar.
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features
