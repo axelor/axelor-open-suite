@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.user;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -310,11 +311,12 @@ public class UserServiceImpl implements UserService {
         return;
       }
 
-      Template template = Beans.get(AppBaseService.class).getAppBase().getPasswordChangedTemplate();
+      AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
+      Template template = appBase.getPasswordChangedTemplate();
 
       if (template == null) {
         throw new AxelorException(
-            Template.class,
+            appBase,
             TraceBackRepository.CATEGORY_NO_VALUE,
             I18n.get("Template for changed password is missing."));
       }
