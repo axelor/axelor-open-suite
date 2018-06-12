@@ -9,43 +9,64 @@
         <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 		<field name="mediaTypeSelect"/>
     </grid>
-    
-	<form name="template-form" id="template-form-base" title="Template" model="com.axelor.apps.message.db.Template" 
-		onSave="action-template-check-receptor" 
+
+	<form id="template-form-base" name="template-form" title="Template"
+		model="com.axelor.apps.message.db.Template" onSave="action-template-check-receptor"
 		onNew="action-template-record-new">
 		<panel name="main" colSpan="12">
-			<field name="name" colSpan="4" />
-			<field name="mediaTypeSelect" colSpan="4" />
-			<field name="isDefault" colSpan="2"/>
-			<field name="isSystem" colSpan="2"/>
-			<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
-			<field name="target"/>
-			<field name="templateContext" grid-view="template-context-grid" form-view="template-context-form"/>
-			<field name="language" grid-view="language-grid" form-view="language-form"/>
+			<field name="name" showTitle="false" colSpan="12">
+				<viewer depends="name"><![CDATA[
+					<h3>
+						<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
+					</h3>
+				]]></viewer>
+				<editor>
+					<field name="name" showTitle="true" />
+				</editor>
+			</field>
+			<field name="mediaTypeSelect" colSpan="6" />
+			<field name="metaModel" canEdit="false" form-view="meta-model-form"
+				grid-view="meta-model-grid" />
+			<field name="target" hidden="true" />
+			<field name="templateContext" canEdit="false" form-view="template-context-form"
+				grid-view="template-context-grid" hidden="true" />
+			<field name="language" canEdit="false" form-view="language-form"
+				grid-view="language-grid" />
 		</panel>
-		<panel sidebar="true" name="attachedFiles" title="Attached files" colSpan="12">
-			    <field name="birtTemplate" colSpan="12" form-view="birt-template-form" grid-view="birt-template-grid"/>
-  		</panel>
-		<panel name="recipientAddress" title="Recipient address" showIf="mediaTypeSelect == 1">
-			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false"/>
-		</panel>
-        <panel name="from" title="From" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
-        	<field name="fromAdress" height="2" colSpan="12"/>
-        </panel>
-        <panel name="replyTo" title="Reply to" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
-        	<field name="replyToRecipients" height="2" colSpan="12"/>
-        </panel>
-        <panel name="recipients" title="Recipients" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
-        	<field name="toRecipients" height="2" colSpan="12"/>
-        	<field name="ccRecipients" height="2" colSpan="12"/>
-        	<field name="bccRecipients" height="2" colSpan="12"/>
-        </panel>
-		<panel name="subjectContent" title="Content" colSpan="12">
-			<field name="subject" colSpan="12" height="2"/>
-			<field name="content" showTitle="false" widget="html" colSpan="12"/>
-		</panel>
+		<panel-tabs>
+			<panel title="Contenu">
+				<panel name="recipientAddress" title="Recipient address"
+					showIf="mediaTypeSelect == 1">
+					<field name="addressBlock" showTitle="false" colSpan="12"
+						height="5" widget="html" x-lite="false" />
+				</panel>
+				<panel name="sender" title="Sender" colSpan="12"
+					showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
+					<field name="fromAdress" height="2" />
+					<field name="replyToRecipients" height="2" />
+				</panel>
+				<panel name="recipients" title="Recipients"
+					showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4" colSpan="12">
+					<field name="toRecipients" colSpan="12" height="2" />
+					<field name="ccRecipients" colSpan="12" height="2" />
+					<field name="bccRecipients" colSpan="12" height="2" />
+				</panel>
+				<panel name="subjectContent" title="Content" colSpan="12">
+					<field name="subject" colSpan="12" height="2" />
+					<field name="content" showTitle="false" colSpan="12" widget="html" />
+				</panel>
+				<panel name="attachedFiles" title="Attached files" colSpan="12">
+					<field name="birtTemplate" colSpan="12" canEdit="false"
+						form-view="birt-template-form" grid-view="birt-template-grid" />
+				</panel>
+			</panel>
+			<panel title="Configuration">
+				<field name="isDefault" widget="boolean-switch" />
+				<field name="isSystem" widget="boolean-switch" />
+			</panel>
+		</panel-tabs>
 	</form>
-	
+
 	 <action-method name="action-template-check-receptor">
     	<call class="com.axelor.apps.base.web.TemplateController" method="checkTargetReceptor"/>
     </action-method>
