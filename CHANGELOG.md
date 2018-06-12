@@ -22,7 +22,7 @@
 - Fix missing address in Birt report for internal stock move + show it on the view
 - Change domain in real operation order domain grid and calendar.
 - Fix context for the creation of a template from a sale order
-- Fix context for the creation of a sale ordre from a template
+- Fix context for the creation of a sale order from a template
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features
