@@ -11,6 +11,7 @@
 - Add sequence to sort stock move lines.
 
 ## Bug Fixes
+- Leave Request : reset Leave Line after changing User
 - Fix : wrong domain for the bill of material field in the 'add manuf order' popup form in a production order
 - Fix : errors when trying to generate production orders from sale orders with products lacking a stock unit or bill of materials lacking a production process.
 - Fix : error when add a manufacturing order lacking a production process to a production process.
