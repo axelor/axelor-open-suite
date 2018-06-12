@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">3422</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">3422</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">3422</property>
+        </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">3692</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">3692</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">3692</property>
+        </structure>
         <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
@@ -23,16 +47,24 @@
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
         <structure>
-            <property name="name">queryText</property>
-            <property name="id">3422</property>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
         </structure>
         <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">3422</property>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
         </structure>
         <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">3422</property>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -286,6 +318,11 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">23</property>
+                        <property name="name">to_stock_location</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -426,6 +463,12 @@ else row["last_modified_by"]</expression>
                     <property name="nativeName">gross_weight</property>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="position">23</property>
+                    <property name="name">to_stock_location</property>
+                    <property name="nativeName">to_stock_location</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id, MetaFile.file_path as logo_path, StockMove.real_date, StockMove.type_select,
 StockMove.stock_move_seq, SaleOrder.sale_order_seq, PurchaseOrder.purchase_order_seq,
@@ -437,7 +480,8 @@ AuthUserCreate.full_name as "createdBy",
 StockMove.num_of_packages,
 StockMove.tracking_number,
 StockMove.num_of_palettes,
-StockMove.gross_weight
+StockMove.gross_weight,
+BaseAddress.full_name as "to_stock_location"
 from stock_stock_move as StockMove
 left outer join base_company as Company on (StockMove.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -450,6 +494,8 @@ left join auth_user as AuthUserCreate on (StockMove.created_by = AuthUserCreate.
 left join base_printing_settings as PrintingSetting on (StockMove.printing_settings = PrintingSetting.id)
 left join sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
 left join purchase_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
+left join stock_stock_location as StockLocation on (StockMove.to_stock_location = StockLocation.id)
+left join base_address as BaseAddress on (StockLocation.address = BaseAddress.id)
 where StockMove.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1001,6 +1047,18 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="dataType">boolean</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">is_ispm_required_1</property>
+                    <text-property name="displayName">is_ispm_required</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_ispm_required"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">to_stock_location</property>
+                    <text-property name="displayName">to_stock_location</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["to_stock_location"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -1454,6 +1512,8 @@ row["first_name"]
 	row["to_address_str"].replace(/\n/g, "<br>")
 } else if (row["type_select"] == 3) {
 	row["from_address_str"].replace(/\n/g, "<br>")
+} else if (row["type_select"] == 1) {
+	row["to_stock_location"].replace(/\n/g, "<br>")
 }</VALUE-OF>]]></text-property>
                                     </text>
                                     <label id="3644">
