@@ -312,20 +312,20 @@
 	<tree name="project-task-tree" title="Tasks">
     	
     	<column name="name" type="string"/>
-    	<column name="assignedTo" type="string"/>
+    	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="integer"/>
 		<column name="openTask" type="button"/>
 
 		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
-			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
 		
 		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
-			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
@@ -341,14 +341,14 @@
 
 		<node model="com.axelor.apps.project.db.Project" domain="self.parentProject.id = :id" onClick="action-project-view-phase">
 			<field name="name" as="name"/>
-			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress"/>
 			<button name="openTask" title="Open phase" onClick="action-project-view-phase"/>
 		</node>
 		
 		<node model="com.axelor.team.db.TeamTask" parent="project" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
-			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
