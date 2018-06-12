@@ -80,6 +80,7 @@
 "ConformityCertificate.orderDate","Date de commande",,
 "ConformityCertificate.orderNumber","N° de commande",,
 "ConformityCertificate.partNumber","Code article",,
+"ConformityCertificate.qty","Quantité",,
 "ConformityCertificate.quantity","Quantité",,
 "ConformityCertificate.signature","Visa",,
 "Consumed quantity","Quantité consommée",,
