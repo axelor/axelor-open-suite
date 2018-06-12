@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -204,13 +205,12 @@ public class InvoiceLineController {
     }
 
     try {
-
       BigDecimal price =
           invoiceLineService.getUnitPrice(
               invoice,
               invoiceLine,
               invoiceLine.getTaxLine(),
-              invoiceLineService.isPurchase(invoice));
+              InvoiceToolService.isPurchase(invoice));
 
       Map<String, Object> discounts = invoiceLineService.getDiscount(invoice, invoiceLine, price);
 
