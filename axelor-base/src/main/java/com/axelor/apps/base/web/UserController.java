@@ -21,6 +21,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -34,6 +35,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.Map;
+import javax.validation.ValidationException;
 
 @Singleton
 public class UserController {
@@ -64,6 +66,7 @@ public class UserController {
 
   public void validate(ActionRequest request, ActionResponse response) {
     try {
+      Context context = request.getContext();
       User user = request.getContext().asType(User.class);
       Map<String, String> errors = ModelTool.getUniqueErrors(user, UNIQUE_MESSAGES);
 
@@ -72,6 +75,24 @@ public class UserController {
         return;
       }
 
+      UserService userService = Beans.get(UserService.class);
+      user = userService.changeUserPassword(user, context);
+
+      response.setValues(user);
+    } catch (ValidationException e) {
+      response.setError(e.getMessage());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateRandomPassword(ActionRequest request, ActionResponse response) {
+    try {
+      UserService userService = Beans.get(UserService.class);
+      CharSequence password = userService.generateRandomPassword();
+
+      response.setValue("newPassword", password);
+      response.setValue("chkPassword", password);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

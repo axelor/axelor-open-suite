@@ -17,27 +17,54 @@
  */
 package com.axelor.apps.base.service.user;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.auth.AuthService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.StringUtils;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import javax.mail.MessagingException;
+import javax.validation.ValidationException;
+import org.apache.commons.math3.exception.TooManyIterationsException;
 
 /** UserService is a class that implement all methods for user informations */
 public class UserServiceImpl implements UserService {
 
   @Inject private UserRepository userRepo;
 
-  public static String DEFAULT_LOCALE = "en";
+  public static final String DEFAULT_LOCALE = "en";
+
+  private static AppSettings appSettings = AppSettings.get();
+  private static Pattern pwdPattern =
+      Pattern.compile(MoreObjects.firstNonNull(appSettings.get("user.password.pattern"), ""));
+
+  private static final String GEN_CHARS =
+      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+  private static final int GEN_LEN = 12;
+  private static final int GEN_LOOP_LIMIT = 1000;
+  private static final SecureRandom random = new SecureRandom();
 
   /**
    * Method that return the current connected user
@@ -211,5 +238,90 @@ public class UserServiceImpl implements UserService {
       return user.getLanguage();
     }
     return DEFAULT_LOCALE;
+  }
+
+  @Override
+  public boolean matchPasswordPattern(CharSequence password) {
+    return pwdPattern.matcher(password).matches();
+  }
+
+  @Override
+  public User changeUserPassword(User user, Map<String, Object> values)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException {
+    final String oldPassword = (String) values.get("oldPassword");
+    final String newPassword = (String) values.get("newPassword");
+    final String chkPassword = (String) values.get("chkPassword");
+
+    // no password change
+    if (StringUtils.isBlank(newPassword)) {
+      return user;
+    }
+
+    if (StringUtils.isBlank(oldPassword)) {
+      throw new ValidationException(I18n.get("Current user password is not provided."));
+    }
+
+    if (!newPassword.equals(chkPassword)) {
+      throw new ValidationException(I18n.get("Confirm password doesn't match with new password."));
+    }
+
+    if (!matchPasswordPattern(newPassword)) {
+      throw new ValidationException(I18n.get("Password doesn't match with configured pattern."));
+    }
+
+    final User current = AuthUtils.getUser();
+    final AuthService authService = AuthService.getInstance();
+
+    if (!authService.match(oldPassword, current.getPassword())) {
+      throw new ValidationException(I18n.get("Current user password is wrong."));
+    }
+
+    user.setTransientPassword(newPassword);
+
+    return user;
+  }
+
+  @Override
+  @Transactional
+  public void processChangedPassword(User user)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException {
+
+    if (!user.getSendEmailUponPasswordChange()) {
+      return;
+    }
+
+    Template template = Beans.get(AppBaseService.class).getAppBase().getPasswordChangedTemplate();
+
+    if (template == null) {
+      throw new AxelorException(
+          Template.class,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get("Template for changed password is missing."));
+    }
+
+    TemplateMessageService templateMessageService = Beans.get(TemplateMessageService.class);
+    templateMessageService.generateAndSendMessage(user, template);
+    user.setTransientPassword(null);
+  }
+
+  @Override
+  public CharSequence generateRandomPassword() {
+    for (int genLoopIndex = 0; genLoopIndex < GEN_LOOP_LIMIT; ++genLoopIndex) {
+      StringBuilder sb = new StringBuilder(GEN_LEN);
+
+      for (int i = 0; i < GEN_LEN; ++i) {
+        sb.append(GEN_CHARS.charAt(random.nextInt(GEN_CHARS.length())));
+      }
+
+      String result = sb.toString();
+
+      if (matchPasswordPattern(result)) {
+        return result;
+      }
+    }
+
+    throw new TooManyIterationsException(GEN_LOOP_LIMIT);
   }
 }
