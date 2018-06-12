@@ -39,8 +39,17 @@ public class AccountAccountRepository extends AccountRepository {
           acc.addCompatibleAccountSetItem(account);
           JPA.save(acc);
         }
-      }
+      } else {
 
+        for (Account acc : account.getCompatibleAccountSet()) {
+          acc.removeCompatibleAccountSetItem(account);
+          if (acc.getCompatibleAccountSet().size() == 0) {
+            acc.setReconcileOk(false);
+          }
+          JPA.save(acc);
+        }
+        account.getCompatibleAccountSet().clear();
+      }
       return super.save(account);
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());

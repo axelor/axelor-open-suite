@@ -34,7 +34,8 @@
     <decimal name="unitPriceTaxed" precision="20" scale="10" title="Unit price"/>
     
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
-    
+    <integer name="sequence" title="Seq."/>
+
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
 
