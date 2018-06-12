@@ -80,6 +80,7 @@
 "ConformityCertificate.orderDate","Date of order",,
 "ConformityCertificate.orderNumber","Order number",,
 "ConformityCertificate.partNumber","Part number",,
+"ConformityCertificate.qty","Quantity",,
 "ConformityCertificate.quantity","Quantity",,
 "ConformityCertificate.signature","Signature",,
 "Consumed quantity",,,
