@@ -32,6 +32,7 @@
 - Fix : error when add a manufacturing order lacking a production process to a production process.
 - Fix : disable create and edit of saleorderline from sale order invoicing wizard.
 - Fix account reconcilable issue when ventilate a refund invoice.
+- Fix trading name form seemingly allowing to create new companies.
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features
