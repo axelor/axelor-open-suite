@@ -424,7 +424,7 @@
 	</grid>
 
     <form name="sale-order-template-form-wizard" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
 		onLoad="action-group-sale-saleorder-onload">
 
 		<panel-include view="sale-order-template-form"/>
@@ -1127,6 +1127,10 @@
 
 	<action-method name="action-sale-order-method-create-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createSaleOrder"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-create-template">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate"/>
 	</action-method>
 
 	<action-method name="action-sale-order-method-address-str">
