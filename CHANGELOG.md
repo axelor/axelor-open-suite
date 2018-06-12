@@ -10,6 +10,7 @@
 - Product description can be copy to Invoice/Order/Purchase line.
 
 ## Improvements
+- Project: Add new task from project form is now done with pop-up.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
