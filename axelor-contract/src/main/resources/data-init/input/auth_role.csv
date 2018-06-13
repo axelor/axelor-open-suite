@@ -1,2 +1,4 @@
-"name";"description";"permissions"
-"role.admin";"Access to all objects for all modules";"perm.contract.all"
+"name";"description"
+"role.contract.r";
+"role.contract.rwc";
+"role.contract.rwcde";

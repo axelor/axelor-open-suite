@@ -1,2 +1,4 @@
-"name";"description";"permissions"
-"role.admin";"Access to all objects for all modules";"perm.bankpayment.all"
+"name";"description"
+"role.bankpayment.r";
+"role.bankpayment.rwc";
+"role.bankpayment.rwcde";

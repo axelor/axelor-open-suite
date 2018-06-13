@@ -1,2 +1,5 @@
-"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
-"perm.client.portal.all";"com.axelor.apps.client.portal.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.client.portal.all";"com.axelor.apps.client.portal.db.*";"x";"x";"x";"x";"x";;;"role.admin"
+"perm.client.portal.OnlinePaymentMethod;r";"com.axelor.apps.client.portal.db.OnlinePaymentMethod";"x";;;;;;;"role.client.portal.r"
+"perm.client.portal.OnlinePaymentMethod;rwc";"com.axelor.apps.client.portal.db.OnlinePaymentMethod";"x";"x";"x";;;;;"role.client.portal.rwc"
+"perm.client.portal.OnlinePaymentMethod;rwcde";"com.axelor.apps.client.portal.db.OnlinePaymentMethod";"x";"x";"x";"x";"x";;;"role.client.portal.rwcde"

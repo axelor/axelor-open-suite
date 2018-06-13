@@ -1,0 +1,4 @@
+"module";"object";"view";"field";"help"
+"axelor-talent";"JobPosition";"job-position-form";"contractType";"Type of employment contract : permanent contract, temporary contract, internship...They are configured in the configurations of the ""Employee Management"" app."
+"axelor-talent";"JobPosition";"job-position-form";"mailAccount";"The management of the candidatures can be automated by filling the field ""Job email"" when creating a job offer. It must be an email account already configured in the application. You must include this email address in your job offer in order to automatically import applicants' information and attachments into the application. Each email sent to this address will create a new application."
+"axelor-talent";"JobPosition";"job-position-form";"nbOpenJob";"Indicates the number of open positions for this job offer."

@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.admin.service;
 
-import com.axelor.apps.admin.db.ObjectDataConfig;
+package com.axelor.apps.base.service.app;
+
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 
-public interface ObjectDataExportService {
+public interface AccessTemplateService {
 
-  public MetaFile export(
-      ObjectDataConfig objectDataConfig, Long recorId, String language, String format)
-      throws AxelorException;
+  public MetaFile generateTemplate() throws AxelorException;
 }

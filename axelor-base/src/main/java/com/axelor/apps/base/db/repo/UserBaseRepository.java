@@ -45,6 +45,7 @@ public class UserBaseRepository extends UserRepository {
 
       return user;
     } catch (Exception e) {
+      e.printStackTrace();
       throw new PersistenceException(e.getLocalizedMessage());
     }
   }

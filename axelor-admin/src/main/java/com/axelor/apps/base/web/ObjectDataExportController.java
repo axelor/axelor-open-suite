@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.admin.web;
+package com.axelor.apps.base.web;
 
-import com.axelor.apps.admin.db.ObjectDataConfig;
-import com.axelor.apps.admin.db.repo.ObjectDataConfigRepository;
-import com.axelor.apps.admin.service.ObjectDataAnonymizeService;
-import com.axelor.apps.admin.service.ObjectDataExportService;
+import com.axelor.apps.base.db.ObjectDataConfig;
+import com.axelor.apps.base.db.repo.ObjectDataConfigRepository;
+import com.axelor.apps.base.service.ObjectDataAnonymizeService;
+import com.axelor.apps.base.service.ObjectDataExportService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;

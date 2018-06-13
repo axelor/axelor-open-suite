@@ -11,11 +11,31 @@
 	<input file="base_appSupplychain.csv" separator=";" type="com.axelor.apps.base.db.AppSupplychain" call="com.axelor.csv.script.ImportApp:importApp">
 		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
   	</input>
-	
-	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
+
+	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+        <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
+        <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
+        <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
+        <bind to="canRemove" eval="can_remove == 'x' ? 'true' : 'false'"/>
+        <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
+    </input>
+    
+  	<input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId"/>
   	
   	<input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"  search="self.name = :name">
         <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+    </input>
+    
+    <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
+    	<bind to="language" eval="'en'" />
+    	<bind to="type" eval="'tooltip'" />
+    	<bind to="model" eval="com.axelor.inject.Beans.get(com.axelor.meta.db.repo.MetaModelRepository.class).findByName(object).getFullName()" column="object" />
+    </input>
+    
+    <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
+    	<bind to="language" eval="'fr'" />
+    	<bind to="type" eval="'tooltip'" />
+    	<bind to="model" eval="com.axelor.inject.Beans.get(com.axelor.meta.db.repo.MetaModelRepository.class).findByName(object).getFullName()" column="object" />
     </input>
     	
 <!--   	<input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->

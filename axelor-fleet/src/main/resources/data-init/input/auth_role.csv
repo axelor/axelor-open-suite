@@ -1,2 +1,4 @@
-"name";"description";"permissions"
-"role.admin";"Access to all objects for all modules";"perm.fleet.all"
+"name";"description"
+"role.fleet.r";
+"role.fleet.rwc";
+"role.fleet.rwcde";

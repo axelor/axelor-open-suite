@@ -19,10 +19,12 @@
 		<integer name="sequence" title="Sequence" />
 		<integer name="installOrder" title="Install order" />
 		<string name="languageSelect" title="Language" selection="select.language" />
+		<one-to-many name="accessConfigList" ref="AccessConfig" title="Access config" mappedBy="app"/>
 		
 		<finder-method name="findByCode" using="code" cacheable="true" />
 		
 		<finder-method name="findByName" using="name" cacheable="true" />
+		
 
   	</entity>
 

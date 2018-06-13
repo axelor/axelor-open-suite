@@ -21,7 +21,6 @@
     <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
     <boolean name="global" title="Global" default="false"/>
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
-    <boolean name="globalByPost" title="Subtotal by cash register" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
     
