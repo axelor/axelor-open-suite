@@ -41,7 +41,7 @@
   	<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
   	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
   	
-  	<boolean name="isOrdered" title="Ordered ?"/>
+  	<boolean name="isOrdered" title="Ordered"/>
   	  	
   	<decimal name="saleMinPrice" title="Min sale price" precision="20" scale="10"/>
   	
