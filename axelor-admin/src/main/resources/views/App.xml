@@ -4,6 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="app-grid" title="Apps" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false">
+		<menubar>
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
+	            <item title="Generate access template" action="action-app-method-generate-access-template"/>
+	            <item title="Import access config" action="action-app-view-import-access-config-wizard"/>
+	        </menu>
+        </menubar>
 		<field name="name" />
 		<field name="active" />
 		<field name="demoDataLoaded" />
@@ -32,6 +38,7 @@
 			<field name="name" />
 			<field name="active"/>
 		</panel-related>
+		<panel-related field="accessConfigList" /> 
 	</form> 
 	
 	<form model="com.axelor.apps.base.db.App" title="Bulk install" name="bulk-install-app-form">
@@ -41,6 +48,13 @@
 			<field name="languageSelect" type="string" selection="select.language" title="Language" colSpan="4"/>
 			<field type="boolean" name="importDemoData" title="Import demo data ?" colSpan="3"/>
 			<button name="install" title="Install" colSpan="4" onClick="action-app-method-bulk-install" hidden="true"/>
+		</panel>
+	</form>
+	
+	<form model="com.axelor.apps.base.db.Wizard" title="Import access config" name="import-access-config-wizard-form">
+		<panel>
+			<field type="many-to-one" name="metaFile" title="File" widget="binary-link" target="com.axelor.meta.db.MetaFile"/>
+			<button name="importAccess" title="Import" colSpan="4" onClick="action-app-method-import-access-config" readonlyIf="metaFile == null"/>
 		</panel>
 	</form>
 	
@@ -96,6 +110,14 @@
 	 <action-method name="action-app-method-refresh-app">
 		<call class="com.axelor.apps.base.web.AppController" method="refreshApp"/>
 	 </action-method>
+	 
+	 <action-method name="action-app-method-generate-access-template">
+	 	<call class="com.axelor.apps.base.web.AppController" method="generateAccessTemplate"/>
+	 </action-method>
+	 
+	 <action-method name="action-app-method-import-access-config">
+	 	<call class="com.axelor.apps.base.web.AppController" method="importAccessConfig"/>
+	 </action-method>
 
 	 <action-view name="action-app-open-bulk-install-selector" title="Bulk install" model="com.axelor.apps.base.db.App">
 	 	<view type="form" name="bulk-install-app-form"/>
@@ -104,6 +126,14 @@
 		<view-param name="popup-save" value="false" />
 		<view-param name="show-confirm" value="false" />
 		<view-param name="height" value="400" />
+	 </action-view>
+	 
+	 <action-view name="action-app-view-import-access-config-wizard" title="Import access config" model="com.axelor.apps.base.db.Wizard">
+	 	<view type="form" name="import-access-config-wizard-form"/>
+	 	<view-param name="show-toolbar" value="false"/>
+		<view-param name="popup" value="true" />  
+		<view-param name="popup-save" value="false" />
+		<view-param name="show-confirm" value="false" />
 	 </action-view>
 	 
 	 <action-attrs name="action-app-on-load-attrs">

@@ -15,9 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.admin.excception;
+package com.axelor.apps.base.service;
 
-public interface IExceptionMessage {
+import com.axelor.apps.base.db.ObjectDataConfig;
+import com.axelor.exception.AxelorException;
 
-  public static final String OBJECT_DATA_REPLACE_MISSING = /*$$(*/ "No record found for: %s" /*)*/;
+public interface ObjectDataAnonymizeService {
+
+  public void anonymize(ObjectDataConfig objectDataConfig, Long recordId) throws AxelorException;
 }

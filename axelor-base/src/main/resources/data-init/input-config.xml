@@ -87,7 +87,7 @@
 <!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
 <!-- 	</input> -->
     
-    <input file="admin_objectDataConfig.csv" separator=";" type="com.axelor.apps.admin.db.DataConfigLine">
+    <input file="base_objectDataConfig.csv" separator=";" type="com.axelor.apps.base.db.DataConfigLine">
     	<bind to="objectDataConfig" search="self.modelSelect = :modelSelect">
     		<bind to="modelSelect" column="modelSelect" />
     	</bind>

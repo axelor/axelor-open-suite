@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.admin.service;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.admin.db.DataConfigLine;
+import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
