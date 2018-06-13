@@ -3,6 +3,7 @@
 ## [5.0.0] - 2018-06-13
 ## Features
 - User: configurable password pattern, generate random password, and send email upon password change
+- Help added for fields.
 
 ## Improvements
 - Improved the way to sort the accounting grand ledger per account, date, and moveLine ref.

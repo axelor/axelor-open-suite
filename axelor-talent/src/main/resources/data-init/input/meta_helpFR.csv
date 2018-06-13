@@ -1,0 +1,4 @@
+"module";"object";"view";"field";"help"
+"axelor-talent";"JobPosition";"job-position-form";"contractType";"Type de contrat de travail : CDI, CDD, stage... Ils se configurent dans les configurations de l'app ""Gestions des employés""."
+"axelor-talent";"JobPosition";"job-position-form";"mailAccount";"La création des candidatures peut être automatisée en remplissant le champ ""Email de réponse à l'offre d'emploi"" lors de la création d'une offre d'emploi. Il doit s'agir d'un compte email déjà configuré dans l'application. Vous devez indiquez cette adresse email dans votre offre d'emploi afin d'importer automatiquement dans l'application les informations et pièces jointes des candidats. Chaque email envoyé à cette adresse créera une nouvelle candidature."
+"axelor-talent";"JobPosition";"job-position-form";"nbOpenJob";"Indique le nombre de postes ouverts pour cette offre d'emploi."
