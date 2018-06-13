@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -117,12 +117,6 @@
                     <text-property name="heading">PaymentVoucherId</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">GlobalByPost</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">GlobalByPost</text-property>
-                    <text-property name="heading">GlobalByPost</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">Global</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">Global</text-property>
@@ -167,21 +161,16 @@
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">GlobalByPost</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
                         <property name="name">Global</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">4</property>
                         <property name="name">PartnerFullName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">5</property>
                         <property name="name">AmountPaid</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -206,27 +195,20 @@
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">GlobalByPost</property>
-                    <property name="nativeName">GlobalByPost</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
                     <property name="name">Global</property>
                     <property name="nativeName">Global</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">4</property>
                     <property name="name">PartnerFullName</property>
                     <property name="nativeName">PartnerFullName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">5</property>
                     <property name="name">AmountPaid</property>
                     <property name="nativeName">AmountPaid</property>
                     <property name="dataType">decimal</property>
@@ -234,7 +216,7 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select PaymentVoucher.ref as "PaymentVoucherRef", PaymentVoucher.id as "PaymentVoucherId", 
-AccountingReport.global_by_post as "GlobalByPost",  AccountingReport.global as "Global", 
+AccountingReport.global as "Global", 
 Partner.full_name as "PartnerFullName", PaymentVoucher.paid_amount as "AmountPaid"  
 -- Récupération des informations de l'en-tête du reporting comptable passé en paramètre
 from public.account_accounting_report as AccountingReport 
@@ -279,12 +261,6 @@ ORDER BY PaymentVoucher.paid_amount]]></xml-property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">Global</text-property>
                     <text-property name="heading">Global</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">GlobalByPost</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">GlobalByPost</text-property>
-                    <text-property name="heading">GlobalByPost</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportDateEdition</property>
@@ -343,26 +319,21 @@ ORDER BY PaymentVoucher.paid_amount]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">GlobalByPost</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
                         <property name="name">ReportDateEdition</property>
                         <property name="dataType">date-time</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">5</property>
                         <property name="name">PeriodName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">DateTo</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">DateFrom</property>
                         <property name="dataType">date</property>
                     </structure>
@@ -393,34 +364,27 @@ ORDER BY PaymentVoucher.paid_amount]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">GlobalByPost</property>
-                    <property name="nativeName">GlobalByPost</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
                     <property name="name">ReportDateEdition</property>
                     <property name="nativeName">ReportDateEdition</property>
                     <property name="dataType">date-time</property>
                     <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">5</property>
                     <property name="name">PeriodName</property>
                     <property name="nativeName">PeriodName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">DateTo</property>
                     <property name="nativeName">DateTo</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">DateFrom</property>
                     <property name="nativeName">DateFrom</property>
                     <property name="dataType">date</property>
@@ -428,7 +392,7 @@ ORDER BY PaymentVoucher.paid_amount]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as "CompanyName", AccountingReport.date_val as "ReportDate", 
-AccountingReport.global as "Global", AccountingReport.global_by_post as "GlobalByPost", 
+AccountingReport.global as "Global", 
 AccountingReport.publication_date_time as "ReportDateEdition", Period.name as "PeriodName", 
 AccountingReport.date_to as "DateTo", AccountingReport.date_from as "DateFrom"
 from public.account_accounting_report as AccountingReport
@@ -498,12 +462,6 @@ left outer join public.base_period as Period on (AccountingReport.period = Perio
                             <property name="name">Global</property>
                             <text-property name="displayName">Global</text-property>
                             <expression name="expression" type="javascript">dataSetRow["Global"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">GlobalByPost</property>
-                            <text-property name="displayName">GlobalByPost</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["GlobalByPost"]</expression>
                             <property name="dataType">integer</property>
                         </structure>
                         <structure>
@@ -651,12 +609,6 @@ left outer join public.base_period as Period on (AccountingReport.period = Perio
                     <property name="name">Global</property>
                     <text-property name="displayName">Global</text-property>
                     <expression name="expression" type="javascript">dataSetRow["Global"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">GlobalByPost</property>
-                    <text-property name="displayName">GlobalByPost</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["GlobalByPost"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -831,12 +783,6 @@ left outer join public.base_period as Period on (AccountingReport.period = Perio
                     <text-property name="displayName">PaymentVoucherId</text-property>
                     <expression name="expression" type="javascript">dataSetRow["PaymentVoucherId"]</expression>
                     <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">GlobalByPost</property>
-                    <text-property name="displayName">GlobalByPost</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["GlobalByPost"]</expression>
-                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">Global</property>
