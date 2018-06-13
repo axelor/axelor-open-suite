@@ -17,6 +17,8 @@
 - Fix : error when add a manufacturing order lacking a production process to a production process.
 - Fix : disable create and edit of saleorderline from sale order invoicing wizard.
 - Fix account reconcilable issue when ventilate a refund invoice.
+- Fix : On the Stock Move view -> saleOrder, invoice and purchase.. put readonly when status != draft
+- Fix : On the Stock Move view -> saleOrder, invoice and purchase.. disable edition when status != draft
 - Fix trading name form seemingly allowing to create new companies.
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Fix missing address in Birt report for internal stock move + show it on the view
