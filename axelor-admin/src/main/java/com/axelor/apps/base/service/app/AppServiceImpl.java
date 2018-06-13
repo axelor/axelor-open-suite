@@ -95,7 +95,7 @@ public class AppServiceImpl implements AppService {
     if (lang == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessages.NO_LANGAUAGE_SELECTED));
+          I18n.get(IExceptionMessages.NO_LANGUAGE_SELECTED));
     }
 
     importData(app, DIR_DEMO);

@@ -30,7 +30,7 @@ public interface IExceptionMessages {
 
   public static final String REFRESH_APP_ERROR = /*$$(*/ "Error in refreshing app" /*)*/;
 
-  public static final String NO_LANGAUAGE_SELECTED = /*$$(*/
+  public static final String NO_LANGUAGE_SELECTED = /*$$(*/
       "No application language set. Please set 'application.locale' property." /*)*/;
 
   public static final String DEMO_DATA_SUCCESS = /*$$(*/ "Demo data loaded successfully" /*)*/;
