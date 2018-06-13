@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -183,7 +184,29 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
     stockMove.setSaleOrder(saleOrder);
     stockMove.setStockMoveLineList(new ArrayList<>());
+
+    if (stockMove.getPartner() != null) {
+      setDefaultAutoMailSettings(stockMove);
+    }
     return stockMove;
+  }
+
+  /**
+   * Set automatic mail configuration from the partner.
+   *
+   * @param stockMove
+   */
+  protected void setDefaultAutoMailSettings(StockMove stockMove) throws AxelorException {
+    Partner partner = stockMove.getPartner();
+    Company company = stockMove.getCompany();
+
+    PartnerStockSettings mailSettings =
+        Beans.get(PartnerStockSettingsService.class).getOrCreateMailSettings(partner, company);
+
+    stockMove.setRealStockMoveAutomaticMail(mailSettings.getRealStockMoveAutomaticMail());
+    stockMove.setRealStockMoveMessageTemplate(mailSettings.getRealStockMoveMessageTemplate());
+    stockMove.setPlannedStockMoveAutomaticMail(mailSettings.getPlannedStockMoveAutomaticMail());
+    stockMove.setPlannedStockMoveMessageTemplate(mailSettings.getPlannedStockMoveMessageTemplate());
   }
 
   /**

@@ -206,8 +206,14 @@
             <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms"/>
 
             <panel title="Automatic mail" showIf="typeSelect == 2">
-                <field name="stockMoveAutomaticMail"/>
-                <field name="stockMoveMessageTemplate" requiredIf="stockMoveAutomaticMail" showIf="stockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+              <panel>
+                <field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
+                <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+              </panel>
+              <panel>
+								<field name="realStockMoveAutomaticMail"/>
+								<field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+							</panel>
             </panel>
 
             <panel title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
@@ -377,10 +383,14 @@
 	</action-record>
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">
-		<field name="stockMoveAutomaticMail" if="_typeSelect == '2'"
-			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.stockMoveAutomaticMail"/>
-		<field name="stockMoveMessageTemplate" if="_typeSelect == '2'"
-			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.stockMoveMessageTemplate"/>
+    <field name="plannedStockMoveAutomaticMail" if="_typeSelect == '2'"
+      expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.plannedStockMoveAutomaticMail"/>
+    <field name="plannedStockMoveMessageTemplate" if="_typeSelect == '2'"
+      expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.plannedStockMoveMessageTemplate"/>
+		<field name="realStockMoveAutomaticMail" if="_typeSelect == '2'"
+			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.realStockMoveAutomaticMail"/>
+		<field name="realStockMoveMessageTemplate" if="_typeSelect == '2'"
+			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.realStockMoveMessageTemplate"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-record-ispm-field" model="com.axelor.apps.stock.db.StockMove">
