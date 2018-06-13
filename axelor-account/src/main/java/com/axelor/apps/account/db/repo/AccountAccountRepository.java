@@ -40,7 +40,7 @@ public class AccountAccountRepository extends AccountRepository {
           JPA.save(acc);
         }
       } else {
-        
+
         for (Account acc : account.getCompatibleAccountSet()) {
           acc.removeCompatibleAccountSetItem(account);
           if (acc.getCompatibleAccountSet().size() == 0) {

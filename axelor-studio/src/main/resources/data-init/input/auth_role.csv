@@ -1,2 +1,4 @@
-"name";"description";"permissions"
-"role.admin";"Access to all objects for all modules";"perm.studio.all"
+"name";"description"
+"role.studio.r";
+"role.studio.rwc";
+"role.studio.rwcde";

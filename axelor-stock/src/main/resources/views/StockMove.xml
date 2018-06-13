@@ -132,6 +132,9 @@
             <field name="fromStockLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
             <field name="toStockLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
 
+            <field name="fromStockLocation.address" showIf="typeSelect == 1"/>
+            <field name="toStockLocation.address" showIf="typeSelect == 1"/>
+
             <field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="3"/>
             <field name="realDate" colSpan="3"/>
 
@@ -164,7 +167,7 @@
         </panel>
 
         <panel-tabs>
-            <panel-related height="6" field="stockMoveLineList" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form"/>
+            <panel-related height="6" field="stockMoveLineList" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence"/>
             <panel title="Freight Carrier" readonlyIf="statusSelect == 3 || statusSelect == 4" >
                 <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
@@ -201,9 +204,9 @@
             </panel>
 
             <panel title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-                <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="sale-order-grid" form-view="sale-order-form"/>
-                <field name="purchaseOrder" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-grid" form-view="purchase-order-form"/>
-                <field name="invoice" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="invoice-grid" form-view="invoice-form"/>
+                <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1" grid-view="sale-order-grid" form-view="sale-order-form" canEdit="false"/>
+                <field name="purchaseOrder" readonlyIf="statusSelect != 1" grid-view="purchase-order-grid" form-view="purchase-order-form" canEdit="false"/>
+                <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false"/>
                 <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
             </panel>
         </panel-tabs>

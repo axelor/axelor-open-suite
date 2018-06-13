@@ -98,7 +98,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveLine creditMoveLine,
       BigDecimal amount,
       boolean canBeZeroBalanceOk) {
-    
+
     if (ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)) {
       log.debug(
           "Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
@@ -107,7 +107,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getName(),
           amount,
           canBeZeroBalanceOk);
-  
+
       Reconcile reconcile =
           new Reconcile(
               debitMoveLine.getMove().getCompany(),
@@ -116,13 +116,13 @@ public class ReconcileServiceImpl implements ReconcileService {
               creditMoveLine,
               ReconcileRepository.STATUS_DRAFT,
               canBeZeroBalanceOk);
-  
+
       if (!moveToolService.isDebitMoveLine(debitMoveLine)) {
-  
+
         reconcile.setDebitMoveLine(creditMoveLine);
         reconcile.setCreditMoveLine(debitMoveLine);
       }
-  
+
       return reconcileRepository.save(reconcile);
     }
     return null;

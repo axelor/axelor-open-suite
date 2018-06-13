@@ -42,6 +42,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -216,7 +217,6 @@ public class SaleOrderController {
 
   public void generateViewTemplate(ActionRequest request, ActionResponse response) {
     SaleOrder context = request.getContext().asType(SaleOrder.class);
-    context = saleOrderRepo.find(context.getId());
     response.setView(
         ActionView.define("Template")
             .model(SaleOrder.class.getName())
@@ -230,7 +230,7 @@ public class SaleOrderController {
         saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
     if (origin != null) {
       SaleOrder copy = Beans.get(SaleOrderCreateService.class).createSaleOrder(origin);
-      response.setValues(copy);
+      response.setValues(Mapper.toMap(copy));
     }
   }
 
@@ -240,7 +240,7 @@ public class SaleOrderController {
       String idCopy = context.get("_idCopy").toString();
       SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
       SaleOrder copy = Beans.get(SaleOrderCreateService.class).createSaleOrder(origin);
-      response.setValues(copy);
+      response.setValues(Mapper.toMap(copy));
     }
   }
 

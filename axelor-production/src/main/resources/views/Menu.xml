@@ -90,7 +90,7 @@
 		<view type="calendar" name="operation-order-real-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
-		<domain>self.statusSelect = 4 OR self.statusSelect = 5</domain>
+		<domain>self.statusSelect = 6</domain>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"

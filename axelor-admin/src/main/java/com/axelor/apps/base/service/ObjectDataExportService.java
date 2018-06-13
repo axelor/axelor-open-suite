@@ -15,12 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.admin.service;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.admin.db.ObjectDataConfig;
+import com.axelor.apps.base.db.ObjectDataConfig;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
 
-public interface ObjectDataAnonymizeService {
+public interface ObjectDataExportService {
 
-  public void anonymize(ObjectDataConfig objectDataConfig, Long recordId) throws AxelorException;
+  public MetaFile export(
+      ObjectDataConfig objectDataConfig, Long recorId, String language, String format)
+      throws AxelorException;
 }

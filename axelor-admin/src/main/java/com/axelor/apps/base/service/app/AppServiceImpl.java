@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.app;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
-import com.axelor.apps.base.exceptions.IAppExceptionMessages;
+import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
 import com.axelor.data.Importer;
@@ -95,7 +95,7 @@ public class AppServiceImpl implements AppService {
     if (lang == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IAppExceptionMessages.NO_LANGAUAGE_SELECTED));
+          I18n.get(IExceptionMessages.NO_LANGUAGE_SELECTED));
     }
 
     importData(app, DIR_DEMO);
@@ -471,9 +471,7 @@ public class AppServiceImpl implements AppService {
     if (!children.isEmpty()) {
       List<String> childrenNames = getNames(children);
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          IAppExceptionMessages.APP_IN_USE,
-          childrenNames);
+          TraceBackRepository.CATEGORY_INCONSISTENCY, IExceptionMessages.APP_IN_USE, childrenNames);
     }
 
     app.setActive(false);

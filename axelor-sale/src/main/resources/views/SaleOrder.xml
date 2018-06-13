@@ -238,7 +238,8 @@
 		<field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	  </panel>
 	  <panel name="customerInformation" title="Customer information" hideIf="company == null">
-	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect &gt;= 2"/>
+	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date"
+					onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2"/>
    	      <field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 		  <panel stacked="true">
 			  <field name="mainInvoicingAddress" canNew="true"
@@ -424,7 +425,7 @@
 	</grid>
 
     <form name="sale-order-template-form-wizard" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
+		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
 		onLoad="action-group-sale-saleorder-onload">
 
 		<panel-include view="sale-order-template-form"/>
@@ -1127,6 +1128,10 @@
 
 	<action-method name="action-sale-order-method-create-order">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createSaleOrder"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-create-template">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="createTemplate"/>
 	</action-method>
 
 	<action-method name="action-sale-order-method-address-str">

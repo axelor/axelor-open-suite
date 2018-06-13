@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -648,276 +648,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="StockMoveLineDS" id="3422">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">stock_move_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">stock_move_id</text-property>
-                    <text-property name="heading">stock_move_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">id</text-property>
-                    <text-property name="heading">id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_code</text-property>
-                    <text-property name="heading">product_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_name</text-property>
-                    <text-property name="heading">product_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">barcode_picture</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">barcode_picture</text-property>
-                    <text-property name="heading">barcode_picture</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">bar_code</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">bar_code</text-property>
-                    <text-property name="heading">bar_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">qty</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">qty</text-property>
-                    <text-property name="heading">qty</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">unit_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">unit_code</text-property>
-                    <text-property name="heading">unit_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">tracking_number_seq</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">tracking_number_seq</text-property>
-                    <text-property name="heading">tracking_number_seq</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">description</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">description</text-property>
-                    <text-property name="heading">description</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rack</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rack</text-property>
-                    <text-property name="heading">rack</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">picking_order_info</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">picking_order_info</text-property>
-                    <text-property name="heading">picking_order_info</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">isTitleLine</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">isTitleLine</text-property>
-                    <text-property name="heading">isTitleLine</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">lineSequence</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">lineSequence</text-property>
-                    <text-property name="heading">lineSequence</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="filter"/>
             <list-property name="parameters"/>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">stock_move_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">product_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">product_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">barcode_picture</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">bar_code</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">qty</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">unit_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">tracking_number_seq</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">description</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">11</property>
-                        <property name="name">rack</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">12</property>
-                        <property name="name">picking_order_info</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
-                        <property name="name">isTitleLine</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">lineSequence</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockMoveId"])]]></method>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">stock_move_id</property>
-                    <property name="nativeName">stock_move_id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">id</property>
-                    <property name="nativeName">id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">product_code</property>
-                    <property name="nativeName">product_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">product_name</property>
-                    <property name="nativeName">product_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">barcode_picture</property>
-                    <property name="nativeName">barcode_picture</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">bar_code</property>
-                    <property name="nativeName">bar_code</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">qty</property>
-                    <property name="nativeName">qty</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">unit_code</property>
-                    <property name="nativeName">unit_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">tracking_number_seq</property>
-                    <property name="nativeName">tracking_number_seq</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
-                    <property name="name">description</property>
-                    <property name="nativeName">description</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">11</property>
-                    <property name="name">rack</property>
-                    <property name="nativeName">rack</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">12</property>
-                    <property name="name">picking_order_info</property>
-                    <property name="nativeName">picking_order_info</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
-                    <property name="name">isTitleLine</property>
-                    <property name="nativeName">isTitleLine</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">14</property>
-                    <property name="name">lineSequence</property>
-                    <property name="nativeName">lineSequence</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
-                </structure>
-            </list-property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
 BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
 StockMoveLine.qty, Unit.name as unit_code, TrackingNumber.tracking_number_seq,
 StockMoveLine.description, StockLocationLine.rack, SaleOrderLine.picking_order_info,
-( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine", 
-(COALESCE(SaleOrderLine.sequence, 0) +  COALESCE(PurchaseOrderLine.sequence,0)) as "lineSequence"
+StockMoveLine.sequence,
+( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine"
 from stock_stock_move as StockMove
 inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
 left join base_product as Product on (StockMoveLine.product = Product.id)
@@ -928,7 +671,8 @@ left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = Sto
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line)
 left join stock_stock_location as Location on (Location.id = StockMove.from_stock_location)
 left join stock_stock_location_line as StockLocationLine on (Location.id = StockLocationLine.stock_location)
-where StockMove.id in (@INJECTID) AND StockLocationLine.product = Product.id]]></xml-property>
+where StockMove.id in (@INJECTID) AND StockLocationLine.product = Product.id
+order by StockMoveLine.sequence]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -1719,12 +1463,6 @@ row["first_name"]
                                     <property name="dataType">integer</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">lineSequence</property>
-                                    <text-property name="displayName">lineSequence</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["lineSequence"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
                                     <property name="name">pickingOrderInfo</property>
                                     <text-property name="displayName">pickingOrderInfo</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["picking_order_info"]</expression>
@@ -1750,6 +1488,13 @@ row["first_name"]
                                     <text-property name="displayName">barcode_picture</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["barcode_picture"]</expression>
                                     <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">sequence</property>
+                                    <text-property name="displayName">sequence</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
+                                    <property name="dataType">integer</property>
                                     <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
@@ -2146,7 +1891,7 @@ row["first_name"]
                                 <property name="hideDetail">false</property>
                                 <list-property name="sort">
                                     <structure>
-                                        <expression name="key" type="javascript">row["lineSequence"]</expression>
+                                        <expression name="key" type="javascript">row["sequence"]</expression>
                                         <property name="direction">asc</property>
                                         <property name="strength">-1</property>
                                     </structure>
@@ -2175,9 +1920,9 @@ row["first_name"]
                                             <property name="borderTopWidth">thin</property>
                                             <property name="textAlign">center</property>
                                             <image id="4110">
-                                                <expression name="altText">""</expression>
                                                 <property name="source">file</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                                <expression name="altText">""</expression>
                                             </image>
                                         </cell>
                                         <cell id="3807">

@@ -1,2 +1,5 @@
-"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
-"perm.supplier.management.all";"com.axelor.apps.suppliermanagement.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.suppliermanagement.all";"com.axelor.apps.suppliermanagement.db.*";"x";"x";"x";"x";"x";;;"role.admin"
+"perm.suppliermanagement.PurchaseOrderSupplierLine.r";"com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine";"x";;;;;;;"role.suppliermanagement.r"
+"perm.suppliermanagement.PurchaseOrderSupplierLine.rwc";"com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine";"x";"x";"x";;;;;"role.suppliermanagement.rwc"
+"perm.suppliermanagement.PurchaseOrderSupplierLine.rwcde";"com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine";"x";"x";"x";"x";"x";;;"role.suppliermanagement.rwcde"

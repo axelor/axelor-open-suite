@@ -1,2 +1,4 @@
-"name";"description";"permissions"
-"role.admin";"Access to all objects for all modules";"perm.supplychain.all"
+"name";"description"
+"role.supplychain.r";
+"role.supplychain.rwc";
+"role.supplychain.rwcde";

@@ -78,7 +78,7 @@ public class UserController {
       UserService userService = Beans.get(UserService.class);
       user = userService.changeUserPassword(user, context);
 
-      response.setValues(user);
+      response.setValue("transientPassword", user.getTransientPassword());
     } catch (ValidationException e) {
       response.setError(e.getMessage());
     } catch (Exception e) {

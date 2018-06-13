@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.exceptions;
 
-public interface IAppExceptionMessages {
+public interface IExceptionMessages {
 
   public static final String NO_CONFIG_REQUIRED = /*$$(*/ "No configuration required" /*)*/;
 
@@ -30,8 +30,13 @@ public interface IAppExceptionMessages {
 
   public static final String REFRESH_APP_ERROR = /*$$(*/ "Error in refreshing app" /*)*/;
 
-  public static final String NO_LANGAUAGE_SELECTED = /*$$(*/
+  public static final String NO_LANGUAGE_SELECTED = /*$$(*/
       "No application language set. Please set 'application.locale' property." /*)*/;
 
   public static final String DEMO_DATA_SUCCESS = /*$$(*/ "Demo data loaded successfully" /*)*/;
+
+  public static final String ACCESS_CONFIG_IMPORTED = /*$$(*/
+      "Access config imported successfully" /*)*/;
+
+  public static final String OBJECT_DATA_REPLACE_MISSING = /*$$(*/ "No record found for: %s" /*)*/;
 }

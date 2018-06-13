@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.admin.service;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.admin.db.DataConfigLine;
-import com.axelor.apps.admin.db.ObjectDataConfig;
-import com.axelor.apps.admin.db.repo.DataConfigLineRepository;
-import com.axelor.apps.admin.excception.IExceptionMessage;
+import com.axelor.apps.base.db.DataConfigLine;
+import com.axelor.apps.base.db.ObjectDataConfig;
+import com.axelor.apps.base.db.repo.DataConfigLineRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
@@ -113,7 +113,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     if (object == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.OBJECT_DATA_REPLACE_MISSING),
+          I18n.get(IExceptionMessages.OBJECT_DATA_REPLACE_MISSING),
           recordValue);
     }
     for (Model record : data) {

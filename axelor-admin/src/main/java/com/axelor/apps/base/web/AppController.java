@@ -19,12 +19,16 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
-import com.axelor.apps.base.exceptions.IAppExceptionMessages;
+import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.apps.base.service.app.AccessConfigImportService;
+import com.axelor.apps.base.service.app.AccessTemplateService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -47,6 +51,12 @@ public class AppController {
 
   @Inject private AppRepository appRepo;
 
+  @Inject private AccessTemplateService accessTemplateService;
+
+  @Inject private AccessConfigImportService accessConfigImportService;
+
+  @Inject private MetaFileRepository metaFileRepo;
+
   public void importDataDemo(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -54,7 +64,7 @@ public class AppController {
     app = appRepo.find(app.getId());
     appService.importDataDemo(app);
 
-    response.setFlash(I18n.get(IAppExceptionMessages.DEMO_DATA_SUCCESS));
+    response.setFlash(I18n.get(IExceptionMessages.DEMO_DATA_SUCCESS));
 
     response.setReload(true);
   }
@@ -78,7 +88,7 @@ public class AppController {
     String viewName = "app-" + code + "-config-form";
 
     if (Beans.get(MetaViewRepository.class).findByName(viewName) == null) {
-      response.setFlash(I18n.get(IAppExceptionMessages.NO_CONFIG_REQUIRED));
+      response.setFlash(I18n.get(IExceptionMessages.NO_CONFIG_REQUIRED));
     } else {
       response.setView(
           ActionView.define(I18n.get("Configure") + ": " + app.getName())
@@ -122,7 +132,7 @@ public class AppController {
 
     appService.bulkInstall(appList, importDemo, language);
 
-    response.setFlash(I18n.get(IAppExceptionMessages.BULK_INSTALL_SUCCESS));
+    response.setFlash(I18n.get(IExceptionMessages.BULK_INSTALL_SUCCESS));
     response.setSignal("refresh-app", true);
   }
 
@@ -130,11 +140,46 @@ public class AppController {
 
     try {
       appService.refreshApp();
-      response.setNotify(I18n.get(IAppExceptionMessages.REFRESH_APP_SUCCESS));
+      response.setNotify(I18n.get(IExceptionMessages.REFRESH_APP_SUCCESS));
       response.setReload(true);
     } catch (IOException | ClassNotFoundException e) {
       e.printStackTrace();
-      response.setNotify(I18n.get(IAppExceptionMessages.REFRESH_APP_ERROR));
+      response.setNotify(I18n.get(IExceptionMessages.REFRESH_APP_ERROR));
+    }
+  }
+
+  public void generateAccessTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    MetaFile accesssFile = accessTemplateService.generateTemplate();
+
+    if (accesssFile == null) {
+      return;
+    }
+
+    response.setView(
+        ActionView.define(I18n.get("Export file"))
+            .model(App.class.getName())
+            .add(
+                "html",
+                "ws/rest/com.axelor.meta.db.MetaFile/"
+                    + accesssFile.getId()
+                    + "/content/download?v="
+                    + accesssFile.getVersion())
+            .param("download", "true")
+            .map());
+  }
+
+  public void importAccessConfig(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Map<String, Object> metaFileMap = (Map<String, Object>) request.getContext().get("metaFile");
+
+    if (metaFileMap != null) {
+      Long fileId = Long.parseLong(metaFileMap.get("id").toString());
+      accessConfigImportService.importAccessConfig(metaFileRepo.find(fileId));
+      response.setFlash(I18n.get(IExceptionMessages.ACCESS_CONFIG_IMPORTED));
+      response.setCanClose(true);
     }
   }
 }
