@@ -17,6 +17,15 @@
 - Timeshee editor: Allows to delete a line when use unique product for the timesheet. 
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 
+## [Unreleased 5.0.1]
+## Improvements
+
+
+## Bug Fixes
+- Fix selection of sale order lines on MRP : Now we can select a sale order line whose the product is storrable, not excluded on MRP, and not delivered. 
+Also, improve the sale order line grid and form views
+
+
 ## [5.0.0] - 2018-06-13
 ## Features
 - User: configurable password pattern, generate random password, and send email upon password change
