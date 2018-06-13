@@ -42,7 +42,6 @@ import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.db.repo.UserAdminRepository;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -94,6 +93,7 @@ import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.message.service.TemplateService;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.base.service.ical.ICalendarEventServiceImpl;
 
@@ -127,7 +127,7 @@ public class BaseModule extends AxelorModule {
     bind(BankRepository.class).to(BankBaseRepository.class);
     bind(CompanyService.class).to(CompanyServiceImpl.class);
     bind(BankAddressRepository.class).to(BankAddressBaseRepository.class);
-    bind(UserAdminRepository.class).to(UserBaseRepository.class);
+    bind(UserRepository.class).to(UserBaseRepository.class);
     bind(BankDetailsService.class).to(BankDetailsServiceImpl.class);
     bind(ImportCityService.class).to(ImportCityServiceImpl.class);
     bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);

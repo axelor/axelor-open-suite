@@ -18,7 +18,6 @@
 package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.base.db.repo.UserAdminRepository;
 import com.axelor.apps.base.service.ObjectDataAnonymizeService;
 import com.axelor.apps.base.service.ObjectDataAnonymizeServiceImpl;
 import com.axelor.apps.base.service.ObjectDataExportService;
@@ -29,7 +28,6 @@ import com.axelor.apps.base.service.app.AccessTemplateService;
 import com.axelor.apps.base.service.app.AccessTemplateServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.app.AppServiceImpl;
-import com.axelor.auth.db.repo.UserRepository;
 
 public class AdminModule extends AxelorModule {
 
@@ -40,6 +38,5 @@ public class AdminModule extends AxelorModule {
     bind(ObjectDataAnonymizeService.class).to(ObjectDataAnonymizeServiceImpl.class);
     bind(AccessTemplateService.class).to(AccessTemplateServiceImpl.class);
     bind(AccessConfigImportService.class).to(AccessConfigImportServiceImpl.class);
-    bind(UserRepository.class).to(UserAdminRepository.class);
   }
 }

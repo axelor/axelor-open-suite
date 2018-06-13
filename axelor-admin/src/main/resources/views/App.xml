@@ -4,12 +4,6 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="app-grid" title="Apps" model="com.axelor.apps.base.db.App" canDelete="false" canNew="false">
-		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Generate access template" action="action-app-method-generate-access-template"/>
-	            <item title="Import access config" action="action-app-view-import-access-config-wizard"/>
-	        </menu>
-        </menubar>
 		<field name="name" />
 		<field name="active" />
 		<field name="demoDataLoaded" />
@@ -38,7 +32,6 @@
 			<field name="name" />
 			<field name="active"/>
 		</panel-related>
-		<panel-related field="accessConfigList" /> 
 	</form> 
 	
 	<form model="com.axelor.apps.base.db.App" title="Bulk install" name="bulk-install-app-form">
