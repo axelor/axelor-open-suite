@@ -13,11 +13,11 @@
     <decimal name="supplierQualityRating" title="Supplier quality rating"/>
     <decimal name="supplierQualityRatingSelect" title="Supplier quality rating" selection="rating.icon.select"/>
     <decimal name="supplierArrivalProductQty" title="Supplier arrival product qty"/>
-    <boolean name="isCarrier" title="Carrier ?"/>
+    <boolean name="isCarrier" title="Carrier"/>
     <one-to-many name="partnerProductQualityRatingList" ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner" title="Partner product quality rating"/>
     <one-to-many name="freightCarrierModeList" ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="carrierPartner"/>
 
-    <boolean name="isIspmRequired" title="Is ISPM15 required ?"/>
+    <boolean name="isIspmRequired" title="Is ISPM15 required"/>
     <one-to-many name="partnerStockSettingsList" title="Partner stock settings" ref="com.axelor.apps.stock.db.PartnerStockSettings" mappedBy="partner"/>
     <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" title="Customer account numbers to carriers" mappedBy="partner"/>
   </entity>
