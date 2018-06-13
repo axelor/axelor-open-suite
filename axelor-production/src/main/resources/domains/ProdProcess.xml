@@ -15,7 +15,7 @@
 	<string name="fullName" namecolumn="true" title="Label"/>
 	 
   	
-  	<boolean name="isConsProOnOperation" title="Manage consumed products on phases?"/>
+  	<boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
   	
   	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock location"/>
   	<many-to-one name="producedProductStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product"/>
