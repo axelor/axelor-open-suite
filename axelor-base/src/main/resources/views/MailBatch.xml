@@ -17,7 +17,7 @@
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="template" widget="SuggestBox" form-view="template-form" grid-view="template-grid"/>
-			<field name="archived" title="Archived ?"/>
+			<field name="archived" title="Archived"/>
 		</panel>
 		<panel-tabs>
 			<panel name="information" title="Information"  >
