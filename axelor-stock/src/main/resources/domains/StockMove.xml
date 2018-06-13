@@ -65,7 +65,7 @@
     <boolean name="isReversion" readonly="true" />
 
     <boolean name="isNeedingConformityCertificate" title="Certificate of conformity"/>
-    <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed ?"/>
+    <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed"/>
     <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" title="Electronic signature"/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory user"/>
 
