@@ -3,6 +3,7 @@
 ## [5.0.0] - 2018-06-13
 ## Features
 - User: configurable password pattern, generate random password, and send email upon password change
+- Help added for fields.
 
 ## Improvements
 - Improved the way to sort the accounting grand ledger per account, date, and moveLine ref.
@@ -17,12 +18,17 @@
 - Fix : error when add a manufacturing order lacking a production process to a production process.
 - Fix : disable create and edit of saleorderline from sale order invoicing wizard.
 - Fix account reconcilable issue when ventilate a refund invoice.
+- Fix : On the Stock Move view -> saleOrder, invoice and purchase.. put readonly when status != draft
+- Fix : On the Stock Move view -> saleOrder, invoice and purchase.. disable edition when status != draft
 - Fix trading name form seemingly allowing to create new companies.
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Fix missing address in Birt report for internal stock move + show it on the view
 - Change domain in real operation order domain grid and calendar.
 - Fix context for the creation of a template from a sale order
-- Fix context for the creation of a sale ordre from a template
+- Fix context for the creation of a sale order from a template
+- Partner is readonly on purchase order if there are already lines.
+- Partner is readonly on sale order if there are already lines.
+- Accounting report : Reset some of the fields when copy accounting report and remove 'globalByPost' field.
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features
@@ -122,6 +128,9 @@
 - Supplier request : added suggestion filters on selecting supplierPartner 
 
 ## [5.0.0-rc2] - 2018-05-09
+## Features
+- Partner: option to disable automatic partner sequence generation.
+
 ## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
@@ -149,7 +158,7 @@
 - Refactor invoice payment list display in invoice-form and invoice-client-form views
 - Check partner blocking on invoicing, direct debit and reimbursement. 
 - Improved sale order status label.
-- Timesheet editor: No group by on project when unique product is used. 
+- Timesheet editor: No group by on project when unique product is used.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
