@@ -266,8 +266,8 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
       sheet = workBook.createSheet(app);
       writeRow(sheet, objectHeaders);
     }
-    String usersRights = appMenus.contains(menu) ? "all" : "r";
-    writeRow(sheet, new String[] {obj, usersRights, "all"});
+    String usersRights = appMenus.contains(menu) ? "rwcde" : "r";
+    writeRow(sheet, new String[] {obj, usersRights, "rwcde"});
   }
 
   private void writeMenuSheet(XSSFWorkbook workBook, String menu, String app) {
@@ -294,7 +294,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
   private void updateNoMenuObjects() {
 
     List<MetaModel> metaModels =
-        metaModelRepo.all().filter("self.name not in ?1", objMenu.keySet()).fetch();
+        metaModelRepo.all().filter("self.fullName not in ?1", objMenu.keySet()).fetch();
 
     Iterator<MetaModel> modelIter = metaModels.iterator();
     String appMenu = objMenu.get(App.class.getName());

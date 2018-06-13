@@ -19,12 +19,11 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
-public class UserBaseRepository extends UserRepository {
+public class UserBaseRepository extends UserAdminRepository {
 
   @Override
   public User save(User user) {
@@ -45,6 +44,7 @@ public class UserBaseRepository extends UserRepository {
 
       return user;
     } catch (Exception e) {
+      e.printStackTrace();
       throw new PersistenceException(e.getLocalizedMessage());
     }
   }

@@ -120,7 +120,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     while (cellIter.hasNext()) {
       Cell cell = cellIter.next();
       String value = cell.getStringCellValue();
-      if (cell == null || Strings.isNullOrEmpty(value)) {
+      if (cell == null || Strings.isNullOrEmpty(value) || invalidValue(value)) {
         continue;
       }
       AccessConfig config = accessMap.get(cell.getColumnIndex());
@@ -129,12 +129,18 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     }
   }
 
+  private boolean invalidValue(String value) {
+
+    return !"rwcde".startsWith(value);
+  }
+
   @Transactional
   public Permission getPermission(String model, String value, AccessConfig config) {
 
     String[] objs = model.split("\\.");
     String obj = objs[objs.length - 1];
-    String name = obj + "." + config.getApp().getCode() + "." + config.getName();
+    String pkg = objs[objs.length - 3];
+    String name = "perm." + pkg + "." + obj + "." + value;
     Permission permission =
         permissionRepo.all().filter("self.name = ?1 and self.object = ?2", name, model).fetchOne();
     if (permission == null) {
