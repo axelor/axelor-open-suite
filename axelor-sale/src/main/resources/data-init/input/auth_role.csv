@@ -1,2 +1,4 @@
-"name";"description";"permissions"
-"role.admin";"Access to all objects for all modules";"perm.sale.all"
+"name";"description"
+"role.sale.r";
+"role.sale.rwc";
+"role.sale.rwcde";

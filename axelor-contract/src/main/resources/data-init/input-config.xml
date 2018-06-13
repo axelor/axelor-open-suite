@@ -6,11 +6,15 @@
   	<input file="base_appContract.csv" separator=";" type="com.axelor.apps.base.db.AppContract" call="com.axelor.csv.script.ImportApp:importApp">
   		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
   	</input>
+
+    <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role" search="self.name = :name"/>
   	
-  	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name"/>
-  	
-  	<input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"  search="self.name = :name">
-        <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+  	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+        <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
+        <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
+        <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
+        <bind to="canRemove" eval="can_remove == 'x' ? 'true' : 'false'"/>
+        <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
     </input>
 
 <!-- 	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId"> -->

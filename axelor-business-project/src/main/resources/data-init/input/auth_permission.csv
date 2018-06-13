@@ -1,2 +1,8 @@
-"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
-"perm.businessproject.all";"com.axelor.apps.businessproject.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.businessproject.all";"com.axelor.apps.businessproject.db.*";"x";"x";"x";"x";"x";;;"role.admin"
+"perm.businessproject.InvoicingProject.r";"com.axelor.apps.businessproject.db.InvoicingProject";"x";;;;;;;"role.businessproject.r"
+"perm.businessproject.ElementsToInvoice.r";"com.axelor.apps.businessproject.db.ElementsToInvoice";"x";;;;;;;"role.businessproject.r"
+"perm.businessproject.InvoicingProject.rwc";"com.axelor.apps.businessproject.db.InvoicingProject";"x";"x";"x";;;;;"role.businessproject.rwc"
+"perm.businessproject.ElementsToInvoice.rwc";"com.axelor.apps.businessproject.db.ElementsToInvoice";"x";"x";"x";;;;;"role.businessproject.rwc"
+"perm.businessproject.InvoicingProject.rwcde";"com.axelor.apps.businessproject.db.InvoicingProject";"x";"x";"x";"x";"x";;;"role.businessproject.rwcde"
+"perm.businessproject.ElementsToInvoice.rwcde";"com.axelor.apps.businessproject.db.ElementsToInvoice";"x";"x";"x";"x";"x";;;"role.businessproject.rwcde"

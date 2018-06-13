@@ -1,2 +1,4 @@
-"name";"description";"permissions"
-"role.admin";"Access to all objects for all modules";"perm.businessproject.all"
+"name";"description"
+"role.businessproject.r";
+"role.businessproject.rwc";
+"role.businessproject.rwcde";

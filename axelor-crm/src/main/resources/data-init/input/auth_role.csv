@@ -1,2 +1,4 @@
-"name";"description";"permissions"
-"role.admin";"Access to all objects for all modules";"perm.crm.all"
+"name";"description"
+"role.crm.r";
+"role.crm.rwc";
+"role.crm.rwcde";

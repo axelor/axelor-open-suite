@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 5.0.0]
+## [5.0.0] - 2018-06-13
 ## Features
 - User: configurable password pattern, generate random password, and send email upon password change
 
@@ -11,6 +11,7 @@
 - Add sequence to sort stock move lines.
 
 ## Bug Fixes
+- Leave Request : reset Leave Line after changing User
 - Fix : wrong domain for the bill of material field in the 'add manuf order' popup form in a production order
 - Fix : errors when trying to generate production orders from sale orders with products lacking a stock unit or bill of materials lacking a production process.
 - Fix : error when add a manufacturing order lacking a production process to a production process.
@@ -18,6 +19,14 @@
 - Fix account reconcilable issue when ventilate a refund invoice.
 - Fix : On the Stock Move view -> saleOrder, invoice and purchase.. put readonly when status != draft
 - Fix : On the Stock Move view -> saleOrder, invoice and purchase.. disable edition when status != draft
+- Fix trading name form seemingly allowing to create new companies.
+- Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
+- Fix missing address in Birt report for internal stock move + show it on the view
+- Change domain in real operation order domain grid and calendar.
+- Fix context for the creation of a template from a sale order
+- Fix context for the creation of a sale order from a template
+- Partner is readonly on purchase order if there are already lines.
+- Partner is readonly on sale order if there are already lines.
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features
@@ -117,6 +126,9 @@
 - Supplier request : added suggestion filters on selecting supplierPartner 
 
 ## [5.0.0-rc2] - 2018-05-09
+## Features
+- Partner: option to disable automatic partner sequence generation.
+
 ## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
@@ -144,7 +156,7 @@
 - Refactor invoice payment list display in invoice-form and invoice-client-form views
 - Check partner blocking on invoicing, direct debit and reimbursement. 
 - Improved sale order status label.
-- Timesheet editor: No group by on project when unique product is used. 
+- Timesheet editor: No group by on project when unique product is used.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -591,7 +603,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-[Unreleased 5.0.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc3...dev
+[5.0.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc3...v5.0.0
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
 [5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
