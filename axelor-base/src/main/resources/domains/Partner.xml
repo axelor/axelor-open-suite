@@ -16,11 +16,11 @@
     <string name="firstName" title="First Name"/>
     <string name="jobTitle" title="Function"/>
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" index="false"/>
-    <boolean name="isCustomer" title="Customer?"/>
-    <boolean name="isProspect" title="Prospect?"/>
-    <boolean name="isSupplier" title="Supplier?"/>
+    <boolean name="isCustomer" title="Customer"/>
+    <boolean name="isProspect" title="Prospect"/>
+    <boolean name="isSupplier" title="Supplier"/>
     <boolean name="isEmployee" title="Employee"/>
-    <boolean name="isContact" title="Contact ?" default="false" />
+    <boolean name="isContact" title="Contact" default="false" />
     
     
     <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language" massUpdate="true"/>
