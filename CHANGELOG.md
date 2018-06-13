@@ -23,6 +23,8 @@
 - Change domain in real operation order domain grid and calendar.
 - Fix context for the creation of a template from a sale order
 - Fix context for the creation of a sale order from a template
+- Partner is readonly on purchase order if there are already lines.
+- Partner is readonly on sale order if there are already lines.
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features

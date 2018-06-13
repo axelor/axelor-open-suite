@@ -238,7 +238,8 @@
 		<field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	  </panel>
 	  <panel name="customerInformation" title="Customer information" hideIf="company == null">
-	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect &gt;= 2"/>
+	      <field name="clientPartner" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date"
+					onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2"/>
    	      <field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 		  <panel stacked="true">
 			  <field name="mainInvoicingAddress" canNew="true"
