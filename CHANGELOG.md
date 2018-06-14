@@ -18,6 +18,7 @@
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
 - Timeshee editor: Allows to delete a line when use unique product for the timesheet. 
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
+- Automatic mail default fields in stock move are now filled correctly on partner change.
 
 ## [Unreleased 5.0.1]
 ## Improvements

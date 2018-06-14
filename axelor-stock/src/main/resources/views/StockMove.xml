@@ -383,13 +383,13 @@
 	</action-record>
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">
-    <field name="plannedStockMoveAutomaticMail" if="_typeSelect == '2'"
+    <field name="plannedStockMoveAutomaticMail" if="_typeSelect == '2' || typeSelect == 2"
       expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.plannedStockMoveAutomaticMail"/>
-    <field name="plannedStockMoveMessageTemplate" if="_typeSelect == '2'"
+    <field name="plannedStockMoveMessageTemplate" if="_typeSelect == '2' || typeSelect == 2"
       expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.plannedStockMoveMessageTemplate"/>
-		<field name="realStockMoveAutomaticMail" if="_typeSelect == '2'"
+		<field name="realStockMoveAutomaticMail" if="_typeSelect == '2' || typeSelect == 2"
 			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.realStockMoveAutomaticMail"/>
-		<field name="realStockMoveMessageTemplate" if="_typeSelect == '2'"
+		<field name="realStockMoveMessageTemplate" if="_typeSelect == '2' || typeSelect == 2"
 			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.realStockMoveMessageTemplate"/>
 	</action-record>
 	
