@@ -12,22 +12,20 @@
 		<field name="toDate"/>
 	</grid>
 
-	<form name="resource-booking-form" title="Resource booking"  model="com.axelor.apps.project.db.ResourceBooking" width="large"
-		onNew="action-resource-booking-defaults">
+	<form name="resource-booking-form" title="Resource booking" model="com.axelor.apps.project.db.ResourceBooking" width="large" onNew="action-resource-booking-defaults">
 		<panel>
 			<panel colSpan="12">
 				<field name="name" colSpan="12" css="label-bold bold large"/>
 				<static name="nameLabel" hideIf="id" colSpan="12"><![CDATA[<span class='label label-info'>Computed automatically if left empty</span>]]></static>
 			</panel>
 			<field name="resource" canEdit="false"/>
-			<field name="project" canEdit="false"/>
-			<field name="task" onChange="action-resource-booking-attrs-update-period" canEdit="false"/>
 			<field name="user" canEdit="false"/>
-			<field name="updateTaskFromPeriod" onChange="action-resource-booking-attrs-update-period"/>
-			<spacer/>
-			<field name="fromDate"/>
-			<field name="toDate"/>
-      <field name="notes" colSpan="12"/>
+			<field name="project" canEdit="false"/>
+			<field name="task" canEdit="false" onChange="action-resource-booking-attrs-update-period" domain="self.project = :project"/>
+			<field name="fromDate" colSpan="4"/>
+			<field name="toDate" colSpan="4"/>
+			<field name="updateTaskFromPeriod" onChange="action-resource-booking-attrs-update-period" colSpan="4"/>
+			<field name="notes" colSpan="12"/>
 		</panel>
 	</form>
 
