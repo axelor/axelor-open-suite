@@ -10,6 +10,7 @@
 - Product description can be copy to Invoice/Order/Purchase line.
 
 ## Improvements
+- Project: Reorganization of Resource Booking form view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
