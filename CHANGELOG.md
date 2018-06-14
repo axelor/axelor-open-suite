@@ -8,7 +8,7 @@
 - Fix selection of sale order lines on MRP : Now we can select a sale order line whose the product is storrable, not excluded on MRP, and not delivered. 
 Also, improve the sale order line grid and form views
 - Minor fixes to printing a sale/purchase order or an invoice.
-
+- Sale order: fix NPE when adding a new line on pending orders.
 
 ## [5.0.0] - 2018-06-13
 ## Features
