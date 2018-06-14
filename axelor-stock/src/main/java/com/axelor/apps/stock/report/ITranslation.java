@@ -110,4 +110,6 @@ public interface ITranslation {
   public static final String CONFORMITY_CERTIFICATE_FUNCTION = /*$$(*/
       "ConformityCertificate.function"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_QTY = /*$$(*/ "ConformityCertificate.qty"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_SEQUENCE = /*$$(*/
+      "ConformityCertificate.sequence"; /*)*/
 }

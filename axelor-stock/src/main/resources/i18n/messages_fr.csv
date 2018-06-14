@@ -82,6 +82,7 @@
 "ConformityCertificate.partNumber","Code article",,
 "ConformityCertificate.qty","Quantité",,
 "ConformityCertificate.quantity","Quantité",,
+"ConformityCertificate.sequence","Poste",,
 "ConformityCertificate.signature","Visa",,
 "Consumed quantity","Quantité consommée",,
 "Control on Receipt","Contrôle à la réception",,
