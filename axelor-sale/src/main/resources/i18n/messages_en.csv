@@ -311,7 +311,7 @@
 "SaleOrder.deliveryDate","Delivery date",,
 "SaleOrder.description","Description to display",,
 "SaleOrder.discountAmount","Discount",,
-"SaleOrder.duration",,,
+"SaleOrder.duration","Validity duration",,
 "SaleOrder.invoicingAddrs","Invoicing address",,
 "SaleOrder.no","Order N°",,
 "SaleOrder.note","Note",,

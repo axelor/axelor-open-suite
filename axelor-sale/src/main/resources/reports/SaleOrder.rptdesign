@@ -40,6 +40,26 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
+        </structure>
     </list-property>
     <property name="units">cm</property>
     <property name="layoutPreference">auto layout</property>
@@ -65,6 +85,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -2384,13 +2407,13 @@ from base_app_base]]></xml-property>
                         <text-property name="content"><![CDATA[<TABLE >
 	<TR>
 		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+row["header"]+"</TD><TD/><TD align='right'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></td>"
+		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></td>"
 		} else if(row["logoPosition"] == 1) {
-		"<TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></TD><TD/><TD>"+row["header"]+"</TD>"
+		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD><TD/><TD>"+row["header"]+"</TD>"
 		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></TD><TD>"+row["header"]+"</TD>"
+			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD><TD>"+row["header"]+"</TD>"
 		}else if(row["logoPosition"] == null) {
-			"<TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' />"
+			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/>"
 		}else {
 		"<TD/><TD/><TD>"+row["header"]+"</TD>"
 		}
@@ -2565,6 +2588,7 @@ from base_app_base]]></xml-property>
                             <cell id="4385">
                                 <text id="4386">
                                     <property name="fontSize">9pt</property>
+                                    <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -5519,6 +5543,7 @@ row["ClientPartFirstName"]
                     <property name="textAlign">right</property>
                     <image id="4328">
                         <property name="height">50px</property>
+                        <expression name="altText">""</expression>
                         <property name="source">file</property>
                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["salesperson_signature_path"]</expression>
                     </image>
