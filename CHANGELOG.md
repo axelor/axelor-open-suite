@@ -9,6 +9,7 @@
 - Add ISPM15 feature on Picking stock move report.
 - Product description can be copy to Invoice/Order/Purchase line.
 - Automatic mail on stock move planning.
+- New printing: certificate of conformity on stock move.
 
 ## Improvements
 - Add Partner balance as a new Accounting report.
