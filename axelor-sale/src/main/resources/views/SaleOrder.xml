@@ -287,7 +287,7 @@
   		    <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
             <field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
             <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false"/>
-  		    <panel-dashlet action="action-view-show-stock-move-line" title="Customer deliveries" colSpan="12" showIf="statusSelect &gt;= 3" />
+            <panel-dashlet action="action-sale-order-view-stock-move" title="Customer deliveries" colSpan="12" showIf="statusSelect &gt;= 3" />
       	</panel>
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect &gt;= 3"/>
 	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
@@ -1072,10 +1072,10 @@
 	  	<context name="_saleOrder" expr="eval: __this__"/>
     </action-view>
 
-	<action-view name="action-view-show-stock-move-line" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-sale-order-grid"/>
-		<view type="form" name="stock-move-line-form"/>
-		<domain>self.stockMove.saleOrder = :saleOrder</domain>
+	<action-view name="action-sale-order-view-stock-move" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-sale-order-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.saleOrder = :saleOrder</domain>
 		<context name="saleOrder" expr="eval: __self__"/>
 	</action-view>
 
