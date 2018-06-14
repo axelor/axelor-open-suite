@@ -82,6 +82,7 @@
 "ConformityCertificate.partNumber","Part number",,
 "ConformityCertificate.qty","Quantity",,
 "ConformityCertificate.quantity","Quantity",,
+"ConformityCertificate.sequence","Sequence",,
 "ConformityCertificate.signature","Signature",,
 "Consumed quantity",,,
 "Control on Receipt",,,
