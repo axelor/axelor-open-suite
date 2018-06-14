@@ -5554,25 +5554,5 @@ row["ClientPartFirstName"]
                 </cell>
             </row>
         </grid>
-        <text id="3623">
-            <property name="fontSize">8pt</property>
-            <property name="contentType">html</property>
-            <text-property name="content"><![CDATA[<TABLE >
-	<TR>
-		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+row["header"]+"</TD><TD/><TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></td>"
-		} else if(row["logoPosition"] == 1) {
-		"<TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></TD><TD/><TD>"+row["header"]+"</TD>"
-		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></TD><TD>"+row["header"]+"</TD>"
-		}else if(row["logoPosition"] == null) {
-			"<TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' />"
-		}else {
-		"<TD/><TD/><TD>"+row["header"]+"</TD>"
-		}
- 		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-        </text>
     </body>
 </report>
