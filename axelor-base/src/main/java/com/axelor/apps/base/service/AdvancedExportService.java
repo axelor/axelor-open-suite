@@ -21,6 +21,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
 import com.itextpdf.text.DocumentException;
@@ -34,7 +35,7 @@ public interface AdvancedExportService {
   public String getTargetField(
       Context context, MetaField metaField, String targetField, MetaModel parentMetaModel);
 
-  public MetaFile advancedExportPDF(
+  public Map<Boolean, MetaFile> advancedExportPDF(
       List<Map<String, Object>> advancedExportLines,
       MetaModel metaModel,
       String criteria,
@@ -42,7 +43,7 @@ public interface AdvancedExportService {
       Integer queryFetchLimit)
       throws DocumentException, IOException, ClassNotFoundException, AxelorException;
 
-  public MetaFile advancedExportExcel(
+  public Map<Boolean, MetaFile> advancedExportExcel(
       List<Map<String, Object>> advancedExportLines,
       MetaModel metaModel,
       String criteria,
@@ -51,7 +52,7 @@ public interface AdvancedExportService {
       throws IOException, ClassNotFoundException, DocumentException, AxelorException,
           InvalidFormatException;
 
-  public MetaFile advancedExportCSV(
+  public Map<Boolean, MetaFile> advancedExportCSV(
       List<Map<String, Object>> advancedExportLines,
       MetaModel metaModel,
       String criteria,
@@ -60,4 +61,6 @@ public interface AdvancedExportService {
       throws IOException, ClassNotFoundException, DocumentException, AxelorException;
 
   public Filter getJpaSecurityFilter(MetaModel metaModel);
+
+  public String createCriteria(ActionRequest request, int limit);
 }

@@ -39,8 +39,8 @@
 	
 	<action-view name="action-advanced-export-view-open-form" title="Personalised export" model="com.axelor.apps.base.db.AdvancedExport">
 		<view type="form" name="advanced-export-form"/>
-		<context name="_contextModel" expr="eval: _metaModel"/>
-		<context name="_contextCriteria" expr="eval: _criteria"/>
+		<context name="_metaModel" expr="eval: _metaModel"/>
+		<context name="_criteria" expr="eval: _criteria"/>
 	</action-view>
 
 </object-views>

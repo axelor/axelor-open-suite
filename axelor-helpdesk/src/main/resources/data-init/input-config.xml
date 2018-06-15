@@ -3,13 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
   	
-  	<input file="base_appHelpdesk.csv" separator=";" type="com.axelor.apps.base.db.AppHelpdesk" call="com.axelor.csv.script.ImportApp:importApp">
-  		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
-  	</input>
-
-    <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role" search="self.name = :name"/>
-
-	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+  	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
         <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
         <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
         <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
@@ -17,12 +11,10 @@
         <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
     </input>
     
-  <!--   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId" call="com.axelor.csv.script.SequenceScript:computeFullname">
-    	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
-    	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
-    	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
-    	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
-    	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" />
-    </input>
- -->
+  	<input file="base_appHelpdesk.csv" separator=";" type="com.axelor.apps.base.db.AppHelpdesk" call="com.axelor.csv.script.ImportApp:importApp">
+  		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
+  	</input>
+  	
+  	<input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true" />
+
 </csv-inputs>
