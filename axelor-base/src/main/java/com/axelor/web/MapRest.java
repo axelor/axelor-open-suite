@@ -316,7 +316,7 @@ public class MapRest {
     ObjectNode mainNode = nodeFactory.objectNode();
 
     String language = AuthUtils.getUser().getLanguage();
-    String translation = translationService.getValueTranslation(key, language);
+    String translation = translationService.getTranslation(key, language);
 
     if (translation.equals(key)) {
       translation = translation.substring(ITranslation.PREFIX.length());
