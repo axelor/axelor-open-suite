@@ -38,4 +38,8 @@ public interface AppService {
 
   public void bulkInstall(Collection<App> apps, Boolean importDeomo, String language)
       throws AxelorException;
+  
+  public App importRoles(App app) throws AxelorException;
+  
+  public void importRoles() throws AxelorException;
 }
