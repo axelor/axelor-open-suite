@@ -21,18 +21,22 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderProjectService;
+import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
+import com.axelor.apps.businessproject.service.projectgenerator.state.ProjectGeneratorState;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.team.db.TeamTask;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -43,18 +47,17 @@ public class SaleOrderProjectController {
 
   private static final String CONTEXT_SHOW_RECORD = "_showRecord";
 
-  @Inject protected SaleOrderProjectService saleOrderProjectService;
-
-  @Inject protected InvoicingProjectService invoicingProjectService;
-
-  @Inject protected SaleOrderRepository saleOrderRepo;
-
   public void generateProject(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = saleOrderRepo.find(saleOrder.getId());
-    String genProjTypePerOrderLine = (String) request.getContext().get("genProjTypePerOrderLine");
     try {
-      Project project = saleOrderProjectService.generateProject(saleOrder, genProjTypePerOrderLine);
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      String generatorType = (String) request.getContext().get("_projectGeneratorType");
+
+      ProjectGeneratorState generator =
+          Beans.get(ProjectGeneratorFactory.class)
+              .getGenerator(ProjectGeneratorType.valueOf(generatorType));
+      Project project = generator.generate(saleOrder);
+
       response.setReload(true);
       response.setView(
           ActionView.define("Project")
@@ -63,17 +66,38 @@ public class SaleOrderProjectController {
               .param("forceEdit", "true")
               .context(CONTEXT_SHOW_RECORD, String.valueOf(project.getId()))
               .map());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
+  public void fillProject(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      String generatorType = (String) request.getContext().get("_projectGeneratorType");
+
+      ProjectGeneratorState generator =
+          Beans.get(ProjectGeneratorFactory.class)
+              .getGenerator(ProjectGeneratorType.valueOf(generatorType));
+      ActionViewBuilder view = generator.fill(saleOrder.getProject(), saleOrder);
+
+      response.setReload(true);
+      response.setView(view.map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  // TODO: To remove because replaced by fillProject
   public void generateTypePerOrderLineForProject(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = saleOrderRepo.find(saleOrder.getId());
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     try {
       List<? extends AuditableModel> models =
-          saleOrderProjectService.generateProjectTypePerOrderLine(saleOrder);
+          Beans.get(SaleOrderProjectService.class).generateProjectTypePerOrderLine(saleOrder);
       ActionView.ActionViewBuilder actionView;
       switch (saleOrder.getProject().getGenProjTypePerOrderLine()) {
         case PHASE_BY_LINE:
@@ -108,7 +132,9 @@ public class SaleOrderProjectController {
   }
 
   public void generateInvoicingProject(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = saleOrderRepo.find(request.getContext().asType(SaleOrder.class).getId());
+    SaleOrder saleOrder =
+        Beans.get(SaleOrderRepository.class)
+            .find(request.getContext().asType(SaleOrder.class).getId());
     LocalDate deadline = null;
     if (request.getContext().get("deadline") != null) {
       deadline =
@@ -116,10 +142,11 @@ public class SaleOrderProjectController {
               request.getContext().get("deadline").toString(), DateTimeFormatter.ISO_DATE);
     }
     InvoicingProject invoicingProject =
-        invoicingProjectService.createInvoicingProject(
-            saleOrder,
-            deadline,
-            Integer.valueOf(request.getContext().get("operationSelect").toString()));
+        Beans.get(InvoicingProjectService.class)
+            .createInvoicingProject(
+                saleOrder,
+                deadline,
+                Integer.valueOf(request.getContext().get("operationSelect").toString()));
     if (invoicingProject != null) {
       response.setCanClose(true);
       response.setFlash(I18n.get(IExceptionMessage.INVOICING_PROJECT_GENERATION));

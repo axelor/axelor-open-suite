@@ -291,13 +291,12 @@
   		    <panel-dashlet action="action-view-show-stock-move-line" title="Customer deliveries" colSpan="12" showIf="statusSelect &gt;= 3" />
       	</panel>
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect &gt;= 3"/>
-	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
-      		  <field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
-			  <field name="$genProjTypePerOrderLine" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.GenProjTypePerOrderLine" showIf="project == null"/>
-              <field name="project.genProjTypePerOrderLine" title="Type of project's elements generated" showIf="project != null"/>
-	          <button name="generateProject" title="Generate Project/Business" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
-	          <button name="generateTypePerOrderLine" title="Generate Elements" if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-type-per-order-line,action-sale-order-attrs-hide-generate-tasks"/>
-       	</panel>
+			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
+				<field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
+				<field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"/>
+				<button name="generateProject" title="Generate Project/Business" if="!__config__.app.getApp('business-project').automaticProject" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
+				<button name="fillProject" title="Fill project" if="__config__.app.getApp('business-project').projectSaleOrderLines" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-fill-project"/>
+			</panel>
 		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" >
 			<field name="expectedRealisationDate" colSpan="12" width="50%"/>
  			<label title="OR"/>
@@ -752,13 +751,21 @@
 		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateProject"/>
 	</action-method>
 
+	<action-method name="action-sale-order-method-fill-project">
+		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="fillProject"/>
+	</action-method>
+
     <action-attrs name="action-sale-order-domain-on-team">
     	<attribute name="domain" for="team" expr="eval: salemanUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salemanUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
     </action-attrs>
 
-    <action-attrs name="action-sale-order-attrs-hide-generate-tasks">
-    	<attribute name="hidden" for="generateTasks" expr="true"/>
-    </action-attrs>
+	<action-attrs name="action-sale-order-attrs-hide-generate-tasks">
+		<attribute name="hidden" for="generateTasks" expr="true"/>
+	</action-attrs>
+	<action-attrs name="action-sale-order-attrs-generate-stockmove-readonly">
+
+		<attribute name="readonly" for="generateCustomerStockMove" expr="eval: !saleOrderLineList"/>
+	</action-attrs>
 
 	<action-attrs name="action-attrs-sale-other-reason">
 		<attribute for="cancelReasonStr" name="hidden" expr="cancelReason.freeText == false"/>
@@ -910,10 +917,6 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="changePriceListDomain"/>
 	</action-method>
 
-	<action-method name="action-sale-order-method-generate-type-per-order-line">
-		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateTypePerOrderLineForProject"/>
-	</action-method>
-	
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="deliveryState" expr="eval: 1"/>
