@@ -9,6 +9,7 @@
 Also, improve the sale order line grid and form views
 - Minor fixes to printing a sale/purchase order or an invoice.
 - Sale order: fix NPE when adding a new line on pending orders.
+- Sale order : calculate fullname for draft orders while importing demo data.
 
 ## [5.0.0] - 2018-06-13
 ## Features
