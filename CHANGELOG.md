@@ -68,6 +68,7 @@ Also, improve the sale order line grid and form views.
 - Product: fix missing pictures in catalog when not all products have pictures.
 
 - Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
+- Budget: Display the O2M in editable grid on PurchaseOrderLine and InvoiceLine.
 
 ## [5.0.0] - 2018-06-13
 ## Features
