@@ -29,11 +29,11 @@
 	</action-validate>
 	
 	<action-method name="action-object-data-export-wizard-method-export">
-		<call class="com.axelor.apps.admin.web.ObjectDataExportController" method="export"/>
+		<call class="com.axelor.apps.base.web.ObjectDataExportController" method="export"/>
 	</action-method>
 	
 	<action-method name="action-object-data-export-wizard-method-anonymyize">
-		<call class="com.axelor.apps.admin.web.ObjectDataExportController" method="anonymize"/>
+		<call class="com.axelor.apps.base.web.ObjectDataExportController" method="anonymize"/>
 	</action-method>
    
 </object-views>

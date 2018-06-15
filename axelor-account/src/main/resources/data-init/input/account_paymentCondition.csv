@@ -1,5 +1,0 @@
-"importId";"name";"code";"paymentTime";"typeSelect";"isFree";"daySelect"
-1;"Upon Receipt";"UPRECPT";0;1;"true";0
-2;"30 net days";"30D_NET";30;1;"false";0
-3;"30 days end of month";"30D_EOM";30;3;"false";0
-4;"30 days end of month the 10";"30D_EOM10";30;4;"false";10

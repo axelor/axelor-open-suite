@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.app;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
-import com.axelor.apps.base.exceptions.IAppExceptionMessages;
+import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
 import com.axelor.data.Importer;
@@ -64,6 +64,8 @@ public class AppServiceImpl implements AppService {
   private static final String DIR_DEMO = "demo";
 
   private static final String DIR_INIT = "data-init" + File.separator + "app";
+  
+  private static final String DIR_ROLES = "roles";
 
   private static final String CONFIG_PATTERN = "-config.xml";
 
@@ -95,10 +97,10 @@ public class AppServiceImpl implements AppService {
     if (lang == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IAppExceptionMessages.NO_LANGAUAGE_SELECTED));
+          I18n.get(IExceptionMessages.NO_LANGUAGE_SELECTED));
     }
 
-    importData(app, DIR_DEMO);
+    importData(app, DIR_DEMO, true);
 
     app = appRepo.find(app.getId());
 
@@ -112,16 +114,16 @@ public class AppServiceImpl implements AppService {
     return appRepo.save(app);
   }
 
-  private void importData(App app, String dataDir) {
+  private void importData(App app, String dataDir, boolean useLang) {
 
     String modules = app.getModules();
     if (modules == null) {
       return;
     }
     String code = app.getCode();
-    String lang = getLanguage(app);
+    String lang = useLang ? getLanguage(app) : "";
 
-    log.debug("Data import: App code: {}, App lang: {}", code, lang);
+    log.debug("Data import: DataDir: {}, App code: {}, App lang: {}", dataDir, code, lang);
 
     for (String module : modules.split(",")) {
       log.debug("Importing module: {}", module);
@@ -173,7 +175,7 @@ public class AppServiceImpl implements AppService {
       return app;
     }
 
-    importData(app, DIR_INIT);
+    importData(app, DIR_INIT, true);
 
     app = appRepo.find(app.getId());
 
@@ -216,25 +218,29 @@ public class AppServiceImpl implements AppService {
 
   private File extract(String module, String dirName, String lang, String code) {
 
-    String dirPath = dirName + "/";
     List<URL> files = new ArrayList<URL>();
     files.addAll(MetaScanner.findAll(module, dirName, code + CONFIG_PATTERN));
     if (files.isEmpty()) {
       return null;
     }
-    files.addAll(fetchUrls(module, dirPath + lang));
-    if (files.isEmpty()) {
-      return null;
+    if (lang.isEmpty()) {
+      files.addAll(MetaScanner.findAll(module, dirName, code + "*"));
     }
-    files.addAll(fetchUrls(module, dirPath + IMG_DIR));
-    files.addAll(fetchUrls(module, dirPath + EXT_DIR));
+    else {
+      String dirPath = dirName + "/";
+      files.addAll(fetchUrls(module, dirPath + IMG_DIR));
+      files.addAll(fetchUrls(module, dirPath + EXT_DIR));
+      files.addAll(fetchUrls(module, dirPath + lang));
+    }
 
     final File tmp = Files.createTempDir();
 
     for (URL file : files) {
       String name = file.toString();
       name = name.substring(name.lastIndexOf(dirName));
-      name = name.replace(dirName + "/" + lang, dirName);
+      if (!lang.isEmpty()) {
+        name = name.replace(dirName + "/" + lang, dirName);
+      }
       try {
         copy(file.openStream(), tmp, name);
       } catch (IOException e) {
@@ -289,7 +295,8 @@ public class AppServiceImpl implements AppService {
   private List<App> getDepends(App app, Boolean active) {
 
     List<App> apps = new ArrayList<App>();
-
+    app = appRepo.find(app.getId());
+    
     for (App depend : app.getDependsOnSet()) {
       if (depend.getActive().equals(active)) {
         apps.add(depend);
@@ -471,9 +478,7 @@ public class AppServiceImpl implements AppService {
     if (!children.isEmpty()) {
       List<String> childrenNames = getNames(children);
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          IAppExceptionMessages.APP_IN_USE,
-          childrenNames);
+          TraceBackRepository.CATEGORY_INCONSISTENCY, IExceptionMessages.APP_IN_USE, childrenNames);
     }
 
     app.setActive(false);
@@ -486,12 +491,56 @@ public class AppServiceImpl implements AppService {
       throws AxelorException {
 
     apps = sortApps(apps);
-
+    
     for (App app : apps) {
       app = installApp(app, language);
       if (importDemo != null && importDemo) {
-        importDataDemo(app);
+          importDataDemo(app);
       }
     }
+    
+  }
+
+  @Override
+  public App importRoles(App app) throws AxelorException {
+    
+    if (app.getIsRolesImported()) {
+      return app;
+    }
+    
+    importParentRoles(app);
+    
+    importData(app, DIR_ROLES, false);
+
+    app = appRepo.find(app.getId());
+
+    app.setIsRolesImported(true);
+
+    return saveApp(app);
+    
+  }
+  
+  private void importParentRoles(App app) throws AxelorException {
+
+    List<App> depends = getDepends(app, true);
+
+    for (App parent : depends) {
+      parent = appRepo.find(parent.getId());
+      if (!parent.getIsRolesImported()) {
+        importRoles(parent);
+      }
+    }
+  }
+  
+  @Override
+  public void importRoles() throws AxelorException {
+    
+    List<App> apps = appRepo.all().filter("self.isRolesImported = false").fetch();
+    apps = sortApps(apps);
+
+    for (App app : apps) {
+        importRoles(app);
+    }
+    
   }
 }

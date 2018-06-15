@@ -1,0 +1,6 @@
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.auth.all";"com.axelor.auth.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"perm.meta.all";"com.axelor.meta.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"perm.mail.all";"com.axelor.mail.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"perm.dms.all";"com.axelor.dms.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"perm.team.all";"com.axelor.team.db.*";"x";"x";"x";"x";"x";;;"Admin"
