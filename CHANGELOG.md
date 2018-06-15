@@ -11,6 +11,7 @@
 
 ## Improvements
 - Add Partner balance as a new Accounting report.
+- Rework SaleOrder form interface
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
