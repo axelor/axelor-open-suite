@@ -25,7 +25,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import java.util.List;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
@@ -33,8 +32,6 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
   public SaleOrder copy(SaleOrder entity, boolean deep) {
 
     SaleOrder copy = super.copy(entity, deep);
-
-    List<SaleOrderLine> saleOrderLines = copy.getSaleOrderLineList();
 
     if (!Beans.get(AppService.class).isApp("supplychain")) {
       return copy;
@@ -45,12 +42,14 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     copy.setAmountInvoiced(null);
     copy.setStockMoveList(null);
 
-    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+    for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
       saleOrderLine.setDeliveryState(null);
       saleOrderLine.setDeliveredQty(null);
+      saleOrderLine.setAmountInvoiced(null);
+      saleOrderLine.setInvoiced(null);
+      saleOrderLine.setInvoicingDate(null);
+      saleOrderLine.setIsInvoiceControlled(null);
     }
-
-    copy.setSaleOrderLineList(saleOrderLines);
 
     return copy;
   }
