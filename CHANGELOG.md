@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.0.1]
 ## Improvements
+- Rework accounting report for journal
 - User: add default password pattern description.
 
 ## Bug Fixes
