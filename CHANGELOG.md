@@ -9,6 +9,7 @@
 Also, improve the sale order line grid and form views
 - Minor fixes to printing a sale/purchase order or an invoice.
 - Sale order: fix NPE when adding a new line on pending orders.
+- Added missing translations on supplier catalog in partners.
 - Fix translation of product full names.
 - Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
 - Sale order : calculate fullname for draft orders while importing demo data.
