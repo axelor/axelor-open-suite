@@ -2,7 +2,7 @@
 
 ## [Unreleased 5.0.1]
 ## Improvements
-
+- User: add default password pattern description.
 
 ## Bug Fixes
 - Fix selection of sale order lines on MRP : Now we can select a sale order line whose the product is storrable, not excluded on MRP, and not delivered. 
