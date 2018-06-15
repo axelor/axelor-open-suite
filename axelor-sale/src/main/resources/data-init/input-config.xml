@@ -3,13 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
 
-
-	<input file="base_appSale.csv" separator=";" type="com.axelor.apps.base.db.AppSale" call="com.axelor.csv.script.ImportApp:importApp">
-		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
-  	</input>
-
-    <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role" search="self.name = :name"/>
-
 	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
         <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
         <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
@@ -17,24 +10,10 @@
         <bind to="canRemove" eval="can_remove == 'x' ? 'true' : 'false'"/>
         <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
     </input>
-    
-<!--     <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId"> -->
-<!--     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/> -->
-<!--     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/> -->
-<!--     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/> -->
-<!--     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/> -->
-<!--     	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" /> -->
-<!--     </input> -->
-    
-<!--     <input file="sale_saleConfig.csv" separator=";" type="com.axelor.apps.sale.db.SaleConfig"  search="self.importId = :importId"/> -->
-  	
-<!--   	 <input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
-<!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
-<!-- 	</input> -->
 	
-<!-- 	<input file="meta_menuManager.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
-<!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
-<!-- 	</input> -->
+	<input file="base_appSale.csv" separator=";" type="com.axelor.apps.base.db.AppSale" call="com.axelor.csv.script.ImportApp:importApp">
+		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
+  	</input>
 	
     <input file="base_objectDataConfig.csv" separator=";" type="com.axelor.apps.base.db.DataConfigLine">
     	<bind to="objectDataConfig" search="self.modelSelect = :modelSelect">
@@ -56,6 +35,8 @@
     	<bind to="type" eval="'tooltip'" />
     	<bind to="model" eval="com.axelor.inject.Beans.get(com.axelor.meta.db.repo.MetaModelRepository.class).findByName(object).getFullName()" column="object" />
     </input>
+    
+    <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true" />
 	
 </csv-inputs>
 

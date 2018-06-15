@@ -39,4 +39,6 @@ public interface IExceptionMessages {
       "Access config imported successfully" /*)*/;
 
   public static final String OBJECT_DATA_REPLACE_MISSING = /*$$(*/ "No record found for: %s" /*)*/;
+
+  public static final String ROLE_IMPORT_SUCCESS = /*$$(*/ "Roles imported successfully" /*)*/;
 }

@@ -170,6 +170,26 @@ public class AppController {
             .map());
   }
 
+  public void importRoles(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    App app = request.getContext().asType(App.class);
+
+    app = appRepo.find(app.getId());
+
+    appService.importRoles(app);
+    response.setReload(true);
+    response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
+  }
+
+  public void importAllRoles(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    appService.importRoles();
+
+    response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
+    response.setReload(true);
+  }
+
   public void importAccessConfig(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

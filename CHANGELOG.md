@@ -10,6 +10,7 @@ Also, improve the sale order line grid and form views
 - Minor fixes to printing a sale/purchase order or an invoice.
 - Sale order: fix NPE when adding a new line on pending orders.
 - Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
+- Sale order : calculate fullname for draft orders while importing demo data.
 
 ## [5.0.0] - 2018-06-13
 ## Features
@@ -21,6 +22,7 @@ Also, improve the sale order line grid and form views
 - General data protection regulation: data export and anonymize feature added.
 - Use general configurations to determine the number of digits displayed in purchase order, invoice and product catalog reports.
 - Add sequence to sort stock move lines.
+- Advanced export : Fix set limits before the wizard.
 
 ## Bug Fixes
 - Leave Request : reset Leave Line after changing User
