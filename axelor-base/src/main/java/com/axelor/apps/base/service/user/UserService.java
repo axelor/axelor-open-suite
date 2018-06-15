@@ -147,4 +147,11 @@ public interface UserService {
    * @return
    */
   CharSequence generateRandomPassword();
+
+  /**
+   * Get password pattern description.
+   *
+   * @return
+   */
+  String getPasswordPatternDescription();
 }

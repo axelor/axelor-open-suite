@@ -11,7 +11,6 @@
 			<field name="enableConfigurator" widget="boolean-switch"/>
 			<field name="allowPendingOrderModification" widget="boolean-switch"/>
             <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
-            <field name="timetableInvoicing" widget="boolean-switch"/>
             <field name="printingConfigPerSaleOrder" widget="boolean-switch"/>
             <field name="closeOpportunityUponSaleOrderConfirmation" widget="boolean-switch"/>
 		</panel>

@@ -49,6 +49,7 @@
             <panel name="passwordPanel" itemSpan="12">
               <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change || !id" validIf="(!change &amp;&amp; id) || newPassword.length >= 4"/>
               <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
+              <label name="passwordPatternDescription" css="label-italic"/>
             </panel>
             <panel name="passwordOptionsPanel" showIf="code != $user">
               <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
@@ -110,6 +111,7 @@
                 <panel name="passwordPanel" itemSpan="12">
                   <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change" validIf="!change || newPassword.length >= 4"/>
                   <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change" validIf="chkPassword === newPassword"/>
+                  <label name="passwordPatternDescription" css="label-italic"/>
                 </panel>
                 <panel name="passwordOptionsPanel" hidden="true">
                   <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
@@ -147,10 +149,12 @@
     </action-attrs>
 
     <action-attrs name="action-user-attrs">
-      <attribute name="hidden" for="email" expr="partner" />
+      <attribute name="hidden" for="email" expr="partner"/>
       <attribute name="hidden" for="passwordPanel" expr="false"/>
       <attribute name="required" for="partner.emailAddress" expr="sendEmailUponPasswordChange"/>
       <attribute name="value" for="$generateRandomPassword" expr="false"/>
+      <attribute name="title" for="passwordPatternDescription"
+        expr="call: com.axelor.apps.base.service.user.UserService:getPasswordPatternDescription()"/>
     </action-attrs>
 
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
