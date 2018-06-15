@@ -3,12 +3,17 @@
 ## [Unreleased 5.0.1]
 ## Improvements
 - Rework accounting report for journal
+- User: add default password pattern description.
 
 ## Bug Fixes
 - Fix selection of sale order lines on MRP : Now we can select a sale order line whose the product is storrable, not excluded on MRP, and not delivered. 
 Also, improve the sale order line grid and form views
 - Minor fixes to printing a sale/purchase order or an invoice.
 - Sale order: fix NPE when adding a new line on pending orders.
+- Added missing translations on supplier catalog in partners.
+- Fix translation of product full names.
+- Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
+- Sale order : calculate fullname for draft orders while importing demo data.
 
 ## [5.0.0] - 2018-06-13
 ## Features
@@ -20,6 +25,7 @@ Also, improve the sale order line grid and form views
 - General data protection regulation: data export and anonymize feature added.
 - Use general configurations to determine the number of digits displayed in purchase order, invoice and product catalog reports.
 - Add sequence to sort stock move lines.
+- Advanced export : Fix set limits before the wizard.
 
 ## Bug Fixes
 - Leave Request : reset Leave Line after changing User

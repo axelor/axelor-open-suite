@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
@@ -39,7 +40,13 @@ public class PurchaseOrderLineController {
         purchaseOrderLineRepo.find(request.getContext().asType(PurchaseOrderLine.class).getId());
 
     try {
-      purchaseOrderSupplierService.generateSuppliersRequests(purchaseOrderLine);
+      if (purchaseOrderLine.getPurchaseOrder() == null) {
+        PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+
+        purchaseOrderSupplierService.generateSuppliersRequests(purchaseOrderLine, purchaseOrder);
+      } else {
+        purchaseOrderSupplierService.generateSuppliersRequests(purchaseOrderLine);
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
