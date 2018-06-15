@@ -325,10 +325,10 @@ public class AdvancedExportController {
 
     Map<Boolean, MetaFile> exportMap = new HashMap<Boolean, MetaFile>();
     MetaFile exportFile = null;
-    String criteria = 
+    String criteria =
         advancedExportService.createCriteria(request, advancedExport.getMaxExportLimit());
     if (criteria == null) criteria = "";
-    
+
     int exportFormatSelect =
         Integer.parseInt(request.getContext().get("exportFormatSelect").toString());
 

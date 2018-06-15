@@ -170,7 +170,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     if (request.getContext().get("_criteria") != null) {
       if (request.getContext().get("_criteria").toString().startsWith("[")) {
         return request.getContext().get("_criteria").toString();
-        
+
       } else {
         MetaModel metaModel =
             metaModelRepo.find(
@@ -993,7 +993,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       query.setFirstResult(startPosition);
       dataList = query.getResultList();
       if (dataList.isEmpty()) break;
-      
+
       createPDfData(table, dataList);
       log.debug("File processing: {}", pdfFile.getName());
 
@@ -1098,7 +1098,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       query.setFirstResult(startPosition);
       dataList = query.getResultList();
       if (dataList.isEmpty()) break;
-      
+
       createExcelData(dataList, sheet);
       log.debug("File processing: {}", excelFile.getName());
 
@@ -1194,18 +1194,18 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       query.setFirstResult(startPosition);
       dataList = query.getResultList();
       if (dataList.isEmpty()) break;
-      
+
       createCsvData(dataList, totalCols, index, csvWriter);
       log.debug("File processing: {}", csvFile.getName());
 
       startPosition = startPosition + queryFetchLimit;
       reachLimit += dataList.size();
     }
-    
+
     if (maxExportLimit == reachLimit) {
       isReachMaxExportLimit = true;
     }
-    
+
     csvWriter.close();
 
     FileInputStream inStream = new FileInputStream(csvFile);

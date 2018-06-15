@@ -64,7 +64,7 @@ public class AppServiceImpl implements AppService {
   private static final String DIR_DEMO = "demo";
 
   private static final String DIR_INIT = "data-init" + File.separator + "app";
-  
+
   private static final String DIR_ROLES = "roles";
 
   private static final String CONFIG_PATTERN = "-config.xml";
@@ -225,8 +225,7 @@ public class AppServiceImpl implements AppService {
     }
     if (lang.isEmpty()) {
       files.addAll(MetaScanner.findAll(module, dirName, code + "*"));
-    }
-    else {
+    } else {
       String dirPath = dirName + "/";
       files.addAll(fetchUrls(module, dirPath + IMG_DIR));
       files.addAll(fetchUrls(module, dirPath + EXT_DIR));
@@ -296,7 +295,7 @@ public class AppServiceImpl implements AppService {
 
     List<App> apps = new ArrayList<App>();
     app = appRepo.find(app.getId());
-    
+
     for (App depend : app.getDependsOnSet()) {
       if (depend.getActive().equals(active)) {
         apps.add(depend);
@@ -491,25 +490,24 @@ public class AppServiceImpl implements AppService {
       throws AxelorException {
 
     apps = sortApps(apps);
-    
+
     for (App app : apps) {
       app = installApp(app, language);
       if (importDemo != null && importDemo) {
-          importDataDemo(app);
+        importDataDemo(app);
       }
     }
-    
   }
 
   @Override
   public App importRoles(App app) throws AxelorException {
-    
+
     if (app.getIsRolesImported()) {
       return app;
     }
-    
+
     importParentRoles(app);
-    
+
     importData(app, DIR_ROLES, false);
 
     app = appRepo.find(app.getId());
@@ -517,9 +515,8 @@ public class AppServiceImpl implements AppService {
     app.setIsRolesImported(true);
 
     return saveApp(app);
-    
   }
-  
+
   private void importParentRoles(App app) throws AxelorException {
 
     List<App> depends = getDepends(app, true);
@@ -531,16 +528,15 @@ public class AppServiceImpl implements AppService {
       }
     }
   }
-  
+
   @Override
   public void importRoles() throws AxelorException {
-    
+
     List<App> apps = appRepo.all().filter("self.isRolesImported = false").fetch();
     apps = sortApps(apps);
 
     for (App app : apps) {
-        importRoles(app);
+      importRoles(app);
     }
-    
   }
 }

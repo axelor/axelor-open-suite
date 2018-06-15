@@ -28,9 +28,8 @@ import com.google.inject.Inject;
 import java.util.Map;
 
 public class ImportSaleOrder {
-  
-  @Inject
-  SaleOrderManagementRepository saleOrderRepo;
+
+  @Inject SaleOrderManagementRepository saleOrderRepo;
 
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
