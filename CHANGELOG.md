@@ -23,6 +23,7 @@ Also, improve the sale order line grid and form views
 - Financial account : Fix NPE(PersistanceException) while persistence of new account. 
 - Opportunity: fix error in grid view when clicking on "Assign to me" button without having selected any lines.
 - Fix Analytic balance report to take into account the company of the analytic journal.
+- Fix line removal in confirmed sale order.
 
 ## [5.0.0] - 2018-06-13
 ## Features
