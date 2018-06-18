@@ -20,15 +20,12 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
-import com.axelor.apps.businessproject.service.SaleOrderProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.businessproject.service.projectgenerator.state.ProjectGeneratorState;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.auth.db.AuditableModel;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -36,11 +33,9 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.team.db.TeamTask;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Singleton
 public class SaleOrderProjectController {
@@ -86,46 +81,6 @@ public class SaleOrderProjectController {
       response.setReload(true);
       response.setView(view.map());
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  // TODO: To remove because replaced by fillProject
-  public void generateTypePerOrderLineForProject(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-    try {
-      List<? extends AuditableModel> models =
-          Beans.get(SaleOrderProjectService.class).generateProjectTypePerOrderLine(saleOrder);
-      ActionView.ActionViewBuilder actionView;
-      switch (saleOrder.getProject().getGenProjTypePerOrderLine()) {
-        case PHASE_BY_LINE:
-          actionView =
-              ActionView.define(
-                      String.format("Project%s generated", (models.size() > 1 ? "s" : "")))
-                  .model(Project.class.getName())
-                  .add("grid", "project-grid")
-                  .add("form", "project-form");
-          break;
-        case TASK_BY_LINE:
-          actionView =
-              ActionView.define(String.format("Task%s generated", (models.size() > 1 ? "s" : "")))
-                  .model(TeamTask.class.getName())
-                  .add("grid", "team-task-grid")
-                  .add("form", "team-task-form");
-          break;
-        default:
-          actionView = ActionView.define("Model generated").model(models.getClass().getName());
-      }
-      if (models.size() == 1) {
-        actionView.context(CONTEXT_SHOW_RECORD, String.valueOf(models.get(0).getId()));
-      } else {
-        actionView.domain(String.format("self.id in (%s)", StringTool.getIdListString(models)));
-      }
-      actionView.param("forceEdit", "true");
-      response.setReload(true);
-      response.setView(actionView.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
