@@ -1,5 +1,30 @@
 # Changelog
 
+## [5.0.1] - 2018-06-18
+## Improvements
+- Rework accounting report for journal
+- User: add default password pattern description.
+
+## Bug Fixes
+- Fix selection of sale order lines on MRP : Now we can select a sale order line whose the product is storrable, not excluded on MRP, and not delivered. 
+Also, improve the sale order line grid and form views
+- Minor fixes to printing a sale/purchase order or an invoice.
+- Sale order: fix NPE when adding a new line on pending orders.
+- Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
+- Prevented bugs by changing the way the companySet field is set in partner form.
+- Added missing translations on supplier catalog in partners.
+- Fix translation of product full names.
+- Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
+- Sale order : calculate fullname for draft orders while importing demo data.
+- Sale order: fix copy problem by reseting field deliverState and deliveredQty, and others fields to null
+- Event : fix an error on save that can occur if the organizer is not set.
+- Stock move: hide button generate invoice if internal stock move
+- Fix NPE happening in invoice lines.
+- Financial account : Fix NPE(PersistanceException) while persistence of new account. 
+- Opportunity: fix error in grid view when clicking on "Assign to me" button without having selected any lines.
+- Fix Analytic balance report to take into account the company of the analytic journal.
+- Fix line removal in confirmed sale order.
+
 ## [5.0.0] - 2018-06-13
 ## Features
 - User: configurable password pattern, generate random password, and send email upon password change
@@ -10,6 +35,7 @@
 - General data protection regulation: data export and anonymize feature added.
 - Use general configurations to determine the number of digits displayed in purchase order, invoice and product catalog reports.
 - Add sequence to sort stock move lines.
+- Advanced export : Fix set limits before the wizard.
 
 ## Bug Fixes
 - Leave Request : reset Leave Line after changing User
@@ -605,6 +631,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+
+[5.0.0]: https://github.com/axelor/abs-webapp/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/axelor/abs-webapp/compare/v5.0.0-rc3...v5.0.0
 [5.0.0-rc3]: https://github.com/axelor/abs-webapp/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/abs-webapp/compare/v5.0.0-rc1...v5.0.0-rc2
