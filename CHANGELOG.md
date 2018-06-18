@@ -20,6 +20,7 @@ Also, improve the sale order line grid and form views
 - Event : fix an error on save that can occur if the organizer is not set.
 - Stock move: hide button generate invoice if internal stock move
 - Fix NPE happening in invoice lines.
+- Financial account : Fix NPE(PersistanceException) while persistence of new account. 
 
 ## [5.0.0] - 2018-06-13
 ## Features
