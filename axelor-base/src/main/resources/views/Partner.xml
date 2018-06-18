@@ -727,9 +727,9 @@
 	</action-attrs>
 
 	<action-record name="action-partner-record-set-balance" model="com.axelor.apps.base.db.Partner">
-        <field name="$balance" expr="eval: __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceCustAccount }" if="__config__.app.getApp('account')?.balanceConfiguration == 1"/>
-        <field name="$balance" expr="eval: __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueCustAccount }" if="__config__.app.getApp('account')?.balanceConfiguration == 2"/>
-        <field name="$balance" expr="eval: __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueDebtRecoveryCustAccount }" if="__config__.app.getApp('account')?.balanceConfiguration == 3"/>
+        <field name="$balance" expr="eval: __config__.app.getApp('account')?.partnerBalanceViewerConfiguration == PartnerBalanceViewerConfigurationTypeSelect.TOTAL_BALANCE ? __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceCustAccount } : __config__.app.getApp('account')?.partnerBalanceViewerConfiguration == PartnerBalanceViewerConfigurationTypeSelect.DUE_BALANCE ?
+        __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueCustAccount } :
+        __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueDebtRecoveryCustAccount }"/>
 	</action-record>
 
 	<action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">
