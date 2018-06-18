@@ -649,6 +649,7 @@
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
+        <action name="action-partner-attrs-partner-supplier-hide-create-order"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-onnew">
@@ -659,6 +660,7 @@
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
+		<action name="action-partner-attrs-partner-supplier-hide-create-order"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-contact-name-onchange">
@@ -688,6 +690,10 @@
 	<action-attrs name="action-partner-attrs-partner-seq-editable">
 		<attribute name="readonly" for="partnerSeq" expr="__config__.app.getApp('base').getGeneratePartnerSequence()"/>
 	</action-attrs>
+
+    <action-attrs name="action-partner-attrs-partner-supplier-hide-create-order">
+        <attribute name="hidden" for="createOrder" expr="eval: !(isProspect || isCustomer)"/>
+    </action-attrs>
 
     <action-attrs name="action-partner-attrs-change-name">
         <attribute name="title" for="name" expr="Business name" if="partnerTypeSelect == __repo__(Partner).PARTNER_TYPE_COMPANY" />
