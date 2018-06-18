@@ -26,6 +26,7 @@ Also, improve the sale order line grid and form views
 - Fix line removal in confirmed sale order.
 - Partner: check whether another partner with the same email address exist or not on save.
 
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
 
 ## [5.0.0] - 2018-06-13
 ## Features
