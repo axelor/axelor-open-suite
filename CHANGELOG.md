@@ -17,6 +17,7 @@ Also, improve the sale order line grid and form views
 - Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
 - Sale order : calculate fullname for draft orders while importing demo data.
 - Sale order: fix copy problem by reseting field deliverState and deliveredQty, and others fields to null
+- Stock move: hide button generate invoice if internal stock move
 
 ## [5.0.0] - 2018-06-13
 ## Features
