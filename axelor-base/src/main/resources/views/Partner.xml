@@ -726,7 +726,7 @@
 	</action-attrs>
 
 	<action-record name="action-partner-record-set-balance" model="com.axelor.apps.base.db.Partner">
-		<field name="$balance" expr="eval: __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueCustAccount }"/>
+		<field name="$balance" expr="eval: __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceCustAccount }"/>
 	</action-record>
 
 	<action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">
