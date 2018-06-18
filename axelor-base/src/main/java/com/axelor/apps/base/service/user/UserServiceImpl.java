@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -62,9 +63,18 @@ public class UserServiceImpl implements UserService {
 
   public static final String DEFAULT_LOCALE = "en";
 
-  private static AppSettings appSettings = AppSettings.get();
-  private static Pattern pwdPattern =
-      Pattern.compile(MoreObjects.firstNonNull(appSettings.get("user.password.pattern"), ""));
+  private static final String PATTERN_ACCES_RESTRICTION =
+      "((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z[0-9]]))|((?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z[0-9]]))|((?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z[0-9]])).{8,}";
+
+  private static final Pattern PATTERN =
+      Pattern.compile(
+          MoreObjects.firstNonNull(
+              AppSettings.get().get("user.password.pattern"), PATTERN_ACCES_RESTRICTION));
+
+  private static final String PATTERN_DESCRIPTION =
+      PATTERN.pattern().equals(PATTERN_ACCES_RESTRICTION)
+          ? IExceptionMessage.USER_PATTERN_MISMATCH_ACCES_RESTRICTION
+          : "";
 
   private static final String GEN_CHARS =
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
@@ -251,7 +261,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean matchPasswordPattern(CharSequence password) {
-    return pwdPattern.matcher(password).matches();
+    return PATTERN.matcher(password).matches();
   }
 
   @Override
@@ -347,5 +357,10 @@ public class UserServiceImpl implements UserService {
     }
 
     throw new TooManyIterationsException(GEN_LOOP_LIMIT);
+  }
+
+  @Override
+  public String getPasswordPatternDescription() {
+    return I18n.get(PATTERN_DESCRIPTION);
   }
 }

@@ -15,6 +15,7 @@
 		<many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Image"/>
 		<boolean name="initDataLoaded" title="Init data loaded" />
 		<boolean name="demoDataLoaded" title="Demo data loaded" />
+		<boolean name="isRolesImported" title="Roles imported" />
 		<boolean name="active" title="Installed" />
 		<integer name="sequence" title="Sequence" />
 		<integer name="installOrder" title="Install order" />

@@ -3,6 +3,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
   	
+  	<input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" />
+	
+	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+        <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
+        <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
+        <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
+        <bind to="canRemove" eval="can_remove == 'x' ? 'true' : 'false'"/>
+        <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
+    </input>
+    
   	<input file="base_appAccount.csv" separator=";" type="com.axelor.apps.base.db.AppAccount"  call="com.axelor.csv.script.ImportApp:importApp">
   		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
   	</input>
@@ -15,64 +25,6 @@
   		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
   	</input>
   	
-    <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role" search="self.name = :name"/>
-    
-  	<input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
-        <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
-        <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
-        <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
-        <bind to="canRemove" eval="can_remove == 'x' ? 'true' : 'false'"/>
-        <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
-    </input>
-  	
-    
-<!--     <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId"> -->
-<!--     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/> -->
-<!--     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/> -->
-<!--     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/> -->
-<!--     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/> -->
-<!--     	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" /> -->
-<!--     </input> -->
-    
-<!--   	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" /> -->
-
-<!-- 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" > -->
-<!-- 		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/> -->
-<!-- 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/> -->
-<!-- 		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/> -->
-<!-- 	</input> -->
-
-<!-- 	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" /> -->
-		
-<!-- 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId" /> -->
-	
-<!-- 	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId" /> -->
-	
-<!-- 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" /> -->
-	
-<!-- 	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId" /> -->
-	
-<!-- 	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId" > -->
-<!-- 		<bind search="self.importId = :company_id" to="company" update="true" /> -->
-<!-- 	</input> -->
-		
-<!-- 	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig" search="self.importId = :importId" /> -->
-	
-<!-- 	<input file="account_cfonbConfig.csv" separator=";" type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId" /> -->
-	
-<!-- 	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" /> -->
-	
-    <input file="account_accountChart.csv" separator=";" type="com.axelor.apps.account.db.AccountChart" search="self.code = :code" call="com.axelor.csv.script.ImportAccountChart:importAccountChart" />
-	   
-<!--     <input file="meta_menuUser.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
-<!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
-<!-- 	</input> -->
-	
-	
-<!-- 	<input file="meta_menuManager.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name"> -->
-<!-- 		<bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/> -->
-<!-- 	</input> -->
-
 	<input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     	<bind to="language" eval="'en'" />
     	<bind to="type" eval="'tooltip'" />
@@ -84,5 +36,7 @@
     	<bind to="type" eval="'tooltip'" />
     	<bind to="model" eval="com.axelor.inject.Beans.get(com.axelor.meta.db.repo.MetaModelRepository.class).findByName(object).getFullName()" column="object" />
     </input>
+    
+    <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true" />
     
 </csv-inputs>

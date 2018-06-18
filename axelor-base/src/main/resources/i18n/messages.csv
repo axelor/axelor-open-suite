@@ -862,6 +862,7 @@
 "Partners by Industry Sector",,,
 "Password",,,
 "Password doesn't match with configured pattern.",,,
+"Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special.",,,
 "Path to export file",,,
 "Path to export folder",,,
 "Payment Mode",,,

@@ -45,17 +45,17 @@ import java.util.Map;
 
 public class LeadServiceImpl implements LeadService {
 
-  @Inject private SequenceService sequenceService;
+  @Inject protected SequenceService sequenceService;
 
-  @Inject private UserService userService;
+  @Inject protected UserService userService;
 
-  @Inject PartnerRepository partnerRepo;
+  @Inject protected PartnerRepository partnerRepo;
 
-  @Inject OpportunityRepository opportunityRepo;
+  @Inject protected OpportunityRepository opportunityRepo;
 
-  @Inject LeadRepository leadRepo;
+  @Inject protected LeadRepository leadRepo;
 
-  @Inject EventRepository eventRepo;
+  @Inject protected EventRepository eventRepo;
 
   /**
    * Convert lead into a partner

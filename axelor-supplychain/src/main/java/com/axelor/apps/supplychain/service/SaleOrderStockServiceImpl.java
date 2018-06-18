@@ -341,8 +341,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
   @Override
   public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException {
+    return isStockMoveProduct(saleOrderLine, saleOrderLine.getSaleOrder());
+  }
 
-    Company company = saleOrderLine.getSaleOrder().getCompany();
+  @Override
+  public boolean isStockMoveProduct(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+
+    Company company = saleOrder.getCompany();
 
     SupplyChainConfig supplyChainConfig =
         Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
@@ -389,7 +395,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
-      if (this.isStockMoveProduct(saleOrderLine)) {
+      if (this.isStockMoveProduct(saleOrderLine, saleOrder)) {
 
         if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
           if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED

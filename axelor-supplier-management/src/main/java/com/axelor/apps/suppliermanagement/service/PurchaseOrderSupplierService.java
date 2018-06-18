@@ -82,11 +82,29 @@ public class PurchaseOrderSupplierService {
     poRepo.save(purchaseOrder);
   }
 
+  /**
+   * Generate supplier requests for one PurchaseOrderLine. Make sure to only call this function when
+   * you are sure the line passed as argument has a valid purchaseOrder. Else, use the
+   * generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder)
+   * format below.
+   *
+   * @param purchaseOrderLine
+   */
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine) {
+    this.generateSuppliersRequests(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generateSuppliersRequests(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+
+    if (purchaseOrder == null) {
+      return;
+    }
 
     Product product = purchaseOrderLine.getProduct();
-    Company company = purchaseOrderLine.getPurchaseOrder().getCompany();
+    Company company = purchaseOrder.getCompany();
 
     if (product != null && product.getSupplierCatalogList() != null) {
 

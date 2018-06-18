@@ -655,6 +655,7 @@
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-record-set-default"/>
+		<action name="action-partner-attrs-set-default"/>
 		<action name="action-partner-record-set-default-cash-management"/>
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
@@ -720,6 +721,10 @@
 		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
 		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$balance == 0"/>
 	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-set-default">
+	  <attribute name="value:add" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()" for="companySet"/>
+	</action-attrs>
 
 	<action-record name="action-partner-record-set-balance" model="com.axelor.apps.base.db.Partner">
 		<field name="$balance" expr="eval: __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueCustAccount }"/>
@@ -750,7 +755,6 @@
 		<field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}" />
 		<field name="user"  expr="#{__user__}"/>
 		<field name="team"  expr="#{__user__.activeTeam}"/>
-		<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
 		<field name="language" expr="#{__config__.app.getApp('base').getDefaultPartnerLanguage()}" />
 		<field name="isCustomer" expr="true" if="_isCustomer"/>
 		<field name="isSupplier" expr="true" if="_isSupplier"/>

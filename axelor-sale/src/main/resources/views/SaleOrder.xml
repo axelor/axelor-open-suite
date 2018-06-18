@@ -298,7 +298,7 @@
 	          <button name="generateProject" title="Generate Project/Business" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
 	          <button name="generateTypePerOrderLine" title="Generate Elements" if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-type-per-order-line,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
-		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('sale').getTimetableInvoicing()" >
+		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" >
 			<field name="expectedRealisationDate" colSpan="12" width="50%"/>
  			<label title="OR"/>
 			<field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
@@ -357,7 +357,7 @@
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
 	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    </field>
-	    <field name="expectedRealisationDate" colSpan="6" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('sale').getTimetableInvoicing()"/>
+	    <field name="expectedRealisationDate" colSpan="6" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
         <field name="cancelReason" hidden="true"/>
 		<field name="cancelReasonStr" title="Cancel Reason" readonly="true" colSpan="12" css="red" hidden="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null">
 			<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
