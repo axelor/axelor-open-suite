@@ -227,7 +227,11 @@
 	        			<panel-dashlet colSpan="12" action="action-product-view-other-product-variant" showIf="parentProduct" />
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
-	    		</panel>
+					</panel>
+				<panel title="Tasks template" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+					<button name="addTask" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-product-task-template-add-task"/>
+					<panel-dashlet title="Task Tree" colSpan="12" action="action-product-task-template-task-tree"/>
+				</panel>
             <panel name="links" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct" showIf="id">
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned" showIf="id" />
