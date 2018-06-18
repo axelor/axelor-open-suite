@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 5.0.1]
+## [5.0.1] - 2018-06-18
 ## Improvements
 - Rework accounting report for journal
 - User: add default password pattern description.
@@ -631,6 +631,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+
+[5.0.1]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc3...v5.0.0
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
