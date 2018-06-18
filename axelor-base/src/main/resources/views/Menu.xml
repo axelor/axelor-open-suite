@@ -548,6 +548,13 @@
 		<view type="form" name="birt-template-form"/>
 	</action-view>
 
+	<menuitem name="mail-conf-print-templates" parent="mail-conf" order="40" title="Print templates" action="admin.root.templating.print.templates"/>
+
+	<action-view name="admin.root.templating.print.templates" title="Print templates" model="com.axelor.apps.base.db.PrintTemplate">
+		<view type="grid" name="print-template-grid"/>
+		<view type="form" name="print-template-form"/>
+	</action-view>
+
 	<menuitem name="admin-root-maintenance-trace-back" parent="admin-root-maintenance"
 		title="Tracebacks" action="admin.root.maintenance.trace.back" />
 

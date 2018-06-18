@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+    <module name="base" package="com.axelor.apps.base.db"/>
+
+    <entity name="Print">
+
+        <string name="name" title="Name" namecolumn="true"/>
+        <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>
+        <many-to-one name="printSettings" title="Print settings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+        <one-to-many name="printLineList" title="Content lines" ref="com.axelor.apps.base.db.PrintLine" mappedBy="print"/>
+        <many-to-one name="language" title="Language" ref="com.axelor.apps.base.db.Language"/>
+        <one-to-many name="birtTemplateList" title="Birt templates" ref="com.axelor.apps.base.db.BirtTemplate"/>
+
+    </entity>
+
+</domain-models>

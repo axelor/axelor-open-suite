@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <grid name="print-line-grid" title="Prints" model="com.axelor.apps.base.db.Print">
+    <field name="title"/>
+  </grid>
+
+  <form name="print-line-form" title="Print" model="com.axelor.apps.base.db.Print">
+    <panel>
+      <field name="title" colSpan="12"/>
+      <field name="content" widget="html" colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>
