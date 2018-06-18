@@ -77,6 +77,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -89,6 +92,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -176,6 +182,7 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -424,7 +431,7 @@ left outer join base_product_category as ProductCategory on (Product.product_cat
 left join meta_file as BarCodeFile on (BarCodeFile.id = Product.bar_code)
 left outer join base_unit as Unit on (Product.unit = Unit.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
-
+@INJECTEDWHERE
 order by ProductFamily.name, ProductCategory.name
 ]]></xml-property>
         </oda-data-set>
