@@ -35,6 +35,7 @@
 - Web service mobile: change the "create timesheet line" method to update it also, and have duration/hours updated
 - Product : displaying quantities in stock with big numbers (until millions)
 - Manufacturing order: fix NPE when adding manually an operation order, caused by missing work center
+- Invoice: fix trading name that was not set
 
 ## [5.0.1] - 2018-06-18
 ## Improvements

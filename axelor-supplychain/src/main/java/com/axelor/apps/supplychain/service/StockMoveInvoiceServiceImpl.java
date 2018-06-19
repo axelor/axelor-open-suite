@@ -444,6 +444,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             numSeq,
             externalRef,
             null,
+            null,
             null) {
 
           @Override
@@ -613,6 +614,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             invoicePriceList,
             numSeq,
             externalRef,
+            null,
             null) {
 
           @Override
