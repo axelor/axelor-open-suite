@@ -14,6 +14,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,13 +34,14 @@ public class ProjectGeneratorStatePhase extends ProjectGeneratorStateAlone
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public ActionViewBuilder fill(Project project, SaleOrder saleOrder) {
+  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate) {
     List<Project> projects = new ArrayList<>();
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
       if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
         Project phase = projectBusinessService.generatePhaseProject(saleOrderLine, project);
+        phase.setFromDate(startDate);
         saleOrderLineRepository.save(saleOrderLine);
         projects.add(phase);
       }
