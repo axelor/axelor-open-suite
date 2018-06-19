@@ -26,6 +26,7 @@ Also, improve the sale order line grid and form views.
 - Fix line removal in confirmed sale order.
 - Partner: check whether another partner with the same email address exist or not on save.
 - Supplier form: show button "create order" when isProspect or isCustomer, hidden if none of them
+- Sale order: Show stock move instead of stock move line in CustomerDeliveries
 
 ## [5.0.0] - 2018-06-13
 ## Features
