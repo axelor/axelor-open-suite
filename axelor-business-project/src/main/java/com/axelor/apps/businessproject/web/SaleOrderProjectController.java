@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
@@ -33,8 +34,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 import com.google.inject.Singleton;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Singleton
@@ -73,10 +78,18 @@ public class SaleOrderProjectController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
 
+      LocalDateTime startDate;
+      String stringStartDate = (String) request.getContext().get("_elementStartDate");
+      if (!Strings.isNullOrEmpty(stringStartDate)) {
+        startDate = LocalDateTime.ofInstant(Instant.parse(stringStartDate), ZoneId.systemDefault());
+      } else {
+        startDate = Beans.get(AppBaseService.class).getTodayDate().atStartOfDay();
+      }
+
       ProjectGeneratorState generator =
           Beans.get(ProjectGeneratorFactory.class)
               .getGenerator(ProjectGeneratorType.valueOf(generatorType));
-      ActionViewBuilder view = generator.fill(saleOrder.getProject(), saleOrder);
+      ActionViewBuilder view = generator.fill(saleOrder.getProject(), saleOrder, startDate);
 
       response.setReload(true);
       response.setView(view.map());

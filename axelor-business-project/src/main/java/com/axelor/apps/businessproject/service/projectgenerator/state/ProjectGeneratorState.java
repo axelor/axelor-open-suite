@@ -6,6 +6,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import java.time.LocalDateTime;
 
 public interface ProjectGeneratorState {
   default Project generate(SaleOrder saleOrder) throws AxelorException {
@@ -14,7 +15,8 @@ public interface ProjectGeneratorState {
         I18n.get("You can't generate a project with this strategy."));
   }
 
-  default ActionViewBuilder fill(Project project, SaleOrder saleOrder) throws AxelorException {
+  default ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
+      throws AxelorException {
     throw new AxelorException(
         TraceBackRepository.TYPE_FUNCTIONNAL,
         I18n.get("You can't fill a project with this strategy."));

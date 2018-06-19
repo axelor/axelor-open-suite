@@ -17,6 +17,7 @@ import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class ProjectGeneratorStateTask extends ProjectGeneratorStateAlone
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public ActionViewBuilder fill(Project project, SaleOrder saleOrder) {
+  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate) {
     List<TeamTask> tasks = new ArrayList<>();
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
@@ -55,6 +56,7 @@ public class ProjectGeneratorStateTask extends ProjectGeneratorStateAlone
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
         TeamTask task =
             teamTaskBusinessService.create(saleOrderLine, project, project.getAssignedTo());
+        task.setTaskDate(startDate.toLocalDate());
         teamTaskRepository.save(task);
         tasks.add(task);
       }
