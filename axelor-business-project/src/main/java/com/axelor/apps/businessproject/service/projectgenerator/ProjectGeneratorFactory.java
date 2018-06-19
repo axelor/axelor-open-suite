@@ -1,29 +1,47 @@
 package com.axelor.apps.businessproject.service.projectgenerator;
 
-import com.axelor.apps.businessproject.service.projectgenerator.state.ProjectGeneratorState;
-import com.axelor.apps.businessproject.service.projectgenerator.state.ProjectGeneratorStateAlone;
-import com.axelor.apps.businessproject.service.projectgenerator.state.ProjectGeneratorStatePhase;
-import com.axelor.apps.businessproject.service.projectgenerator.state.ProjectGeneratorStateTask;
-import com.axelor.apps.businessproject.service.projectgenerator.state.ProjectGeneratorStateTaskTemplate;
+import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryAlone;
+import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryPhase;
+import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryTask;
+import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryTaskTemplate;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import java.util.EnumMap;
-import java.util.Map;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import java.time.LocalDateTime;
 
-public class ProjectGeneratorFactory {
+public interface ProjectGeneratorFactory {
 
-  private static final Map<ProjectGeneratorType, ProjectGeneratorState> STATES =
-      new EnumMap<>(ProjectGeneratorType.class);
-
-  static {
-    STATES.put(ProjectGeneratorType.PROJECT_ALONE, Beans.get(ProjectGeneratorStateAlone.class));
-    STATES.put(ProjectGeneratorType.PHASE_BY_LINE, Beans.get(ProjectGeneratorStatePhase.class));
-    STATES.put(ProjectGeneratorType.TASK_BY_LINE, Beans.get(ProjectGeneratorStateTask.class));
-    STATES.put(
-        ProjectGeneratorType.TASK_TEMPLATE, Beans.get(ProjectGeneratorStateTaskTemplate.class));
+  default Project generate(SaleOrder saleOrder, LocalDateTime localDateTime)
+      throws AxelorException {
+    Project project = create(saleOrder);
+    fill(project, saleOrder, localDateTime);
+    return project;
   }
 
-  public ProjectGeneratorState getGenerator(ProjectGeneratorType type) {
-    return STATES.get(type);
+  static ProjectGeneratorFactory getFactory(ProjectGeneratorType type) throws AxelorException {
+    switch (type) {
+      case PROJECT_ALONE:
+        return Beans.get(ProjectGeneratorFactoryAlone.class);
+      case TASK_BY_LINE:
+        return Beans.get(ProjectGeneratorFactoryTask.class);
+      case PHASE_BY_LINE:
+        return Beans.get(ProjectGeneratorFactoryPhase.class);
+      case TASK_TEMPLATE:
+        return Beans.get(ProjectGeneratorFactoryTaskTemplate.class);
+      default:
+        throw new AxelorException(
+            TraceBackRepository.TYPE_FUNCTIONNAL,
+            I18n.get("Factory not found this type of generator"));
+    }
   }
+
+  Project create(SaleOrder saleOrder) throws AxelorException;
+
+  ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime localDateTime)
+      throws AxelorException;
 }

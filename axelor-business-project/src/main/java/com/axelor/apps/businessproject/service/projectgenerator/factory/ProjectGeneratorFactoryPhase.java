@@ -1,8 +1,9 @@
-package com.axelor.apps.businessproject.service.projectgenerator.state;
+package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
+import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -18,18 +19,29 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectGeneratorStatePhase extends ProjectGeneratorStateAlone
-    implements ProjectGeneratorState {
+public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
 
-  protected SaleOrderLineRepository saleOrderLineRepository;
+  private ProjectBusinessService projectBusinessService;
+  private ProjectRepository projectRepository;
+  private SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject
-  public ProjectGeneratorStatePhase(
+  public ProjectGeneratorFactoryPhase(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
       SaleOrderLineRepository saleOrderLineRepository) {
-    super(projectBusinessService, projectRepository);
+    this.projectBusinessService = projectBusinessService;
+    this.projectRepository = projectRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Project create(SaleOrder saleOrder) {
+    Project project = projectBusinessService.generateProject(saleOrder);
+    project.setIsProject(false);
+    project.setIsBusinessProject(true);
+    return projectRepository.save(project);
   }
 
   @Override

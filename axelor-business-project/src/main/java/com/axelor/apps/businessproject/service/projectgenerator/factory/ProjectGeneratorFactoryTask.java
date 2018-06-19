@@ -1,9 +1,10 @@
-package com.axelor.apps.businessproject.service.projectgenerator.state;
+package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
+import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -21,29 +22,32 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectGeneratorStateTask extends ProjectGeneratorStateAlone
-    implements ProjectGeneratorState {
+public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
-  protected TeamTaskBusinessService teamTaskBusinessService;
-  protected TeamTaskRepository teamTaskRepository;
+  private ProjectBusinessService projectBusinessService;
+  private ProjectRepository projectRepository;
+  private TeamTaskBusinessService teamTaskBusinessService;
+  private TeamTaskRepository teamTaskRepository;
 
   @Inject
-  public ProjectGeneratorStateTask(
+  public ProjectGeneratorFactoryTask(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
       TeamTaskBusinessService teamTaskBusinessService,
       TeamTaskRepository teamTaskRepository) {
-    super(projectBusinessService, projectRepository);
+    this.projectBusinessService = projectBusinessService;
+    this.projectRepository = projectRepository;
     this.teamTaskBusinessService = teamTaskBusinessService;
     this.teamTaskRepository = teamTaskRepository;
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Project generate(SaleOrder saleOrder) {
-    Project project = super.generate(saleOrder);
+  public Project create(SaleOrder saleOrder) {
+    Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsProject(true);
-    return project;
+    project.setIsBusinessProject(true);
+    return projectRepository.save(project);
   }
 
   @Override
