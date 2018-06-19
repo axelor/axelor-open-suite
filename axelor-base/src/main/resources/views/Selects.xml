@@ -57,7 +57,7 @@
 
 	<selection name="product.sale.supply.select">
 		<option value="0">None</option>
-		<option value="1">FromStock</option>
+		<option value="1">From stock</option>
 		<option value="2">Purchase</option>
 		<option value="3">Produce</option>
 	</selection>

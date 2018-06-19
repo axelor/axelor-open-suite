@@ -7,7 +7,7 @@
 - Partner: check whether another partner with the same email address exist or not on save.
 - Supplier form: show button "create order" when isProspect or isCustomer, hidden if none of them
 - Product: fix missing picture on product sheet.
-
+- Minor change from "FromStock" option to "From stock" in sale order lines.
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
