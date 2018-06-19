@@ -41,7 +41,12 @@
 		<option value='2'>Confirmed</option>
 		<option value='3'>Canceled</option>
 	</selection>
-	
+
+	<selection name='account.reconcile.group.status.select'>
+		<option value='1'>Temporary</option>
+		<option value='2'>Final</option>
+	</selection>
+
 	<selection name='account.journal.status.select'>
 		<option value="0">Inactive</option>
 		<option value="1">Active</option>
@@ -335,6 +340,8 @@
 		<option value="moveLineExport">Accounting export</option>
 		<option value="analyticReport">Analytic report</option>
 		<option value="reconcile">Reconcile</option>
+		<option value="reconcileGroupDraft">Reconcile Group (Draft)</option>
+		<option value="reconcileGroupFinal">Reconcile Group (Final)</option>
 		<option value="depositSlip">Deposit slip</option>
 		<option value="subrogationRelease">Subrogation release</option>
 	</selection>

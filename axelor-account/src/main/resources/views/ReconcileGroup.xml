@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <grid name="reconcile-group-grid" title="Reconcile group"
+    model="com.axelor.apps.account.db.ReconcileGroup">
+    <field name="code"/>
+    <field name="company"/>
+  </grid>
+
+  <form name="reconcile-group-form" title="Reconcile group" readonlyIf="statusSelect == 2"
+    model="com.axelor.apps.account.db.ReconcileGroup">
+    <panel itemSpan="12">
+      <field name="statusSelect" widget="NavSelect" showTitle="false"/>
+      <field name="code" showTitle="false">
+        <viewer depends="code">
+          <![CDATA[
+						<h3>
+							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.code}}</span>
+						</h3>
+					]]>
+        </viewer>
+      </field>
+    </panel>
+    <panel name="company" showTitle="false">
+      <field name="company" canEdit="false"/>
+    </panel>
+    <panel name="main" showIf="company">
+      <field name="reconcileList"
+        domain="self.company = :company AND self.reconcileGroup IS NULL AND self.statusSelect = 2" form-view="reconcile-form"
+        grid-view="move-line-reconcile-grid" canSelect="true" canNew="false" colSpan="12"/>
+    </panel>
+    <panel sidebar="true" name="actions">
+      <button name="valid" title="Validate"
+        showIf="statusSelect == 1 &amp;&amp; reconcileList &amp;&amp; reconcileList.length != 0"
+        onClick="save,action-reconcile-group-method-valid"/>
+    </panel>
+  </form>
+
+  <action-method name="action-reconcile-group-method-valid">
+    <call class="com.axelor.apps.account.web.ReconcileGroupController" method="validate"/>
+  </action-method>
+
+</object-views>

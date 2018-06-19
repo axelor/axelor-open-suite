@@ -17,6 +17,8 @@
     
     <!--  Will be fully reconciled if there is a currency delta amount -->
     <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false"/>
+
+    <many-to-one name="reconcileGroup" ref="com.axelor.apps.account.db.ReconcileGroup"/>
     
     <unique-constraint columns="reconcileSeq,company"/>
 
