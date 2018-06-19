@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased 5.0.2]
+## Improvements
+
+## Bug Fixes
+- Partner: check whether another partner with the same email address exist or not on save.
+- Supplier form: show button "create order" when isProspect or isCustomer, hidden if none of them
+
+
 ## [5.0.1] - 2018-06-18
 ## Improvements
 - Rework accounting report for journal
@@ -24,8 +32,7 @@ Also, improve the sale order line grid and form views.
 - Opportunity: fix error in grid view when clicking on "Assign to me" button without having selected any lines.
 - Fix Analytic balance report to take into account the company of the analytic journal.
 - Fix line removal in confirmed sale order.
-- Partner: check whether another partner with the same email address exist or not on save.
-- Supplier form: show button "create order" when isProspect or isCustomer, hidden if none of them
+
 
 ## [5.0.0] - 2018-06-13
 ## Features
@@ -633,7 +640,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-
+[Unreleased 5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...dev
 [5.0.1]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc3...v5.0.0
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
