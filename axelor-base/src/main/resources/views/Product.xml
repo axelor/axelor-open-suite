@@ -150,7 +150,7 @@
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	    	</panel>
-            <panel name="accounting" title="Accounting">
+            <panel name="accounting" title="Accounting" if="__config__.app.isApp('account')">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
                 <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
                 <panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
