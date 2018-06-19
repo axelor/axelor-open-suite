@@ -24,6 +24,8 @@ Also, improve the sale order line grid and form views
 - Opportunity: fix error in grid view when clicking on "Assign to me" button without having selected any lines.
 - Fix Analytic balance report to take into account the company of the analytic journal.
 - Fix line removal in confirmed sale order.
+- Partner: check whether another partner with the same email address exist or not on save.
+
 
 ## [5.0.0] - 2018-06-13
 ## Features
