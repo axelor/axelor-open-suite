@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -168,8 +169,18 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (updateInvoicePayments) {
       this.updateInvoicePayments(reconcile);
     }
+    this.addToReconcileGroup(reconcile);
 
     return reconcileRepository.save(reconcile);
+  }
+
+  @Override
+  public void addToReconcileGroup(Reconcile reconcile) throws AxelorException {
+    ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+
+    ReconcileGroup reconcileGroup = reconcileGroupService.findOrCreateGroup(reconcile);
+
+    reconcileGroupService.addAndValidate(reconcileGroup, reconcile);
   }
 
   public void reconcilePreconditions(Reconcile reconcile) throws AxelorException {

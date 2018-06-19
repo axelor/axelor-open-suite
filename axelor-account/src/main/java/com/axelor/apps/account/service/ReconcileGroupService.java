@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.exception.AxelorException;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReconcileGroupService {
 
@@ -38,4 +39,47 @@ public interface ReconcileGroupService {
    * @param reconcileList a list of reconcile.
    */
   boolean isBalanced(List<Reconcile> reconcileList) throws AxelorException;
+
+  /**
+   * Call {@link ReconcileGroupService#findOrMergeGroup} to get a reconcile group. If not found,
+   * create one with {@link ReconcileGroupService#createReconcileGroup}
+   *
+   * @param reconcile a confirmed reconcile
+   * @return the created or found group.
+   */
+  ReconcileGroup findOrCreateGroup(Reconcile reconcile);
+
+  /**
+   * Find the corresponding group for a given reconcile. If two or more reconcile group are found,
+   * then return the merge between them.
+   *
+   * @param reconcile a confirmed reconcile.
+   * @return an optional with the reconcile group if it was found. Else an empty optional.
+   */
+  Optional<ReconcileGroup> findOrMergeGroup(Reconcile reconcile);
+
+  /**
+   * Merge reconcile groups into one. The created reconcile group will have a new sequence and all
+   * reconcile lines from the groups.
+   *
+   * @param reconcileGroupList a non empty list of reconcile group to merge.
+   * @return the created reconcile group.
+   */
+  ReconcileGroup mergeReconcileGroups(List<ReconcileGroup> reconcileGroupList);
+
+  /**
+   * Create a reconcile group with the given reconcile.
+   *
+   * @param reconcile a confirmed reconcile.
+   * @return a new reconcile group.
+   */
+  ReconcileGroup createReconcileGroup(Reconcile reconcile);
+
+  /**
+   * Add a reconcile to a group and validate the group if it is balanced.
+   *
+   * @param reconcileGroup a reconcileGroup.
+   * @param reconcile a reconcile.
+   */
+  void addAndValidate(ReconcileGroup reconcileGroup, Reconcile reconcile) throws AxelorException;
 }
