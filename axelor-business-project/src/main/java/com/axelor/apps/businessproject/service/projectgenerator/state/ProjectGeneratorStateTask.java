@@ -42,7 +42,7 @@ public class ProjectGeneratorStateTask extends ProjectGeneratorStateAlone
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Project generate(SaleOrder saleOrder) {
     Project project = super.generate(saleOrder);
-    project.setIsBusinessProject(true);
+    project.setIsProject(true);
     return project;
   }
 
