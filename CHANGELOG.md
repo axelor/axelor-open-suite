@@ -38,6 +38,7 @@ Also, improve the sale order line grid and form views.
 - Fix Analytic balance report to take into account the company of the analytic journal.
 - Fix line removal in confirmed sale order.
 - Product: fix printing catalog of selected products.
+- Product: fix missing pictures in catalog when not all products have pictures.
 
 
 ## [5.0.0] - 2018-06-13

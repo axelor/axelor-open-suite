@@ -1740,15 +1740,6 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                             <property name="height">1.40625in</property>
                             <property name="width">8.479166666666666in</property>
                             <property name="dataSet">ProductDS</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">picture</property>
-                                    <text-property name="displayName">picture</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                            </list-property>
                             <column id="240"/>
                             <column id="241">
                                 <property name="width">6.729166666666667in</property>
@@ -1767,7 +1758,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["picture"] == null</expression>
+                                                <expression name="valueExpr" type="javascript">!row._outer["picture"]</expression>
                                             </structure>
                                         </list-property>
                                         <property name="source">file</property>
