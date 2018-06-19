@@ -54,6 +54,21 @@ public class PartnerBaseRepository extends PartnerRepository {
         partner.setPartnerSeq(seq);
       }
 
+      if (partner.getEmailAddress() != null) {
+        long existEmailCount =
+            this.all()
+                .filter(
+                    "self.id != ?1 and self.emailAddress = ?2",
+                    partner.getId(),
+                    partner.getEmailAddress())
+                .count();
+
+        if (existEmailCount > 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
+              I18n.get(IExceptionMessage.PARTNER_EMAIL_EXIST));
+        }
+      }
       return super.save(partner);
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());
