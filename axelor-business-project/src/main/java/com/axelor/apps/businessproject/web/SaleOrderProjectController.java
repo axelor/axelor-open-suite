@@ -22,7 +22,6 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
-import com.axelor.apps.businessproject.service.projectgenerator.state.ProjectGeneratorState;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -53,10 +52,9 @@ public class SaleOrderProjectController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
 
-      ProjectGeneratorState generator =
-          Beans.get(ProjectGeneratorFactory.class)
-              .getGenerator(ProjectGeneratorType.valueOf(generatorType));
-      Project project = generator.generate(saleOrder);
+      ProjectGeneratorFactory factory =
+          ProjectGeneratorFactory.getFactory(ProjectGeneratorType.valueOf(generatorType));
+      Project project = factory.create(saleOrder);
 
       response.setReload(true);
       response.setView(
@@ -86,10 +84,9 @@ public class SaleOrderProjectController {
         startDate = Beans.get(AppBaseService.class).getTodayDate().atStartOfDay();
       }
 
-      ProjectGeneratorState generator =
-          Beans.get(ProjectGeneratorFactory.class)
-              .getGenerator(ProjectGeneratorType.valueOf(generatorType));
-      ActionViewBuilder view = generator.fill(saleOrder.getProject(), saleOrder, startDate);
+      ProjectGeneratorFactory factory =
+          ProjectGeneratorFactory.getFactory(ProjectGeneratorType.valueOf(generatorType));
+      ActionViewBuilder view = factory.fill(saleOrder.getProject(), saleOrder, startDate);
 
       response.setReload(true);
       response.setView(view.map());
