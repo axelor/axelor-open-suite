@@ -35,7 +35,7 @@
 
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
 		  onNew="action-account-invoice-line-onnew-group"
-		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form">
+		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form, action-invoice-line-record-operation-type">
 		<panel name="panelTitle">
 			<field name="isTitleLine" onChange="action-invoice-line-method-empty-line"/>
 			<field name="productName" showIf="isTitleLine" title="Title" requiredIf="isTitleLine"/>
@@ -79,7 +79,18 @@
 				<field name="budgetDistributionList" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
 			</panel>
 			<panel name="accounting" title="Accounting">
-				<field name="account"/>
+				<field name="account" colSpan="9"/>
+				<panel colSpan="3" itemSpan="12">
+					<field name="fixedAssets" showTitle="false" showIf="$readonly()">
+						<viewer depends="fixedAssets"> 
+							<![CDATA[
+								<span class="label label-default" style="background-color: #B6473F; margin: 10px 0 !important; padding: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.fixedAssets" x-translate>Fixed Assets</span>
+							]]>
+						</viewer>
+					</field>
+					<field name="fixedAssets"  showTitle="true" hideIf="$readonly() || $contains([3,4], $_operationTypeSelect)" widget="boolean-switch"/>
+					<field name="$_operationTypeSelect" hidden="true"/>
+				</panel>
 			</panel>
 		</panel-tabs>
 	</form>
@@ -164,6 +175,7 @@
     <action-group name="action-account-invoice-line-onnew-group">
 	    <action name="action-invoice-line-record-new"/>
 	    <action name="action-invoice-line-record-project"/>
+	    <action name="action-invoice-line-record-operation-type"/>
 	    <action name="action-attrs-account-invoice-line-onnew-onload"/>
     </action-group>
 
@@ -184,6 +196,10 @@
     
     <action-record name="action-invoice-line-record-new" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="qty" expr="eval: 1"/>
+    </action-record>
+    
+    <action-record name="action-invoice-line-record-operation-type" model="com.axelor.apps.account.db.InvoiceLine">
+    	<field name="$_operationTypeSelect" expr="eval: __parent__.operationTypeSelect"/>
     </action-record>
     
 	<!-- ACTION METHOD -->
