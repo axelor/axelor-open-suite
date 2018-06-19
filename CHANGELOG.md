@@ -6,8 +6,8 @@
 - User: add default password pattern description.
 
 ## Bug Fixes
-- Fix selection of sale order lines on MRP : Now we can select a sale order line whose the product is storrable, not excluded on MRP, and not delivered. 
-Also, improve the sale order line grid and form views
+- Fix selection of sale order lines on MRP : Now we can select a sale order line whose product is storable, not excluded on MRP, and not delivered. 
+Also, improve the sale order line grid and form views.
 - Minor fixes to printing a sale/purchase order or an invoice.
 - Sale order: fix NPE when adding a new line on pending orders.
 - Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
