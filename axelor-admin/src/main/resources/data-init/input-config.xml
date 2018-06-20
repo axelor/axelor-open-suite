@@ -11,5 +11,7 @@
         <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
     </input>
     
+    <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name and self.module = 'axelor-admin'" update="true" />
+    
 </csv-inputs>
 	
