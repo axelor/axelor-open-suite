@@ -19,6 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +27,19 @@ import java.util.Optional;
 public interface ReconcileGroupService {
 
   /**
+   * Call {@link ReconcileGroupService#validate(ReconcileGroup)} after checking the balance.
+   *
+   * @param reconcileGroup a reconcile group.
+   * @throws AxelorException if the reconcile group is not balanced
+   */
+  void validateCheckBalanced(ReconcileGroup reconcileGroup) throws AxelorException;
+
+  /**
    * Validate the given reconcile group. A reconcile Group can be validated if it is not empty and
    * its lines are balanced.
    *
-   * @param reconcileGroup a reconcileGroup
+   * @param reconcileGroup a reconcile group.
+   * @throws AxelorException if the reconcile list is empty.
    */
   void validate(ReconcileGroup reconcileGroup) throws AxelorException;
 
@@ -70,10 +80,10 @@ public interface ReconcileGroupService {
   /**
    * Create a reconcile group with the given reconcile.
    *
-   * @param reconcile a confirmed reconcile.
+   * @param company a confirmed reconcile.
    * @return a new reconcile group.
    */
-  ReconcileGroup createReconcileGroup(Reconcile reconcile);
+  ReconcileGroup createReconcileGroup(Company company);
 
   /**
    * Add a reconcile to a group and validate the group if it is balanced.
@@ -82,4 +92,12 @@ public interface ReconcileGroupService {
    * @param reconcile a reconcile.
    */
   void addAndValidate(ReconcileGroup reconcileGroup, Reconcile reconcile) throws AxelorException;
+
+  /**
+   * Add the reconcile and its move line to the reconcile group.
+   *
+   * @param reconcileGroup a reconcileGroup.
+   * @param reconcile the confirmed reconcile to be added.
+   */
+  void addToReconcileGroup(ReconcileGroup reconcileGroup, Reconcile reconcile);
 }

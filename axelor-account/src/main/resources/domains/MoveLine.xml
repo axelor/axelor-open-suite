@@ -57,8 +57,10 @@
     <string name="taxCode" readonly="true"/>
       
     <decimal name="taxAmount" title="Tax amount" readonly="true"/>
-	
-    
+
+    <many-to-one name="reconcileGroup" title="Reconcile Group"
+                 ref="com.axelor.apps.account.db.ReconcileGroup"/>
+
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[
     	if (move != null && move.getReference() != null){
@@ -79,7 +81,7 @@
 		else return BigDecimal.ZERO;
 	    ]]>
     </decimal>
-  
+
   	<extra-code><![CDATA[
 
 		// REIMBURSEMENT STATUS
@@ -93,8 +95,8 @@
 		public static final int IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE = 2;
 	
 	]]></extra-code>
-  
-  
+
+
   </entity>
 
 </domain-models>

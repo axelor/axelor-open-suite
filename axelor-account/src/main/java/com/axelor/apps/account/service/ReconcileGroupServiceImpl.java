@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
@@ -41,19 +42,25 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void validateCheckBalanced(ReconcileGroup reconcileGroup) throws AxelorException {
+    List<Reconcile> reconcileList = reconcileGroup.getReconcileList();
+    if (reconcileList != null && !isBalanced(reconcileList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.RECONCILE_GROUP_VALIDATION_NOT_BALANCED),
+          reconcileGroup);
+    }
+    validate(reconcileGroup);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void validate(ReconcileGroup reconcileGroup) throws AxelorException {
     List<Reconcile> reconcileList = reconcileGroup.getReconcileList();
     if (CollectionUtils.isEmpty(reconcileList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.RECONCILE_GROUP_VALIDATION_NO_LINES),
-          reconcileGroup);
-    }
-
-    if (!isBalanced(reconcileList)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.RECONCILE_GROUP_VALIDATION_NOT_BALANCED),
           reconcileGroup);
     }
 
@@ -113,7 +120,8 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   @Override
   public ReconcileGroup findOrCreateGroup(Reconcile reconcile) {
-    return findOrMergeGroup(reconcile).orElseGet(() -> createReconcileGroup(reconcile));
+    return findOrMergeGroup(reconcile)
+        .orElseGet(() -> createReconcileGroup(reconcile.getCompany()));
   }
 
   @Override
@@ -131,10 +139,10 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     otherReconcileGroupList =
         allReconcileList
             .stream()
-            .distinct()
             .filter(reconcile1 -> !reconcile.equals(reconcile1))
             .map(Reconcile::getReconcileGroup)
             .filter(Objects::nonNull)
+            .distinct()
             .collect(Collectors.toList());
     if (otherReconcileGroupList.isEmpty()) {
       return Optional.empty();
@@ -150,36 +158,52 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   public ReconcileGroup mergeReconcileGroups(List<ReconcileGroup> reconcileGroupList) {
     ReconcileGroupRepository reconcileGroupRepository = Beans.get(ReconcileGroupRepository.class);
     Company company = reconcileGroupList.get(0).getCompany();
-    ReconcileGroup reconcileGroup = new ReconcileGroup();
-    reconcileGroup.setCompany(company);
+    ReconcileGroup reconcileGroup = createReconcileGroup(company);
+
     List<Reconcile> reconcileList =
-        reconcileGroupList
-            .stream()
-            .flatMap(reconcileGroup1 -> reconcileGroup1.getReconcileList().stream())
-            .collect(Collectors.toList());
-    reconcileList.forEach(reconcileGroup::addReconcileListItem);
+        Beans.get(ReconcileRepository.class)
+            .all()
+            .filter("self.reconcileGroup.id IN (:reconcileGroupIds)")
+            .bind(
+                "reconcileGroupIds",
+                reconcileGroupList.stream().map(ReconcileGroup::getId).collect(Collectors.toList()))
+            .fetch();
+    reconcileList.forEach(reconcile -> addToReconcileGroup(reconcileGroup, reconcile));
 
-    reconcileGroupRepository.save(reconcileGroup);
-    reconcileGroupList.forEach(reconcileGroupRepository::remove);
+    for (ReconcileGroup toDeleteReconcileGroup : reconcileGroupList) {
+      toDeleteReconcileGroup.setMoveLineList(null);
+      toDeleteReconcileGroup.setReconcileList(null);
+      reconcileGroupRepository.remove(toDeleteReconcileGroup);
+    }
 
-    return reconcileGroup;
+    return reconcileGroupRepository.save(reconcileGroup);
   }
 
   @Override
   @Transactional
-  public ReconcileGroup createReconcileGroup(Reconcile reconcile) {
+  public ReconcileGroup createReconcileGroup(Company company) {
     ReconcileGroup reconcileGroup = new ReconcileGroup();
-    reconcileGroup.setCompany(reconcile.getCompany());
-    reconcileGroup.addReconcileListItem(reconcile);
+    reconcileGroup.setCompany(company);
     return Beans.get(ReconcileGroupRepository.class).save(reconcileGroup);
   }
 
   @Override
   public void addAndValidate(ReconcileGroup reconcileGroup, Reconcile reconcile)
       throws AxelorException {
-    reconcileGroup.addReconcileListItem(reconcile);
+    addToReconcileGroup(reconcileGroup, reconcile);
     if (isBalanced(reconcileGroup.getReconcileList())) {
       validate(reconcileGroup);
     }
+  }
+
+  @Override
+  public void addToReconcileGroup(ReconcileGroup reconcileGroup, Reconcile reconcile) {
+    reconcileGroup.addReconcileListItem(reconcile);
+    reconcileGroup.addMoveLineListItem(reconcile.getDebitMoveLine());
+    reconcileGroup.addMoveLineListItem(reconcile.getCreditMoveLine());
+
+    // remove possible duplicates
+    reconcileGroup.setMoveLineList(
+        reconcileGroup.getMoveLineList().stream().distinct().collect(Collectors.toList()));
   }
 }

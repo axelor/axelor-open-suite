@@ -29,13 +29,13 @@ public class ReconcileGroupController {
 
   /**
    * Called from ReconcileGroup form view on "valid" button. Call {@link
-   * ReconcileGroupService#validate(ReconcileGroup)}.
+   * ReconcileGroupService#validateCheckBalanced(ReconcileGroup)}.
    */
   public void validate(ActionRequest request, ActionResponse response) {
     try {
       ReconcileGroup reconcileGroup = request.getContext().asType(ReconcileGroup.class);
       reconcileGroup = Beans.get(ReconcileGroupRepository.class).find(reconcileGroup.getId());
-      Beans.get(ReconcileGroupService.class).validate(reconcileGroup);
+      Beans.get(ReconcileGroupService.class).validateCheckBalanced(reconcileGroup);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
