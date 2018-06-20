@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.0.2]
 ## Improvements
+- New default behaviour for Mrp, proposal type is now based on the product's procurement method if no stock rule exists.
 
 ## Bug Fixes
 - Partner: check whether another partner with the same email address exist or not on save.
