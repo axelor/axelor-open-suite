@@ -16,6 +16,7 @@
 - Type of stock move generated from manuf order is now correctly set to internal.
 - Remove unused action.
 - Fix columns of type reference in all tree view.
+- Manufactoring Order: add rollback in operation order as it is in manufacturing order when click on finish
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
