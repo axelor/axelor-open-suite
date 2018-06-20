@@ -9,6 +9,7 @@
 - Product: fix missing picture on product sheet.
 - Minor change from "FromStock" option to "From stock" in sale order lines.
 - Employee: fix encrypted fields.
+- Fix rounding problem in HR batches calculations
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
