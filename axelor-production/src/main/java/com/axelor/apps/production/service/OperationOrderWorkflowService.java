@@ -330,7 +330,13 @@ public class OperationOrderWorkflowService {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
-      Machine machine = operationOrder.getWorkCenter().getMachine();
+      WorkCenter workCenter = operationOrder.getWorkCenter();
+      Machine machine = null;
+      if (workCenter != null) {
+        machine = operationOrder.getWorkCenter().getMachine();
+      } else if (operationOrder.getMachineWorkCenter() != null) {
+        machine = operationOrder.getMachineWorkCenter().getMachine();
+      }
       if (machine != null) {
         machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
       }
