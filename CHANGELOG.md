@@ -10,6 +10,7 @@
 - Minor change from "FromStock" option to "From stock" in sale order lines.
 - Employee: fix encrypted fields.
 - Type of stock move generated from manuf order is now correctly set to internal.
+- Remove unused action.
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
