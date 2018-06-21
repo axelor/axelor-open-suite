@@ -9,6 +9,7 @@
 - Product: fix missing picture on product sheet.
 - Minor change from "FromStock" option to "From stock" in sale order lines.
 - Employee: fix encrypted fields.
+- Fix rounding problem in HR batches calculations
 - Type of stock move generated from manuf order is now correctly set to internal.
 - Remove unused action.
 
