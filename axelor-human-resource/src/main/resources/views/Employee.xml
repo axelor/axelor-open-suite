@@ -61,7 +61,7 @@
       			<panel name="personalInfo" title="Personal Info." colSpan="12">
         			<field name="birthDate" colSpan="4"/>
         			<field name="maritalStatus" colSpan="4"/>
-        			<field name="socialSecurityNumber" colSpan="4"/>
+        			<field name="socialSecurityNumber" colSpan="4" min="12" max="15"/>
       			</panel>
 	        	<panel name="emergencyContact" title="Contact in case of emergency" colSpan="12">
 	        		<field name="emergencyContact" colSpan="4"/>
@@ -144,6 +144,7 @@
 							<field name="kilometricAllowParam" widget="SuggestBox"/>
 							<field name="startDate"/>
 							<field name="endDate"/>
+                            <field name="vehicleRegistrationCertificate" widget="Image"/>
 						</editor>
 					</field>
 				</panel>

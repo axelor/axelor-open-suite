@@ -23,14 +23,25 @@
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Automatic mail default fields in stock move are now filled correctly on partner change.
 
-## [Unreleased 5.0.1]
+## [Unreleased 5.0.2]
+## Improvements
+
+## Bug Fixes
+- Partner: check whether another partner with the same email address exist or not on save.
+- Supplier form: show button "create order" when isProspect or isCustomer, hidden if none of them
+- Product: fix missing picture on product sheet.
+- Minor change from "FromStock" option to "From stock" in sale order lines.
+- Employee: fix encrypted fields.
+- Type of stock move generated from manuf order is now correctly set to internal.
+
+## [5.0.1] - 2018-06-18
 ## Improvements
 - Rework accounting report for journal
 - User: add default password pattern description.
 
 ## Bug Fixes
-- Fix selection of sale order lines on MRP : Now we can select a sale order line whose the product is storrable, not excluded on MRP, and not delivered. 
-Also, improve the sale order line grid and form views
+- Fix selection of sale order lines on MRP : Now we can select a sale order line whose product is storable, not excluded on MRP, and not delivered. 
+Also, improve the sale order line grid and form views.
 - Minor fixes to printing a sale/purchase order or an invoice.
 - Sale order: fix NPE when adding a new line on pending orders.
 - Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
@@ -47,6 +58,7 @@ Also, improve the sale order line grid and form views
 - Opportunity: fix error in grid view when clicking on "Assign to me" button without having selected any lines.
 - Fix Analytic balance report to take into account the company of the analytic journal.
 - Fix line removal in confirmed sale order.
+
 
 ## [5.0.0] - 2018-06-13
 ## Features
@@ -656,6 +668,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 
 
 [Unreleased 5.1]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
+[Unreleased 5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...dev
+[5.0.1]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc3...v5.0.0
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2

@@ -202,7 +202,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       FreightCarrierMode freightCarrierMode,
       Partner carrierPartner,
       Partner forwarderPartner,
-      Incoterm incoterm)
+      Incoterm incoterm,
+      int typeSelect)
       throws AxelorException {
 
     StockMove stockMove =
@@ -214,7 +215,8 @@ public class StockMoveServiceImpl implements StockMoveService {
             toStockLocation,
             realDate,
             estimatedDate,
-            description);
+            description,
+            typeSelect);
     stockMove.setPartner(clientPartner);
     stockMove.setShipmentMode(shipmentMode);
     stockMove.setFreightCarrierMode(freightCarrierMode);
@@ -237,6 +239,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param realDate
    * @param estimatedDate
    * @param description
+   * @param typeSelect
    * @return
    * @throws AxelorException No Stock move sequence defined
    */
@@ -249,7 +252,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description)
+      String description,
+      int typeSelect)
       throws AxelorException {
 
     StockMove stockMove = new StockMove();
@@ -272,7 +276,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
-    stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
+    stockMove.setTypeSelect(typeSelect);
 
     return stockMove;
   }
