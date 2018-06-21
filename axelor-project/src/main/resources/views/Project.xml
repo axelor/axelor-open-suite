@@ -460,13 +460,17 @@
 		<view type="calendar" name="resource-booking-calendar" />
 		<context name="_project" expr="eval:__self__"/>
 	</action-view>
-	
-	<action-view name="action-project-add-task" title="Task" model="com.axelor.team.db.TeamTask">
-		<view type="form" name="team-task-form" />
-		<view type="grid" name="team-task-grid" />
+
+	<action-view name="action-project-add-task" model="com.axelor.team.db.TeamTask" title="Task">
+		<view name="team-task-form" type="form"/>
+		<view name="team-task-grid" type="grid"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="popup-save" value="true"/>
+		<view-param name="show-confirm" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
 		<context name="_project" expr="eval:__self__"/>
 	</action-view>
-	
+
 	<action-view name="action-project-open-popup-select-users" title="Select Users" model="com.axelor.apps.base.db.Wizard">
 	<view type="form" name="user-select-wizard-form"/>
 	 <view-param name="show-toolbar" value="false"/>

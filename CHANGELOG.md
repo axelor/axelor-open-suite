@@ -15,6 +15,7 @@
 - Add Partner balance as a new Accounting report.
 - Remove all question marks (?) from boolean fields names.
 - Message : Run the process of send an email in a separate thread to avoid thread blocking.
+- Project: Add new task from project form is now done with pop-up.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
