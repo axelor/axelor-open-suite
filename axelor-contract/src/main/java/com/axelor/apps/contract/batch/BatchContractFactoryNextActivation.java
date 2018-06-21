@@ -30,7 +30,7 @@ import java.time.format.DateTimeFormatter;
 public class BatchContractFactoryNextActivation extends BatchContractFactory {
 
   @Inject
-  BatchContractFactoryNextActivation(
+  public BatchContractFactoryNextActivation(
       ContractRepository repository, ContractService service, AppBaseService baseService) {
     super(repository, service, baseService);
   }

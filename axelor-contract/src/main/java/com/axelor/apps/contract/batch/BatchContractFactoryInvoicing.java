@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
 public class BatchContractFactoryInvoicing extends BatchContractFactory {
 
   @Inject
-  BatchContractFactoryInvoicing(
+  public BatchContractFactoryInvoicing(
       ContractRepository repository, ContractService service, AppBaseService baseService) {
     super(repository, service, baseService);
   }

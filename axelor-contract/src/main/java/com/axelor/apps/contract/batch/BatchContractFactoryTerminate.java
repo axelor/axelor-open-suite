@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
 public class BatchContractFactoryTerminate extends BatchContractFactory {
 
   @Inject
-  BatchContractFactoryTerminate(
+  public BatchContractFactoryTerminate(
       ContractRepository repository, ContractService service, AppBaseService baseService) {
     super(repository, service, baseService);
   }
