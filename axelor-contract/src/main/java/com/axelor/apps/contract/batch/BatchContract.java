@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.contract.batch;
 
 import com.axelor.apps.base.service.batch.BatchStrategy;
@@ -9,29 +26,29 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 public class BatchContract extends BatchStrategy {
-  private static final Map<ContractBatchAction, BatchContractState> STATES =
-      new EnumMap<>(ContractBatchAction.class);
 
-  static {
-    STATES.put(ContractBatchAction.INVOICING,
-        Beans.get(BatchContractStateInvoicing.class));
-    STATES.put(ContractBatchAction.TERMINATE,
-        Beans.get(BatchContractStateTerminate.class));
-    STATES.put(ContractBatchAction.CURRENT_VERSION_ACTIVATION,
-        Beans.get(BatchContractStateCurrentActivation.class));
-    STATES.put(ContractBatchAction.NEXT_VERSION_ACTIVATION,
-        Beans.get(BatchContractStateNextActivation.class));
+  public static BatchContractFactory getFactory(ContractBatchAction action) {
+    switch (action) {
+      case INVOICING:
+        return Beans.get(BatchContractFactoryInvoicing.class);
+      case TERMINATE:
+        return Beans.get(BatchContractFactoryTerminate.class);
+      case NEXT_VERSION_ACTIVATION:
+        return Beans.get(BatchContractFactoryNextActivation.class);
+      case CURRENT_VERSION_ACTIVATION:
+        return Beans.get(BatchContractFactoryCurrentActivation.class);
+      default:
+        return null;
+    }
   }
 
   @Override
   protected void process() {
     try {
-      BatchContractState state = STATES.get(batch.getContractBatch().getActionEnum());
+      BatchContractFactory state = getFactory(batch.getContractBatch().getActionEnum());
       Preconditions.checkNotNull(
           state,
           String.format(

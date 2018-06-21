@@ -59,12 +59,11 @@ public class ContractRepository extends AbstractContractRepository {
     }
   }
 
-	@Override
-	public Contract copy(Contract entity, boolean deep) {
-		Contract contract = super.copy(entity, deep);
-		ContractVersion version = Beans.get(ContractVersionRepository.class).copy(entity);
-		contract.setCurrentContractVersion(version);
-		return contract;
-	}
-
+  @Override
+  public Contract copy(Contract entity, boolean deep) {
+    Contract contract = super.copy(entity, deep);
+    ContractVersion version = Beans.get(ContractVersionRepository.class).copy(entity);
+    contract.setCurrentContractVersion(version);
+    return contract;
+  }
 }
