@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -127,6 +128,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         stockMove.setFullySpreadOverLogisticalFormsFlag(true);
       }
 
+      boolean isNeedingConformityCertificate = saleOrder.getIsNeedingConformityCertificate();
+      stockMove.setIsNeedingConformityCertificate(isNeedingConformityCertificate);
+
+      if (isNeedingConformityCertificate) {
+        stockMove.setSignatoryUser(
+            stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
+      }
+
       stockMove.setEstimatedDate(saleOrder.getDeliveryDate());
       stockMoveService.plan(stockMove);
       return stockMove;
@@ -175,7 +184,29 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
     stockMove.setSaleOrder(saleOrder);
     stockMove.setStockMoveLineList(new ArrayList<>());
+
+    if (stockMove.getPartner() != null) {
+      setDefaultAutoMailSettings(stockMove);
+    }
     return stockMove;
+  }
+
+  /**
+   * Set automatic mail configuration from the partner.
+   *
+   * @param stockMove
+   */
+  protected void setDefaultAutoMailSettings(StockMove stockMove) throws AxelorException {
+    Partner partner = stockMove.getPartner();
+    Company company = stockMove.getCompany();
+
+    PartnerStockSettings mailSettings =
+        Beans.get(PartnerStockSettingsService.class).getOrCreateMailSettings(partner, company);
+
+    stockMove.setRealStockMoveAutomaticMail(mailSettings.getRealStockMoveAutomaticMail());
+    stockMove.setRealStockMoveMessageTemplate(mailSettings.getRealStockMoveMessageTemplate());
+    stockMove.setPlannedStockMoveAutomaticMail(mailSettings.getPlannedStockMoveAutomaticMail());
+    stockMove.setPlannedStockMoveMessageTemplate(mailSettings.getPlannedStockMoveMessageTemplate());
   }
 
   /**
@@ -310,8 +341,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
   @Override
   public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException {
+    return isStockMoveProduct(saleOrderLine, saleOrderLine.getSaleOrder());
+  }
 
-    Company company = saleOrderLine.getSaleOrder().getCompany();
+  @Override
+  public boolean isStockMoveProduct(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+
+    Company company = saleOrder.getCompany();
 
     SupplyChainConfig supplyChainConfig =
         Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
@@ -358,7 +395,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
-      if (this.isStockMoveProduct(saleOrderLine)) {
+      if (this.isStockMoveProduct(saleOrderLine, saleOrder)) {
 
         if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
           if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED

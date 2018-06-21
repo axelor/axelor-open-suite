@@ -40,7 +40,6 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -52,7 +51,6 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -169,7 +167,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     return ref;
   }
 
-  @Override
   /**
    * Generic method to create any stock move
    *
@@ -190,6 +187,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @return
    * @throws AxelorException No Stock move sequence defined
    */
+  @Override
   public StockMove createStockMove(
       Address fromAddress,
       Address toAddress,
@@ -275,30 +273,8 @@ public class StockMoveServiceImpl implements StockMoveService {
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
     stockMove.setTypeSelect(getStockMoveType(fromStockLocation, toStockLocation));
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-        && stockMove.getPartner() != null) {
-      setDefaultAutoMailSettings(stockMove);
-    }
 
     return stockMove;
-  }
-
-  /**
-   * Set automatic mail configuration from the partner.
-   *
-   * @param stockMove
-   */
-  protected void setDefaultAutoMailSettings(StockMove stockMove) throws AxelorException {
-    Partner partner = stockMove.getPartner();
-    Company company = stockMove.getCompany();
-
-    PartnerStockSettings mailSettings =
-        Beans.get(PartnerStockSettingsService.class).getOrCreateMailSettings(partner, company);
-    boolean stockMoveAutomaticMail = mailSettings.getStockMoveAutomaticMail();
-    Template stockMoveMessageTemplate = mailSettings.getStockMoveMessageTemplate();
-
-    stockMove.setStockMoveAutomaticMail(stockMoveAutomaticMail);
-    stockMove.setStockMoveMessageTemplate(stockMoveMessageTemplate);
   }
 
   /**
@@ -405,6 +381,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
 
     stockMoveRepo.save(stockMove);
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getPlannedStockMoveAutomaticMail()) {
+      sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
+    }
   }
 
   @Override
@@ -464,23 +444,31 @@ public class StockMoveServiceImpl implements StockMoveService {
       partnerProductQualityRatingService.calculate(stockMove);
     }
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-        && stockMove.getStockMoveAutomaticMail()) {
-      Template template = stockMove.getStockMoveMessageTemplate();
-      if (template == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.STOCK_MOVE_MISSING_TEMPLATE),
-            stockMove);
-      }
-      try {
-        Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
-      } catch (Exception e) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
-      }
+        && stockMove.getRealStockMoveAutomaticMail()) {
+      sendMailForStockMove(stockMove, stockMove.getRealStockMoveMessageTemplate());
     }
 
     return newStockSeq;
+  }
+
+  /**
+   * Generate and send mail. Throws exception if the template is not found or if there is an error
+   * while generating the message.
+   */
+  protected void sendMailForStockMove(StockMove stockMove, Template template)
+      throws AxelorException {
+    if (template == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.STOCK_MOVE_MISSING_TEMPLATE),
+          stockMove);
+    }
+    try {
+      Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
+    } catch (Exception e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
+    }
   }
 
   /**
@@ -1070,7 +1058,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   public String printStockMove(
-      StockMove stockMove, List<Integer> lstSelectedMove, boolean isPicking)
+      StockMove stockMove, List<Integer> lstSelectedMove, String reportType)
       throws AxelorException {
     List<Long> selectedStockMoveListId;
     if (lstSelectedMove != null && !lstSelectedMove.isEmpty()) {
@@ -1125,9 +1113,7 @@ public class StockMoveServiceImpl implements StockMoveService {
               : I18n.get("StockMove(s)");
     }
 
-    String report = isPicking ? IReport.PICKING_STOCK_MOVE : IReport.STOCK_MOVE;
-
-    return ReportFactory.createReport(report, title + "-${date}")
+    return ReportFactory.createReport(reportType, title + "-${date}")
         .addParam("StockMoveId", stockMoveIds)
         .addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
         .generate()

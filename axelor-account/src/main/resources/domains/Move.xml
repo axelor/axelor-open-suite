@@ -21,7 +21,7 @@
     <boolean name="getInfoFromFirstMoveLineOk" title="Get information from 1st Move line" default="true"/>
     <string name="exportNumber" title="Accounting Export N°"/>
     <date name="exportDate" title="Export Date"/>
-    <boolean name="accountingOk" title="Exported ?" default="false"/>
+    <boolean name="accountingOk" title="Exported" default="false"/>
     <many-to-one name="accountingReport" ref="com.axelor.apps.account.db.AccountingReport" title="Accounting Export"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher"/>
    	<many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency" title="Company currency"/>

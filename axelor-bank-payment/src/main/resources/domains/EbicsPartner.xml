@@ -27,7 +27,7 @@
 	
 	<boolean name="testMode" title="Test mode"/>
 
-	<boolean name="filterReceiverBD" default="false" title="Filter receiver bank details?"/>
+	<boolean name="filterReceiverBD" default="false" title="Filter receiver bank details"/>
 	<integer name="orderTypeSelect" selection="bankpayment.bank.order.type.select" title="Order type to filter"/>
 	<many-to-many name="receiverBankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Authorized Bank Accounts"/>
 

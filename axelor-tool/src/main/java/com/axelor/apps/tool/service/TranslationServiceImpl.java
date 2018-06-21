@@ -38,10 +38,7 @@ public class TranslationServiceImpl implements TranslationService {
   @Override
   @Transactional
   public void updateFormatedValueTranslations(String oldKey, String format, Object... args) {
-    if (!StringUtils.isBlank(oldKey)) {
-      removeValueTranslations(oldKey);
-    }
-
+    removeValueTranslations(oldKey);
     createFormatedValueTranslations(format, args);
   }
 
@@ -59,7 +56,7 @@ public class TranslationServiceImpl implements TranslationService {
         metaTranslation.setLanguage(language);
       }
 
-      String message = String.format(format, getTranslatedArgs(args, language));
+      String message = String.format(format, getTranslatedValueArgs(args, language));
       metaTranslation.setMessage(message);
 
       metaTranslationRepo.save(metaTranslation);
@@ -69,6 +66,9 @@ public class TranslationServiceImpl implements TranslationService {
   @Override
   @Transactional
   public void removeValueTranslations(String key) {
+    if (StringUtils.isBlank(key)) {
+      return;
+    }
     for (MetaTranslation metaTranslation :
         metaTranslationRepo
             .all()
@@ -79,22 +79,30 @@ public class TranslationServiceImpl implements TranslationService {
     }
   }
 
-  private Object[] getTranslatedArgs(Object[] args, String language) {
+  private Object[] getTranslatedValueArgs(Object[] args, String language) {
     Object[] translatedArgs = new String[args.length];
 
     for (int i = 0; i < args.length; ++i) {
       String key = String.valueOf(args[i]);
-      translatedArgs[i] = getValueTranslation(VALUE_KEY_PREFIX + key, language);
+      translatedArgs[i] = getValueTranslation(key, language);
     }
 
     return translatedArgs;
   }
 
-  public String getValueTranslation(String key, String language) {
+  @Override
+  public String getTranslation(String key, String language) {
     MetaTranslation metaTranslation = metaTranslationRepo.findByKey(key, language);
     return metaTranslation != null && !StringUtils.isBlank(metaTranslation.getMessage())
         ? metaTranslation.getMessage()
         : key;
+  }
+
+  @Override
+  public String getValueTranslation(String key, String language) {
+    String valueKey = VALUE_KEY_PREFIX + key;
+    String translation = getTranslation(valueKey, language);
+    return !valueKey.equals(translation) ? translation : key;
   }
 
   private Collection<String> getLanguages(Object... args) {

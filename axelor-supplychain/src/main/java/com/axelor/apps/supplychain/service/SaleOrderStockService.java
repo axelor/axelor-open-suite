@@ -47,6 +47,9 @@ public interface SaleOrderStockService {
 
   public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException;
 
+  boolean isStockMoveProduct(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
+
   /**
    * Find active stock move for sale order.
    *

@@ -44,7 +44,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.itextpdf.text.DocumentException;
-import com.mysql.jdbc.StringUtils;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -52,8 +51,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -203,10 +200,13 @@ public class AdvancedExportController {
           InvalidFormatException {
 
     AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
+    advancedExport = advancedExportRepo.find(advancedExport.getId());
+
+    Map<Boolean, MetaFile> exportMap = new HashMap<Boolean, MetaFile>();
     MetaFile exportFile = null;
-    String criteria = "";
-    if (request.getContext().get("_contextCriteria") != null)
-      criteria = request.getContext().get("_contextCriteria").toString();
+    String criteria =
+        advancedExportService.createCriteria(request, advancedExport.getMaxExportLimit());
+    if (criteria == null) criteria = "";
 
     List<Map<String, Object>> advancedExportLineList = new ArrayList<>();
 
@@ -231,7 +231,7 @@ public class AdvancedExportController {
         MetaModel metaModel = (MetaModel) request.getContext().get("metaModel");
 
         if (fileType.contentEquals("PDF")) {
-          exportFile =
+          exportMap =
               advancedExportService.advancedExportPDF(
                   advancedExportLineList,
                   metaModel,
@@ -240,7 +240,7 @@ public class AdvancedExportController {
                   advancedExport.getQueryFetchSize());
 
         } else if (fileType.contentEquals("EXCEL")) {
-          exportFile =
+          exportMap =
               advancedExportService.advancedExportExcel(
                   advancedExportLineList,
                   metaModel,
@@ -249,7 +249,7 @@ public class AdvancedExportController {
                   advancedExport.getQueryFetchSize());
 
         } else if (fileType.contentEquals("CSV")) {
-          exportFile =
+          exportMap =
               advancedExportService.advancedExportCSV(
                   advancedExportLineList,
                   metaModel,
@@ -266,6 +266,7 @@ public class AdvancedExportController {
     } else {
       response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_1));
     }
+    exportFile = getExportFile(response, exportMap);
     downloadExportFile(response, exportFile);
   }
 
@@ -278,22 +279,17 @@ public class AdvancedExportController {
     MetaModel metaModel =
         metaModelRepo.all().filter("self.fullName = ?", request.getModel()).fetchOne();
     String criteria = "";
-
-    if (request.getContext().get("_ids") != null) {
+    if (request.getContext().get("_ids") != null)
       criteria = request.getContext().get("_ids").toString();
-
-    } else if (!request.getData().get("criteria").toString().equals("[]")
-        || !StringUtils.isNullOrEmpty(request.getData().get("_domain").toString())) {
-
+    else {
       Class<? extends Model> klass = (Class<? extends Model>) request.getBeanClass();
       Filter filter = advancedExportService.getJpaSecurityFilter(metaModel);
-      Stream<? extends Model> listObj =
-          request.getCriteria().createQuery(klass, filter).fetchSteam();
-
-      criteria = listObj.map(it -> it.getId()).collect(Collectors.toList()).toString();
+      int recordCount = (int) request.getCriteria().createQuery(klass, filter).count();
+      if (recordCount > 0) criteria = String.valueOf(recordCount);
     }
 
-    if (criteria.equals("[]")) response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_2));
+    if (Strings.isNullOrEmpty(criteria))
+      response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_2));
     else {
       response.setView(
           ActionView.define(I18n.get("Advanced export"))
@@ -303,12 +299,12 @@ public class AdvancedExportController {
               .param("show-toolbar", "false")
               .param("show-confirm", "false")
               .context("_metaModel", metaModel)
-              .context("_criteria", criteria)
+              .context("_criteria", criteria.startsWith("[") ? criteria : request)
               .map());
     }
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({"rawtypes"})
   public void generateExportFile(ActionRequest request, ActionResponse response)
       throws ClassNotFoundException, IOException, DocumentException, AxelorException,
           InvalidFormatException {
@@ -320,12 +316,15 @@ public class AdvancedExportController {
         advancedExportRepo.find(
             Long.valueOf(
                 ((Map) request.getContext().get("_xAdvancedExport")).get("id").toString()));
+
+    Map<Boolean, MetaFile> exportMap = new HashMap<Boolean, MetaFile>();
     MetaFile exportFile = null;
+    String criteria =
+        advancedExportService.createCriteria(request, advancedExport.getMaxExportLimit());
+    if (criteria == null) criteria = "";
+
     int exportFormatSelect =
         Integer.parseInt(request.getContext().get("exportFormatSelect").toString());
-    String criteria = null;
-    if (request.getContext().get("_criteria") != null)
-      criteria = request.getContext().get("_criteria").toString();
 
     List<Map<String, Object>> advancedExportLineList = new ArrayList<>();
 
@@ -352,7 +351,7 @@ public class AdvancedExportController {
                 Long.valueOf(((Map) request.getContext().get("_metaModel")).get("id").toString()));
 
         if (exportFormatSelect == 0) {
-          exportFile =
+          exportMap =
               advancedExportService.advancedExportPDF(
                   advancedExportLineList,
                   metaModel,
@@ -361,7 +360,7 @@ public class AdvancedExportController {
                   advancedExport.getQueryFetchSize());
 
         } else if (exportFormatSelect == 1) {
-          exportFile =
+          exportMap =
               advancedExportService.advancedExportExcel(
                   advancedExportLineList,
                   metaModel,
@@ -370,7 +369,7 @@ public class AdvancedExportController {
                   advancedExport.getQueryFetchSize());
 
         } else if (exportFormatSelect == 2) {
-          exportFile =
+          exportMap =
               advancedExportService.advancedExportCSV(
                   advancedExportLineList,
                   metaModel,
@@ -387,8 +386,21 @@ public class AdvancedExportController {
     } else {
       response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_1));
     }
-
+    exportFile = getExportFile(response, exportMap);
     downloadExportFile(response, exportFile);
+  }
+
+  private MetaFile getExportFile(ActionResponse response, Map<Boolean, MetaFile> exportMap) {
+    MetaFile exportFile = null;
+    boolean isReachMaxExportLimit = false;
+    for (Map.Entry<Boolean, MetaFile> entry : exportMap.entrySet()) {
+      isReachMaxExportLimit = entry.getKey();
+      exportFile = entry.getValue();
+    }
+    if (isReachMaxExportLimit) {
+      response.setFlash(I18n.get(IExceptionMessage.ADVANCED_EXPORT_3));
+    }
+    return exportFile;
   }
 
   private void downloadExportFile(ActionResponse response, MetaFile exportFile) {
@@ -405,8 +417,6 @@ public class AdvancedExportController {
                       + exportFile.getVersion())
               .param("download", "true")
               .map());
-
-      response.setFlash(I18n.get(IExceptionMessage.ADVANCED_EXPORT_3));
     }
   }
 }

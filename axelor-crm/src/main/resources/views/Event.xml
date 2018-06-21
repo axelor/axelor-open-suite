@@ -461,10 +461,10 @@
 	
 	<search-filters name="event-filters" model="com.axelor.apps.crm.db.Event" title="Event filters">
 		<filter title="My upcoming events">
-			<domain>self.user.internalUser.id  = :_internalUserId AND self.startDateTime &gt;= :_currentDate</domain>
+			<domain>self.user = :__user__ AND self.startDateTime &gt;= :_currentDate</domain>
 		</filter>
 		<filter title="My past events">
-			<domain>self.user.internalUser.id  = :_internalUserId AND self.startDateTime &lt;= :_currentDate</domain>
+			<domain>self.user = :__user__  AND self.startDateTime &lt;= :_currentDate</domain>
 		</filter>
 		<filter title="All upcoming events">
 			<domain>self.startDateTime &gt;= :_currentDate</domain>

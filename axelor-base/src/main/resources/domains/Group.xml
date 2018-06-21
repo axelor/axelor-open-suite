@@ -7,8 +7,8 @@
 
     <entity name="Group" cachable="true">
 
-        <boolean name="isClient" default="false" title="Client?"/>
-        <boolean name="isSupplier" default="false" title="Supplier?"/>
+        <boolean name="isClient" default="false" title="Client"/>
+        <boolean name="isSupplier" default="false" title="Supplier"/>
 
     </entity>
 

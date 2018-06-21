@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
    
-	<grid name="data-config-line-grid" title="Data config line" model="com.axelor.apps.admin.db.DataConfigLine">
+	<grid name="data-config-line-grid" title="Data config line" model="com.axelor.apps.base.db.DataConfigLine">
 		<field name="metaModel" />
 		<field name="path" required="true" />
 	</grid> 
     
 	<form name="data-config-line-form" title="Data config line"
-		model="com.axelor.apps.admin.db.DataConfigLine" width="large">
+		model="com.axelor.apps.base.db.DataConfigLine" width="large">
 		<panel>
 		 	<field name="metaModel" canEdit="false"  />
 		 	<field name="tabName" />

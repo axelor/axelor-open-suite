@@ -7,7 +7,7 @@
 
     <entity name="Country" lang="java" cachable="true">
 
-        <boolean name="isIspmRequired" title="Is ISPM15 required ?"/>
+        <boolean name="isIspmRequired" title="Is ISPM15 required"/>
 
 
     </entity>

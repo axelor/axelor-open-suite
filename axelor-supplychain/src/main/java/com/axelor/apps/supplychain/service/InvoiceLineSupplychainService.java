@@ -51,7 +51,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       PriceListService priceListService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      PurchaseProductService purchaseProductService) {
 
     super(
         accountManagementService,
@@ -60,6 +61,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         appAccountService,
         analyticMoveLineService,
         accountManagementAccountService);
+    this.purchaseProductService = purchaseProductService;
   }
 
   @Override
