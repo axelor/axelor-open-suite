@@ -205,7 +205,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                   purchaseOrder.getFreightCarrierMode(),
                   null,
                   null,
-                  null);
+                  null,
+                  StockMoveRepository.TYPE_INCOMING);
       stockMove.setPurchaseOrder(purchaseOrder);
       stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
       stockMove.setTradingName(purchaseOrder.getTradingName());

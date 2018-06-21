@@ -438,9 +438,9 @@ public class InventoryService {
                 toStockLocation,
                 inventoryDate,
                 inventoryDate,
-                null);
+                null,
+                StockMoveRepository.TYPE_INTERNAL);
 
-    stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
     stockMove.setName(name);
 
     return stockMove;
