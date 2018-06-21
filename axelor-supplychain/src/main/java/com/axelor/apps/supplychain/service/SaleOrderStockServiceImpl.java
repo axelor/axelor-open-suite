@@ -170,7 +170,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             saleOrder.getFreightCarrierMode(),
             saleOrder.getCarrierPartner(),
             saleOrder.getForwarderPartner(),
-            saleOrder.getIncoterm());
+            saleOrder.getIncoterm(),
+            StockMoveRepository.TYPE_OUTGOING);
 
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
     stockMove.setSaleOrder(saleOrder);
