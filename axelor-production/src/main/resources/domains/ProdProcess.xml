@@ -13,7 +13,7 @@
   	<boolean name="outsourcing" title="Outsourcing"/>
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
 	<string name="fullName" namecolumn="true" title="Label"/>
-	 
+    <integer name="statusSelect" title="Status" readonly="true" selection="production.prod.process.status.select" default="1"/>
   	
   	<boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
   	
