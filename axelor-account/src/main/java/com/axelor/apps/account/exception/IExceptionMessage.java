@@ -173,7 +173,7 @@ public interface IExceptionMessage {
       "%s : Reconciliation : Move line accounts are not compatible." /*)*/;
   static final String RECONCILE_3 = /*$$(*/ "(Debit %s account %s - Credit %s account %s)" /*)*/;
   static final String RECONCILE_4 = /*$$(*/
-      "%s : Reconciliation %s: Reconciliated amount must be different than zero. \n (Debit %s account %s - Credit %s account %s)" /*)*/;
+      "%s : Reconciliation %s: Reconciliated amount must be different than zero. (Debit %s account %s - Credit %s account %s)" /*)*/;
   static final String RECONCILE_5 = /*$$(*/
       "%s : Reconciliation %s: Reconciliated amount must be lower or equal to remaining amount to reconciliate from moves lines." /*)*/;
   static final String RECONCILE_6 = /*$$(*/
