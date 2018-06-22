@@ -32,6 +32,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -205,5 +206,48 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     // remove possible duplicates
     reconcileGroup.setMoveLineList(
         reconcileGroup.getMoveLineList().stream().distinct().collect(Collectors.toList()));
+  }
+
+  @Override
+  public void remove(Reconcile reconcile) throws AxelorException {
+    ReconcileGroup reconcileGroup = reconcile.getReconcileGroup();
+    reconcileGroup.removeReconcileListItem(reconcile);
+
+    // update move lines
+    if (reconcileGroup.getMoveLineList() != null) {
+      Iterator<MoveLine> it = reconcileGroup.getMoveLineList().iterator();
+      while (it.hasNext()) {
+        it.next().setReconcileGroup(null);
+        it.remove();
+      }
+    }
+    reconcileGroup
+        .getReconcileList()
+        .stream()
+        .map(Reconcile::getDebitMoveLine)
+        .forEach(reconcileGroup::addMoveLineListItem);
+    reconcileGroup
+        .getReconcileList()
+        .stream()
+        .map(Reconcile::getCreditMoveLine)
+        .forEach(reconcileGroup::addMoveLineListItem);
+
+    // update status
+    updateStatus(reconcileGroup);
+  }
+
+  @Override
+  public void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException {
+    List<Reconcile> reconcileList = reconcileGroup.getReconcileList();
+    int status = reconcileGroup.getStatusSelect();
+    if (CollectionUtils.isNotEmpty(reconcileList)
+        && isBalanced(reconcileList)
+        && status == ReconcileGroupRepository.STATUS_TEMPORARY) {
+      validate(reconcileGroup);
+    } else if (status == ReconcileGroupRepository.STATUS_FINAL) {
+      // it is not balanced or the collection is empty.
+      reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
+      Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
+    }
   }
 }

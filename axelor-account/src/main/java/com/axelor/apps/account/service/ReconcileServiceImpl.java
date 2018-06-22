@@ -388,6 +388,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
+
+    // Update reconcile group
+    Beans.get(ReconcileGroupService.class).remove(reconcile);
   }
 
   public void updateInvoicePaymentsCanceled(Reconcile reconcile) throws AxelorException {
