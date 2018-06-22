@@ -68,7 +68,7 @@
 		<item name="PROJECT_ALONE" title="Project alone"/>
 		<item name="PHASE_BY_LINE" title="Phase by line"/>
 		<item name="TASK_BY_LINE" title="Task by line"/>
-		<item name="TASK_TEMPLATE" title="Product Task Template"/>
+		<item name="TASK_TEMPLATE" title="Tasks by product"/>
 	</enum>
 
 </domain-models>

@@ -77,7 +77,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
                 project,
                 root,
                 startDate,
-                orderLine.getQty().intValue());
+                orderLine.getQty());
         tasks.addAll(convertedTasks);
       }
     }

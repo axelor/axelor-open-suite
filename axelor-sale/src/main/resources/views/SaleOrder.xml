@@ -294,10 +294,10 @@
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
 				<field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
 				<field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"/>
-				<field name="$_elementStartDate" title="Start date" hidden="true" showIf="project" widget="date-time"/>
+				<field name="$_elementStartDate" title="Start date" widget="date-time"/>
 				<panel colSpan="6">
-					<button name="fillProject" readonlyIf="!$_projectGeneratorType" title="Fill project" if="__config__.app.getApp('business-project').projectSaleOrderLines" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-fill-project" colSpan="12"/>
-					<button name="generateProject" readonlyIf="!$_projectGeneratorType" title="Generate Project/Business" if="!__config__.app.getApp('business-project').automaticProject" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project" colSpan="12"/>
+					<button name="fillProject" readonlyIf="!$_projectGeneratorType" title="Fill project" if="__config__.app.getApp('business-project').projectSaleOrderLines" showIf="project != null" hidden="true" onClick="save,action-business-project-method-fill-project" colSpan="12"/>
+					<button name="generateProject" readonlyIf="!$_projectGeneratorType" title="Generate Project/Business" if="!__config__.app.getApp('business-project').automaticProject" showIf="project == null" hidden="true" onClick="save,action-business-project-method-generate-project" colSpan="12"/>
 				</panel>
 			</panel>
 		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" >
@@ -749,14 +749,6 @@
 		]]>
 		</template>
 	</cards>
-
-	<action-method name="action-sale-order-method-generate-project">
-		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="generateProject"/>
-	</action-method>
-
-	<action-method name="action-sale-order-method-fill-project">
-		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="fillProject"/>
-	</action-method>
 
     <action-attrs name="action-sale-order-domain-on-team">
     	<attribute name="domain" for="team" expr="eval: salemanUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salemanUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
