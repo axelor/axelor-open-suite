@@ -16,6 +16,7 @@
 - Type of stock move generated from manuf order is now correctly set to internal.
 - Remove unused action.
 - Fix columns of type reference in all tree view.
+- Web service mobile: change the "create timesheet line" method to update it also, and have duration/hours updated
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
