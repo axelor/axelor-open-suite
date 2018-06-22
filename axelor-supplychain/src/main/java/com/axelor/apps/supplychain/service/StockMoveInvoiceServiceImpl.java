@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -430,6 +431,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMoveIdList.add(stockMoveLocal.getId());
     }
 
+    TradingName tradingName = null;
+    if (!stockMoveToInvoiceList.isEmpty()) {
+      tradingName = stockMoveList.get(0).getTradingName();
+    }
+
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
             InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
@@ -445,7 +451,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             externalRef,
             null,
             null,
-            null) {
+            tradingName) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -605,6 +611,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMoveIdList.add(stockMoveLocal.getId());
     }
 
+    TradingName tradingName = null;
+    if (!stockMoveToInvoiceList.isEmpty()) {
+      tradingName = stockMoveList.get(0).getTradingName();
+    }
+
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
             InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
@@ -615,7 +626,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             numSeq,
             externalRef,
             null,
-            null) {
+            tradingName) {
 
           @Override
           public Invoice generate() throws AxelorException {
