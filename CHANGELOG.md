@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.0.2]
 ## Improvements
+- Added the possibility to have production processes not limited to a single product and thus applicable to all bills of materials.
 
 ## Bug Fixes
 - Partner: check whether another partner with the same email address exist or not on save.
