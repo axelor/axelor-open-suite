@@ -38,6 +38,7 @@ import com.axelor.apps.hr.db.repo.KilometricAllowParamRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
@@ -308,15 +309,16 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertTSLine
+   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine
    * Content-Type: application/json
    *
-   * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertTSLine
+   * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine
    * fields: project, activity, date, duration, comments
    *
    * payload:
    * { "data": {
-   * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertTSLine",
+   * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine",
+   *        "id": 1,
    * 		"project": 1,
    * 		"activity": 2,
    * 		"date": "2018-02-22",
@@ -325,8 +327,10 @@ public class HumanResourceMobileController {
    * } }
    */
   @Transactional
-  public void insertTSLine(ActionRequest request, ActionResponse response) { // insert TimesheetLine
+  public void insertOrUpdateTSLine(
+      ActionRequest request, ActionResponse response) { // insert TimesheetLine
     try {
+      Map<String, Object> requestData = request.getData();
       User user = AuthUtils.getUser();
       Project project =
           Beans.get(ProjectRepository.class)
@@ -351,15 +355,31 @@ public class HumanResourceMobileController {
           timesheet = timesheetService.createTimesheet(user, date, date);
         }
         BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
-        TimesheetLine line =
-            timesheetLineService.createTimesheetLine(
-                project,
-                product,
-                user,
-                date,
-                timesheet,
-                hours,
-                request.getData().get("comments").toString());
+
+        TimesheetLine line;
+        Object idO = requestData.get("id");
+        if (idO != null) {
+          line =
+              timesheetLineService.updateTimesheetLine(
+                  Beans.get(TimesheetLineRepository.class).find(Long.valueOf(idO.toString())),
+                  project,
+                  product,
+                  user,
+                  date,
+                  timesheet,
+                  hours,
+                  request.getData().get("comments").toString());
+        } else {
+          line =
+              timesheetLineService.createTimesheetLine(
+                  project,
+                  product,
+                  user,
+                  date,
+                  timesheet,
+                  hours,
+                  request.getData().get("comments").toString());
+        }
 
         // convert hours to what is defined in timeLoggingPreferenceSelect
         BigDecimal duration = timesheetLineService.computeHoursDuration(timesheet, hours, false);

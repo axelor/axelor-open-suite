@@ -74,4 +74,14 @@ public interface TimesheetLineService {
       Timesheet timesheet,
       BigDecimal hours,
       String comments);
+
+  TimesheetLine updateTimesheetLine(
+      TimesheetLine timesheetLine,
+      Project project,
+      Product product,
+      User user,
+      LocalDate date,
+      Timesheet timesheet,
+      BigDecimal hours,
+      String comments);
 }
