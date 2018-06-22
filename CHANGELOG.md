@@ -15,6 +15,7 @@
 - Fix rounding problem in HR batches calculations
 - Type of stock move generated from manuf order is now correctly set to internal.
 - Remove unused action.
+- Fix columns of type reference in all tree view.
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
