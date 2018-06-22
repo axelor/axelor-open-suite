@@ -100,4 +100,18 @@ public interface ReconcileGroupService {
    * @param reconcile the confirmed reconcile to be added.
    */
   void addToReconcileGroup(ReconcileGroup reconcileGroup, Reconcile reconcile);
+
+  /**
+   * Remove a reconcile from a reconcile group then update the group.
+   *
+   * @param reconcile a reconcile with a reconcile group.
+   */
+  void remove(Reconcile reconcile) throws AxelorException;
+
+  /**
+   * Update the status and the sequence of a reconcile group.
+   *
+   * @param reconcileGroup
+   */
+  void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException;
 }
