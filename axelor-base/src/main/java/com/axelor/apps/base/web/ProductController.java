@@ -17,6 +17,12 @@
  */
 package com.axelor.apps.base.web;
 
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -38,10 +44,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ProductController {
@@ -90,10 +92,6 @@ public class ProductController {
 
     if (lstSelectedProduct != null) {
       productIds = Joiner.on(",").join(lstSelectedProduct);
-    }
-
-    if (!productIds.equals("")) {
-      productIds = productIds.substring(0, productIds.length() - 1);
     }
 
     String name = I18n.get("Product Catalog");

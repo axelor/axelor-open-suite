@@ -63,7 +63,7 @@ public class AppServiceImpl implements AppService {
 
   private static final String DIR_DEMO = "demo";
 
-  private static final String DIR_INIT = "data-init/app";
+  private static final String DIR_INIT = "data-init" + File.separator + "app";
 
   private static final String DIR_ROLES = "roles";
 
@@ -217,37 +217,32 @@ public class AppServiceImpl implements AppService {
   }
 
   private File extract(String module, String dirName, String lang, String code) {
-
+    String dirNamePattern = dirName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> files = new ArrayList<URL>();
-    files.addAll(MetaScanner.findAll(module, dirName, code + CONFIG_PATTERN));
+    files.addAll(MetaScanner.findAll(module, dirNamePattern, code + CONFIG_PATTERN));
     if (files.isEmpty()) {
-      log.debug("No app config file found: {}", code + CONFIG_PATTERN);
       return null;
     }
     if (lang.isEmpty()) {
-      log.debug(
-          "No lanuage to extract. All data to extract under directory: {}, appCode: {}",
-          dirName,
-          code);
-      files.addAll(MetaScanner.findAll(module, dirName, code + "*"));
+      files.addAll(MetaScanner.findAll(module, dirNamePattern, code + "*"));
     } else {
       String dirPath = dirName + "/";
-      log.debug("Demo data input dir: {}", dirName);
       files.addAll(fetchUrls(module, dirPath + IMG_DIR));
       files.addAll(fetchUrls(module, dirPath + EXT_DIR));
       files.addAll(fetchUrls(module, dirPath + lang));
     }
 
-    log.debug("Total files found: {}", files.size());
-
     final File tmp = Files.createTempDir();
+    final String dir = dirName.replace("\\", "/");
 
     for (URL file : files) {
       String name = file.toString();
-      name = name.substring(name.lastIndexOf(dirName));
+      name = name.substring(name.lastIndexOf(dir));
       if (!lang.isEmpty()) {
-        name = name.replace(dirName + "/" + lang, dirName.replace("/", File.separator));
-        log.debug("File to copy: {}", name);
+        name = name.replace(dir + "/" + lang, dir);
+      }
+      if (File.separatorChar == '\\') {
+        name = name.replace("/", "\\");
       }
       try {
         copy(file.openStream(), tmp, name);
@@ -260,7 +255,8 @@ public class AppServiceImpl implements AppService {
   }
 
   private List<URL> fetchUrls(String module, String fileName) {
-    return MetaScanner.findAll(module, fileName, "(.+?)");
+    final String fileNamePattern = fileName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
+    return MetaScanner.findAll(module, fileNamePattern, "(.+?)");
   }
 
   private void copy(InputStream in, File toDir, String name) throws IOException {
