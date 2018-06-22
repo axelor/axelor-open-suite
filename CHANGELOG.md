@@ -17,6 +17,7 @@
 - Remove unused action.
 - Fix columns of type reference in all tree view.
 - Manufactoring Order: add rollback in operation order as it is in manufacturing order when click on finish
+- Web service mobile: change the "create timesheet line" method to update it also, and have duration/hours updated
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
