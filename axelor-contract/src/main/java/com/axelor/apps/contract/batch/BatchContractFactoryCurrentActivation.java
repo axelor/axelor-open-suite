@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.contract.batch;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractRepository;
@@ -36,14 +37,16 @@ public class BatchContractFactoryCurrentActivation extends BatchContractFactory 
   }
 
   @Override
-  Query<Contract> prepare() {
+  Query<Contract> prepare(Batch batch) {
     return repository
         .all()
         .filter(
             "self.currentVersion.supposedActivationDate <= :date "
-                + "AND self.currentVersion.statusSelect = :status")
+                + "AND self.currentVersion.statusSelect = :status "
+                + "AND :batch NOT MEMBER of self.batchSet")
         .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")))
-        .bind("status", ContractVersionRepository.WAITING_VERSION);
+        .bind("status", ContractVersionRepository.WAITING_VERSION)
+        .bind("batch", batch);
   }
 
   @Override

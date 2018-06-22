@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.contract.batch;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractRepository;
@@ -35,14 +36,16 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
   }
 
   @Override
-  public Query<Contract> prepare() {
+  public Query<Contract> prepare(Batch batch) {
     return repository
         .all()
         .filter(
-            "self.isInvoicingManagement = TRUE AND "
-                + "self.currentVersion.automaticInvoicing = TRUE AND "
-                + "self.invoicingDate <= :date")
-        .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")));
+            "self.isInvoicingManagement = TRUE "
+                + "AND self.currentVersion.automaticInvoicing = TRUE "
+                + "AND self.invoicingDate <= :date "
+                + "AND :batch NOT MEMBER of self.batchSet")
+        .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")))
+        .bind("batch", batch);
   }
 
   @Override

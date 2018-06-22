@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.contract.batch;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractRepository;
@@ -35,15 +36,17 @@ public class BatchContractFactoryTerminate extends BatchContractFactory {
   }
 
   @Override
-  Query<Contract> prepare() {
+  Query<Contract> prepare(Batch batch) {
     return repository
         .all()
         .filter(
             "(self.terminatedDate <= :date "
                 + " OR self.currentVersion.supposedEndDate <= :date)"
-                + " AND self.statusSelect = :status")
+                + " AND self.statusSelect = :status"
+                + " AND :batch NOT MEMBER of self.batchSet")
         .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")))
-        .bind("status", ContractRepository.ACTIVE_CONTRACT);
+        .bind("status", ContractRepository.ACTIVE_CONTRACT)
+        .bind("batch", batch);
   }
 
   @Override

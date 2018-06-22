@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.contract.batch;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractRepository;
@@ -38,7 +39,7 @@ abstract class BatchContractFactory {
     this.baseService = baseService;
   }
 
-  abstract Query<Contract> prepare();
+  abstract Query<Contract> prepare(Batch batch);
 
   abstract void process(Contract contract) throws AxelorException;
 }

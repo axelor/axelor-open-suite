@@ -20,15 +20,24 @@ package com.axelor.apps.contract.batch;
 import com.axelor.apps.base.service.batch.BatchStrategy;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractBatchAction;
+import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import java.util.List;
 
 public class BatchContract extends BatchStrategy {
+
+  protected ContractRepository repository;
+
+  @Inject
+  public BatchContract(ContractRepository repository) {
+    this.repository = repository;
+  }
 
   public static BatchContractFactory getFactory(ContractBatchAction action) {
     switch (action) {
@@ -48,25 +57,25 @@ public class BatchContract extends BatchStrategy {
   @Override
   protected void process() {
     try {
-      BatchContractFactory state = getFactory(batch.getContractBatch().getActionEnum());
+      BatchContractFactory factory = getFactory(batch.getContractBatch().getActionEnum());
       Preconditions.checkNotNull(
-          state,
+          factory,
           String.format(
               I18n.get("Action %s has no Batch implementation."),
               batch.getContractBatch().getActionEnum().getValue()));
 
-      Query<Contract> query = state.prepare();
+      Query<Contract> query = factory.prepare(batch);
       List<Contract> contracts;
 
       while (!(contracts = query.fetch(FETCH_LIMIT)).isEmpty()) {
         findBatch();
         for (Contract contract : contracts) {
           try {
-            state.process(contract);
-            incrementDone();
+            factory.process(contract);
+            incrementDone(contract);
           } catch (Exception e) {
             TraceBackService.trace(e);
-            incrementAnomaly();
+            incrementAnomaly(contract);
           }
         }
         JPA.clear();
@@ -75,6 +84,18 @@ public class BatchContract extends BatchStrategy {
       TraceBackService.trace(e);
       LOG.error(e.getMessage());
     }
+  }
+
+  protected void incrementDone(Contract contract) {
+    contract.addBatchSetItem(batch);
+    super.incrementDone();
+  }
+
+  protected void incrementAnomaly(Contract contract) {
+    findBatch();
+    contract = repository.find(contract.getId());
+    contract.addBatchSetItem(batch);
+    super.incrementAnomaly();
   }
 
   @Override
