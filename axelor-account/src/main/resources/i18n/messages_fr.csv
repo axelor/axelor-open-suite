@@ -1213,7 +1213,7 @@
 "Recipient record code","Code Enreg. destinataire",,
 "Reconcilable ?","Lettrable ?",,
 "Reconcilations","Réconciliations",,
-"Reconcile","Réconcilier",,
+"Reconcile","Réconciliation",,
 "Reconcile filters","Filtre Réconciliations",,
 "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company",,,
 "Reconciliation date","Date de réconciliation",,
