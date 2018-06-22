@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 5.0.2]
+## [5.0.2] - 2018-06-22
 ## Improvements
 - Added the possibility to have production processes not limited to a single product and thus applicable to all bills of materials.
 - New default behaviour for Mrp, proposal type is now based on the product's procurement method if no stock rule exists.
@@ -19,6 +19,7 @@
 - Manufactoring Order: add rollback in operation order as it is in manufacturing order when click on finish
 - Web service mobile: change the "create timesheet line" method to update it also, and have duration/hours updated
 - Product : displaying quantities in stock with big numbers (until millions)
+
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
@@ -654,7 +655,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-[Unreleased 5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...dev
+
+[5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...v5.0.2
 [5.0.1]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc3...v5.0.0
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
