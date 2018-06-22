@@ -4,6 +4,7 @@ import com.axelor.apps.businessproject.db.ProductTaskTemplate;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.team.db.TeamTask;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ProductTaskTemplateService {
       Project project,
       TeamTask parent,
       LocalDateTime startDate,
-      int qty);
+      BigDecimal qty);
 
   void remove(ProductTaskTemplate productTaskTemplate);
 }

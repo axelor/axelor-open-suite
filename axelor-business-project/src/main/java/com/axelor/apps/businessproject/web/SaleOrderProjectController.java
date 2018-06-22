@@ -33,6 +33,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.time.Instant;
@@ -51,10 +52,11 @@ public class SaleOrderProjectController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
+      LocalDateTime startDate = getElementStartDate(request.getContext());
 
       ProjectGeneratorFactory factory =
           ProjectGeneratorFactory.getFactory(ProjectGeneratorType.valueOf(generatorType));
-      Project project = factory.create(saleOrder);
+      Project project = factory.generate(saleOrder, startDate);
 
       response.setReload(true);
       response.setView(
@@ -75,14 +77,7 @@ public class SaleOrderProjectController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
-
-      LocalDateTime startDate;
-      String stringStartDate = (String) request.getContext().get("_elementStartDate");
-      if (!Strings.isNullOrEmpty(stringStartDate)) {
-        startDate = LocalDateTime.ofInstant(Instant.parse(stringStartDate), ZoneId.systemDefault());
-      } else {
-        startDate = Beans.get(AppBaseService.class).getTodayDate().atStartOfDay();
-      }
+      LocalDateTime startDate = getElementStartDate(request.getContext());
 
       ProjectGeneratorFactory factory =
           ProjectGeneratorFactory.getFactory(ProjectGeneratorType.valueOf(generatorType));
@@ -123,5 +118,16 @@ public class SaleOrderProjectController {
               .context(CONTEXT_SHOW_RECORD, String.valueOf(invoicingProject.getId()))
               .map());
     }
+  }
+
+  private LocalDateTime getElementStartDate(Context context) {
+    LocalDateTime date;
+    String stringStartDate = (String) context.get("_elementStartDate");
+    if (!Strings.isNullOrEmpty(stringStartDate)) {
+      date = LocalDateTime.ofInstant(Instant.parse(stringStartDate), ZoneId.systemDefault());
+    } else {
+      date = Beans.get(AppBaseService.class).getTodayDate().atStartOfDay();
+    }
+    return date;
   }
 }

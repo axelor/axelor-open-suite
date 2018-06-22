@@ -18,13 +18,13 @@
     model="com.axelor.apps.businessproject.db.ProductTaskTemplate" width="large"
     onNew="action-product-task-template-on-new">
     <panel>
-      <field name="name" showTitle="false" colSpan="12" css="label-bold bold large"/>
+      <field name="name" colSpan="12" css="label-bold bold large"/>
       <field name="delayToStart"/>
       <field name="duration"/>
       <field name="totalPlannedHrs"/>
-      <field name="assignedTo"/>
-      <field name="team"/>
-      <field name="parentTaskTemplate" domain="self.product = :product"/>
+      <field name="assignedTo" canEdit="false"/>
+      <field name="team" canEdit="false"/>
+      <field name="parentTaskTemplate" domain="self.product = :product" canEdit="false"/>
       <field name="isUniqueTaskForMultipleQuantity" widget="boolean-switch"/>
       <field name="product" hidden="true" showIf="!product"/>
     </panel>
@@ -34,9 +34,9 @@
     <column name="name" type="string"/>
     <column name="assignedTo" type="reference"/>
     <column name="team" type="reference"/>
-    <column name="delayToStart" type="decimal"/>
-    <column name="duration" type="decimal"/>
-    <column name="totalPlannedHrs" type="decimal"/>
+    <column name="delayToStart" type="decimal" title="Delay to start (Hours)"/>
+    <column name="duration" type="decimal" title="Duration (Hours)"/>
+    <column name="totalPlannedHrs" type="decimal" title="Planned hours"/>
     <column name="openTask" type="button"/>
     <column name="editTask" type="button"/>
     <column name="removeTask" type="button"/>
