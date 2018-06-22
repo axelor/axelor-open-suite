@@ -201,15 +201,16 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertExpenseLine
+   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine
    * Content-Type: application/json
    *
-   * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertExpenseLine
-   * fields: project, expenseType, date, comments, toInvoice, unTaxTotal, taxTotal, justification
+   * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine
+   * fields: (id,) project, expenseType, date, comments, toInvoice, unTaxTotal, taxTotal, justification
    *
    * payload:
    * { "data": {
-   * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertExpenseLine",
+   * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine",
+   *        "id": 1,
    * 		"project": 2,
    * 		"expenseType": 10,
    * 		"date": "2018-02-22",
@@ -313,7 +314,7 @@ public class HumanResourceMobileController {
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine
-   * fields: project, activity, date, duration, comments
+   * fields: (id,) project, activity, date, duration, comments
    *
    * payload:
    * { "data": {
