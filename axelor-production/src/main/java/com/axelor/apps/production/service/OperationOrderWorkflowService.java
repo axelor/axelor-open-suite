@@ -268,6 +268,12 @@ public class OperationOrderWorkflowService {
     operationOrderRepo.save(operationOrder);
   }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
+    finish(operationOrder);
+    Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
+  }
+
   /**
    * Cancels the given {@link OperationOrder} and its linked stock moves And sets its stopping time
    *
