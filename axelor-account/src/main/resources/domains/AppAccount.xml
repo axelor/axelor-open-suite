@@ -38,9 +38,9 @@
 	</entity>
 
     <enum name="PartnerBalConfigSelect">
-        <item name="TOTAL_BALANCE" title="Total balance"/> <!-- title="Total balance" -->
-        <item name="DUE_BALANCE" title="Due balance"/> <!-- title="Due balance" -->
-        <item name="DUE_BALANCE_RECOVERABLE" title="Due balance recoverable"/> <!-- title="Due balance recoverable" -->
+        <item name="TOTAL_BALANCE" title="Total balance"/>
+        <item name="DUE_BALANCE" title="Due balance"/>
+        <item name="DUE_BALANCE_RECOVERABLE" title="Due balance recoverable"/>
     </enum>
 
 </domain-models>
