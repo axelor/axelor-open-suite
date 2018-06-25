@@ -27,21 +27,15 @@ import java.util.Optional;
 public interface ReconcileGroupService {
 
   /**
-   * Call {@link ReconcileGroupService#validate(ReconcileGroup)} after checking the balance.
-   *
-   * @param reconcileGroup a reconcile group.
-   * @throws AxelorException if the reconcile group is not balanced
-   */
-  void validateCheckBalanced(ReconcileGroup reconcileGroup) throws AxelorException;
-
-  /**
    * Validate the given reconcile group. A reconcile Group can be validated if it is not empty and
    * its lines are balanced.
    *
    * @param reconcileGroup a reconcile group.
+   * @param reconcileList a list of reconcile.
    * @throws AxelorException if the reconcile list is empty.
    */
-  void validate(ReconcileGroup reconcileGroup) throws AxelorException;
+  void validate(ReconcileGroup reconcileGroup, List<Reconcile> reconcileList)
+      throws AxelorException;
 
   /**
    * Check if the given reconcile lines are balanced.

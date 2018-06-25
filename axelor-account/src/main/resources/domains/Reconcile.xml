@@ -23,6 +23,7 @@
     <unique-constraint columns="reconcileSeq,company"/>
 
     <finder-method name="findByMoveLines" using="debitMoveLine,creditMoveLine"/>
+    <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     
     <extra-code><![CDATA[
 	

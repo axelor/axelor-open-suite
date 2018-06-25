@@ -1476,7 +1476,6 @@
 "The payer doesn't have email attached. Please input/provide the email to use.",,,
 "The payment mode is not in adequacy with the invoice type",,,
 "The project must be the same for all invoices",,,
-"The reconcile group cannot be validated because it is not balanced.",,,
 "The reconcile group cannot be validated since there is no lines.",,,
 "The record is not %s characters",,,
 "The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
