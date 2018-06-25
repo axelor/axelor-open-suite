@@ -104,7 +104,7 @@
 	</form>
 	
 	<action-validate name="action-convert-lead-validate-confirm-validate-lead">
-       <alert message="Are you sure wants to convert lead ?"/>
+       <alert message="Are you sure you want to convert the lead?"/>
     </action-validate>
     
     <action-method name="action-convert-lead-wizard-method-set-defaults">
