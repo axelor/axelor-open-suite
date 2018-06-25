@@ -239,6 +239,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Currency invoiceCurrency = null;
     Partner invoiceClientPartner = null;
     Company invoiceCompany = null;
+    TradingName invoiceTradingName = null;
     PaymentCondition invoicePaymentCondition = null;
     PaymentMode invoicePaymentMode = null;
     Address invoiceMainInvoicingAddress = null;
@@ -248,6 +249,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Boolean invoiceInAti = null;
 
     Map<String, Object> mapResult = new HashMap<String, Object>();
+
+    StringBuilder fieldErrors = new StringBuilder();
 
     int count = 1;
     List<StockMove> stockMoveToInvoiceList = new ArrayList<StockMove>();
@@ -272,6 +275,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoiceCurrency = saleOrder.getCurrency();
         invoiceClientPartner = saleOrder.getClientPartner();
         invoiceCompany = saleOrder.getCompany();
+        invoiceTradingName = saleOrder.getTradingName();
         invoicePaymentCondition = saleOrder.getPaymentCondition();
         invoicePaymentMode = saleOrder.getPaymentMode();
         invoiceMainInvoicingAddress = saleOrder.getMainInvoicingAddress();
@@ -292,6 +296,15 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
         if (invoiceCompany != null && !invoiceCompany.equals(saleOrder.getCompany())) {
           invoiceCompany = null;
+        }
+
+        if ((invoiceTradingName != null && !invoiceTradingName.equals(saleOrder.getTradingName()))
+            || (invoiceTradingName == null && saleOrder.getTradingName() != null)) {
+          invoiceTradingName = null;
+          if (fieldErrors.length() > 0) {
+            fieldErrors.append("<br/>");
+          }
+          fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_SO));
         }
 
         if (invoicePaymentCondition != null
@@ -329,8 +342,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (stockMoveToInvoiceList.isEmpty()) {
       return mapResult;
     }
-
-    StringBuilder fieldErrors = new StringBuilder();
 
     /**
      * * Step 1, check if required and similar fields are correct The currency, the clientPartner
@@ -431,11 +442,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMoveIdList.add(stockMoveLocal.getId());
     }
 
-    TradingName tradingName = null;
-    if (!stockMoveToInvoiceList.isEmpty()) {
-      tradingName = stockMoveList.get(0).getTradingName();
-    }
-
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
             InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
@@ -451,7 +457,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             externalRef,
             null,
             null,
-            tradingName) {
+            invoiceTradingName) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -494,11 +500,14 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       List<StockMove> stockMoveList, Partner contactPartnerIn) throws AxelorException {
 
     Company invoiceCompany = null;
+    TradingName invoiceTradingName = null;
     Partner invoiceSupplierPartner = null;
     Partner invoiceContactPartner = null;
     PriceList invoicePriceList = null;
 
     Map<String, Object> mapResult = new HashMap<String, Object>();
+
+    StringBuilder fieldErrors = new StringBuilder();
 
     int count = 1;
     List<StockMove> stockMoveToInvoiceList = new ArrayList<StockMove>();
@@ -520,6 +529,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
       if (purchaseOrder != null && count == 1) {
         invoiceCompany = purchaseOrder.getCompany();
+        invoiceTradingName = purchaseOrder.getTradingName();
         invoiceSupplierPartner = purchaseOrder.getSupplierPartner();
         invoiceContactPartner = purchaseOrder.getContactPartner();
         invoicePriceList = purchaseOrder.getPriceList();
@@ -527,6 +537,16 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
         if (invoiceCompany != null && !invoiceCompany.equals(purchaseOrder.getCompany())) {
           invoiceCompany = null;
+        }
+
+        if ((invoiceTradingName != null
+                && !invoiceTradingName.equals(purchaseOrder.getTradingName()))
+            || (invoiceTradingName == null && purchaseOrder.getTradingName() != null)) {
+          invoiceTradingName = null;
+          if (fieldErrors.length() > 0) {
+            fieldErrors.append("<br/>");
+          }
+          fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_PO));
         }
 
         if (invoiceSupplierPartner != null
@@ -550,8 +570,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (stockMoveToInvoiceList.isEmpty()) {
       return mapResult;
     }
-
-    StringBuilder fieldErrors = new StringBuilder();
 
     /**
      * * Step 1, check if required and similar fields are correct the supplierPartner and the
@@ -611,11 +629,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMoveIdList.add(stockMoveLocal.getId());
     }
 
-    TradingName tradingName = null;
-    if (!stockMoveToInvoiceList.isEmpty()) {
-      tradingName = stockMoveList.get(0).getTradingName();
-    }
-
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
             InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
@@ -626,7 +639,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             numSeq,
             externalRef,
             null,
-            tradingName) {
+            invoiceTradingName) {
 
           @Override
           public Invoice generate() throws AxelorException {
