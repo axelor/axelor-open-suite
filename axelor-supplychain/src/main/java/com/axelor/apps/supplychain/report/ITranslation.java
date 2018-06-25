@@ -86,5 +86,6 @@ public class ITranslation {
       "Stock move No. {0} / Ref. No. {1}" /*)*/;
   public static final String PACKAGING_LIST_TOTAL_NET_MASS = /*$$(*/ "Total net mass" /*)*/;
   public static final String PACKAGING_LIST_TOTAL_FORMAT = /*$$(*/
-      "Number of parcels/pallets: {0} - Total gross mass ({1}): {2}" /*)*/;
+	      "Number of parcels/pallets: {0} - Total gross mass ({1}): {2}" /*)*/;
+  public static final String PACKAGING_LIST_SHIPPING_COMMENTS = /*$$(*/ "Shipping comments" /*)*/;
 }
