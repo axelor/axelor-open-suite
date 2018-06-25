@@ -8,7 +8,7 @@
 	</form>
 	
      <form name="incl-sales-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	   <panel-dashlet colSpan="12" action="action-partner-view-sales-orders" title="Sales orders" showIf="id != null &amp;&amp; _isCustomer"/>
+	   <panel-dashlet colSpan="12" action="action-partner-view-sales-orders" title="Sales orders" showIf="id != null &amp;&amp; (isCustomer || isProspect)"/>
 	</form>
 	
 	<form name="incl-sales-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" >
@@ -16,7 +16,7 @@
 	</form>
 
     <form name="incl-purchases-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-       <panel-dashlet colSpan="12" action="action-partner-view-purchases-orders" title="Purchase orders" showIf="id != null &amp;&amp; _isSupplier"/>
+       <panel-dashlet colSpan="12" action="action-partner-view-purchases-orders" title="Purchase orders" showIf="id != null &amp;&amp; isSupplier"/>
     </form>
 
 	<form name="incl-customer-credit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >	
@@ -41,6 +41,5 @@
         <view type="grid" name="purchase-order-partner-grid"/>
         <view type="form" name="purchase-order-form"/>
         <domain>(self.supplierPartner.id = :id)</domain>
-        <context name="id" expr="eval: id"/>
     </action-view>
 </object-views>

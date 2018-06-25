@@ -23,6 +23,7 @@
 - Demo data: in base, "base_shipmentMode.csv" was deleted because present in stock, and correction of french demo data of "stock_shipmentMode" 
 - Demo data, remove unused "base_scheduler.csv"
 - Bill of material generation from configurator: fixed an exception on using a many-to-one from context in script.
+- Show purchase order form in partner purchase order (panel Activities)
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
@@ -158,7 +159,6 @@ Also, improve the sale order line grid and form views.
 - Partner is readonly on purchase order if there are already lines.
 - Partner is readonly on sale order if there are already lines.
 - Accounting report : Reset some of the fields when copy accounting report and remove 'globalByPost' field.
-- Show purchase order form in partner purchase order (panel Activities)
 
 ## [5.0.0-rc3] - 2018-06-06
 ## Features
