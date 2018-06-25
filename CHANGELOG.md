@@ -34,7 +34,7 @@
 - Timeshee editor: Allows to delete a line when use unique product for the timesheet. 
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Automatic mail default fields in stock move are now filled correctly on partner change.
-- Project: Fix multiple bugs and increase views.
+- Project: Fix multiple bugs and improve views.
 
 ## [Unreleased 5.0.3]
 ## Improvements
