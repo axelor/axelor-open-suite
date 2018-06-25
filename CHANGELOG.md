@@ -16,6 +16,7 @@
 - Add a Job to update the currency conversion rates from a scheduler.
 - Add reconcile group which is a group of move lines. It also contains the reconciles between the lines.
 - Balance on top of Partner view become configurable for use specific balance
+- Project: Can now generate project with task templates by product.
 
 ## Improvements
 - Add Partner balance as a new Accounting report.
@@ -33,6 +34,7 @@
 - Timeshee editor: Allows to delete a line when use unique product for the timesheet. 
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Automatic mail default fields in stock move are now filled correctly on partner change.
+- Project: Fix multiple bugs and increase views.
 
 ## [Unreleased 5.0.3]
 ## Improvements
