@@ -44,4 +44,7 @@ public interface IExceptionMessage {
       "The project is configured to be alone" /*)*/;
   static final String INVOICING_PROJECT_GENERATION = /*$$(*/ "Invoicing project generated" /*)*/;
   static final String JOB_COSTING_APP = /*$$(*/ "Job costing" /*)*/;
+  String FACTORY_NO_FOUND = /*$$(*/ "Factory not found this type of generator" /*)*/;
+  String FACTORY_FILL_WITH_PROJECT_ALONE = /*$$(*/
+      "You can't fill a project with the strategy Project Alone." /*)*/;
 }
