@@ -292,9 +292,9 @@
       	</panel>
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect &gt;= 3"/>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
-				<field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="12"/>
-				<field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"/>
-				<field name="$_elementStartDate" title="Start date" widget="date-time"/>
+				<field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType" colSpan="6"/>
+				<field name="$_elementStartDate" title="Start date" widget="date-time" colSpan="6" type="datetime"/>
+				<field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="6"/>
 				<panel colSpan="6">
 					<button name="fillProject" readonlyIf="!$_projectGeneratorType" title="Fill project" if="__config__.app.getApp('business-project').projectSaleOrderLines" showIf="project != null" hidden="true" onClick="save,action-business-project-method-fill-project" colSpan="12"/>
 					<button name="generateProject" readonlyIf="!$_projectGeneratorType" title="Generate Project/Business" if="!__config__.app.getApp('business-project').automaticProject" showIf="project == null" hidden="true" onClick="save,action-business-project-method-generate-project" colSpan="12"/>
@@ -812,7 +812,8 @@
     	<action name="action-partner-attrs-hide-contact-partner" />
     	<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
-    </action-group>
+			<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
+		</action-group>
 
 	<action-group name="action-sale-group-confirmed">
 		<action name="action-sale-order-validate-check-on-confirm"/>
@@ -1167,5 +1168,9 @@
 	<action-record name="action-sale-order-manual-unblock" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="manualUnblock" expr="true"/>
 	</action-record>
+
+	<action-attrs name="action-sale-order-record-project-default-fields" if-module="axelor-business-project">
+		<attribute for="$_elementStartDate" name="value" expr="#{__datetime__}"/>
+	</action-attrs>
 
 </object-views>

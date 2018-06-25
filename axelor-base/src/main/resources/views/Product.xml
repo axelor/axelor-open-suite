@@ -228,7 +228,7 @@
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
 					</panel>
-				<panel title="Task templates" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+				<panel title="Task templates" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct" if-module="axelor-business-project">
 					<button name="addTask" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-product-task-template-add-task"/>
 					<panel-dashlet title="Task Tree" colSpan="12" action="action-product-task-template-task-tree"/>
 				</panel>
