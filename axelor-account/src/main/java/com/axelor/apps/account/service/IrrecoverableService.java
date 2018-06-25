@@ -46,7 +46,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
@@ -861,7 +860,8 @@ public class IrrecoverableService {
           moveLineService.createMoveLine(
               move,
               payerPartner,
-              taxAccountService.getAccount(invoiceLineTax.getTaxLine().getTax(), company, false, false),
+              taxAccountService.getAccount(
+                  invoiceLineTax.getTaxLine().getTax(), company, false, false),
               amount,
               true,
               appAccountService.getTodayDate(),
