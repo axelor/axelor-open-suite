@@ -249,10 +249,10 @@ public class EventServiceImpl implements EventService {
     if (monthRepeatType == RecurrenceConfigurationRepository.REPEAT_TYPE_MONTH) {
       nextStartDateTimeFunc =
           dateTime ->
-      dateTime
-      .withDayOfMonth(1)
-      .plusMonths(periodicity)
-      .withDayOfMonth(event.getStartDateTime().getDayOfMonth());
+              dateTime
+                  .withDayOfMonth(1)
+                  .plusMonths(periodicity)
+                  .withDayOfMonth(event.getStartDateTime().getDayOfMonth());
     } else {
       nextStartDateTimeFunc =
           dateTime -> {
