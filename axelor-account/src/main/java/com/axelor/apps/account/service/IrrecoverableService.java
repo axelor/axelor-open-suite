@@ -861,13 +861,14 @@ public class IrrecoverableService {
           moveLineService.createMoveLine(
               move,
               payerPartner,
-              taxAccountService.getAccount(invoiceLineTax.getTaxLine().getTax(), company, false),
+              taxAccountService.getAccount(invoiceLineTax.getTaxLine().getTax(), company, false, false),
               amount,
               true,
               appAccountService.getTodayDate(),
               seq,
               irrecoverableName,
               invoice.getInvoiceId());
+
       move.getMoveLineList().add(debitMoveLine);
       seq++;
       debitAmount = debitAmount.subtract(amount);
@@ -998,7 +999,7 @@ public class IrrecoverableService {
     move.getMoveLineList().add(creditMoveLine1);
 
     // Debit MoveLine 445 (Tax account)
-    Account taxAccount = taxAccountService.getAccount(tax, company, false);
+    Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
     BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
     MoveLine creditMoveLine2 =
         moveLineService.createMoveLine(

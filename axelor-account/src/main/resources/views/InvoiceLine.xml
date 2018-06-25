@@ -88,7 +88,7 @@
 							]]>
 						</viewer>
 					</field>
-					<field name="fixedAssets"  showTitle="true" hideIf="$readonly() || $contains([3,4], $_operationTypeSelect)" widget="boolean-switch"/>
+					<field name="fixedAssets"  showTitle="true" hideIf="$readonly() || $contains([3,4], $_operationTypeSelect)" widget="boolean-switch" onChange="action-invoice-line-method-get-account"/>
 					<field name="$_operationTypeSelect" hidden="true"/>
 				</panel>
 			</panel>
@@ -221,6 +221,10 @@
 	
 	<action-method name="action-invoice-line-method-get-discount">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getDiscount"/>
+	</action-method>
+
+	<action-method name="action-invoice-line-method-get-account">
+		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getAccount"/>
 	</action-method>
 	
 	<!-- ACTION ATTRS -->

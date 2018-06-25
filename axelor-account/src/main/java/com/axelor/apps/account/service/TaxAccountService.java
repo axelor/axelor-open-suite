@@ -24,17 +24,18 @@ import com.axelor.apps.base.db.Company;
 
 public class TaxAccountService {
 
-  public Account getAccount(Tax tax, Company company, boolean isPurchase) {
+  public Account getAccount(Tax tax, Company company, boolean isPurchase, boolean isFixedAssets) {
 
     AccountManagement accountManagement = this.getTaxAccount(tax, company);
 
     if (accountManagement != null) {
       if (isPurchase) {
+    	if(isFixedAssets) {
+    	  return accountManagement.getPurchFixedAssetsAccount();
+    	}
         return accountManagement.getPurchaseAccount();
-
-      } else {
-        return accountManagement.getSaleAccount();
       }
+      return accountManagement.getSaleAccount();
     }
 
     return null;
@@ -43,7 +44,7 @@ public class TaxAccountService {
 
   public AccountManagement getTaxAccount(Tax tax, Company company) {
 
-    if (tax.getAccountManagementList() != null) {
+    if (tax != null && tax.getAccountManagementList() != null) {
 
       for (AccountManagement accountManagement : tax.getAccountManagementList()) {
 

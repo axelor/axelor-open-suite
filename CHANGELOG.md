@@ -11,6 +11,7 @@
 - Product description can be copy to Invoice/Order/Purchase line.
 - Automatic mail on stock move planning.
 - New printing: certificate of conformity on stock move.
+- Purchases : possibility to set purchases as fixed assets.
 
 ## Improvements
 - Add Partner balance as a new Accounting report.
