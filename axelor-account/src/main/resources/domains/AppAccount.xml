@@ -21,7 +21,7 @@
 
 		<boolean name="printReportOnVentilation" title="Print report on invoice ventilation" default="true" />
 
-        <enum name="partnerBalanceViewerConfiguration" ref="PartnerBalanceViewerConfigurationTypeSelect" default="TOTAL_BALANCE"/>
+        <enum name="partnerBalanceViewerConfiguration" ref="PartnerBalConfigSelect" default="TOTAL_BALANCE"/>
 
 		<boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice" default="true"/>
         <boolean name="paymentVouchersOnInvoice" />
@@ -37,7 +37,7 @@
 		
 	</entity>
 
-    <enum name="PartnerBalanceViewerConfigurationTypeSelect">
+    <enum name="PartnerBalConfigSelect">
         <item name="TOTAL_BALANCE" title="Total balance"/> <!-- title="Total balance" -->
         <item name="DUE_BALANCE" title="Due balance"/> <!-- title="Due balance" -->
         <item name="DUE_BALANCE_RECOVERABLE" title="Due balance recoverable"/> <!-- title="Due balance recoverable" -->
