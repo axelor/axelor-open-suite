@@ -82,6 +82,8 @@
 	    ]]>
     </decimal>
 
+    <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
+
   	<extra-code><![CDATA[
 
 		// REIMBURSEMENT STATUS

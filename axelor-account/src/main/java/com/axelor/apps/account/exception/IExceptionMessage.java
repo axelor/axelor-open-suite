@@ -717,8 +717,6 @@ public interface IExceptionMessage {
    */
   String RECONCILE_GROUP_VALIDATION_NO_LINES = /*$$(*/
       "The reconcile group cannot be validated since there is no lines." /*)*/;
-  String RECONCILE_GROUP_VALIDATION_NOT_BALANCED = /*$$(*/
-      "The reconcile group cannot be validated because it is not balanced." /*)*/;
   String RECONCILE_GROUP_NO_TEMP_SEQUENCE = /*$$(*/
       "There is no configured sequence for temporary reconcile group" /*)*/;
   String RECONCILE_GROUP_NO_FINAL_SEQUENCE = /*$$(*/

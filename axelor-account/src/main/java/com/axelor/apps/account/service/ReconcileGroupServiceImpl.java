@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -32,7 +33,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,21 +43,8 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void validateCheckBalanced(ReconcileGroup reconcileGroup) throws AxelorException {
-    List<Reconcile> reconcileList = reconcileGroup.getReconcileList();
-    if (reconcileList != null && !isBalanced(reconcileList)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.RECONCILE_GROUP_VALIDATION_NOT_BALANCED),
-          reconcileGroup);
-    }
-    validate(reconcileGroup);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void validate(ReconcileGroup reconcileGroup) throws AxelorException {
-    List<Reconcile> reconcileList = reconcileGroup.getReconcileList();
+  public void validate(ReconcileGroup reconcileGroup, List<Reconcile> reconcileList)
+      throws AxelorException {
     if (CollectionUtils.isEmpty(reconcileList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -172,8 +159,6 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     reconcileList.forEach(reconcile -> addToReconcileGroup(reconcileGroup, reconcile));
 
     for (ReconcileGroup toDeleteReconcileGroup : reconcileGroupList) {
-      toDeleteReconcileGroup.setMoveLineList(null);
-      toDeleteReconcileGroup.setReconcileList(null);
       reconcileGroupRepository.remove(toDeleteReconcileGroup);
     }
 
@@ -191,46 +176,44 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   public void addAndValidate(ReconcileGroup reconcileGroup, Reconcile reconcile)
       throws AxelorException {
+    List<Reconcile> reconcileList =
+        Beans.get(ReconcileRepository.class).findByReconcileGroup(reconcileGroup).fetch();
+    reconcileList.add(reconcile);
     addToReconcileGroup(reconcileGroup, reconcile);
-    if (isBalanced(reconcileGroup.getReconcileList())) {
-      validate(reconcileGroup);
+    if (isBalanced(reconcileList)) {
+      validate(reconcileGroup, reconcileList);
     }
   }
 
   @Override
   public void addToReconcileGroup(ReconcileGroup reconcileGroup, Reconcile reconcile) {
-    reconcileGroup.addReconcileListItem(reconcile);
-    reconcileGroup.addMoveLineListItem(reconcile.getDebitMoveLine());
-    reconcileGroup.addMoveLineListItem(reconcile.getCreditMoveLine());
-
-    // remove possible duplicates
-    reconcileGroup.setMoveLineList(
-        reconcileGroup.getMoveLineList().stream().distinct().collect(Collectors.toList()));
+    reconcile.setReconcileGroup(reconcileGroup);
+    reconcile.getDebitMoveLine().setReconcileGroup(reconcileGroup);
+    reconcile.getCreditMoveLine().setReconcileGroup(reconcileGroup);
   }
 
   @Override
   public void remove(Reconcile reconcile) throws AxelorException {
+    MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
+    ReconcileRepository reconcileRepository = Beans.get(ReconcileRepository.class);
     ReconcileGroup reconcileGroup = reconcile.getReconcileGroup();
-    reconcileGroup.removeReconcileListItem(reconcile);
+    reconcile.setReconcileGroup(null);
 
     // update move lines
-    if (reconcileGroup.getMoveLineList() != null) {
-      Iterator<MoveLine> it = reconcileGroup.getMoveLineList().iterator();
-      while (it.hasNext()) {
-        it.next().setReconcileGroup(null);
-        it.remove();
-      }
-    }
-    reconcileGroup
-        .getReconcileList()
+    List<MoveLine> moveLineToRemoveList =
+        moveLineRepository.findByReconcileGroup(reconcileGroup).fetch();
+    moveLineToRemoveList.forEach(moveLine -> moveLine.setReconcileGroup(null));
+
+    List<Reconcile> reconcileList =
+        reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
+    reconcileList
         .stream()
         .map(Reconcile::getDebitMoveLine)
-        .forEach(reconcileGroup::addMoveLineListItem);
-    reconcileGroup
-        .getReconcileList()
+        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
+    reconcileList
         .stream()
         .map(Reconcile::getCreditMoveLine)
-        .forEach(reconcileGroup::addMoveLineListItem);
+        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
 
     // update status
     updateStatus(reconcileGroup);
@@ -238,16 +221,21 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   @Override
   public void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException {
-    List<Reconcile> reconcileList = reconcileGroup.getReconcileList();
+    List<Reconcile> reconcileList =
+        Beans.get(ReconcileRepository.class).findByReconcileGroup(reconcileGroup).fetch();
     int status = reconcileGroup.getStatusSelect();
     if (CollectionUtils.isNotEmpty(reconcileList)
         && isBalanced(reconcileList)
         && status == ReconcileGroupRepository.STATUS_TEMPORARY) {
-      validate(reconcileGroup);
+      validate(reconcileGroup, reconcileList);
     } else if (status == ReconcileGroupRepository.STATUS_FINAL) {
       // it is not balanced or the collection is empty.
-      reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
-      Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
+      if (CollectionUtils.isEmpty(reconcileList)) {
+        Beans.get(ReconcileGroupRepository.class).remove(reconcileGroup);
+      } else {
+        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
+        Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
+      }
     }
   }
 }
