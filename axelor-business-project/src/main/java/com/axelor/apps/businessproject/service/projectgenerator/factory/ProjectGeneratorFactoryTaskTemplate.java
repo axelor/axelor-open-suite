@@ -8,7 +8,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -81,10 +80,10 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         tasks.addAll(convertedTasks);
       }
     }
-    return ActionView.define(String.format("Task%s generated", (tasks.size() > 1 ? "s" : "")))
+    return ActionView.define("Parent Task")
         .model(TeamTask.class.getName())
-        .add("grid", "team-task-grid")
         .add("form", "team-task-form")
-        .domain(String.format("self.id in (%s)", StringTool.getIdListString(tasks)));
+        .add("grid", "team-task-grid")
+        .context("_showRecord", root.getId());
   }
 }

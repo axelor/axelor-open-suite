@@ -84,7 +84,7 @@
   <action-view name="action-product-task-template-view-task" title="Tasks"
     model="com.axelor.apps.businessproject.db.ProductTaskTemplate">
     <view type="form" name="product-task-template-form"/>
-    <view-param name="popup" value="reload"/>
+    <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
@@ -94,6 +94,10 @@
   <action-view name="action-product-task-template-edit-task" title="Tasks"
     model="com.axelor.apps.businessproject.db.ProductTaskTemplate">
     <view type="form" name="product-task-template-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="popup-save" value="true"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
