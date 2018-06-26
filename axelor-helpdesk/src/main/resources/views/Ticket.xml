@@ -35,6 +35,7 @@
 			        </h3>
 				]]></viewer>
 			</field>
+      <field name="mailSubject"/>
 		</panel>
 		
 		<panel name="context" title="Context">

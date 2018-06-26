@@ -13,6 +13,7 @@
 - New printing: certificate of conformity on stock move.
 - Add a Job to update the currency conversion rates from a scheduler.
 - Add reconcile group which is a group of move lines. It also contains the reconciles between the lines.
+- Ticket: add mail subject field in order to choose the default subject for each mail sent to followers. 
 
 ## Improvements
 - Add Partner balance as a new Accounting report.

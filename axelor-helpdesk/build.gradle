@@ -19,4 +19,5 @@ axelor {
 
 dependencies {
 	compile project(":modules:axelor-base")
+	compile 'org.jsoup:jsoup:1.11.3'
 }
