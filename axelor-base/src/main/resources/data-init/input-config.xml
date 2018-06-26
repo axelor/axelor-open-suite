@@ -56,6 +56,8 @@
     <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name and self.module = 'axelor-core'" update="true" />
     
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  search="self.code = :code" />
+
+	<input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
     
 </csv-inputs>
 	
