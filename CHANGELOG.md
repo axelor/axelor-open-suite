@@ -3,6 +3,7 @@
 ## [Unreleased 5.0.3]
 ## Improvements
 - Add a panel with Shipping comments in the PackagingList Report.
+- Permission assistant: use language configuration.
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
