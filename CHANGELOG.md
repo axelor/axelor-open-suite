@@ -19,6 +19,7 @@
 - Message : Run the process of send an email in a separate thread to avoid thread blocking.
 - Project: Add new task from project form is now done with pop-up.
 - Add a panel with Shipping comments in the PackagingList Report.
+- Remove unneeded required attribute for decimal in accounting situation
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
