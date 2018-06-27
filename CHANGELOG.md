@@ -3,13 +3,16 @@
 ## [Unreleased 5.0.3]
 ## Improvements
 - Add a panel with Shipping comments in the PackagingList Report.
+- Permission assistant: use language configuration.
+- User: validate password on change.
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
 - Event: fix recurrence configurations.
 - Partner: fix opening client situation report.
 - Opportunity: fix bugs of values being set wrongly when creating an opportunity from a partner or a lead.
-
+- Production process and bill of material : fix errors generated when adding an element with a priority to a list for the first time.
+- Production process: set as required the fields, "product", "qty", and "unit" to avoid NPE
 
 ## [5.0.2] - 2018-06-22
 ## Improvements
