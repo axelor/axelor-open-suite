@@ -604,6 +604,7 @@
 "Project planning time",,,
 "Public Holiday Planning",,,
 "Public Holiday Plannings",,,
+"Qty must be lower than %d.",,,
 "Quantity",,,
 "Quantity for stock",,,
 "Rate",,,
