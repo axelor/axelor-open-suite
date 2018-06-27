@@ -34,7 +34,6 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -115,23 +114,17 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   public Optional<ReconcileGroup> findOrMergeGroup(Reconcile reconcile) {
     List<ReconcileGroup> otherReconcileGroupList;
-    List<Reconcile> allReconcileList = new ArrayList<>();
-    List<Reconcile> debitReconcileList = reconcile.getDebitMoveLine().getDebitReconcileList();
-    if (debitReconcileList != null) {
-      allReconcileList.addAll(debitReconcileList);
+    MoveLine debitMoveLine = reconcile.getDebitMoveLine();
+    MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    otherReconcileGroupList = new ArrayList<>();
+    if (debitMoveLine.getReconcileGroup() != null) {
+      otherReconcileGroupList.add(debitMoveLine.getReconcileGroup());
     }
-    List<Reconcile> creditReconcileList = reconcile.getCreditMoveLine().getCreditReconcileList();
-    if (creditReconcileList != null) {
-      allReconcileList.addAll(creditReconcileList);
+    if (creditMoveLine.getReconcileGroup() != null) {
+      otherReconcileGroupList.add(creditMoveLine.getReconcileGroup());
     }
     otherReconcileGroupList =
-        allReconcileList
-            .stream()
-            .filter(reconcile1 -> !reconcile.equals(reconcile1))
-            .map(Reconcile::getReconcileGroup)
-            .filter(Objects::nonNull)
-            .distinct()
-            .collect(Collectors.toList());
+        otherReconcileGroupList.stream().distinct().collect(Collectors.toList());
     if (otherReconcileGroupList.isEmpty()) {
       return Optional.empty();
     } else if (otherReconcileGroupList.size() == 1) {
