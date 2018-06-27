@@ -125,7 +125,7 @@
     
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
-    	<field name="priority" if = "__parent__?.billOfMaterialSet?.size() > 0" expr="eval:__parent__?.billOfMaterialSet?.max{ it.getPriority() }.getPriority() + 10"/>
+    	<field name="priority" if = "__parent__?.billOfMaterialSet?.size() > 0" expr="eval:__parent__?.billOfMaterialSet?.max{ it.getPriority() }?.getPriority() + 10"/>
     </action-record>
     
     <action-record name="action-bill-of-material-record-product" model="com.axelor.apps.production.db.BillOfMaterial">
