@@ -217,14 +217,14 @@ public class AppServiceImpl implements AppService {
   }
 
   private File extract(String module, String dirName, String lang, String code) {
-
+    String dirNamePattern = dirName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> files = new ArrayList<URL>();
-    files.addAll(MetaScanner.findAll(module, dirName, code + CONFIG_PATTERN));
+    files.addAll(MetaScanner.findAll(module, dirNamePattern, code + CONFIG_PATTERN));
     if (files.isEmpty()) {
       return null;
     }
     if (lang.isEmpty()) {
-      files.addAll(MetaScanner.findAll(module, dirName, code + "*"));
+      files.addAll(MetaScanner.findAll(module, dirNamePattern, code + "*"));
     } else {
       String dirPath = dirName + "/";
       files.addAll(fetchUrls(module, dirPath + IMG_DIR));
@@ -233,12 +233,16 @@ public class AppServiceImpl implements AppService {
     }
 
     final File tmp = Files.createTempDir();
+    final String dir = dirName.replace("\\", "/");
 
     for (URL file : files) {
       String name = file.toString();
-      name = name.substring(name.lastIndexOf(dirName));
+      name = name.substring(name.lastIndexOf(dir));
       if (!lang.isEmpty()) {
-        name = name.replace(dirName + "/" + lang, dirName);
+        name = name.replace(dir + "/" + lang, dir);
+      }
+      if (File.separatorChar == '\\') {
+        name = name.replace("/", "\\");
       }
       try {
         copy(file.openStream(), tmp, name);
@@ -251,7 +255,8 @@ public class AppServiceImpl implements AppService {
   }
 
   private List<URL> fetchUrls(String module, String fileName) {
-    return MetaScanner.findAll(module, fileName, "(.+?)");
+    final String fileNamePattern = fileName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
+    return MetaScanner.findAll(module, fileNamePattern, "(.+?)");
   }
 
   private void copy(InputStream in, File toDir, String name) throws IOException {

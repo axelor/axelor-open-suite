@@ -161,4 +161,32 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
     return timesheetLine;
   }
+
+  @Override
+  public TimesheetLine updateTimesheetLine(
+      TimesheetLine timesheetLine,
+      Project project,
+      Product product,
+      User user,
+      LocalDate date,
+      Timesheet timesheet,
+      BigDecimal hours,
+      String comments) {
+
+    timesheetLine.setDate(date);
+    timesheetLine.setComments(comments);
+    timesheetLine.setProduct(product);
+    timesheetLine.setProject(project);
+    timesheetLine.setUser(user);
+    timesheetLine.setHoursDuration(hours);
+    try {
+      timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
+    } catch (AxelorException e) {
+      log.error(e.getLocalizedMessage());
+      TraceBackService.trace(e);
+    }
+    timesheet.addTimesheetLineListItem(timesheetLine);
+
+    return timesheetLine;
+  }
 }

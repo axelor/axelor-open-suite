@@ -377,7 +377,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             wasteStockLocation,
             null,
             appBaseService.getTodayDate(),
-            manufOrder.getWasteProdDescription());
+            manufOrder.getWasteProdDescription(),
+            StockMoveRepository.TYPE_INTERNAL);
 
     for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
       stockMoveLineService.createStockMoveLine(

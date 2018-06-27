@@ -147,6 +147,7 @@
 				
 				public static final String PROCUREMENT_METHOD_BUY = "buy";
 				public static final String PROCUREMENT_METHOD_PRODUCE = "produce";
+				public static final String PROCUREMENT_METHOD_BUYANDPRODUCE = "buyAndProduce";
 				
 				public static final int COST_TYPE_STANDARD = 1;
 				public static final int COST_TYPE_LAST_PURCHASE_PRICE = 2;

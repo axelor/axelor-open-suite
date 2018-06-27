@@ -151,6 +151,10 @@ public final class StringTool {
     return temp.replaceAll("[^\\p{ASCII}]", "");
   }
 
+  public static boolean equalsIgnoreCaseAndAccents(String s1, String s2) {
+    return deleteAccent(s1).equalsIgnoreCase(deleteAccent(s2));
+  }
+
   /**
    * Check if string s contain only digital character
    *
