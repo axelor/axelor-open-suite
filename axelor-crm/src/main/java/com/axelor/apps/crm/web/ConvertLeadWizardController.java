@@ -239,13 +239,13 @@ public class ConvertLeadWizardController {
     response.setAttr("amount", "value", lead.getEstimatedBudget());
     response.setAttr("description", "value", lead.getDescription());
     response.setAttr("source", "value", lead.getSource());
-    response.setAttr("user", "value", lead.getUser());
-    response.setAttr("team", "value", lead.getTeam());
-    response.setAttr("salesStageSelect", "value", "1");
+    if (lead.getUser() != null || lead.getTeam() != null) {
+      response.setAttr("user", "value", lead.getUser());
+      response.setAttr("team", "value", lead.getTeam());
+    }
     response.setAttr("webSite", "value", lead.getWebSite());
     response.setAttr("source", "value", lead.getSource());
     response.setAttr("department", "value", lead.getDepartment());
-    response.setAttr("team", "value", lead.getTeam());
     response.setAttr("isCustomer", "value", true);
     response.setAttr("partnerTypeSelect", "value", "1");
     response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());

@@ -840,10 +840,9 @@ public class MoveLineService {
   /**
    * Method used to reconcile the move line list passed as a parameter
    *
-   * @param creditMoveLineList
-   * @param debitMoveLineList
-   * @throws AxelorException
+   * @param moveLineList
    */
+  @Transactional
   public void reconcileMoveLines(List<MoveLine> moveLineList) {
 
     List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);

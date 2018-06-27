@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -1856,11 +1856,11 @@ order by LogisticalFormLine.sequence]]></xml-property>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
+            <property name="showHeaderOnFirst">true</property>
             <property name="headerHeight">1.6in</property>
             <property name="footerHeight">0.25in</property>
             <page-header>
                 <grid id="12">
-                    <property name="height">1.6354166666666667in</property>
                     <property name="dataSet">LogisticalFormDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
@@ -2079,7 +2079,6 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <property name="colSpan">3</property>
                             <property name="rowSpan">1</property>
                             <grid id="65">
-                                <property name="height">0.4895833333333333in</property>
                                 <column id="66">
                                     <property name="width">5%</property>
                                 </column>
@@ -2314,6 +2313,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
     </page-setup>
     <body>
         <grid id="269">
+            <property name="width">100%</property>
             <property name="dataSet">LogisticalFormDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -2430,6 +2430,13 @@ order by LogisticalFormLine.sequence]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["unit_label"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">external_delivery_comment2</property>
+                    <text-property name="displayName">external_delivery_comment</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["external_delivery_comment"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[if (String.prototype.repeat === undefined) {
   String.prototype.repeat = function(n) {
@@ -2451,9 +2458,13 @@ if (String.myFormat === undefined) {
   };
 }
 ]]></method>
-            <column id="270"/>
+            <column id="4507">
+                <property name="width">9in</property>
+            </column>
             <row id="271">
                 <cell id="272">
+                    <property name="colSpan">1</property>
+                    <property name="rowSpan">1</property>
                     <property name="paddingLeft">1pt</property>
                     <property name="paddingRight">1pt</property>
                     <table id="143">
@@ -3149,6 +3160,188 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                             </row>
                         </footer>
                     </table>
+                </cell>
+            </row>
+        </grid>
+        <grid id="4518">
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">thin</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">thin</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">thin</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">thin</property>
+            <property name="marginTop">10pt</property>
+            <property name="dataSet">LogisticalFormDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row["external_delivery_comment"] == "" || row["external_delivery_comment"] == null</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">external_delivery_comment</property>
+                    <text-property name="displayName">external_delivery_comment</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["external_delivery_comment"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">delivery_number</property>
+                    <text-property name="displayName">delivery_number</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_number"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">collection_date</property>
+                    <text-property name="displayName">collection_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["collection_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">status_select</property>
+                    <text-property name="displayName">status_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">total_net_mass</property>
+                    <text-property name="displayName">total_net_mass</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["total_net_mass"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">total_gross_mass</property>
+                    <text-property name="displayName">total_gross_mass</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["total_gross_mass"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">total_volume</property>
+                    <text-property name="displayName">total_volume</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["total_volume"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">tracking</property>
+                    <text-property name="displayName">tracking</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["tracking"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">internal_delivery_comment</property>
+                    <text-property name="displayName">internal_delivery_comment</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["internal_delivery_comment"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">company_logo_file_path</property>
+                    <text-property name="displayName">company_logo_file_path</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_logo_file_path"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">company_addressl2</property>
+                    <text-property name="displayName">company_addressl2</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_addressl2"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">company_addressl3</property>
+                    <text-property name="displayName">company_addressl3</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_addressl3"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">company_addressl4</property>
+                    <text-property name="displayName">company_addressl4</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_addressl4"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">company_addressl5</property>
+                    <text-property name="displayName">company_addressl5</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_addressl5"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">company_addressl6</property>
+                    <text-property name="displayName">company_addressl6</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_addressl6"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">company_country</property>
+                    <text-property name="displayName">company_country</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_country"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">customer_seq</property>
+                    <text-property name="displayName">customer_seq</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customer_seq"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">customer_full_name</property>
+                    <text-property name="displayName">customer_full_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customer_full_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">unit_label</property>
+                    <text-property name="displayName">unit_label</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["unit_label"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="4519"/>
+            <row id="4520">
+                <cell id="4521">
+                    <text id="4508">
+                        <property name="fontWeight">bold</property>
+                        <property name="paddingTop">2pt</property>
+                        <property name="paddingLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">"Shipping comments"</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="4522">
+                <cell id="4523">
+                    <property name="verticalAlign">middle</property>
+                    <data id="4526">
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">2pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="textAlign">center</property>
+                        <property name="resultSetColumn">external_delivery_comment</property>
+                    </data>
                 </cell>
             </row>
         </grid>

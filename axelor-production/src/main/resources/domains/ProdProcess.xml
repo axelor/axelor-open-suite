@@ -24,5 +24,6 @@
   	<integer name="versionNumber" title="Version number" default="1"/>
     <many-to-one name="originalProdProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Original production process" />
    	
+   	<boolean name="isEnabledForAllProducts" title="Enable the process for other products"/>
   </entity>
 </domain-models>

@@ -44,7 +44,9 @@ import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import javax.validation.constraints.Digits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -205,8 +207,25 @@ public class BatchLeaveManagement extends BatchStrategy {
               batch.getHrBatch().getStartDate(),
               batch.getHrBatch().getEndDate(),
               dayNumber);
-      leaveLine.setQuantity(leaveLine.getQuantity().add(dayNumber));
-      leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(dayNumber));
+      BigDecimal qty = leaveLine.getQuantity().add(dayNumber);
+      BigDecimal totalQty = leaveLine.getTotalQuantity().add(dayNumber);
+
+      try {
+        int integer = LeaveLine.class.getField("quantity").getAnnotation(Digits.class).integer();
+        BigDecimal limit = new BigDecimal(Math.pow(10, integer));
+        if (qty.compareTo(limit) >= 0 || totalQty.compareTo(limit) >= 0) {
+          throw new AxelorException(
+              employee,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS));
+        }
+
+      } catch (NoSuchFieldException | SecurityException e) {
+        e.printStackTrace();
+      }
+
+      leaveLine.setQuantity(qty.setScale(4, RoundingMode.HALF_EVEN));
+      leaveLine.setTotalQuantity(totalQty.setScale(4, RoundingMode.HALF_EVEN));
 
       leaveManagementRepository.save(leaveManagement);
       leaveLineRepository.save(leaveLine);
