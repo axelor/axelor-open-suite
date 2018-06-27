@@ -279,4 +279,6 @@ public interface IExceptionMessage {
   String USER_CODE_ALREADY_EXISTS = /*$$(*/ "A user with this login already exists." /*)*/;
   String USER_PATTERN_MISMATCH_ACCES_RESTRICTION = /*$$(*/
       "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
+  String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
+      "Password doesn't match with configured pattern." /*)*/;
 }
