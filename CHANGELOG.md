@@ -1,5 +1,85 @@
 # Changelog
 
+## [5.0.2] - 2018-06-22
+## Improvements
+- Added the possibility to have production processes not limited to a single product and thus applicable to all bills of materials.
+- New default behaviour for Mrp, proposal type is now based on the product's procurement method if no stock rule exists.
+- Can now copy lines of a supplier catalog in partner view.
+
+## Bug Fixes
+- Partner: check whether another partner with the same email address exist or not on save.
+- Supplier form: show button "create order" when isProspect or isCustomer, hidden if none of them
+- Product: fix missing picture on product sheet.
+- Minor change from "FromStock" option to "From stock" in sale order lines.
+- Employee: fix encrypted fields.
+- Fix rounding problem in HR batches calculations
+- Type of stock move generated from manuf order is now correctly set to internal.
+- Remove unused action.
+- Fix columns of type reference in all tree view.
+- Manufactoring Order: add rollback in operation order as it is in manufacturing order when click on finish
+- Web service mobile: change the "create timesheet line" method to update it also, and have duration/hours updated
+- Product : displaying quantities in stock with big numbers (until millions)
+
+
+## [5.0.1] - 2018-06-18
+## Improvements
+- Rework accounting report for journal
+- User: add default password pattern description.
+
+## Bug Fixes
+- Fix selection of sale order lines on MRP : Now we can select a sale order line whose product is storable, not excluded on MRP, and not delivered. 
+Also, improve the sale order line grid and form views.
+- Minor fixes to printing a sale/purchase order or an invoice.
+- Sale order: fix NPE when adding a new line on pending orders.
+- Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
+- Prevented bugs by changing the way the companySet field is set in partner form.
+- Added missing translations on supplier catalog in partners.
+- Fix translation of product full names.
+- Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
+- Sale order : calculate fullname for draft orders while importing demo data.
+- Sale order: fix copy problem by reseting field deliverState and deliveredQty, and others fields to null
+- Event : fix an error on save that can occur if the organizer is not set.
+- Stock move: hide button generate invoice if internal stock move
+- Fix NPE happening in invoice lines.
+- Financial account : Fix NPE(PersistanceException) while persistence of new account. 
+- Opportunity: fix error in grid view when clicking on "Assign to me" button without having selected any lines.
+- Fix Analytic balance report to take into account the company of the analytic journal.
+- Fix line removal in confirmed sale order.
+- Product: fix printing catalog of selected products.
+- Product: fix missing pictures in catalog when not all products have pictures.
+
+
+## [5.0.0] - 2018-06-13
+## Features
+- User: configurable password pattern, generate random password, and send email upon password change
+- Help added for fields.
+
+## Improvements
+- Improved the way to sort the accounting grand ledger per account, date, and moveLine ref.
+- General data protection regulation: data export and anonymize feature added.
+- Use general configurations to determine the number of digits displayed in purchase order, invoice and product catalog reports.
+- Add sequence to sort stock move lines.
+- Advanced export : Fix set limits before the wizard.
+
+## Bug Fixes
+- Leave Request : reset Leave Line after changing User
+- Fix : wrong domain for the bill of material field in the 'add manuf order' popup form in a production order
+- Fix : errors when trying to generate production orders from sale orders with products lacking a stock unit or bill of materials lacking a production process.
+- Fix : error when add a manufacturing order lacking a production process to a production process.
+- Fix : disable create and edit of saleorderline from sale order invoicing wizard.
+- Fix account reconcilable issue when ventilate a refund invoice.
+- Fix : On the Stock Move view -> saleOrder, invoice and purchase.. put readonly when status != draft
+- Fix : On the Stock Move view -> saleOrder, invoice and purchase.. disable edition when status != draft
+- Fix trading name form seemingly allowing to create new companies.
+- Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
+- Fix missing address in Birt report for internal stock move + show it on the view
+- Change domain in real operation order domain grid and calendar.
+- Fix context for the creation of a template from a sale order
+- Fix context for the creation of a sale order from a template
+- Partner is readonly on purchase order if there are already lines.
+- Partner is readonly on sale order if there are already lines.
+- Accounting report : Reset some of the fields when copy accounting report and remove 'globalByPost' field.
+
 ## [5.0.0-rc3] - 2018-06-06
 ## Features
 - Sale order: option to close linked opportunity upon confirmation.
@@ -97,8 +177,10 @@
 - Fix BillOfMaterial copy when creating a personalized BOM.
 - Supplier request : added suggestion filters on selecting supplierPartner 
 
-
 ## [5.0.0-rc2] - 2018-05-09
+## Features
+- Partner: option to disable automatic partner sequence generation.
+
 ## Improvements
 - sale order: Allow user to manually define a legal note that will be put on edited orders.
 - sale invoice: Allow user to manually define a legal note that will be put on edited invoices.
@@ -126,7 +208,7 @@
 - Refactor invoice payment list display in invoice-form and invoice-client-form views
 - Check partner blocking on invoicing, direct debit and reimbursement. 
 - Improved sale order status label.
-- Timesheet editor: No group by on project when unique product is used. 
+- Timesheet editor: No group by on project when unique product is used.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -573,6 +655,10 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+
+[5.0.2]: https://github.com/axelor/abs-webapp/compare/v5.0.1...v5.0.2
+[5.0.1]: https://github.com/axelor/abs-webapp/compare/v5.0.0...v5.0.1
+[5.0.0]: https://github.com/axelor/abs-webapp/compare/v5.0.0-rc3...v5.0.0
 [5.0.0-rc3]: https://github.com/axelor/abs-webapp/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/abs-webapp/compare/v5.0.0-rc1...v5.0.0-rc2
 [5.0.0-rc1]: https://github.com/axelor/abs-webapp/compare/4.2-dev...v5.0.0-rc1
