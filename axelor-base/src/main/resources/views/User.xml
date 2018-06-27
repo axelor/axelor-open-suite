@@ -47,9 +47,9 @@
           <panel showIf="change || !id" colSpan="12" itemSpan="12">
             <field name="oldPassword" title="Your password" placeholder="your password" widget="password" requiredIf="change || !id"/>
             <panel name="passwordPanel" itemSpan="12">
-              <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change || !id" validIf="(!change &amp;&amp; id) || newPassword.length >= 4"/>
+              <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change || !id" validIf="(!change &amp;&amp; id) || newPassword.length >= 4" onChange="action-user-validate-password"/>
               <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
-              <label name="passwordPatternDescription" css="label-italic"/>
+              <label name="passwordPatternDescription" css="label-danger"/>
             </panel>
             <panel name="passwordOptionsPanel" showIf="code != $user">
               <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
@@ -194,6 +194,10 @@
 
     <action-method name="action-method-user-generate-random-password">
       <call class="com.axelor.apps.base.web.UserController" method="generateRandomPassword"/>
+    </action-method>
+
+    <action-method name="action-user-validate-password">
+      <call class="com.axelor.apps.base.web.UserController" method="validatePassword"/>
     </action-method>
 
     <action-condition name="action-condition-user-validCode" id="base-action-condition-user-validCode">
