@@ -11,7 +11,7 @@
 - Event: fix recurrence configurations.
 - Partner: fix opening client situation report.
 - Production process and bill of material : fix errors generated when adding an element with a priority to a list for the first time.
-
+- Production process: set as required the fields, "product", "qty", and "unit" to avoid NPE
 
 ## [5.0.2] - 2018-06-22
 ## Improvements
