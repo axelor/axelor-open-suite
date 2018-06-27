@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
   private static final String PATTERN_DESCRIPTION =
       PATTERN.pattern().equals(PATTERN_ACCES_RESTRICTION)
           ? IExceptionMessage.USER_PATTERN_MISMATCH_ACCES_RESTRICTION
-          : "";
+          : IExceptionMessage.USER_PATTERN_MISMATCH_CUSTOM;
 
   private static final String GEN_CHARS =
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
@@ -289,7 +289,7 @@ public class UserServiceImpl implements UserService {
     }
 
     if (!matchPasswordPattern(newPassword)) {
-      throw new ValidationException(I18n.get("Password doesn't match with configured pattern."));
+      throw new ValidationException(I18n.get(PATTERN_DESCRIPTION));
     }
 
     final User current = AuthUtils.getUser();
