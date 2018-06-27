@@ -870,7 +870,9 @@ public class MrpServiceImpl implements MrpService {
     List<StockLocation> subLocationList =
         stockLocationRepository
             .all()
-            .filter("self.parentStockLocation = ?1", stockLocation)
+            .filter("self.parentStockLocation.id = :stockLocationId AND self.typeSelect != :virtual")
+            .bind("stockLocationId", stockLocation.getId())
+            .bind("virtual", StockLocationRepository.TYPE_VIRTUAL)
             .fetch();
 
     for (StockLocation subLocation : subLocationList) {
