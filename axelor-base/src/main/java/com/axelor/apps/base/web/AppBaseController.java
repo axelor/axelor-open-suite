@@ -72,7 +72,8 @@ public class AppBaseController {
     }
   }
 
-  public void updateCurrencyConversion(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void updateCurrencyConversion(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     currencyConversionService.updateCurrencyConverion();
     response.setReload(true);
   }
