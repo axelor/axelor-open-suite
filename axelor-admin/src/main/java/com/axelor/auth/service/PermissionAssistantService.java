@@ -124,11 +124,11 @@ public class PermissionAssistantService {
 
     try {
 
-      FileWriterWithEncoding fileWriter =
-          new FileWriterWithEncoding(permFile, StandardCharsets.UTF_8);
-      CSVWriter csvWriter = new CSVWriter(fileWriter, ';');
-      writeGroup(csvWriter, assistant);
-      csvWriter.close();
+      try (FileWriterWithEncoding fileWriter =
+          new FileWriterWithEncoding(permFile, StandardCharsets.UTF_8)) {
+        CSVWriter csvWriter = new CSVWriter(fileWriter, ';');
+        writeGroup(csvWriter, assistant);
+      }
 
       createMetaFile(permFile, assistant);
 
@@ -407,46 +407,48 @@ public class PermissionAssistantService {
       ResourceBundle bundle = I18n.getBundle(new Locale(permissionAssistant.getLanguage()));
       MetaFile metaFile = permissionAssistant.getMetaFile();
       File csvFile = MetaFiles.getPath(metaFile).toFile();
-      CSVReader csvReader =
+
+      try (CSVReader csvReader =
           new CSVReader(
-              new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';');
+              new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';')) {
 
-      String[] groupRow = csvReader.readNext();
-      if (groupRow == null || groupRow.length < 11) {
-        errorLog = I18n.get(IMessage.BAD_FILE);
-      }
+        String[] groupRow = csvReader.readNext();
+        if (groupRow == null || groupRow.length < 11) {
+          errorLog = I18n.get(IMessage.BAD_FILE);
+        }
 
-      String[] headerRow = csvReader.readNext();
-      if (headerRow == null) {
-        errorLog = I18n.get(IMessage.NO_HEADER);
-      }
-      if (!checkHeaderRow(Arrays.asList(headerRow), bundle)) {
-        errorLog = I18n.get(IMessage.BAD_HEADER) + " " + Arrays.asList(headerRow);
-      }
+        String[] headerRow = csvReader.readNext();
+        if (headerRow == null) {
+          errorLog = I18n.get(IMessage.NO_HEADER);
+        }
+        if (!checkHeaderRow(Arrays.asList(headerRow), bundle)) {
+          errorLog = I18n.get(IMessage.BAD_HEADER) + " " + Arrays.asList(headerRow);
+        }
 
-      if (!errorLog.equals("")) {
-        csvReader.close();
-        return errorLog;
-      }
+        if (!errorLog.equals("")) {
+          return errorLog;
+        }
 
-      if (permissionAssistant.getTypeSelect() == 1) {
-        Map<String, Group> groupMap = checkBadGroups(groupRow);
-        processGroupCSV(
-            csvReader,
-            groupRow,
-            groupMap,
-            permissionAssistant.getMetaField(),
-            permissionAssistant.getFieldPermission());
-        saveGroups(groupMap);
-      } else if (permissionAssistant.getTypeSelect() == 2) {
-        Map<String, Role> roleMap = checkBadRoles(groupRow);
-        processRoleCSV(
-            csvReader,
-            groupRow,
-            roleMap,
-            permissionAssistant.getMetaField(),
-            permissionAssistant.getFieldPermission());
-        saveRoles(roleMap);
+        if (permissionAssistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
+          Map<String, Group> groupMap = checkBadGroups(groupRow);
+          processGroupCSV(
+              csvReader,
+              groupRow,
+              groupMap,
+              permissionAssistant.getMetaField(),
+              permissionAssistant.getFieldPermission());
+          saveGroups(groupMap);
+        } else if (permissionAssistant.getTypeSelect()
+            == PermissionAssistantRepository.TYPE_ROLES) {
+          Map<String, Role> roleMap = checkBadRoles(groupRow);
+          processRoleCSV(
+              csvReader,
+              groupRow,
+              roleMap,
+              permissionAssistant.getMetaField(),
+              permissionAssistant.getFieldPermission());
+          saveRoles(roleMap);
+        }
       }
 
     } catch (Exception e) {
