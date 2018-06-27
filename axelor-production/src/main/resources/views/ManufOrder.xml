@@ -346,7 +346,7 @@
    	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-prodProcess">
-		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.id = ${prodProcess?.id} AND self.statusSelect = 3 &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
+		<attribute name="domain" for="prodProcess" expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
 		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 &quot;" if="billOfMaterial == null"/>
 	</action-attrs>
 

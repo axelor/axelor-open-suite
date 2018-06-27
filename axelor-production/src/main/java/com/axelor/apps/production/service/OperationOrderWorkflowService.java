@@ -268,6 +268,12 @@ public class OperationOrderWorkflowService {
     operationOrderRepo.save(operationOrder);
   }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
+    finish(operationOrder);
+    Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
+  }
+
   /**
    * Cancels the given {@link OperationOrder} and its linked stock moves And sets its stopping time
    *
@@ -324,7 +330,13 @@ public class OperationOrderWorkflowService {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
-      Machine machine = operationOrder.getWorkCenter().getMachine();
+      WorkCenter machineWorkCenter = operationOrder.getMachineWorkCenter();
+      Machine machine = null;
+      if (machineWorkCenter != null) {
+        machine = machineWorkCenter.getMachine();
+      } else if (operationOrder.getWorkCenter() != null) {
+        machine = operationOrder.getWorkCenter().getMachine();
+      }
       if (machine != null) {
         machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
       }

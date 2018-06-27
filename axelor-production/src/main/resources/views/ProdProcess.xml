@@ -44,6 +44,7 @@
 	        <field name="producedProductStockLocation" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.company = :company"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
+	        <field name="isEnabledForAllProducts"/>
         </panel>
 
         <panel-related field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
