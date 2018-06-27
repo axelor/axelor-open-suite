@@ -60,8 +60,8 @@
 160;"saleInterface";"Interface vente";"NUMBERS";"UPPERCASE";1;6;"INTVEN%YY";;1;1
 161;"treasuryInterface";"Interface trésorerie";"NUMBERS";"UPPERCASE";1;6;"INTTRE%YY";;1;1
 162;"reconcile";"Réconciliation comptable";"NUMBERS";"UPPERCASE";1;5;"RECON%YY%M";;1;1
-172;"reconcileGroupDraft";"Groupe de lettrage non définitif";"LETTERS";"LOWERCASE";1;5;;;1;0
-173;"reconcileGroupFinal";"Groupe de lettrage définitifs";"LETTERS";"UPPERCASE";1;5;;;1;0
+172;"reconcileGroupDraft";"Lettrage non définitif";"LETTERS";"LOWERCASE";1;5;;;1;0
+173;"reconcileGroupFinal";"Lettrage définitif";"LETTERS";"UPPERCASE";1;5;;;1;0
 171;"analyticReport";"Rapport Analytique";"NUMBERS";"UPPERCASE";1;10;"ANAREP_%YY_";;1;1
 170;"depositSlip";"Bordereau de remise";"NUMBERS";"UPPERCASE";1;4;"BR%YY%FM";;1;1
 169;"subrogationRelease";"Quittance subrogative";"NUMBERS";"UPPERCASE";1;4;"QS%YY%FM";;1;1
