@@ -7,10 +7,6 @@
 		<field name="taxLine" width="400%" grid-view="tax-line-grid" form-view="tax-line-form"/>
 		<field name="exTaxBase"/>
 		<field name="taxTotal" aggregate="sum"/>
-		<field name="subTotalExcludingFixedAssets" hidden="true"/>
-		<field name="subTotalOfFixedAssets" hidden="true"/>
-		<field name="companySubTotalExcludingFixedAssets" hidden="true"/>
-		<field name="companySubTotalOfFixedAssets" hidden="true"/>
     </grid>
     
     <form name="invoice-line-tax-form" title="Tax Line" model="com.axelor.apps.account.db.InvoiceLineTax"  >

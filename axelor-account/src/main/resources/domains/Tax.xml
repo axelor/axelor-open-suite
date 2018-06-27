@@ -7,7 +7,7 @@
 
   <entity name="Tax" lang="java" cachable="true">
   
-	<one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement"/>
+	<one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="tax"/>
   
   </entity>
 
