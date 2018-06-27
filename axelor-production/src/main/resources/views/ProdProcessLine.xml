@@ -50,7 +50,7 @@
     </action-record>
     
     <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
-    	<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }.getPriority() + 10"/>
+    	<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority() + 10"/>
     	<field name="stockLocation" expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()"/>
     </action-record>
     
