@@ -30,6 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -39,6 +40,16 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ReconcileGroupServiceImpl implements ReconcileGroupService {
+
+  protected ReconcileGroupRepository reconcileGroupRepository;
+  protected ReconcileRepository reconcileRepository;
+
+  @Inject
+  public ReconcileGroupServiceImpl(
+      ReconcileGroupRepository reconcileGroupRepository, ReconcileRepository reconcileRepository) {
+    this.reconcileGroupRepository = reconcileGroupRepository;
+    this.reconcileRepository = reconcileRepository;
+  }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
@@ -137,12 +148,11 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   @Transactional
   public ReconcileGroup mergeReconcileGroups(List<ReconcileGroup> reconcileGroupList) {
-    ReconcileGroupRepository reconcileGroupRepository = Beans.get(ReconcileGroupRepository.class);
     Company company = reconcileGroupList.get(0).getCompany();
     ReconcileGroup reconcileGroup = createReconcileGroup(company);
 
     List<Reconcile> reconcileList =
-        Beans.get(ReconcileRepository.class)
+        reconcileRepository
             .all()
             .filter("self.reconcileGroup.id IN (:reconcileGroupIds)")
             .bind(
@@ -163,14 +173,14 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   public ReconcileGroup createReconcileGroup(Company company) {
     ReconcileGroup reconcileGroup = new ReconcileGroup();
     reconcileGroup.setCompany(company);
-    return Beans.get(ReconcileGroupRepository.class).save(reconcileGroup);
+    return reconcileGroupRepository.save(reconcileGroup);
   }
 
   @Override
   public void addAndValidate(ReconcileGroup reconcileGroup, Reconcile reconcile)
       throws AxelorException {
     List<Reconcile> reconcileList =
-        Beans.get(ReconcileRepository.class).findByReconcileGroup(reconcileGroup).fetch();
+        reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
     reconcileList.add(reconcile);
     addToReconcileGroup(reconcileGroup, reconcile);
     if (isBalanced(reconcileList)) {
@@ -188,7 +198,6 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   public void remove(Reconcile reconcile) throws AxelorException {
     MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
-    ReconcileRepository reconcileRepository = Beans.get(ReconcileRepository.class);
     ReconcileGroup reconcileGroup = reconcile.getReconcileGroup();
     reconcile.setReconcileGroup(null);
 
@@ -215,7 +224,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   public void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException {
     List<Reconcile> reconcileList =
-        Beans.get(ReconcileRepository.class).findByReconcileGroup(reconcileGroup).fetch();
+        reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
     int status = reconcileGroup.getStatusSelect();
     if (CollectionUtils.isNotEmpty(reconcileList)
         && isBalanced(reconcileList)
@@ -224,7 +233,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     } else if (status == ReconcileGroupRepository.STATUS_FINAL) {
       // it is not balanced or the collection is empty.
       if (CollectionUtils.isEmpty(reconcileList)) {
-        Beans.get(ReconcileGroupRepository.class).remove(reconcileGroup);
+        reconcileGroupRepository.remove(reconcileGroup);
       } else {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
         Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
