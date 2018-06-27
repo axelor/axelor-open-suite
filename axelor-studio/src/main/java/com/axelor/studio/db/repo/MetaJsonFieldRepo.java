@@ -31,6 +31,6 @@ public class MetaJsonFieldRepo extends MetaJsonFieldRepository {
       metajsonField.setIncludeIf("__config__.app.isApp('" + appBuilder.getCode() + "')");
     }
 
-    return metajsonField;
+    return super.save(metajsonField);
   }
 }
