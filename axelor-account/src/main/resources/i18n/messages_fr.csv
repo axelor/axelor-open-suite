@@ -1065,6 +1065,7 @@
 "Partner account","Compte comptable Tiers",,
 "Partner account missing on the invoice %s","Compte tiers absent de la facture %s",,
 "Partner balance","Balance auxiliaire",,
+"Partner balance viewer configuration","Configuration du viewer des soldes de tiers",,
 "Partner category","Les Tiers",,
 "Partner credit balance reimbursement","Remboursement des soldes créditeurs des tiers",,
 "Partner full name","Nom tiers",,
