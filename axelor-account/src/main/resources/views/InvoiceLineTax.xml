@@ -17,6 +17,10 @@
 			<field name="exTaxBase"/>
 			<field name="taxTotal"/>
 			<field name="inTaxTotal"/>
+			<field name="subTotalExcludingFixedAssets" hidden="true"/>
+			<field name="subTotalOfFixedAssets" hidden="true"/>
+			<field name="companySubTotalExcludingFixedAssets" hidden="true"/>
+			<field name="companySubTotalOfFixedAssets" hidden="true"/>
     	</panel>
     </form>
     

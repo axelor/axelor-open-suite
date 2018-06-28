@@ -167,6 +167,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected InvoiceLine createInvoiceLine() throws AxelorException {
 
     InvoiceLine invoiceLine = new InvoiceLine();
+		boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
     invoiceLine.setInvoice(invoice);
 
@@ -174,7 +175,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     invoiceLine.setProductName(productName);
     if (product != null) {
-      boolean isPurchase = invoiceLineService.isPurchase(invoice);
       invoiceLine.setProductCode(product.getCode());
       AccountManagement accountManagement =
           accountManagementService.getAccountManagement(product, invoice.getCompany());
@@ -192,8 +192,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (taxLine == null) {
       this.determineTaxLine();
     }
-
-    boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
 
     if (product != null) {
       Tax tax =

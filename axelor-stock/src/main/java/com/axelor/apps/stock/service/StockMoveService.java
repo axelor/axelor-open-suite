@@ -63,6 +63,7 @@ public interface StockMoveService {
    * @param carrierPartner
    * @param forwarderPartner
    * @param incoterm
+   * @param typeSelect
    * @return
    * @throws AxelorException No Stock move sequence defined
    */
@@ -80,26 +81,28 @@ public interface StockMoveService {
       FreightCarrierMode freightCarrierMode,
       Partner carrierPartner,
       Partner forwarderPartner,
-      Incoterm incoterm)
+      Incoterm incoterm,
+      int typeSelect)
       throws AxelorException;
 
   /**
    * Generic method to create any stock move for internal stock move (without partner information)
    *
-   * @param fromAddress
-   * @param toAddress
-   * @param company
    * @param clientPartner
-   * @param fromStockLocation
-   * @param toStockLocation
-   * @param realDate
-   * @param estimatedDate
-   * @param description
    * @param shipmentMode
    * @param freightCarrierMode
    * @param carrierPartner
    * @param forwarderPartner
    * @param incoterm
+   * @param fromAddress
+   * @param toAddress
+   * @param company
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @param realDate
+   * @param estimatedDate
+   * @param description
+   * @param typeSelect
    * @return
    * @throws AxelorException No Stock move sequence defined
    */
@@ -111,7 +114,8 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description)
+      String description,
+      int typeSelect)
       throws AxelorException;
 
   public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation);
@@ -195,11 +199,11 @@ public interface StockMoveService {
    *
    * @param stockMove
    * @param lstSelectedMove
-   * @param isPicking true if we print a picking order
+   * @param reportType true if we print a picking order
    * @return the link to the PDF file
    * @throws AxelorException
    */
-  String printStockMove(StockMove stockMove, List<Integer> lstSelectedMove, boolean isPicking)
+  String printStockMove(StockMove stockMove, List<Integer> lstSelectedMove, String reportType)
       throws AxelorException;
 
   /**

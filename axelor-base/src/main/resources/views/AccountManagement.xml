@@ -41,21 +41,22 @@
 		<panel name="main">
 			<field name="typeSelect"/>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-account-management-onchange-common" form-view="company-form" grid-view="company-grid"/>
-			<panel colSpan="12" showIf="typeSelect == 1">
+			<panel colSpan="12" showIf="typeSelect == 1 || typeSelect == 2">
 				<field name="purchaseAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
 				<field name="saleAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
+				<field name="purchFixedAssetsAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
 			</panel>
 			<panel colSpan="12" showIf="typeSelect == 3">
 				<field name="cashAccount" onChange="action-group-account-account-management-onchange-common" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
 			</panel>
-			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account" if="__config__.app.isApp('account')" />
+			<field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account" if="__config__.app.isApp('account')" showIf="typeSelect != 2"/>
 		</panel>
 		
 		<panel name="productPage" title="Product" showIf="typeSelect == 1">
 			<field name="product" canEdit="false" colSpan="12" form-view="product-form" grid-view="product-grid"/>
 		</panel>
 		
-		<panel name="taxPage" title="Tax" hideIf="typeSelect == 3">
+		<panel name="taxPage" title="Tax" hideIf="typeSelect != 1">
 			<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid"/>
 			<field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
 		</panel>

@@ -24,6 +24,8 @@
 		public static final String PAYMENT_VOUCHER = "paymentVoucher";
 		public static final String PAYMENT_VOUCHER_RECEIPT_NUMBER = "paymentVoucherReceiptNo";
 		public static final String RECONCILE = "reconcile";
+    public static final String RECONCILE_GROUP_DRAFT = "reconcileGroupDraft";
+    public static final String RECONCILE_GROUP_FINAL = "reconcileGroupFinal";
 		public static final String REIMBOURSEMENT = "reimbursement";
 		public static final String SALES_INTERFACE = "saleInterface";
         public static final String REFUND_INTERFACE = "refundInterface";

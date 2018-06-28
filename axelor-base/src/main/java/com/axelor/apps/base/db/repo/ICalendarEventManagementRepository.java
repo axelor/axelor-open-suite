@@ -41,18 +41,20 @@ public class ICalendarEventManagementRepository extends ICalendarEventRepository
     if (entity.getOrganizer() == null && creator != null) {
       if (creator.getPartner() != null && creator.getPartner().getEmailAddress() != null) {
         String email = creator.getPartner().getEmailAddress().getAddress();
-        ICalendarUser organizer =
-            Beans.get(ICalendarUserRepository.class)
-                .all()
-                .filter("self.email = ?1 AND self.user.id = ?2", email, creator.getId())
-                .fetchOne();
-        if (organizer == null) {
-          organizer = new ICalendarUser();
-          organizer.setEmail(email);
-          organizer.setName(creator.getFullName());
-          organizer.setUser(creator);
+        if (email != null) {
+          ICalendarUser organizer =
+              Beans.get(ICalendarUserRepository.class)
+                  .all()
+                  .filter("self.email = ?1 AND self.user.id = ?2", email, creator.getId())
+                  .fetchOne();
+          if (organizer == null) {
+            organizer = new ICalendarUser();
+            organizer.setEmail(email);
+            organizer.setName(creator.getFullName());
+            organizer.setUser(creator);
+          }
+          entity.setOrganizer(organizer);
         }
-        entity.setOrganizer(organizer);
       }
     }
 

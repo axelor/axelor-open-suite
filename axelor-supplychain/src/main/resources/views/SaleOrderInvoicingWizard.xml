@@ -15,7 +15,7 @@
 
 		</panel>
         <panel showIf="[2,3,4].includes($number(operationSelect))">
-			<field name="isPercent" title="Is amount in % ?" type="boolean"
+			<field name="isPercent" title="Is amount in %" type="boolean"
 				   />
 			<field name="amountToInvoice" title="Amount to invoice" type="decimal"
 				   showIf="[2,4].includes($number(operationSelect))"/>
@@ -51,7 +51,7 @@
 		<field name="amountInvoiced" readonly="true"/>
         <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
 			   readonlyIf="invoiceAll" min="0"/>
-        <field name="invoiceAll" title="Invoice all ?" type="boolean"
+        <field name="invoiceAll" title="Invoice all" type="boolean"
 			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
 	</grid>
 

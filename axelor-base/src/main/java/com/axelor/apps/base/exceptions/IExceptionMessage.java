@@ -211,7 +211,9 @@ public interface IExceptionMessage {
       "%s SIRET Number required. Please configure SIRET Number for partner %s" /*)*/;
   public static final String PARTNER_3 = /*$$(*/
       "Can’t convert into an individual partner from scratch." /*)*/;
-  public static final String PARTNER_NOT_FOUND = /*$$(*/ "Partner not found." /*)*/;
+  public static final String PARTNER_NOT_FOUND = /*$$(*/ "Partner not found" /*)*/;
+  public static final String PARTNER_EMAIL_EXIST = /*$$(*/
+      "Email address already linked with another partner" /*)*/;
 
   /** Product controller */
   public static final String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
@@ -276,4 +278,8 @@ public interface IExceptionMessage {
    * User service
    */
   String USER_CODE_ALREADY_EXISTS = /*$$(*/ "A user with this login already exists." /*)*/;
+  String USER_PATTERN_MISMATCH_ACCES_RESTRICTION = /*$$(*/
+      "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
+  String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
+      "Password doesn't match with configured pattern." /*)*/;
 }

@@ -14,8 +14,8 @@
 		<string name="host" title="Host" required="true"/>
 		<integer name="port" title="Port" min="1" nullable="true"/>
 		<integer name="securitySelect" title="SSL/STARTTLS" selection="mail.account.security.select"/>
-		<boolean name="isDefault" title="Default account ?"/>
-		<boolean name="isValid" title="Valid ?"/>
+		<boolean name="isDefault" title="Default account"/>
+		<boolean name="isValid" title="Valid"/>
 		<string name="signature" title="Signature" large="true"/>
 
 		<extra-code><![CDATA[

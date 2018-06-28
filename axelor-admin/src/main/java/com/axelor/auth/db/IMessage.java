@@ -22,7 +22,7 @@ public interface IMessage {
   /** Common messages * */
   public static final String IMPORT_OK = /*$$(*/ "Import completed successfully" /*)*/;
 
-  public static final String ERR_IMPORT = /*$$(*/ "Error in import. Please check log" /*)*/;
+  public static final String ERR_IMPORT = /*$$(*/ "Error in import. Please check log." /*)*/;
 
   /** Permission assistant & group menu assistant* */
   public static final String BAD_FILE = /*$$(*/ "Bad import file" /*)*/;
