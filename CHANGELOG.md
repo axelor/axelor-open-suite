@@ -23,6 +23,8 @@
 - In CRM sale stage change "Nouveau" by "Nouvelle".
 - Removed app service initialization exception. App records must not be required to initialize service. 
 - Printing a non-ventilated invoice no longer saves the generated printing and attaches it to the invoice.
+- Account : Create a new entry in menu configuration for Analytic journal types
+
 
 ## [5.0.2] - 2018-06-22
 ## Improvements
@@ -71,7 +73,7 @@ Also, improve the sale order line grid and form views.
 - Fix line removal in confirmed sale order.
 - Product: fix printing catalog of selected products.
 - Product: fix missing pictures in catalog when not all products have pictures.
-
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
 
 ## [5.0.0] - 2018-06-13
 ## Features
