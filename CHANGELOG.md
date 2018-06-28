@@ -18,6 +18,7 @@
 
 ## Improvements
 - Add Partner balance as a new Accounting report.
+- Rework opportunity view
 - Remove all question marks (?) from boolean fields names.
 - Message : Run the process of send an email in a separate thread to avoid thread blocking.
 - Project: Add new task from project form is now done with pop-up.
