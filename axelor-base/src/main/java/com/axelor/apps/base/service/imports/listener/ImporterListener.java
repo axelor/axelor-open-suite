@@ -25,9 +25,10 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
 
 public class ImporterListener implements Listener {
 
@@ -38,7 +39,6 @@ public class ImporterListener implements Listener {
 
   public ImporterListener(String name) {
     this.name = name;
-    this.totalRecord = this.successRecord = this.notNull = this.anomaly = 0;
   }
 
   public String getImportLog() {
@@ -65,14 +65,14 @@ public class ImporterListener implements Listener {
   @Override
   public void imported(Model bean) {
     if (bean != null) {
-      notNull++;
+      ++notNull;
     }
   }
 
   @Override
   public void imported(Integer total, Integer success) {
-    totalRecord = total;
-    successRecord = success;
+    totalRecord += total;
+    successRecord += success;
   }
 
   @Override
