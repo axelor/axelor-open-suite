@@ -67,6 +67,7 @@ Also, improve the sale order line grid and form views.
 - Product: fix printing catalog of selected products.
 - Product: fix missing pictures in catalog when not all products have pictures.
 
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
 
 ## [5.0.0] - 2018-06-13
 ## Features
