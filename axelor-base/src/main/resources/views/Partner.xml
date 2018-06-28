@@ -727,7 +727,7 @@
 	</action-attrs>
 
 	<action-record name="action-partner-record-set-balance" model="com.axelor.apps.base.db.Partner">
-        <field name="$balance" expr="eval: __config__.app.getApp('account')?.partnerBalanceViewerConfiguration == PartnerBalConfigSelect.TOTAL_BALANCE ? __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceCustAccount } : __config__.app.getApp('account')?.partnerBalanceViewerConfiguration == PartnerBalConfigSelect.DUE_BALANCE ?
+        <field name="$balance" expr="eval: __config__.app.getApp('account')?.partnerBalConfigSelect == PartnerBalConfigSelect.TOTAL_BALANCE ? __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceCustAccount } : __config__.app.getApp('account')?.partnerBalConfigSelect == PartnerBalConfigSelect.DUE_BALANCE ?
         __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueCustAccount } :
         __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueDebtRecoveryCustAccount }"/>
 	</action-record>
