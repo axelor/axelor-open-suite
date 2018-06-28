@@ -8,6 +8,7 @@
 - Manuf Order: add status in BOM and create manufacturing order only with "Applicable" BOM
 - Prod Process: add status and create manufacturing order only with "Applicable" prod process
 - Add ISPM15 feature on Picking stock move report.
+- New menu entry for calendars and a new sharing system.
 - Product description can be copy to Invoice/Order/Purchase line.
 - Automatic mail on stock move planning.
 - New printing: certificate of conformity on stock move.

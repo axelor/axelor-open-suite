@@ -431,9 +431,14 @@
 		<option value="QR_CODE">QR_CODE</option>
 		<option value="UPC_A">UPC_A</option>
     </selection>
+   
+    <selection name="base.sharing.setting.rights.select">
+        <option value="1">Read only</option>
+        <option value="2">Modification</option>
+    </selection>
     
     <selection id="base.object.data.config.model.select" name="object.data.config.model.select">
-		<option value="com.axelor.apps.base.db.Partner">Partner</option>
-	</selection>
-    
+		    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+	  </selection>
+
 </object-views>
