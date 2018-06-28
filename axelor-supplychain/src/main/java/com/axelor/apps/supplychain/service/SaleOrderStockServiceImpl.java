@@ -176,6 +176,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
     stockMove.setSaleOrder(saleOrder);
     stockMove.setStockMoveLineList(new ArrayList<>());
+    stockMove.setTradingName(saleOrder.getTradingName());
     return stockMove;
   }
 
