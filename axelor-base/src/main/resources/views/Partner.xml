@@ -730,9 +730,9 @@
         model="com.axelor.apps.base.db.Partner">
         <field name="$balance"
             expr="#{accountingSituationList.stream().map(
-                    __config__.app.getApp('account').partnerBalConfigSelect == 1 ? (x -> x.balanceCustAccount)
+                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
                     : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
-                    : (x -> x.balanceDueDebtRecoveryCustAccount)
+                    : (x -> x.balanceCustAccount)
                 ).sum()}"/>
     </action-record>
 
