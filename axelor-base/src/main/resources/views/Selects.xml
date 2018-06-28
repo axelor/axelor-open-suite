@@ -57,7 +57,7 @@
 
 	<selection name="product.sale.supply.select">
 		<option value="0">None</option>
-		<option value="1">FromStock</option>
+		<option value="1">From stock</option>
 		<option value="2">Purchase</option>
 		<option value="3">Produce</option>
 	</selection>
@@ -401,6 +401,7 @@
 		<option value="com.axelor.mail.service.MailFetchJob">com.axelor.mail.service.MailFetchJob</option>
 		<option value="com.axelor.apps.base.job.MailJob">com.axelor.apps.base.job.MailJob</option>
 		<option value="com.axelor.apps.base.job.BatchJob">com.axelor.apps.base.job.BatchJob</option>
+		<option value="com.axelor.apps.base.job.CurrencyConversionJob">com.axelor.apps.base.job.CurrencyConversionJob</option>
 	</selection>
 
 	<selection name="meta.schedule.batch.service.select" id="base.meta.schedule.batch.service.select">
@@ -430,9 +431,14 @@
 		<option value="QR_CODE">QR_CODE</option>
 		<option value="UPC_A">UPC_A</option>
     </selection>
+   
+    <selection name="base.sharing.setting.rights.select">
+        <option value="1">Read only</option>
+        <option value="2">Modification</option>
+    </selection>
     
     <selection id="base.object.data.config.model.select" name="object.data.config.model.select">
-		<option value="com.axelor.apps.base.db.Partner">Partner</option>
-	</selection>
-    
+		    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+	  </selection>
+
 </object-views>

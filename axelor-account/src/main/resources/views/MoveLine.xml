@@ -106,6 +106,9 @@
    		</panel>
     	
     	<panel-tabs>
+				<panel title="Reconcile group" showIf="reconcileGroup">
+					<field name="reconcileGroup" showTitle="false"/>
+				</panel>
 	        <panel-related field="debitReconcileList" canRemove="false" canNew="false" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
 	        <panel-related field="creditReconcileList"  canRemove="false" canNew="false" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
 	    	

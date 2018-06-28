@@ -210,6 +210,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
             advancePaymentAccount);
 
+    // no need for link to sale order lines for an advance payment
+    if (invoice.getInvoiceLineList() != null) {
+      invoice.getInvoiceLineList().forEach(invoiceLine -> invoiceLine.setSaleOrderLine(null));
+    }
+
     return invoiceRepo.save(invoice);
   }
 

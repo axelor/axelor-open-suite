@@ -51,6 +51,9 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +63,8 @@ public class MessageServiceImpl implements MessageService {
 
   private MetaAttachmentRepository metaAttachmentRepository;
   protected MessageRepository messageRepository;
+
+  private ExecutorService executor = Executors.newCachedThreadPool();
 
   @Inject
   public MessageServiceImpl(
@@ -268,7 +273,7 @@ public class MessageServiceImpl implements MessageService {
       throw new AxelorException(
           message,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MESSAGE_8));
+          I18n.get(IExceptionMessage.MESSAGE_6));
     }
 
     MailSender sender = new MailSender(account);
@@ -282,7 +287,7 @@ public class MessageServiceImpl implements MessageService {
         mailBuilder.from(message.getFromEmailAddress().getAddress());
       } else {
         throw new AxelorException(
-            message, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_7);
+            message, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_5);
       }
     }
     if (replytoRecipients != null && !replytoRecipients.isEmpty()) {
@@ -306,14 +311,29 @@ public class MessageServiceImpl implements MessageService {
       mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
     }
 
-    mailBuilder.send();
+    // send email using a separate process to avoid thread blocking
+    executor.submit(
+        new Callable<Boolean>() {
+          @Override
+          public Boolean call() {
+            try {
+              mailBuilder.send();
+              Message updateMessage = messageRepository.find(message.getId());
+              JPA.em().getTransaction().begin();
+              updateMessage.setSentByEmail(true);
+              updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
+              updateMessage.setSentDateT(LocalDateTime.now());
+              updateMessage.setSenderUser(AuthUtils.getUser());
+              messageRepository.save(updateMessage);
+              JPA.em().getTransaction().commit();
+            } catch (Exception e) {
+              TraceBackService.trace(e);
+            }
+            return true;
+          }
+        });
 
-    message.setSentByEmail(true);
-    message.setStatusSelect(MessageRepository.STATUS_SENT);
-    message.setSentDateT(LocalDateTime.now());
-    message.setSenderUser(AuthUtils.getUser());
-
-    return messageRepository.save(message);
+    return message;
   }
 
   public Set<MetaAttachment> getMetaAttachments(Message message) {

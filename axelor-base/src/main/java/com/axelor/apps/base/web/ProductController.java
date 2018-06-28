@@ -92,10 +92,6 @@ public class ProductController {
       productIds = Joiner.on(",").join(lstSelectedProduct);
     }
 
-    if (!productIds.equals("")) {
-      productIds = productIds.substring(0, productIds.length() - 1);
-    }
-
     String name = I18n.get("Product Catalog");
 
     String fileLink =

@@ -70,6 +70,9 @@
             <menu title="Reports" icon="fa-files-o">
                 <item title="Print" action="save,action-print-stock-move" readonlyIf="statusSelect == 1"/>
                 <item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
+							<item title="Print certificate of conformity"
+								action="save,action-method-print-conformity-certificate"
+								showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
             </menu>
 
             <menu title="Tools" icon="fa-wrench">
@@ -115,7 +118,7 @@
             <panel colSpan="3" itemSpan="12">
                 <button name="plan" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
                 <button name="realize" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
-                <button name="generateInvoice" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+                <button name="generateInvoice" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
                 <button name="generateReversion" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
                 <button name="cancel" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
                 <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
@@ -194,13 +197,23 @@
                         </viewer>
                     </field>
                 </panel>
+							<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
+							<field name="signatoryUser"/>
+							<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
+							<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
             </panel>
 
             <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms"/>
 
             <panel title="Automatic mail" showIf="typeSelect == 2">
-                <field name="stockMoveAutomaticMail"/>
-                <field name="stockMoveMessageTemplate" requiredIf="stockMoveAutomaticMail" showIf="stockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+              <panel>
+                <field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
+                <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+              </panel>
+              <panel>
+								<field name="realStockMoveAutomaticMail"/>
+								<field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+							</panel>
             </panel>
 
             <panel title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
@@ -370,10 +383,14 @@
 	</action-record>
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">
-		<field name="stockMoveAutomaticMail" if="_typeSelect == '2'"
-			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.stockMoveAutomaticMail"/>
-		<field name="stockMoveMessageTemplate" if="_typeSelect == '2'"
-			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.stockMoveMessageTemplate"/>
+    <field name="plannedStockMoveAutomaticMail" if="_typeSelect == '2' || typeSelect == 2"
+      expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.plannedStockMoveAutomaticMail"/>
+    <field name="plannedStockMoveMessageTemplate" if="_typeSelect == '2' || typeSelect == 2"
+      expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.plannedStockMoveMessageTemplate"/>
+		<field name="realStockMoveAutomaticMail" if="_typeSelect == '2' || typeSelect == 2"
+			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.realStockMoveAutomaticMail"/>
+		<field name="realStockMoveMessageTemplate" if="_typeSelect == '2' || typeSelect == 2"
+			   expr="eval: partner?.partnerStockSettingsList?.find{it.company == company}?.realStockMoveMessageTemplate"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-record-ispm-field" model="com.axelor.apps.stock.db.StockMove">
@@ -398,6 +415,17 @@
 	<action-record name="action-stock-move-record-partner-delivery-informations" model="com.axelor.apps.stock.db.StockMove">
     	<field name="shipmentMode" expr="eval: partner?.shipmentMode"/>	
     	<field name="freightCarrierMode" expr="eval: partner?.freightCarrierMode"/>
+	</action-record>
+
+	<action-record name="action-stock-move-record-is-conformity-certif-signed-onchange" model="com.axelor.apps.stock.db.StockMove">
+		<field name="electronicSignature" if="!signatoryUser" expr="eval: (__user__?.useSignatureForStock &amp;&amp; isConformityCertifSigned) ? __user__.electronicSignature : null"/>
+		<field name="electronicSignature" if="signatoryUser" expr="eval: (signatoryUser?.useSignatureForStock &amp;&amp; isConformityCertifSigned) ? signatoryUser.electronicSignature : null"/>
+    <field name="signatoryUser" if="isConformityCertifSigned &amp;&amp; !signatoryUser" expr="eval: __user__"/>
+	</action-record>
+
+	<action-record name="action-stock-move-record-unset-certificate-signed" model="com.axelor.apps.stock.db.StockMove">
+		<field name="isConformityCertifSigned" if="!isNeedingConformityCertificate" expr="eval: false"/>
+		<field name="electronicSignature" if="!isNeedingConformityCertificate" expr="eval:null"/>
 	</action-record>
 	
 	<action-method name="action-stock-move-method-plan">
@@ -558,7 +586,11 @@
 	<action-method name="action-stock-move-method-filter-printing-settings">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="filterPrintingSettings"/>
 	</action-method>
-	
+
+	<action-method name="action-method-print-conformity-certificate">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="printConformityCertificate"/>
+	</action-method>
+
 	<action-record name="action-stock-move-record-freight-carrier" model="com.axelor.apps.stock.db.StockMove">
 		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
 	</action-record>

@@ -12,7 +12,7 @@
 	  <string name="description" title="Description" large="true"/>
 	  <string name="status" title="Status"/>
 	  <datetime name="startDateTime" required="true" title="Start date"/>
-	  <datetime name="endDateTime" title="End date"/>
+	  <datetime name="endDateTime" required="true" title="End date"/>
 	  <boolean name="allDay" title="All day"/>
 	  <string name="location" title="Location"/>
 	  <string name="geo" title="Geo. coordinates"/>

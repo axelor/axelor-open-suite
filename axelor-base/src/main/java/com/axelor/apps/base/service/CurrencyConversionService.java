@@ -25,6 +25,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -37,7 +38,10 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.http.HTTPClient;
@@ -57,14 +61,74 @@ public class CurrencyConversionService {
 
   @Inject protected CurrencyConversionLineRepository cclRepo;
 
+  public void updateCurrencyConverion() throws AxelorException {
+    AppBase appBase = appBaseService.getAppBase();
+    LocalDate today = appBaseService.getTodayDate();
+
+    Map<Long, Set<Long>> currencyMap = new HashMap<Long, Set<Long>>();
+
+    for (CurrencyConversionLine ccl : appBase.getCurrencyConversionLineList()) {
+      if (currencyMap.containsKey(ccl.getEndCurrency().getId())) {
+        currencyMap.get(ccl.getEndCurrency().getId()).add(ccl.getStartCurrency().getId());
+
+      } else {
+        Set<Long> startCurrencyIds = new HashSet<>();
+        startCurrencyIds.add(ccl.getStartCurrency().getId());
+        currencyMap.put(ccl.getEndCurrency().getId(), startCurrencyIds);
+      }
+    }
+
+    for (Long key : currencyMap.keySet()) {
+      List<CurrencyConversionLine> cclList =
+          cclRepo
+              .all()
+              .filter(
+                  "startCurrency.id IN (?1) AND endCurrency.id = ?2 AND fromDate <= ?3 AND toDate is null",
+                  currencyMap.get(key),
+                  key,
+                  today)
+              .fetch();
+
+      for (CurrencyConversionLine ccl : cclList) {
+        LOG.trace("Currency Conversion Line without toDate : {}", ccl);
+        BigDecimal currentRate = BigDecimal.ZERO;
+        try {
+          currentRate = this.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
+        } catch (Exception e) {
+          TraceBackService.trace(e);
+        }
+        if (currentRate.compareTo(new BigDecimal(-1)) == 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.CURRENCY_6));
+        }
+
+        ccl = cclRepo.find(ccl.getId());
+        BigDecimal previousRate = ccl.getExchangeRate();
+        if (currentRate.compareTo(previousRate) != 0) {
+          ccl.setToDate(today.minusDays(1));
+          this.saveCurrencyConversionLine(ccl);
+          String variations = this.getVariations(currentRate, previousRate);
+          this.createCurrencyConversionLine(
+              ccl.getStartCurrency(),
+              ccl.getEndCurrency(),
+              today,
+              currentRate,
+              appBase,
+              variations);
+        }
+      }
+    }
+  }
+
   public BigDecimal convert(Currency currencyFrom, Currency currencyTo)
       throws MalformedURLException, JSONException, AxelorException {
     BigDecimal rate = new BigDecimal(-1);
 
-    LOG.debug("Currerncy conversion From: {} To: {}", new Object[] {currencyFrom, currencyTo});
+    LOG.trace("Currerncy conversion From: {} To: {}", new Object[] {currencyFrom, currencyTo});
     String wsUrl = appBaseService.getAppBase().getCurrencyWsURL();
     if (wsUrl == null) {
-      LOG.info("Currency WS URL not configured");
+      LOG.trace("Currency WS URL not configured");
       return rate;
     }
 
@@ -77,12 +141,11 @@ public class CurrencyConversionService {
       // Float.parseFloat(json.getJSONObject("rates").get(currencyTo.getCode()).toString());
       //	        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
 
-    } else LOG.info("Currency from and to must be filled to get rate");
-    LOG.debug("Currerncy conversion rate: {}", new Object[] {rate});
+    } else LOG.trace("Currency from and to must be filled to get rate");
+    LOG.trace("Currerncy conversion rate: {}", new Object[] {rate});
     return rate;
   }
 
-  @SuppressWarnings("deprecation")
   private Float validateAndGetRate(
       int dayCount, String wsUrl, Currency currencyFrom, Currency currencyTo, LocalDate date)
       throws MalformedURLException, JSONException, AxelorException {
@@ -98,24 +161,24 @@ public class CurrencyConversionService {
       URL url =
           new URL(String.format(wsUrl, currencyFrom.getCode(), currencyTo.getCode(), date, date));
       // URL url = new URL(String.format(wsUrl,currencyFrom.getCode()));
-      LOG.debug("Currency conversion webservice URL: {}", new Object[] {url.toString()});
+      LOG.trace("Currency conversion webservice URL: {}", new Object[] {url.toString()});
       request.setUrl(url);
       request.setMethod(HTTPMethod.GET);
       response = httpclient.execute(request);
       // JSONObject json = new JSONObject(response.getContentAsString());
-      LOG.debug(
-          "Webservice response code: {}, reponse mesasage: {}",
+      LOG.trace(
+          "Webservice response code: {}, response message: {}",
           response.getStatusCode(),
           response.getStatusMessage());
       if (response.getStatusCode() != 200) return -1f;
 
     } else {
       throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
               I18n.get(IExceptionMessage.CURRENCY_7),
               date.plus(Period.ofDays(1)),
-              appBaseService.getTodayDate()),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+              appBaseService.getTodayDate()));
     }
 
     if (response.getContentAsString().isEmpty()) {
@@ -168,7 +231,7 @@ public class CurrencyConversionService {
 
   public String getVariations(BigDecimal currentRate, BigDecimal previousRate) {
     String variations = "0";
-    LOG.debug(
+    LOG.trace(
         "Currency rate variation calculation for CurrentRate: {} PreviousRate: {}",
         new Object[] {currentRate, previousRate});
 
@@ -183,7 +246,7 @@ public class CurrencyConversionService {
       variations = variation.toString() + "%";
     }
 
-    LOG.debug("Currency rate variation result: {}", new Object[] {variations});
+    LOG.trace("Currency rate variation result: {}", new Object[] {variations});
     return variations;
   }
 
@@ -195,7 +258,7 @@ public class CurrencyConversionService {
       BigDecimal rate,
       AppBase appBase,
       String variations) {
-    LOG.debug(
+    LOG.trace(
         "Create new currency conversion line CurrencyFrom: {}, CurrencyTo: {},FromDate: {},ConversionRate: {}, AppBase: {}, Variations: {}",
         new Object[] {currencyFrom, currencyTo, fromDate, rate, appBase, variations});
 

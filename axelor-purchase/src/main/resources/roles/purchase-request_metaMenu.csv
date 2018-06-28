@@ -1,0 +1,6 @@
+"name";"roles"
+"sc-root-purchase-request";"Purchase Request Manager|Purchase Request User|Purchase Request Read"
+"sc-root-purchase-request-all";"Purchase Request Manager|Purchase Request User|Purchase Request Read"
+"sc-root-purchase-request-all-sent";"Purchase Request Manager|Purchase Request User|Purchase Request Read"
+"sc-root-purchase-request-all-accepted";"Purchase Request Manager|Purchase Request User|Purchase Request Read"
+"sc-root-purchase-conf-purchase-request-creator";"Purchase Request Manager"

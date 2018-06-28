@@ -287,6 +287,7 @@
   		    <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
             <field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
             <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false"/>
+					<field name="isNeedingConformityCertificate"/>
   		    <panel-dashlet action="action-view-show-stock-move-line" title="Customer deliveries" colSpan="12" showIf="statusSelect &gt;= 3" />
       	</panel>
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect &gt;= 3"/>
@@ -297,7 +298,7 @@
 	          <button name="generateProject" title="Generate Project/Business" if="!__config__.app.getApp('business-project').getAutomaticProject()" showIf="project == null" hidden="true" onClick="save,action-sale-order-method-generate-project"/>
 	          <button name="generateTypePerOrderLine" title="Generate Elements" if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" showIf="project != null" hidden="true" onClick="save,action-sale-order-method-generate-type-per-order-line,action-sale-order-attrs-hide-generate-tasks"/>
        	</panel>
-		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('sale').getTimetableInvoicing()" >
+		<panel name="timetable" title="Timetable" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" >
 			<field name="expectedRealisationDate" colSpan="12" width="50%"/>
  			<label title="OR"/>
 			<field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
@@ -325,6 +326,7 @@
         <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>
 	    <button name="generateCustomerStockMove" title="Generate customer deliveries" colSpan="12" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
 	    	if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto"
+	    	readonlyIf="!saleOrderLineList || !saleOrderLineList.length"
 	    	onClick="save, action-supplychain-sale-order-create-stock-move"/>
 	    <button name="confirmOrder" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
 	    <button name="generateInvoice" title="Generate invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-view-invoicing-wizard" if-module="axelor-supplychain"/>
@@ -356,7 +358,7 @@
 	    <field name="endOfValidityDate" colSpan="6" readonly="true">
 	    	<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    </field>
-	    <field name="expectedRealisationDate" colSpan="6" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('sale').getTimetableInvoicing()"/>
+	    <field name="expectedRealisationDate" colSpan="6" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
         <field name="cancelReason" hidden="true"/>
 		<field name="cancelReasonStr" title="Cancel Reason" readonly="true" colSpan="12" css="red" hidden="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null">
 			<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
@@ -667,7 +669,7 @@
 					</div>
 			  </div>
 			  <div>
-				  <div class="span7">
+				  <div class="span6">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
 						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
@@ -682,7 +684,7 @@
                         <span class="label label-important" ng-show="record.orderBeingEdited" x-translate>Order being edited</span>
                     </h5>
 				  </div>
-				  <div class="span5">
+				  <div class="span6">
 				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
 				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
 				  </div>
@@ -724,7 +726,7 @@
 					</div>
 			  </div>
 			  <div>
-				  <div class="span7">
+				  <div class="span6">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
 						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
@@ -736,7 +738,7 @@
 						<span class="label label-success" ng-show="record.deliveryState > 0 && record.deliveryState == 3" x-translate>Delivered</span>
 					</h5>
 				  </div>
-				  <div class="span5">
+				  <div class="span6">
 				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
 				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
 				  </div>
@@ -752,10 +754,6 @@
 
     <action-attrs name="action-sale-order-domain-on-team">
     	<attribute name="domain" for="team" expr="eval: salemanUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salemanUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
-    </action-attrs>
-
-    <action-attrs name="action-sale-order-attrs-generate-stockmove-readonly">
-		<attribute name="readonly" for="generateCustomerStockMove" expr="eval: !saleOrderLineList"/>
     </action-attrs>
 
     <action-attrs name="action-sale-order-attrs-hide-generate-tasks">
@@ -810,7 +808,6 @@
     <action-group name="action-group-sale-saleorder-onload">
     	<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
     	<action name="action-partner-attrs-hide-contact-partner" />
-    	<action name="action-sale-order-attrs-generate-stockmove-readonly"/>
     	<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
     </action-group>
@@ -991,6 +988,7 @@
 		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 		<field name="companyBankDetails" expr="call: com.axelor.apps.account.service.AccountingSituationService:getCompanySalesBankDetails(company, clientPartner)"/>
+			<field name="isNeedingConformityCertificate" expr="eval: clientPartner?.isNeedingConformityCertificate"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">
