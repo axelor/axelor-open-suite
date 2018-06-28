@@ -13,6 +13,7 @@
 - New printing: certificate of conformity on stock move.
 - Add a Job to update the currency conversion rates from a scheduler.
 - Add reconcile group which is a group of move lines. It also contains the reconciles between the lines.
+- Balance on top of Partner view become configurable for use specific balance
 
 ## Improvements
 - Add Partner balance as a new Accounting report.

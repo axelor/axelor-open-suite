@@ -21,6 +21,7 @@
 
 		<boolean name="printReportOnVentilation" title="Print report on invoice ventilation" default="true" />
 
+        <enum name="partnerBalConfigSelect" ref="PartnerBalConfigSelect" title="Partner balance viewer configuration" default="TOTAL_BALANCE"/>
 
 		<boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice" default="true"/>
         <boolean name="paymentVouchersOnInvoice" />
@@ -35,5 +36,11 @@
 		]]></extra-code>
 		
 	</entity>
+
+    <enum name="PartnerBalConfigSelect">
+        <item name="TOTAL_BALANCE" title="Total balance"/>
+        <item name="DUE_BALANCE" title="Due balance"/>
+        <item name="DUE_BALANCE_RECOVERABLE" title="Due balance recoverable"/>
+    </enum>
 
 </domain-models>
