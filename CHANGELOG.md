@@ -11,6 +11,7 @@
 - Product description can be copy to Invoice/Order/Purchase line.
 - Automatic mail on stock move planning.
 - New printing: certificate of conformity on stock move.
+- Purchases : possibility to set purchases as fixed assets.
 - Add a Job to update the currency conversion rates from a scheduler.
 - Add reconcile group which is a group of move lines. It also contains the reconciles between the lines.
 
