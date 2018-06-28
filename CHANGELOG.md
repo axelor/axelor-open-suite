@@ -18,6 +18,8 @@
 - BANK - bank details type : update BBAN translation
 - Invoice: fix trading name that was not set
 - Remove the blank part to the right at PurchaseOrderLine
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
+- In CRM sale stage change "Nouveau" by "Nouvelle".
 
 ## [5.0.2] - 2018-06-22
 ## Improvements
@@ -66,7 +68,7 @@ Also, improve the sale order line grid and form views.
 - Fix line removal in confirmed sale order.
 - Product: fix printing catalog of selected products.
 - Product: fix missing pictures in catalog when not all products have pictures.
-- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
+
 
 ## [5.0.0] - 2018-06-13
 ## Features
