@@ -17,6 +17,7 @@
 - Permission assistant: fix persisting import error.
 - BANK - bank details type : update BBAN translation
 - Invoice: fix trading name that was not set
+- Partner - The balance appear only if the partner has an id
 
 
 ## [5.0.2] - 2018-06-22
