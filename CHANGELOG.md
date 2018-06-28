@@ -14,6 +14,9 @@
 - Production process and bill of material : fix errors generated when adding an element with a priority to a list for the first time.
 - Production process: set as required the fields, "product", "qty", and "unit" to avoid NPE
 - Fix payment method field of a purchase order not displaying any value in edit mode.
+- Permission assistant: fix persisting import error.
+- BANK - bank details type : update BBAN translation
+- Invoice: fix trading name that was not set
 
 
 ## [5.0.2] - 2018-06-22

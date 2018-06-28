@@ -23,7 +23,7 @@
 "Depends on","Dépend de",,
 "Description",,,
 "Details","Détails",,
-"Error in import. Please check log","Erreur dans l'import. Veuillez verifier le journal",,
+"Error in import. Please check log.","Erreur dans l'import. Veuillez verifier le journal.",,
 "Error in import: %s. Please check the server log","Erreur dans l'import: %s. Veuillez verifier le journal du serveur",,
 "Error in refreshing app","Erreur dans l'actualisation de l'application",,
 "Export",,,

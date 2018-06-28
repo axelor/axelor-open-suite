@@ -111,6 +111,7 @@ public class InvoicingProjectService {
             null,
             null,
             null,
+            null,
             null) {
 
           @Override
