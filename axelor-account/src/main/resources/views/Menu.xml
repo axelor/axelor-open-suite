@@ -402,7 +402,7 @@
 	<menuitem name="account-conf-analytic-journal-type" parent="account-conf-analytic"
 		title="Analytic journals type" action="account.conf.analytic.journal.type" />
 
-	<action-view name="account.conf.analytic.journal.type" title="Analytic journals type"
+	<action-view name="account.conf.analytic.journal.type" title="Analytic journal types"
 		model="com.axelor.apps.account.db.AnalyticJournalType" >
 		<view type="grid" name="analytic-journal-type-grid"/>
 		<view type="form" name="analytic-journal-type-form"/>
