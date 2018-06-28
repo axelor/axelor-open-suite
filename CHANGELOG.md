@@ -15,6 +15,7 @@
 - Production process: set as required the fields, "product", "qty", and "unit" to avoid NPE
 - Permission assistant: fix persisting import error.
 - BANK - bank details type : update BBAN translation
+- Invoice: fix trading name that was not set
 
 
 ## [5.0.2] - 2018-06-22
