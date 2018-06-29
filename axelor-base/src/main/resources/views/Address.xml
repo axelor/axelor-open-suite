@@ -13,7 +13,7 @@
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
-	onSave="action-group-base-address-onsave,save,action-base-address-method-check-lat-lang"  onNew="default-address-record" width="large" >
+	onSave="action-group-base-address-onsave,save,action-base-address-method-update-lat-long"  onNew="default-address-record" width="large" >
 		<panel name="main" title="Address details" colSpan="12">
 			<field name="addressL7Country" onChange="action-address-record-clear-fields" required="true" canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
 			<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
@@ -46,7 +46,7 @@
 	</form>
 	
 	<form name="address-partner-address-form" title="Address" model="com.axelor.apps.base.db.Address" 
-	onSave="action-group-base-address-onsave,save,action-base-address-method-create-partner-address,action-base-address-method-check-lat-lang"  onNew="default-address-record" width="large" >
+	onSave="action-group-base-address-onsave,save,action-base-address-method-create-partner-address,action-base-address-method-update-lat-long"  onNew="default-address-record" width="large" >
 		<panel name="main" title="Address details" colSpan="12">
 			<field name="addressL7Country" onChange="action-address-record-clear-fields" required="true" canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
 			<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
@@ -118,11 +118,11 @@
 	<action-method name="action-base-address-method-view-direction">
 		<call class="com.axelor.apps.base.web.AddressController" method="viewDirection"/>
 	</action-method>
-	
-	<action-method name="action-base-address-method-check-lat-lang">
-		<call class="com.axelor.apps.base.web.AddressController" method="checkLatLong"/>
+
+	<action-method name="action-base-address-method-update-lat-long">
+		<call class="com.axelor.apps.base.web.AddressController" method="updateLatLong"/>
 	</action-method>
-	
+
 	<action-method name="action-base-address-method-create-partner-address">
 		<call class="com.axelor.apps.base.web.AddressController" method="createPartnerAddress" />
 	</action-method>

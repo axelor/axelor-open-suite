@@ -173,6 +173,7 @@ public interface IExceptionMessage {
       "Feature currently not available with Open Street Maps." /*)*/;
   public static final String ADDRESS_7 = /*$$(*/
       "Current user's active company address is not set" /*)*/;
+  public static final String ADDRESS_CANNOT_BE_NULL = "Address cannot be null.";
 
   /** Bank details controller */
   public static final String BANK_DETAILS_1 = /*$$(*/

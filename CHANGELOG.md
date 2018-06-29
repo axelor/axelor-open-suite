@@ -10,6 +10,7 @@
 - Production process: remove process line list from grid view and add company.
 - Bill of materials: display company and status in grid view.
 - Import demo data from excel demo file with specified configuration in excel file.
+- Address: rework coordinates updating.
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
