@@ -304,6 +304,7 @@ public class AdvancedExportController {
               .param("popup", "true")
               .param("show-toolbar", "false")
               .param("show-confirm", "false")
+              .param("popup-save", "false")
               .context("_metaModel", metaModel)
               .context("_criteria", criteria.startsWith("[") ? criteria : request)
               .map());
