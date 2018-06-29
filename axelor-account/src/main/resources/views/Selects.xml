@@ -29,6 +29,12 @@
 		<option value='tax'>Tax</option>
 		<option value='view'>View</option>
 	</selection>
+
+    <selection name='account.partner.bal.config.select'>
+        <option value='1'>Total balance</option>
+        <option value='2'>Due balance</option>
+        <option value='3'>Due balance recoverable</option>
+    </selection>
 	
 	<selection name='invoice.account.condition.invoice.sending.format.select'>
 		<option value='email'>Email</option>
@@ -41,7 +47,12 @@
 		<option value='2'>Confirmed</option>
 		<option value='3'>Canceled</option>
 	</selection>
-	
+
+	<selection name='account.reconcile.group.status.select'>
+		<option value='1'>Temporary</option>
+		<option value='2'>Final</option>
+	</selection>
+
 	<selection name='account.journal.status.select'>
 		<option value="0">Inactive</option>
 		<option value="1">Active</option>
@@ -60,6 +71,7 @@
 		<option order="3" value="3">Detailed customers balance</option>
 		<option order="4" value="4">Aged Balance</option>
 		<option order="5" value="5">Cheque deposit slip</option>
+		<option order="6" value="6">Partner balance</option>
 		<option order="10" value="10">Cash payments summary</option>
 		<option order="11" value="11">Journal</option>
 		<option order="12" value="12">VAT Statement on invoices</option>
@@ -334,6 +346,8 @@
 		<option value="moveLineExport">Accounting export</option>
 		<option value="analyticReport">Analytic report</option>
 		<option value="reconcile">Reconcile</option>
+		<option value="reconcileGroupDraft">Reconcile Group (Draft)</option>
+		<option value="reconcileGroupFinal">Reconcile Group (Final)</option>
 		<option value="depositSlip">Deposit slip</option>
 		<option value="subrogationRelease">Subrogation release</option>
 	</selection>

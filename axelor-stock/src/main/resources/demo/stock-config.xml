@@ -14,7 +14,7 @@
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" update="true" search="self.importId = :importId"/>
 	
 	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory">
-		<bind to="inventorySeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.INVENTORY)" />
+		<bind to="inventorySeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.INVENTORY)" />
 	    <bind to="statusSelect" eval="3" />
 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
 	</input>

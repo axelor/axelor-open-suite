@@ -424,13 +424,6 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <text-property name="heading">global_by_date</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">global_by_post</property>
-                    <property name="alias">global_by_post</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">global_by_post</text-property>
-                    <text-property name="heading">global_by_post</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">payment_mode</property>
                     <property name="alias">payment_mode</property>
                     <property name="analysis">dimension</property>
@@ -505,11 +498,6 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
-                        <property name="name">global_by_post</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">12</property>
                         <property name="name">payment_mode</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -589,13 +577,6 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">global_by_post</property>
-                    <property name="nativeName">global_by_post</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">12</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
@@ -605,7 +586,6 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path,
 Period.name as period_name, Journal.name as journal_name, AccountingReport.global, AccountingReport.global_by_date,
-AccountingReport.global_by_post,
 PaymentMode.name as payment_mode
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
@@ -614,27 +594,6 @@ left outer join public.account_payment_mode as PaymentMode on (AccountingReport.
 left outer join public.account_journal as Journal on (AccountingReport.journal = Journal.id)
 left outer join public.base_period as Period on (AccountingReport.period = Period.id)
 where AccountingReport.id = ? ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
@@ -844,12 +803,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="dataType">integer</property>
                         </structure>
                         <structure>
-                            <property name="name">global_by_post</property>
-                            <text-property name="displayName">global_by_post</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["global_by_post"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
                             <property name="name">payment_mode</property>
                             <text-property name="displayName">payment_mode</text-property>
                             <expression name="expression" type="javascript">dataSetRow["payment_mode"]</expression>
@@ -1026,12 +979,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">global_by_date</property>
                     <text-property name="displayName">global_by_date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["global_by_date"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">global_by_post</property>
-                    <text-property name="displayName">global_by_post</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["global_by_post"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>

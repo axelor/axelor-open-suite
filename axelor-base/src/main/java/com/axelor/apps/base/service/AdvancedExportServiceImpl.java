@@ -36,8 +36,10 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
+import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -58,9 +60,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.Query;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -157,6 +162,30 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       metaField3 = checkLastMetaField(splitField, i + 1, metaModel, metaField3);
     }
     return metaField3;
+  }
+
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  @Override
+  public String createCriteria(ActionRequest request, int limit) {
+    if (request.getContext().get("_criteria") != null) {
+      if (request.getContext().get("_criteria").toString().startsWith("[")) {
+        return request.getContext().get("_criteria").toString();
+
+      } else {
+        MetaModel metaModel =
+            metaModelRepo.find(
+                Long.valueOf(((Map) request.getContext().get("_metaModel")).get("id").toString()));
+        ObjectMapper mapper = new ObjectMapper();
+        ActionRequest parentRequest =
+            mapper.convertValue(request.getContext().get("_criteria"), ActionRequest.class);
+        Class<? extends Model> klass = (Class<? extends Model>) parentRequest.getBeanClass();
+        Filter filter = this.getJpaSecurityFilter(metaModel);
+        Stream<? extends Model> listObj =
+            parentRequest.getCriteria().createQuery(klass, filter).fetchSteam(limit);
+        return listObj.map(it -> it.getId()).collect(Collectors.toList()).toString();
+      }
+    }
+    return null;
   }
 
   private Query getAdvancedExportData(
@@ -932,7 +961,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
-  public MetaFile advancedExportPDF(
+  public Map<Boolean, MetaFile> advancedExportPDF(
       List<Map<String, Object>> advancedExportLines,
       MetaModel metaModel,
       String criteria,
@@ -940,11 +969,13 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       Integer queryFetchLimit)
       throws DocumentException, IOException, ClassNotFoundException, AxelorException {
 
+    Map<Boolean, MetaFile> exportMap = new HashMap<Boolean, MetaFile>();
+    boolean isReachMaxExportLimit = false;
     int startPosition = 0;
+    int reachLimit = 0;
+    List<Map> dataList = new ArrayList<>();
     Query query = this.getAdvancedExportData(advancedExportLines, metaModel, criteria);
-    query.setFirstResult(startPosition);
     query.setMaxResults(queryFetchLimit);
-    List<Map> dataList = query.getResultList();
 
     File pdfFile = File.createTempFile(metaModel.getName(), ".pdf");
     FileOutputStream outStream = new FileOutputStream(pdfFile);
@@ -956,13 +987,22 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     createPDFHeader(advancedExportLines, table);
 
     while (startPosition < maxExportLimit) {
+      if ((maxExportLimit - startPosition) < queryFetchLimit) {
+        query.setMaxResults((maxExportLimit - startPosition));
+      }
+      query.setFirstResult(startPosition);
+      dataList = query.getResultList();
+      if (dataList.isEmpty()) break;
+
       createPDfData(table, dataList);
       log.debug("File processing: {}", pdfFile.getName());
 
       startPosition = startPosition + queryFetchLimit;
-      query.setFirstResult(startPosition);
-      dataList = query.getResultList();
-      if (dataList.isEmpty()) break;
+      reachLimit += dataList.size();
+    }
+
+    if (maxExportLimit == reachLimit) {
+      isReachMaxExportLimit = true;
     }
 
     document.add(table);
@@ -973,7 +1013,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     inStream.close();
     pdfFile.delete();
 
-    return exportFile;
+    exportMap.put(isReachMaxExportLimit, exportFile);
+    return exportMap;
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
@@ -1027,7 +1068,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
-  public MetaFile advancedExportExcel(
+  public Map<Boolean, MetaFile> advancedExportExcel(
       List<Map<String, Object>> advancedExportLines,
       MetaModel metaModel,
       String criteria,
@@ -1036,11 +1077,13 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       throws IOException, ClassNotFoundException, DocumentException, AxelorException,
           InvalidFormatException {
 
+    Map<Boolean, MetaFile> exportMap = new HashMap<Boolean, MetaFile>();
+    boolean isReachMaxExportLimit = false;
     int startPosition = 0;
+    int reachLimit = 0;
+    List<Map> dataList = new ArrayList<>();
     Query query = this.getAdvancedExportData(advancedExportLines, metaModel, criteria);
-    query.setFirstResult(startPosition);
     query.setMaxResults(queryFetchLimit);
-    List<Map> dataList = query.getResultList();
 
     File excelFile = File.createTempFile(metaModel.getName(), ".xlsx");
     Workbook workbook = new XSSFWorkbook();
@@ -1049,13 +1092,22 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     createExcelHeader(advancedExportLines, metaModel, sheet);
 
     while (startPosition < maxExportLimit) {
+      if ((maxExportLimit - startPosition) < queryFetchLimit) {
+        query.setMaxResults((maxExportLimit - startPosition));
+      }
+      query.setFirstResult(startPosition);
+      dataList = query.getResultList();
+      if (dataList.isEmpty()) break;
+
       createExcelData(dataList, sheet);
       log.debug("File processing: {}", excelFile.getName());
 
       startPosition = startPosition + queryFetchLimit;
-      query.setFirstResult(startPosition);
-      dataList = query.getResultList();
-      if (dataList.isEmpty()) break;
+      reachLimit += dataList.size();
+    }
+
+    if (maxExportLimit == reachLimit) {
+      isReachMaxExportLimit = true;
     }
 
     FileOutputStream fout = new FileOutputStream(excelFile);
@@ -1067,7 +1119,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     inStream.close();
     excelFile.delete();
 
-    return exportFile;
+    exportMap.put(isReachMaxExportLimit, exportFile);
+    return exportMap;
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
@@ -1111,7 +1164,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
-  public MetaFile advancedExportCSV(
+  public Map<Boolean, MetaFile> advancedExportCSV(
       List<Map<String, Object>> advancedExportLines,
       MetaModel metaModel,
       String criteria,
@@ -1119,13 +1172,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       Integer queryFetchLimit)
       throws IOException, ClassNotFoundException, DocumentException, AxelorException {
 
+    Map<Boolean, MetaFile> exportMap = new HashMap<Boolean, MetaFile>();
+    boolean isReachMaxExportLimit = false;
     int startPosition = 0;
     int index = 0;
+    int reachLimit = 0;
+    List<Map> dataList = new ArrayList<>();
     Query query = this.getAdvancedExportData(advancedExportLines, metaModel, criteria);
-
-    query.setFirstResult(startPosition);
     query.setMaxResults(queryFetchLimit);
-    List<Map> dataList = query.getResultList();
 
     File csvFile = File.createTempFile(metaModel.getName(), ".csv");
     CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile, true), ';');
@@ -1134,14 +1188,24 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     createCsvHeader(advancedExportLines, totalCols, index, csvWriter, csvFile);
 
     while (startPosition < maxExportLimit) {
+      if ((maxExportLimit - startPosition) < queryFetchLimit) {
+        query.setMaxResults((maxExportLimit - startPosition));
+      }
+      query.setFirstResult(startPosition);
+      dataList = query.getResultList();
+      if (dataList.isEmpty()) break;
+
       createCsvData(dataList, totalCols, index, csvWriter);
       log.debug("File processing: {}", csvFile.getName());
 
       startPosition = startPosition + queryFetchLimit;
-      query.setFirstResult(startPosition);
-      dataList = query.getResultList();
-      if (dataList.isEmpty()) break;
+      reachLimit += dataList.size();
     }
+
+    if (maxExportLimit == reachLimit) {
+      isReachMaxExportLimit = true;
+    }
+
     csvWriter.close();
 
     FileInputStream inStream = new FileInputStream(csvFile);
@@ -1149,7 +1213,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     inStream.close();
     csvFile.delete();
 
-    return exportFile;
+    exportMap.put(isReachMaxExportLimit, exportFile);
+    return exportMap;
   }
 
   private void createCsvHeader(

@@ -64,6 +64,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1572,13 +1575,13 @@ from base_app_base]]></xml-property>
                                         <text-property name="content"><![CDATA[<TABLE >
 	<TR>
 		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+row["header"]+"</TD><TD/><TD align='right'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></td>"
+		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width:'100%' /></td>"
 		} else if(row["logoPosition"] == 1) {
-		"<TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></TD><TD/><TD>"+row["header"]+"</TD>"
+		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width:'100%' /></TD><TD/><TD>"+row["header"]+"</TD>"
 		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' /></TD><TD>"+row["header"]+"</TD>"
+			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width:'100%' /></TD><TD>"+row["header"]+"</TD>"
 		}else if(row["logoPosition"] == null) {
-			"<TD> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='71px' />"
+			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width:'100%' />"
 		}else {
 		"<TD/><TD/><TD>"+row["header"]+"</TD>"
 		}

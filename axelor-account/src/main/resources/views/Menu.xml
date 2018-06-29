@@ -132,6 +132,16 @@
 		<view-param name="search-filters" value="reconcile-filters"/>
 	</action-view>
 
+	<menuitem name="account-root-periodic-processing-reconcile-group"
+		parent="account-root-periodic-processing" title="Reconcile Groups"
+		action="account.root.periodic.processing.reconcile.group" />
+
+	<action-view name="account.root.periodic.processing.reconcile.group"
+		title="Reconcile Groups" model="com.axelor.apps.account.db.ReconcileGroup" >
+		<view type="grid" name="reconcile-group-grid"/>
+		<view type="form" name="reconcile-group-form"/>
+	</action-view>
+
 	<menuitem name="account-root-periodic-processing-overpayment-clearances"
 		parent="account-root-periodic-processing" title="Overpayments clearances"
 		action="account.root.periodic.processing.overpayment.clearances" />

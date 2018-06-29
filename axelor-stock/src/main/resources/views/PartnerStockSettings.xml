@@ -10,11 +10,17 @@
         <field name="company" form-view="company-form"
                grid-view="company-grid"/>
         <field name="defaultStockLocation" form-view="stock-location-form"
-               grid-view="stock-location-grid"/>
-        <field name="stockMoveAutomaticMail"/>
-        <field name="stockMoveMessageTemplate"
-               requiredIf="stockMoveAutomaticMail"
-               showIf="stockMoveAutomaticMail"
+               grid-view="stock-location-grid"
+               onSelect="action-partner-default-stock-location-form-domain"/>
+        <field name="plannedStockMoveAutomaticMail"/>
+        <field name="plannedStockMoveMessageTemplate"
+          requiredIf="plannedStockMoveAutomaticMail"
+          showIf="plannedStockMoveAutomaticMail"
+          form-view="template-form" grid-view="template-grid"/>
+        <field name="realStockMoveAutomaticMail"/>
+        <field name="realStockMoveMessageTemplate"
+               requiredIf="realStockMoveAutomaticMail"
+               showIf="realStockMoveAutomaticMail"
                form-view="template-form" grid-view="template-grid"/>
     </grid>
 
@@ -27,11 +33,20 @@
             <field name="defaultStockLocation" form-view="stock-location-form"
                    grid-view="stock-location-grid"
                    onSelect="action-partner-default-stock-location-form-domain"/>
-            <field name="stockMoveAutomaticMail"/>
-            <field name="stockMoveMessageTemplate"
-                   requiredIf="stockMoveAutomaticMail"
-                   showIf="stockMoveAutomaticMail"
-                   form-view="template-form" grid-view="template-grid"/>
+            <panel colSpan="12">
+                <field name="plannedStockMoveAutomaticMail"/>
+                <field name="plannedStockMoveMessageTemplate"
+                  requiredIf="plannedStockMoveAutomaticMail"
+                  showIf="plannedStockMoveAutomaticMail"
+                  form-view="template-form" grid-view="template-grid"/>
+            </panel>
+            <panel colSpan="12">
+                <field name="realStockMoveAutomaticMail"/>
+                <field name="realStockMoveMessageTemplate"
+                  requiredIf="realStockMoveAutomaticMail"
+                  showIf="realStockMoveAutomaticMail"
+                  form-view="template-form" grid-view="template-grid"/>
+            </panel>
         </panel>
     </form>
 

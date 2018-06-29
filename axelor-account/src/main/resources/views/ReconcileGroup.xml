@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <grid name="reconcile-group-grid" title="Reconcile group"
+    model="com.axelor.apps.account.db.ReconcileGroup">
+    <field name="code"/>
+    <field name="company"/>
+  </grid>
+
+  <form name="reconcile-group-form" title="Reconcile group" readonlyIf="true"
+    model="com.axelor.apps.account.db.ReconcileGroup">
+    <panel itemSpan="12">
+      <field name="statusSelect" widget="NavSelect" showTitle="false"/>
+      <field name="code" showTitle="false">
+        <viewer depends="code">
+          <![CDATA[
+						<h3>
+							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.code}}</span>
+						</h3>
+					]]>
+        </viewer>
+      </field>
+    </panel>
+    <panel name="company" showTitle="false">
+      <field name="company"/>
+    </panel>
+    <panel name="main" showIf="company">
+      <panel-dashlet action="action-reconcile-group-view-reconcile" colSpan="12"/>
+      <panel-dashlet action="action-reconcile-group-view-move-line" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-view name="action-reconcile-group-view-reconcile" title="Reconcile list"
+    model="com.axelor.apps.account.db.Reconcile">
+    <view type="grid" name="move-line-reconcile-grid"/>
+    <view type="form" name="reconcile-form"/>
+    <domain>self.reconcileGroup.id = :id</domain>
+  </action-view>
+
+  <action-view name="action-reconcile-group-view-move-line" title="Move line list"
+    model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain>self.reconcileGroup.id = :id</domain>
+  </action-view>
+
+</object-views>

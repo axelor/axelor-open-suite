@@ -28,21 +28,21 @@
 	<boolean name="isMultiCurrency" title="Multicurrency"/>
     <integer name="orderDebitTypeSelect" title="Order debit type" selection="bankpayment.order.debit.type.select" nullable="true" />
 
-  	<boolean name="displayAdditionnalInformations" title="Display additional information?"/>
+  	<boolean name="displayAdditionnalInformations" title="Display additional information"/>
 	
-  	<boolean name="displayBankOrderEconomicReason" title="Display economic reason?"/>
+  	<boolean name="displayBankOrderEconomicReason" title="Display economic reason"/>
 	<many-to-one name="bankOrderEconomicReason" ref="com.axelor.apps.bankpayment.db.BankOrderEconomicReason" title="Default economic reason" index="idx_bankpayment_bank_order_file_format_economic_reason"/>
 	
-	<boolean name="displayReceiverCountry" title="Display receiver country?"/>
+	<boolean name="displayReceiverCountry" title="Display receiver country"/>
   	<many-to-one name="receiverCountry" ref="com.axelor.apps.base.db.Country" title="Default receiver country"/>
 	
-  	<boolean name="displayPaymentModeSelect" title="Display payment mode?"/>
+  	<boolean name="displayPaymentModeSelect" title="Display payment mode"/>
   	<integer name="paymentModeSelect" title="Default payment Mode" selection="bankpayment.bank.order.line.payment.mode.select"/>
   	
-  	<boolean name="displayFeesImputationModeSelect" title="Display fees imputation?"/>
+  	<boolean name="displayFeesImputationModeSelect" title="Display fees imputation"/>
   	<integer name="feesImputationModeSelect" title="Default fees imputation" selection="bankpayment.bank.order.line.fees.imputation.mode.select"/>
   	
-	<boolean name="displayFurtherInformations" title="Display further information?"/>
+	<boolean name="displayFurtherInformations" title="Display further information"/>
   	
 	 
  	<extra-code><![CDATA[

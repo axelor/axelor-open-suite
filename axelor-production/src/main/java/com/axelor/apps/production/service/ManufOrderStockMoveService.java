@@ -52,16 +52,13 @@ import org.slf4j.LoggerFactory;
 
 public class ManufOrderStockMoveService {
 
-  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected StockMoveService stockMoveService;
-  protected StockMoveLineService stockMoveLineService;
-
   protected static final int PART_FINISH_IN = 1;
   protected static final int PART_FINISH_OUT = 2;
-
   protected static final int STOCK_LOCATION_IN = 1;
   protected static final int STOCK_LOCATION_OUT = 2;
+  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected StockMoveService stockMoveService;
+  protected StockMoveLineService stockMoveLineService;
 
   @Inject
   public ManufOrderStockMoveService(
@@ -117,7 +114,8 @@ public class ManufOrderStockMoveService {
         virtualStockLocation,
         null,
         manufOrder.getPlannedStartDateT().toLocalDate(),
-        null);
+        null,
+        StockMoveRepository.TYPE_INTERNAL);
   }
 
   protected StockLocation getDefaultStockLocation(
@@ -188,19 +186,16 @@ public class ManufOrderStockMoveService {
           stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
     }
 
-    StockMove stockMove =
-        stockMoveService.createStockMove(
-            null,
-            null,
-            company,
-            virtualStockLocation,
-            producedProductStockLocation,
-            null,
-            plannedEndDate,
-            null);
-    stockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
-
-    return stockMove;
+    return stockMoveService.createStockMove(
+        null,
+        null,
+        company,
+        virtualStockLocation,
+        producedProductStockLocation,
+        null,
+        plannedEndDate,
+        null,
+        StockMoveRepository.TYPE_INTERNAL);
   }
 
   protected StockMoveLine _createStockMoveLine(
@@ -356,7 +351,8 @@ public class ManufOrderStockMoveService {
             toStockLocation,
             null,
             manufOrder.getPlannedStartDateT().toLocalDate(),
-            null);
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     createNewStockMoveLines(manufOrder, newStockMove, inOrOut);

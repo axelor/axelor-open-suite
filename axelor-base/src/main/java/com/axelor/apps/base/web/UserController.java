@@ -31,6 +31,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -93,6 +94,19 @@ public class UserController {
 
       response.setValue("newPassword", password);
       response.setValue("chkPassword", password);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validatePassword(ActionRequest request, ActionResponse response) {
+    try {
+      UserService userService = Beans.get(UserService.class);
+      String newPassword =
+          MoreObjects.firstNonNull((String) request.getContext().get("newPassword"), "");
+      boolean valid = userService.matchPasswordPattern(newPassword);
+
+      response.setAttr("passwordPatternDescription", "hidden", valid);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

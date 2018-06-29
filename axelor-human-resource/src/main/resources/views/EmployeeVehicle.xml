@@ -19,6 +19,7 @@
             <field name="kilometricAllowParam" colSpan="4"/>
             <field name="startDate" colSpan="4"/>
             <field name="endDate" colSpan="4"/>
+            <field name="vehicleRegistrationCertificate" colSpan="4" widget="Image"/>
         </panel>
     </form>
 

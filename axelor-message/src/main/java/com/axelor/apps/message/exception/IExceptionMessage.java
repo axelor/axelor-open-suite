@@ -43,15 +43,13 @@ public interface IExceptionMessage {
 
   static final String MESSAGE_2 = /*$$(*/ "Select template" /*)*/;
   static final String MESSAGE_3 = /*$$(*/ "Create message" /*)*/;
-  static final String MESSAGE_4 = /*$$(*/ "Email sent" /*)*/;
-  static final String MESSAGE_5 = /*$$(*/ "Message sent" /*)*/;
-  static final String MESSAGE_6 = /*$$(*/ "Failed to send Email" /*)*/;
-  static final String MESSAGE_7 = /*$$(*/ "Sender's email address is null or empty" /*)*/;
-  static final String MESSAGE_8 = /*$$(*/ "TO/CC/BCC recipient's email address is empty" /*)*/;
+  static final String MESSAGE_4 = /*$$(*/ "Email sending is in progress" /*)*/;
+  static final String MESSAGE_5 = /*$$(*/ "Sender's email address is null or empty" /*)*/;
+  static final String MESSAGE_6 = /*$$(*/ "TO/CC/BCC recipient's email address is empty" /*)*/;
   static final String MESSAGE_MISSING_SELECTED_MESSAGES = /*$$(*/
       "Please select one or more messages." /*)*/;
-  static final String MESSAGES_SENT = /*$$(*/
-      "%d messages has been sent successfully and %d errors append." /*)*/;
+  static final String MESSAGES_SEND_IN_PROGRESS = /*$$(*/
+      "Email sending is in progress for %d messages." /*)*/;
   static final String MESSAGES_REGENERATED = /*$$(*/
       "%d messages has been regenerated successfully and %d errors append." /*)*/;
 }

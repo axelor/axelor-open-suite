@@ -267,7 +267,7 @@
 					<panel title="Assigned to" colSpan="12">
 						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
-						<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
+						<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
 				</panel>
 				<panel name="notes" title="Notes" colSpan="12">
@@ -301,7 +301,7 @@
 			<panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
 				<field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
-				<field name="supplierCatalogList" colSpan="12" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+				<field name="supplierCatalogList" colSpan="12" x-can-copy="true" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
 				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer/>
@@ -317,6 +317,7 @@
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode"/>
                 <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true"/>
 				<field name="isIspmRequired" hidden="true" showIf="isCustomer || isProspect"/>
+							<field name="isNeedingConformityCertificate" showIf="isCustomer || isProspect"/>
 				<field name="partnerStockSettingsList" colSpan="12"
 					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
                 <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form"/>
@@ -654,6 +655,7 @@
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-record-set-default"/>
+		<action name="action-partner-attrs-set-default"/>
 		<action name="action-partner-record-set-default-cash-management"/>
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
@@ -719,10 +721,20 @@
 		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
 		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$balance == 0"/>
 	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-set-default">
+	  <attribute name="value:add" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()" for="companySet"/>
+	</action-attrs>
 
-	<action-record name="action-partner-record-set-balance" model="com.axelor.apps.base.db.Partner">
-		<field name="$balance" expr="eval: __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueCustAccount }"/>
-	</action-record>
+    <action-record name="action-partner-record-set-balance"
+        model="com.axelor.apps.base.db.Partner">
+        <field name="$balance"
+            expr="#{accountingSituationList.stream().map(
+                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
+                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
+                    : (x -> x.balanceCustAccount)
+                ).sum()}"/>
+    </action-record>
 
 	<action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">
 		<field name="contactPartnerSet" expr="eval: null"/>
@@ -749,7 +761,6 @@
 		<field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}" />
 		<field name="user"  expr="#{__user__}"/>
 		<field name="team"  expr="#{__user__.activeTeam}"/>
-		<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
 		<field name="language" expr="#{__config__.app.getApp('base').getDefaultPartnerLanguage()}" />
 		<field name="isCustomer" expr="true" if="_isCustomer"/>
 		<field name="isSupplier" expr="true" if="_isSupplier"/>

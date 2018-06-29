@@ -16,7 +16,7 @@
                      ref="com.axelor.auth.db.User"/>
         <many-to-many name="authorizedGroupSet" title="Authorized groups"
                      ref="com.axelor.auth.db.Group"/>
-        <boolean name="generateProduct" title="Generate product?" default="true"/>
+        <boolean name="generateProduct" title="Generate product" default="true"/>
 
         <boolean name="isActive" title="Is Active" default="false"/>
 

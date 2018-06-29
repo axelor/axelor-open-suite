@@ -12,9 +12,9 @@
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" required="true"/>
     <many-to-one name="alarmMessage" ref="com.axelor.apps.base.db.AlarmMessage" title="Message" required="true"/>
     <integer name="managerTypeSelect" title="Manager Type" selection="alarm.engine.manager.type"/>
-    <boolean name="activeOk" title="Active ?" default="true"/>
-    <boolean name="lockingOk" title="Blocking ?" default="false"/>
-    <boolean name="externalOk" title="External ?" default="false"/>
+    <boolean name="activeOk" title="Active" default="true"/>
+    <boolean name="lockingOk" title="Blocking" default="false"/>
+    <boolean name="externalOk" title="External" default="false"/>
     
     <string name="query" title="Query" large="true"/>
  

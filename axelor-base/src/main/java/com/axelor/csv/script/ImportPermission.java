@@ -19,9 +19,12 @@ package com.axelor.csv.script;
 
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Permission;
+import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.PermissionRepository;
+import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Arrays;
@@ -61,6 +64,28 @@ public class ImportPermission {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    return bean;
+  }
+
+  @Transactional
+  public Object importPermissionToRole(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof Permission;
+
+    Permission permission = (Permission) bean;
+    String roleName = values.get("roleName").toString();
+    if (Strings.isNullOrEmpty(roleName)) {
+      return bean;
+    }
+
+    RoleRepository roleRepository = Beans.get(RoleRepository.class);
+    Role role = roleRepository.findByName(roleName);
+
+    if (role == null) {
+      return bean;
+    }
+
+    role.addPermission(permission);
     return bean;
   }
 }

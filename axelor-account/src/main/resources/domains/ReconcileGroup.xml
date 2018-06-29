@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="ReconcileGroup" lang="java">
+
+    <string name="code" title="Reference" readonly="true" namecolumn="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true" initParam="true"/>
+    <integer name="statusSelect" title="Status" default="1" readonly="true"
+      selection="account.reconcile.group.status.select"/>
+
+    <unique-constraint columns="code,company"/>
+    <finder-method name="findByCodeAndCompany" using="code,company"/>
+
+    <extra-code><![CDATA[
+      // STATUS SELECT
+      public static final int STATUS_TEMPORARY = 1;
+      public static final int STATUS_FINAL = 2;
+	]]></extra-code>
+  </entity>
+
+</domain-models>

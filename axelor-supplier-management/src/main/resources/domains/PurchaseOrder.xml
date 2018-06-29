@@ -10,7 +10,7 @@
 	
 	<!--   	Champ du module Supplier Management -->
 	<many-to-one name="parentPurchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Initial purchase order"/>
-	<boolean name="isPurchaseParent" title="Purchase order?"/>
+	<boolean name="isPurchaseParent" title="Purchase order"/>
 	
 	
   </entity>

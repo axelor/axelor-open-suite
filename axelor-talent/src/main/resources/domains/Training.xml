@@ -14,7 +14,7 @@
 		<string name="program" title="Program" large="true" />
 		<string name="objectives" title="Objectives" large="true" />
 		<decimal name="duration" title="Number of hours" />
-		<boolean name="mandatoryTraining" title="Mandatory training ?"/>
+		<boolean name="mandatoryTraining" title="Mandatory training"/>
 		<decimal name="rating" title="Rating" />
 	</entity>
 

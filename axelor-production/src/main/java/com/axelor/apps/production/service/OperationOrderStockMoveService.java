@@ -117,7 +117,8 @@ public class OperationOrderStockMoveService {
         virtualStockLocation,
         null,
         operationOrder.getPlannedStartDateT().toLocalDate(),
-        null);
+        null,
+        StockMoveRepository.TYPE_INTERNAL);
   }
 
   protected StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove)
@@ -201,7 +202,8 @@ public class OperationOrderStockMoveService {
             toStockLocation,
             null,
             operationOrder.getPlannedStartDateT().toLocalDate(),
-            null);
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     createNewStockMoveLines(operationOrder, newStockMove);
