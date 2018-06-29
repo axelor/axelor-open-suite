@@ -603,6 +603,7 @@
 "Project planning time",,,
 "Public Holiday Planning","Planning jours fériés",,
 "Public Holiday Plannings","Plannings jours fériés",,
+"Qty must be lower than %d.","La qté doit être inférieure à %d.",,
 "Quantity","Quantité",,
 "Quantity for stock","Quantité pour stock",,
 "Rate","Taux",,

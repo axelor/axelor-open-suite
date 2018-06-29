@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
@@ -78,6 +79,7 @@ public abstract class InvoiceGenerator {
   protected String externalReference;
   protected Boolean inAti;
   protected BankDetails companyBankDetails;
+  protected TradingName tradingName;
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   protected InvoiceGenerator(
@@ -93,7 +95,8 @@ public abstract class InvoiceGenerator {
       String internalReference,
       String externalReference,
       Boolean inAti,
-      BankDetails companyBankDetails)
+      BankDetails companyBankDetails,
+      TradingName tradingName)
       throws AxelorException {
 
     this.operationType = operationType;
@@ -109,6 +112,7 @@ public abstract class InvoiceGenerator {
     this.externalReference = externalReference;
     this.inAti = inAti;
     this.companyBankDetails = companyBankDetails;
+    this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
     this.journalService = new JournalService();
   }
@@ -130,7 +134,8 @@ public abstract class InvoiceGenerator {
       PriceList priceList,
       String internalReference,
       String externalReference,
-      Boolean inAti)
+      Boolean inAti,
+      TradingName tradingName)
       throws AxelorException {
 
     this.operationType = operationType;
@@ -141,6 +146,7 @@ public abstract class InvoiceGenerator {
     this.internalReference = internalReference;
     this.externalReference = externalReference;
     this.inAti = inAti;
+    this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
     this.journalService = new JournalService();
   }
@@ -258,6 +264,8 @@ public abstract class InvoiceGenerator {
 
     invoice.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
+
+    invoice.setTradingName(tradingName);
 
     // Set ATI mode on invoice
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);

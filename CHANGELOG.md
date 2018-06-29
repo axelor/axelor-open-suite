@@ -45,7 +45,13 @@
 - Opportunity: fix bugs of values being set wrongly when creating an opportunity from a partner or a lead.
 - Production process and bill of material : fix errors generated when adding an element with a priority to a list for the first time.
 - Production process: set as required the fields, "product", "qty", and "unit" to avoid NPE
+- Fix payment method field of a purchase order not displaying any value in edit mode.
 - Permission assistant: fix persisting import error.
+- BANK - bank details type : update BBAN translation
+- Invoice: fix trading name that was not set
+- Remove the blank part to the right at PurchaseOrderLine
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
+- In CRM sale stage change "Nouveau" by "Nouvelle".
 
 ## [5.0.2] - 2018-06-22
 ## Improvements

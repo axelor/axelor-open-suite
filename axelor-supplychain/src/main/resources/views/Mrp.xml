@@ -23,7 +23,7 @@
 	    <panel name="filters" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/>
 	        <field name="createdOn"/>
-	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6"/>
+	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="typeSelect != 3"/>
 	        <field name="endDate" colSpan="6"/>
 	        <panel-related field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false"/>
 	        <panel-related field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>

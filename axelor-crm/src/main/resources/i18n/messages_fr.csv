@@ -477,6 +477,7 @@
 "amount","Montant",,
 "com.axelor.apps.crm.job.EventReminderJob",,,
 "com.axelor.apps.crm.service.batch.CrmBatchService",,,
+"crm.New","Nouvelle",,
 "date",,,
 "every week's day","tous les jours de la semaine",,
 "everyday","tous les jours",,
