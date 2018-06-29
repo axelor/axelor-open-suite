@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
   <grid name="reconcile-group-grid" title="Reconcile group"
-    model="com.axelor.apps.account.db.ReconcileGroup">
+    model="com.axelor.apps.account.db.ReconcileGroup"
+    canNew="false">
     <field name="code"/>
     <field name="company"/>
   </grid>
