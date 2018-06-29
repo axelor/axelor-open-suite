@@ -19,7 +19,7 @@ package com.axelor.web;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Lead;
@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -46,13 +45,11 @@ import javax.ws.rs.core.MediaType;
 @Path("/map")
 public class MapRestCrm {
 
-  @Inject private MapService mapService;
+  @Inject private MapRestService mapRestService;
 
   @Inject private LeadRepository leadRepo;
 
   @Inject private OpportunityRepository opportunityRepo;
-
-  @Inject private AddressRepository addressRepo;
 
   private JsonNodeFactory factory = JsonNodeFactory.instance;
 
@@ -119,15 +116,14 @@ public class MapRestCrm {
         arrayNode.add(objectNode);
       }
 
-      mapService.setData(mainNode, arrayNode);
+      mapRestService.setData(mainNode, arrayNode);
     } catch (Exception e) {
-      mapService.setError(mainNode, e);
+      mapRestService.setError(mainNode, e);
     }
 
     return mainNode;
   }
 
-  @Transactional
   @Path("/opportunity")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -173,8 +169,7 @@ public class MapRestCrm {
         Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
 
         if (address != null) {
-          String addressString = mapService.makeAddressString(address, objectNode);
-          addressRepo.save(address);
+          String addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
         }
 
@@ -183,9 +178,9 @@ public class MapRestCrm {
         arrayNode.add(objectNode);
       }
 
-      mapService.setData(mainNode, arrayNode);
+      mapRestService.setData(mainNode, arrayNode);
     } catch (Exception e) {
-      mapService.setError(mainNode, e);
+      mapRestService.setError(mainNode, e);
     }
 
     return mainNode;

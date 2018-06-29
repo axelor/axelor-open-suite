@@ -55,6 +55,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,16 +208,14 @@ public class AddressController {
   public void viewMap(ActionRequest request, ActionResponse response) {
     try {
       Address address = request.getContext().asType(Address.class);
-      address = addressService.checkLatLong(address, false);
-      BigDecimal latit = address.getLatit();
-      BigDecimal longit = address.getLongit();
-      BigDecimal zero = BigDecimal.ZERO;
+      address = Beans.get(AddressRepository.class).find(address.getId());
+      Optional<Pair<BigDecimal, BigDecimal>> latLong = addressService.getOrUpdateLatLong(address);
 
-      if (zero.compareTo(latit) != 0 && zero.compareTo(longit) != 0) {
+      if (latLong.isPresent()) {
         MapService mapService = Beans.get(MapService.class);
         Map<String, Object> mapView = new HashMap<>();
         mapView.put("title", "Map");
-        mapView.put("resource", mapService.getMapUrl(latit, longit, address.getFullName()));
+        mapView.put("resource", mapService.getMapUrl(latLong.get(), address.getFullName()));
         mapView.put("viewType", "html");
         response.setView(mapView);
       } else {
@@ -248,21 +248,22 @@ public class AddressController {
         return;
       }
 
-      departureAddress = addressService.checkLatLong(departureAddress, false);
-      BigDecimal dLat = departureAddress.getLatit();
-      BigDecimal dLon = departureAddress.getLongit();
-      BigDecimal zero = BigDecimal.ZERO;
-      if (zero.compareTo(dLat) == 0 || zero.compareTo(dLon) == 0) {
+      departureAddress = Beans.get(AddressRepository.class).find(departureAddress.getId());
+      Optional<Pair<BigDecimal, BigDecimal>> departureLatLong =
+          addressService.getOrUpdateLatLong(departureAddress);
+
+      if (!departureLatLong.isPresent()) {
         response.setFlash(
             String.format(I18n.get(IExceptionMessage.ADDRESS_5), departureAddress.getFullName()));
         return;
       }
 
       Address arrivalAddress = request.getContext().asType(Address.class);
-      arrivalAddress = addressService.checkLatLong(arrivalAddress, false);
-      BigDecimal aLat = arrivalAddress.getLatit();
-      BigDecimal aLon = arrivalAddress.getLongit();
-      if (zero.compareTo(aLat) == 0 || zero.compareTo(aLon) == 0) {
+      arrivalAddress = Beans.get(AddressRepository.class).find(arrivalAddress.getId());
+      Optional<Pair<BigDecimal, BigDecimal>> arrivalLatLong =
+          addressService.getOrUpdateLatLong(departureAddress);
+
+      if (!arrivalLatLong.isPresent()) {
         response.setFlash(
             String.format(I18n.get(IExceptionMessage.ADDRESS_5), arrivalAddress.getFullName()));
         return;
@@ -270,7 +271,9 @@ public class AddressController {
 
       Map<String, Object> mapView = new HashMap<>();
       mapView.put("title", "Map");
-      mapView.put("resource", mapService.getDirectionUrl(key, dLat, dLon, aLat, aLon));
+      mapView.put(
+          "resource",
+          mapService.getDirectionUrl(key, departureLatLong.get(), arrivalLatLong.get()));
       mapView.put("viewType", "html");
       response.setView(mapView);
       response.setReload(true);
@@ -279,25 +282,16 @@ public class AddressController {
     }
   }
 
-  public void checkLatLong(ActionRequest request, ActionResponse response) {
+  public void updateLatLong(ActionRequest request, ActionResponse response) {
     try {
       Address address = request.getContext().asType(Address.class);
-      AppBase appBase = Beans.get(AppBase.class);
-      if (appBase.getMapApiSelect() == null
-          || (appBase.getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE
-              && appBase.getGoogleMapsApiKey() == null)) {
-        return;
-      }
-      addressService.checkLatLong(address, true);
+      address = Beans.get(AddressRepository.class).find(address.getId());
+      addressService.resetLatLong(address);
+      addressService.updateLatLong(address);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  @Deprecated
-  public void checkLatLang(ActionRequest request, ActionResponse response) {
-    checkLatLong(request, response);
   }
 
   public void createPartnerAddress(ActionRequest request, ActionResponse response) {
