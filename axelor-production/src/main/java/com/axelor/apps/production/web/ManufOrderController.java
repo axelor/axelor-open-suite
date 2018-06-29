@@ -33,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -139,10 +140,19 @@ public class ManufOrderController {
   public void plan(ActionRequest request, ActionResponse response) {
 
     try {
-      Long manufOrderId = (Long) request.getContext().get("id");
-      ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+      List<Integer> manufOrderIdList = (List<Integer>) request.getContext().get("_ids");
+      if (manufOrderIdList == null) {
+        Long manufOrderId = (Long) request.getContext().get("id");
+        manufOrderIdList = Lists.newArrayList(manufOrderId.intValue());
+      }
+      List<ManufOrder> manufOrderList =
+          manufOrderRepo
+              .all()
+              .filter("self.id in (:idList)")
+              .bind("idList", manufOrderIdList)
+              .fetch();
 
-      manufOrderWorkflowService.plan(manufOrder);
+      manufOrderWorkflowService.plan(manufOrderList);
 
       response.setReload(true);
     } catch (Exception e) {

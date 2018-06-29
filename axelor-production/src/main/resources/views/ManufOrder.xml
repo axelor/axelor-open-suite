@@ -6,6 +6,7 @@
     <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     	<toolbar>
     		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+    		<button name="plan" title="Plan" onClick="action-manuf-order-method-plan"/>
     	</toolbar>
     	<hilite color="danger" if="$get('productionOrder.prioritySelect') == 3"/>
   		<hilite color="warning" if="$get('productionOrder.prioritySelect') == 2"/>
