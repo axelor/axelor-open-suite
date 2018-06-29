@@ -35,9 +35,7 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
 
   @Override
   public AppProduction getAppProduction() {
-    return Query.of(AppProduction.class)
-        .cacheable()
-        .fetchOne();
+    return Query.of(AppProduction.class).cacheable().fetchOne();
   }
 
   @Override

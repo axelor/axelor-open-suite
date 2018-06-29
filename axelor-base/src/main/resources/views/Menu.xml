@@ -553,6 +553,14 @@
 		<view type="grid" name="import-configuration-grid" />
 		<view type="form" name="import-configuration-form" />
 	</action-view>
+	
+	<menuitem name="admin-root-convert-demo-file" parent="admin-root-maintenance"
+		title="Convert demo file" action="admin.root.convert.demo.file"/>
+		
+	<action-view name="admin.root.convert.demo.file" title="Convert demo file"
+		model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="convert-demo-file-wizard-form" />
+	</action-view>
 
 	<menuitem name="admin-root-indicator-generator-grouping" parent="admin-root-maintenance"
 		title="Indicators groups" action="admin.root.indicator.generator.grouping" />
