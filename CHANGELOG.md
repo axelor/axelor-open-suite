@@ -5,6 +5,7 @@
 - Add a panel with Shipping comments in the PackagingList Report.
 - Permission assistant: use language configuration.
 - User: validate password on change.
+- Convert demo data excel file into zip file containing csv files ready to import.
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
