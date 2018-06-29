@@ -67,6 +67,7 @@
 - Added the possibility to have production processes not limited to a single product and thus applicable to all bills of materials.
 - New default behaviour for Mrp, proposal type is now based on the product's procurement method if no stock rule exists.
 - Can now copy lines of a supplier catalog in partner view.
+- Remove useless dependencies in build.gradle files.
 
 ## Bug Fixes
 - Partner: check whether another partner with the same email address exist or not on save.
