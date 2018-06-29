@@ -281,4 +281,14 @@ public interface IExceptionMessage {
       "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
   String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
       "Password doesn't match with configured pattern." /*)*/;
+
+  /** Convert demo data file */
+  public static final String DUPLICATE_CSV_FILE_NAME_EXISTS = /*$$(*/
+      "Please remove duplicate csv file name from excel file." /*)*/;
+
+  public static final String CSV_FILE_NAME_NOT_EXISTS = /*$$(*/
+      "Please provide valid csv file name." /*)*/;
+  public static final String EXCEL_FILE_FORMAT_ERROR = /*$$(*/
+      "Improper format of excel file." /*)*/;
+  public static final String VALIDATE_FILE_TYPE = /*$$(*/ "Please import only excel file." /*)*/;
 }
