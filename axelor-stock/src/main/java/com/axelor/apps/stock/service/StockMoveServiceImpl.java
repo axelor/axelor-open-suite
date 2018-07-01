@@ -58,6 +58,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -66,6 +67,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -406,9 +408,20 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
     }
 
+    savePreviousQties(stockMove);
+
     stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
 
     stockMoveRepo.save(stockMove);
+  }
+
+  protected void savePreviousQties(StockMove stockMove) {
+    List<StockMoveLine> stockMoveLineList =
+        MoreObjects.firstNonNull(stockMove.getStockMoveLineList(), Collections.emptyList());
+
+    stockMoveLineList
+        .stream()
+        .forEach(stockMoveLine -> stockMoveLine.setPreviousQty(stockMoveLine.getQty()));
   }
 
   @Override
@@ -756,21 +769,42 @@ public class StockMoveServiceImpl implements StockMoveService {
   public void cancel(StockMove stockMove) throws AxelorException {
     LOG.debug("Annulation du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
 
-    stockMoveLineService.updateLocations(
-        stockMove.getFromStockLocation(),
-        stockMove.getToStockLocation(),
-        stockMove.getStatusSelect(),
-        StockMoveRepository.STATUS_CANCELED,
-        stockMove.getStockMoveLineList(),
-        stockMove.getEstimatedDate(),
-        false);
+    swapPreviousQties(stockMove);
 
-    stockMove.setStatusSelect(StockMoveRepository.STATUS_CANCELED);
-    stockMove.setRealDate(appBaseService.getTodayDate());
+    try {
+      stockMoveLineService.updateLocations(
+          stockMove.getFromStockLocation(),
+          stockMove.getToStockLocation(),
+          stockMove.getStatusSelect(),
+          StockMoveRepository.STATUS_CANCELED,
+          stockMove.getStockMoveLineList(),
+          stockMove.getEstimatedDate(),
+          false);
 
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-      partnerProductQualityRatingService.undoCalculation(stockMove);
+      stockMove.setStatusSelect(StockMoveRepository.STATUS_CANCELED);
+      stockMove.setRealDate(appBaseService.getTodayDate());
+
+      if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+        partnerProductQualityRatingService.undoCalculation(stockMove);
+      }
+    } finally {
+      swapPreviousQties(stockMove);
     }
+  }
+
+  protected void swapPreviousQties(StockMove stockMove) {
+    List<StockMoveLine> stockMoveLineList =
+        MoreObjects.firstNonNull(stockMove.getStockMoveLineList(), Collections.emptyList());
+
+    stockMoveLineList
+        .stream()
+        .filter(stockMoveLine -> stockMoveLine.getPreviousQty() != null)
+        .forEach(
+            stockMoveLine -> {
+              BigDecimal qty = stockMoveLine.getQty();
+              stockMoveLine.setQty(stockMoveLine.getPreviousQty());
+              stockMoveLine.setPreviousQty(qty);
+            });
   }
 
   @Override

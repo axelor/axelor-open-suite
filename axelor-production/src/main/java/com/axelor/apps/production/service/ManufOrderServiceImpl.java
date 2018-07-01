@@ -533,7 +533,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) {
+  public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
     Optional<StockMove> stockMoveOpt =
         manufOrder
@@ -551,22 +551,29 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
   @Override
   public void updateStockMoveFromManufOrder(
-      List<StockMoveLine> stockMoveLineList, StockMove stockMove) {
+      List<StockMoveLine> stockMoveLineList, StockMove stockMove) throws AxelorException {
     if (stockMoveLineList == null) {
       return;
     }
 
-    // add missing lines in stock move
-    stockMoveLineList
-        .stream()
-        .filter(stockMoveLine -> stockMoveLine.getStockMove() == null)
-        .forEach(stockMove::addStockMoveLineListItem);
+    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+    stockMoveService.cancel(stockMove);
 
-    // remove lines in stock move removed in manuf order
-    if (stockMove.getStockMoveLineList() != null) {
-      stockMove
-          .getStockMoveLineList()
-          .removeIf(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine));
+    try {
+      // add missing lines in stock move
+      stockMoveLineList
+          .stream()
+          .filter(stockMoveLine -> stockMoveLine.getStockMove() == null)
+          .forEach(stockMove::addStockMoveLineListItem);
+
+      // remove lines in stock move removed in manuf order
+      if (stockMove.getStockMoveLineList() != null) {
+        stockMove
+            .getStockMoveLineList()
+            .removeIf(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine));
+      }
+    } finally {
+      stockMoveService.plan(stockMove);
     }
   }
 
