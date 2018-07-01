@@ -170,23 +170,7 @@
         <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="stockMove.statusSelect"/>
     </grid>
-    
-    <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-group-stock-stockmoveline-production-onnew" onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
-		<panel name="main" readonlyIf="stockMove.statusSelect == 3">
-	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-set-product-info" onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form" grid-view="product-grid"/>
-	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product"/>
-	        <field name="productName" required="true" />
-	        <field name="qty" onChange="action-stock-move-line-group-qty-onchange" title="Consumed quantity"/>
-	        <field name="unitPriceUntaxed"/>
-        	<field name="unitPriceTaxed" hidden="true"/>
-	        <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
-	        <field name="stockMove" hidden="true"/>
-			<field name="stockMove.statusSelect" hidden="true"/>
-        </panel>
-    </form>
-    
+
     <action-method name="action-stock-move-line-compute-price">
     	<call class="com.axelor.apps.stock.web.StockMoveLineController" method="compute"/>
     </action-method>
