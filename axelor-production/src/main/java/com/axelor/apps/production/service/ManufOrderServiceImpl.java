@@ -517,12 +517,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (consumedStockMoveLineList == null) {
       return;
     }
-    Optional<StockMove> stockMoveOpt =
-        manufOrder
-            .getInStockMoveList()
-            .stream()
-            .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
-            .findFirst();
+    Optional<StockMove> stockMoveOpt = findPlannedInStockMove(manufOrder);
     if (!stockMoveOpt.isPresent()) {
       return;
     }
@@ -535,18 +530,31 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
-    Optional<StockMove> stockMoveOpt =
-        manufOrder
-            .getOutStockMoveList()
-            .stream()
-            .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
-            .findFirst();
+    Optional<StockMove> stockMoveOpt = findPlannedOutStockMove(manufOrder);
     if (!stockMoveOpt.isPresent()) {
       return;
     }
     StockMove stockMove = stockMoveOpt.get();
 
     updateStockMoveFromManufOrder(producedStockMoveLineList, stockMove);
+  }
+
+  @Override
+  public Optional<StockMove> findPlannedInStockMove(ManufOrder manufOrder) {
+    return manufOrder
+        .getInStockMoveList()
+        .stream()
+        .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
+        .findFirst();
+  }
+
+  @Override
+  public Optional<StockMove> findPlannedOutStockMove(ManufOrder manufOrder) {
+    return manufOrder
+        .getOutStockMoveList()
+        .stream()
+        .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
+        .findFirst();
   }
 
   @Override
