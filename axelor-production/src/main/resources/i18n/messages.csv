@@ -112,6 +112,7 @@
 "Duration between two cycles (hh:mm)",,,
 "Duration on MOs",,,
 "Enable production configurator",,,
+"Enable the process for other products",,,
 "End date",,,
 "Ending duration (hh:mm)",,,
 "Error during production's order's creation",,,

@@ -39,6 +39,7 @@
 - Permission assistant: use language configuration.
 - User: validate password on change.
 - Convert demo data excel file into zip file containing csv files ready to import.
+- Use base configuration to set the scale of costPrice in ManufOrder.
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
@@ -57,9 +58,12 @@
 - Removed app service initialization exception. App records must not be required to initialize service. 
 - Stock move: fix forbid a 'Planned' move and archived a 'Realized' move on delete.
 - Printing a non-ventilated invoice no longer saves the generated printing and attaches it to the invoice.
+- Production process : display the title of the field "name" on edit mode.
+- Added missing translation and made product field of a production process required when the process is not authorized for multiple products.
 - Production process: display the title of the field "name" on edit mode.
 - Manufacturing order: don't compute a new sequence (appears when we plan a canceled manufacturing order) if a definive sequence has been computed before.
 - Manufacturing order: fix quantity updating for manually added consumed products.
+- Fix duplicate name field when editing or creating a "individual" partner.
 
 
 ## [5.0.2] - 2018-06-22
