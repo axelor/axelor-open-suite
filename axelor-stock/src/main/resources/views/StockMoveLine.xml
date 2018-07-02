@@ -65,8 +65,8 @@
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"
             width="70px"/>
-        <field name="netWeight"
-            onChange="action-stock-move-line-group-net-weight-onchange"
+        <field name="netMass"
+            onChange="action-stock-move-line-group-net-mass-onchange"
             width="100px"/>
         <field name="trackingNumber"
             form-view="tracking-number-stock-move-line-form"
