@@ -79,10 +79,10 @@
         </field>
     </grid>
 
-	<form onNew="action-manuf-order-default-record" 
+	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits"
 	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
 	      onSave="save,action-manuf-order-set-draft-seq,save"
-	      onLoad="action-manuf-order-attrs-isConsProOnOperation" width="large">
+	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
@@ -360,6 +360,10 @@
 	<action-attrs name="action-manuf-order-attrs-filter-bill-of-material">
 		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true AND self.product.id = ${product?.id} &quot;" if="product != null"/>
 		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true &quot;" if="product == null"/>
+	</action-attrs>
+
+	<action-attrs name="action-manuf-order-attrs-price-digits">
+		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 
 	<action-validate name="action-manuf-order-validate-planned-end-date"
