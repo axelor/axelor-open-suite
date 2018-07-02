@@ -27,7 +27,7 @@
 - Production process: display the title of the field "name" on edit mode.
 - Manufacturing order: don't compute a new sequence (appears when we plan a canceled manufacturing order) if a definive sequence has been computed before.
 - Manufacturing order: fix quantity updating for manually added consumed products.
-
+- Fix duplicate name field when editing or creating a "individual" partner.
 
 ## [5.0.2] - 2018-06-22
 ## Improvements
