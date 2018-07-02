@@ -19,7 +19,9 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import javax.persistence.PersistenceException;
@@ -56,6 +58,17 @@ public class StockMoveManagementRepository extends StockMoveRepository {
       return stockMove;
     } catch (Exception e) {
       throw new PersistenceException(e);
+    }
+  }
+
+  @Override
+  public void remove(StockMove entity) {
+    if (entity.getStatusSelect() == STATUS_PLANNED) {
+      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_NOT_DELETED));
+    } else if (entity.getStatusSelect() == STATUS_REALIZED) {
+      entity.setArchived(true);
+    } else {
+      super.remove(entity);
     }
   }
 }
