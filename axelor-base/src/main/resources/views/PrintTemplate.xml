@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-  <grid name="print-template-grid" title="Print templates" model="com.axelor.apps.base.db.Print">
+  <grid name="print-template-grid" title="Print templates" model="com.axelor.apps.base.db.PrintTemplate">
     <field name="name"/>
     <field name="metaModel"/>
     <field name="language"/>
   </grid>
 
-  <form name="print-template-form" title="Print template" model="com.axelor.apps.base.db.Print">
+  <form name="print-template-form" title="Print template" model="com.axelor.apps.base.db.PrintTemplate">
     <panel>
       <field name="name"/>
       <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form"/>
