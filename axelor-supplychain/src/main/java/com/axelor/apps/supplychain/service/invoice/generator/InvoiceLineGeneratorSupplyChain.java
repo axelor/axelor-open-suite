@@ -164,6 +164,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
+      invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
     } else if (stockMoveLine != null) {
 
@@ -173,7 +174,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.price =
           Beans.get(UnitConversionService.class)
               .convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
-      invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
       invoiceLine.setPrice(price);
     }

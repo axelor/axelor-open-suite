@@ -30,9 +30,9 @@ public class TaxAccountService {
 
     if (accountManagement != null) {
       if (isPurchase) {
-    	if(isFixedAssets) {
-    	  return accountManagement.getPurchFixedAssetsAccount();
-    	}
+        if (isFixedAssets) {
+          return accountManagement.getPurchFixedAssetsAccount();
+        }
         return accountManagement.getPurchaseAccount();
       }
       return accountManagement.getSaleAccount();
@@ -40,7 +40,6 @@ public class TaxAccountService {
 
     return null;
   }
-
 
   public AccountManagement getTaxAccount(Tax tax, Company company) {
 

@@ -167,7 +167,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected InvoiceLine createInvoiceLine() throws AxelorException {
 
     InvoiceLine invoiceLine = new InvoiceLine();
-		boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
     invoiceLine.setInvoice(invoice);
 
