@@ -1,9 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <action-method name="action-stock-move-line-set-product-info" id="action-production-stock-move-line-set-product-info">
-        <call class="com.axelor.apps.production.web.StockMoveLineController" method="setProductInfo"/>
-    </action-method>
+  <grid name="stock-move-line-consumed-production-grid" title="Stock move lines"
+    orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
+    <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
+    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
+    <field name="productModel" form-view="product-form" grid-view="product-grid"
+      if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
+    <field name="qty" title="Consumed quantity" />
+    <field name="unitPriceUntaxed" x-scale="2" />
+    <field name="unitPriceTaxed" x-scale="2" hidden="true" />
+    <field name="unit" form-view="unit-form" grid-view="unit-grid" />
+    <field name="trackingNumber" form-view="tracking-number-form"
+      grid-view="tracking-number-grid" readonlyIf="id" />
+    <field name="stockMove.statusSelect" />
+  </grid>
+
+  <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
+    orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
+    <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
+    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
+    <field name="productModel" form-view="product-form" grid-view="product-grid"
+      if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
+    <field name="qty" title="Produced quantity" />
+    <field name="unitPriceUntaxed" x-scale="2" />
+    <field name="unitPriceTaxed" x-scale="2" hidden="true" />
+    <field name="unit" form-view="unit-form" grid-view="unit-grid" />
+    <field name="trackingNumber" form-view="tracking-number-form"
+      grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="id" />
+    <field name="stockMove.statusSelect" />
+  </grid>
+
+  <form name="stock-move-line-production-form" title="Stock move line"
+    model="com.axelor.apps.stock.db.StockMoveLine"
+    onNew="action-group-stock-stockmoveline-production-onnew"
+    onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
+    <panel name="main" readonlyIf="stockMove.statusSelect == 3">
+      <field name="product" canEdit="false" domain="self.expense = false"
+        onChange="action-group-stock-stockmoveline-product-onchange"
+        onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form"
+        grid-view="product-grid" readonlyIf="id" />
+      <field name="productModel" canEdit="false" domain="self.isModel = true"
+        form-view="product-form" grid-view="product-grid"
+        if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
+      <field name="productName" required="true" />
+      <field name="qty" onChange="action-stock-move-line-group-qty-onchange"
+        title="Consumed quantity" />
+      <field name="unitPriceUntaxed" />
+      <field name="unitPriceTaxed" hidden="true" />
+      <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid" />
+      <field name="trackingNumber" onChange="action-stock-move-line-record-product"
+        form-view="tracking-number-form" grid-view="tracking-number-grid"
+        domain="self.product = :product" readonlyIf="id" />
+      <field name="stockMove" hidden="true" />
+      <field name="stockMove.statusSelect" hidden="true" />
+    </panel>
+  </form>
+
+  <action-method name="action-stock-move-line-compute-price"
+    id="action-production-stock-move-line-compute-price">
+    <call class="com.axelor.apps.production.web.StockMoveLineController" method="compute" />
+  </action-method>
+
+  <action-method name="action-stock-move-line-set-product-info"
+    id="action-production-stock-move-line-set-product-info">
+    <call class="com.axelor.apps.production.web.StockMoveLineController"
+      method="setProductInfo" />
+  </action-method>
+
 </object-views>
