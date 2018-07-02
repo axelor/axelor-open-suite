@@ -39,7 +39,7 @@
     onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
     <panel name="main" readonlyIf="stockMove.statusSelect == 3">
       <field name="product" canEdit="false" domain="self.expense = false"
-        onChange="action-stock-move-line-set-product-info"
+        onChange="action-group-stock-stockmoveline-product-onchange"
         onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form"
         grid-view="product-grid" readonlyIf="id" />
       <field name="productModel" canEdit="false" domain="self.isModel = true"
@@ -58,6 +58,11 @@
       <field name="stockMove.statusSelect" hidden="true" />
     </panel>
   </form>
+
+  <action-method name="action-stock-move-line-compute-price"
+    id="action-production-stock-move-line-compute-price">
+    <call class="com.axelor.apps.production.web.StockMoveLineController" method="compute" />
+  </action-method>
 
   <action-method name="action-stock-move-line-set-product-info"
     id="action-production-stock-move-line-set-product-info">
