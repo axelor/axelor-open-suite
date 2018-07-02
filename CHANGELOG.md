@@ -23,6 +23,7 @@
 - In CRM sale stage change "Nouveau" by "Nouvelle".
 - Removed app service initialization exception. App records must not be required to initialize service. 
 - Stock move: fix forbid a 'Planned' move and archived a 'Realized' move on delete.
+- Printing a non-ventilated invoice no longer saves the generated printing and attaches it to the invoice.
 
 ## [5.0.2] - 2018-06-22
 ## Improvements
