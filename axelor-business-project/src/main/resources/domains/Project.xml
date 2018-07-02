@@ -10,6 +10,7 @@
         <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   		<decimal name="qty" title="Qty" default="1"/>
   		<decimal name="price" title="Unit price" precision="20" scale="10"/>
+  		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
   		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   		<decimal name="exTaxTotal" title="Total W.T."/>
 		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Original Sale order"/>

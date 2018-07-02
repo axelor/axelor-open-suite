@@ -25,6 +25,7 @@
 - Project: Add new task from project form is now done with pop-up.
 - Add a panel with Shipping comments in the PackagingList Report.
 - Remove unneeded required attribute for decimal in accounting situation
+- Rework project view
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
