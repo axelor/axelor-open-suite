@@ -6,8 +6,15 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Timer">
-    <one-to-many name="timerHistoryList" ref="com.axelor.apps.base.db.TimerHistory" mappedBy="timer"/>
-    <integer name="stateSelect" readonly="true" selection="base.timer.state.select"/>
+    <one-to-many name="timerHistoryList" ref="com.axelor.apps.base.db.TimerHistory"
+      mappedBy="timer"/>
+    <enum name="state" ref="TimerState" readonly="true" default="STOPPED"/>
+    <many-to-one name="assignedTo" ref="com.axelor.auth.db.User"/>
   </entity>
+
+  <enum name="TimerState">
+    <item name="STOPPED" title="Stopped"/>
+    <item name="STARTED" title="Started"/>
+  </enum>
 
 </domain-models>
