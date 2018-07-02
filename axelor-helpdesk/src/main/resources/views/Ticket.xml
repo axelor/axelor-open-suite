@@ -17,7 +17,7 @@
 		<field name="prioritySelect"/>
 		<field name="statusSelect"/>
 		<field name="progressSelect" widget="SelectProgress"/>
-		<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
+		<button name="takeCharge" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
 		<button name="startTicket" icon="fa-play" readonlyIf="statusSelect > 0" onClick="action-ticket-group-on-start,save"/>
 		<button name="validateTicket" icon="fa-check" readonlyIf="statusSelect > 1" onClick="action-ticket-group-on-validate,save"/>
 		<button name="finishTicket" icon="fa-power-off" readonlyIf="statusSelect > 2" onClick="action-ticket-record-set-closed-status,save"/>

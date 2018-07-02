@@ -33,7 +33,7 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-        <button name="grabLead" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
+        <button name="grabLead" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
