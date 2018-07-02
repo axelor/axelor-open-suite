@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -95,7 +96,11 @@ public class ManufOrderWorkflowService {
 
     manufOrderStockMoveService.createToProduceStockMove(manufOrder);
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
-    manufOrder.setManufOrderSeq(Beans.get(ManufOrderService.class).getManufOrderSeq());
+
+    if (Beans.get(SequenceService.class)
+        .isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
+      manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq());
+    }
 
     return manufOrderRepo.save(manufOrder);
   }

@@ -24,7 +24,7 @@
 		<panel name="main">
             <panel stacked="true" colSpan="8">
                 <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false" css="label-bold bold large"/>
-                <field name="name" hidden="true" showIf="!$readonly()" showTitle="false" css="label-bold bold large"/>
+                <field name="name" hidden="true" showIf="!$readonly()" css="label-bold bold large"/>
             </panel>
             <field name="$numberOfPhases" showTitle="false" readonly="true" showIf="$numberOfPhases > 0" colSpan="4">
                 <viewer depends="$numberOfPhases">

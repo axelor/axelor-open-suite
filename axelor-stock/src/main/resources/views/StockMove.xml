@@ -167,7 +167,10 @@
         </panel>
 
         <panel-tabs>
-            <panel-related height="6" field="stockMoveLineList" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence"/>
+            <panel name="stockMoveLineListPanel" title="Stock move lines" itemSpan="12">
+              <panel-related field="stockMoveLineList" showIf="statusSelect &lt;= 1" height="6" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" canRemove="statusSelect &lt; 2" />
+              <panel-related field="stockMoveLineList" showIf="statusSelect > 1" height="6" onChange="action-stock-move-method-compute,action-stock-move-line-method-change-conformity" readonlyIf="statusSelect == 3" grid-view="stock-move-line-non-draft-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" canRemove="statusSelect &lt; 2" />
+            </panel>
             <panel title="Freight Carrier" readonlyIf="statusSelect == 3 || statusSelect == 4" >
                 <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
