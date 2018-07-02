@@ -64,16 +64,32 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   @Override
   @Transactional(rollbackOn = {AxelorException.class, IOException.class, RuntimeException.class})
   public File getPrintedInvoice(Invoice invoice, boolean forceRefresh) throws AxelorException {
-    if (forceRefresh == false
-        && invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-        && invoice.getPrintedPDF() != null) {
-      Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
-      return path.toFile();
-    }
 
-    // if the invoice is not ventilated or missing a printing,
-    // we generate and save it.
-    return printAndSave(invoice);
+    // if invoice is ventilated (or just validated for advance payment invoices)
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+        || (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+            && invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED)) {
+
+      // return a previously generated printing if possible
+      if (!forceRefresh && invoice.getPrintedPDF() != null) {
+
+        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
+        return path.toFile();
+      } else {
+
+        // generate a new printing
+        return printAndSave(invoice);
+      }
+    } else {
+      // invoice is not ventilated (or validated for advance payment invoices) --> generate and
+      // don't save
+      return print(invoice);
+    }
+  }
+
+  public File print(Invoice invoice) throws AxelorException {
+    ReportSettings reportSettings = prepareReportSettings(invoice);
+    return reportSettings.generate().getFile();
   }
 
   public File printAndSave(Invoice invoice) throws AxelorException {

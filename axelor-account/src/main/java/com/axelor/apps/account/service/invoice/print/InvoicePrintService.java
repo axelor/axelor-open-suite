@@ -65,6 +65,15 @@ public interface InvoicePrintService {
   File getPrintedInvoice(Invoice invoice, boolean forceRefresh) throws AxelorException;
 
   /**
+   * Print an invoice but doesn't save the generated file in the invoice.
+   *
+   * @param invoice an invoice
+   * @return a file of the invoice printing.
+   * @throws AxelorException
+   */
+  public File print(Invoice invoice) throws AxelorException;
+
+  /**
    * Print an invoice, then save the generated file in this invoice.
    *
    * @param invoice an invoice

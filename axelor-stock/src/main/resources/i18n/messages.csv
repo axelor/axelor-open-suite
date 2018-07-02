@@ -41,6 +41,7 @@
 "Both source location address and delivery (to) address are required to define the delivery itinerary",,,
 "Buyer",,,
 "Buyer/Seller",,,
+"Can't delete a planned stock move",,,
 "Can't realize this stock move because of the ongoing inventory %s.",,,
 "Cancel",,,
 "Cancel reason",,,
