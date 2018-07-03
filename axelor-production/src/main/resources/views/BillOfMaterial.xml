@@ -5,10 +5,12 @@
     
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="fullName"/>
+    	<field name="company"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
         <field name="qty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
+        <field name="statusSelect"/>
     </grid>
 
 	<form name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" width="large"
@@ -35,8 +37,8 @@
 		</menubar>
 
 		<panel name="main">
-            <field name="statusSelect" showTitle="false" colSpan="12" readonly="false" widget="NavSelect"/>
-            <field name="$defaultBOMOnProduct" readonly="true" showTitle="false" colSpan="4" colOffset="8">
+            <field name="statusSelect" showTitle="false" colSpan="8" readonly="false" widget="NavSelect"/>
+            <field name="$defaultBOMOnProduct" readonly="true" showTitle="false" colSpan="4">
                 <viewer depends="$defaultBOMOnProduct, product.defaultBillOfMaterial">
                     <![CDATA[
                         <h4 class="text-right">
@@ -45,8 +47,18 @@
                         </h4>
                 ]]></viewer>
             </field>
-			<field name="fullName" hidden="true" showIf="$readonly()" colSpan="12" showTitle="false" css="label-bold bold large"/>
-			<field name="name" hidden="true" showIf="!$readonly()" colSpan="12"/>
+			<field name="fullName" showTitle="false" colSpan="12">
+				<viewer depends="name">
+					<![CDATA[
+						<h3>
+							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.fullName}}</span>
+						</h3>
+					]]>
+				</viewer>
+				<editor>
+					<field name="name" showTitle="true" css="label-bold bold large"/>
+				</editor>
+			</field>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company"/>
 			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
@@ -57,9 +69,7 @@
 
 		<panel-tabs>
 			<panel title="Components">
-				<panel>
-				    <button name="openBomTree" title="Open tree" onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3" css="btn-custom"/>
-				</panel>
+				<button name="openBomTree" title="Open tree" onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3" css="btn-custom"/>
 				<field name="$numberOfComponents" showTitle="false" readonly="true" colSpan="9" showIf="$numberOfComponents > 0">
 					<viewer depends="$numberOfComponents">
                         <![CDATA[

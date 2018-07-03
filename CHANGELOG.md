@@ -8,20 +8,26 @@
 - Manuf Order: add status in BOM and create manufacturing order only with "Applicable" BOM
 - Prod Process: add status and create manufacturing order only with "Applicable" prod process
 - Add ISPM15 feature on Picking stock move report.
+- New menu entry for calendars and a new sharing system.
 - Product description can be copy to Invoice/Order/Purchase line.
 - Automatic mail on stock move planning.
 - New printing: certificate of conformity on stock move.
+- Purchases : possibility to set purchases as fixed assets.
 - Add a Job to update the currency conversion rates from a scheduler.
 - Add reconcile group which is a group of move lines. It also contains the reconciles between the lines.
 - Ticket: add mail subject field in order to choose the default subject for each mail sent to followers. 
+- Balance on top of Partner view become configurable for use specific balance
 
 ## Improvements
 - Add Partner balance as a new Accounting report.
+- Rework opportunity view
 - Remove all question marks (?) from boolean fields names.
 - Message : Run the process of send an email in a separate thread to avoid thread blocking.
 - Project: Add new task from project form is now done with pop-up.
 - Add a panel with Shipping comments in the PackagingList Report.
 - Remove unneeded required attribute for decimal in accounting situation
+- Rework TeamTask UI
+- Production processes: display status in grid view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -34,6 +40,10 @@
 - Add a panel with Shipping comments in the PackagingList Report.
 - Permission assistant: use language configuration.
 - User: validate password on change.
+- Convert demo data excel file into zip file containing csv files ready to import.
+- Use base configuration to set the scale of costPrice in ManufOrder.
+- Production process: remove process line list from grid view and add company.
+- Bill of materials: display company and status in grid view.
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
@@ -42,7 +52,27 @@
 - Opportunity: fix bugs of values being set wrongly when creating an opportunity from a partner or a lead.
 - Production process and bill of material : fix errors generated when adding an element with a priority to a list for the first time.
 - Production process: set as required the fields, "product", "qty", and "unit" to avoid NPE
+- Fix payment method field of a purchase order not displaying any value in edit mode.
 - Permission assistant: fix persisting import error.
+- BANK - bank details type : update BBAN translation
+- Invoice: fix trading name that was not set
+- Remove the blank part to the right at PurchaseOrderLine
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
+- In CRM sale stage change "Nouveau" by "Nouvelle".
+- Removed app service initialization exception. App records must not be required to initialize service. 
+- Stock move: fix forbid a 'Planned' move and archived a 'Realized' move on delete.
+- Printing a non-ventilated invoice no longer saves the generated printing and attaches it to the invoice.
+- Production process : display the title of the field "name" on edit mode.
+- Added missing translation and made product field of a production process required when the process is not authorized for multiple products.
+- Production process: display the title of the field "name" on edit mode.
+- Manufacturing order: don't compute a new sequence (appears when we plan a canceled manufacturing order) if a definive sequence has been computed before.
+- Manufacturing order: fix quantity updating for manually added consumed products.
+- Fix duplicate name field when editing or creating a "individual" partner.
+- Logistical form: in M2O forwarder, we should be able to select carrier or supplier partner only.
+- Partner demo data: fix import carrier partner sequence.
+- Rework on menu 'Custom fields' of App builder.
+- Manufacturing order: fix updating of quantities in stock locations when updating real quantities.
+
 
 ## [5.0.2] - 2018-06-22
 ## Improvements

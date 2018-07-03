@@ -15,12 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.app;
+package com.axelor.apps.base.service.imports;
 
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 
-public interface AccessConfigImportService {
+public interface ConvertDemoDataFileService {
 
-  public void importAccessConfig(MetaFile metaFile) throws AxelorException;
+  public MetaFile convertDemoDataExcelFile(File excelFile)
+      throws IOException, AxelorException, ParseException;
 }

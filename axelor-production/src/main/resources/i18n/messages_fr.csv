@@ -112,6 +112,7 @@
 "Duration between two cycles (hh:mm)","Temps entre 2 cycles (hh:mm)",,
 "Duration on MOs","Durée passée sur les OF",,
 "Enable production configurator","Activer les configurateurs de production",,
+"Enable the process for other products","Autoriser l’usage de la gamme pour d’autres produits",,
 "End date","Date de fin",,
 "Ending duration (hh:mm)","Temps clôture (hh:mm)",,
 "Error during production's order's creation","Erreur lors de la création de l'ordre de production",,

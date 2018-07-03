@@ -113,6 +113,7 @@ public class BatchLeaveManagement extends BatchStrategy {
                   Iterables.transform(
                       hrBatch.getEmployeeSet(),
                       new Function<Employee, String>() {
+                        @Override
                         public String apply(Employee obj) {
                           return obj.getId().toString();
                         }
@@ -126,6 +127,7 @@ public class BatchLeaveManagement extends BatchStrategy {
                   Iterables.transform(
                       hrBatch.getPlanningSet(),
                       new Function<WeeklyPlanning, String>() {
+                        @Override
                         public String apply(WeeklyPlanning obj) {
                           return obj.getId().toString();
                         }
@@ -212,16 +214,17 @@ public class BatchLeaveManagement extends BatchStrategy {
 
       try {
         int integer = LeaveLine.class.getField("quantity").getAnnotation(Digits.class).integer();
-        BigDecimal limit = new BigDecimal(Math.pow(10, integer));
+        BigDecimal limit = new BigDecimal((long) Math.pow(10, integer));
         if (qty.compareTo(limit) >= 0 || totalQty.compareTo(limit) >= 0) {
           throw new AxelorException(
               employee,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS));
+              I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS),
+              limit.longValue());
         }
 
       } catch (NoSuchFieldException | SecurityException e) {
-        e.printStackTrace();
+        throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
       }
 
       leaveLine.setQuantity(qty.setScale(4, RoundingMode.HALF_EVEN));

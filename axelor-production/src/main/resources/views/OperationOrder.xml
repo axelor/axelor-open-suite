@@ -95,12 +95,12 @@
 			<panel name="plannedDates" title="Planned dates" colSpan="6">
 				<field name="plannedStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="plannedEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
-				<field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true"/>
+				<field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true" x-big="true"/>
 			</panel>
 			<panel name="realDates" title="Real dates" colSpan="6">
 				<field name="realStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="realEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
-				<field name="realDuration" colSpan="12" widget="duration" x-seconds="true"/>
+				<field name="realDuration" colSpan="12" widget="duration" x-seconds="true" x-big="true"/>
 			</panel>
 		</panel>
 		<panel name="resources" title="Resources" colSpan="12" readonlyIf="statusSelect == 6">

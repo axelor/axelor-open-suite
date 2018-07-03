@@ -29,6 +29,12 @@
 		<option value='tax'>Tax</option>
 		<option value='view'>View</option>
 	</selection>
+
+    <selection name='account.partner.bal.config.select'>
+        <option value='1'>Total balance</option>
+        <option value='2'>Due balance</option>
+        <option value='3'>Due balance recoverable</option>
+    </selection>
 	
 	<selection name='invoice.account.condition.invoice.sending.format.select'>
 		<option value='email'>Email</option>

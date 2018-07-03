@@ -21,6 +21,7 @@
 
 		<boolean name="printReportOnVentilation" title="Print report on invoice ventilation" default="true" />
 
+        <integer name="partnerBalConfigSelect" title="Partner balance viewer configuration" selection="account.partner.bal.config.select" default="1"/>
 
 		<boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice" default="true"/>
         <boolean name="paymentVouchersOnInvoice" />

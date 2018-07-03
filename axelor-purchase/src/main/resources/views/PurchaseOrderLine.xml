@@ -103,6 +103,7 @@
 			<field name="exTaxTotal" readonly="true"/>
 			<field name="inTaxTotal" readonly="true"/>
 			<field name="saleMinPrice" readonly="true"/>
+			<field name="fixedAssets" widget="boolean-switch"/>
 			<field name="salePrice" hidden="true"/>
 			<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 		</panel>

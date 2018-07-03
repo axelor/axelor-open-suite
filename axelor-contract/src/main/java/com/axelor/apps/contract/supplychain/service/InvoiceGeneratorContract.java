@@ -36,6 +36,7 @@ public abstract class InvoiceGeneratorContract extends InvoiceGenerator {
         null,
         contract.getContractId(),
         null,
+        null,
         null);
     this.contract = contract;
     this.currency = contract.getCurrency();
