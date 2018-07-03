@@ -7,7 +7,8 @@
 - User: validate password on change.
 - Convert demo data excel file into zip file containing csv files ready to import.
 - Use base configuration to set the scale of costPrice in ManufOrder.
-- BillOfMaterial : display company and status in grid view
+- Production process: remove process line list from grid view and add company.
+- Bill of materials: display company and status in grid view.
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
