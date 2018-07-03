@@ -51,8 +51,8 @@
   </action-method>
   
   <action-attrs name="action-wkf-attrs-set-status-field-domain">
-  	<attribute name="domain" for="statusField" expr="eval:&quot;self.model = '${model}' and self.modelField = '${jsonField}' and (self.type = 'string' or self.type = 'integer')&quot;" if="!isJson" />
-  	<attribute name="domain" for="statusField" expr="eval:&quot;self.jsonModel.name = '${model}' and (self.type = 'string' or self.type = 'integer')&quot;" if="isJson"/>
+  	<attribute name="domain" for="statusField" expr="eval:&quot;self.model = '${model}' and self.modelField = '${jsonField}' and (self.type = 'string' or self.type = 'integer') and self.appBuilder.id = ${appBuilder?.id} &quot;" if="!isJson" />
+  	<attribute name="domain" for="statusField" expr="eval:&quot;self.jsonModel.name = '${model}' and (self.type = 'string' or self.type = 'integer') and (self.appBuilder.id = ${appBuilder?.id} or self.jsonModel.appBuilder.id = ${appBuilder?.id}) &quot;" if="isJson"/>
   </action-attrs>
   
   <action-attrs name="action-wkf-reset-model">

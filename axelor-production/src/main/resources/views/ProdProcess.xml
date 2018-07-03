@@ -5,10 +5,11 @@
     
     <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
     	<field name="name"/>
+    	<field name="company"/>
     	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
         <field name="product"/>
-        <field name="prodProcessLineList" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
+        <field name="statusSelect"/>
     </grid>
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
