@@ -5,6 +5,13 @@ import com.axelor.apps.base.db.TimerHistory;
 import com.axelor.apps.base.db.TimerState;
 import com.axelor.apps.base.db.repo.TimerHistoryRepository;
 import com.axelor.apps.base.db.repo.TimerRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
@@ -15,12 +22,16 @@ public abstract class AbstractTimerService implements TimerService {
 
   protected TimerRepository timerRepository;
   protected TimerHistoryRepository timerHistoryRepository;
+  protected UserService userService;
 
   @Inject
   public AbstractTimerService(
-      TimerRepository timerRepository, TimerHistoryRepository timerHistoryRepository) {
+      TimerRepository timerRepository,
+      TimerHistoryRepository timerHistoryRepository,
+      UserService userService) {
     this.timerRepository = timerRepository;
     this.timerHistoryRepository = timerHistoryRepository;
+    this.userService = userService;
   }
 
   @Override
@@ -64,5 +75,35 @@ public abstract class AbstractTimerService implements TimerService {
     List<TimerHistory> histories = timerHistoryRepository.findByTimer(timer).fetch();
     histories.forEach(timerHistoryRepository::remove);
     timer.setState(TimerState.STOPPED);
+  }
+
+  @Transactional
+  protected Timer tryStartOrCreate(Timer timer) throws AxelorException {
+    if (timer == null) {
+      timer = new Timer();
+      timer.setAssignedTo(userService.getUser());
+    } else if (timer.getState().equals(TimerState.STARTED)) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.TIMER_IS_NOT_STOPPED));
+    }
+    timer.setState(TimerState.STARTED);
+    return timerRepository.save(timer);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class, RuntimeException.class})
+  public TimerHistory stop(Model model, Timer timer, LocalDateTime dateTime)
+      throws AxelorException {
+    Preconditions.checkNotNull(timer, I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
+
+    TimerHistory last = timerHistoryRepository.findByTimer(timer).order("-startDate").fetchOne();
+    if (last == null) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
+    }
+    last.setEndDate(dateTime);
+    timer.setState(TimerState.STOPPED);
+
+    return last;
   }
 }

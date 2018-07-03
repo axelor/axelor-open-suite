@@ -292,4 +292,7 @@ public interface IExceptionMessage {
   public static final String EXCEL_FILE_FORMAT_ERROR = /*$$(*/
       "Improper format of excel file." /*)*/;
   public static final String VALIDATE_FILE_TYPE = /*$$(*/ "Please import only excel file." /*)*/;
+
+  String TIMER_IS_NOT_STOPPED = /*$$(*/ "You can't start a timer that has already started" /*)*/;
+  String TIMER_IS_NOT_STARTED = /*$$(*/ "You can't stop a timer that hasn't been started" /*)*/;
 }

@@ -19,7 +19,8 @@
 - Balance on top of Partner view become configurable for use specific balance
 - Project: Can now generate project with task templates by product.
 - Add abstract class and interface for time model: "Timer" and "TimerHistory".
-- Add Timer on TeamTask.
+- Add Timer to TeamTask.
+- Add Timer to Ticket.
 
 ## Improvements
 - Add Partner balance as a new Accounting report.
