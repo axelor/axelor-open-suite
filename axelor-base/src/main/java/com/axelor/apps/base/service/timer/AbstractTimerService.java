@@ -2,9 +2,9 @@ package com.axelor.apps.base.service.timer;
 
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.TimerHistory;
+import com.axelor.apps.base.db.TimerState;
 import com.axelor.apps.base.db.repo.TimerHistoryRepository;
 import com.axelor.apps.base.db.repo.TimerRepository;
-import com.axelor.db.Model;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
@@ -60,8 +60,9 @@ public abstract class AbstractTimerService implements TimerService {
 
   @Override
   @Transactional
-  public void cancel(Model model, Timer timer, LocalDateTime dateTime) {
+  public void cancel(Timer timer) {
     List<TimerHistory> histories = timerHistoryRepository.findByTimer(timer).fetch();
     histories.forEach(timerHistoryRepository::remove);
+    timer.setState(TimerState.STOPPED);
   }
 }

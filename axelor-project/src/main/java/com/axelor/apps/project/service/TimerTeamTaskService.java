@@ -15,5 +15,7 @@ public interface TimerTeamTaskService {
 
   TimerHistory stop(TeamTask task, LocalDateTime dateTime) throws AxelorException;
 
+  void cancel(TeamTask task) throws AxelorException;
+
   Duration compute(TeamTask task);
 }

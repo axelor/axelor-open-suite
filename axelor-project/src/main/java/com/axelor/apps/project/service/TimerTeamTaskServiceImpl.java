@@ -40,7 +40,7 @@ public class TimerTeamTaskServiceImpl extends AbstractTimerService implements Ti
 
     return task.getTimerList()
         .stream()
-        .filter(t -> t.getAssignedTo() == user && t.getState() == TimerState.STARTED)
+        .filter(t -> t.getAssignedTo() == user)
         .findFirst()
         .orElse(null);
   }
@@ -105,6 +105,12 @@ public class TimerTeamTaskServiceImpl extends AbstractTimerService implements Ti
   public TimerHistory stop(TeamTask task, LocalDateTime dateTime) throws AxelorException {
     Timer timer = find(task);
     return stop(task, timer, dateTime);
+  }
+
+  @Override
+  public void cancel(TeamTask task) {
+    Timer timer = find(task);
+    cancel(timer);
   }
 
   @Override

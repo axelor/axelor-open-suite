@@ -18,6 +18,8 @@
 - Ticket: add mail subject field in order to choose the default subject for each mail sent to followers. 
 - Balance on top of Partner view become configurable for use specific balance
 - Project: Can now generate project with task templates by product.
+- Add abstract class and interface for time model: "Timer" and "TimerHistory".
+- Add Timer on TeamTask.
 
 ## Improvements
 - Add Partner balance as a new Accounting report.
