@@ -265,6 +265,9 @@ public class ManufOrderWorkflowService {
           .getProducedStockMoveLineList()
           .forEach(stockMoveLine -> stockMoveLine.setProducedManufOrder(null));
     }
+    if (manufOrder.getDiffConsumeProdProductList() != null) {
+      manufOrder.clearDiffConsumeProdProductList();
+    }
 
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_CANCELED);
     manufOrderRepo.save(manufOrder);
