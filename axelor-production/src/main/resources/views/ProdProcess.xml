@@ -9,6 +9,7 @@
     	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
         <field name="product"/>
+        <field name="statusSelect"/>
     </grid>
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"

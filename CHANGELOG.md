@@ -26,6 +26,7 @@
 - Add a panel with Shipping comments in the PackagingList Report.
 - Remove unneeded required attribute for decimal in accounting situation
 - Rework TeamTask UI
+- Production processes: display status in grid view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
