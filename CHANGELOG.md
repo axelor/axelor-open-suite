@@ -40,6 +40,8 @@
 - User: validate password on change.
 - Convert demo data excel file into zip file containing csv files ready to import.
 - Use base configuration to set the scale of costPrice in ManufOrder.
+- Production process: remove process line list from grid view and add company.
+- Bill of materials: display company and status in grid view.
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
@@ -65,6 +67,8 @@
 - Manufacturing order: fix quantity updating for manually added consumed products.
 - Fix duplicate name field when editing or creating a "individual" partner.
 - Logistical form : In M2O forwarder, we should be able to select carrier or supplier partner only.
+- Partner demo data : Fix import carrier partner sequence.
+- Rework on menu 'Custom fields' of App builder.
 
 
 ## [5.0.2] - 2018-06-22

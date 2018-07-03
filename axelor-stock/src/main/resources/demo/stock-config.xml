@@ -43,8 +43,9 @@
 	</input>
 
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId">
+		<bind to="partnerSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.PARTNER)" />
 		<bind to="isCarrier" eval="true"/>
-		<bind to="language" search="self.code = :languageCode"></bind>
+		<bind to="language" search="self.code = :languageCode"/>
 	</input>
   
     <input file="stock_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId"/>
