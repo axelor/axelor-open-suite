@@ -15,14 +15,14 @@
 - Event: fix recurrence configurations.
 - Partner: fix opening client situation report.
 - Opportunity: fix bugs of values being set wrongly when creating an opportunity from a partner or a lead.
-- Production process and bill of material : fix errors generated when adding an element with a priority to a list for the first time.
+- Production process and bill of material: fix errors generated when adding an element with a priority to a list for the first time.
 - Production process: set as required the fields, "product", "qty", and "unit" to avoid NPE
 - Fix payment method field of a purchase order not displaying any value in edit mode.
 - Permission assistant: fix persisting import error.
-- BANK - bank details type : update BBAN translation
+- BANK - bank details type: update BBAN translation
 - Invoice: fix trading name that was not set
 - Remove the blank part to the right at PurchaseOrderLine
-- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
+- Fix MRP: stock location filter. Only internal and external stock location should be able to use on MRP
 - In CRM sale stage change "Nouveau" by "Nouvelle".
 - Removed app service initialization exception. App records must not be required to initialize service. 
 - Stock move: fix forbid a 'Planned' move and archived a 'Realized' move on delete.
@@ -33,9 +33,10 @@
 - Manufacturing order: don't compute a new sequence (appears when we plan a canceled manufacturing order) if a definive sequence has been computed before.
 - Manufacturing order: fix quantity updating for manually added consumed products.
 - Fix duplicate name field when editing or creating a "individual" partner.
-- Logistical form : In M2O forwarder, we should be able to select carrier or supplier partner only.
-- Partner demo data : Fix import carrier partner sequence.
+- Logistical form: in M2O forwarder, we should be able to select carrier or supplier partner only.
+- Partner demo data: fix import carrier partner sequence.
 - Rework on menu 'Custom fields' of App builder.
+- Manufacturing order: fix updating of quantities in stock locations when updating real quantities.
 
 
 ## [5.0.2] - 2018-06-22
