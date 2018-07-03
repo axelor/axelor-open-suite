@@ -32,6 +32,7 @@
 - Manufacturing order: fix quantity updating for manually added consumed products.
 - Fix duplicate name field when editing or creating a "individual" partner.
 - Logistical form : In M2O forwarder, we should be able to select carrier or supplier partner only.
+- Partner demo data : Fix import carrier partner sequence.
 
 
 ## [5.0.2] - 2018-06-22
