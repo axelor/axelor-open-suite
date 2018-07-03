@@ -29,7 +29,6 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface ManufOrderService {
 
@@ -158,20 +157,4 @@ public interface ManufOrderService {
    */
   void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove)
       throws AxelorException;
-
-  /**
-   * Find planned input stock move.
-   *
-   * @param manufOrder
-   * @return
-   */
-  Optional<StockMove> findPlannedInStockMove(ManufOrder manufOrder);
-
-  /**
-   * Find planned output stock move.
-   *
-   * @param manufOrder
-   * @return
-   */
-  Optional<StockMove> findPlannedOutStockMove(ManufOrder manufOrder);
 }
