@@ -15,7 +15,9 @@
 		<field name="projectCategory"/>
 	</grid>
 	
-	<form title="Task" id="project-team-task-grid" name="team-task-form"  model="com.axelor.team.db.TeamTask" onNew="action-task-defaults" width="large">
+	<form title="Task" id="project-team-task-grid" name="team-task-form"
+		model="com.axelor.team.db.TeamTask" onNew="action-task-defaults"
+		onLoad="action-team-task-group-timer-process" width="large">
 		<toolbar>
 			<button name="grabEvent" icon="fa-suitcase" onClick="action-team-task-record-assigned-yourself,save"/>
 			<button name="start" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
@@ -81,6 +83,21 @@
 				<field name="quantity" colSpan="6"/>
 				<field name="unit" colSpan="6" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="currency" colSpan="6"/>
+			</panel>
+			<panel title="Timer" showIf="id" hidden="true">
+				<panel title="Actions">
+					<button name="btnStartTimer" title="Start" icon="fa-play" colSpan="12" hidden="true"
+						onClick="action-team-task-method-start-timer"/>
+					<button name="btnStopTimer" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
+						onClick="action-team-task-method-stop-timer"/>
+					<button name="btnCancelTimer" title="Cancel" icon="fa-times-circle" colSpan="12"
+						hidden="true" onClick="action-team-task-method-cancel-timer"/>
+				</panel>
+				<panel>
+					<field name="$_totalTimerDuration" type="decimal" readonly="true"
+						title="Total duration (Hours)"
+						colSpan="12"/>
+				</panel>
 			</panel>
 		</panel-tabs>
 		<panel-mail>
@@ -282,5 +299,31 @@
 		<field name="unit" expr="eval: product?.salesUnit ?: product?.unit"/>
 		<field name="currency" expr="eval: product?.saleCurrency"/>
 	</action-record>
+
+	<action-method name="action-team-task-method-manage-timer-buttons">
+		<call class="com.axelor.apps.project.web.TeamTaskController" method="manageTimerButtons"/>
+	</action-method>
+
+	<action-method name="action-team-task-method-compute-total-timer-duration">
+		<call class="com.axelor.apps.project.web.TeamTaskController"
+			method="computeTotalTimerDuration"/>
+	</action-method>
+
+	<action-group name="action-team-task-group-timer-process">
+		<action name="action-team-task-method-manage-timer-buttons"/>
+		<action name="action-team-task-method-compute-total-timer-duration"/>
+	</action-group>
+
+	<action-method name="action-team-task-method-start-timer">
+		<call class="com.axelor.apps.project.web.TeamTaskController" method="startTimer"/>
+	</action-method>
+
+	<action-method name="action-team-task-method-stop-timer">
+		<call class="com.axelor.apps.project.web.TeamTaskController" method="stopTimer"/>
+	</action-method>
+
+	<action-method name="action-team-task-method-cancel-timer">
+		<call class="com.axelor.apps.project.web.TeamTaskController" method="cancelTimer"/>
+	</action-method>
 
 </object-views>

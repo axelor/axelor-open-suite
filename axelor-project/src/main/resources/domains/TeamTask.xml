@@ -31,7 +31,9 @@
 		<many-to-many name="finishToStartSet" title="Predecessors tasks" ref="TeamTask" />
 		<decimal name="durationHours" title="Duration hours" />
 		<date name="taskEndDate" title="Task end" />
-	  
+
+		<one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
+
 	 <track>
 	 	<field name="sequence"/>
 	 	<field name="project"/>
