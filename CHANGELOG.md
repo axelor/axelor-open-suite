@@ -15,6 +15,7 @@
 - Purchases : possibility to set purchases as fixed assets.
 - Add a Job to update the currency conversion rates from a scheduler.
 - Add reconcile group which is a group of move lines. It also contains the reconciles between the lines.
+- Ticket: add mail subject field in order to choose the default subject for each mail sent to followers. 
 - Balance on top of Partner view become configurable for use specific balance
 - Project: Can now generate project with task templates by product.
 
