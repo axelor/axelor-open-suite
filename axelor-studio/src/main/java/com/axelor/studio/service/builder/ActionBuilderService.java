@@ -31,7 +31,7 @@ public class ActionBuilderService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject private ActionViewBuilderService actionViewBuilderService;
-  
+
   @Inject private ActionScriptBuilderService actionScriptBuilderService;
 
   @Transactional

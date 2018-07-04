@@ -30,109 +30,106 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 public class ActionViewBuilderService {
 
-	private static final String INDENT = "\t";
+  private static final String INDENT = "\t";
 
-	@Inject
-	private StudioMetaService metaService;
+  @Inject private StudioMetaService metaService;
 
-	public MetaAction build(ActionBuilder builder) {
+  public MetaAction build(ActionBuilder builder) {
 
-		List<ActionBuilderView> views = builder.getActionBuilderViews();
-		if (views == null || views.isEmpty()) {
-			return null;
-		}
+    List<ActionBuilderView> views = builder.getActionBuilderViews();
+    if (views == null || views.isEmpty()) {
+      return null;
+    }
 
-		StringBuilder xml = new StringBuilder();
+    StringBuilder xml = new StringBuilder();
 
-		String model = appendBasic(builder, xml);
+    String model = appendBasic(builder, xml);
 
-		appendViews(views, xml);
+    appendViews(views, xml);
 
-		appendParams(builder.getViewParams(), xml);
+    appendParams(builder.getViewParams(), xml);
 
-		appendDomain(builder.getDomainCondition(), builder.getIsJson(), xml);
+    appendDomain(builder.getDomainCondition(), builder.getIsJson(), xml);
 
-		appendContext(builder, xml);
+    appendContext(builder, xml);
 
-		xml.append("\n" + "</action-view>");
+    xml.append("\n" + "</action-view>");
 
-		return metaService.updateMetaAction(builder.getName(), "action-view", xml.toString(), model);
+    return metaService.updateMetaAction(builder.getName(), "action-view", xml.toString(), model);
+  }
 
-	}
+  private void appendParams(List<ActionBuilderLine> params, StringBuilder xml) {
 
-	private void appendParams(List<ActionBuilderLine> params, StringBuilder xml) {
+    if (params != null) {
+      return;
+    }
+    for (ActionBuilderLine param : params) {
+      xml.append("\n" + INDENT + "<view-param name=\"" + param.getName() + "\" ");
+      xml.append("value=\"" + StringEscapeUtils.escapeXml(param.getValue()) + "\" />");
+    }
+  }
 
-		if (params != null) {
-			return;
-		}
-		for (ActionBuilderLine param : params) {
-			xml.append("\n" + INDENT + "<view-param name=\"" + param.getName() + "\" ");
-			xml.append("value=\"" + StringEscapeUtils.escapeXml(param.getValue()) + "\" />");
-		}
+  private void appendContext(ActionBuilder builder, StringBuilder xml) {
+    boolean addJsonCtx = true;
+    if (builder.getLines() != null) {
+      for (ActionBuilderLine context : builder.getLines()) {
+        if (context.getName().contentEquals("jsonModel")) {
+          addJsonCtx = false;
+        }
+        xml.append("\n" + INDENT + "<context name=\"" + context.getName() + "\" ");
+        xml.append("expr=\"eval:" + StringEscapeUtils.escapeXml(context.getValue()) + "\" />");
+      }
+    }
 
-	}
+    if (addJsonCtx && builder.getIsJson() && builder.getModel() != null) {
+      xml.append("\n" + INDENT + "<context name=\"jsonModel\" ");
+      xml.append("expr=\"eval:" + builder.getModel() + "\" />");
+    }
+  }
 
-	private void appendContext(ActionBuilder builder, StringBuilder xml) {
-		boolean addJsonCtx = true;
-		if (builder.getLines() != null) {
-			for (ActionBuilderLine context : builder.getLines()) {
-				if (context.getName().contentEquals("jsonModel")) {
-					addJsonCtx = false;
-				}
-				xml.append("\n" + INDENT + "<context name=\"" + context.getName() + "\" ");
-				xml.append("expr=\"eval:" + StringEscapeUtils.escapeXml(context.getValue()) + "\" />");
-			}
-		}
+  private void appendDomain(String domain, Boolean isJson, StringBuilder xml) {
 
-		if (addJsonCtx && builder.getIsJson() && builder.getModel() != null) {
-			xml.append("\n" + INDENT + "<context name=\"jsonModel\" ");
-			xml.append("expr=\"eval:" + builder.getModel() + "\" />");
-		}
-	}
+    if (isJson) {
+      String jsonDomain = "self.jsonModel = :jsonModel";
+      if (domain == null) {
+        domain = jsonDomain;
+      } else if (!domain.contains(jsonDomain)) {
+        domain = jsonDomain + " AND (" + domain + ")";
+      }
+    }
 
-	private void appendDomain(String domain, Boolean isJson, StringBuilder xml) {
+    if (domain != null) {
+      xml.append("\n" + INDENT + "<domain>" + StringEscapeUtils.escapeXml(domain) + "</domain>");
+    }
+  }
 
-		if (isJson) {
-			String jsonDomain = "self.jsonModel = :jsonModel";
-			if (domain == null) {
-				domain = jsonDomain;
-			} else if (!domain.contains(jsonDomain)) {
-				domain = jsonDomain + " AND (" + domain + ")";
-			}
-		}
+  private void appendViews(List<ActionBuilderView> views, StringBuilder xml) {
 
-		if (domain != null) {
-			xml.append("\n" + INDENT + "<domain>" + StringEscapeUtils.escapeXml(domain) + "</domain>");
-		}
-	}
+    views.sort(
+        new Comparator<ActionBuilderView>() {
+          @Override
+          public int compare(ActionBuilderView action1, ActionBuilderView action2) {
+            return action1.getSequence().compareTo(action2.getSequence());
+          }
+        });
+    for (ActionBuilderView view : views) {
+      xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
+      xml.append("name=\"" + view.getViewName() + "\" />");
+    }
+  }
 
-	private void appendViews(List<ActionBuilderView> views, StringBuilder xml) {
+  private String appendBasic(ActionBuilder builder, StringBuilder xml) {
 
-		views.sort(new Comparator<ActionBuilderView>() {
-			@Override
-			public int compare(ActionBuilderView action1, ActionBuilderView action2) {
-				return action1.getSequence().compareTo(action2.getSequence());
-			}
-		});
-		for (ActionBuilderView view : views) {
-			xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
-			xml.append("name=\"" + view.getViewName() + "\" />");
-		}
-	}
+    xml.append("<action-view name=\"" + builder.getName() + "\" ");
+    xml.append("title=\"" + builder.getTitle() + "\" ");
+    xml.append("id=\"studio-" + builder.getName() + "\" ");
 
-	private String appendBasic(ActionBuilder builder, StringBuilder xml) {
+    String model = MetaJsonRecord.class.getName();
+    if (!builder.getIsJson()) {
+      model = builder.getModel();
+    }
+    xml.append("model=\"" + model + "\">");
 
-		xml.append("<action-view name=\"" + builder.getName() + "\" ");
-		xml.append("title=\"" + builder.getTitle() + "\" ");
-		xml.append("id=\"studio-" + builder.getName() + "\" ");
-
-		String model = MetaJsonRecord.class.getName();
-		if (!builder.getIsJson()) {
-			model = builder.getModel();
-		}
-		xml.append("model=\"" + model + "\">");
-
-		return model;
-	}
-
+    return model;
+  }
 }
