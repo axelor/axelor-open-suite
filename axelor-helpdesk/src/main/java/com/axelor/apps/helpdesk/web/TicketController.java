@@ -30,6 +30,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 
@@ -195,6 +196,20 @@ public class TicketController {
       Ticket ticket = request.getContext().asType(Ticket.class);
       Beans.get(TimerTicketService.class).cancel(ticket);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeRealDuration(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
+      if (ticket.getRealTotalDuration().compareTo(BigDecimal.ZERO) == 0) {
+        response.setValue(
+            "realTotalDuration",
+            Beans.get(TimerTicketService.class).compute(ticket).toMinutes() / 60F);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -72,7 +72,10 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
   @Override
   public TimerHistory stop(Ticket task, LocalDateTime dateTime) throws AxelorException {
     Timer timer = find(task);
-    return stop(task, timer, dateTime);
+    if (timer != null) {
+      return stop(task, timer, dateTime);
+    }
+    return null;
   }
 
   @Override
