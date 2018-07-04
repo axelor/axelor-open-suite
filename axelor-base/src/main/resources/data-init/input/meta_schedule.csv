@@ -1,0 +1,2 @@
+"active";"name";"job";"cron"
+"false";"Fetch currency conversion rates on every 5 minutes ";"com.axelor.apps.base.job.CurrencyConversionJob";"0 0/5 * * * ?"

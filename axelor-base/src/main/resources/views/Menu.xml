@@ -14,6 +14,42 @@
     <menuitem id="abs-menu-team" name="menu-team" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getTeamManagement()" hidden="false"  order="-110"
     title="Teamwork" icon="fa-user" icon-background="blue"/>
 
+	<menuitem id="abs-menu-team-tasks-due" name="menu-team-tasks-due" hidden="true" title="Tasks due"/>
+	<menuitem id="abs-menu-team-tasks-todo" name="menu-team-tasks-todo" hidden="true" title="Tasks todo"/>
+	<menuitem id="abs-menu-team-tasks-open" name="menu-team-tasks-open" hidden="true" title="Tasks open"/>
+	<menuitem id="abs-menu-team-tasks-assigned" name="menu-team-tasks-assigned" title="My tasks" parent="menu-team-tasks" action="team.tasks.assigned"/>
+	<menuitem id="abs-menu-team-tasks-created" name="menu-team-tasks-created" hidden="true" title="Tasks created by me"/>
+	<menuitem name="menu-team-tasks-all" title="All tasks" parent="menu-team-tasks" action="team.tasks.all" order="20"/>
+
+	<menuitem id="abs-menu-team-teams-my" name="menu-team-teams-my" order="-110" title="My teams" parent="menu-team-teams" action="teams.my"/>
+	<menuitem id="abs-menu-team-teams-all" name="menu-team-teams-all" order="-100" title="All teams" parent="menu-team-teams" action="teams.all"/>
+
+    <menuitem id="calendar.root.menu" name="menu-calendar" order="-110" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
+
+    <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events" parent="menu-calendar" action="calendar.root.menu.my.calendar"/>
+
+	<action-method name="calendar.root.menu.my.calendar">
+		<call class="com.axelor.apps.base.web.ICalendarController" method="showMyEvents"/>
+	</action-method>
+
+    <menuitem id="calendar.root.menu.configuration" name="menu-calendar-configuration" title="Configuration" parent="menu-calendar" icon="fa-cog"/>
+
+    <menuitem id="calendar.root.menu.configuration.calendars" name="menu-calendar-configuration-calendars" title="My calendars" parent="menu-calendar-configuration" action="calendar.root.menu.my.calendars"/>
+
+	<action-view name="calendar.root.menu.my.calendars" title="My calendars" model="com.axelor.apps.base.db.ICalendar">
+		<view type="grid" name="calendar-user-calendars-grid"/>
+		<view type="form" name="calendar-form"/>
+		<domain>self.user = :__user__</domain>
+	</action-view>
+
+    <menuitem id="calendar.root.menu.configuration.others" name="menu-calendar-configuration-others" title="Shared with me" parent="menu-calendar-configuration" action="calendar.root.menu.shared.with.me"/>
+
+	<action-view name="calendar.root.menu.shared.with.me" title="Sharing settings" model="com.axelor.apps.base.db.SharingSetting">
+		<view type="grid" name="sharing-setting-menu-grid"/>
+		<view type="form" name="sharing-setting-menu-form"/>
+		<domain>self.sharedWith = :__user__</domain>
+	</action-view>
+
 	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100" 
 	     icon="fa-wrench" icon-background="#2fa042" />
 
@@ -428,7 +464,7 @@
 	    <view type="form" name="company-department-form"/>
 	</action-view>
 
-	<menuitem title="Trading names" name="sportcom-trading-name-menu" parent="admin-root-user-configuration" action="action-view-trading-name" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+	<menuitem title="Trading names" name="admin-root-trading-name" parent="admin-root-user-configuration" action="action-view-trading-name" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 
 	<action-view name="action-view-trading-name" title="Trading names" model="com.axelor.apps.base.db.TradingName">
 		<view type="grid" name="trading-name-grid" />
@@ -527,6 +563,14 @@
 		<view type="grid" name="import-configuration-grid" />
 		<view type="form" name="import-configuration-form" />
 	</action-view>
+	
+	<menuitem name="admin-root-convert-demo-file" parent="admin-root-maintenance"
+		title="Convert demo file" action="admin.root.convert.demo.file"/>
+		
+	<action-view name="admin.root.convert.demo.file" title="Convert demo file"
+		model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="convert-demo-file-wizard-form" />
+	</action-view>
 
 	<menuitem name="admin-root-indicator-generator-grouping" parent="admin-root-maintenance"
 		title="Indicators groups" action="admin.root.indicator.generator.grouping" />
@@ -617,10 +661,11 @@
 	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
 	</action-view>
 	
-	<action-view id="base.team.tasks.assigned" name="team.tasks.assigned" model="com.axelor.team.db.TeamTask" title="Tasks assigned to me">
+	<action-view id="base.team.tasks.assigned" name="team.tasks.assigned" model="com.axelor.team.db.TeamTask" title="My tasks">
 	  <view name="team-task-grid" type="grid"/>
 	  <view name="team-task-calendar" type="calendar"/>
 	  <view name="team-task-form" type="form"/>
+	  <view-param name="search-filters" value="task-filters"/>
 	  <view-param name="details-view" value="true"/>
 	  <domain>self.assignedTo = :__user__</domain>
 	</action-view>
@@ -632,6 +677,14 @@
 	  <view-param name="details-view" value="true"/>
 	  <domain>self.createdBy = :__user__ AND self.status NOT IN :closed_status</domain>
 	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+	</action-view>
+
+	<action-view name="team.tasks.all" model="com.axelor.team.db.TeamTask" title="All tasks">
+	  <view name="team-task-grid" type="grid"/>
+	  <view name="team-task-calendar" type="calendar"/>
+	  <view name="team-task-form" type="form"/>
+	  <view-param name="search-filters" value="task-filters"/>
+	  <view-param name="details-view" value="true"/>
 	</action-view>
 
 </object-views>

@@ -17,6 +17,7 @@
  */
 package com.axelor.auth.service;
 
+import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Permission;
@@ -26,6 +27,7 @@ import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
 import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.auth.db.repo.RoleRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -39,6 +41,7 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.db.repo.MetaPermissionRuleRepository;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -54,11 +57,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,24 +93,21 @@ public class PermissionAssistantService {
 
   private String errorLog = "";
 
-  private String[] header = new String[] {"Object", "Field", "Title"};
+  private Collection<String> header =
+      Arrays.asList(/*$$(*/ "Object" /*)*/, /*$$(*/ "Field" /*)*/, /*$$(*/ "Title" /*)*/);
 
-  @SuppressWarnings("serial")
-  private List<String> groupHeader =
-      new ArrayList<String>() {
-        {
-          add("");
-          add(I18n.get("Read"));
-          add(I18n.get("Write"));
-          add(I18n.get("Create"));
-          add(I18n.get("Delete"));
-          add(I18n.get("Export"));
-          add(I18n.get("Condition"));
-          add(I18n.get("ConditionParams"));
-          add(I18n.get("Readonly If"));
-          add(I18n.get("Hide If"));
-        }
-      };
+  private Collection<String> groupHeader =
+      Arrays.asList(
+          "",
+          /*$$(*/ "Read" /*)*/,
+          /*$$(*/ "Write" /*)*/,
+          /*$$(*/ "Create" /*)*/,
+          /*$$(*/ "Delete" /*)*/,
+          /*$$(*/ "Export" /*)*/,
+          /*$$(*/ "Condition" /*)*/,
+          /*$$(*/ "ConditionParams" /*)*/,
+          /*$$(*/ "Readonly If" /*)*/,
+          /*$$(*/ "Hide If" /*)*/);
 
   private String getFileName(PermissionAssistant assistant) {
 
@@ -119,16 +124,17 @@ public class PermissionAssistantService {
 
     try {
 
-      FileWriterWithEncoding fileWriter =
-          new FileWriterWithEncoding(permFile, StandardCharsets.UTF_8);
-      CSVWriter csvWriter = new CSVWriter(fileWriter, ';');
-      writeGroup(csvWriter, assistant);
-      csvWriter.close();
+      try (FileWriterWithEncoding fileWriter =
+          new FileWriterWithEncoding(permFile, StandardCharsets.UTF_8)) {
+        CSVWriter csvWriter = new CSVWriter(fileWriter, ';');
+        writeGroup(csvWriter, assistant);
+      }
 
       createMetaFile(permFile, assistant);
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.error(e.getLocalizedMessage());
+      TraceBackService.trace(e);
     }
   }
 
@@ -140,25 +146,31 @@ public class PermissionAssistantService {
     Beans.get(PermissionAssistantRepository.class).save(assistant);
   }
 
+  private Collection<String> getTranslatedStrings(
+      Collection<String> strings, ResourceBundle bundle) {
+    return strings.stream().map(bundle::getString).collect(Collectors.toList());
+  }
+
   private void writeGroup(CSVWriter csvWriter, PermissionAssistant assistant) {
 
     String[] groupRow = null;
-    Integer count = header.length;
+    Integer count = header.size();
+    ResourceBundle bundle = I18n.getBundle(new Locale(assistant.getLanguage()));
 
     List<String> headerRow = new ArrayList<String>();
-    headerRow.addAll(Arrays.asList(header));
-    if (assistant.getTypeSelect() == 1) {
-      groupRow = new String[header.length + (assistant.getGroupSet().size() * groupHeader.size())];
+    headerRow.addAll(getTranslatedStrings(header, bundle));
+    if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
+      groupRow = new String[header.size() + (assistant.getGroupSet().size() * groupHeader.size())];
       for (Group group : assistant.getGroupSet()) {
         groupRow[count + 1] = group.getCode();
-        headerRow.addAll(groupHeader);
+        headerRow.addAll(getTranslatedStrings(groupHeader, bundle));
         count += groupHeader.size();
       }
-    } else if (assistant.getTypeSelect() == 2) {
-      groupRow = new String[header.length + (assistant.getRoleSet().size() * groupHeader.size())];
+    } else if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_ROLES) {
+      groupRow = new String[header.size() + (assistant.getRoleSet().size() * groupHeader.size())];
       for (Role role : assistant.getRoleSet()) {
         groupRow[count + 1] = role.getName();
-        headerRow.addAll(groupHeader);
+        headerRow.addAll(getTranslatedStrings(groupHeader, bundle));
         count += groupHeader.size();
       }
     }
@@ -168,7 +180,7 @@ public class PermissionAssistantService {
     csvWriter.writeNext(groupRow);
     csvWriter.writeNext(headerRow.toArray(groupRow));
 
-    writeObject(csvWriter, assistant, groupRow.length);
+    writeObject(csvWriter, assistant, groupRow.length, bundle);
   }
 
   public Comparator<Object> compareField() {
@@ -181,24 +193,25 @@ public class PermissionAssistantService {
     };
   }
 
-  private void writeObject(CSVWriter csvWriter, PermissionAssistant assistant, Integer size) {
+  private void writeObject(
+      CSVWriter csvWriter, PermissionAssistant assistant, Integer size, ResourceBundle bundle) {
 
     MetaField userField = assistant.getMetaField();
 
     for (MetaModel object : assistant.getObjectSet()) {
 
-      int colIndex = header.length + 1;
+      int colIndex = header.size() + 1;
       String[] row = new String[size];
       row[0] = object.getFullName();
 
-      if (assistant.getTypeSelect() == 1) {
+      if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
         for (Group group : assistant.getGroupSet()) {
           String permName = getPermissionName(userField, object.getName(), group.getCode());
           colIndex = writePermission(object, userField, row, colIndex, permName);
           colIndex++;
         }
 
-      } else if (assistant.getTypeSelect() == 2) {
+      } else if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_ROLES) {
         for (Role role : assistant.getRoleSet()) {
           String permName = getPermissionName(userField, object.getName(), role.getName());
           colIndex = writePermission(object, userField, row, colIndex, permName);
@@ -216,19 +229,19 @@ public class PermissionAssistantService {
       Collections.sort(fieldList, compareField());
 
       for (MetaField field : fieldList) {
-        colIndex = header.length + 1;
+        colIndex = header.size() + 1;
         row = new String[size];
         row[1] = field.getName();
-        row[2] = getFieldTitle(field);
+        row[2] = getFieldTitle(field, bundle);
 
-        if (assistant.getTypeSelect() == 1) {
+        if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
           for (Group group : assistant.getGroupSet()) {
             String permName = getPermissionName(null, object.getName(), group.getCode());
             colIndex = writeFieldPermission(field, row, colIndex, permName);
             colIndex++;
           }
 
-        } else if (assistant.getTypeSelect() == 2) {
+        } else if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_ROLES) {
           for (Role role : assistant.getRoleSet()) {
             String permName = getPermissionName(null, object.getName(), role.getName());
             colIndex = writeFieldPermission(field, row, colIndex, permName);
@@ -250,11 +263,11 @@ public class PermissionAssistantService {
     return permName;
   }
 
-  private String getFieldTitle(MetaField field) {
+  private String getFieldTitle(MetaField field, ResourceBundle bundle) {
 
     String title = field.getLabel();
     if (!Strings.isNullOrEmpty(title)) {
-      title = I18n.get(title);
+      title = bundle.getString(title);
       if (Strings.isNullOrEmpty(title)) {
         title = field.getLabel();
       }
@@ -339,72 +352,108 @@ public class PermissionAssistantService {
     return colIndex;
   }
 
-  private boolean checkHeaderRow(String[] headerRow) {
+  private static boolean headerEquals(
+      Collection<String> standardRow,
+      Collection<String> translatedRow,
+      Collection<String> headerRow) {
 
-    Integer count = header.length;
-    List<String> standardRow = new ArrayList<String>();
-    standardRow.addAll(Arrays.asList(header));
-    while (count < headerRow.length) {
-      standardRow.addAll(groupHeader);
-      count += groupHeader.size();
+    if (standardRow.size() != translatedRow.size() || headerRow.size() != standardRow.size()) {
+      return false;
     }
+
+    Iterator<String> itStandard = standardRow.iterator();
+    Iterator<String> itTranslated = translatedRow.iterator();
+    Iterator<String> it = headerRow.iterator();
+
+    while (it.hasNext()) {
+      String standard = itStandard.next();
+      String translated = itTranslated.next();
+      String name = it.next();
+
+      if (!StringTool.equalsIgnoreCaseAndAccents(standard, name)
+          && !StringTool.equalsIgnoreCaseAndAccents(translated, name)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private boolean checkHeaderRow(Collection<String> headerRow, ResourceBundle bundle) {
+    Collection<String> translatedHeader = getTranslatedStrings(header, bundle);
+    Collection<String> translatedGroupHeader = getTranslatedStrings(groupHeader, bundle);
+
+    // Untranslated
+    Collection<String> standardRow = Lists.newArrayList(header);
+    for (int count = header.size(); count < headerRow.size(); count += groupHeader.size()) {
+      standardRow.addAll(groupHeader);
+    }
+
+    // Translated
+    Collection<String> translatedRow = Lists.newArrayList(translatedHeader);
+    for (int count = header.size(); count < headerRow.size(); count += groupHeader.size()) {
+      translatedRow.addAll(translatedGroupHeader);
+    }
+
     LOG.debug("Standard Headers: {}", standardRow);
+    LOG.debug("File Headers: {}", headerRow);
 
-    String[] headers = standardRow.toArray(new String[standardRow.size()]);
-    LOG.debug("File Headers: {}", Arrays.asList(headerRow));
-
-    return Arrays.equals(headers, headerRow);
+    return headerEquals(standardRow, translatedRow, headerRow);
   }
 
   public String importPermissions(PermissionAssistant permissionAssistant) {
 
     try {
+      ResourceBundle bundle = I18n.getBundle(new Locale(permissionAssistant.getLanguage()));
       MetaFile metaFile = permissionAssistant.getMetaFile();
       File csvFile = MetaFiles.getPath(metaFile).toFile();
-      CSVReader csvReader =
+
+      try (CSVReader csvReader =
           new CSVReader(
-              new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';');
+              new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';')) {
 
-      String[] groupRow = csvReader.readNext();
-      if (groupRow == null || groupRow.length < 11) {
-        errorLog = I18n.get(IMessage.BAD_FILE);
-      }
+        String[] groupRow = csvReader.readNext();
+        if (groupRow == null || groupRow.length < 11) {
+          errorLog = I18n.get(IMessage.BAD_FILE);
+        }
 
-      String[] headerRow = csvReader.readNext();
-      if (headerRow == null) {
-        errorLog = I18n.get(IMessage.NO_HEADER);
-      }
-      if (!checkHeaderRow(headerRow)) {
-        errorLog = I18n.get(IMessage.BAD_HEADER) + " " + Arrays.asList(headerRow);
-      }
+        String[] headerRow = csvReader.readNext();
+        if (headerRow == null) {
+          errorLog = I18n.get(IMessage.NO_HEADER);
+        }
+        if (!checkHeaderRow(Arrays.asList(headerRow), bundle)) {
+          errorLog = I18n.get(IMessage.BAD_HEADER) + " " + Arrays.asList(headerRow);
+        }
 
-      if (!errorLog.equals("")) {
-        csvReader.close();
-        return errorLog;
-      }
+        if (!errorLog.equals("")) {
+          return errorLog;
+        }
 
-      if (permissionAssistant.getTypeSelect() == 1) {
-        Map<String, Group> groupMap = checkBadGroups(groupRow);
-        processGroupCSV(
-            csvReader,
-            groupRow,
-            groupMap,
-            permissionAssistant.getMetaField(),
-            permissionAssistant.getFieldPermission());
-        saveGroups(groupMap);
-      } else if (permissionAssistant.getTypeSelect() == 2) {
-        Map<String, Role> roleMap = checkBadRoles(groupRow);
-        processRoleCSV(
-            csvReader,
-            groupRow,
-            roleMap,
-            permissionAssistant.getMetaField(),
-            permissionAssistant.getFieldPermission());
-        saveRoles(roleMap);
+        if (permissionAssistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
+          Map<String, Group> groupMap = checkBadGroups(groupRow);
+          processGroupCSV(
+              csvReader,
+              groupRow,
+              groupMap,
+              permissionAssistant.getMetaField(),
+              permissionAssistant.getFieldPermission());
+          saveGroups(groupMap);
+        } else if (permissionAssistant.getTypeSelect()
+            == PermissionAssistantRepository.TYPE_ROLES) {
+          Map<String, Role> roleMap = checkBadRoles(groupRow);
+          processRoleCSV(
+              csvReader,
+              groupRow,
+              roleMap,
+              permissionAssistant.getMetaField(),
+              permissionAssistant.getFieldPermission());
+          saveRoles(roleMap);
+        }
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.error(e.getLocalizedMessage());
+      TraceBackService.trace(e);
       errorLog += "\n" + String.format(I18n.get(IMessage.ERR_IMPORT_WITH_MSG), e.getMessage());
     }
 
@@ -432,7 +481,7 @@ public class PermissionAssistantService {
     List<String> badGroups = new ArrayList<String>();
     Map<String, Group> groupMap = new HashMap<String, Group>();
 
-    for (Integer glen = header.length + 1; glen < groupRow.length; glen += groupHeader.size()) {
+    for (Integer glen = header.size() + 1; glen < groupRow.length; glen += groupHeader.size()) {
 
       String groupName = groupRow[glen];
       Group group = groupRepository.all().filter("self.code = ?1", groupName).fetchOne();
@@ -455,7 +504,7 @@ public class PermissionAssistantService {
     List<String> badroles = new ArrayList<String>();
     Map<String, Role> roleMap = new HashMap<String, Role>();
 
-    for (Integer len = header.length + 1; len < roleRow.length; len += groupHeader.size()) {
+    for (Integer len = header.size() + 1; len < roleRow.length; len += groupHeader.size()) {
 
       String roleName = roleRow[len];
       Role role = roleRepo.all().filter("self.name = ?1", roleName).fetchOne();
@@ -498,7 +547,7 @@ public class PermissionAssistantService {
 
     String[] row = csvReader.readNext();
     while (row != null) {
-      for (Integer groupIndex = header.length + 1;
+      for (Integer groupIndex = header.size() + 1;
           groupIndex < row.length;
           groupIndex += groupHeader.size()) {
 
@@ -507,8 +556,7 @@ public class PermissionAssistantService {
           continue;
         }
 
-        String[] rowGroup =
-            (String[]) Arrays.copyOfRange(row, groupIndex, groupIndex + groupHeader.size());
+        String[] rowGroup = Arrays.copyOfRange(row, groupIndex, groupIndex + groupHeader.size());
 
         if (!Strings.isNullOrEmpty(groupName) && !Strings.isNullOrEmpty(row[0])) {
           objectName = checkObject(row[0]);
@@ -542,7 +590,7 @@ public class PermissionAssistantService {
     String[] row = csvReader.readNext();
     while (row != null) {
 
-      for (Integer groupIndex = header.length + 1;
+      for (Integer groupIndex = header.size() + 1;
           groupIndex < row.length;
           groupIndex += groupHeader.size()) {
 
@@ -551,8 +599,7 @@ public class PermissionAssistantService {
           continue;
         }
 
-        String[] rowGroup =
-            (String[]) Arrays.copyOfRange(row, groupIndex, groupIndex + groupHeader.size());
+        String[] rowGroup = Arrays.copyOfRange(row, groupIndex, groupIndex + groupHeader.size());
 
         if (!Strings.isNullOrEmpty(roleName) && !Strings.isNullOrEmpty(row[0])) {
           objectName = checkObject(row[0]);

@@ -19,8 +19,8 @@
       <many-to-many name="outgoing" ref="WkfTransition"  title="Outgoing" />
       <many-to-many name="roleSet" ref="com.axelor.auth.db.Role" title="ReadOnly For"/>
       <integer name="sequence" title="Sequence" />
-      <boolean name="startNode" title="Start node ?" />
-      <boolean name="endNode" title="End node ?" />
+      <boolean name="startNode" title="Start node" />
+      <boolean name="endNode" title="End node" />
       <many-to-many name="metaActionSet" ref="com.axelor.meta.db.MetaAction" title="Actions" orderBy="sequence"/>
       <unique-constraint columns="wkf,sequence"/>
   </entity>

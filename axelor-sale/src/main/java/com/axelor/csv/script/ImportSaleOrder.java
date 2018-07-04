@@ -19,6 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
@@ -27,6 +28,8 @@ import com.google.inject.Inject;
 import java.util.Map;
 
 public class ImportSaleOrder {
+
+  @Inject SaleOrderManagementRepository saleOrderRepo;
 
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
@@ -56,6 +59,7 @@ public class ImportSaleOrder {
 
     if (saleOrder.getStatusSelect() == 1) {
       saleOrder.setSaleOrderSeq(sequenceService.getDraftSequenceNumber(saleOrder));
+      saleOrderRepo.computeFullName(saleOrder);
     } else {
       saleOrderWorkflowService.finalizeQuotation(saleOrder);
     }

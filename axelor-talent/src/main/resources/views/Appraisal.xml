@@ -61,7 +61,7 @@
 		onNew="action-appraisal-employee-select-default" width="large">
 		<panel>
 			<field name="$employeeSet" type="many-to-many" colSpan="12" target="com.axelor.apps.hr.db.Employee" title="Employees"/>
-			<field name="sendAppraisals" type="boolean" title="Send ?" colSpan="2"/>
+			<field name="sendAppraisals" type="boolean" title="Send" colSpan="2"/>
 			<button name="createAppraisals" title="Create" onClick="action-appraisal-template-method-create-appraisals" showIf="$employeeSet.length > 0" colSpan="3"/>
 			<field name="templateId" type="long" hidden="true" />
 		</panel>

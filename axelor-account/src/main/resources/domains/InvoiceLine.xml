@@ -28,6 +28,7 @@
         <integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
 
         <string name="description" title="Description" large="true"/>
+        <boolean name="fixedAssets" title="Fixed Assets"/>
 
         <!--   	Champ technique non affiché, utilisé pour les reportings -->
         <decimal name="companyExTaxTotal" title="Total W.T. in Acc. currency" hidden="true"/>

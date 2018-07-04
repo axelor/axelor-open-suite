@@ -164,16 +164,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public boolean isPurchase(Invoice invoice) {
-    int operation = invoice.getOperationTypeSelect();
-    if (operation == 1 || operation == 2) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @Override
   public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice)
       throws AxelorException {
 
@@ -303,8 +293,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Map<String, Object> productInformation = new HashMap<>();
 
     Product product = invoiceLine.getProduct();
-    boolean isPurchase = this.isPurchase(invoice);
+
     TaxLine taxLine;
+
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
     try {
       taxLine = getTaxLine(invoice, invoiceLine, isPurchase);

@@ -48,20 +48,9 @@ public class MessageController {
     Message message = request.getContext().asType(Message.class);
 
     try {
-      message = messageService.sendMessage(messageRepo.find(message.getId()));
+      messageService.sendMessage(messageRepo.find(message.getId()));
       response.setReload(true);
-
-      if (message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-
-        if (message.getSentByEmail()) {
-          response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
-        } else {
-          response.setFlash(I18n.get(IExceptionMessage.MESSAGE_5));
-        }
-
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.MESSAGE_6));
-      }
+      response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
@@ -76,11 +65,9 @@ public class MessageController {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));
       }
-      int error =
-          ModelTool.apply(
-              Message.class, idList, model -> messageService.sendMessage((Message) model));
+      ModelTool.apply(Message.class, idList, model -> messageService.sendMessage((Message) model));
       response.setFlash(
-          String.format(I18n.get(IExceptionMessage.MESSAGES_SENT), idList.size() - error, error));
+          String.format(I18n.get(IExceptionMessage.MESSAGES_SEND_IN_PROGRESS), idList.size()));
       response.setReload(true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);

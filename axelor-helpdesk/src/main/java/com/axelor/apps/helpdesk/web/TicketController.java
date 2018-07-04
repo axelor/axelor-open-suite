@@ -17,13 +17,18 @@
  */
 package com.axelor.apps.helpdesk.web;
 
+import com.axelor.apps.base.db.Timer;
+import com.axelor.apps.base.db.TimerState;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.helpdesk.db.Ticket;
-import com.axelor.apps.helpdesk.service.TicketServiceImpl;
+import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.apps.helpdesk.service.TimerTicketService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.Duration;
 import java.util.List;
@@ -31,7 +36,7 @@ import java.util.List;
 @Singleton
 public class TicketController {
 
-  @Inject private TicketServiceImpl ticketService;
+  private static final String HIDDEN_ATTR = "hidden";
 
   /**
    * Ticket assign to the current user.
@@ -40,12 +45,15 @@ public class TicketController {
    * @param response
    */
   public void assignToMeTicket(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = (Long) request.getContext().get("id");
+      List<?> ids = (List<?>) request.getContext().get("_ids");
+      Beans.get(TicketService.class).assignToMeTicket(id, ids);
 
-    Long id = (Long) request.getContext().get("id");
-    List<?> ids = (List<?>) request.getContext().get("_ids");
-    ticketService.assignToMeTicket(id, ids);
-
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
@@ -55,20 +63,23 @@ public class TicketController {
    * @param response
    */
   public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
 
-    Ticket ticket = request.getContext().asType(Ticket.class);
+      if (ticket.getStartDateT() != null) {
+        if (ticket.getDuration() != null && ticket.getDuration() != 0) {
+          response.setValue(
+              "endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
 
-    if (ticket.getStartDateT() != null) {
-      if (ticket.getDuration() != null && ticket.getDuration() != 0) {
-        response.setValue(
-            "endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
-
-      } else if (ticket.getEndDateT() != null
-          && ticket.getEndDateT().isAfter(ticket.getStartDateT())) {
-        Duration duration =
-            DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
-        response.setValue("duration", DurationTool.getSecondsDuration(duration));
+        } else if (ticket.getEndDateT() != null
+            && ticket.getEndDateT().isAfter(ticket.getStartDateT())) {
+          Duration duration =
+              DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
+          response.setValue("duration", DurationTool.getSecondsDuration(duration));
+        }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -79,18 +90,21 @@ public class TicketController {
    * @param response
    */
   public void computeFromDuration(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
 
-    Ticket ticket = request.getContext().asType(Ticket.class);
+      if (ticket.getDuration() != null) {
+        if (ticket.getStartDateT() != null) {
+          response.setValue(
+              "endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
 
-    if (ticket.getDuration() != null) {
-      if (ticket.getStartDateT() != null) {
-        response.setValue(
-            "endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
-
-      } else if (ticket.getEndDateT() != null) {
-        response.setValue(
-            "startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+        } else if (ticket.getEndDateT() != null) {
+          response.setValue(
+              "startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+        }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 
@@ -101,20 +115,88 @@ public class TicketController {
    * @param response
    */
   public void computeFromEndDateTime(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
 
-    Ticket ticket = request.getContext().asType(Ticket.class);
+      if (ticket.getEndDateT() != null) {
 
-    if (ticket.getEndDateT() != null) {
+        if (ticket.getStartDateT() != null
+            && ticket.getStartDateT().isBefore(ticket.getEndDateT())) {
+          Duration duration =
+              DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
+          response.setValue("duration", DurationTool.getSecondsDuration(duration));
 
-      if (ticket.getStartDateT() != null && ticket.getStartDateT().isBefore(ticket.getEndDateT())) {
-        Duration duration =
-            DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
-        response.setValue("duration", DurationTool.getSecondsDuration(duration));
-
-      } else if (ticket.getDuration() != null) {
-        response.setValue(
-            "startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+        } else if (ticket.getDuration() != null) {
+          response.setValue(
+              "startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+        }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageTimerButtons(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
+      TimerTicketService service = Beans.get(TimerTicketService.class);
+
+      Timer timer = service.find(ticket);
+
+      boolean hideStart = false;
+      boolean hideCancel = true;
+      if (timer != null) {
+        hideStart = timer.getState() == TimerState.STARTED;
+        hideCancel = timer.getTimerHistoryList().isEmpty();
+      }
+
+      response.setAttr("btnStartTimer", HIDDEN_ATTR, hideStart);
+      response.setAttr("btnStopTimer", HIDDEN_ATTR, !hideStart);
+      response.setAttr("btnCancelTimer", HIDDEN_ATTR, hideCancel);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTotalTimerDuration(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
+      Duration duration = Beans.get(TimerTicketService.class).compute(ticket);
+      response.setValue("$_totalTimerDuration", duration.toMinutes() / 60F);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void startTimer(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
+      Beans.get(TimerTicketService.class)
+          .start(ticket, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void stopTimer(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
+      Beans.get(TimerTicketService.class)
+          .stop(ticket, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelTimer(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
+      Beans.get(TimerTicketService.class).cancel(ticket);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

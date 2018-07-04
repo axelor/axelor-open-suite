@@ -7,7 +7,7 @@
 
   <entity name="PermissionAssistant" cachable="true">
     <![CDATA[
-    This object store the permission assistant
+    This object stores the permission assistant.
     ]]>
     <datetime name="importDate" title="Import date" readonly="true" />
     <integer name="typeSelect" title="Type" required="true"/>
@@ -19,6 +19,13 @@
     <string name="language" title="Language" selection="select.language" default="en"/>
     <string name="log" large="true" title="Log" />
     <boolean name="fieldPermission" title="Field permission"/>
+
+    <extra-code>
+    <![CDATA[
+      public static final int TYPE_GROUPS = 1;
+      public static final int TYPE_ROLES = 2;
+    ]]>
+    </extra-code>
   </entity>
 
 </domain-models>

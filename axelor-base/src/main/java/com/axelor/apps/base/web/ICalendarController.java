@@ -18,11 +18,14 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ICalendar;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -70,9 +73,7 @@ public class ICalendarController {
     if (cal == null) {
       cal = new ICalendar();
     }
-
     File data = MetaFiles.getPath(imp.getDataMetaFile()).toFile();
-
     calendarService.load(cal, data);
     response.setCanClose(true);
     response.setReload(true);
@@ -120,5 +121,24 @@ public class ICalendarController {
           "password",
           calendarService.getCalendarEncryptPassword(
               request.getContext().get("newPassword").toString()));
+  }
+
+  public void showMyEvents(ActionRequest request, ActionResponse response) {
+    User user = AuthUtils.getUser();
+
+    response.setView(
+        ActionView.define(I18n.get("My events"))
+            .model(ICalendarEvent.class.getName())
+            .add("calendar", "calendar-event-all")
+            .add("grid", "calendar-event-grid")
+            .add("form", "calendar-event-form")
+            .domain(
+                "self.user.id = :_userId"
+                    + " OR self.calendar.user.id = :_userId"
+                    + " OR :_userId IN (SELECT attendee.user FROM self.attendees attendee)"
+                    + " OR self.organizer.user.id = :_userId"
+                    + " OR :_userId IN (SELECT setting.sharedWith FROM self.calendar.sharingSettingList setting WHERE setting.visible = TRUE)")
+            .context("_userId", user.getId())
+            .map());
   }
 }

@@ -292,7 +292,7 @@ public class MrpServiceImpl implements MrpService {
           reorderQty = reorderQty.max(stockRules.getReOrderQty());
         }
 
-        MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules);
+        MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules, product);
 
         this.createProposalMrpLine(
             product,
@@ -402,7 +402,8 @@ public class MrpServiceImpl implements MrpService {
     return BigDecimal.ZERO;
   }
 
-  protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules) throws AxelorException {
+  protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules, Product product)
+      throws AxelorException {
 
     return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
   }
@@ -870,7 +871,10 @@ public class MrpServiceImpl implements MrpService {
     List<StockLocation> subLocationList =
         stockLocationRepository
             .all()
-            .filter("self.parentStockLocation = ?1", stockLocation)
+            .filter(
+                "self.parentStockLocation.id = :stockLocationId AND self.typeSelect != :virtual")
+            .bind("stockLocationId", stockLocation.getId())
+            .bind("virtual", StockLocationRepository.TYPE_VIRTUAL)
             .fetch();
 
     for (StockLocation subLocation : subLocationList) {

@@ -359,7 +359,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             numSeq,
             externalRef,
             null,
-            company.getDefaultBankDetails()) {
+            company.getDefaultBankDetails(),
+            null) {
 
           @Override
           public Invoice generate() throws AxelorException {

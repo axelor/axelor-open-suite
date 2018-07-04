@@ -52,16 +52,13 @@ import org.slf4j.LoggerFactory;
 
 public class ManufOrderStockMoveService {
 
-  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected StockMoveService stockMoveService;
-  protected StockMoveLineService stockMoveLineService;
-
   protected static final int PART_FINISH_IN = 1;
   protected static final int PART_FINISH_OUT = 2;
-
   protected static final int STOCK_LOCATION_IN = 1;
   protected static final int STOCK_LOCATION_OUT = 2;
+  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected StockMoveService stockMoveService;
+  protected StockMoveLineService stockMoveLineService;
 
   @Inject
   public ManufOrderStockMoveService(
@@ -117,7 +114,8 @@ public class ManufOrderStockMoveService {
         virtualStockLocation,
         null,
         manufOrder.getPlannedStartDateT().toLocalDate(),
-        null);
+        null,
+        StockMoveRepository.TYPE_INTERNAL);
   }
 
   protected StockLocation getDefaultStockLocation(
@@ -188,19 +186,16 @@ public class ManufOrderStockMoveService {
           stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
     }
 
-    StockMove stockMove =
-        stockMoveService.createStockMove(
-            null,
-            null,
-            company,
-            virtualStockLocation,
-            producedProductStockLocation,
-            null,
-            plannedEndDate,
-            null);
-    stockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
-
-    return stockMove;
+    return stockMoveService.createStockMove(
+        null,
+        null,
+        company,
+        virtualStockLocation,
+        producedProductStockLocation,
+        null,
+        plannedEndDate,
+        null,
+        StockMoveRepository.TYPE_INTERNAL);
   }
 
   protected StockMoveLine _createStockMoveLine(
@@ -356,7 +351,8 @@ public class ManufOrderStockMoveService {
             toStockLocation,
             null,
             manufOrder.getPlannedStartDateT().toLocalDate(),
-            null);
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     createNewStockMoveLines(manufOrder, newStockMove, inOrOut);
@@ -481,20 +477,27 @@ public class ManufOrderStockMoveService {
       return;
     }
     StockMove stockMove = stockMoveOpt.get();
-    stockMove.clearStockMoveLineList();
+    stockMoveService.cancel(stockMove);
 
-    // create a new list
-    for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
-      BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
-      _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
+    try {
+      stockMove.clearStockMoveLineList();
 
-      // Update consumed StockMoveLineList with created stock move lines
-      stockMove
-          .getStockMoveLineList()
-          .stream()
-          .filter(
-              stockMoveLine1 -> !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
-          .forEach(manufOrder::addConsumedStockMoveLineListItem);
+      // create a new list
+      for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
+        BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
+        _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
+
+        // Update consumed StockMoveLineList with created stock move lines
+        stockMove
+            .getStockMoveLineList()
+            .stream()
+            .filter(
+                stockMoveLine1 ->
+                    !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
+            .forEach(manufOrder::addConsumedStockMoveLineListItem);
+      }
+    } finally {
+      stockMoveService.plan(stockMove);
     }
   }
 
@@ -518,25 +521,32 @@ public class ManufOrderStockMoveService {
       return;
     }
     StockMove stockMove = stockMoveOpt.get();
-    stockMove.clearStockMoveLineList();
+    stockMoveService.cancel(stockMove);
 
-    // create a new list
-    for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
-      BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
-      _createStockMoveLine(
-          prodProduct,
-          stockMove,
-          StockMoveLineService.TYPE_OUT_PRODUCTIONS,
-          qty,
-          manufOrder.getBillOfMaterial().getCostPrice());
+    try {
+      stockMove.clearStockMoveLineList();
 
-      // Update produced StockMoveLineList with created stock move lines
-      stockMove
-          .getStockMoveLineList()
-          .stream()
-          .filter(
-              stockMoveLine1 -> !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
-          .forEach(manufOrder::addProducedStockMoveLineListItem);
+      // create a new list
+      for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
+        BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
+        _createStockMoveLine(
+            prodProduct,
+            stockMove,
+            StockMoveLineService.TYPE_OUT_PRODUCTIONS,
+            qty,
+            manufOrder.getBillOfMaterial().getCostPrice());
+
+        // Update produced StockMoveLineList with created stock move lines
+        stockMove
+            .getStockMoveLineList()
+            .stream()
+            .filter(
+                stockMoveLine1 ->
+                    !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
+            .forEach(manufOrder::addProducedStockMoveLineListItem);
+      }
+    } finally {
+      stockMoveService.plan(stockMove);
     }
   }
 

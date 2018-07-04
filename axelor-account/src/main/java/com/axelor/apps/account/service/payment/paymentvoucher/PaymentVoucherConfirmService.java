@@ -274,7 +274,9 @@ public class PaymentVoucherConfirmService {
         Reconcile reconcile =
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);
-        reconcileService.confirmReconcile(reconcile, true);
+        if (reconcile != null) {
+          reconcileService.confirmReconcile(reconcile, true);
+        }
       } else {
 
         moveLine =
@@ -450,8 +452,10 @@ public class PaymentVoucherConfirmService {
 
     Reconcile reconcile =
         reconcileService.createReconcile(moveLineToPay, moveLine, amountInCompanyCurrency, true);
-    log.debug("Reconcile : : : {}", reconcile);
-    reconcileService.confirmReconcile(reconcile, true);
+    if (reconcile != null) {
+      log.debug("Reconcile : : : {}", reconcile);
+      reconcileService.confirmReconcile(reconcile, true);
+    }
     return moveLine;
   }
 }

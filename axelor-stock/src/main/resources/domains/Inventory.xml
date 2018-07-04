@@ -18,8 +18,8 @@
   	
   	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product family"/>
   	<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
-  	<boolean name="excludeOutOfStock" title="Excl. out of stock products ?"/>
-  	<boolean name="includeObsolete" title="Incl. obsolete products ?"/>
+  	<boolean name="excludeOutOfStock" title="Excl. out of stock products"/>
+  	<boolean name="includeObsolete" title="Incl. obsolete products"/>
   	<many-to-one name="validatedBy" title="Validated By" ref="com.axelor.auth.db.User"/>
   	<date name="validatedOn" title="Validated On"/>
   	

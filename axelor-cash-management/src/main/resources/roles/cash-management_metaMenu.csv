@@ -1,0 +1,8 @@
+"name";"roles"
+"forecast-root";"Cash Management Manager|Cash Management User|Cash Management Read"
+"forecast-root-forecast";"Cash Management Manager|Cash Management User|Cash Management Read"
+"forecast-root-forecast-recap";"Cash Management Manager|Cash Management User|Cash Management Read"
+"forecast-root-forecast-report";"Cash Management Manager|Cash Management User|Cash Management Read"
+"forecast-conf";"Cash Management Manager"
+"forecast-conf-forecast-generator";"Cash Management Manager"
+"forecast-conf-forecast-reason";"Cash Management Manager"

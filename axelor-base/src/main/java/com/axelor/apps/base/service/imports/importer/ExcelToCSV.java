@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
@@ -69,40 +68,40 @@ public class ExcelToCSV {
     String separator = ";";
     FileWriter writer = new FileWriter(sheetFile);
     int cnt = 0;
-    Iterator<Row> rowIterator = sheet.iterator();
 
-    if (rowIterator.hasNext()) {
-      Row headerRow = rowIterator.next();
-      Iterator<Cell> headerCellIterator = headerRow.cellIterator();
+    for (int row = 3; row <= sheet.getLastRowNum(); row++) {
 
-      while (headerCellIterator.hasNext()) {
-        Cell cell = headerCellIterator.next();
-        writer.append(cell.getStringCellValue() + separator);
-        cnt++;
-      }
-      writer.append("\n");
+      if (row == 3) {
+        Row headerRow = sheet.getRow(row);
+        for (int cell = 1; cell < headerRow.getLastCellNum(); cell++) {
+          Cell headerCell = headerRow.getCell(cell);
+          writer.append(headerCell.getStringCellValue() + separator);
+          cnt++;
+        }
+        writer.append("\n");
 
-      while (rowIterator.hasNext()) {
-        Row row = rowIterator.next();
-        for (int i = 0; i < cnt; i++) {
+      } else {
+
+        Row dataRow = sheet.getRow(row);
+        for (int cell = 1; cell <= cnt; cell++) {
           try {
 
-            Cell cell = row.getCell(i);
-            if (cell != null) {
+            Cell dataCell = dataRow.getCell(cell);
+            if (dataCell != null) {
 
-              switch (cell.getCellType()) {
+              switch (dataCell.getCellType()) {
                 case Cell.CELL_TYPE_STRING:
-                  String strData = cell.getStringCellValue();
+                  String strData = dataCell.getStringCellValue();
                   writer.append("\"" + strData + "\"" + separator);
                   break;
 
                 case Cell.CELL_TYPE_NUMERIC:
-                  if (DateUtil.isCellDateFormatted(cell)) {
-                    String dateInString = getDateValue(cell);
+                  if (DateUtil.isCellDateFormatted(dataCell)) {
+                    String dateInString = getDateValue(dataCell);
                     writer.append("\"" + dateInString + "\"" + separator);
 
                   } else {
-                    Integer val = (int) cell.getNumericCellValue();
+                    Integer val = (int) dataCell.getNumericCellValue();
                     writer.append(val.toString() + separator);
                   }
                   break;
@@ -122,6 +121,7 @@ public class ExcelToCSV {
         writer.append("\n");
       }
     }
+
     writer.flush();
     writer.close();
   }
