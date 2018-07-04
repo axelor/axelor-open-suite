@@ -39,6 +39,7 @@
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Automatic mail default fields in stock move are now filled correctly on partner change.
 - Project: Fix multiple bugs and improve views.
+- Bill of material: remove duplicate toolbar button of 'Generate new version'.
 
 ## [Unreleased 5.0.3]
 ## Improvements
