@@ -440,7 +440,7 @@
 	</action-validate> 
 	
 	<action-method name="action-print-product-catalog" >
-		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatelog"/>
+		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatalog"/>
 	</action-method>
 	
 	<action-method name="action-product-method-show-product-sheet" >
