@@ -9,9 +9,21 @@
     
     <form name="target-list-form" title="Target list" model="com.axelor.apps.marketing.db.TargetList" width="large">
 		<panel name="main" >
-		  <field name="name"/>
-		  <panel title="Partners" colSpan="12">
+			<field name="name" showTitle="false" colSpan="12">
+				<viewer depends="name"><![CDATA[
+					<h3>
+						<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
+					</h3>
+				]]></viewer>
+				<editor>
+					<field name="name" showTitle="true" />
+				</editor>
+			</field>
+		</panel>
+	  	<panel-tabs>
+		  <panel title="Partners" >
 		  	<field name="partnerQueryTypeSelect"/>
+		  	<field name="partnerTypeSelect" />
 		  	<field name="partnerQuery" colSpan="12" showIf="partnerQueryTypeSelect == 1"/>
 		  	<field name="partnerFilterList" colSpan="12" layout="table" showIf="partnerQueryTypeSelect == 0">
 		  	 	<editor x-show-titles="false">
@@ -25,10 +37,9 @@
 		  	</field>
 		  	<button name="openFilteredPartners" title="Open filtered partners" colSpan="3" onClick="save,action-target-list-method-open-filtered-partners"/>
 		  	<spacer/>
-		  	<field name="partnerTypeSelect" />
 		  	<panel-related field="partnerSet" colSpan="12" onSelect="action-target-list-lead-partner-set-domain"/>
 		  </panel>
-		  <panel title="Leads" colSpan="12">
+		  <panel title="Leads" >
 		  	<field name="leadQueryTypeSelect"/>
 		  	<field name="leadQuery" colSpan="12" showIf="leadQueryTypeSelect == 1"/>
       		<field name="leadFilterList" colSpan="12" layout="table" showIf="leadQueryTypeSelect == 0">
@@ -44,7 +55,7 @@
 		  	 <button name="openFilteredLeads" title="Open filtered leads" colSpan="3" onClick="save,action-target-list-method-open-filtered-leads"/>
 		  	<panel-related field="leadSet" colSpan="12"/>
 		  </panel>
-		</panel>
+		</panel-tabs>
 	</form>
 	
 	<action-attrs name="action-target-list-partner-filters-field-domain">

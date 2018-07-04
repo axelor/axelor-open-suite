@@ -23,6 +23,7 @@
 - Add Timer to Ticket.
 
 ## Improvements
+- Refactor TargetList and Campaign views to follow guidelines.
 - Add Partner balance as a new Accounting report.
 - Rework opportunity view
 - Remove all question marks (?) from boolean fields names.
