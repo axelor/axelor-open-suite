@@ -176,14 +176,6 @@
 		<field name="statusSelect" expr="3" if="statusSelect &lt;= 2"/>
 	</action-record>
 
-	<action-record name="action-ticket-record-pause" model="com.axelor.apps.helpdesk.db.Ticket">
-		<field name="timerState" expr="false"/>
-	</action-record>
-
-	<action-record name="action-ticket-record-play" model="com.axelor.apps.helpdesk.db.Ticket">
-		<field name="timerState" expr="true"/>
-	</action-record>
-
 	<action-record name="action-ticket-record-to-set-progress-select" model="com.axelor.apps.helpdesk.db.Ticket">
 		<field name="progressSelect" expr="100" if="statusSelect == 2"/>
 		<field name="progressSelect" expr="0" if="statusSelect != 2"/>
@@ -208,7 +200,7 @@
 
 	<action-group name="action-ticket-group-on-start">
 		<action name="action-ticket-method-start-timer"/>
-		<action name="action-ticket-record-play"/>
+		<action name="action-ticket-method-play"/>
 		<action name="action-ticket-record-to-fill-startDate"/>
 		<action name="action-ticket-method-compute-from-start-date-time"/>
 		<action name="action-ticket-record-set-start-status"/>
@@ -217,7 +209,7 @@
 
 	<action-group name="action-ticket-group-on-validate">
 		<action name="action-ticket-method-stop-timer"/>
-		<action name="action-ticket-record-pause"/>
+		<action name="action-ticket-method-pause"/>
 		<action name="action-ticket-record-to-fill-endDate"/>
 		<action name="action-ticket-method-compute-from-end-date-time"/>
 		<action name="action-ticket-record-set-validate-status"/>
@@ -227,7 +219,7 @@
 
 	<action-group name="action-ticket-group-on-close">
 		<action name="action-ticket-method-stop-timer"/>
-		<action name="action-ticket-record-pause"/>
+		<action name="action-ticket-method-pause"/>
 		<action name="action-ticket-method-compute-real-total-duration"/>
 		<action name="action-ticket-record-set-closed-status"/>
 		<action name="save"/>
@@ -235,7 +227,7 @@
 
 	<action-group name="action-ticket-group-on-pause">
 		<action name="action-ticket-method-stop-timer"/>
-		<action name="action-ticket-record-pause"/>
+		<action name="action-ticket-method-pause"/>
 		<action name="save"/>
 	</action-group>
 
@@ -251,6 +243,14 @@
 		<call class="com.axelor.apps.helpdesk.web.TicketController" method="computeFromEndDateTime"/>
 	</action-method>
 
+	<action-method name="action-ticket-method-pause" model="com.axelor.apps.helpdesk.db.Ticket">
+		<call class="com.axelor.apps.helpdesk.web.TicketController" method="timerStateOff"/>
+	</action-method>
+
+	<action-method name="action-ticket-method-play" model="com.axelor.apps.helpdesk.db.Ticket">
+		<call class="com.axelor.apps.helpdesk.web.TicketController" method="timerStateOn"/>
+	</action-method>
+	
 	<action-attrs name="action-ticket-domain-on-contact-partner">
 		<attribute for="contactPartner" if="customer != null &amp;&amp; !customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${customer.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
  		<attribute for="contactPartner" if="customer != null &amp;&amp; customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>

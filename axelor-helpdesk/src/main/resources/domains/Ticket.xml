@@ -30,6 +30,15 @@
 		<decimal name="realTotalDuration" title="Real total duration (Hours)" min="0" default="0" />
 		<boolean name="timerState" readonly="true"/>
 
+		<extra-code>
+			<![CDATA[
+				public static final int STATUS_NEW = 0;
+				public static final int STATUS_IN_PROGRESS = 0;
+				public static final int STATUS_RESOLVED = 0;
+				public static final int STATUS_CLOSED = 0;
+			]]>
+		</extra-code>
+
 		<track>
 		  <field name="ticketSeq"/>
 	      <field name="subject" />
