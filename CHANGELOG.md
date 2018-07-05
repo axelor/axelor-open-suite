@@ -23,6 +23,7 @@
 - Add Timer to Ticket.
 
 ## Improvements
+- Refactor TargetList and Campaign views to follow guidelines.
 - Add Partner balance as a new Accounting report.
 - Rework opportunity view
 - Remove all question marks (?) from boolean fields names.
@@ -39,6 +40,7 @@
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Automatic mail default fields in stock move are now filled correctly on partner change.
 - Project: Fix multiple bugs and improve views.
+- Bill of material: remove duplicate toolbar button of 'Generate new version'.
 
 ## [Unreleased 5.0.3]
 ## Improvements
