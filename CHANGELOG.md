@@ -38,6 +38,7 @@
 - Rework on menu 'Custom fields' of App builder.
 - Manufacturing order: fix updating of quantities in stock locations when updating real quantities.
 - When finishing a part of a manufacturing order, the newly generated out stock move gets now the correct stock location in the production process.
+- Import history : change type of field log from text to MetaFile.
 
 
 ## [5.0.2] - 2018-06-22

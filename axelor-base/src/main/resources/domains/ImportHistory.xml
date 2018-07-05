@@ -10,7 +10,7 @@
 		<many-to-one name="importConfiguration" ref="com.axelor.apps.base.db.ImportConfiguration" />
 		<many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" initParam="true" column="user_id"/>
 		<many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data(s)" required="true" initParam="true" />
-		<string name="log" title="Log" large="true" />
+		<many-to-one name="logMetaFile" title="Log" ref="com.axelor.meta.db.MetaFile" />
 
 	</entity>
 
