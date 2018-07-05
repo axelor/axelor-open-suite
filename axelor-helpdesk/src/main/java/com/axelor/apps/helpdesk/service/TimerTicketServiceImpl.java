@@ -33,7 +33,7 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
     return ticket
         .getTimerList()
         .stream()
-        .filter(t -> t.getAssignedTo() == user)
+        .filter(t -> t.getAssignedToUser() == user)
         .findFirst()
         .orElse(null);
   }
@@ -51,7 +51,7 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
     }
 
     TimerHistory history = new TimerHistory();
-    history.setStartDate(dateTime);
+    history.setStartDateT(dateTime);
     history.setTimer(timer);
     timer.addTimerHistoryListItem(history);
 

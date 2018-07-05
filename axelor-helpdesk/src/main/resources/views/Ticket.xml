@@ -18,11 +18,11 @@
 		<field name="statusSelect"/>
 		<field name="timerState" hidden="true"/>
 		<field name="progressSelect" widget="SelectProgress"/>
-		<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket" />
-		<button name="startTicket" icon="fa-play" onClick="action-ticket-group-on-start,save" readonlyIf="timerState == true || statusSelect == 3"/>
-		<button name="pause" icon="fa-pause" onClick="action-ticket-method-stop-timer,action-ticket-record-pause,save" readonlyIf="timerState == false || statusSelect == 3"/>
-		<button name="validateTicket" icon="fa-check" onClick="action-ticket-group-on-validate,save"/>
-		<button name="finishTicket" icon="fa-power-off" onClick="action-ticket-group-on-close,save"/>
+		<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket" readonlyIf="statusSelect == 3"/>
+		<button name="startTicket" icon="fa-play" onClick="action-ticket-group-on-start" readonlyIf="timerState == true || statusSelect == 3"/>
+		<button name="pause" icon="fa-pause" onClick="action-ticket-group-on-pause" readonlyIf="timerState == false || statusSelect == 3"/>
+		<button name="validateTicket" icon="fa-check" onClick="action-ticket-group-on-validate" readonlyIf="statusSelect == 3"/>
+		<button name="finishTicket" icon="fa-power-off" onClick="action-ticket-group-on-close" readonlyIf="statusSelect == 3"/>
 	</grid>
 
 	<form model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" name="ticket-form" onNew="action-ticket-group-on-new" onLoad="action-ticket-group-timer-process">
@@ -82,9 +82,9 @@
         </panel-tabs>
 
 		<panel name="actions" sidebar="true">
-			<button name="startTicket" title="Start" icon="fa-play" hideIf="statusSelect > 0" onClick="save,action-ticket-group-on-start,save"/>
-			<button name="validateTicket" title="Resolve" icon="fa-check" hideIf="statusSelect > 1" onClick="save,action-ticket-group-on-validate,save"/>
-			<button name="finishTicket" title="Close" icon="fa-power-off" css="btn-danger" hideIf="statusSelect > 2" onClick="save,action-ticket-group-on-close,save"/>
+			<button name="startTicket" title="Start" icon="fa-play" hideIf="statusSelect > 0" onClick="save,action-ticket-group-on-start"/>
+			<button name="validateTicket" title="Resolve" icon="fa-check" hideIf="statusSelect > 1" onClick="save,action-ticket-group-on-validate"/>
+			<button name="finishTicket" title="Close" icon="fa-power-off" css="btn-danger" hideIf="statusSelect > 2" onClick="save,action-ticket-group-on-close"/>
 		</panel>
 
 		<panel name="caracteristics" title="Caracteristics" sidebar="true" canCollapse="true">
@@ -212,6 +212,7 @@
 		<action name="action-ticket-record-to-fill-startDate"/>
 		<action name="action-ticket-method-compute-from-start-date-time"/>
 		<action name="action-ticket-record-set-start-status"/>
+		<action name="save"/>
 	</action-group>
 
 	<action-group name="action-ticket-group-on-validate">
@@ -221,6 +222,7 @@
 		<action name="action-ticket-method-compute-from-end-date-time"/>
 		<action name="action-ticket-record-set-validate-status"/>
 		<action name="action-ticket-record-to-set-progress-select"/>
+		<action name="save"/>
 	</action-group>
 
 	<action-group name="action-ticket-group-on-close">
@@ -228,6 +230,13 @@
 		<action name="action-ticket-record-pause"/>
 		<action name="action-ticket-method-compute-real-total-duration"/>
 		<action name="action-ticket-record-set-closed-status"/>
+		<action name="save"/>
+	</action-group>
+
+	<action-group name="action-ticket-group-on-pause">
+		<action name="action-ticket-method-stop-timer"/>
+		<action name="action-ticket-record-pause"/>
+		<action name="save"/>
 	</action-group>
 
 	<action-method name="action-ticket-method-compute-from-start-date-time">
