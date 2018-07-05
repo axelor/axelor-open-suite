@@ -33,11 +33,15 @@ import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +65,8 @@ public abstract class Importer {
   private File workspace;
 
   @Inject ExcelToCSV excelToCSV;
+
+  @Inject MetaFiles metaFiles;
 
   public void setConfiguration(ImportConfiguration configuration) {
     this.configuration = configuration;
@@ -107,8 +113,6 @@ public abstract class Importer {
     File workspace = createFinalWorkspace(configuration.getDataMetaFile());
     ImportHistory importHistory = process(bind.getAbsolutePath(), workspace.getAbsolutePath());
     deleteFinalWorkspace(workspace);
-
-    log.debug("Import terminé : {}", importHistory.getLog());
 
     return importHistory;
   }
@@ -206,12 +210,25 @@ public abstract class Importer {
    *
    * @param listener
    * @return
+   * @throws IOException
    */
-  protected ImportHistory addHistory(ImporterListener listener) {
+  protected ImportHistory addHistory(ImporterListener listener) throws IOException {
 
     ImportHistory importHistory =
         new ImportHistory(AuthUtils.getUser(), configuration.getDataMetaFile());
-    importHistory.setLog(listener.getImportLog());
+    File logFile = File.createTempFile("importLog", ".log");
+    FileWriter writer = null;
+    try {
+      writer = new FileWriter(logFile);
+      writer.write(listener.getImportLog());
+    } finally {
+      writer.close();
+    }
+    MetaFile logMetaFile =
+        metaFiles.upload(
+            new FileInputStream(logFile),
+            "importLog-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".log");
+    importHistory.setLogMetaFile(logMetaFile);
     importHistory.setImportConfiguration(configuration);
 
     return importHistory;
