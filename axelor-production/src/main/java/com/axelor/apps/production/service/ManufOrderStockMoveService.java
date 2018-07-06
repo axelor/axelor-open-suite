@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -118,6 +119,18 @@ public class ManufOrderStockMoveService {
         StockMoveRepository.TYPE_INTERNAL);
   }
 
+  /**
+   * Given a manuf order, its company and whether we want to create a in or out stock move,
+   * determine the default stock location and return it. First search in prodprocess, then in
+   * company stock configuration.
+   *
+   * @param manufOrder a manufacturing order.
+   * @param company a company with stock config.
+   * @param inOrOut can be {@link ManufOrderStockMoveService#STOCK_LOCATION_IN} or {@link
+   *     ManufOrderStockMoveService#STOCK_LOCATION_OUT}.
+   * @return the found stock location, which can be null.
+   * @throws AxelorException if the stock config is missing for the company.
+   */
   protected StockLocation getDefaultStockLocation(
       ManufOrder manufOrder, Company company, int inOrOut) throws AxelorException {
     if (inOrOut != STOCK_LOCATION_IN && inOrOut != STOCK_LOCATION_OUT) {
@@ -125,15 +138,36 @@ public class ManufOrderStockMoveService {
     }
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
-    if (manufOrder.getProdProcess() != null
-        && manufOrder.getProdProcess().getStockLocation() != null) {
-      return manufOrder.getProdProcess().getStockLocation();
+    StockLocation stockLocation = getDefaultStockLocation(manufOrder.getProdProcess(), inOrOut);
+    if (stockLocation == null) {
+      stockLocation =
+          inOrOut == STOCK_LOCATION_IN
+              ? stockConfigService.getComponentDefaultStockLocation(stockConfig)
+              : stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
+    }
+    return stockLocation;
+  }
+
+  /**
+   * Given a prodprocess and whether we want to create a in or out stock move, determine the stock
+   * location and return it.
+   *
+   * @param prodProcess a production process.
+   * @param inOrOut can be {@link ManufOrderStockMoveService#STOCK_LOCATION_IN} or {@link
+   *     ManufOrderStockMoveService#STOCK_LOCATION_OUT}.
+   * @return the found stock location, or null if the prod process is null.
+   */
+  protected StockLocation getDefaultStockLocation(ProdProcess prodProcess, int inOrOut) {
+    if (inOrOut != STOCK_LOCATION_IN && inOrOut != STOCK_LOCATION_OUT) {
+      throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
+    }
+    if (prodProcess == null) {
+      return null;
+    }
+    if (inOrOut == STOCK_LOCATION_IN) {
+      return prodProcess.getStockLocation();
     } else {
-      if (inOrOut == STOCK_LOCATION_IN) {
-        return stockConfigService.getComponentDefaultStockLocation(stockConfig);
-      } else {
-        return stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
-      }
+      return prodProcess.getProducedProductStockLocation();
     }
   }
 

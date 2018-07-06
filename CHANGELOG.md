@@ -52,6 +52,8 @@
 - Use base configuration to set the scale of costPrice in ManufOrder.
 - Production process: remove process line list from grid view and add company.
 - Bill of materials: display company and status in grid view.
+- Import demo data from excel demo file with specified configuration in excel file.
+- Improve grid view for timesheets in operation order.
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
@@ -80,6 +82,14 @@
 - Partner demo data: fix import carrier partner sequence.
 - Rework on menu 'Custom fields' of App builder.
 - Manufacturing order: fix updating of quantities in stock locations when updating real quantities.
+- When finishing a part of a manufacturing order, the newly generated out stock move gets now the correct stock location in the production process.
+- Import history : change type of field log from text to MetaFile.
+- Leads: Fix lost reason to readonly when lead is lost.
+- Leads: Fix delete the 'Draft' button when lead is lost.
+- Leads: Fix "Recycled" status
+- Leads : while converting lead to partner if partner is not a customer then convert it as prospect.
+- Add missing translation in alert message on timesheet line on manufacturing order.
+- Fix domain issue that appears on Configurator BOM form view when we select a product.
 
 
 ## [5.0.2] - 2018-06-22

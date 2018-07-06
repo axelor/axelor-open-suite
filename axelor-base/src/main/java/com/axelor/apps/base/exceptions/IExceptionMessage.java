@@ -295,4 +295,7 @@ public interface IExceptionMessage {
 
   String TIMER_IS_NOT_STOPPED = /*$$(*/ "You can't start a timer that has already started" /*)*/;
   String TIMER_IS_NOT_STARTED = /*$$(*/ "You can't stop a timer that hasn't been started" /*)*/;
+
+  /** Import demo data */
+  public static final String FILE_NAME_NOT_EXISTS = /*$$(*/ "Please provide valid %s name" /*)*/;
 }
