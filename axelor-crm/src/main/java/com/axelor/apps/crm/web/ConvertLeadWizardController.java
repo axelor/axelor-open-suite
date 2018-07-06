@@ -102,7 +102,7 @@ public class ConvertLeadWizardController {
       Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
       partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
       if (!partner.getIsCustomer()) {
-    	  partner.setIsProspect(true);
+        partner.setIsProspect(true);
       }
     }
 
