@@ -39,7 +39,7 @@ public interface TimerService {
    * @param model The model link to timer.
    * @return The timer related to model.
    */
-  Timer find(Model model);
+  Timer find(Model model) throws AxelorException;
 
   /**
    * Start the timer for model. If timer is null, create a new one.

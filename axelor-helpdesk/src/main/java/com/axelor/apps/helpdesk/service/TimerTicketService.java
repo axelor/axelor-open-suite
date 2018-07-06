@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public interface TimerTicketService {
 
-  Timer find(Ticket ticket);
+  Timer find(Ticket ticket) throws AxelorException;
 
   TimerHistory start(Ticket task, LocalDateTime dateTime) throws AxelorException;
 
