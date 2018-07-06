@@ -292,6 +292,7 @@
 <!--     ACTION RECORD -->
 
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
+   		<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
       <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
       <field name="typeSelect" expr="0" if="_typeSelect == null"/>

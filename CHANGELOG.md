@@ -47,6 +47,7 @@
 - Leads : while converting lead to partner if partner is not a customer then convert it as prospect.
 - Add missing translation in alert message on timesheet line on manufacturing order.
 - Fix domain issue that appears on Configurator BOM form view when we select a product.
+- Event :  when we create new event, set status 'Planned' by default.
 
 
 ## [5.0.2] - 2018-06-22
