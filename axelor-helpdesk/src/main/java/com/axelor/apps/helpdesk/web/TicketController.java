@@ -26,6 +26,7 @@ import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TimerTicketService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -179,7 +180,7 @@ public class TicketController {
       Beans.get(TimerTicketService.class)
           .start(ticket, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

@@ -7,9 +7,11 @@ import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.timer.AbstractTimerService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
@@ -17,25 +19,35 @@ import java.time.LocalDateTime;
 
 public class TimerTicketServiceImpl extends AbstractTimerService implements TimerTicketService {
 
+  protected TicketRepository repository;
+
   @Inject
   public TimerTicketServiceImpl(
       TimerRepository timerRepository,
       TimerHistoryRepository timerHistoryRepository,
-      UserService userService) {
+      UserService userService,
+      TicketRepository repository) {
     super(timerRepository, timerHistoryRepository, userService);
+    this.repository = repository;
   }
 
   @Override
-  public Timer find(Model model) {
+  public Timer find(Model model) throws AxelorException {
     User user = userService.getUser();
     Ticket ticket = (Ticket) model;
 
-    return ticket
-        .getTimerList()
-        .stream()
-        .filter(t -> t.getAssignedToUser() == user)
-        .findFirst()
-        .orElse(null);
+    try {
+      return ticket
+          .getTimerList()
+          .stream()
+          .filter(t -> t.getAssignedToUser() == user)
+          .findFirst()
+          .orElse(null);
+    } catch (NullPointerException e) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_TECHNICAL,
+          "Veuillez recharger la page pour effectuer cette action");
+    }
   }
 
   @Override
@@ -59,7 +71,7 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
   }
 
   @Override
-  public Timer find(Ticket ticket) {
+  public Timer find(Ticket ticket) throws AxelorException {
     return find((Model) ticket);
   }
 
@@ -79,7 +91,7 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
   }
 
   @Override
-  public void cancel(Ticket task) {
+  public void cancel(Ticket task) throws AxelorException {
     Timer timer = find(task);
     cancel(timer);
   }
