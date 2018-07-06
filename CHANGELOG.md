@@ -42,6 +42,7 @@
 - Leads: Fix lost reason to readonly when lead is lost.
 - Leads: Fix delete the 'Draft' button when lead is lost.
 - Leads: Fix "Recycled" status
+- Leads : while converting lead to partner if partner is not a customer then convert it as prospect.
 
 ## [5.0.2] - 2018-06-22
 ## Improvements
