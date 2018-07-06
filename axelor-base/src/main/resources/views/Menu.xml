@@ -535,6 +535,14 @@
 		model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-demo-file-wizard-form" />
 	</action-view>
+	
+	<menuitem name="admin-root-import-demo-data" parent="admin-root-maintenance"
+		title="Import demo data" action="admin.root.import.demo.data" />
+
+	<action-view name="admin.root.import.demo.data" title="Import demo data"
+		model="com.axelor.apps.base.db.Wizard" >
+		<view type="form" name="import-demo-data-wizard-form" />
+	</action-view>
 
 	<menuitem name="admin-root-indicator-generator-grouping" parent="admin-root-maintenance"
 		title="Indicators groups" action="admin.root.indicator.generator.grouping" />
