@@ -291,4 +291,7 @@ public interface IExceptionMessage {
   public static final String EXCEL_FILE_FORMAT_ERROR = /*$$(*/
       "Improper format of excel file." /*)*/;
   public static final String VALIDATE_FILE_TYPE = /*$$(*/ "Please import only excel file." /*)*/;
+
+  /** Import demo data */
+  public static final String FILE_NAME_NOT_EXISTS = /*$$(*/ "Please provide valid %s name" /*)*/;
 }
