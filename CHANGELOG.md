@@ -11,6 +11,7 @@
 - Bill of materials: display company and status in grid view.
 - Import demo data from excel demo file with specified configuration in excel file.
 - Improve grid view for timesheets in operation order.
+- Reduce padding of the default sequences of partner
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
@@ -47,6 +48,7 @@
 - Leads : while converting lead to partner if partner is not a customer then convert it as prospect.
 - Add missing translation in alert message on timesheet line on manufacturing order.
 - Fix domain issue that appears on Configurator BOM form view when we select a product.
+- Partner : Display the partner balance only on existing records
 
 
 ## [5.0.2] - 2018-06-22
