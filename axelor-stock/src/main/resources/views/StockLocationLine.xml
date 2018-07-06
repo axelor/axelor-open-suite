@@ -25,6 +25,10 @@
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
+		<panel>
+        	<button name="plannedStockMoveLineBtn" title="Planned stock move lines" onClick="action-stock-location-line-view-planned-stock-move-lines"/>
+        	<button name="realizedStockMoveLineBtn" title="Realized stock move lines" onClick="action-stock-location-line-view-realized-stock-move-lines"/>
+        </panel>
     </form>
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
@@ -105,5 +109,21 @@
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
     </form>
+    
+    <action-view name="action-stock-location-line-view-planned-stock-move-lines" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    	<view type="grid" name="stock-move-line-all-grid-planned"/>
+    	<view type="form" name="stock-move-line-all-form"/>
+    	<domain>self.stockMove.statusSelect = 2 AND self.product.id = :productId AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId)</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+    	<context name="locationId" expr="eval: stockLocation?.id"/>
+    </action-view>
+    
+	<action-view name="action-stock-location-line-view-realized-stock-move-lines" title="Realized stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    	<view type="grid" name="stock-move-line-all-grid"/>
+    	<view type="form" name="stock-move-line-all-form"/>
+    	<domain>self.stockMove.statusSelect = 3 AND self.product.id = :productId AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId)</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+    	<context name="locationId" expr="eval: stockLocation?.id "/>
+    </action-view>
     
 </object-views>
