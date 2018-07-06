@@ -55,7 +55,18 @@
 		</menubar>
 		<panel name="main" >
 			<panel colSpan="12">
-				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false" readonly="true"/>
+				<field name="statusSelect" colSpan="8" widget="NavSelect" showTitle="false" readonly="true"/>
+				<panel colSpan="4">
+					<field name="isRecycled" showTitle="false" widget="boolean-switch" readonly="true">
+						<viewer>
+							<![CDATA[
+								<h4>
+									<span class="label label-default" style="background-color: #0285D8;" ng-show="record.isRecycled" x-translate>Recycled</span>
+								<h4>
+							]]>
+						</viewer>
+					</field>
+				</panel>
 			</panel>
 
 			<panel colSpan="3">
@@ -146,10 +157,10 @@
 
 		<panel sidebar="true">
 			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
-			<button name="start" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start"/>
+			<button name="start" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start,save"/>
 			<button name="convert" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead,reload"/>
-			<button name="recycle" title="Recycle" hideIf="statusSelect == 6" icon="fa-recycle" onClick="save,action-lead-record-status-recycle"/>
-			<button name="lose" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose" css="btn-danger"/>
+			<button name="recycle" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle" onClick="save,action-lead-record-status-recycle,save"/>
+			<button name="lose" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose,save" css="btn-danger"/>
 			<button name="showPartner" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
 		</panel>
 	
@@ -258,7 +269,8 @@
     </action-record>
     
    	<action-record name="action-lead-record-status-recycle" model="com.axelor.apps.crm.db.Lead">
-    	<field name="statusSelect" expr="6"/>
+    	<field name="statusSelect" expr="3"/>
+    	<field name="isRecycled" expr="true"/>
     </action-record>
 
     <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead" title="Lose">

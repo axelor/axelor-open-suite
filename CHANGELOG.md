@@ -41,6 +41,7 @@
 - Import history : change type of field log from text to MetaFile.
 - Leads: Fix lost reason to readonly when lead is lost.
 - Leads: Fix delete the 'Draft' button when lead is lost.
+- Leads: Fix "Recycled" status
 
 ## [5.0.2] - 2018-06-22
 ## Improvements
