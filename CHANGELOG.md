@@ -58,6 +58,7 @@
 - Partner : Display the partner balance only on existing records
 - Opportunity: Fix priority on kanban by fill the 'orderByState' field on demo data.
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
+- Event :  when we create new event, set status 'Planned' by default.
 
 
 ## [5.0.2] - 2018-06-22
