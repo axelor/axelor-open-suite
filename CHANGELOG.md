@@ -56,6 +56,7 @@
 - Add missing translation in alert message on timesheet line on manufacturing order.
 - Fix domain issue that appears on Configurator BOM form view when we select a product.
 - Partner : Display the partner balance only on existing records
+- Opportunity: Fix priority on kanban by fill the 'orderByState' field on demo data.
 
 
 ## [5.0.2] - 2018-06-22
