@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.0.4]
 ## Improvements
+- Stock rules : change column name of code and name to product code and product name.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
