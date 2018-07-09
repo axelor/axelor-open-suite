@@ -60,9 +60,10 @@ public class ActionViewBuilderService {
 
   private void appendParams(List<ActionBuilderLine> params, StringBuilder xml) {
 
-    if (params != null) {
+    if (params == null) {
       return;
     }
+
     for (ActionBuilderLine param : params) {
       xml.append("\n" + INDENT + "<view-param name=\"" + param.getName() + "\" ");
       xml.append("value=\"" + StringEscapeUtils.escapeXml(param.getValue()) + "\" />");
