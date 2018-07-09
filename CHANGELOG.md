@@ -22,7 +22,8 @@
 - Add Timer to TeamTask.
 - Add Timer to Ticket.
 - Stock location line : add two buttons to see 'Planned' and 'Realized' stock move details for the current product and location.
-
+- Machine type added for the machine. 
+ 
 ## Improvements
 - Refactor TargetList and Campaign views to follow guidelines.
 - Add Partner balance as a new Accounting report.
