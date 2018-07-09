@@ -1,11 +1,12 @@
 # Changelog
-
 ## [Unreleased 5.0.4]
 ## Improvements
 - Stock rules : change column name of code and name to product code and product name.
+- Account : Create a new entry in menu configuration for Analytic journal types
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
+- Remove useless dependencies in build.gradle files.
 
 
 ## [5.0.3] - 2018-07-06
@@ -62,12 +63,12 @@
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
 
+
 ## [5.0.2] - 2018-06-22
 ## Improvements
 - Added the possibility to have production processes not limited to a single product and thus applicable to all bills of materials.
 - New default behaviour for Mrp, proposal type is now based on the product's procurement method if no stock rule exists.
 - Can now copy lines of a supplier catalog in partner view.
-- Remove useless dependencies in build.gradle files.
 
 ## Bug Fixes
 - Partner: check whether another partner with the same email address exist or not on save.
@@ -110,7 +111,7 @@ Also, improve the sale order line grid and form views.
 - Fix line removal in confirmed sale order.
 - Product: fix printing catalog of selected products.
 - Product: fix missing pictures in catalog when not all products have pictures.
-
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
 
 ## [5.0.0] - 2018-06-13
 ## Features
