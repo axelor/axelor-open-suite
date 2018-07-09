@@ -24,7 +24,7 @@
 	<menuitem id="abs-menu-team-teams-my" name="menu-team-teams-my" order="-110" title="My teams" parent="menu-team-teams" action="teams.my"/>
 	<menuitem id="abs-menu-team-teams-all" name="menu-team-teams-all" order="-100" title="All teams" parent="menu-team-teams" action="teams.all"/>
 
-    <menuitem id="calendar.root.menu" if="__config__.app.isApp('base')" name="menu-calendar" order="-110" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
+    <menuitem id="calendar.root.menu" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnableCalendars()" name="menu-calendar" order="-110" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
 
     <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events" parent="menu-calendar" action="calendar.root.menu.my.calendar"/>
 
