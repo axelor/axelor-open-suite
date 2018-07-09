@@ -1,6 +1,13 @@
 # Changelog
 
-## [Unreleased 5.0.3]
+## [Unreleased 5.0.4]
+## Improvements
+
+## Bug Fixes
+- Leads : Fix demo data according with 'isRecycled' new field.
+
+
+## [5.0.3] - 2018-07-06
 ## Improvements
 - Add a panel with Shipping comments in the PackagingList Report.
 - Permission assistant: use language configuration.
@@ -11,6 +18,7 @@
 - Bill of materials: display company and status in grid view.
 - Import demo data from excel demo file with specified configuration in excel file.
 - Improve grid view for timesheets in operation order.
+- Reduce padding of the default sequences of partner
 
 ## Bug Fixes
 - Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
@@ -47,6 +55,8 @@
 - Leads : while converting lead to partner if partner is not a customer then convert it as prospect.
 - Add missing translation in alert message on timesheet line on manufacturing order.
 - Fix domain issue that appears on Configurator BOM form view when we select a product.
+- Partner : Display the partner balance only on existing records
+- Opportunity: Fix priority on kanban by fill the 'orderByState' field on demo data.
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
 
 
@@ -706,7 +716,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...dev
+[Unreleased 5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...dev
+[5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...v5.0.2
 [5.0.1]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc3...v5.0.0
