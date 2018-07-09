@@ -211,6 +211,8 @@ public interface IExceptionMessage {
   public static final String PARTNER_3 = /*$$(*/
       "Can’t convert into an individual partner from scratch." /*)*/;
   public static final String PARTNER_NOT_FOUND = /*$$(*/ "Partner not found" /*)*/;
+  public static final String PARTNER_EMAIL_EXIST = /*$$(*/
+      "Email address already linked with another partner" /*)*/;
 
   /** Product controller */
   public static final String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
@@ -275,5 +277,21 @@ public interface IExceptionMessage {
    * User service
    */
   String USER_CODE_ALREADY_EXISTS = /*$$(*/ "A user with this login already exists." /*)*/;
-  String USER_PATTERN_MISMATCH_ACCES_RESTRICTION = /*$$(*/ "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
+  String USER_PATTERN_MISMATCH_ACCES_RESTRICTION = /*$$(*/
+      "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
+  String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
+      "Password doesn't match with configured pattern." /*)*/;
+
+  /** Convert demo data file */
+  public static final String DUPLICATE_CSV_FILE_NAME_EXISTS = /*$$(*/
+      "Please remove duplicate csv file name from excel file." /*)*/;
+
+  public static final String CSV_FILE_NAME_NOT_EXISTS = /*$$(*/
+      "Please provide valid csv file name." /*)*/;
+  public static final String EXCEL_FILE_FORMAT_ERROR = /*$$(*/
+      "Improper format of excel file." /*)*/;
+  public static final String VALIDATE_FILE_TYPE = /*$$(*/ "Please import only excel file." /*)*/;
+
+  /** Import demo data */
+  public static final String FILE_NAME_NOT_EXISTS = /*$$(*/ "Please provide valid %s name" /*)*/;
 }

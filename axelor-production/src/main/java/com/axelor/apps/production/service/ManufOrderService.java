@@ -143,8 +143,9 @@ public interface ManufOrderService {
    * On changing {@link ManufOrder#producedStockMoveLineList}, we also update the stock move.
    *
    * @param manufOrder
+   * @throws AxelorException
    */
-  void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder);
+  void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Compute {@link ManufOrder#diffConsumeProdProductList}, then add and remove lines to the stock
@@ -152,6 +153,8 @@ public interface ManufOrderService {
    *
    * @param stockMoveLineList
    * @param stockMove
+   * @throws AxelorException
    */
-  void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove);
+  void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove)
+      throws AxelorException;
 }

@@ -57,7 +57,7 @@
 
 	<selection name="product.sale.supply.select">
 		<option value="0">None</option>
-		<option value="1">FromStock</option>
+		<option value="1">From stock</option>
 		<option value="2">Purchase</option>
 		<option value="3">Produce</option>
 	</selection>
@@ -217,7 +217,7 @@
 	<selection name="base.bank.bank.details.type.select">
 		<option value="0">Other</option>
 		<option value="1">IBAN</option>
-		<option value="2">National id</option>
+		<option value="2">BBAN</option>
 	</selection>
 
 	<!-- TODO: move this selection to account module and create a copy here

@@ -25,6 +25,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class LeaveManagementService {
     }
     leaveManagement.setFromDate(fromDate);
     leaveManagement.setToDate(toDate);
-    leaveManagement.setValue(value);
+    leaveManagement.setValue(value.setScale(4, RoundingMode.HALF_EVEN));
 
     return leaveManagement;
   }

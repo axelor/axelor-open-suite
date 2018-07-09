@@ -32,4 +32,10 @@
     	<attribute name="value" for="modelField" expr="eval:_parent.metaField?.name"/>
     </action-attrs>
     
+    <form id="studio-json-field-form" name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" extension="true">
+    	<panel>
+    		<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+    	</panel>
+    </form>
+    
 </object-views>

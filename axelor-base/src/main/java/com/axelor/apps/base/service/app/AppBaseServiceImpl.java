@@ -27,7 +27,6 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,36 +40,11 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
   public static final String EXCEPTION = "Warning !";
 
-  private long appBaseId;
-
-  private static AppBaseServiceImpl INSTANCE;
-
   protected static String DEFAULT_LOCALE = "en";
-
-  @Inject
-  public AppBaseServiceImpl() {
-    try {
-      appBaseId = Query.of(AppBase.class).fetchOne().getId();
-    } catch (Exception e) {
-      throw new RuntimeException("Base app is not initialized", e);
-    }
-  }
-
-  private static AppBaseServiceImpl get() {
-
-    if (INSTANCE == null) {
-      INSTANCE = new AppBaseServiceImpl();
-    }
-    return INSTANCE;
-  }
 
   @Override
   public AppBase getAppBase() {
-    return Query.of(AppBase.class)
-        .filter("self.id = :id")
-        .bind("id", get().appBaseId)
-        .cacheable()
-        .fetchOne();
+    return Query.of(AppBase.class).cacheable().fetchOne();
   }
 
   /**

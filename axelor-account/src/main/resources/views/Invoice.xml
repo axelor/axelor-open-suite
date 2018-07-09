@@ -119,9 +119,9 @@
 
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect != 3 || printedPDF == null"/>
-                <item title="Show stored copy" action="action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
-                <item title="Print updated copy" action="save,action-invoice-validate-regenerate-invoice,action-invoice-method-regenerate-and-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
+                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="printedPDF == null || (statusSelect != 3 &amp;&amp; !(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2))"/>
+                <item title="Show stored copy" action="action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="(statusSelect == 3 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2)) &amp;&amp; printedPDF != null"/>
+                <item title="Print updated copy" action="save,action-invoice-validate-regenerate-invoice,action-invoice-method-regenerate-and-show-invoice" readonlyIf="partner == null" showIf="(statusSelect == 3 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2)) &amp;&amp; printedPDF != null"/>
                 <item title="Print annex" action="action-invoice-business-project-method-print-annex" showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)" if-module="axelor-business-project"/>
             </menu>
 

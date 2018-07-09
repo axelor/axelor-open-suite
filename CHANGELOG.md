@@ -1,15 +1,99 @@
 # Changelog
+## [Unreleased 5.0.4]
+## Improvements
+- Stock rules : change column name of code and name to product code and product name.
+- Account : Create a new entry in menu configuration for Analytic journal types
+
+## Bug Fixes
+- Leads : Fix demo data according with 'isRecycled' new field.
+- Remove useless dependencies in build.gradle files.
 - Fix : Tax grid-view : sort records per code ASC
 
 
-## [Unreleased 5.0.1]
+## [5.0.3] - 2018-07-06
+## Improvements
+- Add a panel with Shipping comments in the PackagingList Report.
+- Permission assistant: use language configuration.
+- User: validate password on change.
+- Convert demo data excel file into zip file containing csv files ready to import.
+- Use base configuration to set the scale of costPrice in ManufOrder.
+- Production process: remove process line list from grid view and add company.
+- Bill of materials: display company and status in grid view.
+- Import demo data from excel demo file with specified configuration in excel file.
+- Improve grid view for timesheets in operation order.
+- Reduce padding of the default sequences of partner
+
+## Bug Fixes
+- Moved readonly behaviour of a button in sale order form from an attrs action directly onto the button to avoid potential future bugs.
+- Event: fix recurrence configurations.
+- Partner: fix opening client situation report.
+- Opportunity: fix bugs of values being set wrongly when creating an opportunity from a partner or a lead.
+- Production process and bill of material: fix errors generated when adding an element with a priority to a list for the first time.
+- Production process: set as required the fields, "product", "qty", and "unit" to avoid NPE
+- Fix payment method field of a purchase order not displaying any value in edit mode.
+- Permission assistant: fix persisting import error.
+- BANK - bank details type: update BBAN translation
+- Invoice: fix trading name that was not set
+- Remove the blank part to the right at PurchaseOrderLine
+- Fix MRP: stock location filter. Only internal and external stock location should be able to use on MRP
+- In CRM sale stage change "Nouveau" by "Nouvelle".
+- Removed app service initialization exception. App records must not be required to initialize service. 
+- Stock move: fix forbid a 'Planned' move and archived a 'Realized' move on delete.
+- Printing a non-ventilated invoice no longer saves the generated printing and attaches it to the invoice.
+- Production process : display the title of the field "name" on edit mode.
+- Added missing translation and made product field of a production process required when the process is not authorized for multiple products.
+- Production process: display the title of the field "name" on edit mode.
+- Manufacturing order: don't compute a new sequence (appears when we plan a canceled manufacturing order) if a definive sequence has been computed before.
+- Manufacturing order: fix quantity updating for manually added consumed products.
+- Fix duplicate name field when editing or creating a "individual" partner.
+- Logistical form: in M2O forwarder, we should be able to select carrier or supplier partner only.
+- Partner demo data: fix import carrier partner sequence.
+- Rework on menu 'Custom fields' of App builder.
+- Manufacturing order: fix updating of quantities in stock locations when updating real quantities.
+- When finishing a part of a manufacturing order, the newly generated out stock move gets now the correct stock location in the production process.
+- Import history : change type of field log from text to MetaFile.
+- Leads: Fix lost reason to readonly when lead is lost.
+- Leads: Fix delete the 'Draft' button when lead is lost.
+- Leads: Fix "Recycled" status
+- Leads : while converting lead to partner if partner is not a customer then convert it as prospect.
+- Add missing translation in alert message on timesheet line on manufacturing order.
+- Fix domain issue that appears on Configurator BOM form view when we select a product.
+- Partner : Display the partner balance only on existing records
+- Opportunity: Fix priority on kanban by fill the 'orderByState' field on demo data.
+- Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
+- Event :  when we create new event, set status 'Planned' by default.
+- Opportunity: Fix set customer when create opportunity from lead.
+
+
+## [5.0.2] - 2018-06-22
+## Improvements
+- Added the possibility to have production processes not limited to a single product and thus applicable to all bills of materials.
+- New default behaviour for Mrp, proposal type is now based on the product's procurement method if no stock rule exists.
+- Can now copy lines of a supplier catalog in partner view.
+
+## Bug Fixes
+- Partner: check whether another partner with the same email address exist or not on save.
+- Supplier form: show button "create order" when isProspect or isCustomer, hidden if none of them
+- Product: fix missing picture on product sheet.
+- Minor change from "FromStock" option to "From stock" in sale order lines.
+- Employee: fix encrypted fields.
+- Fix rounding problem in HR batches calculations
+- Type of stock move generated from manuf order is now correctly set to internal.
+- Remove unused action.
+- Fix columns of type reference in all tree view.
+- Manufactoring Order: add rollback in operation order as it is in manufacturing order when click on finish
+- Web service mobile: change the "create timesheet line" method to update it also, and have duration/hours updated
+- Product : displaying quantities in stock with big numbers (until millions)
+- Manufacturing order: fix NPE when adding manually an operation order, caused by missing work center
+
+## [5.0.1] - 2018-06-18
 ## Improvements
 - Rework accounting report for journal
 - User: add default password pattern description.
 
 ## Bug Fixes
-- Fix selection of sale order lines on MRP : Now we can select a sale order line whose the product is storrable, not excluded on MRP, and not delivered. 
-Also, improve the sale order line grid and form views
+- Fix selection of sale order lines on MRP : Now we can select a sale order line whose product is storable, not excluded on MRP, and not delivered. 
+Also, improve the sale order line grid and form views.
 - Minor fixes to printing a sale/purchase order or an invoice.
 - Sale order: fix NPE when adding a new line on pending orders.
 - Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
@@ -19,6 +103,16 @@ Also, improve the sale order line grid and form views
 - Fix error when trying to generate suppliers requests on a purchase order line under certain conditions
 - Sale order : calculate fullname for draft orders while importing demo data.
 - Sale order: fix copy problem by reseting field deliverState and deliveredQty, and others fields to null
+- Event : fix an error on save that can occur if the organizer is not set.
+- Stock move: hide button generate invoice if internal stock move
+- Fix NPE happening in invoice lines.
+- Financial account : Fix NPE(PersistanceException) while persistence of new account. 
+- Opportunity: fix error in grid view when clicking on "Assign to me" button without having selected any lines.
+- Fix Analytic balance report to take into account the company of the analytic journal.
+- Fix line removal in confirmed sale order.
+- Product: fix printing catalog of selected products.
+- Product: fix missing pictures in catalog when not all products have pictures.
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
 
 ## [5.0.0] - 2018-06-13
 ## Features
@@ -626,6 +720,11 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+
+[Unreleased 5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...dev
+[5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
+[5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...v5.0.2
+[5.0.1]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc3...v5.0.0
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
