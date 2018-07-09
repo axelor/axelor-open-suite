@@ -41,6 +41,7 @@
 				<field name="manageProductVariants" widget="boolean-switch"/>
 				<field name="manageMultiBanks" widget="boolean-switch"/>
 				<field name="enterpriseCommunication" widget="boolean-switch"/>
+				<field name="enableCalendars" widget="boolean-switch"/>
 				<field name="document" widget="boolean-switch"/>
                 <field name="passwordChangedTemplate"/>
 			</panel>
