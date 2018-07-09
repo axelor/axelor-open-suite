@@ -21,13 +21,17 @@ import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
+import org.apache.commons.io.FileUtils;
 
 @Singleton
 public class ImportCityController {
@@ -52,7 +56,10 @@ public class ImportCityController {
     try {
       ImportHistory importHistory = importCityService.importCity(typeSelect, dataFile);
       response.setAttr("importHistoryList", "value:add", importHistory);
-      response.setNotify(importHistory.getLog().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+      File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
+      response.setNotify(
+          FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
+              .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

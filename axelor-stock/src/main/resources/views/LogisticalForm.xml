@@ -49,8 +49,9 @@
                     onChange="action-logistical-form-set-customer-account-number" />
                 <field name="accountSelectionToCarrierSelect" onChange="action-logistical-form-set-customer-account-number" />
                 <field name="customerAccountNumberToCarrier" />
-                <field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form"
-                    grid-view="partner-grid" canEdit="false" />
+                <field name="forwarderPartner" 
+                    domain="(self.isCarrier = TRUE OR self.isSupplier = TRUE) AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
+                	form-view="partner-form" grid-view="partner-grid" canEdit="false" />
                 <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 <field name="tracking" />
                 <field name="totalGrossWeight" colSpan="3" />

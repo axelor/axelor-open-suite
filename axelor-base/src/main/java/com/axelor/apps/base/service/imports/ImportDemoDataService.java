@@ -15,24 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.imports.importer;
+package com.axelor.apps.base.service.imports;
 
-import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.service.imports.listener.ImporterListener;
-import com.axelor.data.xml.XMLImporter;
+import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
 
-class ImporterXML extends Importer {
+public interface ImportDemoDataService {
 
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException {
-
-    XMLImporter importer = new XMLImporter(bind, data);
-
-    ImporterListener listener = new ImporterListener(getConfiguration().getName());
-    importer.addListener(listener);
-    importer.run();
-
-    return addHistory(listener);
-  }
+  public MetaFile importDemoDataExcel(File excelFile)
+      throws FileNotFoundException, IOException, AxelorException, ParseException,
+          ClassNotFoundException;
 }
