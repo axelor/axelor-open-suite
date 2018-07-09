@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.0.4]
 ## Improvements
+- Apps management: improve layout of applications on the view
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
