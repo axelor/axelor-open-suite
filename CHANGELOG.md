@@ -4,6 +4,7 @@
 ## Improvements
 
 ## Bug Fixes
+- Leads : Fix demo data according with 'isRecycled' new field.
 
 
 ## [5.0.3] - 2018-07-06
