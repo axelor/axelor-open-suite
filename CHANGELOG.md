@@ -7,6 +7,7 @@
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
 - Remove useless dependencies in build.gradle files.
+- Fix : Tax grid-view : sort records per code ASC
 
 
 ## [5.0.3] - 2018-07-06
