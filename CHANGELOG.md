@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.0.4]
+## Features
+- User : Add a search filter to see the active users.
+
 ## Improvements
 - Stock rules : change column name of code and name to product code and product name.
 - Account : Create a new entry in menu configuration for Analytic journal types
