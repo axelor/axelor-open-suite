@@ -19,6 +19,7 @@
 - Prevents errors in configurator by temporary removing O2M selection for attributes and formula.
 - Improve formula maximum length in configurator formula class.
 - Hide configurator bill of material on sale configurator creator.
+- Base: demo data, remove unused base_userInfo.csv
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
