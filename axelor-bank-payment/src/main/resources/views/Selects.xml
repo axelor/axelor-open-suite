@@ -27,6 +27,7 @@
 		<option value="4">International Direct Debit</option>
 		<option value="5">National Treasury transfer</option>
 		<option value="6">International Treasury transfer</option>
+		<option value="7">Send bank order</option>
 	</selection>
 	
 	<selection name="bankpayment.bank.order.partner.type.select">

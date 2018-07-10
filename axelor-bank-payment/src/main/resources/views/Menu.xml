@@ -97,7 +97,8 @@
 		title="Send a Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<view type="grid" name="bank-order-send-grid"/>
 		<view type="form" name="bank-order-send-form"/>
-		<domain>self.generatedMetaFile != NULL AND self.nbOfLines = 0</domain>
+		<domain>self.orderTypeSelect = 7</domain>
+		<context name="_orderTypeSelect" expr="7"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"

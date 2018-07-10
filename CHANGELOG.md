@@ -8,6 +8,7 @@
 - Accounting export, use 1000 for administration and 1001 for FEC
 - Move every method of mobile service in HumanRessourceMobileController + fix some and change parameters
 - Web service mobile, create getKilometricAllowParam
+- Add a new bank order type for existing file transfer
 
 ### Bug Fixes
 - Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
@@ -18,6 +19,7 @@
 - Invoice, replace empty line on pending total by a color line (blue, info-text)
 - In MoveLineExportServiceImpl, always have ignoreInAccountingOk = false
 - Only "Active" EbicsUsers can be selected as signatoryEbicsUser in BankOrder form views.
+- Fix total amount reseting on save in bank orders.
 
 ## [4.2.3] - 2018-02-28
 4.1.3 with axelor-process-studio modules
