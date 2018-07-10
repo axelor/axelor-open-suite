@@ -19,6 +19,7 @@
 - Prevents errors in configurator by temporary removing O2M selection for attributes and formula.
 - Improve formula maximum length in configurator formula class.
 - Hide configurator bill of material on sale configurator creator.
+- Demo data, remove unused "base_scheduler.csv"
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
