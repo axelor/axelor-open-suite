@@ -8,6 +8,7 @@
 - Leads : Fix demo data according with 'isRecycled' new field.
 - Remove useless dependencies in build.gradle files.
 - Fix : Tax grid-view : sort records per code ASC
+- Leads : Fix button 'Show all events' to see events when lead is converted or lost.
 
 
 ## [5.0.3] - 2018-07-06
