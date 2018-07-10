@@ -9,7 +9,7 @@
 - Remove useless dependencies in build.gradle files.
 - Fix : Tax grid-view : sort records per code ASC
 - MESSAGE WIZARD : Apply canEdit to 'false' on editable field 'company'. 
-
+- Leads : Fix button 'Show all events' to see events when lead is converted or lost.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
