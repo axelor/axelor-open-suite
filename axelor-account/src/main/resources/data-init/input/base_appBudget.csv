@@ -1,2 +1,2 @@
 "name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Budget";"budget";10;"Budget configuration";"app-budget.png";"axelor-account";"account";18
+"Budget";"budget";10;"Budget configuration";"app-budget.png";"axelor-account";"account";7
