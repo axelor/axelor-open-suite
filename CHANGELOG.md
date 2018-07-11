@@ -14,6 +14,7 @@
 - Fix : Tax grid-view : sort records per code ASC
 - MESSAGE WIZARD : Apply canEdit to 'false' on editable field 'company'. 
 - Leads : Fix button 'Show all events' to see events when lead is converted or lost.
+- EXPENSE TYPE : Remove button 'Catalog' and set general configuration to set correct number of digits for unit price for field 'salePrice'.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
