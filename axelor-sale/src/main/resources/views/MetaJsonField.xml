@@ -7,7 +7,7 @@
 	    <panel title="Overview">
 	      <field name="$simpleName" onChange="action-configurator-json-field-record-name" title="Name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
 		  <field readonly="true" name="name" title="Name to use in scripts"/>
-	      <field name="type" />
+	      <field name="type" selection-in="['string', 'integer', 'decimal', 'boolean', 'datetime', 'date', 'time', 'panel', 'enum', 'button', 'separator', 'many-to-one', 'many-to-many', 'json-many-to-one', 'json-many-to-many']"/>
 	      <field name="title" />
 	      <field name="defaultValue" />
 	      <field name="help" />

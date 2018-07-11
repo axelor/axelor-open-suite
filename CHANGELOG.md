@@ -16,6 +16,7 @@
 - Leads : Fix button 'Show all events' to see events when lead is converted or lost.
 - EXPENSE TYPE : Remove button 'Catalog' and set general configuration to set correct number of digits for unit price for field 'salePrice'.
 - Leads : Fix fill the 'Partner' when schedule an event from the lead.
+- Prevents errors in configurator by temporary removing O2M selection for attributes and formula.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
