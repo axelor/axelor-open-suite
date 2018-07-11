@@ -121,12 +121,13 @@
 		</panel>
 		
 		<panel sidebar="true" title="Linked to" name="meetingLinked">
-			<field name="partner" domain="(self.isCustomer = true OR self.isSupplier = true OR self.isCarrier = true) AND self.isEmployee = false" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
+			<field name="partner" domain="(self.isCustomer = true OR self.isSupplier = true OR self.isCarrier = true) AND self.isEmployee = false" onChange="action-event-group-partner-onchange" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="contactPartner" hideIf="partner.partnerTypeSelect == 2" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+			<field name="lead" onChange="action-meeting-set-location-lead, action-event-method-add-guest" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 			<field name="campaign" form-view="campaign-form" grid-view="campaign-grid"/>
 			<field name="relatedToSelectId" hidden="true" />
+			<field name="partner.partnerTypeSelect" hidden="true"/>
 		</panel>
 
 		<panel>
@@ -145,7 +146,6 @@
 	</action-group>
 	
 	<action-group name="action-group-crm-event-onload">
-		<action name="action-partner-attrs-hide-contact-partner" />
 		<action name="action-partner-method-check-rights" if="calendar != null"/>
 		<action name="action-event-hide-private" if="typeSelect == 2" />
 	</action-group>
@@ -181,6 +181,12 @@
     <action-group name="action-group-crm-meeting-contactpartner-onchange">
     	<action name="action-attrs-client-partner"/>
     	<action name="action-meeting-set-location-contact"/>
+    	<action name="action-event-method-add-guest"/>
+    </action-group>
+    
+    <action-group name="action-event-group-partner-onchange">
+    	<action name="action-meeting-set-location-partner"/>
+    	<action name="action-event-method-add-guest"/>
     </action-group>
     
     <action-attrs name="action-event-hide-private">
@@ -263,6 +269,7 @@
     	<action name="action-event-record-event-from-partner" if="_partner != null || _parentPartner != null"/>
     	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     	<action name="action-event-record-event-from-sale-order" if="_saleOrder != null" />
+    	<action name="action-event-method-add-guest"/>
     </action-group>
 
     <action-group name="action-event-type-select-onchange-group">
@@ -362,7 +369,7 @@
 	<action-record name="action-event-record-compute-attendee-list" model="com.axelor.apps.crm.db.Event">
 		<field if="attendees" name="computedAttendeeList" expr="eval:attendees.collect{it?.name}.join(', ')"/>
 	</action-record>
-
+	
 	<!-- ACTIONS TO SET SELECTS -->
 	
 	<action-record name="action-set-task-status-select-2" model="com.axelor.apps.crm.db.Event">
@@ -417,6 +424,10 @@
 	<action-method name="action-event-method-generate-recurrence">
 		<call class="com.axelor.apps.crm.web.EventController" method="generateRecurrentEvents"/>
 	</action-method>
+	
+	<action-method name="action-event-method-add-guest">
+    	<call class="com.axelor.apps.crm.web.EventController" method="addGuest"/>
+    </action-method>
 	
 <!-- 	FILTERS -->
 	

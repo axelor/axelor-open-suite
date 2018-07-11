@@ -28,10 +28,12 @@ import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -61,6 +63,8 @@ public class EventController {
   @Inject private EventRepository eventRepo;
 
   @Inject private EventService eventService;
+
+  @Inject ICalendarEventService iCalendarEventService;
 
   public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 
@@ -483,5 +487,23 @@ public class EventController {
   public void changeCreator(ActionRequest request, ActionResponse response) {
     User user = AuthUtils.getUser();
     response.setValue("organizer", Beans.get(CalendarService.class).findOrCreateUser(user));
+  }
+
+  /**
+   * This method is used to add attendees/guests from partner or contact partner or lead
+   *
+   * @param request
+   * @param response
+   */
+  public void addGuest(ActionRequest request, ActionResponse response) {
+    Event event = request.getContext().asType(Event.class);
+    try {
+      EmailAddress emailAddress = eventService.getEmailAddress(event);
+      if (emailAddress != null) {
+        response.setValue("attendees", iCalendarEventService.addEmailGuest(emailAddress, event));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
