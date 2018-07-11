@@ -1,12 +1,19 @@
 # Changelog
-
 ## [Unreleased 5.0.4]
+## Features
+- User : Add a search filter to see the active users.
+
 ## Improvements
+- Stock rules : change column name of code and name to product code and product name.
+- Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
-
+- Remove useless dependencies in build.gradle files.
+- Fix : Tax grid-view : sort records per code ASC
+- MESSAGE WIZARD : Apply canEdit to 'false' on editable field 'company'. 
+- Leads : Fix button 'Show all events' to see events when lead is converted or lost.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
@@ -57,6 +64,10 @@
 - Add missing translation in alert message on timesheet line on manufacturing order.
 - Fix domain issue that appears on Configurator BOM form view when we select a product.
 - Partner : Display the partner balance only on existing records
+- Opportunity: Fix priority on kanban by fill the 'orderByState' field on demo data.
+- Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
+- Event :  when we create new event, set status 'Planned' by default.
+- Opportunity: Fix set customer when create opportunity from lead.
 
 
 ## [5.0.2] - 2018-06-22
@@ -106,7 +117,7 @@ Also, improve the sale order line grid and form views.
 - Fix line removal in confirmed sale order.
 - Product: fix printing catalog of selected products.
 - Product: fix missing pictures in catalog when not all products have pictures.
-
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
 
 ## [5.0.0] - 2018-06-13
 ## Features
