@@ -17,6 +17,8 @@
 - EXPENSE TYPE : Remove button 'Catalog' and set general configuration to set correct number of digits for unit price for field 'salePrice'.
 - Leads : Fix fill the 'Partner' when schedule an event from the lead.
 - Prevents errors in configurator by temporary removing O2M selection for attributes and formula.
+- Improve formula maximum length in configurator formula class.
+- Hide configurator bill of material on sale configurator creator.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
