@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 4.x]
+## [4.2.4] - 208-07-12
 ### Improvements
 - Fiscal Position interface reworked and moved from Account to Base module
 - Add a counter to limit iterations of while loop in YearService and BudgetService
@@ -23,6 +23,12 @@
 
 ## [4.2.3] - 2018-02-28
 4.1.3 with axelor-process-studio modules
+
+## [4.2.2] - 2018-02-28
+4.1.2 with axelor-process-studio modules
+
+## [4.2.1] - 2018-02-28
+4.1.1 with axelor-process-studio modules
 
 ## [4.1.3] - 2018-02-28
 ### Improvements
@@ -339,8 +345,10 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
+[4.2.4]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.3...v4.2.3
+[4.2.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.2.2
+[4.2.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.2.1
 [4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1

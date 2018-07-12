@@ -2,7 +2,7 @@ apply plugin: 'axelor-module'
 
 module {
 	name "axelor-human-resource"
-	version "4.2.0"
+	version "4.2.4"
 	title "Axelor human resource"
 
 	//module dependencies
