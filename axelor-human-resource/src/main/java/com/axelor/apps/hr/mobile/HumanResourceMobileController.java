@@ -1,7 +1,11 @@
 package com.axelor.apps.hr.mobile;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.math.BigDecimal;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,8 +52,11 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
 
 public class HumanResourceMobileController {
@@ -202,35 +209,66 @@ public class HumanResourceMobileController {
 	 *		"justification": 0
 	 * } }
 	 */
-	@Transactional
-	public void insertExpenseLine(ActionRequest request, ActionResponse response) {
-		User user = AuthUtils.getUser();
-		ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
-		Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
-		if (user != null) {
-			Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
-			ExpenseLine expenseLine = new ExpenseLine();
-			expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
-			expenseLine.setComments(request.getData().get("comments").toString());
-			expenseLine.setExpenseProduct(product);
-			expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
-			expenseLine.setProjectTask(projectTask);
-			expenseLine.setUser(user);
-			expenseLine.setUntaxedAmount(new BigDecimal(request.getData().get("amountWithoutVat").toString()));
-			expenseLine.setTotalTax(new BigDecimal(request.getData().get("vatAmount").toString()));
-			expenseLine.setTotalAmount(expenseLine.getUntaxedAmount().add(expenseLine.getTotalTax()));
+  @Transactional
+  public void insertExpenseLine(ActionRequest request, ActionResponse response) {
+    try {
+      User user = AuthUtils.getUser();
+      ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(new Long(request.getData().get("project").toString()));
+      Product product = Beans.get(ProductRepository.class).find(new Long(request.getData().get("expenseProduct").toString()));
+      if (user != null) {
+        Expense expense = Beans.get(ExpenseService.class).getOrCreateExpense(user);
+        ExpenseLine expenseLine = new ExpenseLine();
+        expenseLine.setExpenseDate(new LocalDate(request.getData().get("date").toString()));
+        expenseLine.setComments(request.getData().get("comments").toString());
+        expenseLine.setExpenseProduct(product);
+        expenseLine.setToInvoice(new Boolean(request.getData().get("toInvoice").toString()));
+        expenseLine.setProjectTask(projectTask);
+        expenseLine.setUser(user);
+        expenseLine.setUntaxedAmount(new BigDecimal(request.getData().get("amountWithoutVat").toString()));
+        expenseLine.setTotalTax(new BigDecimal(request.getData().get("vatAmount").toString()));
+        expenseLine.setTotalAmount(expenseLine.getUntaxedAmount().add(expenseLine.getTotalTax()));
 
-			Object justificationObject = request.getData().get("justification");
-			if(justificationObject != null){
-				expenseLine.setJustification(justificationObject.toString().getBytes());
-			}
-			expense.addGeneralExpenseLineListItem(expenseLine);
+        String justification = (String) request.getData().get("justification");
+        if(justification != null){
+          String MIME_IMAGE_X_ICON = "image/x-icon";
+          String MIME_IMAGE_SVG_XML = "image/svg+xml";
+          String MIME_IMAGE_BMP = "image/bmp";
+          String MIME_IMAGE_GIF = "image/gif";
+          String MIME_IMAGE_JPEG = "image/jpeg";
+          String MIME_IMAGE_TIFF = "image/tiff";
+          String MIME_IMAGE_PNG = "image/png";
 
-			Beans.get(ExpenseRepository.class).save(expense);
+          Map<String, String> mimeTypeMapping = new HashMap<String, String>(200);
 
-			response.setValue("id", expenseLine.getId());
-		}
-	}
+          mimeTypeMapping.put(MIME_IMAGE_X_ICON, "ico");
+          mimeTypeMapping.put(MIME_IMAGE_SVG_XML, "svg");
+          mimeTypeMapping.put(MIME_IMAGE_BMP, "bmp");
+          mimeTypeMapping.put(MIME_IMAGE_GIF, "gif");
+          mimeTypeMapping.put(MIME_IMAGE_JPEG, "jpg");
+          mimeTypeMapping.put(MIME_IMAGE_TIFF, "tif");
+          mimeTypeMapping.put(MIME_IMAGE_PNG, "png");
+
+          byte[] decodedFile = Base64.getDecoder().decode(justification);
+          String formatName = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(decodedFile));
+          String extension = "";
+          if(mimeTypeMapping.containsKey(formatName)) {
+            extension = "." + mimeTypeMapping.get(formatName);
+            File file = MetaFiles.createTempFile("justification", extension).toFile();
+            Files.write(decodedFile, file);
+            MetaFile metaFile = Beans.get(MetaFiles.class).upload(file);
+            expenseLine.setJustificationMetaFile(metaFile);
+          }
+        }
+
+        expense.addGeneralExpenseLineListItem(expenseLine);
+        Beans.get(ExpenseRepository.class).save(expense);
+
+        response.setValue("id", expenseLine.getId());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
 	/*
 	 * This method is used in mobile application.

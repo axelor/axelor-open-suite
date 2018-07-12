@@ -2,6 +2,7 @@
 
 ## [Unreleased 4.2.5]
 ### Improvements
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 
 ### Bug Fixes
 
