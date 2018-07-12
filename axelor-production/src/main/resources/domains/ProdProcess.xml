@@ -7,7 +7,7 @@
 
   <entity name="ProdProcess" lang="java">
 
-  	<one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases"/>
+  	<one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases" orderBy="priority"/>
   	<string name="name" title="Label" required="true"/>
   	<string name="code" title="Code"/>
   	<boolean name="outsourcing" title="Outsourcing"/>
