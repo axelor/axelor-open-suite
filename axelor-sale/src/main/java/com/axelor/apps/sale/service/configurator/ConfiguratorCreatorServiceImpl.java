@@ -399,9 +399,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         JPA.all(MetaField.class)
             .filter("self.name = ? AND self.metaModel.id = ?", name, productModelId)
             .fetchOne();
-    if (metaFieldType == "Product") {
+    if (metaFieldType.equals("Product")) {
       configuratorFormula.setProductMetaField(metaField);
-    } else if (metaFieldType == "SaleOrderLine") {
+    } else if (metaFieldType.equals("SaleOrderLine")) {
       configuratorFormula.setSaleOrderLineMetaField(metaField);
     } else {
       throw new AxelorException(
