@@ -299,6 +299,7 @@
 <!--     ACTION RECORD -->
 
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
+   		<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
       <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
       <field name="typeSelect" expr="0" if="_typeSelect == null"/>
@@ -333,8 +334,9 @@
 
     <action-record name="action-event-record-event-from-lead" model="com.axelor.apps.crm.db.Event">
     	<field name="lead" expr="eval: _lead"/>
-    	<field name="user" expr="eval: __repo__(User).find(_lead.user.id)" if="_lead.user != null" />
+    	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
+    	<field name="partner" expr="eval: _lead.partner"/>
     </action-record>
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">

@@ -408,6 +408,15 @@
 		<view type="grid" name="analytic-journal-grid"/>
 		<view type="form" name="analytic-journal-form"/>
 	</action-view>
+	
+	<menuitem name="account-conf-analytic-journal-type" parent="account-conf-analytic"
+		title="Analytic journals types" action="account.conf.analytic.journal.type" />
+
+	<action-view name="account.conf.analytic.journal.type" title="Analytic journal types"
+		model="com.axelor.apps.account.db.AnalyticJournalType" >
+		<view type="grid" name="analytic-journal-type-grid"/>
+		<view type="form" name="analytic-journal-type-form"/>
+	</action-view>
 
 	<menuitem name="account-conf-analytic-account" parent="account-conf-analytic"
 		title="Analytic accounts" action="account.conf.analytic.account" />

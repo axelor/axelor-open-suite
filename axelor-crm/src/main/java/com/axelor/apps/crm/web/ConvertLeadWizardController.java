@@ -242,10 +242,9 @@ public class ConvertLeadWizardController {
     response.setAttr("amount", "value", lead.getEstimatedBudget());
     response.setAttr("description", "value", lead.getDescription());
     response.setAttr("source", "value", lead.getSource());
-    if (lead.getUser() != null || lead.getTeam() != null) {
-      response.setAttr("user", "value", lead.getUser());
-      response.setAttr("team", "value", lead.getTeam());
-    }
+    response.setAttr("partner", "value", lead.getPartner());
+    response.setAttr("user", "value", lead.getUser());
+    response.setAttr("team", "value", lead.getTeam());
     response.setAttr("webSite", "value", lead.getWebSite());
     response.setAttr("source", "value", lead.getSource());
     response.setAttr("department", "value", lead.getDepartment());
@@ -282,6 +281,8 @@ public class ConvertLeadWizardController {
     Map leadMap = (Map) context.get("_lead");
     if (leadMap != null && leadMap.get("id") != null) {
       lead = leadRepo.find(Long.parseLong(leadMap.get("id").toString()));
+    } else {
+      lead = (Lead) context.get("lead");
     }
 
     if (lead == null) {
