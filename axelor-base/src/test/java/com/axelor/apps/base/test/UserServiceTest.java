@@ -65,7 +65,7 @@ public class UserServiceTest {
     Assert.assertTrue(userService.matchPasswordPattern("123!AXELOR"));
     Assert.assertTrue(userService.matchPasswordPattern(";XELOR123"));
   }
-  
+
   @Test
   public void testMatchPasswordPatternUpperLowerSpecialDigit() {
     Assert.assertTrue(userService.matchPasswordPattern("Axelor!12"));

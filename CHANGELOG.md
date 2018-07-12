@@ -15,6 +15,7 @@
 - Add a column name to configurators, equal to the creator's name.
 - UserController: Improve exception handling.
 - Update translations.
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 
 ## Bug Fixes
 - Fix on prod process report.
