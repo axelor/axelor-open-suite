@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.2.4] - 208-07-12
+## [4.2.4] - 2018-07-12
 ### Improvements
 - Fiscal Position interface reworked and moved from Account to Base module
 - Add a counter to limit iterations of while loop in YearService and BudgetService
