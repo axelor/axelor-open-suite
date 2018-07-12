@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased 4.2.5]
+### Improvements
+
+### Bug Fixes
+
+
 ## [4.2.4] - 2018-07-12
 ### Improvements
 - Fiscal Position interface reworked and moved from Account to Base module
@@ -345,6 +351,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+[Unreleased 4.2.5]: https://github.com/axelor/axelor-business-suite/compare/v4.2.4...v4.2.5
 [4.2.4]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.3...v4.2.3
 [4.2.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.2.2
