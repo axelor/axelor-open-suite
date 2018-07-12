@@ -31,6 +31,7 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
     this.appProductionService = appProductionService;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public Long validate(Context context) throws AxelorException {
 
@@ -76,18 +78,19 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
       product = billOfMaterial.getProduct();
     }
 
-    ZonedDateTime startDate;
+    ZonedDateTime startDateT;
     if (context.containsKey("_startDate") && context.get("_startDate") != null) {
-      startDate =
+      startDateT =
           ZonedDateTime.parse(
-              (CharSequence) context.get("_startDate"), DateTimeFormatter.ISO_DATE_TIME);
+              (CharSequence) context.get("_startDate"),
+              DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
     } else {
-      startDate = appProductionService.getTodayDateTime();
+      startDateT = appProductionService.getTodayDateTime();
     }
 
     ProductionOrder productionOrder =
         productionOrderService.generateProductionOrder(
-            product, billOfMaterial, qty, startDate.toLocalDateTime());
+            product, billOfMaterial, qty, startDateT.toLocalDateTime());
 
     if (productionOrder != null) {
       return productionOrder.getId();

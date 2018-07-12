@@ -36,6 +36,7 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -78,13 +79,14 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
       product = billOfMaterial.getProduct();
     }
 
-    ZonedDateTime startDate;
+    ZonedDateTime startDateT;
     if (context.containsKey("_startDate") && context.get("_startDate") != null) {
-      startDate =
+      startDateT =
           ZonedDateTime.parse(
-              context.get("_startDate").toString(), DateTimeFormatter.ISO_DATE_TIME);
+              context.get("_startDate").toString(),
+              DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
     } else {
-      startDate = appProductionService.getTodayDateTime();
+      startDateT = appProductionService.getTodayDateTime();
     }
 
     Project project = null;
@@ -96,7 +98,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 
     ProductionOrder productionOrder =
         productionOrderServiceBusinessImpl.generateProductionOrder(
-            product, billOfMaterial, qty, project, startDate.toLocalDateTime());
+            product, billOfMaterial, qty, project, startDateT.toLocalDateTime());
 
     if (productionOrder != null) {
       return productionOrder.getId();

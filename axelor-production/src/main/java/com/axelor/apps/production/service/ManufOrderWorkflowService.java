@@ -33,12 +33,14 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,10 +84,9 @@ public class ManufOrderWorkflowService {
       manufOrder.setPlannedStartDateT(
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     }
-    if (manufOrder.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-        operationOrderWorkflowService.plan(operationOrder);
-      }
+
+    for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
+      operationOrderWorkflowService.plan(operationOrder);
     }
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
@@ -309,7 +310,7 @@ public class ManufOrderWorkflowService {
   public OperationOrder getLastOperationOrder(ManufOrder manufOrder) {
     return operationOrderRepo
         .all()
-        .filter("self.manufOrder = ?", manufOrder)
+        .filter("self.manufOrder = ? AND self.plannedEndDateT IS NOT NULL", manufOrder)
         .order("-plannedEndDateT")
         .fetchOne();
   }
@@ -345,7 +346,8 @@ public class ManufOrderWorkflowService {
    * @return
    */
   private List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
-    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+    List<OperationOrder> operationOrderList =
+        MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
     Comparator<OperationOrder> byPriority =
         Comparator.comparing(
             OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()));
