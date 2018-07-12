@@ -35,6 +35,7 @@
 - Remove unneeded required attribute for decimal in accounting situation
 - Rework TeamTask UI
 - Production processes: display status in grid view.
+- Tax configuration: display only necessary fields for tax account management.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
