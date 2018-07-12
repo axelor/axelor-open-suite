@@ -29,11 +29,14 @@
 		<field name="billOfMaterial" expr="eval: __repo__(BillOfMaterial).find(product.parentProduct.defaultBillOfMaterial.id)" if="product?.parentProduct?.defaultBillOfMaterial?.id"/>
 		<field name="billOfMaterial" expr="eval: __repo__(BillOfMaterial).find(product.defaultBillOfMaterial.id)" if="product.defaultBillOfMaterial?.id"/>
 	</action-record>
-	
+
 	<action-record name="action-production-order-wizard-record-product" model="com.axelor.apps.base.db.Wizard">
-		<field if="billOfMaterial != null &amp;&amp; product == null" name="product" expr="eval:__repo__(BillOfMaterial).find(billOfMaterial.id).product"/>
+		<field if="billOfMaterial != null &amp;&amp; product == null" name="$product" expr="eval:__repo__(BillOfMaterial).find(billOfMaterial.id).product"/>
 	</action-record>
-	
+
+    <action-record name="action-production-order-wizard-record-bill-of-materials" model="com.axelor.apps.base.db.Wizard">
+      <field name="$billOfMaterial" expr="eval: product?.defaultBillOfMaterial"/>
+    </action-record>
 
     <action-method name="action-production-order-wizard-method-validate">
 		<call class="com.axelor.apps.production.web.ProductionOrderWizardController" method="validate"/>
