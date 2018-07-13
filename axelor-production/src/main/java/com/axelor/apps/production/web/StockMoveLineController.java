@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.ManufOrderService;
+import com.axelor.apps.production.service.ManufOrderStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -47,7 +47,9 @@ public class StockMoveLineController {
         stockMove = Optional.ofNullable(parentContext.asType(StockMove.class));
       } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
         ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
-        stockMove = Beans.get(ManufOrderService.class).findPlannedInStockMove(manufOrder);
+        ManufOrderStockMoveService manufOrderStockMoveService =
+            Beans.get(ManufOrderStockMoveService.class);
+        stockMove = manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
       }
 
       if (!stockMove.isPresent()) {

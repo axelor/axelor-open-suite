@@ -49,7 +49,7 @@
             <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
 		</panel>
 		
-		<panel title="Configurator BoM" if-module="axelor-production" colSpan="12">
+		<panel title="Configurator BoM" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">
             <field name="configuratorBom" showTitle="false" if-module="axelor-production" colSpan="12">
                 <editor>
                     <field name="company"/>

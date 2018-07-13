@@ -400,13 +400,15 @@
 		title="Users/Companies" order="25" />
 
 	<menuitem name="admin-root-user-user" parent="admin-root-user"
-		title="Users" action="admin.root.base.user" />
+		title="Users" action="action-auth-users" />
 
-	<action-view name="admin.root.base.user" title="Users"
-		model="com.axelor.auth.db.User" >
-		<view type="grid" name="user-grid"/>
-		<view type="form" name="user-form"/>
+	<action-view id="base-action-auth-users" name="action-auth-users" title="Users" model="com.axelor.auth.db.User">
+		<view type="grid" name="user-grid" />
+		<view type="form" name="user-form" />
+		<view-param name="search-filters" value="user-filters"/>
+		<context name="_today" expr="eval: __date__"/>
 	</action-view>
+	
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
 		title="Companies" action="admin.root.base.company" />
 
@@ -535,6 +537,14 @@
 		model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-demo-file-wizard-form" />
 	</action-view>
+	
+	<menuitem name="admin-root-import-demo-data" parent="admin-root-maintenance"
+		title="Import demo data" action="admin.root.import.demo.data" />
+
+	<action-view name="admin.root.import.demo.data" title="Import demo data"
+		model="com.axelor.apps.base.db.Wizard" >
+		<view type="form" name="import-demo-data-wizard-form" />
+	</action-view>
 
 	<menuitem name="admin-root-indicator-generator-grouping" parent="admin-root-maintenance"
 		title="Indicators groups" action="admin.root.indicator.generator.grouping" />
@@ -641,5 +651,5 @@
 	  <domain>self.createdBy = :__user__ AND self.status NOT IN :closed_status</domain>
 	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
 	</action-view>
-
+	
 </object-views>

@@ -6,9 +6,11 @@
     <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
         <field name="name"/>
         <field name="fullName"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
         <field name="group" form-view="group-form" grid-view="group-grid"/>
+        <field name="blocked"/>
+		<field name="activateOn"/>
+		<field name="expiresOn"/>
     </grid>
     
     
@@ -205,5 +207,11 @@
         <check error="A user with this login already exists." field="code"
             if="code &amp;&amp; ![null, id].contains(__repo__(User).findByCode(code)?.id)"/>
     </action-condition>
+    
+    <search-filters name="user-filters" model="com.axelor.auth.db.User" title="User filters">
+    	<filter title="Active users">
+    		<domain>self.blocked = false AND (self.activateOn IS NULL OR self.activateOn &lt;= :_today) AND (self.expiresOn IS NULL OR self.expiresOn &gt;= :_today)</domain>
+    	</filter>
+    </search-filters>
 
 </object-views>
