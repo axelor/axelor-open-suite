@@ -22,7 +22,8 @@
 - Add Timer to TeamTask.
 - Add Timer to Ticket.
 - Stock location line : add two buttons to see 'Planned' and 'Realized' stock move details for the current product and location.
-- Machine type added for the machine. 
+- Machine type added for the machine.
+- Selection added for priority of manufacturing order. 
  
 ## Improvements
 - Refactor TargetList and Campaign views to follow guidelines.
