@@ -110,7 +110,28 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
 
-    if (saleOrderLine != null) {
+    if (stockMoveLine != null) {
+      if (saleOrderLine != null || purchaseOrderLine != null) {
+        this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
+        this.qty = stockMoveLine.getRealQty();
+        this.unit = stockMoveLine.getUnit();
+      } else {
+        Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
+
+        if (saleOrPurchaseUnit != null
+            && this.unit != null
+            && !this.unit.equals(saleOrPurchaseUnit)) {
+          this.qty =
+              Beans.get(UnitConversionService.class)
+                  .convertWithProduct(
+                      this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
+          this.priceDiscounted =
+              Beans.get(UnitConversionService.class)
+                  .convertWithProduct(this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
+          this.unit = saleOrPurchaseUnit;
+        }
+      }
+    } else if (saleOrderLine != null) {
       this.discountAmount = saleOrderLine.getDiscountAmount();
       this.price = saleOrderLine.getPrice();
       this.priceDiscounted = saleOrderLine.getPriceDiscounted();
@@ -119,27 +140,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
     } else if (purchaseOrderLine != null) {
       this.isTitleLine = purchaseOrderLine.getIsTitleLine();
-      this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
-    } else if (stockMoveLine != null) {
-      this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
-      Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
-
-      if (saleOrPurchaseUnit != null
-          && this.unit != null
-          && !this.unit.equals(saleOrPurchaseUnit)) {
-        this.qty =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
-        this.priceDiscounted =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
-        this.unit = saleOrPurchaseUnit;
-      }
     }
   }
 
@@ -154,7 +159,20 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     this.assignOriginElements(invoiceLine);
 
-    if (saleOrderLine != null) {
+    if (stockMoveLine != null) {
+      if (saleOrderLine != null || purchaseOrderLine != null) {
+        this.price = stockMoveLine.getUnitPriceUntaxed();
+      } else {
+        this.price =
+            Beans.get(InvoiceLineService.class)
+                .getUnitPrice(
+                    invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+        this.price =
+            Beans.get(UnitConversionService.class)
+                .convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
+      }
+      invoiceLine.setPrice(price);
+    } else if (saleOrderLine != null) {
 
       this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
 
@@ -165,15 +183,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
 
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
-    } else if (stockMoveLine != null) {
-
-      this.price =
-          Beans.get(InvoiceLineService.class)
-              .getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
-      this.price =
-          Beans.get(UnitConversionService.class)
-              .convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
-      invoiceLine.setPrice(price);
     }
 
     return invoiceLine;
