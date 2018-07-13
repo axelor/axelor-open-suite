@@ -110,7 +110,7 @@
 					onSelect="action-invoice-attrs-domain-company-bank-details"
 					form-view="bank-details-form" grid-view="bank-details-grid"
 					if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management"/>
-			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>
+			<field name="inAti" onChange="action-purchase-order-attrs-in-ati" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"/>
 			<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 		</panel>
 
@@ -150,12 +150,10 @@
 				<field name="budget"/>
 				<button name="applyToAll" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget"/>
 			</panel>
-			<panel name="otherInformation" title="Other Information" hideIf="statusSelect &gt; 2">
-				<field name="priceDisplay" colSpan="12"/>
-				<field name="priceRequest" hideIf="priceDisplay" colSpan="12" x-height="5"/>
-			</panel>
 			<panel name="printing" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
+				<field name="priceDisplay" colSpan="12"/>
+				<field name="priceRequest" hideIf="priceDisplay" colSpan="12" x-height="5"/>
 			</panel>
 			<panel name="invoicing" title="Invoicing" hideIf="statusSelect &lt; 3">
 				<field if="__config__.app.isApp('invoice')" if-module="axelor-account" name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>

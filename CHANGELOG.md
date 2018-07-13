@@ -36,6 +36,7 @@
 - Logistical form : In M2O forwarder, we should be able to select carrier or supplier partner only.
 - Partner demo data : Fix import carrier partner sequence.
 - Rework on menu 'Custom fields' of App builder.
+- Fixed bugs and updated printings of ATI sales/purchases/invoices. Also fixed generating a stock move from a sale/purchase order (would consider ati unit prices as if they were excluding taxes).
 
 
 ## [5.0.2] - 2018-06-22
