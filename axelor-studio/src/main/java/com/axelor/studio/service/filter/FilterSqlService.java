@@ -77,6 +77,14 @@ public class FilterSqlService {
     switch (type) {
       case "string":
         return "varchar";
+      case "String":
+        return "varchar";
+      case "LocalDate":
+        return "date";
+      case "LocalDateTime":
+        return "timestamp";
+      case "datetime":
+        return "timestamp";
     }
 
     return type;
@@ -98,8 +106,10 @@ public class FilterSqlService {
       if (target == null) {
         continue;
       }
-      String field = getSqlField(target, parent.toString(), null)[0];
-      String value = getParam(filter.getIsParameter(), filter.getValue(), filter.getId());
+      String[] fields = getSqlField(target, parent.toString(), null);
+      String field = checkDateTime(fields);
+      String value =
+          getParam(filter.getIsParameter(), filter.getValue(), filter.getId(), fields[1]);
       String condition = filterCommonService.getCondition(field, filter.getOperator(), value);
 
       if (filters == null) {
@@ -111,6 +121,17 @@ public class FilterSqlService {
     }
 
     return filters;
+  }
+
+  private String checkDateTime(String[] fields) {
+    switch (fields[1]) {
+      case "LocalDateTime":
+        return "(cast(to_char("
+            + fields[0]
+            + ",'yyyy-MM-dd hh24:mi') as timestamp with time zone)) at time zone 'utc'";
+    }
+
+    return fields[0];
   }
 
   public String[] getSqlField(Object target, String source, List<String> joins) {
@@ -183,10 +204,16 @@ public class FilterSqlService {
     return new String[] {field, type};
   }
 
-  private String getParam(boolean isParam, String value, Long filterId) {
+  private String getParam(boolean isParam, String value, Long filterId, String type) {
 
     if (isParam) {
-      value = ":param" + filterId;
+      String sqlType = getSqlType(type);
+      if (!sqlType.equals(type)) {
+    	  value = "cast(:param" + filterId + " as " + getSqlType(type) + ")";
+      }
+      else {
+    	  value = ":param" + filterId;
+      }
     }
 
     return value;

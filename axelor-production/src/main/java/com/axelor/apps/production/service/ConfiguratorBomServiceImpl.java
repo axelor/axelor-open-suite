@@ -19,16 +19,20 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
+import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -84,6 +88,9 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
       product =
           (Product)
               configuratorService.computeFormula(configuratorBOM.getProductFormula(), attributes);
+      if (product != null) {
+        product = Beans.get(ProductRepository.class).find(product.getId());
+      }
     } else {
       product = configuratorBOM.getProduct();
     }
@@ -99,6 +106,9 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     if (configuratorBOM.getDefUnitAsFormula()) {
       unit =
           (Unit) configuratorService.computeFormula(configuratorBOM.getUnitFormula(), attributes);
+      if (unit != null) {
+        unit = Beans.get(UnitRepository.class).find(unit.getId());
+      }
     } else {
       unit = configuratorBOM.getUnit();
     }
@@ -107,6 +117,9 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
           (ProdProcess)
               configuratorService.computeFormula(
                   configuratorBOM.getProdProcessFormula(), attributes);
+      if (prodProcess != null) {
+        prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      }
     } else if (configuratorBOM.getDefProdProcessAsConfigurator()) {
       prodProcess =
           confProdProcessService.generateProdProcessService(

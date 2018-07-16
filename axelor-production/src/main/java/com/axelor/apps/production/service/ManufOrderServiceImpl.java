@@ -336,14 +336,16 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return billOfMaterial;
   }
 
+  /** Returns the quantity produced by a manufacturing order. */
   @Override
   public BigDecimal getProducedQuantity(ManufOrder manufOrder) {
-    for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
-      if (stockMoveLine.getProduct().equals(manufOrder.getProduct())) {
-        return stockMoveLine.getRealQty();
-      }
-    }
-    return BigDecimal.ZERO;
+    return manufOrder
+        .getProducedStockMoveLineList()
+        .stream()
+        .filter(stockMoveLine -> manufOrder.getProduct().equals(stockMoveLine.getProduct()))
+        .map(StockMoveLine::getRealQty)
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
   }
 
   @Override
