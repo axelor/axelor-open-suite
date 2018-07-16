@@ -48,9 +48,9 @@
 		<panel name="main">
 			<field name="typeSelect" hidden="true"/>
 		   	<field name="company" widget="SuggestBox" form-view="company-form" onChange="action-group-account-account-management-onchange-common" grid-view="company-grid"/>
-		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
-		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
-			<field name="purchFixedAssetsAccount" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
+		   	<field name="purchaseAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
+		   	<field name="saleAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" onChange="action-group-account-account-management-onchange-common" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
+			<field name="purchFixedAssetsAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" if-module="axelor-account" form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
 		</panel>
 	</form>
 	
