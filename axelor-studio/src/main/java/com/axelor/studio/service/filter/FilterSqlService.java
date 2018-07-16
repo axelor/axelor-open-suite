@@ -207,7 +207,13 @@ public class FilterSqlService {
   private String getParam(boolean isParam, String value, Long filterId, String type) {
 
     if (isParam) {
-      value = "cast(:param" + filterId + " as " + getSqlType(type) + ")";
+      String sqlType = getSqlType(type);
+      if (!sqlType.equals(type)) {
+    	  value = "cast(:param" + filterId + " as " + getSqlType(type) + ")";
+      }
+      else {
+    	  value = ":param" + filterId;
+      }
     }
 
     return value;
