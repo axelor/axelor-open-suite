@@ -54,12 +54,18 @@ public interface IExceptionMessage {
   String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/
       "This script has errors, please see server logs for more details." /*)*/;
   String CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR = /*$$(*/
-      "This script returns a %s, it should return a %s instead." /*)*/;
+      "This script returned value is of type %s, it should return a value of type %s instead." /*)*/;
   String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The syntax of the script is correct." /*)*/;
 
   /** Configurator Service */
-  String CONFIGURATOR_SCRIPT_CLASS_NOT_FOUND = /*$$(*/ "Class %s is not a model class." /*)*/;
+  String CONFIGURATOR_PRODUCT_MISSING_NAME = /*$$(*/
+      "You must configure a script to fill the created product name." /*)*/;
 
-  /** Product Sale service */
-  static final String CONFIGURATOR_NOT_FOUND = /*$$(*/ "This product has no configurator." /*)*/;
+  String CONFIGURATOR_PRODUCT_MISSING_CODE = /*$$(*/
+      "You must configure a script to fill the created product code." /*)*/;
+  String CONFIGURATOR_SALE_ORDER_LINE_MISSING_PRODUCT_NAME = /*$$(*/
+      "You must configure a script to fill the product name in the created sale order line." /*)*/;
+
+  String CONFIGURATOR_ON_GENERATING_TYPE_ERROR = /*$$(*/
+      "The field %s is of type %s, but the configured script returned value is of type %s." /*)*/;
 }

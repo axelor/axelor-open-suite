@@ -63,8 +63,8 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
     } else {
-      if (!result.getClass().getSimpleName().equals(wantedTypeName)
-          && !(wantedTypeName.equals("BigDecimal") && result instanceof Integer)) {
+      if (!Beans.get(ConfiguratorService.class)
+          .areCompatible(wantedTypeName, result.getClass().getSimpleName())) {
         throw new AxelorException(
             formula,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
