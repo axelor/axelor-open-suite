@@ -405,7 +405,7 @@
 "This product has no configurator.","Ce produit n'a pas de configurateur",,
 "This sale order is completed.","Cette commande est terminée",,
 "This script has errors, please see server logs for more details.","Le script a des erreurs, veuillez consulter les logs pour plus de détails.",,
-"Time table invoicing","Facturation par échancier",,
+"This script returns a %s, it should return a %s instead.","Ce script renvoie un %s au lieu d'un %s.",,
 "Timetable","Echéancier",,
 "Title","Titre",,
 "To Date","Date de fin",,

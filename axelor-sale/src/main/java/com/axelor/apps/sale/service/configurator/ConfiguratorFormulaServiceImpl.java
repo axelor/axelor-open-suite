@@ -33,6 +33,12 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
   @Override
   public MetaField getMetaField(ConfiguratorFormula configuratorFormula) {
     ConfiguratorCreator configuratorCreator = configuratorFormula.getCreator();
+    return getMetaField(configuratorFormula, configuratorCreator);
+  }
+
+  @Override
+  public MetaField getMetaField(
+      ConfiguratorFormula configuratorFormula, ConfiguratorCreator configuratorCreator) {
     if (configuratorCreator == null) {
       return null;
     }
@@ -50,11 +56,22 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
     ScriptBindings defaultValueBindings =
         Beans.get(ConfiguratorCreatorService.class).getTestingValues(creator);
     Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
+    String wantedTypeName = getMetaField(formula, creator).getTypeName();
     if (result == null) {
       throw new AxelorException(
+          formula,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR),
-          formula);
+          I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
+    } else {
+      if (!result.getClass().getSimpleName().equals(wantedTypeName)
+          && !(wantedTypeName.equals("BigDecimal") && result instanceof Integer)) {
+        throw new AxelorException(
+            formula,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR),
+            result.getClass().getSimpleName(),
+            wantedTypeName);
+      }
     }
   }
 }

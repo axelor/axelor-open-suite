@@ -53,6 +53,8 @@ public interface IExceptionMessage {
 
   String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/
       "This script has errors, please see server logs for more details." /*)*/;
+  String CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR = /*$$(*/
+      "This script returns a %s, it should return a %s instead." /*)*/;
   String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The syntax of the script is correct." /*)*/;
 
   /** Configurator Service */

@@ -405,7 +405,7 @@
 "This product has no configurator.",,,
 "This sale order is completed.",,,
 "This script has errors, please see server logs for more details.",,,
-"Time table invoicing",,,
+"This script returns a %s, it should return a %s instead.",,,
 "Timetable",,,
 "Title",,,
 "To Date",,,
