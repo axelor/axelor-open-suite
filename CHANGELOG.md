@@ -25,6 +25,7 @@
 - Bill of material generation from configurator: fixed an exception on using a many-to-one from context in script.
 - Production : Change menu title in french version from 'Ordres de Production' to 'Ordres de production'. 
 - CANCEL REASON : put field "Name" manadatory.
+- Studio: Fix datetime comparison for chart parameter.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
