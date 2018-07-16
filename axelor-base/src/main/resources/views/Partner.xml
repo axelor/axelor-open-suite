@@ -90,13 +90,13 @@
 	<form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload" width="large">
-		<panel-include view="partner-form" from="axelor-base"/>
+		<panel-include view="partner-form" />
 	</form>
 
 	<form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload" width="large">
-		<panel-include view="partner-form" from="axelor-base"/>
+		<panel-include view="partner-form" />
 	</form>
 
 	<form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-base-partner-form">
