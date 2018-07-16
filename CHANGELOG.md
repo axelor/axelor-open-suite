@@ -23,6 +23,7 @@
 - Demo data: in base, "base_shipmentMode.csv" was deleted because present in stock, and correction of french demo data of "stock_shipmentMode" 
 - Demo data, remove unused "base_scheduler.csv"
 - Bill of material generation from configurator: fixed an exception on using a many-to-one from context in script.
+- CANCEL REASON : put field "Name" manadatory.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
