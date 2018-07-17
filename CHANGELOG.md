@@ -31,6 +31,7 @@
 - Configurator creator : Fix changes in import and export.
 - Cost sheet group : Put field 'name' mandatory.
 - Fix HR root menu access for all HR related apps. 
+- Partner price list : Put field "Label" mandatory.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
