@@ -34,6 +34,7 @@
 - Event : Fix domain on partner.
 - Event: Fix create an event directly by clicking on the calendar.
 - Partner price list : Put field "Label" mandatory.
+- Demo data import : Fix issues in import demo data from excel demo file with specified configuration in excel file.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
