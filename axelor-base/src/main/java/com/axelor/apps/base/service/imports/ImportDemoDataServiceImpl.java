@@ -23,11 +23,11 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import java.io.File;
@@ -53,29 +53,31 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
 
   @Inject private ExcelToCSV excelToCSV;
 
+  @Inject private MetaModuleRepository metaModuleRepo;
+
   @Override
-  public MetaFile importDemoDataExcel(File excelFile)
+  public boolean importDemoDataExcel(File excelFile, File logFile)
       throws FileNotFoundException, IOException, AxelorException, ParseException,
           ClassNotFoundException {
     Workbook workBook = new XSSFWorkbook(new FileInputStream(excelFile));
-    File tmpFile = File.createTempFile("log", ".txt");
-    FileOutputStream out = new FileOutputStream(tmpFile);
+    FileOutputStream out = new FileOutputStream(logFile);
 
     try {
 
-      for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
-        Sheet sheet = workBook.getSheetAt(i);
+      if (this.validateExcel(excelFile, out)) {
+        out = new FileOutputStream(logFile);
+        for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
+          Sheet sheet = workBook.getSheetAt(i);
 
-        String[] importDetails = this.getImportDetailsFromSheet(sheet);
+          String[] importDetails = this.getImportDetailsFromSheet(sheet);
 
-        File dataFile = File.createTempFile(importDetails[1], ".csv");
+          File dataFile = File.createTempFile(importDetails[1], ".csv");
 
-        excelToCSV.writeTOCSV(dataFile, sheet);
+          excelToCSV.writeTOCSV(dataFile, sheet, 3, 1);
 
-        File configFile = File.createTempFile(importDetails[2], ".xml");
-        configFile = this.getConfigFile(importDetails[0], configFile, importDetails[2]);
+          File configFile = File.createTempFile(importDetails[2], ".xml");
+          configFile = this.getConfigFile(importDetails[0], configFile, importDetails[2]);
 
-        if (configFile != null && configFile.exists()) {
           MetaFile logMetaFile =
               this.importFileData(dataFile, configFile, importDetails[1], importDetails[2]);
           File file = MetaFiles.getPath(logMetaFile).toFile();
@@ -83,13 +85,157 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
           ByteStreams.copy(new FileInputStream(file), out);
           out.write("\n\n".getBytes());
         }
+        return true;
       }
 
     } finally {
       out.close();
     }
-    FileInputStream inStream = new FileInputStream(tmpFile);
-    return metaFiles.upload(inStream, "log.txt");
+    return false;
+  }
+
+  private boolean validateExcel(File excelFile, FileOutputStream out)
+      throws FileNotFoundException, IOException, AxelorException {
+    Workbook workBook = new XSSFWorkbook(new FileInputStream(excelFile));
+    boolean flag = true;
+    for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
+
+      Sheet sheet = workBook.getSheetAt(i);
+      StringBuilder errorList = new StringBuilder();
+      errorList.append("\n" + "Sheet : " + sheet.getSheetName());
+
+      if (!this.validateSheet(sheet, errorList)) {
+        out.write(errorList.toString().getBytes());
+
+        flag = false;
+        out.write("\n".getBytes());
+      }
+    }
+
+    return flag;
+  }
+
+  private boolean validateSheet(Sheet sheet, StringBuilder errorList) throws IOException {
+
+    boolean flag = true;
+
+    if (this.validateModule(sheet.getRow(0), errorList)) {
+      if (!this.validateConfigFile(sheet.getRow(0), sheet.getRow(2), errorList)) {
+        flag = false;
+      }
+    } else {
+      flag = false;
+    }
+
+    if (!this.validateDataFile(sheet.getRow(1), errorList)) {
+      flag = false;
+    }
+
+    if (!this.validateHeader(sheet, errorList)) {
+      flag = false;
+    }
+    return flag;
+  }
+
+  private boolean validateModule(Row moduleRow, StringBuilder errorList) throws IOException {
+
+    if (this.validateRow(moduleRow, errorList, I18n.get(IExceptionMessage.MODULE))
+        && this.validateCell(moduleRow.getCell(0), errorList, I18n.get(IExceptionMessage.MODULE))) {
+      String moduleName = moduleRow.getCell(0).getStringCellValue();
+
+      if (metaModuleRepo.findByName(moduleName) != null) {
+        return true;
+      } else {
+        errorList.append(
+            String.format("\n" + I18n.get(IExceptionMessage.MODULE_NOT_EXIST), moduleName));
+      }
+    }
+    return false;
+  }
+
+  private boolean validateDataFile(Row dataFileRow, StringBuilder errorList) throws IOException {
+
+    if (this.validateRow(dataFileRow, errorList, I18n.get(IExceptionMessage.DATA_FILE))
+        && this.validateCell(
+            dataFileRow.getCell(0), errorList, I18n.get(IExceptionMessage.DATA_FILE))) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private boolean validateConfigFile(Row moduleRow, Row configFileRow, StringBuilder errorList)
+      throws IOException {
+
+    if (this.validateRow(configFileRow, errorList, I18n.get(IExceptionMessage.CONFIGURATION_FILE))
+        && this.validateCell(
+            configFileRow.getCell(0), errorList, I18n.get(IExceptionMessage.CONFIGURATION_FILE))) {
+
+      String moduleName = moduleRow.getCell(0).getStringCellValue();
+      String configFileName = configFileRow.getCell(0).getStringCellValue();
+
+      if (this.checkConfigFile(moduleName, configFileName)) {
+        return true;
+      } else {
+        errorList.append(
+            String.format(
+                I18n.get("\n" + IExceptionMessage.CONFIGURATION_FILE_NOT_EXIST), configFileName));
+      }
+    }
+    return false;
+  }
+
+  private boolean validateHeader(Sheet sheet, StringBuilder errorList) throws IOException {
+
+    boolean flag = true;
+    Row headerRow = sheet.getRow(3);
+
+    if (headerRow != null) {
+
+      for (int cell = 1; cell < headerRow.getLastCellNum(); cell++) {
+        Cell headerCell = headerRow.getCell(cell);
+
+        if (headerCell == null || headerCell.getCellType() != Cell.CELL_TYPE_STRING) {
+          errorList.append("\n" + I18n.get(IExceptionMessage.INVALID_HEADER));
+          flag = false;
+        }
+      }
+    } else {
+      errorList.append("\n" + I18n.get(IExceptionMessage.INVALID_HEADER));
+      flag = false;
+    }
+    return flag;
+  }
+
+  private boolean validateRow(Row row, StringBuilder errorList, String rowName) throws IOException {
+
+    if (row == null) {
+      errorList.append(String.format("\n" + I18n.get(IExceptionMessage.ROW_NOT_EMPTY), rowName));
+      return false;
+    }
+    return true;
+  }
+
+  private boolean validateCell(Cell cell, StringBuilder errorList, String cellName)
+      throws IOException {
+
+    if (cell == null || cell.getCellType() != Cell.CELL_TYPE_STRING) {
+      errorList.append(String.format("\n" + I18n.get(IExceptionMessage.CELL_NOT_VALID), cellName));
+      return false;
+    }
+    return true;
+  }
+
+  private boolean checkConfigFile(String moduleName, String configFileName) {
+    String dirNamePattern = "demo".replaceAll("/|\\\\", "(/|\\\\\\\\)");
+    List<URL> files = new ArrayList<URL>();
+
+    files.addAll(MetaScanner.findAll(moduleName, dirNamePattern, configFileName + ".xml"));
+
+    if (files.isEmpty()) {
+      return false;
+    }
+    return true;
   }
 
   private String[] getImportDetailsFromSheet(Sheet sheet) throws AxelorException {
@@ -97,24 +243,11 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     Row moduleRow = sheet.getRow(0);
     Row dataFileRow = sheet.getRow(1);
     Row configFileRow = sheet.getRow(2);
-    if (moduleRow != null && dataFileRow != null && configFileRow != null) {
-      Cell moduleCell = moduleRow.getCell(0);
-      Cell dataFileCell = dataFileRow.getCell(0);
-      Cell configFileCell = configFileRow.getCell(0);
 
-      this.checkValidity(moduleCell, "module");
-      this.checkValidity(configFileCell, "configuation file");
-      this.checkValidity(dataFileCell, "data file");
+    importDetails[0] = moduleRow.getCell(0).getStringCellValue();
+    importDetails[1] = dataFileRow.getCell(0).getStringCellValue();
+    importDetails[2] = configFileRow.getCell(0).getStringCellValue();
 
-      importDetails[0] = moduleCell.getStringCellValue();
-      importDetails[1] = dataFileCell.getStringCellValue();
-      importDetails[2] = configFileCell.getStringCellValue();
-
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.EXCEL_FILE_FORMAT_ERROR));
-    }
     return importDetails;
   }
 
@@ -124,13 +257,6 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     List<URL> files = new ArrayList<URL>();
 
     files.addAll(MetaScanner.findAll(moduleName, dirNamePattern, configFileName + ".xml"));
-
-    if (files.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FILE_NAME_NOT_EXISTS),
-          "configuration file");
-    }
 
     for (URL file : files) {
       FileOutputStream out = new FileOutputStream(configFile);
@@ -142,16 +268,6 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     }
 
     return configFile;
-  }
-
-  private void checkValidity(Cell cell, String msg) throws AxelorException {
-
-    if (cell.getCellType() != Cell.CELL_TYPE_STRING) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.FILE_NAME_NOT_EXISTS),
-          msg);
-    }
   }
 
   private MetaFile importFileData(

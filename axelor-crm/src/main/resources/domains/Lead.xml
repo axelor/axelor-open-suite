@@ -26,15 +26,6 @@
 	<string name="primaryPostalCode" title="Postal code"/>
   	<many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
   
-<!--   Others address group -->
-	<string name="otherAddress" title="Address"/>
-	<string name="otherCity" title="City"/>
-	<string name="otherState" title="Region"/>
-	<string name="otherPostalCode" title="Postal code"/>
-  	<many-to-one name="otherCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
-  	<boolean name="isCopyAddress" title="Copy primary address"/>
-    
-    
     <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
 	<binary name="picture" title="Picture" />
 	
