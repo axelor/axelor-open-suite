@@ -31,6 +31,7 @@
 - Configurator creator : Fix changes in import and export.
 - Cost sheet group : Put field 'name' mandatory.
 - Fix HR root menu access for all HR related apps. 
+- Event: Fix create an event directly by clicking on the calendar.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
