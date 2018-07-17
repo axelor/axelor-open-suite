@@ -7,6 +7,7 @@
 - Stock rules : change column name of code and name to product code and product name.
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
+- Stock location tree: add missing french translation.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
