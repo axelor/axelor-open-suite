@@ -26,7 +26,7 @@
 		<field name="description" widget="html"/>
 	</grid>
     
-    <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user" editable="false"
+    <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user"
     	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event"
     	onChange="action-event-method-compute-from-calendar">
     	<field name="subjectTeam" />
