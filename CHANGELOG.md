@@ -30,9 +30,10 @@
 - Fix product last production price computation from manufacturing order.
 - Configurator creator : Fix changes in import and export.
 - Cost sheet group : Put field 'name' mandatory.
-- Fix HR root menu access for all HR related apps.
+- Fix HR root menu access for all HR related apps. 
 - Event : Fix domain on partner.
 - Event: Fix create an event directly by clicking on the calendar.
+- Partner price list : Put field "Label" mandatory.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
