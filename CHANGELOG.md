@@ -77,6 +77,7 @@
 - Cost price in manufacturing order: fix quantity in produced cost sheet line.
 - Fix product last production price computation from manufacturing order.
 - Configurator creator : Fix changes in import and export.
+- Cost sheet group : Put field 'name' mandatory.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
