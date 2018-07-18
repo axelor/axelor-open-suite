@@ -8,6 +8,7 @@
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
 - Stock location tree: add missing french translation.
+- Improved model studio by removing not required properties from different elements.  
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
