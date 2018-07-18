@@ -2,13 +2,14 @@
 ## [Unreleased 5.0.4]
 ## Features
 - User : Add a search filter to see the active users.
+- Add support for multiple demo data config per app. 
 
 ## Improvements
 - Stock rules : change column name of code and name to product code and product name.
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
 - Stock location tree: add missing french translation.
-- Improved model studio by removing not required properties from different elements.  
+- Improved model studio by removing not required properties from different elements.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
