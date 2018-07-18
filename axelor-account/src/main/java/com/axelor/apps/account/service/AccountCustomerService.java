@@ -28,7 +28,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -381,7 +380,7 @@ public class AccountCustomerService {
           partner,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_1),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -396,7 +395,7 @@ public class AccountCustomerService {
           partner,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.ACCOUNT_CUSTOMER_2),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
