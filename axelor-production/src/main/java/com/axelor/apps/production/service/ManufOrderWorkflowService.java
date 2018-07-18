@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -191,14 +190,17 @@ public class ManufOrderWorkflowService {
     }
 
     // create cost sheet
-    CostSheet costSheet = Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+    Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
 
     // update price in product
     Product product = manufOrder.getProduct();
     if (product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_FORECAST) {
       product.setLastProductionPrice(manufOrder.getBillOfMaterial().getCostPrice());
     } else if (product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_REAL) {
-      product.setLastProductionPrice(costSheet.getCostPrice());
+      BigDecimal costPrice = computeOneUnitProductionPrice(manufOrder);
+      if (costPrice.signum() != 0) {
+        product.setLastProductionPrice(costPrice);
+      }
     } else {
       // default value is forecast
       product.setRealOrEstimatedPriceSelect(ProductRepository.PRICE_METHOD_FORECAST);
@@ -222,6 +224,17 @@ public class ManufOrderWorkflowService {
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
+  }
+
+  /** Return the cost price for one unit in a manufacturing order. */
+  protected BigDecimal computeOneUnitProductionPrice(ManufOrder manufOrder) {
+    BigDecimal qty = manufOrder.getQty();
+    if (qty.signum() != 0) {
+      int scale = Beans.get(AppProductionService.class).getNbDecimalDigitForUnitPrice();
+      return manufOrder.getCostPrice().divide(qty, scale, BigDecimal.ROUND_HALF_EVEN);
+    } else {
+      return BigDecimal.ZERO;
+    }
   }
 
   /**

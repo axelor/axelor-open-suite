@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.db.JPA;
@@ -33,10 +34,13 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
@@ -60,11 +64,65 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       try {
         Object calculatedValue =
             computeIndicatorValue(configurator, indicator.getName(), jsonAttributes);
+        checkType(calculatedValue, indicator);
         jsonIndicators.put(indicator.getName(), calculatedValue);
       } catch (MissingPropertyException e) {
         // if a field is missing, the value needs to be set to null
         continue;
       }
+    }
+  }
+
+  @Override
+  public void checkType(Object calculatedValue, MetaJsonField indicator) throws AxelorException {
+    if (calculatedValue == null) {
+      return;
+    }
+
+    String wantedClassName;
+    String wantedType = jsonTypeToType(indicator.getType());
+    if (wantedType.equals("ManyToOne")
+        || wantedType.equals("ManyToMany")
+        || wantedType.equals("OneToMany")
+        || wantedType.equals("Custom-ManyToOne")
+        || wantedType.equals("Custom-ManyToMany")
+        || wantedType.equals("Custom-OneToMany")) {
+      // it is a relational field so we get the target model class
+      String targetName = indicator.getTargetModel();
+      // get only the class without the package
+      wantedClassName = targetName.substring(targetName.lastIndexOf('.') + 1);
+    } else {
+      wantedClassName = wantedType;
+    }
+    String calculatedValueClassName = calculatedValue.getClass().getSimpleName();
+    if (!areCompatible(wantedClassName, calculatedValueClassName)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CONFIGURATOR_ON_GENERATING_TYPE_ERROR),
+          indicator.getName().substring(0, indicator.getName().indexOf('_')),
+          wantedClassName,
+          calculatedValueClassName);
+    }
+  }
+
+  /**
+   * Convert the type of a json field to a type of a field.
+   *
+   * @param nameType type of a json field
+   * @return corresponding type of field
+   */
+  protected String jsonTypeToType(String nameType) {
+    MetaSelectItem item =
+        Beans.get(MetaSelectItemRepository.class)
+            .all()
+            .filter("self.select.name = :_jsonFieldType AND self.value = :_value")
+            .bind("_jsonFieldType", "json.field.type")
+            .bind("_value", nameType)
+            .fetchOne();
+    if (item == null) {
+      return "";
+    } else {
+      return item.getTitle().equals("Decimal") ? "BigDecimal" : item.getTitle();
     }
   }
 
@@ -96,7 +154,23 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       mapper.set(product, key, jsonIndicators.get(key));
     }
     fixRelationalFields(product);
-    product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
+    if (product.getProductTypeSelect() == null) {
+      product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
+    }
+
+    if (product.getCode() == null) {
+      throw new AxelorException(
+          configurator,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.CONFIGURATOR_PRODUCT_MISSING_CODE));
+    }
+    if (product.getName() == null) {
+      throw new AxelorException(
+          configurator,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.CONFIGURATOR_PRODUCT_MISSING_NAME));
+    }
+
     configurator.setProduct(product);
     product.setConfigurator(configurator);
     Beans.get(ProductRepository.class).save(product);
@@ -145,8 +219,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   }
 
   protected void overwriteFieldToUpdate(
-      Configurator configurator, SaleOrderLine saleOrderLine, JsonContext attributes)
-      throws AxelorException {
+      Configurator configurator, SaleOrderLine saleOrderLine, JsonContext attributes) {
     // update a field if its formula has updateFromSelect to update
     // from product
     List<ConfiguratorFormula> formulas =
@@ -174,8 +247,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * @return
    */
   protected Object computeIndicatorValue(
-      Configurator configurator, String indicatorName, JsonContext jsonAttributes)
-      throws AxelorException {
+      Configurator configurator, String indicatorName, JsonContext jsonAttributes) {
     ConfiguratorCreator creator = configurator.getConfiguratorCreator();
     String groovyFormula = null;
     for (ConfiguratorFormula formula : creator.getConfiguratorFormulaList()) {
@@ -194,11 +266,17 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   }
 
   @Override
-  public Object computeFormula(String groovyFormula, JsonContext values) throws AxelorException {
+  public Object computeFormula(String groovyFormula, JsonContext values) {
 
     ScriptHelper scriptHelper = new GroovyScriptHelper(values);
 
     return scriptHelper.eval(groovyFormula);
+  }
+
+  public boolean areCompatible(String targetClassName, String fromClassName) {
+    return targetClassName.equals(fromClassName)
+        || (targetClassName.equals("BigDecimal") && fromClassName.equals("Integer"))
+        || (targetClassName.equals("BigDecimal") && fromClassName.equals("String"));
   }
 
   /**
@@ -220,6 +298,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     saleOrderLine.setSaleOrder(saleOrder);
     fixRelationalFields(saleOrderLine);
+    if (saleOrderLine.getProductName() == null) {
+      throw new AxelorException(
+          configurator,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.CONFIGURATOR_SALE_ORDER_LINE_MISSING_PRODUCT_NAME));
+    }
     this.fillSaleOrderWithProduct(saleOrderLine);
     this.overwriteFieldToUpdate(configurator, saleOrderLine, jsonAttributes);
     Beans.get(SaleOrderLineService.class)
@@ -228,7 +312,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   }
 
   /**
-   * Indicator keys have this pattern : {id}_{field name} Transform the keys to have only the {field
+   * Indicator keys have this pattern : {field name}_{id} Transform the keys to have only the {field
    * name}.
    *
    * @param jsonIndicators
@@ -237,7 +321,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     Map<String, Object> newKeyMap = new HashMap<>();
     for (Map.Entry entry : jsonIndicators.entrySet()) {
       String oldKey = entry.getKey().toString();
-      newKeyMap.put(oldKey.substring(0, oldKey.indexOf("_")), entry.getValue());
+      newKeyMap.put(oldKey.substring(0, oldKey.indexOf('_')), entry.getValue());
     }
     jsonIndicators.clear();
     jsonIndicators.putAll(newKeyMap);

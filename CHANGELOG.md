@@ -7,6 +7,8 @@
 - Stock rules : change column name of code and name to product code and product name.
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
+- Stock location tree: add missing french translation.
+- Improved model studio by removing not required properties from different elements.  
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
@@ -23,7 +25,20 @@
 - Demo data: in base, "base_shipmentMode.csv" was deleted because present in stock, and correction of french demo data of "stock_shipmentMode" 
 - Demo data, remove unused "base_scheduler.csv"
 - Bill of material generation from configurator: fixed an exception on using a many-to-one from context in script.
+- Production : Change menu title in french version from 'Ordres de Production' to 'Ordres de production'. 
+- CANCEL REASON : put field "Name" manadatory.
+- Studio: Fix datetime comparison for chart parameter.
+- Cost price in manufacturing order: fix quantity in produced cost sheet line.
+- Fix product last production price computation from manufacturing order.
+- Configurator creator : Fix changes in import and export.
+- Cost sheet group : Put field 'name' mandatory.
+- Fix HR root menu access for all HR related apps. 
+- Event : Fix domain on partner.
+- Event: Fix create an event directly by clicking on the calendar.
+- Partner price list : Put field "Label" mandatory.
+- Demo data import : Fix issues in import demo data from excel demo file with specified configuration in excel file.
 - Fixed bugs and updated printings of ATI sales/purchases/invoices. Also fixed generating a stock move from a sale/purchase order (would consider ati unit prices as if they were excluding taxes).
+
 
 ## [5.0.3] - 2018-07-06
 ## Improvements

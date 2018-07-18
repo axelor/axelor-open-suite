@@ -118,7 +118,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   @Override
-  public ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException {
+  public ScriptBindings getTestingValues(ConfiguratorCreator creator) {
     Map<String, Object> attributesValues = new HashMap<>();
     List<MetaJsonField> attributes = creator.getAttributes();
     if (attributes != null) {
