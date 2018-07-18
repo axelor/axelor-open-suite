@@ -82,6 +82,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -96,7 +99,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">en</value>
+                <value type="constant">fr</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -166,186 +169,182 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
+                    <property name="alias">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logopath</property>
+                    <property name="alias">logopath</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logopath</text-property>
                     <text-property name="heading">logopath</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">created_on</property>
+                    <property name="alias">created_on</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">created_on</text-property>
                     <text-property name="heading">created_on</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">updated_on</property>
+                    <property name="alias">updated_on</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">updated_on</text-property>
                     <text-property name="heading">updated_on</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">created_by</property>
+                    <property name="alias">created_by</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">created_by</text-property>
                     <text-property name="heading">created_by</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">updated_by</property>
+                    <property name="alias">updated_by</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">updated_by</text-property>
                     <text-property name="heading">updated_by</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">title_select</property>
+                    <property name="alias">title_select</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">title_select</text-property>
                     <text-property name="heading">title_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">lead_name</property>
+                    <property name="alias">lead_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">lead_name</text-property>
                     <text-property name="heading">lead_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">lead_first_name</property>
+                    <property name="alias">lead_first_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">lead_first_name</text-property>
                     <text-property name="heading">lead_first_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">status_select</property>
+                    <property name="alias">status_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">status_select</text-property>
                     <text-property name="heading">status_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">source_name</property>
+                    <property name="alias">source_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">source_name</text-property>
                     <text-property name="heading">source_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">industry_sector_select</property>
+                    <property name="alias">industry_sector_select</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">industry_sector_select</text-property>
                     <text-property name="heading">industry_sector_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">fax</property>
+                    <property name="alias">fax</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">fax</text-property>
                     <text-property name="heading">fax</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">email</property>
+                    <property name="alias">email</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">email</text-property>
                     <text-property name="heading">email</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">fixed_phone</property>
+                    <property name="alias">fixed_phone</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">fixed_phone</text-property>
                     <text-property name="heading">fixed_phone</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">mobile_phone</property>
+                    <property name="alias">mobile_phone</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">mobile_phone</text-property>
                     <text-property name="heading">mobile_phone</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">web_site</property>
+                    <property name="alias">web_site</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">web_site</text-property>
                     <text-property name="heading">web_site</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">enterprise_name</property>
+                    <property name="alias">enterprise_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">enterprise_name</text-property>
                     <text-property name="heading">enterprise_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">primary_address</property>
+                    <property name="alias">primary_address</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">primary_address</text-property>
                     <text-property name="heading">primary_address</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">primary_state</property>
+                    <property name="alias">primary_state</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">primary_state</text-property>
                     <text-property name="heading">primary_state</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">primary_city</property>
+                    <property name="alias">primary_city</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">primary_city</text-property>
                     <text-property name="heading">primary_city</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">primary_postal_code</property>
+                    <property name="alias">primary_postal_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">primary_postal_code</text-property>
                     <text-property name="heading">primary_postal_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">primary_country</property>
+                    <property name="alias">primary_country</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">primary_country</text-property>
                     <text-property name="heading">primary_country</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">other_address</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">other_address</text-property>
-                    <text-property name="heading">other_address</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">other_state</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">other_state</text-property>
-                    <text-property name="heading">other_state</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">other_city</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">other_city</text-property>
-                    <text-property name="heading">other_city</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">other_postal_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">other_postal_code</text-property>
-                    <text-property name="heading">other_postal_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">other_country</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">other_country</text-property>
-                    <text-property name="heading">other_country</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">job_title</property>
+                    <property name="alias">job_title</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">job_title</text-property>
                     <text-property name="heading">job_title</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">user_name</property>
+                    <property name="alias">user_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">user_name</text-property>
                     <text-property name="heading">user_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">company_name</property>
+                    <property name="alias">company_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">company_name</text-property>
                     <text-property name="heading">company_name</text-property>
@@ -472,41 +471,16 @@
                     </structure>
                     <structure>
                         <property name="position">24</property>
-                        <property name="name">other_address</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">25</property>
-                        <property name="name">other_state</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">26</property>
-                        <property name="name">other_city</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">27</property>
-                        <property name="name">other_postal_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">28</property>
-                        <property name="name">other_country</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">29</property>
                         <property name="name">job_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">30</property>
+                        <property name="position">25</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">31</property>
+                        <property name="position">26</property>
                         <property name="name">company_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -520,217 +494,156 @@
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logopath</property>
                     <property name="nativeName">logopath</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">created_on</property>
                     <property name="nativeName">created_on</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">updated_on</property>
                     <property name="nativeName">updated_on</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">created_by</property>
                     <property name="nativeName">created_by</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">updated_by</property>
                     <property name="nativeName">updated_by</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">lead_name</property>
                     <property name="nativeName">lead_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">lead_first_name</property>
                     <property name="nativeName">lead_first_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">status_select</property>
                     <property name="nativeName">status_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">source_name</property>
                     <property name="nativeName">source_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">industry_sector_select</property>
                     <property name="nativeName">industry_sector_select</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">fax</property>
                     <property name="nativeName">fax</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">email</property>
                     <property name="nativeName">email</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">fixed_phone</property>
                     <property name="nativeName">fixed_phone</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">mobile_phone</property>
                     <property name="nativeName">mobile_phone</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">web_site</property>
                     <property name="nativeName">web_site</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">enterprise_name</property>
                     <property name="nativeName">enterprise_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">primary_address</property>
                     <property name="nativeName">primary_address</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">primary_state</property>
                     <property name="nativeName">primary_state</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
                     <property name="name">primary_city</property>
                     <property name="nativeName">primary_city</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
                     <property name="name">primary_postal_code</property>
                     <property name="nativeName">primary_postal_code</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">23</property>
                     <property name="name">primary_country</property>
                     <property name="nativeName">primary_country</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">24</property>
-                    <property name="name">other_address</property>
-                    <property name="nativeName">other_address</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">25</property>
-                    <property name="name">other_state</property>
-                    <property name="nativeName">other_state</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">26</property>
-                    <property name="name">other_city</property>
-                    <property name="nativeName">other_city</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">27</property>
-                    <property name="name">other_postal_code</property>
-                    <property name="nativeName">other_postal_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">28</property>
-                    <property name="name">other_country</property>
-                    <property name="nativeName">other_country</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">29</property>
                     <property name="name">job_title</property>
                     <property name="nativeName">job_title</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">30</property>
+                    <property name="position">25</property>
                     <property name="name">user_name</property>
                     <property name="nativeName">user_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">31</property>
+                    <property name="position">26</property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select
@@ -738,7 +651,6 @@ Lead.id as id,MetaFile.file_path as logopath, Lead.created_on, Lead.updated_on, 
 Lead.name as lead_name, Lead.first_name as lead_first_name, Lead.status_select, Source.name AS source_name,
 IndustrySector.name as industry_sector_select, Lead.fax,messageEmailAddress.address AS email, Lead.fixed_phone, Lead.mobile_phone, Lead.web_site, Lead.enterprise_name,
 Lead.primary_address, Lead.primary_state, Lead.primary_city, Lead.primary_postal_code, PrimaryCountry.name as primary_country,
-Lead.other_address, Lead.other_state, Lead.other_city, Lead.other_postal_code, OtherCountry.name as other_country,
 Lead.job_title, AuthUser.full_name as user_name, Company.name as company_name
 from crm_lead as Lead 
 left join auth_user as AuthUser on (Lead.user_id = AuthUser.id)
@@ -748,7 +660,6 @@ left join base_partner as Partner on (Lead.partner = Partner.id)
 left join base_industry_sector as IndustrySector on (IndustrySector.id = Lead.industry_sector)
 left join base_source as Source on (Lead.source = Source.id)
 left join base_country as PrimaryCountry on (Lead.primary_country = PrimaryCountry.id)
-left join base_country as OtherCountry on (Lead.other_country = OtherCountry.id)
 left join message_email_address as messageEmailAddress On messageEmailAddress.id=Lead.email_address
 where Lead.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -3103,36 +3014,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">other_address</property>
-                    <text-property name="displayName">other_address</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["other_address"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">other_state</property>
-                    <text-property name="displayName">other_state</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["other_state"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">other_city</property>
-                    <text-property name="displayName">other_city</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["other_city"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">other_postal_code</property>
-                    <text-property name="displayName">other_postal_code</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["other_postal_code"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">other_country</property>
-                    <text-property name="displayName">other_country</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["other_country"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">job_title</property>
                     <text-property name="displayName">job_title</text-property>
                     <expression name="expression" type="javascript">dataSetRow["job_title"]</expression>
@@ -3799,93 +3680,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <cell id="3732"/>
                             </row>
                             <row id="3761">
-                                <property name="height">0.79375cm</property>
+                                <property name="height">0.2cm</property>
                                 <cell id="3762">
-                                    <property name="colSpan">1</property>
+                                    <property name="colSpan">6</property>
                                     <property name="rowSpan">1</property>
                                 </cell>
-                                <cell id="3823">
-                                    <property name="colSpan">2</property>
-                                    <property name="rowSpan">1</property>
-                                    <text id="3769">
-                                        <property name="fontWeight">bold</property>
-                                        <property name="color">#3C3C3C</property>
-                                        <property name="marginTop">0pt</property>
-                                        <property name="marginLeft">0pt</property>
-                                        <property name="marginRight">0pt</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">"Lead.primary_address"</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3765">
-                                    <property name="colSpan">1</property>
-                                    <property name="rowSpan">1</property>
-                                </cell>
-                                <cell id="3810">
-                                    <text id="3811">
-                                        <property name="fontWeight">bold</property>
-                                        <property name="color">#3C3C3C</property>
-                                        <property name="marginTop">0pt</property>
-                                        <property name="marginLeft">0pt</property>
-                                        <property name="marginRight">0pt</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">"Lead.other_address"</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3802"/>
                             </row>
                             <row id="3778">
                                 <property name="height">0.5820833333333333cm</property>
-                                <cell id="3779"/>
-                                <cell id="3780">
-                                    <property name="colSpan">2</property>
+                                <cell id="3779">
+                                    <property name="colSpan">6</property>
                                     <property name="rowSpan">1</property>
                                     <text id="3799">
                                         <property name="fontSize">9pt</property>
@@ -3895,24 +3699,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["primary_address"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="3782"/>
-                                <cell id="3783">
-                                    <property name="colSpan">2</property>
-                                    <property name="rowSpan">1</property>
-                                    <text id="3807">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="color">#3C3C3C</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["other_address"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
                             </row>
                             <row id="3771">
                                 <property name="height">0.6085416666666666cm</property>
-                                <cell id="3772"/>
-                                <cell id="3773">
-                                    <property name="colSpan">2</property>
+                                <cell id="3772">
+                                    <property name="colSpan">6</property>
                                     <property name="rowSpan">1</property>
                                     <text id="3800">
                                         <property name="fontSize">9pt</property>
@@ -3922,24 +3713,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["primary_city"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["primary_state"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["primary_postal_code"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="3775"/>
-                                <cell id="3776">
-                                    <property name="colSpan">2</property>
-                                    <property name="rowSpan">1</property>
-                                    <text id="3808">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="color">#3C3C3C</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["other_city"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["other_state"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["other_postal_code"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
                             </row>
                             <row id="3792">
                                 <property name="height">0.6085416666666666cm</property>
-                                <cell id="3793"/>
-                                <cell id="3794">
-                                    <property name="colSpan">2</property>
+                                <cell id="3793">
+                                    <property name="colSpan">6</property>
                                     <property name="rowSpan">1</property>
                                     <text id="3801">
                                         <property name="fontSize">9pt</property>
@@ -3947,18 +3725,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="color">#3C3C3C</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["primary_country"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3796"/>
-                                <cell id="3797">
-                                    <property name="colSpan">2</property>
-                                    <property name="rowSpan">1</property>
-                                    <text id="3809">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="color">#3C3C3C</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["other_country"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>

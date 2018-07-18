@@ -234,13 +234,7 @@
 		<action name="action-lead-default-record-new"/>
 	</action-group>
 	
-	<action-group name="action-group-crm-lead-iscopyaddress-onchange">
-		<action name="action-lead-record-other-address"/>
-		<action name="action-lead-attrs-readonly-other-address"/>
-	</action-group>
-
 	<action-group name="action-group-crm-lead-onload">
-		<action name="action-lead-attrs-readonly-other-address"/>
         <action name="action-lead-method-set-social-network-url"/>
         <action name="action-crm-lead-method-check-name"/>
 	</action-group>
@@ -283,14 +277,6 @@
 	  	<context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
 
-    <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
-    	<field name="otherAddress" expr="eval: primaryAddress" if="isCopyAddress"/>
-    	<field name="otherCity" expr="eval: primaryCity" if="isCopyAddress"/>
-    	<field name="otherState" expr="eval: primaryState" if="isCopyAddress"/>
-    	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="isCopyAddress"/>
-    	<field name="otherCountry" expr="eval: primaryCountry" if="isCopyAddress"/>
-    </action-record>
-   	
    	<action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-lead-wizard-form"/>
 		<context name="_lead" expr="eval: __self__"/>

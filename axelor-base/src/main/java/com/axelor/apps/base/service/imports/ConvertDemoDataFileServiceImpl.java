@@ -79,7 +79,7 @@ public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileServic
           new File(excelFile.getParent() + File.separator + this.getFileNameFromSheet(sheet));
       try {
 
-        excelToCSV.writeTOCSV(csvFile, sheet);
+        excelToCSV.writeTOCSV(csvFile, sheet, 3, 1);
 
         if (entries.contains(csvFile.getName())) {
           throw new AxelorException(
