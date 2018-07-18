@@ -38,6 +38,7 @@
 - Event: Fix create an event directly by clicking on the calendar.
 - Partner price list : Put field "Label" mandatory.
 - Demo data import : Fix issues in import demo data from excel demo file with specified configuration in excel file.
+- Generating a project from a sale order: "project alone" renamed to "business project", generating a project with a "phase by line" or "task by line" generation type now automatically generates the elements.
 - Employee: Fix always dirty form view.
 - Fix translation : base, hr, project, business-project, accounting, bank-payment and studio.
 - Timesheet: Hide chart when imputing on manufacturing order.
