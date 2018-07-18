@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.message.db.Template;
@@ -45,7 +44,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_1),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -61,7 +60,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_2),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -74,7 +73,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -86,7 +85,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_8),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -98,7 +97,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_9),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -111,7 +110,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_10),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -124,7 +123,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_11),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
   }
@@ -136,7 +135,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_12),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getRejectJournal();
@@ -148,7 +147,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_13),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getIrrecoverableJournal();
@@ -160,7 +159,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_14),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSupplierPurchaseJournal();
@@ -172,7 +171,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_15),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSupplierCreditNoteJournal();
@@ -184,7 +183,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_16),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustomerSalesJournal();
@@ -196,7 +195,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_17),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustomerCreditNoteJournal();
@@ -208,7 +207,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_18),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getAutoMiscOpeJournal();
@@ -220,7 +219,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_19),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getReimbursementJournal();
@@ -233,7 +232,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_20),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSaleJournalType();
@@ -245,7 +244,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_21),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCreditNoteJournalType();
@@ -257,7 +256,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_22),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCashJournalType();
@@ -269,7 +268,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_23),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getPurchaseJournalType();
@@ -282,7 +281,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_24),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getIrrecoverableAccount();
@@ -294,7 +293,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_25),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustomerAccount();
@@ -306,7 +305,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_26),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSupplierAccount();
@@ -318,7 +317,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_40),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getEmployeeAccount();
@@ -330,7 +329,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_38),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getAdvancePaymentAccount();
@@ -343,7 +342,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_27),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCashPositionVariationAccount();
@@ -355,7 +354,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_28),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getReimbursementAccount();
@@ -367,7 +366,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_29),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getDoubtfulCustomerAccount();
@@ -380,7 +379,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getIrrecoverableStandardRateTax();
@@ -393,7 +392,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_30),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getDirectDebitPaymentMode();
@@ -405,7 +404,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_31),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getRejectionPaymentMode();
@@ -418,7 +417,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_32),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getIrrecoverableReasonPassage();
@@ -430,7 +429,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_33),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getExportPath();
@@ -443,7 +442,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_34),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getRejectPaymentScheduleTemplate();
@@ -456,7 +455,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           "%s :\n " + I18n.get(IExceptionMessage.REIMBURSEMENT_2),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getReimbursementExportFolderPath();
@@ -469,7 +468,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_35),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSixMonthDebtPassReason();
@@ -482,7 +481,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_36),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getThreeMonthDebtPassReason();
@@ -496,7 +495,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_37),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getDebtRecoveryConfigLineList();
@@ -509,7 +508,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_1),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustInvSequence();
@@ -521,7 +520,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_2),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getCustRefSequence();
@@ -533,7 +532,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSuppInvSequence();
@@ -545,7 +544,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_4),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSuppRefSequence();
@@ -568,7 +567,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CONFIG_39),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getExportFileName();

@@ -20,7 +20,6 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.GenProjTypePerOrderLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -70,11 +69,12 @@ public class SaleOrderProjectService {
     project.setGenProjTypePerOrderLine(GenProjTypePerOrderLine.valueOf(type));
     project.setPriceList(saleOrder.getPriceList());
     switch (project.getGenProjTypePerOrderLine()) {
-      case PROJECT_ALONE:
-      case PHASE_BY_LINE:
+      case BUSINESS_PROJECT:
         project.setIsProject(false);
         project.setIsBusinessProject(true);
         break;
+      case PHASE_BY_LINE:
+        // willful absence of break; to execute the code of the case below and avoid duplication
       case TASK_BY_LINE:
         project.setIsProject(true);
         project.setIsBusinessProject(true);
@@ -83,8 +83,8 @@ public class SaleOrderProjectService {
         project.setIsProject(true);
         project.setIsBusinessProject(false);
     }
-    if (Beans.get(AppBusinessProjectService.class).getAppBusinessProject().getAutomaticProject()
-        && project.getGenProjTypePerOrderLine() != GenProjTypePerOrderLine.PROJECT_ALONE) {
+    if (project.getGenProjTypePerOrderLine() == GenProjTypePerOrderLine.PHASE_BY_LINE
+        || project.getGenProjTypePerOrderLine() == GenProjTypePerOrderLine.TASK_BY_LINE) {
       generateProjectTypePerOrderLine(saleOrder);
     }
     return Beans.get(ProjectRepository.class).save(project);
@@ -101,11 +101,11 @@ public class SaleOrderProjectService {
     }
     List<? extends AuditableModel> models;
     switch (saleOrder.getProject().getGenProjTypePerOrderLine()) {
-      case PROJECT_ALONE:
+      case BUSINESS_PROJECT:
         throw new AxelorException(
             saleOrder.getProject(),
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.SALE_ORDER_PROJECT_ALONE));
+            I18n.get(IExceptionMessage.SALE_ORDER_BUSINESS_PROJECT));
       case PHASE_BY_LINE:
         models = generateProjectPhases(saleOrder);
         break;
