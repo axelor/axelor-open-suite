@@ -42,6 +42,7 @@
 - Employee: Fix always dirty form view.
 - Fix translation : base, hr, project, business-project, accounting, bank-payment and studio.
 - Timesheet: Hide chart when imputing on manufacturing order.
+- BUDGET : Display budget dustribution as editable and check order line amount and total of budget in purchase orderline and invoice line.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
