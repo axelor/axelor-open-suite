@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -359,7 +358,7 @@ public class DebtRecoveryService {
               + I18n.get("Company")
               + " %s : "
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_1),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           partner.getName(),
           company.getName());
     }
@@ -438,7 +437,7 @@ public class DebtRecoveryService {
                   + I18n.get("Company")
                   + " %s : "
                   + I18n.get(IExceptionMessage.DEBT_RECOVERY_2),
-              AppAccountServiceImpl.EXCEPTION,
+              I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
               partner.getName(),
               company.getName());
         }
@@ -457,7 +456,7 @@ public class DebtRecoveryService {
                     + I18n.get("Company")
                     + " %s : "
                     + I18n.get(IExceptionMessage.DEBT_RECOVERY_3),
-                AppAccountServiceImpl.EXCEPTION,
+                I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
                 partner.getName(),
                 company.getName());
           }
@@ -488,7 +487,7 @@ public class DebtRecoveryService {
                       + I18n.get("Company")
                       + " %s : "
                       + I18n.get(IExceptionMessage.DEBT_RECOVERY_4),
-                  AppAccountServiceImpl.EXCEPTION,
+                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
                   partner.getName(),
                   company.getName()));
         }

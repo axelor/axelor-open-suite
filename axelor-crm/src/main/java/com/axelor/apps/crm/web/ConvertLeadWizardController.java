@@ -85,6 +85,7 @@ public class ConvertLeadWizardController {
     openPartner(response, lead);
   }
 
+  @SuppressWarnings("unchecked")
   private Partner createPartnerData(Context context) throws AxelorException {
 
     Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
@@ -95,8 +96,7 @@ public class ConvertLeadWizardController {
       partner =
           convertLeadWizardService.createPartner(
               (Map<String, Object>) context.get("partner"),
-              convertLeadWizardService.createPrimaryAddress(context),
-              convertLeadWizardService.createOtherAddress(context));
+              convertLeadWizardService.createPrimaryAddress(context));
       // TODO check all required fields...
     } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
       Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
@@ -109,6 +109,7 @@ public class ConvertLeadWizardController {
     return partner;
   }
 
+  @SuppressWarnings("unchecked")
   private Partner createContactData(Context context, Partner partner) throws AxelorException {
 
     Partner contactPartner = null;
@@ -125,8 +126,7 @@ public class ConvertLeadWizardController {
       contactPartner =
           convertLeadWizardService.createPartner(
               (Map<String, Object>) context.get("contactPartner"),
-              convertLeadWizardService.createPrimaryAddress(context),
-              convertLeadWizardService.createOtherAddress(context));
+              convertLeadWizardService.createPrimaryAddress(context));
       contactPartner.setIsContact(true);
       // TODO check all required fields...
     } else if (leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT
@@ -169,11 +169,6 @@ public class ConvertLeadWizardController {
     response.setAttr("$primaryState", "value", lead.getPrimaryState());
     response.setAttr("$primaryPostalCode", "value", lead.getPrimaryPostalCode());
     response.setAttr("$primaryCountry", "value", lead.getPrimaryCountry());
-    response.setAttr("$otherAddress", "value", lead.getOtherAddress());
-    response.setAttr("$otherCity", "value", lead.getOtherCity());
-    response.setAttr("$otherState", "value", lead.getOtherState());
-    response.setAttr("$otherPostalCode", "value", lead.getOtherPostalCode());
-    response.setAttr("$otherCountry", "value", lead.getOtherCountry());
     response.setAttr("$contactAddress", "value", lead.getPrimaryAddress());
     response.setAttr("$contactCity", "value", lead.getPrimaryCity());
     response.setAttr("$contactState", "value", lead.getPrimaryState());
@@ -242,10 +237,9 @@ public class ConvertLeadWizardController {
     response.setAttr("amount", "value", lead.getEstimatedBudget());
     response.setAttr("description", "value", lead.getDescription());
     response.setAttr("source", "value", lead.getSource());
-    if (lead.getUser() != null || lead.getTeam() != null) {
-      response.setAttr("user", "value", lead.getUser());
-      response.setAttr("team", "value", lead.getTeam());
-    }
+    response.setAttr("partner", "value", lead.getPartner());
+    response.setAttr("user", "value", lead.getUser());
+    response.setAttr("team", "value", lead.getTeam());
     response.setAttr("webSite", "value", lead.getWebSite());
     response.setAttr("source", "value", lead.getSource());
     response.setAttr("department", "value", lead.getDepartment());
@@ -282,6 +276,8 @@ public class ConvertLeadWizardController {
     Map leadMap = (Map) context.get("_lead");
     if (leadMap != null && leadMap.get("id") != null) {
       lead = leadRepo.find(Long.parseLong(leadMap.get("id").toString()));
+    } else {
+      lead = (Lead) context.get("lead");
     }
 
     if (lead == null) {

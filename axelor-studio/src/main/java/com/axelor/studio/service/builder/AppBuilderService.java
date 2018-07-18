@@ -53,6 +53,7 @@ public class AppBuilderService {
       depends.addAll(appBuilder.getDependsOnSet());
       app.setDependsOnSet(depends);
     }
+    app.setSequence(appBuilder.getSequence());
     app.setInitDataLoaded(true);
     app.setDemoDataLoaded(true);
 

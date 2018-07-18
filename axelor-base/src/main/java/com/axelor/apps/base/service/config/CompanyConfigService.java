@@ -20,7 +20,6 @@ package com.axelor.apps.base.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -34,7 +33,7 @@ public class CompanyConfigService {
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.COMPANY_CURRENCY),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(IExceptionMessage.EXCEPTION),
           company.getName());
     }
 

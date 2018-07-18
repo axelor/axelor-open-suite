@@ -223,7 +223,7 @@
 
 		<!-- Hide ATI -->
 		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent?.inAti"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval:_parent?.inAti"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent?.inAti"/>
 
 		<!-- Show Price Discounted -->
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price"/>

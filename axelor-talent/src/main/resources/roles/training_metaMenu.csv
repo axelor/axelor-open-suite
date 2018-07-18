@@ -1,4 +1,5 @@
 "name";"roles"
+"hr-root";"Training Manager|Training User|Training Read"
 "training-root";"Training Manager|Training User|Training Read"
 "my-training-register";"Training Manager|Training User|Training Read"
 "my-team-training-register";"Training Manager|Training User|Training Read"

@@ -26,7 +26,7 @@
 		<field name="description" widget="html"/>
 	</grid>
     
-    <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user" editable="false"
+    <calendar name="event-calendar-color-by-user" title="Meetings" mode="month" colorBy="user"
     	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event"
     	onChange="action-event-method-compute-from-calendar">
     	<field name="subjectTeam" />
@@ -121,7 +121,7 @@
 		</panel>
 		
 		<panel sidebar="true" title="Linked to" name="meetingLinked">
-			<field name="partner" domain="(self.isCustomer = true OR self.isSupplier = true OR self.isCarrier = true) AND self.isEmployee = false" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="partner" onSelect="action-partner-attrs-set-domain" onChange="action-meeting-set-location-partner,action-partner-attrs-hide-contact-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" onChange="action-meeting-set-location-lead" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
@@ -292,6 +292,7 @@
 <!--     ACTION RECORD -->
 
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
+   		<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
       <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
       <field name="typeSelect" expr="0" if="_typeSelect == null"/>
@@ -326,8 +327,9 @@
 
     <action-record name="action-event-record-event-from-lead" model="com.axelor.apps.crm.db.Event">
     	<field name="lead" expr="eval: _lead"/>
-    	<field name="user" expr="eval: __repo__(User).find(_lead.user.id)" if="_lead.user != null" />
+    	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
+    	<field name="partner" expr="eval: _lead.partner"/>
     </action-record>
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">

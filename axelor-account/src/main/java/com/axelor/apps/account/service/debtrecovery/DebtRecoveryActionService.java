@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
@@ -95,7 +94,7 @@ public class DebtRecoveryActionService {
               + I18n.get("Partner")
               + " %s: "
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           debtRecovery.getAccountingSituation().getPartner().getName());
     }
     if (debtRecovery.getDebtRecoveryMethodLine() == null) {
@@ -106,7 +105,7 @@ public class DebtRecoveryActionService {
               + I18n.get("Partner")
               + " %s: "
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           debtRecovery.getAccountingSituation().getPartner().getName());
     } else {
 
@@ -142,7 +141,7 @@ public class DebtRecoveryActionService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           partner.getName(),
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
           debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
@@ -191,7 +190,7 @@ public class DebtRecoveryActionService {
               + I18n.get("Partner")
               + " %s: "
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           debtRecovery.getAccountingSituation().getPartner().getName());
     }
 
@@ -202,7 +201,7 @@ public class DebtRecoveryActionService {
               + I18n.get("Partner")
               + " %s: "
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           debtRecovery.getAccountingSituation().getPartner().getName());
     } else {
 
