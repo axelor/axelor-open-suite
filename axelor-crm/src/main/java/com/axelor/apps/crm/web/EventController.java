@@ -77,6 +77,10 @@ public class EventController {
         Duration duration =
             DurationTool.computeDuration(event.getStartDateTime(), event.getEndDateTime());
         response.setValue("duration", DurationTool.getSecondsDuration(duration));
+      } else {
+        Duration duration = Duration.ofHours(1);
+        response.setValue("duration", DurationTool.getSecondsDuration(duration));
+        response.setValue("endDateTime", event.getStartDateTime().plus(duration));
       }
     }
   }
