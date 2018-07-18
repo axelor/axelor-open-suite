@@ -38,6 +38,7 @@
 - Partner price list : Put field "Label" mandatory.
 - Demo data import : Fix issues in import demo data from excel demo file with specified configuration in excel file.
 - Fix translation : base, hr, project, business-project, accounting, bank-payment and studio.
+- BUDGET : Display budget dustribution as editable and check order line amount and total of budget in purchase orderline and invoice line.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
