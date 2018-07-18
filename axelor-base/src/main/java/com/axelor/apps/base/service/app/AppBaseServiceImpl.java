@@ -38,8 +38,6 @@ import javax.inject.Singleton;
 @Singleton
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
 
-  public static final String EXCEPTION = "Warning !";
-
   protected static String DEFAULT_LOCALE = "en";
 
   @Override

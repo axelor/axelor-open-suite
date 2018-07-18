@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.config;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -34,7 +33,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_1),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return cfonbConfig;
@@ -54,7 +53,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_2),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
     return senderRecordCodeExportCFONB;
@@ -66,7 +65,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -77,7 +76,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_4),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -88,7 +87,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_5),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -99,7 +98,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_6),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -110,7 +109,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_7),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -122,7 +121,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_8),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -134,7 +133,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_9),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -145,7 +144,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_10),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -156,7 +155,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_11),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -167,7 +166,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_12),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }
@@ -179,7 +178,7 @@ public class CfonbConfigService extends AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_CONFIG_13),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           cfonbConfig.getName());
     }
   }

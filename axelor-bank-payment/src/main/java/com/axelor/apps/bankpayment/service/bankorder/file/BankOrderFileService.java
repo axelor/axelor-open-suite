@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.apps.tool.xml.Marschaller;
 import com.axelor.exception.AxelorException;
@@ -143,7 +142,7 @@ public class BankOrderFileService {
               e.getCause(),
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(com.axelor.apps.account.exception.IExceptionMessage.CFONB_EXPORT_2),
-              AppBaseServiceImpl.EXCEPTION,
+              I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
               e);
         }
 
