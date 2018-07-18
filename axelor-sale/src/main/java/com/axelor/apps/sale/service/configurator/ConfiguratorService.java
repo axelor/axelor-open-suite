@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service.configurator;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
 import java.lang.reflect.InvocationTargetException;
 import wslite.json.JSONException;
@@ -86,4 +87,20 @@ public interface ConfiguratorService {
       JsonContext jsonIndicators)
       throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, AxelorException;
+
+  /**
+   * Check if the calculated value type is the same as the indicator type.
+   *
+   * @param calculatedValue the return value of a script.
+   * @param indicator an indicator.
+   * @throws AxelorException if the type don't match.
+   */
+  void checkType(Object calculatedValue, MetaJsonField indicator) throws AxelorException;
+
+  /**
+   * Return true if {@code fromClassName} is a class that can be converted to {@code
+   * targetClassName}. <br>
+   * Else return false.
+   */
+  boolean areCompatible(String targetClassName, String fromClassName);
 }

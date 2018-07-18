@@ -24,6 +24,8 @@ package com.axelor.apps.base.exceptions;
  */
 public interface IExceptionMessage {
 
+  public static final String EXCEPTION = /*$$(*/ "Warning !" /*)*/;
+
   static final String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
 
   static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/
@@ -197,6 +199,8 @@ public interface IExceptionMessage {
   public static final String GENERAL_9 = /*$$(*/
       "Invalid duplicate finder field '%s'. Field type ManyToMany or OneToMany is not supported for duplicate check" /*)*/;
   public static final String GENERAL_10 = /*$$(*/ "No duplicate finder field configured." /*)*/;
+  public static final String GENERAL_11 = /*$$(*/ "Please select original object." /*)*/;
+
   /** Messsage controller */
   public static final String MESSAGE_1 = /*$$(*/
       "Error in print. Please check report configuration and print setting." /*)*/;

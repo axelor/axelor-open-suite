@@ -123,9 +123,9 @@
 
 	<menuitem name="plannings-all" parent="hr-root-emp-mgt-conf" title="Plannings" />
 
-	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
+	<menuitem name="event-planning-all" parent="plannings-all" title="Public holidays planning" action="hr.public.holiday.planning.all"/>
 
-	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.base.db.EventsPlanning">
+	<action-view name="hr.public.holiday.planning.all" title="Public holidays planning" model="com.axelor.apps.base.db.EventsPlanning">
     	<view type="grid" name="events-planning-grid"/>
 	    <view type="form" name="events-planning-form"/>
 	</action-view>
