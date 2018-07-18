@@ -37,6 +37,7 @@
 - Event: Fix create an event directly by clicking on the calendar.
 - Partner price list : Put field "Label" mandatory.
 - Demo data import : Fix issues in import demo data from excel demo file with specified configuration in excel file.
+- Fix translation : base, hr, project, business-project, accounting, bank-payment and studio.
 - Fixed bugs and updated printings of ATI sales/purchases/invoices. Also fixed generating a stock move from a sale/purchase order (would consider ati unit prices as if they were excluding taxes).
 
 
