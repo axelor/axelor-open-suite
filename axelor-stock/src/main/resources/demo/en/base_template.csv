@@ -24,3 +24,8 @@ Please let us know when you estimate to deliver the remaining goods.</p>
 
 <p>Best regards<br/>
 Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2
+"StockRule";"StockRules";1;;;;"true";;"Stock rule $StockRules.product.fullName$ not respected";"<p>Hello,</p>
+
+<p>We are seeing a shortage of stock for the product $StockRules.product.fullName$ in the $StockRules.stockLocation.name$ location.</p>
+
+<p>Best Regards</p>";;;;

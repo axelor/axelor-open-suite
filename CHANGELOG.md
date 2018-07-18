@@ -6,6 +6,7 @@
 
 ## Improvements
 - Stock rules : change column name of code and name to product code and product name.
+- Stock rules: new message template in demo data.
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
 - Stock location tree: add missing french translation.
@@ -43,6 +44,7 @@
 - Fix translation : base, hr, project, business-project, accounting, bank-payment and studio.
 - Timesheet: Hide chart when imputing on manufacturing order.
 - BUDGET : Display budget dustribution as editable and check order line amount and total of budget in purchase orderline and invoice line.
+- Stock Rules: Fix npe on stock rule alert.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
