@@ -3,6 +3,7 @@
 ## Features
 - User : Add a search filter to see the active users.
 - Add support for multiple demo data config per app. 
+- Configurator creator : Add demo data.
 
 ## Improvements
 - Stock rules : change column name of code and name to product code and product name.
