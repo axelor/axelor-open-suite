@@ -486,7 +486,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService  {
 			// Zone 5 : Localisation de l'agence (Si le nom de la banque contient plus de 35 caractères, utiliser le début de la première zone 
 			// pour le compléter et le reste de cette zone pour indiquer le début de l'adresse)
 			String bankAddress = "";
-			if(bank.getBankName().length() > 35)  {
+			if(bank.getBankName() != null && bank.getBankName().length() > 35)  {
 				bankAddress = bank.getBankName().substring(35) + " ";
 			}
 			if (receiverBankDetails.getBankAddress() != null) {

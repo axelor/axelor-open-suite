@@ -5,6 +5,7 @@
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 
 ### Bug Fixes
+- Fix NPE in BankOrder generation on missing bank name.
 
 
 ## [4.2.4] - 2018-07-12
