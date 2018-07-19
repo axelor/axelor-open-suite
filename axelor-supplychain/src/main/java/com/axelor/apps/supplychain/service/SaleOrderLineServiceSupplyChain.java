@@ -17,8 +17,11 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -52,4 +55,14 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLineList
    */
   void updateDeliveryStates(List<SaleOrderLine> saleOrderLineList);
+
+  /**
+   * Generates a list of sub sale order lines from a pack product.
+   *
+   * @param product a product of type 'pack'
+   * @param saleOrder the sale order containing a sale order line with the pack product
+   * @return a list of sub sale order lines
+   */
+  public List<SaleOrderLine> createPackLines(Product product, SaleOrder saleOrder)
+      throws AxelorException;
 }

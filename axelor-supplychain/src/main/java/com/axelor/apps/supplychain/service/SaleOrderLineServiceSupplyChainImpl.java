@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -26,6 +27,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -43,6 +45,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -210,5 +213,44 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     } else {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
     }
+  }
+
+  @Override
+  public List<SaleOrderLine> createPackLines(Product product, SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> subLines = new ArrayList<>();
+
+    for (PackLine packLine : product.getPackLines()) {
+      SaleOrderLine subLine = new SaleOrderLine();
+      Product subProduct = packLine.getProduct();
+      subLine.setProduct(subProduct);
+      subLine.setProductName(subProduct.getName());
+      subLine.setPrice(subProduct.getSalePrice());
+      subLine.setUnit(this.getSaleUnit(subLine));
+      subLine.setQty(new BigDecimal(packLine.getQuantity()));
+      subLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, subLine));
+      TaxLine taxLine = this.getTaxLine(saleOrder, subLine);
+      subLine.setSaleSupplySelect(subProduct.getSaleSupplySelect());
+      subLine.setTaxLine(taxLine);
+
+      this.computeValues(saleOrder, subLine);
+
+      BigDecimal price = this.getUnitPrice(saleOrder, subLine, taxLine);
+
+      Map<String, Object> discounts = this.getDiscount(saleOrder, subLine, price);
+
+      if (discounts != null) {
+        subLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+        subLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+        if (discounts.get("price") != null) {
+          price = (BigDecimal) discounts.get("price");
+        }
+      }
+      subLine.setPrice(price);
+
+      subLines.add(subLine);
+    }
+
+    return subLines;
   }
 }

@@ -28,6 +28,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface SaleOrderLineService {
@@ -113,4 +114,14 @@ public interface SaleOrderLineService {
   public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
 
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
+
+  /**
+   * Generates a list of sub sale order lines from a pack product.
+   *
+   * @param product a product of type 'pack'
+   * @param saleOrder the sale order containing a sale order line with the pack product
+   * @return a list of sub sale order lines
+   */
+  public List<SaleOrderLine> createPackLines(Product product, SaleOrder saleOrder)
+      throws AxelorException;
 }
