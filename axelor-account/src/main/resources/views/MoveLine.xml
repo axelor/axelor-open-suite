@@ -145,7 +145,7 @@
 		</panel-tabs>
 		<panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
 			<field name="move" readonly="true" form-view="move-form" grid-view="move-grid" colSpan="6"/>
-			<field name="$viewerTags" showTitle="false" colSpan="6">
+			<field name="$viewerTags" showTitle="false" colSpan="6" readonly="true">
 				<viewer depends="move.statusSelect">
 					<![CDATA[
 						<h4>
