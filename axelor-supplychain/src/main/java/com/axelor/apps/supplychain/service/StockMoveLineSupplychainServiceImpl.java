@@ -177,7 +177,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
       stockMoveService.cancel(stockMoveLine.getStockMove());
       stockMoveLine.setReservedQty(reservedQty);
-      stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
+      stockMoveService.goBackToDraft(stockMove);
       stockMoveService.plan(stockMove);
       if (statusSelect == StockMoveRepository.STATUS_REALIZED) {
         stockMoveService.realize(stockMove);

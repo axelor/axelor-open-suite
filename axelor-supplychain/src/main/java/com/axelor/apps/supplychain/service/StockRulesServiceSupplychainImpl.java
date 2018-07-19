@@ -107,7 +107,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
                     "self.metaModel.fullName = ?1 AND self.isSystem != true",
                     StockRules.class.getName())
                 .fetchOne();
-        if(template != null) {
+        if (template != null) {
           try {
             Message message = templateMessageService.generateMessage(stockRules, template);
             messageRepo.save(message);

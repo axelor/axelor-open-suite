@@ -152,9 +152,9 @@ public class AppServiceImpl implements AppService {
         log.debug("No config file found for the app: {}", appCode);
         return;
       }
-      
+
       Arrays.sort(configs);
-      
+
       for (File config : configs) {
         runImport(config, dataDir);
       }
