@@ -660,6 +660,7 @@ Also, improve the sale order line grid and form views.
 ### Improvements
 
 ### Bug Fixes
+- Fix NPE in BankOrder generation on missing bank name.
 
 
 ## [4.2.4] - 2018-07-12
