@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.repo.OperationOrderManagementRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessManagementRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
+import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.ConfiguratorBomService;
@@ -57,6 +58,7 @@ import com.axelor.apps.production.service.app.AppProductionServiceImpl;
 import com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
@@ -91,5 +93,6 @@ public class ProductionModule extends AxelorModule {
     bind(ConfiguratorServiceImpl.class).to(ConfiguratorServiceProductionImpl.class);
     bind(AppProductionService.class).to(AppProductionServiceImpl.class);
     bind(ProdProcessRepository.class).to(ProdProcessManagementRepository.class);
+    bind(StockMoveLineStockRepository.class).to(StockMoveLineProductionRepository.class);
   }
 }

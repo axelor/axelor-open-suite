@@ -45,6 +45,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class StockMoveController {
@@ -220,16 +221,20 @@ public class StockMoveController {
     StockMove stockMove = request.getContext().asType(StockMove.class);
 
     try {
-      StockMove reversion =
+      Optional<StockMove> reversion =
           stockMoveService.generateReversion(stockMoveRepo.find(stockMove.getId()));
-      response.setView(
-          ActionView.define(I18n.get("Stock move"))
-              .model(StockMove.class.getName())
-              .add("grid", "stock-move-grid")
-              .add("form", "stock-move-form")
-              .param("forceEdit", "true")
-              .context("_showRecord", String.valueOf(reversion.getId()))
-              .map());
+      if (reversion.isPresent()) {
+        response.setView(
+            ActionView.define(I18n.get("Stock move"))
+                .model(StockMove.class.getName())
+                .add("grid", "stock-move-grid")
+                .add("form", "stock-move-form")
+                .param("forceEdit", "true")
+                .context("_showRecord", String.valueOf(reversion.get().getId()))
+                .map());
+      } else {
+        response.setFlash(I18n.get("No reversion generated"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
