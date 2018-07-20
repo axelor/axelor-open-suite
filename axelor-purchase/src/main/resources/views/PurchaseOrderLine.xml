@@ -30,6 +30,7 @@
     
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<hilite background="danger" if="$number(saleMinPrice) &lt; $number(salePrice)"/>
+    	<hilite color="default" strong="true" if="isTitleLine == true"/>
     	<field name="productName"/>
     	<field name="productCode"/>
     	<field name="desiredDelivDate"/>
@@ -41,6 +42,7 @@
 	    <field name="inTaxTotal" aggregate="sum"/>
         <field name="saleMinPrice"  x-scale="2" aggregate="min"/>
         <field name="salePrice" hidden="true"/>
+        <field name="isTitleLine" hidden="true"/>
     </grid>
     
     <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="-purchaseOrder.orderDate" canMove="true">
