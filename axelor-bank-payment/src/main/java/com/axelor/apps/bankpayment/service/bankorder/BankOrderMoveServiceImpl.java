@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -265,7 +264,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             accountingSituation,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING),
-            AppAccountServiceImpl.EXCEPTION);
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
   }
 

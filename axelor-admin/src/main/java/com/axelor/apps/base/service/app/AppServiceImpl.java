@@ -43,10 +43,12 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -126,22 +128,39 @@ public class AppServiceImpl implements AppService {
     log.debug("Data import: DataDir: {}, App code: {}, App lang: {}", dataDir, code, lang);
 
     for (String module : modules.split(",")) {
-      log.debug("Importing module: {}", module);
       File tmp = extract(module, dataDir, lang, code);
       if (tmp == null) {
         continue;
       }
-      try {
-        File config = FileUtils.getFile(tmp, dataDir, code + CONFIG_PATTERN);
-        File data = FileUtils.getFile(tmp, dataDir);
-        if (config != null && config.exists()) {
-          runImport(config, data);
-        } else {
-          log.debug("Config file not found");
-        }
-      } finally {
-        clean(tmp);
+      log.debug("Importing from module: {}", module);
+      importPerConfig(code, new File(tmp, dataDir));
+    }
+  }
+
+  private void importPerConfig(String appCode, File dataDir) {
+
+    try {
+      File[] configs =
+          dataDir.listFiles(
+              new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                  return name.startsWith(appCode + "-") && name.endsWith(CONFIG_PATTERN);
+                }
+              });
+
+      if (configs.length == 0) {
+        log.debug("No config file found for the app: {}", appCode);
+        return;
       }
+      
+      Arrays.sort(configs);
+      
+      for (File config : configs) {
+        runImport(config, dataDir);
+      }
+
+    } finally {
+      clean(dataDir);
     }
   }
 
@@ -219,7 +238,7 @@ public class AppServiceImpl implements AppService {
   private File extract(String module, String dirName, String lang, String code) {
     String dirNamePattern = dirName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> files = new ArrayList<URL>();
-    files.addAll(MetaScanner.findAll(module, dirNamePattern, code + CONFIG_PATTERN));
+    files.addAll(MetaScanner.findAll(module, dirNamePattern, code + "(-+.*)?" + CONFIG_PATTERN));
     if (files.isEmpty()) {
       return null;
     }

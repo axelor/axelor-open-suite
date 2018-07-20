@@ -24,3 +24,8 @@ Please let us know when you estimate to deliver the remaining goods.</p>
 
 <p>Best regards<br/>
 Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2
+"Règle de stocks";"StockRules";2;;;;"true";;"Règle de stock $StockRules.product.fullName$ non respectée";"<p>Bonjour,</p>
+
+<p>Nous constatons une rupture de stock pour le produit $StockRules.product.fullName$ dans l'emplacemeent $StockRules.stockLocation.name$.</p>
+
+<p>Cordialement</p>";;;;

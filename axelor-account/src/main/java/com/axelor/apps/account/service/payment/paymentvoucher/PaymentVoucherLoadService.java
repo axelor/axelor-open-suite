@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -167,7 +166,7 @@ public class PaymentVoucherLoadService {
             paymentVoucher,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1),
-            AppAccountServiceImpl.EXCEPTION);
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
       }
 
       paymentVoucher.setPaidAmount(paymentVoucherContext.getPaidAmount());
