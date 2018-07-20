@@ -33,6 +33,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -87,7 +88,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
         || (stockMove.getSaleOrder() == null && stockMove.getPurchaseOrder() == null)) {
       return super.compute(stockMoveLine, stockMove);
     } else {
-      if (stockMoveLine.getProduct() != null) {
+      if (stockMoveLine.getProduct() != null && stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_PACK ) {
         if (stockMove.getSaleOrder() != null) {
           taxLine =
               accountManagementService.getTaxLine(

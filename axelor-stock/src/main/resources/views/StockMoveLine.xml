@@ -241,17 +241,13 @@
     	<action name="action-stock-move-line-record-new"/>
     </action-group>
     
-    <action-group name="action-group-stock-move-line-qty-onChange">
+    <action-group name="action-stock-move-line-group-qty-onchange">
     	<action name="action-stock-move-line-record-qty"/>
- 		<action name="action-stock-move-line-compute-price"/>
  		<action name="action-stock-move-subline-method-update-qty" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()) &amp;&amp; lineTypeSelect == 2"/>
  		<action name="action-stock-move-line-method-get-product-price" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+    	<action name="action-stock-move-line-group-real-qty-onchange"/>
     </action-group>
     
-    <action-group name="action-group-stock-move-line-real-qty-onChange">
-    	<action name="action-stock-move-subline-method-update-real-qty" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()) &amp;&amp; lineTypeSelect == 2"/>
-    </action-group>
-
 	<action-attrs name="action-stock-move-line-tracking-number-attrs">
 		<attribute for="trackingNumber" name="readonly" expr="eval: product?.trackingNumberConfiguration?.generatePurchaseAutoTrackingNbr || product?.trackingNumberConfiguration?.generateProductionAutoTrackingNbr || product?.trackingNumberConfiguration?.generateSaleAutoTrackingNbr"/>
 	</action-attrs>
@@ -265,14 +261,10 @@
 	    <field name="realQty" expr="1"/>
 	</action-record>
 
-    <action-group name="action-stock-move-line-group-qty-onchange">
-        <action name="action-stock-move-line-record-qty"/>
-        <action name="action-stock-move-line-group-real-qty-onchange"/>
-    </action-group>
-
     <action-group name="action-stock-move-line-group-real-qty-onchange">
         <action name="action-stock-move-line-compute-price"/>
         <action name="action-stock-move-line-record-total-net-mass"/>
+        <action name="action-stock-move-subline-method-update-real-qty" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()) &amp;&amp; lineTypeSelect == 2"/>
     </action-group>
 
     <action-group name="action-stock-move-line-group-net-mass-onchange">
