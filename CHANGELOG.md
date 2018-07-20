@@ -11,6 +11,7 @@
 - Apps management: improve layout of applications on the view
 - Stock location tree: add missing french translation.
 - Improved model studio by removing not required properties from different elements.
+- Move lines: set automatically currency rate and amount in manual move lines.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
