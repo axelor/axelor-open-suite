@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -255,5 +256,25 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     } else {
       return product.getPurchasesUnit();
     }
+  }
+
+  @Override
+  public boolean isAccountRequired() {
+
+    if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
+
+      if (isSubLine
+          && saleOrderLine.getParentLine() != null
+          && saleOrderLine.getParentLine().getPackPriceSelect()
+              == InvoiceLineRepository.PACK_PRICE_ONLY) {
+        return false;
+      }
+      if (typeSelect == InvoiceLineRepository.TYPE_PACK
+          && saleOrderLine.getPackPriceSelect() == InvoiceLineRepository.SUBLINE_PRICE_ONLY) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

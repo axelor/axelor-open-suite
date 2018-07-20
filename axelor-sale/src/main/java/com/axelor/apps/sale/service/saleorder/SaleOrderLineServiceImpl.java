@@ -90,9 +90,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException {
 
-    boolean taxRequired = fillTaxInformation(saleOrderLine, saleOrder, packPriceSelect);
+    boolean taxRequired = checkTaxRequired(saleOrderLine, packPriceSelect);
 
     if (taxRequired) {
+      fillTaxInformation(saleOrderLine, saleOrder, packPriceSelect);
       saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
       BigDecimal price = this.getUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
       price = fillDiscount(saleOrderLine, saleOrder, price);
@@ -138,36 +139,26 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return price;
   }
 
-  private boolean fillTaxInformation(
+  private void fillTaxInformation(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException {
 
-    boolean taxRequired = checkTaxRequired(saleOrderLine, packPriceSelect);
+    TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+    saleOrderLine.setTaxLine(taxLine);
 
-    try {
-      TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
-      saleOrderLine.setTaxLine(taxLine);
+    AccountManagement accountManagement =
+        accountManagementService.getAccountManagement(
+            saleOrderLine.getProduct(), saleOrder.getCompany());
+    Tax tax = accountManagementService.getProductTax(accountManagement, false);
+    TaxEquiv taxEquiv =
+        Beans.get(FiscalPositionService.class)
+            .getTaxEquiv(saleOrder.getClientPartner().getFiscalPosition(), tax);
 
-      AccountManagement accountManagement =
-          accountManagementService.getAccountManagement(
-              saleOrderLine.getProduct(), saleOrder.getCompany());
-      Tax tax = accountManagementService.getProductTax(accountManagement, false);
-      TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class)
-              .getTaxEquiv(saleOrder.getClientPartner().getFiscalPosition(), tax);
-
-      saleOrderLine.setTaxEquiv(taxEquiv);
-
-    } catch (AxelorException e) {
-      if (taxRequired) {
-        throw e;
-      }
-    }
-
-    return taxRequired;
+    saleOrderLine.setTaxEquiv(taxEquiv);
   }
 
-  private boolean checkTaxRequired(SaleOrderLine saleOrderLine, Integer packPriceSelect) {
+  @Override
+  public boolean checkTaxRequired(SaleOrderLine saleOrderLine, Integer packPriceSelect) {
 
     if (appSaleService.getAppSale().getProductPackMgt()) {
 

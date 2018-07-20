@@ -85,7 +85,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected BigDecimal exTaxTotal;
   protected BigDecimal inTaxTotal;
   protected Integer typeSelect = 0;
-  protected boolean isSubLine;
+  protected boolean isSubLine = false;
 
   public static final int DEFAULT_SEQUENCE = 0;
 
@@ -173,13 +173,14 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     InvoiceLine invoiceLine = new InvoiceLine();
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    boolean accountRequired = isAccountRequired();
 
     invoiceLine.setInvoice(invoice);
 
     invoiceLine.setProduct(product);
 
     invoiceLine.setProductName(productName);
-    if (product != null) {
+    if (product != null && accountRequired) {
       invoiceLine.setProductCode(product.getCode());
       AccountManagement accountManagement =
           accountManagementService.getAccountManagement(product, invoice.getCompany());
@@ -195,11 +196,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setQty(qty);
     invoiceLine.setUnit(unit);
 
-    if (taxLine == null) {
+    invoiceLine.setTypeSelect(typeSelect);
+
+    if (taxLine == null && accountRequired) {
       this.determineTaxLine();
     }
 
-    if (product != null) {
+    if (product != null && accountRequired) {
       Tax tax =
           Beans.get(AccountManagementService.class)
               .getProductTax(
@@ -235,6 +238,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setDiscountAmount(discountAmount);
 
     return invoiceLine;
+  }
+
+  public boolean isAccountRequired() {
+    return true;
   }
 
   public void determineTaxLine() throws AxelorException {

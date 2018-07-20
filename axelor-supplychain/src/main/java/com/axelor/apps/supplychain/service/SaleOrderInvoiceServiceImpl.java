@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -39,7 +40,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
@@ -49,6 +52,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -75,18 +79,22 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected InvoiceService invoiceService;
 
+  protected SaleOrderLineService saleOrderLineService;
+
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
-      InvoiceService invoiceService) {
+      InvoiceService invoiceService,
+      SaleOrderLineService saleOrderLineService) {
 
     this.appSupplychainService = appSupplychainService;
 
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
+    this.saleOrderLineService = saleOrderLineService;
   }
 
   @Override
@@ -126,7 +134,46 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     }
-    return invoiceRepo.save(invoice);
+
+    invoice = invoiceRepo.save(invoice);
+
+    if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
+      setParentInvoiceLine(invoice);
+    }
+
+    return invoice;
+  }
+
+  @Transactional
+  public void setParentInvoiceLine(Invoice invoice) {
+
+    Map<Long, BigDecimal> parentTotalMap = Maps.newHashMap();
+
+    for (InvoiceLine line : invoice.getInvoiceLineList()) {
+      if (line.getSaleOrderLine() != null && line.getIsSubLine()) {
+        line.setPackPriceSelect(line.getSaleOrderLine().getPackPriceSelect());
+        InvoiceLine parentInvoiceLine =
+            Beans.get(InvoiceLineRepository.class)
+                .all()
+                .filter(
+                    "self.saleOrderLine = ?1 and  self.invoice = ?2",
+                    line.getSaleOrderLine().getParentLine(),
+                    invoice)
+                .fetchOne();
+        BigDecimal total = parentTotalMap.get(parentInvoiceLine.getId());
+        if (total == null) {
+          total = BigDecimal.ZERO;
+        }
+        parentTotalMap.put(parentInvoiceLine.getId(), total.add(line.getExTaxTotal()));
+        line.setParentLine(parentInvoiceLine);
+      }
+    }
+
+    for (InvoiceLine line : invoice.getInvoiceLineList()) {
+      if (parentTotalMap.containsKey(line.getId())) {
+        line.setTotalPack(parentTotalMap.get(line.getId()));
+      }
+    }
   }
 
   @Override

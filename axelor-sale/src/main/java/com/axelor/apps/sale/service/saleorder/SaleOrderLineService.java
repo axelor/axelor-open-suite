@@ -131,4 +131,6 @@ public interface SaleOrderLineService {
    */
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException;
+
+  public boolean checkTaxRequired(SaleOrderLine saleOrderLine, Integer packPriceSelect);
 }

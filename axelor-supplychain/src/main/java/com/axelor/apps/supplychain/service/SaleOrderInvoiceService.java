@@ -300,4 +300,6 @@ public interface SaleOrderInvoiceService {
    * @return the domain for the operation select field in the invoicing wizard form
    */
   Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
+
+  public void setParentInvoiceLine(Invoice invoice);
 }

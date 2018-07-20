@@ -151,20 +151,31 @@ public class InvoiceLineController {
     response.setValue("subLineList", subLines);
   }
 
-  public void resetSubLines(ActionRequest request, ActionResponse response) {
+  public void resetPackData(ActionRequest request, ActionResponse response) throws AxelorException {
 
     InvoiceLine packLine = request.getContext().asType(InvoiceLine.class);
-    List<InvoiceLine> subLines = packLine.getSubLineList();
 
-    if (subLines != null) {
-      for (InvoiceLine line : subLines) {
-        line.setPrice(BigDecimal.ZERO);
-        line.setPriceDiscounted(BigDecimal.ZERO);
-        line.setExTaxTotal(BigDecimal.ZERO);
-        line.setInTaxTotal(BigDecimal.ZERO);
+    if (packLine.getPackPriceSelect() == InvoiceLineRepository.PACK_PRICE_ONLY) {
+      List<InvoiceLine> subLines = packLine.getSubLineList();
+      if (subLines != null) {
+        for (InvoiceLine line : subLines) {
+          line.setPrice(BigDecimal.ZERO);
+          line.setPriceDiscounted(BigDecimal.ZERO);
+          line.setExTaxTotal(BigDecimal.ZERO);
+          line.setInTaxTotal(BigDecimal.ZERO);
+          line.setCompanyInTaxTotal(BigDecimal.ZERO);
+          line.setCompanyExTaxTotal(BigDecimal.ZERO);
+        }
       }
+      response.setValue("subLineList", subLines);
+    } else {
+      response.setValue("price", BigDecimal.ZERO);
+      response.setValue("priceDiscounted", BigDecimal.ZERO);
+      response.setValue("exTaxTotal", BigDecimal.ZERO);
+      response.setValue("inTaxTotal", BigDecimal.ZERO);
+      response.setValue("companyExTaxTotal", BigDecimal.ZERO);
+      response.setValue("companyInTaxTotal", BigDecimal.ZERO);
     }
-    response.setValue("subLineList", subLines);
   }
 
   public Invoice getInvoice(Context context) {

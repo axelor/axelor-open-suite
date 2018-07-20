@@ -39,6 +39,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -119,6 +120,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMove.setInvoice(invoice);
       stockMoveRepo.save(stockMove);
     }
+
+    if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
+      saleOrderInvoiceService.setParentInvoiceLine(invoice);
+    }
+
     return invoice;
   }
 
@@ -224,6 +230,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMove.setInvoice(invoice);
       stockMoveRepo.save(stockMove);
     }
+
     return invoice;
   }
 
@@ -750,7 +757,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             stockMoveLine.getSaleOrderLine(),
             stockMoveLine.getPurchaseOrderLine(),
             stockMoveLine,
-            false) {
+            stockMoveLine.getIsSubLine()) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
