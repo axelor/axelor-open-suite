@@ -88,7 +88,7 @@
             </panel>
 
             <panel name="Currency" title="Currencies">
-                <field name="currency" readonly="true" readonlyIf="moveLineList.length != 0"/>
+                <field name="currency" readonly="true" readonlyIf="moveLineList.length != 0" onChange="action-move-record-set-currency-code"/>
                 <field name="companyCurrency" readonly="true"/>
                 <field name="currencyCode" hidden="true"/>
             </panel>
@@ -137,6 +137,10 @@
 		<field name="companyCurrency" expr="eval: company?.currency" />
 		<field name="currency" expr="eval: company?.currency" />
 		<field name="currencyCode" expr="eval: company?.currency.code" />
+    </action-record>
+
+    <action-record name="action-move-record-set-currency-code" model="com.axelor.apps.account.db.Move">
+    	<field name="currencyCode" expr="eval: currency.code"/>
     </action-record>
 
     <action-record name="action-move-record-journal" model="com.axelor.apps.account.db.Move">
