@@ -2,7 +2,6 @@ package com.axelor.apps.base.service.timer;
 
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.TimerHistory;
-import com.axelor.apps.base.db.TimerState;
 import com.axelor.apps.base.db.repo.TimerHistoryRepository;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -36,14 +35,14 @@ public abstract class AbstractTimerService implements TimerService {
 
   @Override
   public LocalDateTime findStartDate(Timer timer) {
-    TimerHistory first = timerHistoryRepository.findByTimer(timer).order("startDate").fetchOne();
-    return (first != null ? first.getStartDate() : null);
+    TimerHistory first = timerHistoryRepository.findByTimer(timer).order("startDateT").fetchOne();
+    return (first != null ? first.getStartDateT() : null);
   }
 
   @Override
   public LocalDateTime findEndDate(Timer timer) {
-    TimerHistory last = timerHistoryRepository.findByTimer(timer).order("-endDate").fetchOne();
-    return (last != null ? last.getEndDate() : null);
+    TimerHistory last = timerHistoryRepository.findByTimer(timer).order("-endDateT").fetchOne();
+    return (last != null ? last.getEndDateT() : null);
   }
 
   @Override
@@ -57,14 +56,14 @@ public abstract class AbstractTimerService implements TimerService {
       TimerHistory lastWithEndDate =
           timerHistoryRepository
               .all()
-              .filter("self.timer = :timer AND self.endDate IS NOT NULL")
+              .filter("self.timer = :timer AND self.endDateT IS NOT NULL")
               .bind("timer", timer)
-              .order("-endDate")
+              .order("-endDateT")
               .fetchOne();
       if (lastWithEndDate == null) {
         return Duration.ZERO;
       }
-      end = lastWithEndDate.getEndDate();
+      end = lastWithEndDate.getEndDateT();
     }
     return Duration.between(start, end);
   }
@@ -74,19 +73,19 @@ public abstract class AbstractTimerService implements TimerService {
   public void cancel(Timer timer) {
     List<TimerHistory> histories = timerHistoryRepository.findByTimer(timer).fetch();
     histories.forEach(timerHistoryRepository::remove);
-    timer.setState(TimerState.STOPPED);
+    timer.setStatusSelect(TimerRepository.TIMER_STOPPED);
   }
 
   @Transactional
   protected Timer tryStartOrCreate(Timer timer) throws AxelorException {
     if (timer == null) {
       timer = new Timer();
-      timer.setAssignedTo(userService.getUser());
-    } else if (timer.getState().equals(TimerState.STARTED)) {
+      timer.setAssignedToUser(userService.getUser());
+    } else if (timer.getStatusSelect().equals(TimerRepository.TIMER_STARTED)) {
       throw new AxelorException(
           TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.TIMER_IS_NOT_STOPPED));
     }
-    timer.setState(TimerState.STARTED);
+    timer.setStatusSelect(TimerRepository.TIMER_STARTED);
     return timerRepository.save(timer);
   }
 
@@ -96,13 +95,13 @@ public abstract class AbstractTimerService implements TimerService {
       throws AxelorException {
     Preconditions.checkNotNull(timer, I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
 
-    TimerHistory last = timerHistoryRepository.findByTimer(timer).order("-startDate").fetchOne();
+    TimerHistory last = timerHistoryRepository.findByTimer(timer).order("-startDateT").fetchOne();
     if (last == null) {
       throw new AxelorException(
           TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
     }
-    last.setEndDate(dateTime);
-    timer.setState(TimerState.STOPPED);
+    last.setEndDateT(dateTime);
+    timer.setStatusSelect(TimerRepository.TIMER_STOPPED);
 
     return last;
   }

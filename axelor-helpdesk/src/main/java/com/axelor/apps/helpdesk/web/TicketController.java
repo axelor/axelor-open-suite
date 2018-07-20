@@ -18,18 +18,22 @@
 package com.axelor.apps.helpdesk.web;
 
 import com.axelor.apps.base.db.Timer;
-import com.axelor.apps.base.db.TimerState;
+import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TimerTicketService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 
@@ -146,8 +150,10 @@ public class TicketController {
       boolean hideStart = false;
       boolean hideCancel = true;
       if (timer != null) {
-        hideStart = timer.getState() == TimerState.STARTED;
-        hideCancel = timer.getTimerHistoryList().isEmpty();
+        hideStart = timer.getStatusSelect() == TimerRepository.TIMER_STARTED;
+        hideCancel =
+            timer.getTimerHistoryList().isEmpty()
+                || timer.getStatusSelect().equals(TicketRepository.STATUS_CLOSED);
       }
 
       response.setAttr("btnStartTimer", HIDDEN_ATTR, hideStart);
@@ -173,9 +179,8 @@ public class TicketController {
       Ticket ticket = request.getContext().asType(Ticket.class);
       Beans.get(TimerTicketService.class)
           .start(ticket, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-      response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -184,7 +189,6 @@ public class TicketController {
       Ticket ticket = request.getContext().asType(Ticket.class);
       Beans.get(TimerTicketService.class)
           .stop(ticket, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -194,6 +198,48 @@ public class TicketController {
     try {
       Ticket ticket = request.getContext().asType(Ticket.class);
       Beans.get(TimerTicketService.class).cancel(ticket);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeRealDuration(ActionRequest request, ActionResponse response) {
+    try {
+      Ticket ticket = request.getContext().asType(Ticket.class);
+      if (ticket.getRealTotalDuration().compareTo(BigDecimal.ZERO) == 0) {
+        response.setValue(
+            "realTotalDuration",
+            Beans.get(TimerTicketService.class).compute(ticket).toMinutes() / 60F);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @Transactional
+  public void timerStateOn(ActionRequest request, ActionResponse response) {
+    try {
+      TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+      Ticket ticket = request.getContext().asType(Ticket.class);
+      ticket = ticketRepo.find(ticket.getId());
+      ticket.setTimerState(true);
+      ticketRepo.save(ticket);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @Transactional
+  public void timerStateOff(ActionRequest request, ActionResponse response) {
+    try {
+      TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+      Ticket ticket = request.getContext().asType(Ticket.class);
+      ticket = ticketRepo.find(ticket.getId());
+      ticket.setTimerState(false);
+      ticketRepo.save(ticket);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

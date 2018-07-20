@@ -36,6 +36,7 @@
 - Remove unneeded required attribute for decimal in accounting situation
 - Rework TeamTask UI
 - Production processes: display status in grid view.
+- Rework Ticket UI.
 - Tax configuration: display only necessary fields for tax account management.
 
 ## Bug Fixes

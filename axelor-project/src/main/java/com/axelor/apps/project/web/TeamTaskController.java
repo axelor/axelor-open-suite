@@ -1,7 +1,7 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.db.Timer;
-import com.axelor.apps.base.db.TimerState;
+import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.service.TimerTeamTaskService;
 import com.axelor.exception.service.TraceBackService;
@@ -25,7 +25,7 @@ public class TeamTaskController {
       boolean hideStart = false;
       boolean hideCancel = true;
       if (timer != null) {
-        hideStart = timer.getState() == TimerState.STARTED;
+        hideStart = timer.getStatusSelect() == TimerRepository.TIMER_STARTED;
         hideCancel = timer.getTimerHistoryList().isEmpty();
       }
 

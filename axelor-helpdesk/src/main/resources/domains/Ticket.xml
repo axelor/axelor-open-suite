@@ -27,6 +27,17 @@
 		<integer name="prioritySelect" title="Priority" selection="helpdesk.priority.select" default="2"/>
 		<string name="mailSubject"/>
 		<one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
+		<decimal name="realTotalDuration" title="Real total duration (Hours)" min="0" default="0" />
+		<boolean name="timerState" readonly="true"/>
+
+		<extra-code>
+			<![CDATA[
+				public static final int STATUS_NEW = 0;
+				public static final int STATUS_IN_PROGRESS = 0;
+				public static final int STATUS_RESOLVED = 0;
+				public static final int STATUS_CLOSED = 0;
+			]]>
+		</extra-code>
 
 		<track>
 		  <field name="ticketSeq"/>

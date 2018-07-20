@@ -16,18 +16,37 @@
 		<field name="assignedToUser"/>
 		<field name="prioritySelect"/>
 		<field name="statusSelect"/>
+		<field name="timerState" hidden="true"/>
 		<field name="progressSelect" widget="SelectProgress"/>
-		<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
-		<button name="startTicket" icon="fa-play" readonlyIf="statusSelect > 0" onClick="action-ticket-group-on-start,save"/>
-		<button name="validateTicket" icon="fa-check" readonlyIf="statusSelect > 1" onClick="action-ticket-group-on-validate,save"/>
-		<button name="finishTicket" icon="fa-power-off" readonlyIf="statusSelect > 2" onClick="action-ticket-record-set-closed-status,save"/>
+		<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket" readonlyIf="statusSelect == 3"/>
+		<button name="startTicket" icon="fa-play" onClick="action-ticket-group-on-start" readonlyIf="timerState == true || statusSelect == 3"/>
+		<button name="pause" icon="fa-pause" onClick="action-ticket-group-on-pause" readonlyIf="timerState == false || statusSelect == 3"/>
+		<button name="validateTicket" icon="fa-check" onClick="action-ticket-group-on-validate" readonlyIf="statusSelect == 3"/>
+		<button name="finishTicket" icon="fa-power-off" onClick="action-ticket-group-on-close" readonlyIf="statusSelect == 3"/>
 	</grid>
 
-	<form model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" name="ticket-form" onNew="action-ticket-record-to-fill-startDate" onLoad="action-ticket-attrs-hidden-to-takeCharge-btn,action-ticket-group-timer-process">
+	<form model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" name="ticket-form" onNew="action-ticket-group-on-new" onLoad="action-ticket-group-timer-process">
+		<panel colSpan="12">
+			<field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false" onChange="action-record-to-set-progress-select"/>
+			<field name="ticketSeq" showTitle="false">
+				<viewer depends="ticketSeq">
+					<![CDATA[
+						<h3>
+							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>Ticket N° </span>{{record.ticketSeq}}</span>
+						</h3>
+					]]>
+				</viewer>
+			</field>
+			<panel colSpan="6" itemSpan="12">
+				<field name="progressSelect" widget="SelectProgress">
+					<editor>
+						<field name="progressSelect" colSpan="6" showTitle="false"/>
+					</editor>
+				</field>
+			</panel>
+			<field name="subject" colSpan="12"/>
+			<field name="mailSubject"/>
 
-		<panel>
-			<field name="ticketSeq"/>
-			<field name="subject"/>
 			<field name="slaPolicy" showTitle="false" readonly="true" hideIf="statusSelect >= slaPolicy.reachStageSelect">
 				<viewer><![CDATA[
 					<h3>
@@ -35,59 +54,62 @@
 			        </h3>
 				]]></viewer>
 			</field>
-      <field name="mailSubject"/>
 		</panel>
 
-		<panel name="context" title="Context">
-			<field name="project" onChange="action-ticket-record-value-on-customer-and-contact" form-view="helpdesk-project-form" grid-view="helpdesk-project-grid"/>
+		<panel colSpan="12">
+			<field name="project" if-module="axelor-project" onChange="action-ticket-record-value-on-customer-and-contact" form-view="helpdesk-project-form" grid-view="helpdesk-project-grid"/>
 			<field name="customer" domain="self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onSelect="action-ticket-domain-on-contact-partner" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="lead" form-view="lead-form" grid-view="lead-grid" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-			<field name="assignedToUser" form-view="user-form" grid-view="user-grid" onChange="action-ticket-attrs-hidden-to-takeCharge-btn"/>
-			<field name="responsibleUser" form-view="user-form" grid-view="user-grid"/>
+		</panel>
+
+        <panel-tabs>
+		    <panel colSpan="12" title="Description">
+			    <field name="description" showTitle="false" colSpan="12" widget="html"/>
+		    </panel>
+
+		    <panel title="Timer" showIf="id" hidden="true" sidebar="true" if="__config__.app.getApp('helpdesk').getManageTimer()">
+			    <button name="btnStartTimer" title="Start" icon="fa-play" colSpan="4" hidden="true"
+				    onClick="action-ticket-method-start-timer"/>
+			    <button name="btnStopTimer" title="Stop" icon="fa-pause" colSpan="4" hidden="true"
+				    onClick="action-ticket-method-stop-timer"/>
+			    <button name="btnCancelTimer" title="Cancel" icon="fa-times-circle" colSpan="4"
+				    hidden="true" onClick="action-ticket-method-cancel-timer" css="btn-danger"/>
+			    <field name="$_totalTimerDuration" type="decimal" readonly="true"
+				    title="Total duration (Hours)" colSpan="4"/>
+				<field name="realTotalDuration" colSpan="4"/>
+				<field name="timerState" hidden="true" colSpan="4"/>
+		    </panel>
+        </panel-tabs>
+
+		<panel name="actions" sidebar="true">
+			<button name="startTicket" title="Start" icon="fa-play" hideIf="statusSelect > 0" onClick="save,action-ticket-group-on-start"/>
+			<button name="validateTicket" title="Resolve" icon="fa-check" hideIf="statusSelect > 1" onClick="save,action-ticket-group-on-validate"/>
+			<button name="finishTicket" title="Close" icon="fa-power-off" css="btn-danger" hideIf="statusSelect > 2" onClick="save,action-ticket-group-on-close"/>
+		</panel>
+
+		<panel name="caracteristics" title="Caracteristics" sidebar="true" canCollapse="true">
+			<field name="ticketType" colSpan="12"/>
+			<field name="prioritySelect" colSpan="6"/>
+			<field name="deadlineDateT" colSpan="6"/>
 			<field name="isSlaCompleted" hidden="true"/>
-			<panel colSpan="12">
-				<field name="startDateT" colSpan="3" onChange="action-ticket-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration" x-big="true" colSpan="3" onChange="action-ticket-method-compute-from-duration"/>
-				<field name="endDateT" colSpan="3" onChange="action-ticket-method-compute-from-end-date-time"/>
-				<field name="deadlineDateT" colSpan="3"/>
-			</panel>
 		</panel>
-		<panel colSpan="12">
-				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+		<panel name="followup" title="Follow-up" sidebar="true" canCollapse="true">
+			<field name="assignedToUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+			<field name="responsibleUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+			<field name="lead" colSpan="6" form-view="lead-form" grid-view="lead-grid" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		</panel>
-
-		<panel name="actions" title="Actions" sidebar="true">
-			<button name="takeCharge" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket,action-ticket-attrs-hidden-to-takeCharge-btn"/>
-			<button name="startTicket" title="Start" icon="fa-play" hideIf="statusSelect > 0" onClick="save,action-ticket-group-on-start,save"/>
-			<button name="validateTicket" title="Resolve" icon="fa-check" hideIf="statusSelect > 1" onClick="save,action-ticket-group-on-validate,save"/>
-			<button name="finishTicket" title="Close" icon="fa-power-off" hideIf="statusSelect > 2" onClick="save,action-ticket-record-set-closed-status,action-ticket-attrs-hidden-to-takeCharge-btn,save"/>
+		<panel name="dates" title="Dates" sidebar="true" canCollapse="true">
+			<field name="startDateT" colSpan="6" onChange="action-ticket-method-compute-from-start-date-time"/>
+			<field name="endDateT" colSpan="6" onChange="action-ticket-method-compute-from-end-date-time"/>
+			<field name="duration" colSpan="6" widget="duration" x-big="true" onChange="action-ticket-method-compute-from-duration"/>
 		</panel>
-
-		<panel title="Timer" showIf="id" hidden="true" sidebar="true">
-			<button name="btnStartTimer" title="Start" icon="fa-play" colSpan="12" hidden="true"
-				onClick="action-ticket-method-start-timer"/>
-			<button name="btnStopTimer" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
-				onClick="action-ticket-method-stop-timer"/>
-			<button name="btnCancelTimer" title="Cancel" icon="fa-times-circle" colSpan="12"
-				hidden="true" onClick="action-ticket-method-cancel-timer"/>
-			<field name="$_totalTimerDuration" type="decimal" readonly="true"
-				title="Total duration (Hours)"
-				colSpan="12"/>
+		<panel>
+			<field name="attrs" hidden="true"/>
 		</panel>
-
-		<panel name="attributes" title="Attributes" sidebar="true">
-			<field name="statusSelect" colSpan="3" onChange="action-record-to-set-progress-select,action-ticket-attrs-hidden-to-takeCharge-btn"/>
-			<field name="prioritySelect" colSpan="3"/>
-			<field name="ticketType" colSpan="6"/>
-			<field name="progressSelect" widget="SelectProgress"/>
-		</panel>
-
 		<panel-mail>
-	    	<mail-messages limit="4"/>
+	    	<mail-messages limit="6"/>
 	    	<mail-followers/>
 	  	</panel-mail>
-
 	</form>
 
 	<calendar name="ticket-calendar" model="com.axelor.apps.helpdesk.db.Ticket"
@@ -143,15 +165,15 @@
 	</action-record>
 
 	<action-record name="action-ticket-record-set-start-status" model="com.axelor.apps.helpdesk.db.Ticket">
-		<field name="statusSelect" expr="1"/>
+		<field name="statusSelect" expr="1" if="statusSelect == 0"/>
 	</action-record>
 
 	<action-record name="action-ticket-record-set-validate-status" model="com.axelor.apps.helpdesk.db.Ticket">
-		<field name="statusSelect" expr="2"/>
+		<field name="statusSelect" expr="2" if="statusSelect &lt;= 1"/>
 	</action-record>
 
 	<action-record name="action-ticket-record-set-closed-status" model="com.axelor.apps.helpdesk.db.Ticket">
-		<field name="statusSelect" expr="3"/>
+		<field name="statusSelect" expr="3" if="statusSelect &lt;= 2"/>
 	</action-record>
 
 	<action-record name="action-ticket-record-to-set-progress-select" model="com.axelor.apps.helpdesk.db.Ticket">
@@ -167,17 +189,47 @@
 		<field name="endDateT" expr="eval: __datetime__"/>
 	</action-record>
 
+	<action-record name="action-ticket-record-set-customer" model="com.axelor.apps.helpdesk.db.Ticket">
+		<field name="customer" expr="eval: __user__?.partner" if="__user__?.partner?.isCustomer"/>
+	</action-record>
+
+	<action-group name="action-ticket-group-on-new">
+		<action name="action-ticket-record-to-fill-startDate"/>
+		<action name="action-ticket-record-set-customer"/>
+	</action-group>
+
 	<action-group name="action-ticket-group-on-start">
+		<action name="action-ticket-method-start-timer"/>
+		<action name="action-ticket-method-play"/>
 		<action name="action-ticket-record-to-fill-startDate"/>
 		<action name="action-ticket-method-compute-from-start-date-time"/>
 		<action name="action-ticket-record-set-start-status"/>
+		<action name="save"/>
 	</action-group>
 
 	<action-group name="action-ticket-group-on-validate">
+		<action name="action-ticket-method-stop-timer"/>
+		<action name="action-ticket-method-pause"/>
+		<action name="action-ticket-method-compute-real-total-duration"/>
 		<action name="action-ticket-record-to-fill-endDate"/>
 		<action name="action-ticket-method-compute-from-end-date-time"/>
 		<action name="action-ticket-record-set-validate-status"/>
 		<action name="action-ticket-record-to-set-progress-select"/>
+		<action name="save"/>
+	</action-group>
+
+	<action-group name="action-ticket-group-on-close">
+		<action name="action-ticket-method-stop-timer"/>
+		<action name="action-ticket-method-pause"/>
+		<action name="action-ticket-method-compute-real-total-duration"/>
+		<action name="action-ticket-record-set-closed-status"/>
+		<action name="save"/>
+	</action-group>
+
+	<action-group name="action-ticket-group-on-pause">
+		<action name="action-ticket-method-stop-timer"/>
+		<action name="action-ticket-method-pause"/>
+		<action name="save"/>
 	</action-group>
 
 	<action-method name="action-ticket-method-compute-from-start-date-time">
@@ -192,11 +244,14 @@
 		<call class="com.axelor.apps.helpdesk.web.TicketController" method="computeFromEndDateTime"/>
 	</action-method>
 
-	<action-attrs name="action-ticket-attrs-hidden-to-takeCharge-btn">
-		<attribute if="(assignedToUser != null &amp;&amp; assignedToUser?.id == _user?.id) || statusSelect == 3" name="hidden" expr="true" for="takeCharge"/>
-		<attribute if="(assignedToUser == null || assignedToUser?.id != _user?.id) &amp;&amp; statusSelect &lt; 3" name="hidden" expr="false" for="takeCharge"/>
-	</action-attrs>
+	<action-method name="action-ticket-method-pause" model="com.axelor.apps.helpdesk.db.Ticket">
+		<call class="com.axelor.apps.helpdesk.web.TicketController" method="timerStateOff"/>
+	</action-method>
 
+	<action-method name="action-ticket-method-play" model="com.axelor.apps.helpdesk.db.Ticket">
+		<call class="com.axelor.apps.helpdesk.web.TicketController" method="timerStateOn"/>
+	</action-method>
+	
 	<action-attrs name="action-ticket-domain-on-contact-partner">
 		<attribute for="contactPartner" if="customer != null &amp;&amp; !customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${customer.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
  		<attribute for="contactPartner" if="customer != null &amp;&amp; customer.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>
@@ -229,4 +284,7 @@
 		<call class="com.axelor.apps.helpdesk.web.TicketController" method="cancelTimer"/>
 	</action-method>
 
+	<action-method name="action-ticket-method-compute-real-total-duration">
+		<call class="com.axelor.apps.helpdesk.web.TicketController" method="computeRealDuration"/>
+	</action-method>
 </object-views>
