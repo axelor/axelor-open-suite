@@ -22,6 +22,7 @@
 "manufacturing-conf-configurators-bom";"Production Manager"
 "manufacturing-conf-configurators-prodprocess";"Production Manager"
 "manufacturing-conf-configurators-prod-process-line";"Production Manager"
+"manufacturing-conf-machine-type";"Production Manager"
 "top-manufacturing";"Production Manager|Production User|Production Read"
 "top-manufacturing-manuf-order";"Production Manager|Production User|Production Read"
 "top-manufacturing-operation-order";"Production Manager|Production User|Production Read"

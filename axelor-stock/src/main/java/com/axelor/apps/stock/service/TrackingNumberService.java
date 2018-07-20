@@ -28,6 +28,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -81,6 +82,9 @@ public class TrackingNumberService {
 
   public TrackingNumber createTrackingNumber(Product product, Company company, LocalDate date)
       throws AxelorException {
+    Preconditions.checkNotNull(product, I18n.get("Product cannot be null."));
+    Preconditions.checkNotNull(company, I18n.get("Company cannot be null."));
+    Preconditions.checkNotNull(date, I18n.get("Date cannot be null."));
 
     TrackingNumber trackingNumber = new TrackingNumber();
 

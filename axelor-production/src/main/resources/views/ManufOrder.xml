@@ -6,11 +6,13 @@
     <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     	<toolbar>
     		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+    		<button name="plan" title="Plan" onClick="action-manuf-order-method-plan"/>
     	</toolbar>
-    	<hilite color="danger" if="$get('productionOrder.prioritySelect') == 3"/>
-  		<hilite color="warning" if="$get('productionOrder.prioritySelect') == 2"/>
-  		<hilite color="primary" if="$get('productionOrder.prioritySelect') == 1"/>
-  		<field name="productionOrder.prioritySelect" hidden="true"/>
+    	<hilite color="danger" if="prioritySelect == 4"/>
+  		<hilite color="warning" if="prioritySelect == 3"/>
+  		<hilite color="primary" if="prioritySelect == 2"/>
+  		<hilite color="info" if="prioritySelect == 1"/>
+  		<field name="prioritySelect" hidden="true"/>
         <field name="manufOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
@@ -93,7 +95,7 @@
 		<panel name="main">
 		<panel colSpan="8">
 			<field name="manufOrderSeq" readonly="true" css="bold" />
-			<field name="priority" readonlyIf="statusSelect == 6" colSpan="3"/>
+			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="3"/>
 			<field name="company" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
@@ -101,6 +103,8 @@
 			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
+			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" />
 			<field name="isConsProOnOperation" />
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />

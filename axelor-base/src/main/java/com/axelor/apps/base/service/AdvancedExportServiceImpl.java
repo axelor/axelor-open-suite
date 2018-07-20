@@ -1251,7 +1251,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       for (Integer colIndex : allColIndices) {
         String colName = "Col_" + colIndex;
         Object value = field.get(colName);
-        if (value == null || value == "") {
+        if (value == null || value.equals("")) {
           totalCols[index++] = null;
         } else {
           totalCols[index++] = value.toString();

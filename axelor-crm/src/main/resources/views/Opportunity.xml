@@ -130,7 +130,7 @@
             <button name="previous-stage" title="Previous step" hideIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
             <button name="next-stage" title="Next step" hideIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
             <button name="closed-won" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,save"/>
-            <button name="closed-lost" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>	
+            <button name="closed-lost" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
             <panel name="followUp" title="Follow-up" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" canCollapse="true">
                 <field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
                 <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form" grid-view="company-grid"/>
@@ -141,7 +141,7 @@
 			</panel>
 			<panel name="reference" title="Reference" canCollapse="true">
 				<field name="partner" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-				<field name="lead" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid"/>
+				<field name="lead" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-from-lead"/>
 			</panel>
 			<panel name="postit" title="Memo" canCollapse="true">
 				<field name="memo" showTitle="false" colSpan="12"/>

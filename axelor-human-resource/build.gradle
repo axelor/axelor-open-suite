@@ -18,7 +18,6 @@ axelor {
 }
 
 dependencies {
-	compile project(":modules:axelor-account")
 	compile project(":modules:axelor-project")
 	compile project(":modules:axelor-bank-payment")
 }

@@ -32,7 +32,7 @@ import java.util.List;
 
 public interface ManufOrderService {
 
-  public static int DEFAULT_PRIORITY = 10;
+  public static int DEFAULT_PRIORITY = 2;
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
 

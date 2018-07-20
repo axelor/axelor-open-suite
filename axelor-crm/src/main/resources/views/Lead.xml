@@ -55,7 +55,18 @@
 		</menubar>
 		<panel name="main" >
 			<panel colSpan="12">
-				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false" readonly="true"/>
+				<field name="statusSelect" colSpan="8" widget="NavSelect" showTitle="false" readonly="true"/>
+				<panel colSpan="4">
+					<field name="isRecycled" showTitle="false" widget="boolean-switch" readonly="true">
+						<viewer>
+							<![CDATA[
+								<h4>
+									<span class="label label-default" style="background-color: #0285D8;" ng-show="record.isRecycled" x-translate>Recycled</span>
+								<h4>
+							]]>
+						</viewer>
+					</field>
+				</panel>
 			</panel>
 
 			<panel colSpan="3">
@@ -135,10 +146,10 @@
 				</panel>
 			</panel>
 
-			<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 5" itemSpan="12">
+			<panel name="activities" title="Activities" itemSpan="12">
 				<button name="showAllEvents" title="Show all events" css="btn-custom text-left" icon="fa-tasks" readonlyIf="id == null" onClick="action-lead-view-events"/>
-				<panel-related colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid"/>
-				<panel-related colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid"/>
+				<panel-related colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
+				<panel-related colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 				<panel-dashlet action="action-lead-view-emails"/>
 				<panel-dashlet if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns"/>
 			</panel>
@@ -146,11 +157,10 @@
 
 		<panel sidebar="true">
 			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
-			<button name="start" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start"/>
+			<button name="start" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start,save"/>
 			<button name="convert" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead,reload"/>
-			<button name="recycle" title="Recycle" hideIf="statusSelect == 6" icon="fa-recycle" onClick="save,action-lead-record-status-recycle"/>
-			<button name="lose" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose" css="btn-danger"/>
-			<button name="new" title="Draft" hideIf="statusSelect != 5" icon="fa-undo" onClick="action-lead-record-status-new"/>
+			<button name="recycle" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle" onClick="save,action-lead-record-status-recycle,save"/>
+			<button name="lose" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose,save" css="btn-danger"/>
 			<button name="showPartner" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
 		</panel>
 	
@@ -158,7 +168,7 @@
 			<field name="user" canNew="false" canEdit="false" canView="false" colSpan="6" form-view="user-form" grid-view="user-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 			<field name="contactDate" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-			<field name="lostReason" colSpan="12" readonlyIf="statusSelect == 4" requiredIf="statusSelect == 5" showIf="statusSelect == 5"/>
+			<field name="lostReason" colSpan="12" readonlyIf="statusSelect == 5" requiredIf="statusSelect == 5" showIf="statusSelect == 5"/>
 		</panel>
 		
 		<panel sidebar="true" name="marketing" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
@@ -224,13 +234,7 @@
 		<action name="action-lead-default-record-new"/>
 	</action-group>
 	
-	<action-group name="action-group-crm-lead-iscopyaddress-onchange">
-		<action name="action-lead-record-other-address"/>
-		<action name="action-lead-attrs-readonly-other-address"/>
-	</action-group>
-
 	<action-group name="action-group-crm-lead-onload">
-		<action name="action-lead-attrs-readonly-other-address"/>
         <action name="action-lead-method-set-social-network-url"/>
         <action name="action-crm-lead-method-check-name"/>
 	</action-group>
@@ -254,18 +258,13 @@
     	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     </action-record>
 
-    <action-record name="action-lead-record-status-new" model="com.axelor.apps.crm.db.Lead">
-    	<field name="statusSelect" expr="1"/>
-    	<field name="user" expr="eval:null"/>
-    	<field name="lostReason" expr="eval:null"/>
-    </action-record>
-
 	<action-record name="action-lead-record-status-start" model="com.axelor.apps.crm.db.Lead">
     	<field name="statusSelect" expr="3"/>
     </action-record>
     
    	<action-record name="action-lead-record-status-recycle" model="com.axelor.apps.crm.db.Lead">
-    	<field name="statusSelect" expr="6"/>
+    	<field name="statusSelect" expr="3"/>
+    	<field name="isRecycled" expr="true"/>
     </action-record>
 
     <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead" title="Lose">
@@ -278,14 +277,6 @@
 	  	<context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
 
-    <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
-    	<field name="otherAddress" expr="eval: primaryAddress" if="isCopyAddress"/>
-    	<field name="otherCity" expr="eval: primaryCity" if="isCopyAddress"/>
-    	<field name="otherState" expr="eval: primaryState" if="isCopyAddress"/>
-    	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="isCopyAddress"/>
-    	<field name="otherCountry" expr="eval: primaryCountry" if="isCopyAddress"/>
-    </action-record>
-   	
    	<action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-lead-wizard-form"/>
 		<context name="_lead" expr="eval: __self__"/>
@@ -302,7 +293,7 @@
     <action-view name="action-lead-view-schedule-event" title="Schedule Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
     	<view type="grid" name="event-grid"/>
-    	<context name="_lead" expr="eval: __self__"/>
+    	<context name="_lead" expr="eval: __this__"/>
     </action-view>
     
     <action-view name="action-lead-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
