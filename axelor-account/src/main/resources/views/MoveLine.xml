@@ -165,7 +165,7 @@
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
-				<panel readonly="true">
+		<panel>
 			<field name="name" colSpan="8" showTitle="false">
 				<viewer depends="name">
 					<![CDATA[
@@ -190,8 +190,8 @@
 			</panel>
 			<field name="partner" onSelect="action-move-line-attrs-domain-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="account" onSelect="action-move-line-attrs-domain-account" form-view="account-form" grid-view="account-grid"/>
-			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
-			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3" readonlyIf="credit != 0"/>
+			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3" readonlyIf="debit != 0"/>
 			<field name="amountRemaining" colSpan="3"/>
 			<field name="amountPaid" colSpan="3"/>
 			<field name="origin" colSpan="12"/>
@@ -317,8 +317,8 @@
 	</action-record>
 
 	<action-record name="action-move-line-record-set-currencyAmount" model="com.axelor.apps.account.db.MoveLine">
-		<field name="currencyAmount" expr="eval: debit" if="debit != 0"/>
-		<field name="currencyAmount" expr="eval: credit" if="credit != 0"/>
+		<field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
+		<field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0"/>
 		<field name="currencyAmount" expr="eval: 0" if="debit == 0 &amp;&amp; credit == 0"/>
 	</action-record>
 
