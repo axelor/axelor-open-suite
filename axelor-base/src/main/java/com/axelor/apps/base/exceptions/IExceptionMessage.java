@@ -212,6 +212,8 @@ public interface IExceptionMessage {
   public static final String PARTNER_3 = /*$$(*/
       "Can’t convert into an individual partner from scratch." /*)*/;
   public static final String PARTNER_NOT_FOUND = /*$$(*/ "Partner not found" /*)*/;
+  public static final String PARTNER_EMAIL_EXIST = /*$$(*/
+      "Email address already linked with another partner" /*)*/;
 
   /** Product controller */
   public static final String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
@@ -276,4 +278,39 @@ public interface IExceptionMessage {
    * User service
    */
   String USER_CODE_ALREADY_EXISTS = /*$$(*/ "A user with this login already exists." /*)*/;
+  String USER_PATTERN_MISMATCH_ACCES_RESTRICTION = /*$$(*/
+      "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
+  String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
+      "Password doesn't match with configured pattern." /*)*/;
+
+  /** Convert demo data file */
+  public static final String DUPLICATE_CSV_FILE_NAME_EXISTS = /*$$(*/
+      "Please remove duplicate csv file name from excel file." /*)*/;
+
+  public static final String CSV_FILE_NAME_NOT_EXISTS = /*$$(*/
+      "Please provide valid csv file name." /*)*/;
+  public static final String EXCEL_FILE_FORMAT_ERROR = /*$$(*/
+      "Improper format of excel file." /*)*/;
+  public static final String VALIDATE_FILE_TYPE = /*$$(*/ "Please import only excel file." /*)*/;
+
+  String TIMER_IS_NOT_STOPPED = /*$$(*/ "You can't start a timer that has already started" /*)*/;
+  String TIMER_IS_NOT_STARTED = /*$$(*/ "You can't stop a timer that hasn't been started" /*)*/;
+
+  /** write to CSV from excel sheet */
+  public static final String INVALID_HEADER = /*$$(*/ "Header is not valid." /*)*/;
+
+  /** Import demo data from excel */
+  public static final String MODULE = /*$$*/ "Module" /*)*/;
+
+  public static final String MODULE_NOT_EXIST = /*$$*/ "%s module is not exist." /*)*/;
+  public static final String DATA_FILE = /*$$*/ "Data file" /*)*/;
+  public static final String CONFIGURATION_FILE = /*$$*/ "Configuration file" /*)*/;
+  public static final String CONFIGURATION_FILE_NOT_EXIST = /*$$*/
+      "%s configuration file is not exist." /*)*/;
+  public static final String ROW_NOT_EMPTY = /*$$*/ "%s row must not be Empty." /*)*/;
+  public static final String CELL_NOT_VALID = /*$$*/ "%s  cell is not valid." /*)*/;
+  public static final String IMPORT_COMPLETED_MESSAGE = /*$$*/
+      "Import completed successfully.Please check the log for more details" /*)*/;
+  public static final String INVALID_DATA_FORMAT_ERROR = /*$$*/
+      "Invalid data format. Please check log for more details." /*)*/;
 }

@@ -1,2 +1,2 @@
-"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport"
-"perm.helpdesk.all";"com.axelor.apps.helpdesk.db.*";"true";"true";"true";"true";"true"
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.helpdesk.all";"com.axelor.apps.helpdesk.db.*";"x";"x";"x";"x";"x";;;"Admin"

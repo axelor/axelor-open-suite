@@ -51,8 +51,11 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
     PartnerStockSettings mailSettings = new PartnerStockSettings();
     mailSettings.setCompany(company);
     StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(company);
-    mailSettings.setStockMoveAutomaticMail(stockConfig.getStockMoveAutomaticMail());
-    mailSettings.setStockMoveMessageTemplate(stockConfig.getStockMoveMessageTemplate());
+    mailSettings.setPlannedStockMoveAutomaticMail(stockConfig.getPlannedStockMoveAutomaticMail());
+    mailSettings.setPlannedStockMoveMessageTemplate(
+        stockConfig.getPlannedStockMoveMessageTemplate());
+    mailSettings.setRealStockMoveAutomaticMail(stockConfig.getRealStockMoveAutomaticMail());
+    mailSettings.setRealStockMoveMessageTemplate(stockConfig.getRealStockMoveMessageTemplate());
     partner.addPartnerStockSettingsListItem(mailSettings);
     return Beans.get(PartnerStockSettingsRepository.class).save(mailSettings);
   }

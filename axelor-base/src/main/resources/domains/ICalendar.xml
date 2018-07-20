@@ -22,6 +22,7 @@
 	  <boolean name="isValid" title="Valid"/>
 	  <datetime name="lastSynchronizationDateT" title="Last Synchronization"/>
 	  <integer name="synchronizationDuration" default="1" min="1" title="Synchronization duration (week)"/>
+	  <one-to-many name="sharingSettingList" ref="com.axelor.apps.base.db.SharingSetting" mappedBy="calendar" title="Sharing settings"/>
       <finder-method name="findByUser" using="user" />
 
 	  <extra-code>

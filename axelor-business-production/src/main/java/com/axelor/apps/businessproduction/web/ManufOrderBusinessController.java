@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -63,7 +64,7 @@ public class ManufOrderBusinessController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
           && Beans.get(ManufOrderValidateBusinessService.class).checkTimesheet(manufOrder) > 0) {
-        response.setAlert(IExceptionMessage.MANUF_ORDER_TIMESHEET_WAITING_VALIDATION);
+        response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_TIMESHEET_WAITING_VALIDATION));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

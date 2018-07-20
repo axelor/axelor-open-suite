@@ -37,7 +37,7 @@
        	 	<field name="content" colSpan="12" showTitle="false" widget="html"/>
         </panel>
         <panel name="relatedTo" title="Related to" sidebar="true" colSpan="12" readonlyIf="statusSelect == 3">
-			<field name="company" colSpan="12" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" colSpan="12" form-view="company-form" grid-view="company-grid" canEdit="false"/>
 			<panel colSpan="12">
 				<field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="12"/>
 			</panel>

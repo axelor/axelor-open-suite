@@ -6,12 +6,13 @@
     <module name="production" package="com.axelor.apps.production.db"/>
 
     <entity name="Machine" lang="java">
-
+	    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Image" index="false"/>
         <string name="name" title="Name" required="true"/>
         <string name="serialNumber" title="Serial Nbr"/>
         <string name="brand" title="Brand"/>
         <string name="description" title="Description" large="true"/>
         <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
+        <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType" title="Machine Type"/>
         <long name="startingDuration" title="Starting duration (hh:mm)"/>
         <long name="setupDuration" title="Duration between two cycles (hh:mm)"/>
         <long name="endingDuration" title="Ending duration (hh:mm)"/>

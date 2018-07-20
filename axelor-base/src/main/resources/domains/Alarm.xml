@@ -9,7 +9,7 @@
   
     <datetime name="date" column="date_val" title="Date" required="true" tz="true"/>
     <many-to-one name="alarmEngine" ref="com.axelor.apps.base.db.AlarmEngine" title="Alarm engine"/>
-    <boolean name="acquitOk" title="Suspend Alarm ?" />
+    <boolean name="acquitOk" title="Suspend Alarm" />
     
     <string name="content" title="Message" large="true" />
 

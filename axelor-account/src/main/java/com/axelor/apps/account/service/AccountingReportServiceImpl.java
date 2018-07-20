@@ -113,6 +113,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   public String buildQuery(AccountingReport accountingReport) throws AxelorException {
 
+    this.query = "";
+    this.params.clear();
+    this.paramNumber = 1;
+
     if (accountingReport.getCompany() != null) {
       this.addParams("self.move.company = ?%d", accountingReport.getCompany());
     }
@@ -164,6 +168,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_AGED_BALANCE) {
       this.addParams("self.amountRemaining > 0 AND self.debit > 0");
+    }
+
+    if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_PARNER_BALANCE) {
+      this.addParams("self.account.useForPartnerBalance = 'true'");
     }
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");

@@ -80,7 +80,7 @@
 	<string name="cancelReasonStr" title="Cancel Reason" large="true"/>
     <many-to-one name="templateUser" ref="com.axelor.auth.db.User" title="Template created by" readonly="true"/>
     
-    <boolean name="hideDiscount" title="Hide Discount on prints?"/>
+    <boolean name="hideDiscount" title="Hide Discount on prints"/>
     
 	<date name="deliveryDate" title="Estimated delivery date"/>
 	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>

@@ -49,21 +49,21 @@ import org.slf4j.LoggerFactory;
 
 public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private int duplicateAnomaly;
-  private int configurationAnomaly;
-  private int total;
+  protected int duplicateAnomaly;
+  protected int configurationAnomaly;
+  protected int total;
   protected HrBatch hrBatch;
-  private Company company;
+  protected Company company;
 
   protected PayrollPreparationService payrollPreparationService;
 
-  @Inject PayrollPreparationRepository payrollPreparationRepository;
+  @Inject protected PayrollPreparationRepository payrollPreparationRepository;
 
-  @Inject CompanyRepository companyRepository;
+  @Inject protected CompanyRepository companyRepository;
 
-  @Inject PeriodRepository periodRepository;
+  @Inject protected PeriodRepository periodRepository;
 
   @Inject
   public BatchPayrollPreparationGeneration(PayrollPreparationService payrollPreparationService) {

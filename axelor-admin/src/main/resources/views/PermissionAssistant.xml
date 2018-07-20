@@ -32,15 +32,15 @@
   </form>
   
    <action-method name="action-permission-method-create-file" model="com.axelor.auth.db.PermissionAssistant">
-       <call class="com.axelor.auth.web.PermissionAssitantController" method="createFile"/>
+       <call class="com.axelor.auth.web.PermissionAssistantController" method="createFile"/>
    </action-method>
    
    <action-method name="action-permission-method-import-permissions" model="com.axelor.auth.db.PermissionAssistant">
-       <call class="com.axelor.auth.web.PermissionAssitantController" method="importPermissions"/>
+       <call class="com.axelor.auth.web.PermissionAssistantController" method="importPermissions"/>
    </action-method>
    
    <action-method name="action-permission-assistant-method-fill-objects">
-   	<call class="com.axelor.auth.web.PermissionAssitantController" method="fillObjects"/>
+   	<call class="com.axelor.auth.web.PermissionAssistantController" method="fillObjects"/>
    </action-method>
    
    <action-attrs name="action-attr-reset-all-set">

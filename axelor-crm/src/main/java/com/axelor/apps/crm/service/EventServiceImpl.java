@@ -20,13 +20,18 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
@@ -46,11 +51,14 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.apache.commons.math3.exception.TooManyIterationsException;
 
 public class EventServiceImpl implements EventService {
 
@@ -61,6 +69,14 @@ public class EventServiceImpl implements EventService {
   private PartnerService partnerService;
 
   private EventRepository eventRepo;
+
+  @Inject private EmailAddressRepository emailAddressRepo;
+
+  @Inject private PartnerRepository partnerRepo;
+
+  @Inject private LeadRepository leadRepo;
+
+  private static final int ITERATION_LIMIT = 1000;
 
   @Inject
   public EventServiceImpl(
@@ -146,25 +162,26 @@ public class EventServiceImpl implements EventService {
   public void addRecurrentEventsByDays(
       Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate) {
     Event lastEvent = event;
-    if (endType == 1) {
+    if (endType == RecurrenceConfigurationRepository.END_TYPE_REPET) {
       int repeated = 0;
       while (repeated != repetitionsNumber) {
         Event copy = eventRepo.copy(lastEvent, false);
-        copy.setParentEvent(lastEvent);
+        copy.setParentEvent(event);
         copy.setStartDateTime(copy.getStartDateTime().plusDays(periodicity));
         copy.setEndDateTime(copy.getEndDateTime().plusDays(periodicity));
-        eventRepo.save(copy);
+        lastEvent = eventRepo.save(copy);
         repeated++;
-        lastEvent = copy;
       }
     } else {
-      while (!lastEvent.getStartDateTime().plusDays(periodicity).isAfter(endDate.atStartOfDay())) {
+      while (lastEvent
+          .getStartDateTime()
+          .plusDays(periodicity)
+          .isBefore(endDate.atStartOfDay().plusDays(1))) {
         Event copy = eventRepo.copy(lastEvent, false);
-        copy.setParentEvent(lastEvent);
+        copy.setParentEvent(event);
         copy.setStartDateTime(copy.getStartDateTime().plusDays(periodicity));
         copy.setEndDateTime(copy.getEndDateTime().plusDays(periodicity));
-        eventRepo.save(copy);
-        lastEvent = copy;
+        lastEvent = eventRepo.save(copy);
       }
     }
   }
@@ -178,101 +195,41 @@ public class EventServiceImpl implements EventService {
       int repetitionsNumber,
       LocalDate endDate,
       Map<Integer, Boolean> daysCheckedMap) {
+
+    List<DayOfWeek> dayOfWeekList =
+        daysCheckedMap.keySet().stream().sorted().map(DayOfWeek::of).collect(Collectors.toList());
+    Duration duration = Duration.between(event.getStartDateTime(), event.getEndDateTime());
     Event lastEvent = event;
-    List<Integer> list = new ArrayList<Integer>();
-    for (int day : daysCheckedMap.keySet()) {
-      list.add(day);
-    }
-    Collections.sort(list);
-    if (endType == 1) {
-      int repeated = 0;
-      Event copy = eventRepo.copy(lastEvent, false);
-      copy.setParentEvent(lastEvent);
-      int dayOfWeek = copy.getStartDateTime().getDayOfWeek().getValue();
-      LocalDateTime nextDateTime = LocalDateTime.now();
-      if (dayOfWeek < list.get(0)) {
-        nextDateTime = copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek);
-      } else if (dayOfWeek > list.get(0)) {
-        nextDateTime = copy.getStartDateTime().plusDays((7 - dayOfWeek) + list.get(0));
-      }
-      Duration dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
+    BiFunction<Integer, LocalDateTime, Boolean> breakCondition;
 
-      for (Integer integer : list) {
-        nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek().getValue());
-        copy.setStartDateTime(nextDateTime);
-        copy.setEndDateTime(nextDateTime.plus(dur));
-        eventRepo.save(copy);
-        lastEvent = copy;
-        repeated++;
-      }
-
-      while (repeated < repetitionsNumber) {
-        copy = eventRepo.copy(lastEvent, false);
-        copy.setParentEvent(lastEvent);
-        copy.setStartDateTime(copy.getStartDateTime().plusWeeks(periodicity));
-        copy.setEndDateTime(copy.getEndDateTime().plusWeeks(periodicity));
-
-        dayOfWeek = copy.getStartDateTime().getDayOfWeek().getValue();
-        nextDateTime = LocalDateTime.now();
-        if (dayOfWeek < list.get(0)) {
-          nextDateTime = copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek);
-        } else if (dayOfWeek > list.get(0)) {
-          nextDateTime = copy.getStartDateTime().plusDays((7 - dayOfWeek) + list.get(0));
-        }
-        dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
-
-        for (Integer integer : list) {
-          nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek().getValue());
-          copy.setStartDateTime(nextDateTime);
-          copy.setEndDateTime(nextDateTime.plus(dur));
-          eventRepo.save(copy);
-          lastEvent = copy;
-          repeated++;
-        }
-      }
+    if (endType == RecurrenceConfigurationRepository.END_TYPE_REPET) {
+      breakCondition = (iteration, dateTime) -> iteration >= repetitionsNumber;
     } else {
+      breakCondition = (iteration, dateTime) -> dateTime.toLocalDate().isAfter(endDate);
+    }
 
-      Event copy = eventRepo.copy(lastEvent, false);
-      copy.setParentEvent(lastEvent);
-      int dayOfWeek = copy.getStartDateTime().getDayOfWeek().getValue();
-      LocalDateTime nextDateTime = LocalDateTime.now();
-      if (dayOfWeek < list.get(0)) {
-        nextDateTime = copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek);
-      } else if (dayOfWeek > list.get(0)) {
-        nextDateTime = copy.getStartDateTime().plusDays((7 - dayOfWeek) + list.get(0));
-      }
-      Duration dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
+    boolean loop = true;
 
-      for (Integer integer : list) {
-        nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek().getValue());
-        copy.setStartDateTime(nextDateTime);
-        copy.setEndDateTime(nextDateTime.plus(dur));
-        eventRepo.save(copy);
-        lastEvent = copy;
+    for (int iteration = 0; loop; ++iteration) {
+      if (iteration > ITERATION_LIMIT) {
+        throw new TooManyIterationsException(iteration);
       }
 
-      while (!copy.getStartDateTime().plusWeeks(periodicity).isAfter(endDate.atStartOfDay())) {
-        copy = eventRepo.copy(lastEvent, false);
-        copy.setParentEvent(lastEvent);
-        copy.setStartDateTime(copy.getStartDateTime().plusWeeks(periodicity));
-        copy.setEndDateTime(copy.getEndDateTime().plusWeeks(periodicity));
+      LocalDateTime nextStartDateTime = lastEvent.getStartDateTime().plusWeeks(periodicity - 1L);
 
-        dayOfWeek = copy.getStartDateTime().getDayOfWeek().getValue();
-        nextDateTime = LocalDateTime.now();
-        if (dayOfWeek < list.get(0)) {
-          nextDateTime = copy.getStartDateTime().plusDays(list.get(0) - dayOfWeek);
-        } else if (dayOfWeek > list.get(0)) {
-          nextDateTime = copy.getStartDateTime().plusDays((7 - dayOfWeek) + list.get(0));
-        }
-        dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
+      for (DayOfWeek dayOfWeek : dayOfWeekList) {
+        nextStartDateTime = nextStartDateTime.with(TemporalAdjusters.next(dayOfWeek));
 
-        for (Integer integer : list) {
-          nextDateTime.plusDays(integer - nextDateTime.getDayOfWeek().getValue());
-          copy.setStartDateTime(nextDateTime);
-          copy.setEndDateTime(nextDateTime.plus(dur));
-          eventRepo.save(copy);
-          lastEvent = copy;
+        if (breakCondition.apply(iteration, nextStartDateTime)) {
+          loop = false;
+          break;
         }
+
+        Event copy = eventRepo.copy(lastEvent, false);
+        copy.setParentEvent(event);
+        copy.setStartDateTime(nextStartDateTime);
+        copy.setEndDateTime(nextStartDateTime.plus(duration));
+        lastEvent = eventRepo.save(copy);
       }
     }
   }
@@ -286,130 +243,63 @@ public class EventServiceImpl implements EventService {
       int repetitionsNumber,
       LocalDate endDate,
       int monthRepeatType) {
+
+    int weekNo = 1 + (event.getStartDateTime().getDayOfMonth() - 1) / 7;
+    Duration duration = Duration.between(event.getStartDateTime(), event.getEndDateTime());
     Event lastEvent = event;
-    if (monthRepeatType == 1) {
-      int dayOfMonth = event.getStartDateTime().getDayOfMonth();
-      if (endType == 1) {
-        int repeated = 0;
-        while (repeated != repetitionsNumber) {
-          Event copy = eventRepo.copy(lastEvent, false);
-          copy.setParentEvent(lastEvent);
-          if (copy.getStartDateTime().plusMonths(periodicity).toLocalDate().lengthOfMonth()
-              >= dayOfMonth) {
-            copy.setStartDateTime(copy.getStartDateTime().plusMonths(periodicity));
-            copy.setEndDateTime(copy.getEndDateTime().plusMonths(periodicity));
-            eventRepo.save(copy);
-            repeated++;
-            lastEvent = copy;
-          }
-        }
-      } else {
-        while (!lastEvent
-            .getStartDateTime()
-            .plusMonths(periodicity)
-            .isAfter(endDate.atStartOfDay())) {
-          Event copy = eventRepo.copy(lastEvent, false);
-          copy.setParentEvent(lastEvent);
-          if (copy.getStartDateTime().plusMonths(periodicity).toLocalDate().lengthOfMonth()
-              >= dayOfMonth) {
-            copy.setStartDateTime(copy.getStartDateTime().plusMonths(periodicity));
-            copy.setEndDateTime(copy.getEndDateTime().plusMonths(periodicity));
-            eventRepo.save(copy);
-            lastEvent = copy;
-          }
-        }
-      }
+    BiFunction<Integer, LocalDateTime, Boolean> breakConditionFunc;
+    Function<LocalDateTime, LocalDateTime> nextStartDateTimeFunc;
+    LocalDateTime nextStartDateTime;
+
+    if (endType == RecurrenceConfigurationRepository.END_TYPE_REPET) {
+      breakConditionFunc = (iteration, dateTime) -> iteration >= repetitionsNumber;
     } else {
-      int dayOfWeek = event.getStartDateTime().getDayOfWeek().getValue();
-      int positionInMonth = 0;
-      if (event.getStartDateTime().getDayOfMonth() % 7 == 0) {
-        positionInMonth = event.getStartDateTime().getDayOfMonth() / 7;
-      } else {
-        positionInMonth = (event.getStartDateTime().getDayOfMonth() / 7) + 1;
+      breakConditionFunc = (iteration, dateTime) -> dateTime.toLocalDate().isAfter(endDate);
+    }
+
+    if (monthRepeatType == RecurrenceConfigurationRepository.REPEAT_TYPE_MONTH) {
+      nextStartDateTimeFunc =
+          dateTime ->
+              dateTime
+                  .withDayOfMonth(1)
+                  .plusMonths(periodicity)
+                  .withDayOfMonth(event.getStartDateTime().getDayOfMonth());
+    } else {
+      nextStartDateTimeFunc =
+          dateTime -> {
+            LocalDateTime baseNextDateTime = dateTime.withDayOfMonth(1).plusMonths(periodicity);
+            dateTime =
+                baseNextDateTime.with(
+                    TemporalAdjusters.dayOfWeekInMonth(
+                        weekNo, event.getStartDateTime().getDayOfWeek()));
+
+            if (!dateTime.getMonth().equals(baseNextDateTime.getMonth()) && weekNo > 1) {
+              dateTime =
+                  baseNextDateTime.with(
+                      TemporalAdjusters.dayOfWeekInMonth(
+                          weekNo - 1, event.getStartDateTime().getDayOfWeek()));
+            }
+
+            return dateTime;
+          };
+    }
+
+    for (int iteration = 0; ; ++iteration) {
+      if (iteration > ITERATION_LIMIT) {
+        throw new TooManyIterationsException(iteration);
       }
 
-      if (endType == 1) {
-        int repeated = 0;
-        while (repeated != repetitionsNumber) {
-          Event copy = eventRepo.copy(lastEvent, false);
-          copy.setParentEvent(lastEvent);
-          LocalDateTime nextDateTime = copy.getStartDateTime();
-          nextDateTime.plusMonths(periodicity);
-          int nextDayOfWeek = nextDateTime.getDayOfWeek().getValue();
-          if (nextDayOfWeek > dayOfWeek) {
-            nextDateTime.minusDays(nextDayOfWeek - dayOfWeek);
-          } else {
-            nextDateTime.plusDays(dayOfWeek - nextDayOfWeek);
-          }
-          int nextPositionInMonth = 0;
-          if (event.getStartDateTime().getDayOfMonth() % 7 == 0) {
-            nextPositionInMonth = event.getStartDateTime().getDayOfMonth() / 7;
-          } else {
-            nextPositionInMonth = (event.getStartDateTime().getDayOfMonth() / 7) + 1;
-          }
-          if (nextPositionInMonth > positionInMonth) {
-            nextDateTime.minusWeeks(nextPositionInMonth - positionInMonth);
-          } else {
-            nextDateTime.plusWeeks(positionInMonth - nextPositionInMonth);
-          }
-          Duration dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
-          copy.setStartDateTime(nextDateTime);
-          copy.setEndDateTime(nextDateTime.plus(dur));
-          eventRepo.save(copy);
-          repeated++;
-          lastEvent = copy;
-        }
-      } else {
-        LocalDateTime nextDateTime = lastEvent.getStartDateTime();
-        nextDateTime.plusMonths(periodicity);
-        int nextDayOfWeek = nextDateTime.getDayOfWeek().getValue();
-        if (nextDayOfWeek > dayOfWeek) {
-          nextDateTime.minusDays(nextDayOfWeek - dayOfWeek);
-        } else {
-          nextDateTime.plusDays(dayOfWeek - nextDayOfWeek);
-        }
-        int nextPositionInMonth = 0;
-        if (event.getStartDateTime().getDayOfMonth() % 7 == 0) {
-          nextPositionInMonth = event.getStartDateTime().getDayOfMonth() / 7;
-        } else {
-          nextPositionInMonth = (event.getStartDateTime().getDayOfMonth() / 7) + 1;
-        }
-        if (nextPositionInMonth > positionInMonth) {
-          nextDateTime.minusWeeks(nextPositionInMonth - positionInMonth);
-        } else {
-          nextDateTime.plusWeeks(positionInMonth - nextPositionInMonth);
-        }
-        while (!nextDateTime.isAfter(endDate.atStartOfDay())) {
-          Event copy = eventRepo.copy(lastEvent, false);
-          copy.setParentEvent(lastEvent);
+      nextStartDateTime = nextStartDateTimeFunc.apply(lastEvent.getStartDateTime());
 
-          Duration dur = Duration.between(copy.getStartDateTime(), copy.getEndDateTime());
-          copy.setStartDateTime(nextDateTime);
-          copy.setEndDateTime(nextDateTime.plus(dur));
-          eventRepo.save(copy);
-          lastEvent = copy;
-
-          nextDateTime = lastEvent.getStartDateTime();
-          nextDateTime.plusMonths(periodicity);
-          nextDayOfWeek = nextDateTime.getDayOfWeek().getValue();
-          if (nextDayOfWeek > dayOfWeek) {
-            nextDateTime.minusDays(nextDayOfWeek - dayOfWeek);
-          } else {
-            nextDateTime.plusDays(dayOfWeek - nextDayOfWeek);
-          }
-          nextPositionInMonth = 0;
-          if (event.getStartDateTime().getDayOfMonth() % 7 == 0) {
-            nextPositionInMonth = event.getStartDateTime().getDayOfMonth() / 7;
-          } else {
-            nextPositionInMonth = (event.getStartDateTime().getDayOfMonth() / 7) + 1;
-          }
-          if (nextPositionInMonth > positionInMonth) {
-            nextDateTime.minusWeeks(nextPositionInMonth - positionInMonth);
-          } else {
-            nextDateTime.plusWeeks(positionInMonth - nextPositionInMonth);
-          }
-        }
+      if (breakConditionFunc.apply(iteration, nextStartDateTime)) {
+        break;
       }
+
+      Event copy = eventRepo.copy(lastEvent, false);
+      copy.setParentEvent(event);
+      copy.setStartDateTime(nextStartDateTime);
+      copy.setEndDateTime(nextStartDateTime.plus(duration));
+      lastEvent = eventRepo.save(copy);
     }
   }
 
@@ -418,26 +308,26 @@ public class EventServiceImpl implements EventService {
   public void addRecurrentEventsByYears(
       Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate) {
     Event lastEvent = event;
-    if (endType == 1) {
+    if (endType == RecurrenceConfigurationRepository.END_TYPE_REPET) {
       int repeated = 0;
       while (repeated != repetitionsNumber) {
         Event copy = eventRepo.copy(lastEvent, false);
-        copy.setParentEvent(lastEvent);
+        copy.setParentEvent(event);
         copy.setStartDateTime(copy.getStartDateTime().plusYears(periodicity));
         copy.setEndDateTime(copy.getEndDateTime().plusYears(periodicity));
-
-        eventRepo.save(copy);
+        lastEvent = eventRepo.save(copy);
         repeated++;
-        lastEvent = copy;
       }
     } else {
-      while (!lastEvent.getStartDateTime().plusYears(periodicity).isAfter(endDate.atStartOfDay())) {
+      while (lastEvent
+          .getStartDateTime()
+          .plusYears(periodicity)
+          .isBefore(endDate.atStartOfDay().plusYears(1))) {
         Event copy = eventRepo.copy(lastEvent, false);
-        copy.setParentEvent(lastEvent);
+        copy.setParentEvent(event);
         copy.setStartDateTime(copy.getStartDateTime().plusYears(periodicity));
         copy.setEndDateTime(copy.getEndDateTime().plusYears(periodicity));
-        eventRepo.save(copy);
-        lastEvent = copy;
+        lastEvent = eventRepo.save(copy);
       }
     }
   }
@@ -647,15 +537,15 @@ public class EventServiceImpl implements EventService {
           I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
     }
 
-    boolean monday = (boolean) conf.getMonday();
-    boolean tuesday = (boolean) conf.getTuesday();
-    boolean wednesday = (boolean) conf.getWednesday();
-    boolean thursday = (boolean) conf.getThursday();
-    boolean friday = (boolean) conf.getFriday();
-    boolean saturday = (boolean) conf.getSaturday();
-    boolean sunday = (boolean) conf.getSunday();
-    Map<Integer, Boolean> daysMap = new HashMap<Integer, Boolean>();
-    Map<Integer, Boolean> daysCheckedMap = new HashMap<Integer, Boolean>();
+    boolean monday = conf.getMonday();
+    boolean tuesday = conf.getTuesday();
+    boolean wednesday = conf.getWednesday();
+    boolean thursday = conf.getThursday();
+    boolean friday = conf.getFriday();
+    boolean saturday = conf.getSaturday();
+    boolean sunday = conf.getSunday();
+    Map<Integer, Boolean> daysMap = new HashMap<>();
+    Map<Integer, Boolean> daysCheckedMap = new HashMap<>();
     if (recurrenceType == RecurrenceConfigurationRepository.TYPE_WEEK) {
       daysMap.put(DayOfWeek.MONDAY.getValue(), monday);
       daysMap.put(DayOfWeek.TUESDAY.getValue(), tuesday);
@@ -670,7 +560,7 @@ public class EventServiceImpl implements EventService {
           daysCheckedMap.put(day, daysMap.get(day));
         }
       }
-      if (daysMap.isEmpty()) {
+      if (daysCheckedMap.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.RECURRENCE_DAYS_CHECKED));
@@ -698,7 +588,7 @@ public class EventServiceImpl implements EventService {
             I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
       }
     }
-    LocalDate endDate = LocalDate.now();
+    LocalDate endDate = event.getEndDateTime().toLocalDate();
     if (endType == RecurrenceConfigurationRepository.END_TYPE_DATE) {
       if (conf.getEndDate() == null) {
         throw new AxelorException(
@@ -709,7 +599,7 @@ public class EventServiceImpl implements EventService {
       endDate = LocalDate.parse(conf.getEndDate().toString(), DateTimeFormatter.ISO_DATE);
 
       if (endDate.isBefore(event.getStartDateTime().toLocalDate())
-          && endDate.isEqual(event.getStartDateTime().toLocalDate())) {
+          || endDate.isEqual(event.getStartDateTime().toLocalDate())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.RECURRENCE_END_DATE));
@@ -737,5 +627,32 @@ public class EventServiceImpl implements EventService {
       default:
         break;
     }
+  }
+
+  @Override
+  public EmailAddress getEmailAddress(Event event) {
+    EmailAddress emailAddress = null;
+    if (event.getPartner() != null
+        && event.getPartner().getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+
+      Partner partner = partnerRepo.find(event.getPartner().getId());
+      if (partner.getEmailAddress() != null)
+        emailAddress = emailAddressRepo.find(partner.getEmailAddress().getId());
+
+    } else if (event.getContactPartner() != null) {
+
+      Partner contactPartner = partnerRepo.find(event.getContactPartner().getId());
+      if (contactPartner.getEmailAddress() != null)
+        emailAddress = emailAddressRepo.find(contactPartner.getEmailAddress().getId());
+
+    } else if (event.getPartner() == null
+        && event.getContactPartner() == null
+        && event.getLead() != null) {
+
+      Lead lead = leadRepo.find(event.getLead().getId());
+      if (lead.getEmailAddress() != null)
+        emailAddress = emailAddressRepo.find(lead.getEmailAddress().getId());
+    }
+    return emailAddress;
   }
 }

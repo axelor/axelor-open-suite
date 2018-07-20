@@ -74,8 +74,12 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.app.AppServiceImpl;
+import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
+import com.axelor.apps.base.service.imports.ConvertDemoDataFileServiceImpl;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.service.imports.ImportCityServiceImpl;
+import com.axelor.apps.base.service.imports.ImportDemoDataService;
+import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
@@ -141,5 +145,7 @@ public class BaseModule extends AxelorModule {
     bind(BarcodeGeneratorService.class).to(BarcodeGeneratorServiceImpl.class);
     PartnerAddressRepository.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
     bind(PeriodService.class).to(PeriodServiceImpl.class);
+    bind(ConvertDemoDataFileService.class).to(ConvertDemoDataFileServiceImpl.class);
+    bind(ImportDemoDataService.class).to(ImportDemoDataServiceImpl.class);
   }
 }

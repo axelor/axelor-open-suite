@@ -13,7 +13,7 @@
 	<integer name="periodTypeSelect" title="Period type" selection="account.payment.condition.period.type.select" default="1"/>
 	<integer name="paymentTime" title="Payment period (N days / Month)"/>    
 	<integer name="daySelect" title="Day (end of month)" selection="day.month.select"/>
-	<boolean name="isFree" title="Free ?"/>
+	<boolean name="isFree" title="Free"/>
 
 	<extra-code><![CDATA[
 	

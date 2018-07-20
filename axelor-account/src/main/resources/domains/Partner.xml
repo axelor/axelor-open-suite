@@ -27,7 +27,7 @@
 
 		<string name="specificTaxNote" title="Specific tax note" large="true"/>
 
-		<boolean name="isFactor" title="Factor?" />
+		<boolean name="isFactor" title="Factor" />
 		<boolean name="factorizedCustomer" />
 		<string name="sellerCode" />
     </entity>

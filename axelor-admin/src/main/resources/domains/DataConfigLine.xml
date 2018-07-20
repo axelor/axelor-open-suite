@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="admin" package="com.axelor.apps.admin.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="DataConfigLine" cachable="true">
     <![CDATA[
@@ -16,7 +16,7 @@
     <many-to-one name="objectDataConfig" ref="ObjectDataConfig" />
     <integer name="resetPathSelect" title="Reset Path" selection="data.config.line.reset.path.select" />
     <string name="record" title="Record" />
-    <many-to-many name="toDeleteMetaFieldSet" ref="com.axelor.meta.db.MetaField"  title="Fields to delete " />
+    <many-to-many name="toDeleteMetaFieldSet" ref="com.axelor.meta.db.MetaField"  title="Fields to delete" />
     <string name="tabName" title="Tab name" required="true"/>
     <unique-constraint columns="objectDataConfig,tabName"/>
     <extra-code>

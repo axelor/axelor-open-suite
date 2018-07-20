@@ -29,7 +29,7 @@
       <decimal name="employeeBonusAmount" title="Employee bonus amount" scale="2" precision="15" readonly="true"/>
       <decimal name="lunchVoucherNumber" title="Lunch vouchers' number" scale="1" precision="5" readonly="true"/>
       
-      <boolean name="exported" title="Exported ?" readonly="true"  default="false" />
+      <boolean name="exported" title="Exported" readonly="true"  default="false" />
       <date name="exportDate" title="Export date" readonly="true" />
       <many-to-many name="batchList" title="Mass export list" ref="com.axelor.apps.base.db.Batch" />
       <integer name="exportTypeSelect" title="Export type" selection="hr.batch.payroll.preparation.export.type.select" />

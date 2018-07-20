@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -27,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
@@ -65,44 +68,50 @@ public class ExcelToCSV {
     return newSheets;
   }
 
-  public void writeTOCSV(File sheetFile, Sheet sheet) throws IOException, ParseException {
+  public void writeTOCSV(File sheetFile, Sheet sheet, int startRow, int startColumn)
+      throws IOException, ParseException, AxelorException {
     String separator = ";";
     FileWriter writer = new FileWriter(sheetFile);
     int cnt = 0;
-    Iterator<Row> rowIterator = sheet.iterator();
 
-    if (rowIterator.hasNext()) {
-      Row headerRow = rowIterator.next();
-      Iterator<Cell> headerCellIterator = headerRow.cellIterator();
+    for (int row = startRow; row <= sheet.getLastRowNum(); row++) {
 
-      while (headerCellIterator.hasNext()) {
-        Cell cell = headerCellIterator.next();
-        writer.append(cell.getStringCellValue() + separator);
-        cnt++;
-      }
-      writer.append("\n");
+      if (row == startRow) {
+        Row headerRow = sheet.getRow(row);
+        for (int cell = startColumn; cell < headerRow.getLastCellNum(); cell++) {
+          Cell headerCell = headerRow.getCell(cell);
+          if (headerCell == null || headerCell.getCellType() != Cell.CELL_TYPE_STRING) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(IExceptionMessage.INVALID_HEADER));
+          }
+          writer.append(headerCell.getStringCellValue() + separator);
+          cnt++;
+        }
+        writer.append("\n");
 
-      while (rowIterator.hasNext()) {
-        Row row = rowIterator.next();
-        for (int i = 0; i < cnt; i++) {
+      } else {
+
+        Row dataRow = sheet.getRow(row);
+        for (int cell = startColumn; cell <= cnt; cell++) {
           try {
 
-            Cell cell = row.getCell(i);
-            if (cell != null) {
+            Cell dataCell = dataRow.getCell(cell);
+            if (dataCell != null) {
 
-              switch (cell.getCellType()) {
+              switch (dataCell.getCellType()) {
                 case Cell.CELL_TYPE_STRING:
-                  String strData = cell.getStringCellValue();
+                  String strData = dataCell.getStringCellValue();
                   writer.append("\"" + strData + "\"" + separator);
                   break;
 
                 case Cell.CELL_TYPE_NUMERIC:
-                  if (DateUtil.isCellDateFormatted(cell)) {
-                    String dateInString = getDateValue(cell);
+                  if (DateUtil.isCellDateFormatted(dataCell)) {
+                    String dateInString = getDateValue(dataCell);
                     writer.append("\"" + dateInString + "\"" + separator);
 
                   } else {
-                    Integer val = (int) cell.getNumericCellValue();
+                    Integer val = (int) dataCell.getNumericCellValue();
                     writer.append(val.toString() + separator);
                   }
                   break;
@@ -122,6 +131,7 @@ public class ExcelToCSV {
         writer.append("\n");
       }
     }
+
     writer.flush();
     writer.close();
   }

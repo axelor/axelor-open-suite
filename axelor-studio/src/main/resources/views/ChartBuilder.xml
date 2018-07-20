@@ -12,7 +12,7 @@
   </grid>
   
   <form name="chart-builder-form" title="Chart builder" model="com.axelor.studio.db.ChartBuilder" width="large"
-      onNew="action-view-builder-record-default" onLoad="action-chart-builder-on-load">
+      onLoad="action-chart-builder-on-load">
       <panel>
       	<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
       	<spacer/>
@@ -58,7 +58,6 @@
         <field name="aggregateOnJson.targetJsonModel" hidden="true" />
         <field name="groupOnJson.targetModel" hidden="true" />
         <field name="groupOnJson.targetJsonModel" hidden="true" />
-        <field name="viewType" hidden="true" />
        </panel>
       <panel hideIf="model == null">
       	  <label title="&lt;b&gt;Tags:&lt;/b&gt; $user: Current user, $date: Today's date, $time: Current time" colSpan="12" />
@@ -126,10 +125,6 @@
   <action-record name="action-chart-builder-update-group-on-target-type" model="com.axelor.studio.db.ChartBuilder">
   	<field name="groupOnTargetType" expr="call:com.axelor.studio.service.builder.ChartBuilderService:getTargetType(groupOn, groupOnTarget)" if="!isJsonGroupOn"/>
   	<field name="groupOnTargetType" expr="call:com.axelor.studio.service.builder.ChartBuilderService:getTargetType(groupOnJson, groupOnTarget)" if="isJsonGroupOn"/>
-  </action-record>
-  
-  <action-record name="action-view-builder-record-default" model="com.axelor.studio.db.ChartBuilder">
-  	<field name="viewType" expr="eval:_viewType"/>
   </action-record>
   
 </object-views>

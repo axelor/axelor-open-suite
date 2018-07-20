@@ -1,0 +1,4 @@
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.suppliermanagement.PurchaseOrderSupplierLine.r";"com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine";"x";;;;;;;"Supplychain Read"
+"perm.suppliermanagement.PurchaseOrderSupplierLine.rwc";"com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine";"x";"x";"x";;;;;"Supplychain User"
+"perm.suppliermanagement.PurchaseOrderSupplierLine.rwcde";"com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine";"x";"x";"x";"x";"x";;;"Supplychain Manager"

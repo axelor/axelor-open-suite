@@ -6,9 +6,11 @@
     <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
         <field name="name"/>
         <field name="fullName"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
         <field name="group" form-view="group-form" grid-view="group-grid"/>
+        <field name="blocked"/>
+		<field name="activateOn"/>
+		<field name="expiresOn"/>
     </grid>
     
     
@@ -47,8 +49,9 @@
           <panel showIf="change || !id" colSpan="12" itemSpan="12">
             <field name="oldPassword" title="Your password" placeholder="your password" widget="password" requiredIf="change || !id"/>
             <panel name="passwordPanel" itemSpan="12">
-              <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change || !id" validIf="(!change &amp;&amp; id) || newPassword.length >= 4"/>
+              <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change || !id" validIf="(!change &amp;&amp; id) || newPassword.length >= 4" onChange="action-user-validate-password"/>
               <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
+              <label name="passwordPatternDescription" css="label-danger"/>
             </panel>
             <panel name="passwordOptionsPanel" showIf="code != $user">
               <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
@@ -86,8 +89,10 @@
         		<panel-related field="calendarManagementList" colSpan="12"/>
         		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
-		    <panel name="electronicSignature" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')">
+		    <panel name="electronicSignature" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock')">
 		    	<field name="electronicSignature" widget="Image" />
+					<field name="useSignatureForQuotations" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')"/>
+					<field name="useSignatureForStock" if="__config__.app.isApp('stock')"/>
 		    </panel>
 		    <panel-related field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
         </panel-tabs>
@@ -110,6 +115,7 @@
                 <panel name="passwordPanel" itemSpan="12">
                   <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change" validIf="!change || newPassword.length >= 4"/>
                   <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change" validIf="chkPassword === newPassword"/>
+                  <label name="passwordPatternDescription" css="label-italic"/>
                 </panel>
                 <panel name="passwordOptionsPanel" hidden="true">
                   <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
@@ -147,10 +153,12 @@
     </action-attrs>
 
     <action-attrs name="action-user-attrs">
-      <attribute name="hidden" for="email" expr="partner" />
+      <attribute name="hidden" for="email" expr="partner"/>
       <attribute name="hidden" for="passwordPanel" expr="false"/>
       <attribute name="required" for="partner.emailAddress" expr="sendEmailUponPasswordChange"/>
       <attribute name="value" for="$generateRandomPassword" expr="false"/>
+      <attribute name="title" for="passwordPatternDescription"
+        expr="call: com.axelor.apps.base.service.user.UserService:getPasswordPatternDescription()"/>
     </action-attrs>
 
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
@@ -192,10 +200,20 @@
       <call class="com.axelor.apps.base.web.UserController" method="generateRandomPassword"/>
     </action-method>
 
+    <action-method name="action-user-validate-password">
+      <call class="com.axelor.apps.base.web.UserController" method="validatePassword"/>
+    </action-method>
+
     <action-condition name="action-condition-user-validCode" id="base-action-condition-user-validCode">
         <check error="Code length should be greater than 2." field="code" if="code?.length() &lt; 2"/>
         <check error="A user with this login already exists." field="code"
             if="code &amp;&amp; ![null, id].contains(__repo__(User).findByCode(code)?.id)"/>
     </action-condition>
+    
+    <search-filters name="user-filters" model="com.axelor.auth.db.User" title="User filters">
+    	<filter title="Active users">
+    		<domain>self.blocked = false AND (self.activateOn IS NULL OR self.activateOn &lt;= :_today) AND (self.expiresOn IS NULL OR self.expiresOn &gt;= :_today)</domain>
+    	</filter>
+    </search-filters>
 
 </object-views>
