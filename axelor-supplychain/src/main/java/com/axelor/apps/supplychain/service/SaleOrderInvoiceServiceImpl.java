@@ -170,7 +170,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     for (InvoiceLine line : invoice.getInvoiceLineList()) {
-      if (parentTotalMap.containsKey(line.getId())) {
+      if (line.getSaleOrderLine() != null && parentTotalMap.containsKey(line.getId())) {
+    	line.setPackPriceSelect(line.getSaleOrderLine().getPackPriceSelect());
         line.setTotalPack(parentTotalMap.get(line.getId()));
       }
     }
