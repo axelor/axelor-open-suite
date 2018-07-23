@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
@@ -57,12 +57,12 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
   void updateDeliveryStates(List<SaleOrderLine> saleOrderLineList);
 
   /**
-   * Generates a list of sub sale order lines from a pack product.
+   * Generates a sale order line from a pack line.
    *
-   * @param product a product of type 'pack'
+   * @param packLine a subline of a product of type 'pack'
    * @param saleOrder the sale order containing a sale order line with the pack product
-   * @return a list of sub sale order lines
+   * @return a sale order line
    */
-  public List<SaleOrderLine> createPackLines(Product product, SaleOrder saleOrder)
+  public SaleOrderLine createPackLine(PackLine packLine, SaleOrder saleOrder)
       throws AxelorException;
 }

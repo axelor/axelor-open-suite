@@ -439,35 +439,42 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     List<SaleOrderLine> subLines = new ArrayList<>();
 
     for (PackLine packLine : product.getPackLines()) {
-      SaleOrderLine subLine = new SaleOrderLine();
-      Product subProduct = packLine.getProduct();
-      subLine.setProduct(subProduct);
-      subLine.setProductName(subProduct.getName());
-      subLine.setPrice(subProduct.getSalePrice());
-      subLine.setUnit(this.getSaleUnit(subLine));
-      subLine.setQty(new BigDecimal(packLine.getQuantity()));
-      subLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, subLine));
-      TaxLine taxLine = this.getTaxLine(saleOrder, subLine);
-      subLine.setTaxLine(taxLine);
-
-      this.computeValues(saleOrder, subLine);
-
-      BigDecimal price = this.getUnitPrice(saleOrder, subLine, taxLine);
-
-      Map<String, Object> discounts = this.getDiscount(saleOrder, subLine, price);
-
-      if (discounts != null) {
-        subLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
-        subLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
-        if (discounts.get("price") != null) {
-          price = (BigDecimal) discounts.get("price");
-        }
-      }
-      subLine.setPrice(price);
-
+      SaleOrderLine subLine = this.createPackLine(packLine, saleOrder);
       subLines.add(subLine);
     }
 
     return subLines;
+  }
+
+  @Override
+  public SaleOrderLine createPackLine(PackLine packLine, SaleOrder saleOrder)
+      throws AxelorException {
+    SaleOrderLine subLine = new SaleOrderLine();
+    Product subProduct = packLine.getProduct();
+    subLine.setProduct(subProduct);
+    subLine.setProductName(subProduct.getName());
+    subLine.setPrice(subProduct.getSalePrice());
+    subLine.setUnit(this.getSaleUnit(subLine));
+    subLine.setQty(new BigDecimal(packLine.getQuantity()));
+    subLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, subLine));
+    TaxLine taxLine = this.getTaxLine(saleOrder, subLine);
+    subLine.setTaxLine(taxLine);
+
+    this.computeValues(saleOrder, subLine);
+
+    BigDecimal price = this.getUnitPrice(saleOrder, subLine, taxLine);
+
+    Map<String, Object> discounts = this.getDiscount(saleOrder, subLine, price);
+
+    if (discounts != null) {
+      subLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+      subLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+      if (discounts.get("price") != null) {
+        price = (BigDecimal) discounts.get("price");
+      }
+    }
+    subLine.setPrice(price);
+
+    return subLine;
   }
 }

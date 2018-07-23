@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -123,5 +124,15 @@ public interface SaleOrderLineService {
    * @return a list of sub sale order lines
    */
   public List<SaleOrderLine> createPackLines(Product product, SaleOrder saleOrder)
+      throws AxelorException;
+
+  /**
+   * Generates a sale order line from a pack line.
+   *
+   * @param packLine a subline of a product of type 'pack'
+   * @param saleOrder the sale order containing a sale order line with the pack product
+   * @return a sale order line
+   */
+  public SaleOrderLine createPackLine(PackLine packLine, SaleOrder saleOrder)
       throws AxelorException;
 }
