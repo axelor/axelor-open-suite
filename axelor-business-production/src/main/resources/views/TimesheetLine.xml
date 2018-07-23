@@ -69,4 +69,9 @@
         <field name="operationOrder" expr="eval: null"/>
 	</action-record>
 
+	<action-method name="action-timesheet-line-method-update-operation-order">
+		<call class="com.axelor.apps.businessproduction.web.TimesheetLineController"
+			method="updateOperationOrder"/>
+	</action-method>
+
 </object-views>

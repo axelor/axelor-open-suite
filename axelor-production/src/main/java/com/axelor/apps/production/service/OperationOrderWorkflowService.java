@@ -346,6 +346,17 @@ public class OperationOrderWorkflowService {
   }
 
   /**
+   * Compute the duration of operation order, then fill {@link OperationOrder#realDuration} with the
+   * computed value.
+   *
+   * @param operationOrder
+   */
+  public void updateRealDuration(OperationOrder operationOrder) {
+    long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
+    operationOrder.setRealDuration(durationLong);
+  }
+
+  /**
    * Computes the duration of all the {@link OperationOrderDuration} of {@code operationOrder}
    *
    * @param operationOrder An operation order
@@ -421,8 +432,7 @@ public class OperationOrderWorkflowService {
       operationOrder.setPlannedDuration(duration);
     }
 
-    duration = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
-    operationOrder.setRealDuration(duration);
+    updateRealDuration(operationOrder);
 
     return operationOrder;
   }
