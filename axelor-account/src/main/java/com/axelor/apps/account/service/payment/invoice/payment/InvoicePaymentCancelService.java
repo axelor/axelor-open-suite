@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,27 +21,20 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-public interface InvoicePaymentCancelService  {
-	
-	
-	/**
-	 * Method to cancel an invoice Payment
-	 * 
-	 * Cancel the eventual Move and Reconcile
-	 * Compute the total amount paid on the linked invoice
-  	 * Change the status to cancel
-	 * 
-	 * @param invoicePayment
-	 * 			An invoice payment
-	 * 
-	 * @throws AxelorException
-	 * 		
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(InvoicePayment invoicePayment) throws AxelorException;
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException;
-	
-	
+public interface InvoicePaymentCancelService {
+
+  /**
+   * Method to cancel an invoice Payment
+   *
+   * <p>Cancel the eventual Move and Reconcile Compute the total amount paid on the linked invoice
+   * Change the status to cancel
+   *
+   * @param invoicePayment An invoice payment
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void cancel(InvoicePayment invoicePayment) throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException;
 }

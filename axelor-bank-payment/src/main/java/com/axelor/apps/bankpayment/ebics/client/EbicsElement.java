@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,31 +17,29 @@
  */
 package com.axelor.apps.bankpayment.ebics.client;
 
-import java.io.PrintStream;
-
 import com.axelor.exception.AxelorException;
-
-
+import java.io.PrintStream;
 
 public interface EbicsElement {
 
   /**
    * Returns the name of this <code>EbicsElement</code>
+   *
    * @return the name of the element
    */
   public String getName();
 
   /**
    * Builds the <code>EbicsElement</code> XML fragment
+   *
    * @throws EbicsException
    */
   public void build() throws AxelorException;
 
   /**
-   * Prints the <code>EbicsElement</code> into
-   * the given stream.
+   * Prints the <code>EbicsElement</code> into the given stream.
+   *
    * @param stream the print stream
    */
   public void print(PrintStream stream);
-
 }

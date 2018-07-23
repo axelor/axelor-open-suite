@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.base.service.tax;
 
-import java.math.BigDecimal;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -28,50 +24,52 @@ import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
+import java.math.BigDecimal;
+import org.joda.time.LocalDate;
 
 public class TaxService {
 
-	
-	/**
-	 * Fonction permettant de récupérer le taux de TVA d'une TVA
-	 * @param tax
-	 * 			Une TVA
-	 * @return
-	 * 			Le taux de TVA
-	 * @throws AxelorException
-	 */
-	public BigDecimal getTaxRate(Tax tax, LocalDate localDate) throws AxelorException  {
-		
-		return this.getTaxLine(tax, localDate).getValue();
-	}
-	
-	
-	/**
-	 * Fonction permettant de récupérer le taux de TVA d'une TVA
-	 * @param tax
-	 * 			Une TVA
-	 * @return
-	 * 			Le taux de TVA
-	 * @throws AxelorException
-	 */
-	public TaxLine getTaxLine(Tax tax, LocalDate localDate) throws AxelorException  {
-		
-		if(tax == null)  {  throw new AxelorException(I18n.get(IExceptionMessage.TAX_2), IException.CONFIGURATION_ERROR);  }
-		
-		if(tax.getActiveTaxLine() != null)  {  return tax.getActiveTaxLine();  }
-		
-		if (tax.getTaxLineList() != null && !tax.getTaxLineList().isEmpty())  {
-			
-			for (TaxLine taxLine : tax.getTaxLineList()) {
-				
-				if (DateTool.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
-					return taxLine;
-				}
-			}
-		}
-		
-		throw new AxelorException(String.format(I18n.get(IExceptionMessage.TAX_1), tax.getName()), IException.CONFIGURATION_ERROR);
-	}
-	
-	
+  /**
+   * Fonction permettant de récupérer le taux de TVA d'une TVA
+   *
+   * @param tax Une TVA
+   * @return Le taux de TVA
+   * @throws AxelorException
+   */
+  public BigDecimal getTaxRate(Tax tax, LocalDate localDate) throws AxelorException {
+
+    return this.getTaxLine(tax, localDate).getValue();
+  }
+
+  /**
+   * Fonction permettant de récupérer le taux de TVA d'une TVA
+   *
+   * @param tax Une TVA
+   * @return Le taux de TVA
+   * @throws AxelorException
+   */
+  public TaxLine getTaxLine(Tax tax, LocalDate localDate) throws AxelorException {
+
+    if (tax == null) {
+      throw new AxelorException(I18n.get(IExceptionMessage.TAX_2), IException.CONFIGURATION_ERROR);
+    }
+
+    if (tax.getActiveTaxLine() != null) {
+      return tax.getActiveTaxLine();
+    }
+
+    if (tax.getTaxLineList() != null && !tax.getTaxLineList().isEmpty()) {
+
+      for (TaxLine taxLine : tax.getTaxLineList()) {
+
+        if (DateTool.isBetween(taxLine.getStartDate(), taxLine.getEndDate(), localDate)) {
+          return taxLine;
+        }
+      }
+    }
+
+    throw new AxelorException(
+        String.format(I18n.get(IExceptionMessage.TAX_1), tax.getName()),
+        IException.CONFIGURATION_ERROR);
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,14 +21,13 @@ import com.axelor.apps.base.db.BankAddress;
 import com.axelor.apps.base.service.BankAddressService;
 import com.google.inject.Inject;
 
-public class BankAddressBaseRepository extends BankAddressRepository{
+public class BankAddressBaseRepository extends BankAddressRepository {
 
-	@Inject
-	BankAddressService bankAddressService;
+  @Inject BankAddressService bankAddressService;
 
-    @Override
-	public BankAddress save(BankAddress bankAddress) {
-    	bankAddress.setFullAddress(bankAddressService.computeFullAddress(bankAddress));
-		return super.save(bankAddress);
-	}
+  @Override
+  public BankAddress save(BankAddress bankAddress) {
+    bankAddress.setFullAddress(bankAddressService.computeFullAddress(bankAddress));
+    return super.save(bankAddress);
+  }
 }

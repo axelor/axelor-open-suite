@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,41 +17,36 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
-import java.io.File;
-
 import com.axelor.apps.base.db.IImports;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.inject.Beans;
+import java.io.File;
 
 public class FactoryImporter {
 
+  public Importer createImporter(ImportConfiguration importConfiguration) {
 
-	public Importer createImporter(ImportConfiguration importConfiguration) {
+    Importer importer;
 
-		Importer importer;
+    if (importConfiguration.getTypeSelect().equals(IImports.XML)) {
+      importer = Beans.get(ImporterXML.class);
+    } else {
+      importer = Beans.get(ImporterCSV.class);
+    }
 
-		if (importConfiguration.getTypeSelect().equals(IImports.XML)) {
-			importer = Beans.get(ImporterXML.class);
-		} else {
-			importer = Beans.get(ImporterCSV.class);
-		}
+    return importer.init(importConfiguration);
+  }
 
-		return importer.init(importConfiguration);
+  public Importer createImporter(ImportConfiguration importConfiguration, File workspace) {
 
-	}
+    Importer importer;
 
-	public Importer createImporter(ImportConfiguration importConfiguration, File workspace) {
+    if (importConfiguration.getTypeSelect().equals(IImports.XML)) {
+      importer = Beans.get(ImporterXML.class);
+    } else {
+      importer = Beans.get(ImporterCSV.class);
+    }
 
-		Importer importer;
-
-		if (importConfiguration.getTypeSelect().equals(IImports.XML)) {
-			importer = Beans.get(ImporterXML.class);
-		} else {
-			importer = Beans.get(ImporterCSV.class);
-		}
-
-		return importer.init(importConfiguration, workspace);
-
-	}
-
+    return importer.init(importConfiguration, workspace);
+  }
 }

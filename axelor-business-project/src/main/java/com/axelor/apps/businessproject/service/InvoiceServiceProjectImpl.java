@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -35,51 +32,74 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceImpl {
 
-	@Inject
-	public InvoiceServiceProjectImpl(ValidateFactory validateFactory, VentilateFactory ventilateFactory,
-			CancelFactory cancelFactory, AlarmEngineService<Invoice> alarmEngineService, InvoiceRepository invoiceRepo,
-			GeneralService generalService) {
-		super(validateFactory, ventilateFactory, cancelFactory, alarmEngineService, invoiceRepo, generalService);
-	}
-	
-	
-	
-	public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach) throws AxelorException{
-		
-		if (!AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayTimesheetOnPrinting() && !AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayExpenseOnPrinting()) { return null; }
-		
-		String language;
-		try {
-			language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
-		} catch (NullPointerException e) {
-			language = "en";
-		}
+  @Inject
+  public InvoiceServiceProjectImpl(
+      ValidateFactory validateFactory,
+      VentilateFactory ventilateFactory,
+      CancelFactory cancelFactory,
+      AlarmEngineService<Invoice> alarmEngineService,
+      InvoiceRepository invoiceRepo,
+      GeneralService generalService) {
+    super(
+        validateFactory,
+        ventilateFactory,
+        cancelFactory,
+        alarmEngineService,
+        invoiceRepo,
+        generalService);
+  }
 
-		String title = I18n.get("Invoice");
-		if(invoice.getInvoiceId() != null) {
-			title += invoice.getInvoiceId();
-		}
-		
-		Integer invoicesCopy = invoice.getInvoicesCopySelect();	
-		ReportSettings rS = ReportFactory.createReport(IReport.INVOICE_ANNEX, title + "-" + I18n.get("Annex") + "-${date}");
-		
-		if (toAttach) {
-			rS.toAttach(invoice);
-		}
-		
-		String fileLink = rS.addParam("InvoiceId", invoiceIds)
-				.addParam("Locale", language)
-				.addParam("InvoicesCopy", invoicesCopy)
-				.generate()
-				.getFileLink();
-		
-		List<String> res = Arrays.asList(title, fileLink);
-		
-		return res;
-	}
+  public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)
+      throws AxelorException {
 
-	
+    if (!AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayTimesheetOnPrinting()
+        && !AuthUtils.getUser()
+            .getActiveCompany()
+            .getAccountConfig()
+            .getDisplayExpenseOnPrinting()) {
+      return null;
+    }
+
+    String language;
+    try {
+      language =
+          invoice.getPartner().getLanguageSelect() != null
+              ? invoice.getPartner().getLanguageSelect()
+              : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null
+                  ? invoice.getCompany().getPrintingSettings().getLanguageSelect()
+                  : "en";
+    } catch (NullPointerException e) {
+      language = "en";
+    }
+
+    String title = I18n.get("Invoice");
+    if (invoice.getInvoiceId() != null) {
+      title += invoice.getInvoiceId();
+    }
+
+    Integer invoicesCopy = invoice.getInvoicesCopySelect();
+    ReportSettings rS =
+        ReportFactory.createReport(
+            IReport.INVOICE_ANNEX, title + "-" + I18n.get("Annex") + "-${date}");
+
+    if (toAttach) {
+      rS.toAttach(invoice);
+    }
+
+    String fileLink =
+        rS.addParam("InvoiceId", invoiceIds)
+            .addParam("Locale", language)
+            .addParam("InvoicesCopy", invoicesCopy)
+            .generate()
+            .getFileLink();
+
+    List<String> res = Arrays.asList(title, fileLink);
+
+    return res;
+  }
 }

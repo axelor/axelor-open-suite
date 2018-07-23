@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,39 +17,32 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
-import javax.inject.Inject;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.exception.AxelorException;
+import javax.inject.Inject;
 
 public class MajorEndCycleVentilateState extends VentilateState {
 
-	@Inject
-	private PaymentScheduleService paymentScheduleService;
+  @Inject private PaymentScheduleService paymentScheduleService;
 
-	@Inject
-	private ReimbursementExportService reimbursementExportService;
+  @Inject private ReimbursementExportService reimbursementExportService;
 
-	@Override
-	protected void setMove( ) throws AxelorException {
+  @Override
+  protected void setMove() throws AxelorException {
 
-		if( invoice.getPaymentSchedule() != null && invoice.getEndOfCycleOk())  {
+    if (invoice.getPaymentSchedule() != null && invoice.getEndOfCycleOk()) {
 
-			paymentScheduleService.closePaymentSchedule(invoice.getPaymentSchedule());
+      paymentScheduleService.closePaymentSchedule(invoice.getPaymentSchedule());
+    }
 
-		}
+    super.setMove();
 
-		super.setMove( );
+    Move move = invoice.getMove();
+    if (move != null && invoice.getPaymentSchedule() != null && invoice.getEndOfCycleOk()) {
 
-		Move move = invoice.getMove();
-		if (move != null && invoice.getPaymentSchedule() != null && invoice.getEndOfCycleOk()) {
-
-			reimbursementExportService.createReimbursementInvoice(invoice);
-
-		}
-
-	}
-
+      reimbursementExportService.createReimbursementInvoice(invoice);
+    }
+  }
 }

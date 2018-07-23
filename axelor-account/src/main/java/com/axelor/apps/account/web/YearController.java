@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,26 +27,26 @@ import com.google.inject.Inject;
 
 public class YearController {
 
-	@Inject
-	private YearServiceAccountImpl ys;
-	
-	public void close(ActionRequest request, ActionResponse response) {
-		
-		Year year = request.getContext().asType(Year.class);
-		
-		try  {
-			ys.closeYear(year);
-			response.setReload(true);			
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }	
-	}
-	
-	public void generatePeriods(ActionRequest request, ActionResponse response) {
+  @Inject private YearServiceAccountImpl ys;
+
+  public void close(ActionRequest request, ActionResponse response) {
+
+    Year year = request.getContext().asType(Year.class);
+
+    try {
+      ys.closeYear(year);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generatePeriods(ActionRequest request, ActionResponse response) {
     try {
       Year year = request.getContext().asType(Year.class);
       response.setValue("periodList", ys.generatePeriods(year));
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
-	}
+  }
 }

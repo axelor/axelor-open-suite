@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour AddressLineType complex type.
- * 
+ * Classe Java pour AddressLineType complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType name="AddressLineType">
  *   &lt;complexContent>
@@ -44,157 +43,128 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AddressLineType", propOrder = {
-    "label",
-    "line"
-})
+@XmlType(
+  name = "AddressLineType",
+  propOrder = {"label", "line"}
+)
 public class AddressLineType {
 
-    @XmlElement(name = "Label")
-    protected String label;
-    @XmlElement(name = "Line")
-    protected String line;
-    @XmlAttribute(name = "LineContent")
-    protected LineContentType lineContent;
-    @XmlAttribute(name = "Overflow")
-    protected Boolean overflow;
-    @XmlAttribute(name = "Truncated")
-    protected Boolean truncated;
+  @XmlElement(name = "Label")
+  protected String label;
 
-    /**
-     * Obtient la valeur de la propriété label.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLabel() {
-        return label;
+  @XmlElement(name = "Line")
+  protected String line;
+
+  @XmlAttribute(name = "LineContent")
+  protected LineContentType lineContent;
+
+  @XmlAttribute(name = "Overflow")
+  protected Boolean overflow;
+
+  @XmlAttribute(name = "Truncated")
+  protected Boolean truncated;
+
+  /**
+   * Obtient la valeur de la propriété label.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getLabel() {
+    return label;
+  }
+
+  /**
+   * Définit la valeur de la propriété label.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setLabel(String value) {
+    this.label = value;
+  }
+
+  /**
+   * Obtient la valeur de la propriété line.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getLine() {
+    return line;
+  }
+
+  /**
+   * Définit la valeur de la propriété line.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setLine(String value) {
+    this.line = value;
+  }
+
+  /**
+   * Obtient la valeur de la propriété lineContent.
+   *
+   * @return possible object is {@link LineContentType }
+   */
+  public LineContentType getLineContent() {
+    if (lineContent == null) {
+      return LineContentType.ADDRESS;
+    } else {
+      return lineContent;
     }
+  }
 
-    /**
-     * Définit la valeur de la propriété label.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLabel(String value) {
-        this.label = value;
+  /**
+   * Définit la valeur de la propriété lineContent.
+   *
+   * @param value allowed object is {@link LineContentType }
+   */
+  public void setLineContent(LineContentType value) {
+    this.lineContent = value;
+  }
+
+  /**
+   * Obtient la valeur de la propriété overflow.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public boolean isOverflow() {
+    if (overflow == null) {
+      return false;
+    } else {
+      return overflow;
     }
+  }
 
-    /**
-     * Obtient la valeur de la propriété line.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLine() {
-        return line;
+  /**
+   * Définit la valeur de la propriété overflow.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setOverflow(Boolean value) {
+    this.overflow = value;
+  }
+
+  /**
+   * Obtient la valeur de la propriété truncated.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public boolean isTruncated() {
+    if (truncated == null) {
+      return false;
+    } else {
+      return truncated;
     }
+  }
 
-    /**
-     * Définit la valeur de la propriété line.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLine(String value) {
-        this.line = value;
-    }
-
-    /**
-     * Obtient la valeur de la propriété lineContent.
-     * 
-     * @return
-     *     possible object is
-     *     {@link LineContentType }
-     *     
-     */
-    public LineContentType getLineContent() {
-        if (lineContent == null) {
-            return LineContentType.ADDRESS;
-        } else {
-            return lineContent;
-        }
-    }
-
-    /**
-     * Définit la valeur de la propriété lineContent.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link LineContentType }
-     *     
-     */
-    public void setLineContent(LineContentType value) {
-        this.lineContent = value;
-    }
-
-    /**
-     * Obtient la valeur de la propriété overflow.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public boolean isOverflow() {
-        if (overflow == null) {
-            return false;
-        } else {
-            return overflow;
-        }
-    }
-
-    /**
-     * Définit la valeur de la propriété overflow.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setOverflow(Boolean value) {
-        this.overflow = value;
-    }
-
-    /**
-     * Obtient la valeur de la propriété truncated.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public boolean isTruncated() {
-        if (truncated == null) {
-            return false;
-        } else {
-            return truncated;
-        }
-    }
-
-    /**
-     * Définit la valeur de la propriété truncated.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setTruncated(Boolean value) {
-        this.truncated = value;
-    }
-
+  /**
+   * Définit la valeur de la propriété truncated.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setTruncated(Boolean value) {
+    this.truncated = value;
+  }
 }

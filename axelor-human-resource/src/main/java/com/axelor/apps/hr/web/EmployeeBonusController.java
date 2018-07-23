@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -34,46 +34,47 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class EmployeeBonusController {
-	
-	
-	@Inject
-	EmployeeBonusMgtRepository employeeBonusMgtRepo;
-	
-	@Inject
-	EmployeeBonusService employeeBonusService;
-	
 
-	public void compute(ActionRequest request, ActionResponse response) throws AxelorException{
-		EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
-		employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
-		employeeBonusService.compute(employeeBonusMgt);
-		response.setReload(true);
-		try {
-			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getPayPeriod());
-			Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getLeavePeriod());
-		} catch (AxelorException e) {
-			response.setFlash(e.getMessage());
-		}
-	}
-	
-	public void print(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		EmployeeBonusMgt bonus = employeeBonusMgtRepo.find( request.getContext().asType( EmployeeBonusMgt.class ).getId());
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		
-		String name = I18n.get("Employee bonus management") + " :  " + bonus.getEmployeeBonusType().getLabel();
-		
-		String fileLink = ReportFactory.createReport(IReport.EMPLOYEE_BONUS_MANAGEMENT, name)
-				.addParam("EmployeeBonusMgtId", bonus.getId())
-				.addParam("Locale", language)
-				.toAttach(bonus)
-				.generate()
-				.getFileLink();
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
-	}
+  @Inject EmployeeBonusMgtRepository employeeBonusMgtRepo;
 
+  @Inject EmployeeBonusService employeeBonusService;
+
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
+    EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
+    employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
+    employeeBonusService.compute(employeeBonusMgt);
+    response.setReload(true);
+    try {
+      Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getPayPeriod());
+      Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getLeavePeriod());
+    } catch (AxelorException e) {
+      response.setFlash(e.getMessage());
+    }
+  }
+
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    EmployeeBonusMgt bonus =
+        employeeBonusMgtRepo.find(request.getContext().asType(EmployeeBonusMgt.class).getId());
+    User user = AuthUtils.getUser();
+    String language =
+        user != null
+            ? (user.getLanguage() == null || user.getLanguage().equals(""))
+                ? "en"
+                : user.getLanguage()
+            : "en";
+
+    String name =
+        I18n.get("Employee bonus management") + " :  " + bonus.getEmployeeBonusType().getLabel();
+
+    String fileLink =
+        ReportFactory.createReport(IReport.EMPLOYEE_BONUS_MANAGEMENT, name)
+            .addParam("EmployeeBonusMgtId", bonus.getId())
+            .addParam("Locale", language)
+            .toAttach(bonus)
+            .generate()
+            .getFileLink();
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 }

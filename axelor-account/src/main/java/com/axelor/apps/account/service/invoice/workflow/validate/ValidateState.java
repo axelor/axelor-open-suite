@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -31,29 +31,29 @@ import com.axelor.i18n.I18n;
 
 public class ValidateState extends WorkflowInvoice {
 
-	protected User user;
+  protected User user;
 
-	public ValidateState() {
-		super();
-		this.user = AuthUtils.getUser();
+  public ValidateState() {
+    super();
+    this.user = AuthUtils.getUser();
+  }
 
-	}
+  public void init(Invoice invoice) {
+    this.invoice = invoice;
+  }
 
-	public void init(Invoice invoice){
-		this.invoice = invoice;
-	}
+  @Override
+  public void process() throws AxelorException {
 
-	@Override
-	public void process( ) throws AxelorException {
+    if ((InvoiceToolService.isOutPayment(invoice)
+            && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
+        || (!InvoiceToolService.isOutPayment(invoice)
+            && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.INVOICE_VALIDATE_1), IException.INCONSISTENCY);
+    }
 
-		if ((InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
-		 || (!InvoiceToolService.isOutPayment(invoice) && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
-			throw new AxelorException(I18n.get(IExceptionMessage.INVOICE_VALIDATE_1), IException.INCONSISTENCY);
-		}
-
-		invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
-		invoice.setValidatedByUser( user );
-
-	}
-
+    invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
+    invoice.setValidatedByUser(user);
+  }
 }

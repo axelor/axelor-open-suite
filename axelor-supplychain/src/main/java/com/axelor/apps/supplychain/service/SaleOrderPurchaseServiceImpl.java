@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,16 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -44,113 +34,127 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService  {
+public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@Inject
-	private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  @Inject private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 
-	@Inject
-	protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
+  @Inject protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
 
-	@Inject
-	protected GeneralService generalService;
+  @Inject protected GeneralService generalService;
 
-	protected LocalDate today;
+  protected LocalDate today;
 
-	protected User user;
+  protected User user;
 
-	@Inject
-	public SaleOrderPurchaseServiceImpl() {
+  @Inject
+  public SaleOrderPurchaseServiceImpl() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
-		this.user = AuthUtils.getUser();
-	}
+    this.today = Beans.get(GeneralService.class).getTodayDate();
+    this.user = AuthUtils.getUser();
+  }
 
+  @Override
+  public void createPurchaseOrders(SaleOrder saleOrder) throws AxelorException {
 
-	@Override
-	public void createPurchaseOrders(SaleOrder saleOrder) throws AxelorException  {
+    Map<Partner, List<SaleOrderLine>> saleOrderLinesBySupplierPartner =
+        this.splitBySupplierPartner(saleOrder.getSaleOrderLineList());
 
-		Map<Partner,List<SaleOrderLine>> saleOrderLinesBySupplierPartner = this.splitBySupplierPartner(saleOrder.getSaleOrderLineList());
+    for (Partner supplierPartner : saleOrderLinesBySupplierPartner.keySet()) {
 
-		for(Partner supplierPartner : saleOrderLinesBySupplierPartner.keySet())  {
+      this.createPurchaseOrder(
+          supplierPartner, saleOrderLinesBySupplierPartner.get(supplierPartner), saleOrder);
+    }
+  }
 
-			this.createPurchaseOrder(supplierPartner, saleOrderLinesBySupplierPartner.get(supplierPartner), saleOrder);
+  @Override
+  public Map<Partner, List<SaleOrderLine>> splitBySupplierPartner(
+      List<SaleOrderLine> saleOrderLineList) throws AxelorException {
 
-		}
+    Map<Partner, List<SaleOrderLine>> saleOrderLinesBySupplierPartner =
+        new HashMap<Partner, List<SaleOrderLine>>();
 
-	}
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
+      if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE) {
 
-	@Override
-	public Map<Partner,List<SaleOrderLine>> splitBySupplierPartner(List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
+        Partner supplierPartner = saleOrderLine.getSupplierPartner();
 
-		Map<Partner,List<SaleOrderLine>> saleOrderLinesBySupplierPartner = new HashMap<Partner,List<SaleOrderLine>>();
+        if (supplierPartner == null) {
 
-		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
+          throw new AxelorException(
+              String.format(
+                  I18n.get(IExceptionMessage.SO_PURCHASE_1), saleOrderLine.getProductName()),
+              IException.CONFIGURATION_ERROR);
+        }
 
-			if(saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE)  {
+        if (!saleOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
+          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SaleOrderLine>());
+        }
 
-				Partner supplierPartner = saleOrderLine.getSupplierPartner();
+        saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);
+      }
+    }
 
-				if(supplierPartner == null)  {
+    return saleOrderLinesBySupplierPartner;
+  }
 
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_PURCHASE_1), saleOrderLine.getProductName()), IException.CONFIGURATION_ERROR);
-				}
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public PurchaseOrder createPurchaseOrder(
+      Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder)
+      throws AxelorException {
 
-				if(!saleOrderLinesBySupplierPartner.containsKey(supplierPartner))  {
-					saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SaleOrderLine>());
-				}
+    LOG.debug(
+        "Création d'une commande fournisseur pour le devis client : {}",
+        new Object[] {saleOrder.getSaleOrderSeq()});
 
-				saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);
-			}
+    PurchaseOrder purchaseOrder =
+        purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+            user,
+            saleOrder.getCompany(),
+            null,
+            supplierPartner.getCurrency(),
+            null,
+            saleOrder.getSaleOrderSeq(),
+            saleOrder.getExternalReference(),
+            purchaseOrderServiceSupplychainImpl.getLocation(saleOrder.getCompany()),
+            today,
+            supplierPartner.getPurchasePriceList(),
+            supplierPartner);
 
-		}
+    Integer atiChoice =
+        Beans.get(PurchaseConfigRepository.class)
+            .all()
+            .filter("self.company = ?1", saleOrder.getCompany())
+            .fetchOne()
+            .getPurchaseOrderInAtiSelect();
+    if (atiChoice == 2 || atiChoice == 4) {
+      purchaseOrder.setInAti(true);
+    } else {
+      purchaseOrder.setInAti(false);
+    }
 
-		return saleOrderLinesBySupplierPartner;
-	}
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      purchaseOrder.addPurchaseOrderLineListItem(
+          purchaseOrderLineServiceSupplychainImpl.createPurchaseOrderLine(
+              purchaseOrder, saleOrderLine));
+    }
 
+    purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public PurchaseOrder createPurchaseOrder(Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder) throws AxelorException  {
+    Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
 
-		LOG.debug("Création d'une commande fournisseur pour le devis client : {}",
-				new Object[] { saleOrder.getSaleOrderSeq() });
-
-		PurchaseOrder purchaseOrder = purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-				user,
-				saleOrder.getCompany(),
-				null,
-				supplierPartner.getCurrency(),
-				null,
-				saleOrder.getSaleOrderSeq(),
-				saleOrder.getExternalReference(),
-				purchaseOrderServiceSupplychainImpl.getLocation(saleOrder.getCompany()),
-				today,
-				supplierPartner.getPurchasePriceList(),
-				supplierPartner);
-
-		Integer atiChoice = Beans.get(PurchaseConfigRepository.class).all().filter("self.company = ?1", saleOrder.getCompany()).fetchOne().getPurchaseOrderInAtiSelect();
-		if(atiChoice == 2 || atiChoice == 4){
-			purchaseOrder.setInAti(true);
-		}
-		else{
-			purchaseOrder.setInAti(false);
-		}
-
-		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
-			purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLineServiceSupplychainImpl.createPurchaseOrderLine(purchaseOrder, saleOrderLine));
-		}
-
-		purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
-
-		Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
-
-		return purchaseOrder;
-	}
+    return purchaseOrder;
+  }
 }
-
-

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,11 +21,10 @@ import com.axelor.apps.base.db.BaseBatch;
 
 public class BaseBatchBaseRepository extends BaseBatchRepository {
 
-    @Override
-    public BaseBatch copy(BaseBatch entity, boolean deep) {
-        BaseBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public BaseBatch copy(BaseBatch entity, boolean deep) {
+    BaseBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

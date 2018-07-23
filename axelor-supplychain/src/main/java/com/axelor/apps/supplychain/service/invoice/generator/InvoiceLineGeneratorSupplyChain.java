@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,10 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service.invoice.generator;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
@@ -43,187 +39,254 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Subscription;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
 
-/**
- * Classe de création de ligne de facture abstraite.
- *
- */
+/** Classe de création de ligne de facture abstraite. */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
 
-	protected SaleOrderLine saleOrderLine;
-	protected PurchaseOrderLine purchaseOrderLine;
-	protected StockMoveLine stockMoveLine;
-	protected Subscription subscription;
+  protected SaleOrderLine saleOrderLine;
+  protected PurchaseOrderLine purchaseOrderLine;
+  protected StockMoveLine stockMoveLine;
+  protected Subscription subscription;
 
-	public InvoiceLineGeneratorSupplyChain(Invoice invoice, Product product, String productName,
-										   BigDecimal price, BigDecimal priceDiscounted, String description,
-										   BigDecimal qty, Unit unit, TaxLine taxLine,
-										   int sequence, BigDecimal discountAmount, int discountTypeSelect,
-										   BigDecimal exTaxTotal, BigDecimal inTaxTotal, boolean isTaxInvoice,
-										   SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) {
-		super(invoice, product, productName, price, priceDiscounted, description, qty, unit, taxLine, sequence, discountAmount, discountTypeSelect, exTaxTotal, inTaxTotal, isTaxInvoice);
-		this.saleOrderLine = saleOrderLine;
-		this.purchaseOrderLine = purchaseOrderLine;
-		this.stockMoveLine = stockMoveLine;
-	}
+  public InvoiceLineGeneratorSupplyChain(
+      Invoice invoice,
+      Product product,
+      String productName,
+      BigDecimal price,
+      BigDecimal priceDiscounted,
+      String description,
+      BigDecimal qty,
+      Unit unit,
+      TaxLine taxLine,
+      int sequence,
+      BigDecimal discountAmount,
+      int discountTypeSelect,
+      BigDecimal exTaxTotal,
+      BigDecimal inTaxTotal,
+      boolean isTaxInvoice,
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine,
+      StockMoveLine stockMoveLine) {
+    super(
+        invoice,
+        product,
+        productName,
+        price,
+        priceDiscounted,
+        description,
+        qty,
+        unit,
+        taxLine,
+        sequence,
+        discountAmount,
+        discountTypeSelect,
+        exTaxTotal,
+        inTaxTotal,
+        isTaxInvoice);
+    this.saleOrderLine = saleOrderLine;
+    this.purchaseOrderLine = purchaseOrderLine;
+    this.stockMoveLine = stockMoveLine;
+  }
 
-	protected InvoiceLineGeneratorSupplyChain(Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-											  Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, StockMoveLine stockMoveLine) throws AxelorException {
+  protected InvoiceLineGeneratorSupplyChain(
+      Invoice invoice,
+      Product product,
+      String productName,
+      String description,
+      BigDecimal qty,
+      Unit unit,
+      int sequence,
+      boolean isTaxInvoice,
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine,
+      StockMoveLine stockMoveLine)
+      throws AxelorException {
 
-		super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
+    super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
 
-		this.saleOrderLine = saleOrderLine;
-		this.purchaseOrderLine = purchaseOrderLine;
-		this.stockMoveLine = stockMoveLine;
-		
-		if(saleOrderLine != null)  {
-			this.discountAmount = saleOrderLine.getDiscountAmount();
-			this.price = saleOrderLine.getPrice();
-			this.priceDiscounted = saleOrderLine.getPriceDiscounted();
-			this.taxLine = saleOrderLine.getTaxLine();
-			this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
-			this.isTitleLine = saleOrderLine.getIsTitleLine();
-		} else if (purchaseOrderLine != null){
-			this.isTitleLine = purchaseOrderLine.getIsTitleLine();
-			this.purchaseOrderLine = purchaseOrderLine;
-			this.discountAmount = purchaseOrderLine.getDiscountAmount();
-			this.price = purchaseOrderLine.getPrice();
-			this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
-			this.taxLine = purchaseOrderLine.getTaxLine();
-			this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
-		}
-		else if(stockMoveLine != null)  {
-			this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
-			Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
-			
-			if(saleOrPurchaseUnit != null && this.unit != null && !this.unit.equals(saleOrPurchaseUnit)){
-				this.qty = Beans.get(UnitConversionService.class).convertWithProduct(this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
-				this.priceDiscounted = Beans.get(UnitConversionService.class).convertWithProduct(this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
-				this.unit = saleOrPurchaseUnit;
-			}
+    this.saleOrderLine = saleOrderLine;
+    this.purchaseOrderLine = purchaseOrderLine;
+    this.stockMoveLine = stockMoveLine;
 
-		}
-		
+    if (saleOrderLine != null) {
+      this.discountAmount = saleOrderLine.getDiscountAmount();
+      this.price = saleOrderLine.getPrice();
+      this.priceDiscounted = saleOrderLine.getPriceDiscounted();
+      this.taxLine = saleOrderLine.getTaxLine();
+      this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
+      this.isTitleLine = saleOrderLine.getIsTitleLine();
+    } else if (purchaseOrderLine != null) {
+      this.isTitleLine = purchaseOrderLine.getIsTitleLine();
+      this.purchaseOrderLine = purchaseOrderLine;
+      this.discountAmount = purchaseOrderLine.getDiscountAmount();
+      this.price = purchaseOrderLine.getPrice();
+      this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
+      this.taxLine = purchaseOrderLine.getTaxLine();
+      this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
+    } else if (stockMoveLine != null) {
+      this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
+      Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
+
+      if (saleOrPurchaseUnit != null
+          && this.unit != null
+          && !this.unit.equals(saleOrPurchaseUnit)) {
+        this.qty =
+            Beans.get(UnitConversionService.class)
+                .convertWithProduct(this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
+        this.priceDiscounted =
+            Beans.get(UnitConversionService.class)
+                .convertWithProduct(this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
+        this.unit = saleOrPurchaseUnit;
+      }
     }
-	
+  }
 
-	protected InvoiceLineGeneratorSupplyChain( Invoice invoice, Product product, String productName, String description, BigDecimal qty,
-			Unit unit, int sequence, boolean isTaxInvoice, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine, 
-			StockMoveLine stockMoveLine, Subscription subscription) throws AxelorException {
+  protected InvoiceLineGeneratorSupplyChain(
+      Invoice invoice,
+      Product product,
+      String productName,
+      String description,
+      BigDecimal qty,
+      Unit unit,
+      int sequence,
+      boolean isTaxInvoice,
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine,
+      StockMoveLine stockMoveLine,
+      Subscription subscription)
+      throws AxelorException {
 
-		this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, saleOrderLine, purchaseOrderLine, stockMoveLine);
+    this(
+        invoice,
+        product,
+        productName,
+        description,
+        qty,
+        unit,
+        sequence,
+        isTaxInvoice,
+        saleOrderLine,
+        purchaseOrderLine,
+        stockMoveLine);
 
-		this.subscription = subscription;
+    this.subscription = subscription;
+  }
+
+  /**
+   * @return
+   * @throws AxelorException
+   */
+  @Override
+  protected InvoiceLine createInvoiceLine() throws AxelorException {
+
+    InvoiceLine invoiceLine = super.createInvoiceLine();
+
+    // Update for subscription SaleOrderLine
+    if (saleOrderLine != null
+        && product != null
+        && ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())
+        && saleOrderLine.getSubscriptionList() != null
+        && !saleOrderLine.getSubscriptionList().isEmpty()) {
+      BigDecimal subscriptionListSize = new BigDecimal(saleOrderLine.getSubscriptionList().size());
+      this.exTaxTotal = this.exTaxTotal.divide(subscriptionListSize, 2, RoundingMode.HALF_EVEN);
+      this.inTaxTotal = this.inTaxTotal.divide(subscriptionListSize, 2, RoundingMode.HALF_EVEN);
     }
 
+    this.assignOriginElements(invoiceLine);
 
-	/**
-	 * @return
-	 * @throws AxelorException
-	 */
-	@Override
-	protected InvoiceLine createInvoiceLine() throws AxelorException  {
+    if (saleOrderLine != null) {
 
-		InvoiceLine invoiceLine = super.createInvoiceLine();
-		
-		// Update for subscription SaleOrderLine
-		if (saleOrderLine != null && product != null && ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())
-				&& saleOrderLine.getSubscriptionList() != null && !saleOrderLine.getSubscriptionList().isEmpty())  {
-			BigDecimal subscriptionListSize = new BigDecimal(saleOrderLine.getSubscriptionList().size());
-			this.exTaxTotal = this.exTaxTotal.divide(subscriptionListSize, 2, RoundingMode.HALF_EVEN);
-			this.inTaxTotal = this.inTaxTotal.divide(subscriptionListSize, 2, RoundingMode.HALF_EVEN);
-		}
+      this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
 
-		this.assignOriginElements(invoiceLine);
-		
-		if (saleOrderLine != null)  {
-			
-			this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
+    } else if (purchaseOrderLine != null) {
 
-			
-		} else if (purchaseOrderLine != null)  {
-			
-			this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
-					
-			this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
-			
-			invoiceLine.setBudget(purchaseOrderLine.getBudget());
-		}
-		
-		else if(stockMoveLine != null)  {
-			
-			this.price = Beans.get(InvoiceLineService.class).getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
-			this.price = Beans.get(UnitConversionService.class).convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
+      this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
 
-		}
-		
-		return invoiceLine;
+      this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
 
-	}
-	
-	
-	public void assignOriginElements(InvoiceLine invoiceLine) throws AxelorException  {
-		
-		if (!Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine())  {  return;  }
-		
-		StockMove stockMove = null;
-		if(stockMoveLine != null)  {  stockMove = stockMoveLine.getStockMove();  }
-		
-		if(stockMove != null)  { 
-			if(InvoiceToolService.isPurchase(invoice))  {
-				invoiceLine.setIncomingStockMove(stockMove);
-			}
-			else  {
-				invoiceLine.setOutgoingStockMove(stockMove);
-			}
-		}
-		
-		if(saleOrderLine != null)  {
-			invoiceLine.setSaleOrderLine(saleOrderLine);
-		}
-		if(purchaseOrderLine != null)  {
-			invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
-		}
-		
-	}
-	
-	
-	public void copyAnalyticMoveLines(List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine)  {
-		
-		if(originalAnalyticMoveLineList == null)  {  return;  }
- 
-		for (AnalyticMoveLine originalAnalyticMoveLine : originalAnalyticMoveLineList) {
-			
-			AnalyticMoveLine analyticMoveLine = Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
+      invoiceLine.setBudget(purchaseOrderLine.getBudget());
+    } else if (stockMoveLine != null) {
 
-			analyticMoveLine.setTypeSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+      this.price =
+          Beans.get(InvoiceLineService.class)
+              .getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+      this.price =
+          Beans.get(UnitConversionService.class)
+              .convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
+    }
 
-			invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
-		}
-				
-	}
-	
-	public void copyBudgetDistributionList(List<BudgetDistribution> originalBudgetDistributionList, InvoiceLine invoiceLine)  {
-		
-		if(originalBudgetDistributionList == null)  {  return ;  }
- 
-		for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
-			BudgetDistribution budgetDistribution = new BudgetDistribution();
-			budgetDistribution.setBudget(budgetDistributionIt.getBudget());
-			budgetDistribution.setAmount(budgetDistributionIt.getAmount());
-			invoiceLine.addBudgetDistributionListItem(budgetDistribution);
-		}
-	}
-	
-	public Unit getSaleOrPurchaseUnit() throws AxelorException  {
-		
-		if(!InvoiceToolService.isPurchase(invoice)){
-			return product.getSalesUnit();
-		}
-		else{
-			return product.getPurchasesUnit();
-		}
-	}
+    return invoiceLine;
+  }
 
+  public void assignOriginElements(InvoiceLine invoiceLine) throws AxelorException {
+
+    if (!Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine()) {
+      return;
+    }
+
+    StockMove stockMove = null;
+    if (stockMoveLine != null) {
+      stockMove = stockMoveLine.getStockMove();
+    }
+
+    if (stockMove != null) {
+      if (InvoiceToolService.isPurchase(invoice)) {
+        invoiceLine.setIncomingStockMove(stockMove);
+      } else {
+        invoiceLine.setOutgoingStockMove(stockMove);
+      }
+    }
+
+    if (saleOrderLine != null) {
+      invoiceLine.setSaleOrderLine(saleOrderLine);
+    }
+    if (purchaseOrderLine != null) {
+      invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
+    }
+  }
+
+  public void copyAnalyticMoveLines(
+      List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine) {
+
+    if (originalAnalyticMoveLineList == null) {
+      return;
+    }
+
+    for (AnalyticMoveLine originalAnalyticMoveLine : originalAnalyticMoveLineList) {
+
+      AnalyticMoveLine analyticMoveLine =
+          Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
+
+      analyticMoveLine.setTypeSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+
+      invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
+    }
+  }
+
+  public void copyBudgetDistributionList(
+      List<BudgetDistribution> originalBudgetDistributionList, InvoiceLine invoiceLine) {
+
+    if (originalBudgetDistributionList == null) {
+      return;
+    }
+
+    for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
+      BudgetDistribution budgetDistribution = new BudgetDistribution();
+      budgetDistribution.setBudget(budgetDistributionIt.getBudget());
+      budgetDistribution.setAmount(budgetDistributionIt.getAmount());
+      invoiceLine.addBudgetDistributionListItem(budgetDistribution);
+    }
+  }
+
+  public Unit getSaleOrPurchaseUnit() throws AxelorException {
+
+    if (!InvoiceToolService.isPurchase(invoice)) {
+      return product.getSalesUnit();
+    } else {
+      return product.getPurchasesUnit();
+    }
+  }
 }

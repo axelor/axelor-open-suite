@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,17 +25,15 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class PriceListController {
-	
-	@Inject 
-	private PriceListService priceListService;
-	
-	@Inject
-	protected PriceListRepository priceListRepo;
-	
-	public void historizePriceList(ActionRequest request, ActionResponse response){
-		PriceList priceList = request.getContext().asType(PriceList.class);
-		priceList = priceListRepo.find(priceList.getId());
-		priceList = priceListService.historizePriceList(priceList);
-		response.setReload(true);
-	}
+
+  @Inject private PriceListService priceListService;
+
+  @Inject protected PriceListRepository priceListRepo;
+
+  public void historizePriceList(ActionRequest request, ActionResponse response) {
+    PriceList priceList = request.getContext().asType(PriceList.class);
+    priceList = priceListRepo.find(priceList.getId());
+    priceList = priceListService.historizePriceList(priceList);
+    response.setReload(true);
+  }
 }

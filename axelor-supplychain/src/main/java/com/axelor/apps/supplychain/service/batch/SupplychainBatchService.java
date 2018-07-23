@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -30,33 +30,36 @@ import com.google.inject.Inject;
 
 public class SupplychainBatchService extends AbstractBatchService {
 
-	@Inject
-	protected BatchSubscription batchSubscription;
+  @Inject protected BatchSubscription batchSubscription;
 
-	@Override
-	protected Class<? extends Model> getModelClass() {
-		return SupplychainBatch.class;
-	}
+  @Override
+  protected Class<? extends Model> getModelClass() {
+    return SupplychainBatch.class;
+  }
 
-	@Override
-	public Batch run(Model batchModel) throws AxelorException {
+  @Override
+  public Batch run(Model batchModel) throws AxelorException {
 
-		Batch batch;
-		SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
+    Batch batch;
+    SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
 
-		switch (supplychainBatch.getActionSelect()) {
-		case SupplychainBatchRepository.ACTION_BILL_SUB:
-			batch = billSubscriptions(supplychainBatch);
-			break;
-		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), supplychainBatch.getActionSelect(), supplychainBatch.getCode()), IException.INCONSISTENCY);
-		}
+    switch (supplychainBatch.getActionSelect()) {
+      case SupplychainBatchRepository.ACTION_BILL_SUB:
+        batch = billSubscriptions(supplychainBatch);
+        break;
+      default:
+        throw new AxelorException(
+            String.format(
+                I18n.get(IExceptionMessage.BASE_BATCH_1),
+                supplychainBatch.getActionSelect(),
+                supplychainBatch.getCode()),
+            IException.INCONSISTENCY);
+    }
 
-		return batch;
-	}
+    return batch;
+  }
 
-	public Batch billSubscriptions(SupplychainBatch supplychainBatch){
-		return batchSubscription.run(supplychainBatch);
-	}
-
+  public Batch billSubscriptions(SupplychainBatch supplychainBatch) {
+    return batchSubscription.run(supplychainBatch);
+  }
 }

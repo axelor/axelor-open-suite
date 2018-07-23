@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.tool.db;
 
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
+import com.axelor.db.Query;
+import com.google.common.base.Objects;
+import com.google.common.base.Objects.ToStringHelper;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,72 +30,66 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.axelor.db.JPA;
-import com.axelor.db.Model;
-import com.axelor.db.Query;
-import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
-
 @Entity
 @Table(name = "CONTACT_COUNTRY")
 public class Country extends Model {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CONTACT_COUNTRY_SEQ")
-	@SequenceGenerator(name = "CONTACT_COUNTRY_SEQ", sequenceName = "CONTACT_COUNTRY_SEQ", allocationSize = 1)
-	private Long id;
-	
-	@NotNull
-	private String code;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CONTACT_COUNTRY_SEQ")
+  @SequenceGenerator(
+    name = "CONTACT_COUNTRY_SEQ",
+    sequenceName = "CONTACT_COUNTRY_SEQ",
+    allocationSize = 1
+  )
+  private Long id;
 
-	@NotNull
-	private String name;
+  @NotNull private String code;
 
-	public Country() {
-	}
+  @NotNull private String name;
 
-	public Country(String name, String code) {
-		this.name = name;
-		this.code = code;
-	}
-	
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
+  public Country() {}
 
-	public String getName() {
-		return name;
-	}
+  public Country(String name, String code) {
+    this.name = name;
+    this.code = code;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public Long getId() {
+    return id;
+  }
 
-	public String getCode() {
-		return code;
-	}
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringHelper tsh = Objects.toStringHelper(getClass());
-		
-		tsh.add("id", getId());
-		tsh.add("code", code);
-		tsh.add("name", name);
-		
-		return tsh.omitNullValues().toString();
-	}
-	
-	public static Query<Country> all() {
-		return JPA.all(Country.class);
-	}
-	
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  @Override
+  public String toString() {
+    ToStringHelper tsh = Objects.toStringHelper(getClass());
+
+    tsh.add("id", getId());
+    tsh.add("code", code);
+    tsh.add("name", name);
+
+    return tsh.omitNullValues().toString();
+  }
+
+  public static Query<Country> all() {
+    return JPA.all(Country.class);
+  }
 }

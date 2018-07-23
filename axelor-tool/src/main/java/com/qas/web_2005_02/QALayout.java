@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -22,12 +22,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour QALayout complex type.
- * 
+ * Classe Java pour QALayout complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType name="QALayout">
  *   &lt;complexContent>
@@ -40,67 +39,53 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "QALayout", propOrder = {
-    "name",
-    "comment"
-})
+@XmlType(
+  name = "QALayout",
+  propOrder = {"name", "comment"}
+)
 public class QALayout {
 
-    @XmlElement(name = "Name", required = true)
-    protected String name;
-    @XmlElement(name = "Comment", required = true)
-    protected String comment;
+  @XmlElement(name = "Name", required = true)
+  protected String name;
 
-    /**
-     * Obtient la valeur de la propriété name.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+  @XmlElement(name = "Comment", required = true)
+  protected String comment;
 
-    /**
-     * Définit la valeur de la propriété name.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+  /**
+   * Obtient la valeur de la propriété name.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * Obtient la valeur de la propriété comment.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getComment() {
-        return comment;
-    }
+  /**
+   * Définit la valeur de la propriété name.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setName(String value) {
+    this.name = value;
+  }
 
-    /**
-     * Définit la valeur de la propriété comment.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setComment(String value) {
-        this.comment = value;
-    }
+  /**
+   * Obtient la valeur de la propriété comment.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getComment() {
+    return comment;
+  }
 
+  /**
+   * Définit la valeur de la propriété comment.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setComment(String value) {
+    this.comment = value;
+  }
 }

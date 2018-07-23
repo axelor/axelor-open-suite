@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,24 +17,25 @@
  */
 package com.axelor.apps.hr.service.employee;
 
-import java.math.BigDecimal;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import org.joda.time.LocalDate;
 
-public interface EmployeeService extends UserService{
+public interface EmployeeService extends UserService {
 
-	public BigDecimal getUserDuration(BigDecimal hourDuration, User user, boolean toHours) throws AxelorException;
-	
-	public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException;
-	public int getAge(Employee employee, LocalDate refDate) throws AxelorException;
-	
-	public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
-	
-	public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate) throws AxelorException;
+  public BigDecimal getUserDuration(BigDecimal hourDuration, User user, boolean toHours)
+      throws AxelorException;
 
+  public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException;
+
+  public int getAge(Employee employee, LocalDate refDate) throws AxelorException;
+
+  public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
+
+  public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
 }

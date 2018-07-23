@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,11 +21,10 @@ import com.axelor.apps.supplychain.db.SupplychainBatch;
 
 public class SupplychainBatchSupplychainRepository extends SupplychainBatchRepository {
 
-    @Override
-    public SupplychainBatch copy(SupplychainBatch entity, boolean deep) {
-        SupplychainBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public SupplychainBatch copy(SupplychainBatch entity, boolean deep) {
+    SupplychainBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

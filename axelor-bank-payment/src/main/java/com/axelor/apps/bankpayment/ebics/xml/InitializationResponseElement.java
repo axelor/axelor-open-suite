@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,43 +19,40 @@ package com.axelor.apps.bankpayment.ebics.xml;
 
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResponse;
-import com.axelor.exception.AxelorException;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.exception.ReturnCode;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
+import com.axelor.exception.AxelorException;
 
 /**
- * The <code>InitializationResponseElement</code> is the common
- * element for transfer initialization responses.
+ * The <code>InitializationResponseElement</code> is the common element for transfer initialization
+ * responses.
  *
  * @author Hachani
- *
  */
 public class InitializationResponseElement extends DefaultResponseElement {
 
   /**
    * Constructs a new <code>InitializationResponseElement</code> element.
+   *
    * @param factory the content factory
    * @param orderType the order type
    * @param name the element name
    */
-  public InitializationResponseElement(ContentFactory factory,
-                                       OrderType orderType,
-                                       String name,
-                                       EbicsUser ebicsUser)
-  {
+  public InitializationResponseElement(
+      ContentFactory factory, OrderType orderType, String name, EbicsUser ebicsUser) {
     super(factory, name, ebicsUser);
     this.orderType = orderType;
   }
 
   @Override
   public void build() throws AxelorException {
-    String			code;
-    String			text;
+    String code;
+    String text;
 
     parse(factory);
-    response = ((EbicsResponseDocument)document).getEbicsResponse();
+    response = ((EbicsResponseDocument) document).getEbicsResponse();
     code = response.getHeader().getMutable().getReturnCode();
     text = response.getHeader().getMutable().getReportText();
     returnCode = ReturnCode.toReturnCode(code, text);
@@ -64,6 +61,7 @@ public class InitializationResponseElement extends DefaultResponseElement {
 
   /**
    * Returns the transaction ID.
+   *
    * @return the transaction ID.
    */
   public byte[] getTransactionId() {
@@ -72,6 +70,7 @@ public class InitializationResponseElement extends DefaultResponseElement {
 
   /**
    * Returns the order type.
+   *
    * @return the order type.
    */
   public String getOrderType() {
@@ -82,7 +81,7 @@ public class InitializationResponseElement extends DefaultResponseElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  protected EbicsResponse			response;
-  private OrderType				orderType;
-  private byte[]				transactionId;
+  protected EbicsResponse response;
+  private OrderType orderType;
+  private byte[] transactionId;
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,6 +21,5 @@ import com.axelor.apps.bankpayment.db.EbicsBank;
 
 public interface EbicsBankService {
 
-	public void computeFullName(EbicsBank ebicsBank);
-
+  public void computeFullName(EbicsBank ebicsBank);
 }

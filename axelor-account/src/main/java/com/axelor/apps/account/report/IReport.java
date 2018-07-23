@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,14 +19,11 @@ package com.axelor.apps.account.report;
 
 public interface IReport {
 
-	
-	public static final String MOVE_LINE_REPORT_TYPE = "MoveLineReportType%s.rptdesign";
-	public static final String PAYMENT_VOUCHER = "PaymentVoucher.rptdesign";
-	public static final String IRRECOVERABLE = "Irrecoverable.rptdesign";
-	public static final String INVOICE = "Invoice.rptdesign";
-	public static final String SALE_INVOICES_DETAILS = "SaleInvoicesDetails.rptdesign";
-	public static final String PURCHASE_INVOICES_DETAILS = "PurchaseInvoicesDetails.rptdesign";
-	public static final String ACCOUNT_MOVE = "AccountMove.rptdesign";
-	
-	
+  public static final String MOVE_LINE_REPORT_TYPE = "MoveLineReportType%s.rptdesign";
+  public static final String PAYMENT_VOUCHER = "PaymentVoucher.rptdesign";
+  public static final String IRRECOVERABLE = "Irrecoverable.rptdesign";
+  public static final String INVOICE = "Invoice.rptdesign";
+  public static final String SALE_INVOICES_DETAILS = "SaleInvoicesDetails.rptdesign";
+  public static final String PURCHASE_INVOICES_DETAILS = "PurchaseInvoicesDetails.rptdesign";
+  public static final String ACCOUNT_MOVE = "AccountMove.rptdesign";
 }

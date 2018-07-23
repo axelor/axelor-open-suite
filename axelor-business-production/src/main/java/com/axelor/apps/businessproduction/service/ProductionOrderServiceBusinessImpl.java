@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import java.math.BigDecimal;
-
-import org.joda.time.LocalDateTime;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
@@ -28,31 +24,33 @@ import com.axelor.apps.production.service.ProductionOrderServiceImpl;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import org.joda.time.LocalDateTime;
 
-public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceImpl  {
-	
+public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceImpl {
 
-	public ProductionOrder createProductionOrder(ProjectTask projectTask, boolean isToInvoice) throws AxelorException  {
+  public ProductionOrder createProductionOrder(ProjectTask projectTask, boolean isToInvoice)
+      throws AxelorException {
 
-		ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
-		productionOrder.setProjectTask(projectTask);
+    ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
+    productionOrder.setProjectTask(projectTask);
 
-		return productionOrder;
+    return productionOrder;
+  }
 
-	}
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public ProductionOrder generateProductionOrder(
+      Product product,
+      BillOfMaterial billOfMaterial,
+      BigDecimal qtyRequested,
+      ProjectTask projectTask,
+      LocalDateTime startDate)
+      throws AxelorException {
 
+    ProductionOrder productionOrder = this.createProductionOrder(projectTask, false);
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, ProjectTask projectTask, LocalDateTime startDate) throws AxelorException  {
+    this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate);
 
-		ProductionOrder productionOrder = this.createProductionOrder(projectTask, false);
-
-		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate);
-
-		return productionOrderRepo.save(productionOrder);
-
-	}
-
-
-
+    return productionOrderRepo.save(productionOrder);
+  }
 }

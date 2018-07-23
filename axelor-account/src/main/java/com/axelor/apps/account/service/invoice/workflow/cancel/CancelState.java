@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -30,40 +30,39 @@ import com.axelor.inject.Beans;
 
 public class CancelState extends WorkflowInvoice {
 
-	@Override
-	public void init(Invoice invoice){
-		this.invoice = invoice;
-	}
+  @Override
+  public void init(Invoice invoice) {
+    this.invoice = invoice;
+  }
 
-	@Override
-	public void process() throws AxelorException {
+  @Override
+  public void process() throws AxelorException {
 
-		if(invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice())  {
-			cancelMove();
-		}
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+        && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
+      cancelMove();
+    }
 
-		setStatus();
+    setStatus();
+  }
 
-	}
+  protected void setStatus() {
 
-	protected void setStatus(){
+    invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
+  }
 
-		invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
+  protected void cancelMove() throws AxelorException {
 
-	}
+    if (invoice.getOldMove() != null) {
 
-	protected void cancelMove() throws AxelorException{
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.INVOICE_CANCEL_1), IException.CONFIGURATION_ERROR);
+    }
 
-		if(invoice.getOldMove() != null)  {
+    Move move = invoice.getMove();
 
-			throw new AxelorException(I18n.get(IExceptionMessage.INVOICE_CANCEL_1), IException.CONFIGURATION_ERROR);
-		}
-		
-		Move move = invoice.getMove();
-		
-		invoice.setMove(null);
-		
-		Beans.get(MoveCancelService.class).cancel(move);
-	}
+    invoice.setMove(null);
 
+    Beans.get(MoveCancelService.class).cancel(move);
+  }
 }

@@ -12,7 +12,10 @@ module {
 	module "modules:axelor-project"
 	module "modules:axelor-human-resource"
 	module "modules:axelor-account"
+}
 
-
-
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
 }

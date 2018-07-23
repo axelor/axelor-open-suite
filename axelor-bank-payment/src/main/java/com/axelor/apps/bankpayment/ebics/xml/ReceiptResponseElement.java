@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,16 +26,15 @@ import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
 
 /**
- * The <code>ReceiptResponseElement</code> is the response element
- * for ebics receipt request.
+ * The <code>ReceiptResponseElement</code> is the response element for ebics receipt request.
  *
  * @author Hachani
- *
  */
 public class ReceiptResponseElement extends DefaultResponseElement {
 
   /**
    * Constructs a new <code>ReceiptResponseElement</code> object
+   *
    * @param factory the content factory
    * @param name the element name
    */
@@ -45,12 +44,12 @@ public class ReceiptResponseElement extends DefaultResponseElement {
 
   @Override
   public void build() throws AxelorException {
-    String			code;
-    String			text;
-    EbicsResponse		response;
+    String code;
+    String text;
+    EbicsResponse response;
 
     parse(factory);
-    response = ((EbicsResponseDocument)document).getEbicsResponse();
+    response = ((EbicsResponseDocument) document).getEbicsResponse();
     code = response.getHeader().getMutable().getReturnCode();
     text = response.getHeader().getMutable().getReportText();
     returnCode = ReturnCode.toReturnCode(code, text);
@@ -58,13 +57,12 @@ public class ReceiptResponseElement extends DefaultResponseElement {
 
   @Override
   public void report(EbicsRootElement[] rootElements) throws AxelorException {
-   
-   log(rootElements);   
-   
-   if (!returnCode.equals(ReturnCode.EBICS_DOWNLOAD_POSTPROCESS_DONE)) {
-     returnCode.throwException();
-   }
-   
+
+    log(rootElements);
+
+    if (!returnCode.equals(ReturnCode.EBICS_DOWNLOAD_POSTPROCESS_DONE)) {
+      returnCode.throwException();
+    }
   }
 
   // --------------------------------------------------------------------

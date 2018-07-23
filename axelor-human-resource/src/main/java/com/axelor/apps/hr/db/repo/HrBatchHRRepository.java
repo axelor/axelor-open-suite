@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,11 +21,10 @@ import com.axelor.apps.hr.db.HrBatch;
 
 public class HrBatchHRRepository extends HrBatchRepository {
 
-    @Override
-    public HrBatch copy(HrBatch entity, boolean deep) {
-        HrBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public HrBatch copy(HrBatch entity, boolean deep) {
+    HrBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -18,10 +18,8 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -35,40 +33,39 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 
 public class TimetableController {
-	
-	@Inject
-	protected TimetableService timetableService;
-	
-	@Inject
-	protected TimetableRepository timeTableRepo;
-	
-	public void generateInvoice(ActionRequest request, ActionResponse response) throws AxelorException{
-		Timetable timetable = request.getContext().asType(Timetable.class);
-		timetable = timeTableRepo.find(timetable.getId());
 
-		Context parentContext = request.getContext().getParentContext();
-		if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
-		    SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
-		    if (saleOrder.getStatusSelect() < ISaleOrder.STATUS_ORDER_CONFIRMED) {
-		        response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_SALE_ORDER_NOT_CONFIRMED));
-		        return;
-			}
-		}
+  @Inject protected TimetableService timetableService;
 
-		if (timetable.getInvoice() != null) {
-			response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_INVOICE_ALREADY_GENERATED));
-			return;
-		}
+  @Inject protected TimetableRepository timeTableRepo;
 
-		Invoice invoice = timetableService.generateInvoice(timetable);
-		response.setReload(true);
-		response.setView(ActionView
-				.define(I18n.get("Invoice generated"))
-				.model("com.axelor.apps.account.db.Invoice")
-				.add("form", "invoice-form")
-				.add("grid", "invoice-grid")
-				.param("forceEdit", "true")
-				.context("_showRecord", invoice.getId().toString())
-				.map());
-	}
+  public void generateInvoice(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Timetable timetable = request.getContext().asType(Timetable.class);
+    timetable = timeTableRepo.find(timetable.getId());
+
+    Context parentContext = request.getContext().getParentContext();
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
+      SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
+      if (saleOrder.getStatusSelect() < ISaleOrder.STATUS_ORDER_CONFIRMED) {
+        response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_SALE_ORDER_NOT_CONFIRMED));
+        return;
+      }
+    }
+
+    if (timetable.getInvoice() != null) {
+      response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_INVOICE_ALREADY_GENERATED));
+      return;
+    }
+
+    Invoice invoice = timetableService.generateInvoice(timetable);
+    response.setReload(true);
+    response.setView(
+        ActionView.define(I18n.get("Invoice generated"))
+            .model("com.axelor.apps.account.db.Invoice")
+            .add("form", "invoice-form")
+            .add("grid", "invoice-grid")
+            .param("forceEdit", "true")
+            .context("_showRecord", invoice.getId().toString())
+            .map());
+  }
 }

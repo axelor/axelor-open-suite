@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,32 +27,29 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class CampaignController {
-	
-	@Inject
-	private CampaignRepository campaignRepo;
-	
-	@Inject
-	private CampaignService campaignService;
-	
-	public void sendEmail(ActionRequest request, ActionResponse response) {
-		
-		Campaign campaign = request.getContext().asType(Campaign.class);
-		campaign = campaignRepo.find(campaign.getId());
-		
-		if (campaign.getTargetListSet().isEmpty()) {
-			response.setFlash(I18n.get("Please select target"));
-			return;
-		}
-		
-		MetaFile logFile = campaignService.sendEmail(campaign);
-		
-		if (logFile == null) {
-			response.setFlash(I18n.get("Emails sent successfully"));
-		}
-		else {
-			response.setFlash(I18n.get("Error in sending emails. Please check the log file generated."));
-		}
-		
-		response.setValue("emailLog", logFile);
-	}
+
+  @Inject private CampaignRepository campaignRepo;
+
+  @Inject private CampaignService campaignService;
+
+  public void sendEmail(ActionRequest request, ActionResponse response) {
+
+    Campaign campaign = request.getContext().asType(Campaign.class);
+    campaign = campaignRepo.find(campaign.getId());
+
+    if (campaign.getTargetListSet().isEmpty()) {
+      response.setFlash(I18n.get("Please select target"));
+      return;
+    }
+
+    MetaFile logFile = campaignService.sendEmail(campaign);
+
+    if (logFile == null) {
+      response.setFlash(I18n.get("Emails sent successfully"));
+    } else {
+      response.setFlash(I18n.get("Error in sending emails. Please check the log file generated."));
+    }
+
+    response.setValue("emailLog", logFile);
+  }
 }

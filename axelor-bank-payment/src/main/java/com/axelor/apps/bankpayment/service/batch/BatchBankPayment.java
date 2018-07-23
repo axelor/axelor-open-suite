@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.bankpayment.db.BankPaymentBatch;
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
 import com.axelor.apps.bankpayment.db.EbicsUser;
@@ -41,74 +33,89 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.joda.time.LocalDate;
 
 public class BatchBankPayment extends AbstractBatch {
-	
-	protected BankPaymentBatch bankPaymentBatch;
-	
-	@Inject
-	private TemplateRepository templateRepo;
-	
-	@Inject
-	private TemplateMessageService templateMessageService;
-	
-	@Inject
-	private BatchRepository batchRepo;
-	
-	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-		
-		super.start();
-		
-		bankPaymentBatch = Beans.get(BankPaymentBatchRepository.class).find(batch.getBankPaymentBatch().getId());
 
-	}
-		
-	@Override
-	protected void process() {
-		
-		Template template = templateRepo.find(bankPaymentBatch.getTemplate().getId());
-				
-		List<EbicsUser> users = Beans.get(EbicsUserRepository.class).all().filter("self.a005Certificate != null OR self.e002Certificate != null OR self.x002Certificate != null").fetch();
-		
-		Set<EbicsCertificate> certificatesSet = new HashSet<>();
-		
-		LocalDate today = Beans.get(GeneralService.class).getTodayDate();
-		LocalDate commingDay = today.plusDays(bankPaymentBatch.getDaysNbr());
-		
-		for (EbicsUser user : users) {
-			if (user.getA005Certificate() != null && user.getA005Certificate().getValidTo().isBefore(commingDay)) {
-				certificatesSet.add(user.getA005Certificate());
-			}
+  protected BankPaymentBatch bankPaymentBatch;
 
-			if (user.getE002Certificate() != null && user.getE002Certificate().getValidTo().isBefore(commingDay)) {
-				certificatesSet.add(user.getE002Certificate());
-			}
+  @Inject private TemplateRepository templateRepo;
 
-			if (user.getX002Certificate() != null && user.getX002Certificate().getValidTo().isBefore(commingDay)) {
-				certificatesSet.add(user.getX002Certificate());
-			}
-		}
-				
-		certificatesSet.addAll(Beans.get(EbicsCertificateRepository.class).all().
-				filter("self.ebicsBank != null AND self.validTo <= ?1", commingDay).fetch());
-		
-		for(EbicsCertificate certificate : certificatesSet) {
-				
-			certificate.addBatchSetItem(batchRepo.find(batch.getId()));
-				
-			try {
-				templateMessageService.generateMessage(certificate, template);
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | AxelorException
-					| IOException e) {
-					e.printStackTrace();
-			}
-		}
-	}
-	
-	public Batch ebicsCertificate(BankPaymentBatch bankPaymentBatch) {
-		
-		return Beans.get(BatchBankPayment.class).run(bankPaymentBatch);
-	}
-	
+  @Inject private TemplateMessageService templateMessageService;
+
+  @Inject private BatchRepository batchRepo;
+
+  @Override
+  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+
+    super.start();
+
+    bankPaymentBatch =
+        Beans.get(BankPaymentBatchRepository.class).find(batch.getBankPaymentBatch().getId());
+  }
+
+  @Override
+  protected void process() {
+
+    Template template = templateRepo.find(bankPaymentBatch.getTemplate().getId());
+
+    List<EbicsUser> users =
+        Beans.get(EbicsUserRepository.class)
+            .all()
+            .filter(
+                "self.a005Certificate != null OR self.e002Certificate != null OR self.x002Certificate != null")
+            .fetch();
+
+    Set<EbicsCertificate> certificatesSet = new HashSet<>();
+
+    LocalDate today = Beans.get(GeneralService.class).getTodayDate();
+    LocalDate commingDay = today.plusDays(bankPaymentBatch.getDaysNbr());
+
+    for (EbicsUser user : users) {
+      if (user.getA005Certificate() != null
+          && user.getA005Certificate().getValidTo().isBefore(commingDay)) {
+        certificatesSet.add(user.getA005Certificate());
+      }
+
+      if (user.getE002Certificate() != null
+          && user.getE002Certificate().getValidTo().isBefore(commingDay)) {
+        certificatesSet.add(user.getE002Certificate());
+      }
+
+      if (user.getX002Certificate() != null
+          && user.getX002Certificate().getValidTo().isBefore(commingDay)) {
+        certificatesSet.add(user.getX002Certificate());
+      }
+    }
+
+    certificatesSet.addAll(
+        Beans.get(EbicsCertificateRepository.class)
+            .all()
+            .filter("self.ebicsBank != null AND self.validTo <= ?1", commingDay)
+            .fetch());
+
+    for (EbicsCertificate certificate : certificatesSet) {
+
+      certificate.addBatchSetItem(batchRepo.find(batch.getId()));
+
+      try {
+        templateMessageService.generateMessage(certificate, template);
+      } catch (ClassNotFoundException
+          | InstantiationException
+          | IllegalAccessException
+          | AxelorException
+          | IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public Batch ebicsCertificate(BankPaymentBatch bankPaymentBatch) {
+
+    return Beans.get(BatchBankPayment.class).run(bankPaymentBatch);
+  }
 }

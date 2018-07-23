@@ -9,7 +9,10 @@ module {
 
 	module "modules:axelor-crm"
 	module "modules:axelor-studio"
-
-
 }
 
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}

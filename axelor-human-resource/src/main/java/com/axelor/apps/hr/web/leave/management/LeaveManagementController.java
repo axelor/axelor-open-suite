@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,15 +24,14 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class LeaveManagementController {
-	
-	@Inject
-	protected LeaveManagementService leaveManagementService;
-	
-	public void computeQuantityAvailable(ActionRequest request, ActionResponse response){
-		LeaveLine leaveLine = request.getContext().asType(LeaveLine.class);
-		leaveLine = leaveManagementService.computeQuantityAvailable(leaveLine);
-		response.setValue("quantity",leaveLine.getQuantity());
-		response.setValue("totalQuantity", leaveLine.getTotalQuantity() );
-		response.setValue("leaveManagementList",leaveLine.getLeaveManagementList());
-	}
+
+  @Inject protected LeaveManagementService leaveManagementService;
+
+  public void computeQuantityAvailable(ActionRequest request, ActionResponse response) {
+    LeaveLine leaveLine = request.getContext().asType(LeaveLine.class);
+    leaveLine = leaveManagementService.computeQuantityAvailable(leaveLine);
+    response.setValue("quantity", leaveLine.getQuantity());
+    response.setValue("totalQuantity", leaveLine.getTotalQuantity());
+    response.setValue("leaveManagementList", leaveLine.getLeaveManagementList());
+  }
 }

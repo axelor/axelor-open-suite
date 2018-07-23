@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.base.service.template;
 
-import java.util.Map;
-
 import com.axelor.apps.base.db.TemplateContext;
 import com.axelor.apps.base.db.repo.TemplateContextRepository;
 import com.axelor.apps.message.db.Template;
@@ -26,29 +24,25 @@ import com.axelor.apps.message.service.TemplateService;
 import com.axelor.db.Model;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Map;
 
 @Singleton
 public class TemplateBaseService extends TemplateService {
-	
-	@Inject
-	private TemplateContextService tcs;
-	
-	@Inject
-	private TemplateContextRepository templateContextRepo;
-	
-	public Map<String, Object> getContext(Template template, Model bean) {
-		
-		TemplateContext templateContext = template.getTemplateContext();
-		
-		if(templateContext == null) {
-			return null;
-		}
-		
-		templateContext = templateContextRepo.find(templateContext.getId());
-		
-		return tcs.getContext(templateContext, bean);
-	}
 
-	
+  @Inject private TemplateContextService tcs;
 
+  @Inject private TemplateContextRepository templateContextRepo;
+
+  public Map<String, Object> getContext(Template template, Model bean) {
+
+    TemplateContext templateContext = template.getTemplateContext();
+
+    if (templateContext == null) {
+      return null;
+    }
+
+    templateContext = templateContextRepo.find(templateContext.getId());
+
+    return tcs.getContext(templateContext, bean);
+  }
 }

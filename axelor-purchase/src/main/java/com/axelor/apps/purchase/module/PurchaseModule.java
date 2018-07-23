@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -18,18 +18,16 @@
 package com.axelor.apps.purchase.module;
 
 import com.axelor.app.AxelorModule;
-
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 
-
 public class PurchaseModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-    	bind(PurchaseOrderRepository.class).to(PurchaseOrderManagementRepository.class);
-        bind(PurchaseOrderService.class).to(PurchaseOrderServiceImpl.class);
-    }
+  @Override
+  protected void configure() {
+    bind(PurchaseOrderRepository.class).to(PurchaseOrderManagementRepository.class);
+    bind(PurchaseOrderService.class).to(PurchaseOrderServiceImpl.class);
+  }
 }

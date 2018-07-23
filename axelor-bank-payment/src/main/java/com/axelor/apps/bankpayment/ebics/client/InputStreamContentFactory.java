@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -36,26 +36,21 @@ package com.axelor.apps.bankpayment.ebics.client;
  * $Id$
  */
 
-
+import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
-
-
 /**
- * Input stream content factory that delivers the its content
- * as an <code>InputStream</code>
- * This object is serializable in a way to recover interrupted
- * file transfers.
+ * Input stream content factory that delivers the its content as an <code>InputStream</code> This
+ * object is serializable in a way to recover interrupted file transfers.
  *
  * @author hachani
- *
  */
 public class InputStreamContentFactory implements ContentFactory {
 
   /**
    * Creates a new <code>ContentFactory</code> from an input stream
+   *
    * @param input the given input stream.
    */
   public InputStreamContentFactory(InputStream input) {
@@ -71,5 +66,5 @@ public class InputStreamContentFactory implements ContentFactory {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private InputStream			input;
+  private InputStream input;
 }

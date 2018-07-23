@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -22,10 +22,9 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface LunchVoucherAdvanceService {
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void onNewAdvance(LunchVoucherAdvance lunchVoucherAdvance) throws AxelorException;
-	
-	public int useAdvance(LunchVoucherAdvance lunchVoucherAdvance, int qty) throws AxelorException;
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void onNewAdvance(LunchVoucherAdvance lunchVoucherAdvance) throws AxelorException;
+
+  public int useAdvance(LunchVoucherAdvance lunchVoucherAdvance, int qty) throws AxelorException;
 }

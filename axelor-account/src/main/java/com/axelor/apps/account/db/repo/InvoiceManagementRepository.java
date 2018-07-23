@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,65 +17,61 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import java.math.BigDecimal;
-
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import javax.persistence.PersistenceException;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
-	@Override
-	public Invoice copy(Invoice entity, boolean deep) {
+  @Override
+  public Invoice copy(Invoice entity, boolean deep) {
 
-		Invoice copy = super.copy(entity, deep);
+    Invoice copy = super.copy(entity, deep);
 
-		copy.setStatusSelect(STATUS_DRAFT);
-		copy.setInvoiceId(null);
-		copy.setInvoiceDate(null);
-		copy.setDueDate(null);
-		copy.setValidatedByUser(null);
-		copy.setMove(null);
-		copy.setOriginalInvoice(null);
-		copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
-		copy.setAmountPaid(BigDecimal.ZERO);
-		copy.setIrrecoverableStatusSelect(IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
-		copy.setAmountRejected(BigDecimal.ZERO);
-		copy.clearBatchSet();
-		copy.setDebitNumber(null);
-		copy.setDirectDebitManagement(null);
-		copy.setDoubtfulCustomerOk(false);
-		copy.setMove(null);
-		copy.setEndOfCycleOk(false);
-		copy.setInterbankCodeLine(null);
-		copy.setPaymentMove(null);
-		copy.clearRefundInvoiceList();
-		copy.setRejectDate(null);
-		copy.setOriginalInvoice(null);
-		copy.setUsherPassageOk(false);
-		copy.setAlreadyPrintedOk(false);
-		copy.setCanceledPaymentSchedule(null);
-		copy.setDirectDebitAmount(BigDecimal.ZERO);
-		copy.setImportId(null);
-		copy.setPartnerAccount(null);
-		copy.setJournal(null);
-		copy.clearInvoicePaymentList();
+    copy.setStatusSelect(STATUS_DRAFT);
+    copy.setInvoiceId(null);
+    copy.setInvoiceDate(null);
+    copy.setDueDate(null);
+    copy.setValidatedByUser(null);
+    copy.setMove(null);
+    copy.setOriginalInvoice(null);
+    copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
+    copy.setAmountPaid(BigDecimal.ZERO);
+    copy.setIrrecoverableStatusSelect(IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
+    copy.setAmountRejected(BigDecimal.ZERO);
+    copy.clearBatchSet();
+    copy.setDebitNumber(null);
+    copy.setDirectDebitManagement(null);
+    copy.setDoubtfulCustomerOk(false);
+    copy.setMove(null);
+    copy.setEndOfCycleOk(false);
+    copy.setInterbankCodeLine(null);
+    copy.setPaymentMove(null);
+    copy.clearRefundInvoiceList();
+    copy.setRejectDate(null);
+    copy.setOriginalInvoice(null);
+    copy.setUsherPassageOk(false);
+    copy.setAlreadyPrintedOk(false);
+    copy.setCanceledPaymentSchedule(null);
+    copy.setDirectDebitAmount(BigDecimal.ZERO);
+    copy.setImportId(null);
+    copy.setPartnerAccount(null);
+    copy.setJournal(null);
+    copy.clearInvoicePaymentList();
 
-		return copy;
-	}
+    return copy;
+  }
 
+  @Override
+  public Invoice save(Invoice invoice) {
+    try {
+      invoice = super.save(invoice);
+      Beans.get(InvoiceService.class).setDraftSequence(invoice);
 
-	@Override
-	public Invoice save(Invoice invoice) {
-		try {
-			invoice = super.save(invoice);
-			Beans.get(InvoiceService.class).setDraftSequence(invoice);
-
-			return invoice;
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-
+      return invoice;
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 }

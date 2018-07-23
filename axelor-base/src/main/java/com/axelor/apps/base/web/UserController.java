@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -31,29 +31,27 @@ import com.google.inject.persist.Transactional;
 
 public class UserController {
 
-	@Inject 
-	protected PartnerRepository partnerRepo;
-	
-	@Inject
-	protected UserRepository userRepo;
-	
-	@Transactional
-	public void setUserPartner (ActionRequest request, ActionResponse response) throws AxelorException {
-		Context context = request.getContext();
-			
-		if(context.get("user_id") != null){
-			Partner partner = partnerRepo.find(context.asType(Partner.class).getId());
-			User user = userRepo.find(((Integer)context.get("user_id")).longValue());
-			user.setPartner(partner);
-			userRepo.save(user);
-		}		
-	}
-	
-	public void applyApplicationMode(ActionRequest request, ActionResponse response)  {
-		 String applicationMode = AppSettings.get().get("application.mode", "prod");
-		 if ("dev".equals(applicationMode)) {
-			 response.setAttr("testing", "hidden", false);
-		 }
-	}
+  @Inject protected PartnerRepository partnerRepo;
 
+  @Inject protected UserRepository userRepo;
+
+  @Transactional
+  public void setUserPartner(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+
+    if (context.get("user_id") != null) {
+      Partner partner = partnerRepo.find(context.asType(Partner.class).getId());
+      User user = userRepo.find(((Integer) context.get("user_id")).longValue());
+      user.setPartner(partner);
+      userRepo.save(user);
+    }
+  }
+
+  public void applyApplicationMode(ActionRequest request, ActionResponse response) {
+    String applicationMode = AppSettings.get().get("application.mode", "prod");
+    if ("dev".equals(applicationMode)) {
+      response.setAttr("testing", "hidden", false);
+    }
+  }
 }

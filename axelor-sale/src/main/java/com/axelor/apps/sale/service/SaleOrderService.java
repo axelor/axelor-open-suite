@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.sale.service;
 
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -28,86 +26,84 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import org.joda.time.LocalDate;
 
 public interface SaleOrderService {
 
+  public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 
-	public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
+  /**
+   * Peupler un devis.
+   *
+   * <p>Cette fonction permet de déterminer les tva d'un devis.
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  public void _populateSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  /**
+   * Calculer le montant d'une facture.
+   *
+   * <p>Le calcul est basé sur les lignes de TVA préalablement créées.
+   *
+   * @param invoice
+   * @param vatLines
+   * @throws AxelorException
+   */
+  public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
+  /**
+   * Permet de réinitialiser la liste des lignes de TVA
+   *
+   * @param saleOrder Un devis
+   */
+  public void initSaleOrderLineTaxList(SaleOrder saleOrder);
 
-	/**
-	 * Peupler un devis.
-	 * <p>
-	 * Cette fonction permet de déterminer les tva d'un devis.
-	 * </p>
-	 *
-	 * @param saleOrder
-	 *
-	 * @throws AxelorException
-	 */
-	public void _populateSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Partner validateCustomer(SaleOrder saleOrder);
 
+  public String getSequence(Company company) throws AxelorException;
 
-	/**
-	 * Calculer le montant d'une facture.
-	 * <p>
-	 * Le calcul est basé sur les lignes de TVA préalablement créées.
-	 * </p>
-	 *
-	 * @param invoice
-	 * @param vatLines
-	 * @throws AxelorException
-	 */
-	public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  public SaleOrder createSaleOrder(
+      User buyerUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      LocalDate orderDate,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team)
+      throws AxelorException;
 
+  public SaleOrder createSaleOrder(Company company) throws AxelorException;
 
-	/**
-	 * Permet de réinitialiser la liste des lignes de TVA
-	 * @param saleOrder
-	 * 			Un devis
-	 */
-	public void initSaleOrderLineTaxList(SaleOrder saleOrder);
+  public void cancelSaleOrder(SaleOrder saleOrder);
 
+  public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Partner validateCustomer(SaleOrder saleOrder);
+  public void confirmSaleOrder(SaleOrder saleOrder) throws Exception;
 
+  public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
 
-	public String getSequence(Company company) throws AxelorException;
+  public String getLanguageForPrinting(SaleOrder saleOrder);
 
+  public String getFileName(SaleOrder saleOrder);
 
-	public SaleOrder createSaleOrder(User buyerUser, Company company, Partner contactPartner, Currency currency,
-			LocalDate deliveryDate, String internalReference, String externalReference, LocalDate orderDate,
-			PriceList priceList, Partner clientPartner, Team team) throws AxelorException;
+  @Transactional
+  public SaleOrder createTemplate(SaleOrder context);
 
-	public SaleOrder createSaleOrder(Company company) throws AxelorException;
+  @Transactional
+  public SaleOrder createSaleOrder(SaleOrder context);
 
-	public void cancelSaleOrder(SaleOrder saleOrder);
+  public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws Exception;
-
-	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception;
-
-	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
-
-	public String getLanguageForPrinting(SaleOrder saleOrder);
-	
-	public String getFileName(SaleOrder saleOrder);
-
-	@Transactional
-	public SaleOrder createTemplate(SaleOrder context);
-
-	@Transactional
-	public SaleOrder createSaleOrder(SaleOrder context);
-
-	public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
-	
-	public String getReportLink(SaleOrder saleOrder, String name, String language, String format) throws AxelorException;
+  public String getReportLink(SaleOrder saleOrder, String name, String language, String format)
+      throws AxelorException;
 }
-
-
-

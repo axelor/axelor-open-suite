@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -20,17 +20,12 @@ package com.axelor.apps.base.db;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Interface of Partner object. Enum all static variable of object.
- * 
- */
+/** Interface of Partner object. Enum all static variable of object. */
 public interface IPartner {
 
-	/**
-	 * Static partner type select
-	 */
+  /** Static partner type select */
+  static final int PARTNER_TYPE_SELECT_ENTERPRISE = 1;
 
-	static final int PARTNER_TYPE_SELECT_ENTERPRISE = 1;
-	static final int PARTNER_TYPE_SELECT_INDIVIDUAL = 2;
-	static Map<String,String> modelPartnerFieldMap = new HashMap<>();
+  static final int PARTNER_TYPE_SELECT_INDIVIDUAL = 2;
+  static Map<String, String> modelPartnerFieldMap = new HashMap<>();
 }

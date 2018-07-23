@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,28 +25,24 @@ import com.google.inject.persist.Transactional;
 
 public class ActionBuilderRepo extends ActionBuilderRepository {
 
-	@Inject
-	private MetaActionRepository metaActionRepo;
+  @Inject private MetaActionRepository metaActionRepo;
 
-	@Transactional
-	@Override
-	public void remove(ActionBuilder actionBuilder) {
+  @Transactional
+  @Override
+  public void remove(ActionBuilder actionBuilder) {
 
-		super.remove(actionBuilder);
+    super.remove(actionBuilder);
 
-		MetaAction metaAction = metaActionRepo.findByName(actionBuilder
-				.getName());
-		if (metaAction != null) {
-			metaAction.setRemoveAction(true);
-			metaActionRepo.save(metaAction);
-		}
+    MetaAction metaAction = metaActionRepo.findByName(actionBuilder.getName());
+    if (metaAction != null) {
+      metaAction.setRemoveAction(true);
+      metaActionRepo.save(metaAction);
+    }
 
-		metaAction = metaActionRepo.findByName(actionBuilder.getName()
-				+ "-assign");
-		if (metaAction != null) {
-			metaAction.setRemoveAction(true);
-			metaActionRepo.save(metaAction);
-		}
-	}
-
+    metaAction = metaActionRepo.findByName(actionBuilder.getName() + "-assign");
+    if (metaAction != null) {
+      metaAction.setRemoveAction(true);
+      metaActionRepo.save(metaAction);
+    }
+  }
 }

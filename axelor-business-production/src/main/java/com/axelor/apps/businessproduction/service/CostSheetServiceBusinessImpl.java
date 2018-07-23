@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.Employee;
@@ -33,41 +27,52 @@ import com.axelor.apps.production.service.CostSheetLineService;
 import com.axelor.apps.production.service.CostSheetServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl  {
+public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	public CostSheetServiceBusinessImpl(GeneralService generalService, UnitConversionService unitConversionService, CostSheetLineService costSheetLineService, BillOfMaterialRepository billOfMaterialRepo) {
-		
-		super(generalService, unitConversionService, costSheetLineService, billOfMaterialRepo);
-		
-	}
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Inject
+  public CostSheetServiceBusinessImpl(
+      GeneralService generalService,
+      UnitConversionService unitConversionService,
+      CostSheetLineService costSheetLineService,
+      BillOfMaterialRepository billOfMaterialRepo) {
 
-	@Override
-	protected void _computeHumanResourceCost(ProdHumanResource prodHumanResource, int priority, int bomLevel, CostSheetLine parentCostSheetLine) throws AxelorException  {
+    super(generalService, unitConversionService, costSheetLineService, billOfMaterialRepo);
+  }
 
-		Employee employee = prodHumanResource.getEmployee();
-		
-		if(employee != null)  {
+  @Override
+  protected void _computeHumanResourceCost(
+      ProdHumanResource prodHumanResource,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine)
+      throws AxelorException {
 
-			BigDecimal durationHours = new BigDecimal(prodHumanResource.getDuration()/3600);
-			
-			costSheet.addCostSheetLineListItem(
-					costSheetLineService.createWorkCenterCostSheetLine(prodHumanResource.getWorkCenter(), priority, bomLevel, parentCostSheetLine, 
-							durationHours, employee.getHourlyRate().multiply(durationHours), hourUnit));
-			
-		}
-		else  {
+    Employee employee = prodHumanResource.getEmployee();
 
-			super._computeHumanResourceCost(prodHumanResource, priority, bomLevel, parentCostSheetLine);
+    if (employee != null) {
 
-		}
-		
-		
+      BigDecimal durationHours = new BigDecimal(prodHumanResource.getDuration() / 3600);
 
-	}
-	
+      costSheet.addCostSheetLineListItem(
+          costSheetLineService.createWorkCenterCostSheetLine(
+              prodHumanResource.getWorkCenter(),
+              priority,
+              bomLevel,
+              parentCostSheetLine,
+              durationHours,
+              employee.getHourlyRate().multiply(durationHours),
+              hourUnit));
+
+    } else {
+
+      super._computeHumanResourceCost(prodHumanResource, priority, bomLevel, parentCostSheetLine);
+    }
+  }
 }

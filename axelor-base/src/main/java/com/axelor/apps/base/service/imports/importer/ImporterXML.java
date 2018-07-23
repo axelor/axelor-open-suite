@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,18 +23,15 @@ import com.axelor.data.xml.XMLImporter;
 
 class ImporterXML extends Importer {
 
-	@Override
-	protected ImportHistory process( String bind, String data ) {
+  @Override
+  protected ImportHistory process(String bind, String data) {
 
-		XMLImporter importer = new XMLImporter( bind, data);
-		
-		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
-		importer.addListener( listener );
-		importer.run(null);
-		
-		return addHistory( listener );
-		
-	}
+    XMLImporter importer = new XMLImporter(bind, data);
 
+    ImporterListener listener = new ImporterListener(getConfiguration().getName());
+    importer.addListener(listener);
+    importer.run(null);
 
+    return addHistory(listener);
+  }
 }

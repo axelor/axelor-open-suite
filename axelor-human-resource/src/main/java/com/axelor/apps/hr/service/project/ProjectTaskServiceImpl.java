@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.hr.service.project;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.employee.EmployeeService;
@@ -28,51 +24,53 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
-	
-	protected GeneralService generalService;
-	protected EmployeeService employeeService;	
-	
-	@Inject
-	public ProjectTaskServiceImpl(GeneralService generalService, EmployeeService employeeService){
-		
-		this.generalService = generalService;
-		this.employeeService = employeeService;
-	}
-	
-	@Transactional(rollbackOn={Exception.class})
-	public List<TimesheetLine> computeVisibleDuration(ProjectTask project) throws AxelorException {
-		
-		List<TimesheetLine> timesheetLineList = project.getTimesheetLineList();
-		
-		for(TimesheetLine timesheetLine : timesheetLineList)  {
 
-			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), timesheetLine.getUser(), false));
-		
-		}
+  protected GeneralService generalService;
+  protected EmployeeService employeeService;
 
-		timesheetLineList = _sortTimesheetLineByDate(timesheetLineList);
+  @Inject
+  public ProjectTaskServiceImpl(GeneralService generalService, EmployeeService employeeService) {
 
-		return timesheetLineList;
-	}
+    this.generalService = generalService;
+    this.employeeService = employeeService;
+  }
 
-	public List<TimesheetLine> _sortTimesheetLineByDate(List<TimesheetLine> timesheetLineList){
-	
-		Collections.sort(timesheetLineList, new Comparator<TimesheetLine>() {
-	
-			@Override
-			public int compare(TimesheetLine tsl1, TimesheetLine tsl2) {
-				if(tsl1.getDate().isAfter(tsl2.getDate()))
-					return 1;
-				else if(tsl1.getDate().isBefore(tsl2.getDate()))
-					return -1;
-				else
-					return 0;
-			}
-		});
-	
-		return timesheetLineList;
-	}
+  @Transactional(rollbackOn = {Exception.class})
+  public List<TimesheetLine> computeVisibleDuration(ProjectTask project) throws AxelorException {
 
+    List<TimesheetLine> timesheetLineList = project.getTimesheetLineList();
+
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+
+      timesheetLine.setVisibleDuration(
+          employeeService.getUserDuration(
+              timesheetLine.getDurationStored(), timesheetLine.getUser(), false));
+    }
+
+    timesheetLineList = _sortTimesheetLineByDate(timesheetLineList);
+
+    return timesheetLineList;
+  }
+
+  public List<TimesheetLine> _sortTimesheetLineByDate(List<TimesheetLine> timesheetLineList) {
+
+    Collections.sort(
+        timesheetLineList,
+        new Comparator<TimesheetLine>() {
+
+          @Override
+          public int compare(TimesheetLine tsl1, TimesheetLine tsl2) {
+            if (tsl1.getDate().isAfter(tsl2.getDate())) return 1;
+            else if (tsl1.getDate().isBefore(tsl2.getDate())) return -1;
+            else return 0;
+          }
+        });
+
+    return timesheetLineList;
+  }
 }

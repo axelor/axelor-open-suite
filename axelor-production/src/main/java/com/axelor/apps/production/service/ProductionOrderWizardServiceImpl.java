@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -29,63 +29,60 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.Map;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.Map;
-
 public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardService {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	protected ProductionOrderService productionOrderService;
-	
-	@Inject
-	protected BillOfMaterialRepository billOfMaterialRepo;
-	
-	@Inject
-	protected ProductRepository productRepo;
-	
-	@Inject
-	protected GeneralService generalService;
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@SuppressWarnings("unchecked")
-	public Long validate(Context context) throws AxelorException  {
-	
-		Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
-		BillOfMaterial billOfMaterial = billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
-		
-		BigDecimal qty = new BigDecimal((String)context.get("qty"));
-		
-		Product product = null;
-		
-		if(context.get("product") != null)  {
-			Map<String, Object> productContext = (Map<String, Object>) context.get("product");
-			product = productRepo.find(((Integer) productContext.get("id")).longValue());
-		}
-		else  {
-			product = billOfMaterial.getProduct();
-		}
-		
-		DateTime startDate;
-		if (context.containsKey("_startDate") && context.get("_startDate") != null ){
-			startDate = new DateTime(context.get("_startDate") );
-		}else{
-			startDate = generalService.getTodayDateTime().toDateTime();
-		}
-		
-		ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty, startDate.toLocalDateTime());
-		
-		if(productionOrder != null)  {
-			return productionOrder.getId();
-		}
-		else  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_2)),IException.CONFIGURATION_ERROR);
-		}
-	}
-	
+  @Inject protected ProductionOrderService productionOrderService;
+
+  @Inject protected BillOfMaterialRepository billOfMaterialRepo;
+
+  @Inject protected ProductRepository productRepo;
+
+  @Inject protected GeneralService generalService;
+
+  @SuppressWarnings("unchecked")
+  public Long validate(Context context) throws AxelorException {
+
+    Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
+    BillOfMaterial billOfMaterial =
+        billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
+
+    BigDecimal qty = new BigDecimal((String) context.get("qty"));
+
+    Product product = null;
+
+    if (context.get("product") != null) {
+      Map<String, Object> productContext = (Map<String, Object>) context.get("product");
+      product = productRepo.find(((Integer) productContext.get("id")).longValue());
+    } else {
+      product = billOfMaterial.getProduct();
+    }
+
+    DateTime startDate;
+    if (context.containsKey("_startDate") && context.get("_startDate") != null) {
+      startDate = new DateTime(context.get("_startDate"));
+    } else {
+      startDate = generalService.getTodayDateTime().toDateTime();
+    }
+
+    ProductionOrder productionOrder =
+        productionOrderService.generateProductionOrder(
+            product, billOfMaterial, qty, startDate.toLocalDateTime());
+
+    if (productionOrder != null) {
+      return productionOrder.getId();
+    } else {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_2)),
+          IException.CONFIGURATION_ERROR);
+    }
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -31,13 +31,12 @@ import com.axelor.studio.db.repo.WkfRepository;
 
 public class StudioModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(MetaModelRepository.class).to(StudioMetaModelRepository.class);
-		bind(WkfRepository.class).to(StudioWkfRepository.class);
-		bind(ViewBuilderRepository.class).to(ViewBuilderRepo.class);
-		bind(ActionBuilderRepository.class).to(ActionBuilderRepo.class);
-		bind(MenuBuilderRepository.class).to(MenuBuilderRepo.class);
-	}
-
+  @Override
+  protected void configure() {
+    bind(MetaModelRepository.class).to(StudioMetaModelRepository.class);
+    bind(WkfRepository.class).to(StudioWkfRepository.class);
+    bind(ViewBuilderRepository.class).to(ViewBuilderRepo.class);
+    bind(ActionBuilderRepository.class).to(ActionBuilderRepo.class);
+    bind(MenuBuilderRepository.class).to(MenuBuilderRepo.class);
+  }
 }

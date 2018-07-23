@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,11 +21,10 @@ import com.axelor.apps.sale.db.SaleBatch;
 
 public class SaleBatchSaleRepository extends SaleBatchRepository {
 
-    @Override
-    public SaleBatch copy(SaleBatch entity, boolean deep) {
-        SaleBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public SaleBatch copy(SaleBatch entity, boolean deep) {
+    SaleBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

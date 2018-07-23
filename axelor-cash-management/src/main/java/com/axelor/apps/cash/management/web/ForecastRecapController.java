@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,19 @@
  */
 package com.axelor.apps.cash.management.web;
 
-import java.io.IOException;
-
+import com.axelor.apps.cash.management.db.ForecastRecap;
+import com.axelor.apps.cash.management.db.ForecastRecapLine;
+import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
+import com.axelor.apps.cash.management.exception.IExceptionMessage;
+import com.axelor.apps.cash.management.service.ForecastRecapService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -26,163 +37,153 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.joda.time.LocalDate;
-
-import com.axelor.apps.cash.management.db.ForecastRecap;
-import com.axelor.apps.cash.management.db.ForecastRecapLine;
-import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
-import com.axelor.apps.cash.management.exception.IExceptionMessage;
-import com.axelor.apps.cash.management.service.ForecastRecapService;
-import com.axelor.apps.tool.net.URLService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.axelor.meta.schema.actions.ActionView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ForecastRecapController {
-	
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
-	private ForecastRecapService forecastRecapService;
-	
-	public void populate(ActionRequest request, ActionResponse response) throws AxelorException  {
-		ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
-		if(forecastRecap.getCompany() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.FORECAST_COMPANY)), IException.CONFIGURATION_ERROR);
-		}
-		forecastRecapService.populate(forecastRecap);
-		response.setValues(forecastRecap);
-		
-	}
-	
-	public void showReport(ActionRequest request, ActionResponse response)  throws AxelorException  {
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
+  @Inject private ForecastRecapService forecastRecapService;
 
-		String url = forecastRecapService.getURLForecastRecapPDF(forecastRecap);
+  public void populate(ActionRequest request, ActionResponse response) throws AxelorException {
+    ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
+    if (forecastRecap.getCompany() == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.FORECAST_COMPANY)),
+          IException.CONFIGURATION_ERROR);
+    }
+    forecastRecapService.populate(forecastRecap);
+    response.setValues(forecastRecap);
+  }
 
-		String title = I18n.get("ForecastRecap");
-		title += forecastRecap.getId();
+  public void showReport(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		logger.debug("Printing "+title);
-	
-		response.setView(ActionView
-				.define(title)
-				.add("html", url).map());	
-	}
-	
-	public void sales(ActionRequest request, ActionResponse response) throws AxelorException {
-		Long id = new Long(request.getContext().get("_id").toString());
-		ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
-		forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
-		Map<LocalDate, BigDecimal> mapExpected = new HashMap<LocalDate, BigDecimal>();
-		Map<LocalDate, BigDecimal> mapConfirmed = new HashMap<LocalDate, BigDecimal>();
-		if(forecastRecap.getOpportunitiesTypeSelect() != null && forecastRecap.getOpportunitiesTypeSelect() > ForecastRecapRepository.OPPORTUNITY_TYPE_NO){
-			forecastRecapService.getOpportunities(forecastRecap, mapExpected, mapConfirmed);
-		}
-		forecastRecapService.getInvoices(forecastRecap, mapExpected, mapConfirmed);
-		forecastRecapService.getTimetablesOrOrders(forecastRecap, mapExpected, mapConfirmed);
-		forecastRecapService.getForecasts(forecastRecap, mapExpected, mapConfirmed);
-		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		Set<LocalDate> keyList = mapExpected.keySet();
-		for (LocalDate date : keyList) {
-			Map<String, Object> dataMap = new HashMap<String, Object>();
-			dataMap.put("date", (Object)date);
-			dataMap.put("amount", (Object)mapExpected.get(date));
-			dataMap.put("type", (Object)I18n.get("Expected"));
-			dataList.add(dataMap);
-		}
-		keyList = mapConfirmed.keySet();
-		for (LocalDate date : keyList) {
-			Map<String, Object> dataMap = new HashMap<String, Object>();
-			dataMap.put("date", (Object)date);
-			dataMap.put("amount", (Object)mapConfirmed.get(date));
-			dataMap.put("type", (Object)I18n.get("Confirmed"));
-			dataList.add(dataMap);
-		}
-		response.setData(dataList);
-	}
-	
-	public void spending(ActionRequest request, ActionResponse response) throws AxelorException {
-		Long id = new Long(request.getContext().get("_id").toString());
-		ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
-		forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
-		
-		forecastRecapService.populateWithTimetablesOrOrders(forecastRecap);
-		forecastRecapService.populateWithExpenses(forecastRecap);
-		forecastRecapService.populateWithSalaries(forecastRecap);
-		forecastRecapService.populateWithForecastsNoSave(forecastRecap);
-		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		Map<LocalDate, BigDecimal> map = new HashMap<LocalDate, BigDecimal>();
-		for (ForecastRecapLine forecastRecapLine : forecastRecap.getForecastRecapLineList()) {
-			if(forecastRecapLine.getTypeSelect() == 2){
-				if(map.containsKey(forecastRecapLine.getEstimatedDate())){
-					map.put(forecastRecapLine.getEstimatedDate(), map.get(forecastRecapLine.getEstimatedDate()).add(forecastRecapLine.getAmount()));
-				}
-				else{
-					map.put(forecastRecapLine.getEstimatedDate(), forecastRecapLine.getAmount());
-				}
-			}
-		}
-		Set<LocalDate> keyList = map.keySet();
-		for (LocalDate date : keyList) {
-			Map<String, Object> dataMap = new HashMap<String, Object>();
-			dataMap.put("date", (Object)date);
-			dataMap.put("amount", (Object)map.get(date));
-			dataList.add(dataMap);
-		}
-		response.setData(dataList);
-	}
-	
-	public void marges(ActionRequest request, ActionResponse response) throws AxelorException {
-		Long id = new Long(request.getContext().get("_id").toString());
-		ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
-		forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
-		
-		forecastRecapService.populateWithTimetablesOrOrders(forecastRecap);
-		forecastRecapService.populateWithExpenses(forecastRecap);
-		forecastRecapService.populateWithSalaries(forecastRecap);
-		forecastRecapService.populateWithForecastsNoSave(forecastRecap);
-		forecastRecapService.populateWithInvoices(forecastRecap);
-		if(forecastRecap.getOpportunitiesTypeSelect() != null && forecastRecap.getOpportunitiesTypeSelect() > ForecastRecapRepository.OPPORTUNITY_TYPE_NO){
-			forecastRecapService.populateWithOpportunities(forecastRecap);
-		}
-		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		Map<LocalDate, BigDecimal> map = new HashMap<LocalDate, BigDecimal>();
-		for (ForecastRecapLine forecastRecapLine : forecastRecap.getForecastRecapLineList()) {
-			if(forecastRecapLine.getTypeSelect() == 2){
-				if(map.containsKey(forecastRecapLine.getEstimatedDate())){
-					map.put(forecastRecapLine.getEstimatedDate(), map.get(forecastRecapLine.getEstimatedDate()).subtract(forecastRecapLine.getAmount()));
-				}
-				else{
-					map.put(forecastRecapLine.getEstimatedDate(), BigDecimal.ZERO.subtract(forecastRecapLine.getAmount()));
-				}
-			}
-			else{
-				if(map.containsKey(forecastRecapLine.getEstimatedDate())){
-					map.put(forecastRecapLine.getEstimatedDate(), map.get(forecastRecapLine.getEstimatedDate()).add(forecastRecapLine.getAmount()));
-				}
-				else{
-					map.put(forecastRecapLine.getEstimatedDate(), forecastRecapLine.getAmount());
-				}
-			}
-		}
-		Set<LocalDate> keyList = map.keySet();
-		for (LocalDate date : keyList) {
-			Map<String, Object> dataMap = new HashMap<String, Object>();
-			dataMap.put("date", (Object)date);
-			dataMap.put("amount", (Object)map.get(date));
-			dataList.add(dataMap);
-		}
-		response.setData(dataList);
-	}
-		
+    ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
+
+    String url = forecastRecapService.getURLForecastRecapPDF(forecastRecap);
+
+    String title = I18n.get("ForecastRecap");
+    title += forecastRecap.getId();
+
+    logger.debug("Printing " + title);
+
+    response.setView(ActionView.define(title).add("html", url).map());
+  }
+
+  public void sales(ActionRequest request, ActionResponse response) throws AxelorException {
+    Long id = new Long(request.getContext().get("_id").toString());
+    ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
+    forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
+    Map<LocalDate, BigDecimal> mapExpected = new HashMap<LocalDate, BigDecimal>();
+    Map<LocalDate, BigDecimal> mapConfirmed = new HashMap<LocalDate, BigDecimal>();
+    if (forecastRecap.getOpportunitiesTypeSelect() != null
+        && forecastRecap.getOpportunitiesTypeSelect()
+            > ForecastRecapRepository.OPPORTUNITY_TYPE_NO) {
+      forecastRecapService.getOpportunities(forecastRecap, mapExpected, mapConfirmed);
+    }
+    forecastRecapService.getInvoices(forecastRecap, mapExpected, mapConfirmed);
+    forecastRecapService.getTimetablesOrOrders(forecastRecap, mapExpected, mapConfirmed);
+    forecastRecapService.getForecasts(forecastRecap, mapExpected, mapConfirmed);
+    List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+    Set<LocalDate> keyList = mapExpected.keySet();
+    for (LocalDate date : keyList) {
+      Map<String, Object> dataMap = new HashMap<String, Object>();
+      dataMap.put("date", (Object) date);
+      dataMap.put("amount", (Object) mapExpected.get(date));
+      dataMap.put("type", (Object) I18n.get("Expected"));
+      dataList.add(dataMap);
+    }
+    keyList = mapConfirmed.keySet();
+    for (LocalDate date : keyList) {
+      Map<String, Object> dataMap = new HashMap<String, Object>();
+      dataMap.put("date", (Object) date);
+      dataMap.put("amount", (Object) mapConfirmed.get(date));
+      dataMap.put("type", (Object) I18n.get("Confirmed"));
+      dataList.add(dataMap);
+    }
+    response.setData(dataList);
+  }
+
+  public void spending(ActionRequest request, ActionResponse response) throws AxelorException {
+    Long id = new Long(request.getContext().get("_id").toString());
+    ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
+    forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
+
+    forecastRecapService.populateWithTimetablesOrOrders(forecastRecap);
+    forecastRecapService.populateWithExpenses(forecastRecap);
+    forecastRecapService.populateWithSalaries(forecastRecap);
+    forecastRecapService.populateWithForecastsNoSave(forecastRecap);
+    List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+    Map<LocalDate, BigDecimal> map = new HashMap<LocalDate, BigDecimal>();
+    for (ForecastRecapLine forecastRecapLine : forecastRecap.getForecastRecapLineList()) {
+      if (forecastRecapLine.getTypeSelect() == 2) {
+        if (map.containsKey(forecastRecapLine.getEstimatedDate())) {
+          map.put(
+              forecastRecapLine.getEstimatedDate(),
+              map.get(forecastRecapLine.getEstimatedDate()).add(forecastRecapLine.getAmount()));
+        } else {
+          map.put(forecastRecapLine.getEstimatedDate(), forecastRecapLine.getAmount());
+        }
+      }
+    }
+    Set<LocalDate> keyList = map.keySet();
+    for (LocalDate date : keyList) {
+      Map<String, Object> dataMap = new HashMap<String, Object>();
+      dataMap.put("date", (Object) date);
+      dataMap.put("amount", (Object) map.get(date));
+      dataList.add(dataMap);
+    }
+    response.setData(dataList);
+  }
+
+  public void marges(ActionRequest request, ActionResponse response) throws AxelorException {
+    Long id = new Long(request.getContext().get("_id").toString());
+    ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
+    forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
+
+    forecastRecapService.populateWithTimetablesOrOrders(forecastRecap);
+    forecastRecapService.populateWithExpenses(forecastRecap);
+    forecastRecapService.populateWithSalaries(forecastRecap);
+    forecastRecapService.populateWithForecastsNoSave(forecastRecap);
+    forecastRecapService.populateWithInvoices(forecastRecap);
+    if (forecastRecap.getOpportunitiesTypeSelect() != null
+        && forecastRecap.getOpportunitiesTypeSelect()
+            > ForecastRecapRepository.OPPORTUNITY_TYPE_NO) {
+      forecastRecapService.populateWithOpportunities(forecastRecap);
+    }
+    List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+    Map<LocalDate, BigDecimal> map = new HashMap<LocalDate, BigDecimal>();
+    for (ForecastRecapLine forecastRecapLine : forecastRecap.getForecastRecapLineList()) {
+      if (forecastRecapLine.getTypeSelect() == 2) {
+        if (map.containsKey(forecastRecapLine.getEstimatedDate())) {
+          map.put(
+              forecastRecapLine.getEstimatedDate(),
+              map.get(forecastRecapLine.getEstimatedDate())
+                  .subtract(forecastRecapLine.getAmount()));
+        } else {
+          map.put(
+              forecastRecapLine.getEstimatedDate(),
+              BigDecimal.ZERO.subtract(forecastRecapLine.getAmount()));
+        }
+      } else {
+        if (map.containsKey(forecastRecapLine.getEstimatedDate())) {
+          map.put(
+              forecastRecapLine.getEstimatedDate(),
+              map.get(forecastRecapLine.getEstimatedDate()).add(forecastRecapLine.getAmount()));
+        } else {
+          map.put(forecastRecapLine.getEstimatedDate(), forecastRecapLine.getAmount());
+        }
+      }
+    }
+    Set<LocalDate> keyList = map.keySet();
+    for (LocalDate date : keyList) {
+      Map<String, Object> dataMap = new HashMap<String, Object>();
+      dataMap.put("date", (Object) date);
+      dataMap.put("amount", (Object) map.get(date));
+      dataList.add(dataMap);
+    }
+    response.setData(dataList);
+  }
 }

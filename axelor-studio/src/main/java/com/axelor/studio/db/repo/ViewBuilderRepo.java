@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.studio.db.repo;
 
-import javax.validation.ValidationException;
-
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaActionRepository;
@@ -26,49 +24,46 @@ import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.db.ViewBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import javax.validation.ValidationException;
 
 public class ViewBuilderRepo extends ViewBuilderRepository {
 
-	@Inject
-	MetaViewRepository metaViewRepo;
+  @Inject MetaViewRepository metaViewRepo;
 
-	@Inject
-	MetaActionRepository metaActionRepo;
+  @Inject MetaActionRepository metaActionRepo;
 
-	@Override
-	public ViewBuilder save(ViewBuilder viewBuilder) throws ValidationException {
+  @Override
+  public ViewBuilder save(ViewBuilder viewBuilder) throws ValidationException {
 
-		if (viewBuilder.getName().contains(" ")) {
-			throw new ValidationException(
-					I18n.get("Name must not contains space"));
-		}
+    if (viewBuilder.getName().contains(" ")) {
+      throw new ValidationException(I18n.get("Name must not contains space"));
+    }
 
-		return super.save(viewBuilder);
-	}
+    return super.save(viewBuilder);
+  }
 
-	@Override
-	@Transactional
-	public void remove(ViewBuilder viewBuilder) {
+  @Override
+  @Transactional
+  public void remove(ViewBuilder viewBuilder) {
 
-		MetaView metaView = viewBuilder.getMetaViewGenerated();
-		if (metaView != null) {
-			metaView.setRemoveView(true);
-			metaViewRepo.save(metaView);
-		}
+    MetaView metaView = viewBuilder.getMetaViewGenerated();
+    if (metaView != null) {
+      metaView.setRemoveView(true);
+      metaViewRepo.save(metaView);
+    }
 
-		// String onSave = viewBuilder.getOnSave();
-		//
-		// if(onSave != null){
-		// List<MetaAction> metaActions = metaActionRepo.all()
-		// .filter("self.name in (?1)", Arrays.asList(onSave.split(",")))
-		// .fetch();
-		// for(MetaAction action : metaActions){
-		// action.setRemoveAction(true);
-		// metaActionRepo.save(action);
-		// }
-		// }
+    // String onSave = viewBuilder.getOnSave();
+    //
+    // if(onSave != null){
+    // List<MetaAction> metaActions = metaActionRepo.all()
+    // .filter("self.name in (?1)", Arrays.asList(onSave.split(",")))
+    // .fetch();
+    // for(MetaAction action : metaActions){
+    // action.setRemoveAction(true);
+    // metaActionRepo.save(action);
+    // }
+    // }
 
-		super.remove(viewBuilder);
-	}
-
+    super.remove(viewBuilder);
+  }
 }

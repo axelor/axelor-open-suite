@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.production.web;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -39,175 +31,162 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ManufOrderController {
 
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	private ManufOrderWorkflowService manufOrderWorkflowService;
-	
-	@Inject
-	private ManufOrderService manufOrderService;
-	
-	@Inject
-	private ManufOrderRepository manufOrderRepo;
-	
-	
-//	public void copyToConsume (ActionRequest request, ActionResponse response) {
-//
-//		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-//
-//		manufOrderService.copyToConsume(ManufOrder.find(manufOrder.getId()));
-//		
-//		response.setReload(true);
-//		
-//	}
-	
-	
-//	public void copyToProduce (ActionRequest request, ActionResponse response) {
-//	
-//		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-//
-//		manufOrderService.copyToProduce(ManufOrder.find(manufOrder.getId()));
-//		
-//		response.setReload(true);
-//		
-//	}
-	
-	
-	public void start (ActionRequest request, ActionResponse response) {
-		
-		Long manufOrderId = (Long)request.getContext().get("id");
-		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
-		
-		manufOrderWorkflowService.start(manufOrder);
-		
-		response.setReload(true);
-		
-	}
-	
-	public void pause (ActionRequest request, ActionResponse response) {
-		
-		Long manufOrderId = (Long)request.getContext().get("id");
-		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		manufOrderWorkflowService.pause(manufOrder);
-		
-		response.setReload(true);
-		
-	}
-	
-	public void resume (ActionRequest request, ActionResponse response) {
-		
-		Long manufOrderId = (Long)request.getContext().get("id");
-		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+  @Inject private ManufOrderWorkflowService manufOrderWorkflowService;
 
-		manufOrderWorkflowService.resume(manufOrder);
-		
-		response.setReload(true);
-		
-	}
-	
-	public void finish (ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Long manufOrderId = (Long)request.getContext().get("id");
-		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+  @Inject private ManufOrderService manufOrderService;
 
-		manufOrderWorkflowService.finish(manufOrder);
-		
-		response.setReload(true);
-		
-	}
-	
-	public void cancel (ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Long manufOrderId = (Long)request.getContext().get("id");
-		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+  @Inject private ManufOrderRepository manufOrderRepo;
 
-		manufOrderWorkflowService.cancel(manufOrder);
-		
-		response.setReload(true);
-		
-	}
-	
-	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Long manufOrderId = (Long)request.getContext().get("id");
-		ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+  //	public void copyToConsume (ActionRequest request, ActionResponse response) {
+  //
+  //		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+  //
+  //		manufOrderService.copyToConsume(ManufOrder.find(manufOrder.getId()));
+  //
+  //		response.setReload(true);
+  //
+  //	}
 
-		manufOrderWorkflowService.plan(manufOrder);
-		
-		response.setReload(true);
-		
-	}
-	
-	
-	
-	/**
-	 * Method that generate a Pdf file for an manufacturing order
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
-	 */
-	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+  //	public void copyToProduce (ActionRequest request, ActionResponse response) {
+  //
+  //		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+  //
+  //		manufOrderService.copyToProduce(ManufOrder.find(manufOrder.getId()));
+  //
+  //		response.setReload(true);
+  //
+  //	}
 
-		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-		String manufOrderIds = "";
+  public void start(ActionRequest request, ActionResponse response) {
 
-		@SuppressWarnings("unchecked")
-		List<Integer> lstSelectedManufOrder = (List<Integer>) request.getContext().get("_ids");
-		if(lstSelectedManufOrder != null){
-			for(Integer it : lstSelectedManufOrder) {
-				manufOrderIds+= it.toString()+",";
-			}
-		}	
-			
-		if(!manufOrderIds.equals(""))  {
-			manufOrderIds = manufOrderIds.substring(0, manufOrderIds.length()-1);	
-			manufOrder = manufOrderRepo.find(new Long(lstSelectedManufOrder.get(0)));
-		}else if(manufOrder.getId() != null)  {
-			manufOrderIds = manufOrder.getId().toString();			
-		}
-		
-		if(!manufOrderIds.equals(""))  {
-			
-			String name = I18n.get("Print");
-			if(manufOrder.getManufOrderSeq() != null)  {
-				name += lstSelectedManufOrder == null ? "OF "+manufOrder.getManufOrderSeq():"OFs";
-			}
-			
-			String fileLink = ReportFactory.createReport(IReport.MANUF_ORDER, name+"-${date}")
-					.addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
-					.addParam("ManufOrderId", manufOrderIds)
-					.generate()
-					.getFileLink();
+    Long manufOrderId = (Long) request.getContext().get("id");
+    ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
 
-			LOG.debug("Printing "+name);
-		
-			response.setView(ActionView
-					.define(name)
-					.add("html", fileLink).map());
-			
-		}  
-		else  {
-			response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
-		}	
-	}
-	
-	
-	public void preFillOperations (ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-		ManufOrderService moService = Beans.get(ManufOrderService.class);
-		manufOrder  = manufOrderRepo.find(manufOrder.getId());
-		moService.preFillOperations(manufOrder);
-		response.setReload(true);
-		
-	}
-	
+    manufOrderWorkflowService.start(manufOrder);
+
+    response.setReload(true);
+  }
+
+  public void pause(ActionRequest request, ActionResponse response) {
+
+    Long manufOrderId = (Long) request.getContext().get("id");
+    ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+
+    manufOrderWorkflowService.pause(manufOrder);
+
+    response.setReload(true);
+  }
+
+  public void resume(ActionRequest request, ActionResponse response) {
+
+    Long manufOrderId = (Long) request.getContext().get("id");
+    ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+
+    manufOrderWorkflowService.resume(manufOrder);
+
+    response.setReload(true);
+  }
+
+  public void finish(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Long manufOrderId = (Long) request.getContext().get("id");
+    ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+
+    manufOrderWorkflowService.finish(manufOrder);
+
+    response.setReload(true);
+  }
+
+  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Long manufOrderId = (Long) request.getContext().get("id");
+    ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+
+    manufOrderWorkflowService.cancel(manufOrder);
+
+    response.setReload(true);
+  }
+
+  public void plan(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Long manufOrderId = (Long) request.getContext().get("id");
+    ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+
+    manufOrderWorkflowService.plan(manufOrder);
+
+    response.setReload(true);
+  }
+
+  /**
+   * Method that generate a Pdf file for an manufacturing order
+   *
+   * @param request
+   * @param response
+   * @return
+   * @throws BirtException
+   * @throws IOException
+   */
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    String manufOrderIds = "";
+
+    @SuppressWarnings("unchecked")
+    List<Integer> lstSelectedManufOrder = (List<Integer>) request.getContext().get("_ids");
+    if (lstSelectedManufOrder != null) {
+      for (Integer it : lstSelectedManufOrder) {
+        manufOrderIds += it.toString() + ",";
+      }
+    }
+
+    if (!manufOrderIds.equals("")) {
+      manufOrderIds = manufOrderIds.substring(0, manufOrderIds.length() - 1);
+      manufOrder = manufOrderRepo.find(new Long(lstSelectedManufOrder.get(0)));
+    } else if (manufOrder.getId() != null) {
+      manufOrderIds = manufOrder.getId().toString();
+    }
+
+    if (!manufOrderIds.equals("")) {
+
+      String name = I18n.get("Print");
+      if (manufOrder.getManufOrderSeq() != null) {
+        name += lstSelectedManufOrder == null ? "OF " + manufOrder.getManufOrderSeq() : "OFs";
+      }
+
+      String fileLink =
+          ReportFactory.createReport(IReport.MANUF_ORDER, name + "-${date}")
+              .addParam("Locale", manufOrderService.getLanguageToPrinting(manufOrder))
+              .addParam("ManufOrderId", manufOrderIds)
+              .generate()
+              .getFileLink();
+
+      LOG.debug("Printing " + name);
+
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
+    }
+  }
+
+  public void preFillOperations(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    ManufOrderService moService = Beans.get(ManufOrderService.class);
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
+    moService.preFillOperations(manufOrder);
+    response.setReload(true);
+  }
 }

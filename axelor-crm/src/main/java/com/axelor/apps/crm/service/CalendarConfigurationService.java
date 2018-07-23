@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,102 +17,101 @@
  */
 package com.axelor.apps.crm.service;
 
-import java.util.HashSet;
-
-import com.axelor.inject.Beans;
 import com.axelor.apps.crm.db.CalendarConfiguration;
 import com.axelor.apps.crm.db.repo.CalendarConfigurationRepository;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAction;
-import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.HashSet;
 
 public class CalendarConfigurationService {
-	
-	private final String NAME = "crm-root-event-calendar-";
-	
-	@Inject
-	protected CalendarConfigurationRepository calendarConfigurationRepo;
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createEntryMenu(CalendarConfiguration calendarConfiguration)  {
-		
-		String menuName = NAME+calendarConfiguration.getId();
-		String title = calendarConfiguration.getName();
-		
-		MetaAction metaAction = this.createMetaAction(menuName.replaceAll("-", "."), title);
-		MetaMenu metaMenu = this.createMetaMenu(menuName, title, calendarConfiguration.getCalendarGroup(), calendarConfiguration.getCalendarUser(), metaAction);
-		Beans.get(MetaMenuRepository.class).save(metaMenu);
-		
-		calendarConfiguration.setMetaAction(metaAction);
-		calendarConfigurationRepo.save(calendarConfiguration);
-		
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void deleteEntryMenu(CalendarConfiguration calendarConfiguration)  {
 
-		calendarConfiguration.setMetaAction(null);
-		
-		String menuName = NAME+calendarConfiguration.getId();
-		
-		MetaMenuRepository metaMenuRepository = Beans.get(MetaMenuRepository.class);
-		
-		MetaMenu metaMenu = metaMenuRepository.findByName(menuName);
-		
-		metaMenuRepository.remove(metaMenu);
-		
-		MetaActionRepository metaActionRepository = Beans.get(MetaActionRepository.class);
-		
-		MetaAction metaAction = metaActionRepository.findByName(menuName.replaceAll("-", "."));
-		
-		metaActionRepository.remove(metaAction);
-		
-	}
-	
-	
+  private final String NAME = "crm-root-event-calendar-";
 
-	public MetaMenu createMetaMenu(String name, String title, Group group, User user, MetaAction metaAction)  {
-		MetaMenu metaMenu = new MetaMenu();
-		metaMenu.setName(name);
-		metaMenu.setAction(metaAction);
-		metaMenu.setGroups(new HashSet<Group>());
-		metaMenu.getGroups().add(group);
-		metaMenu.setModule("axelor-crm");
-		metaMenu.setTitle(title);
-		
-		return metaMenu;
-	}
-	
-	public MetaAction createMetaAction(String name, String title)  {
-		
-		MetaAction metaAction = new MetaAction();
-		metaAction.setModel("com.axelor.apps.crm.db.Event");
-		metaAction.setModule("axelor-crm");
-		metaAction.setName(name);
-		metaAction.setType("action-view");
-		
-		
-		String xml = "<action-view title=\""+title+"\" icon=\"img/16px/calendarTask_16px.png\" model=\"com.axelor.apps.crm.db.Event\" name=\""+name+"\"> "+
-    "<view type=\"calendar\" name=\"event-calendar\"/>" +
-    "<view type=\"grid\" name=\"event-grid\"/>" +
-    "<view type=\"form\" name=\"event-form\"/>" +
-    "<context name=\"_typeSelect\" expr=\"2\"/>" +
-    "</action-view>";
-		
-		metaAction.setXml(xml);
-		
-		return metaAction;
-		
-	}
-	
-	
-	
-	
+  @Inject protected CalendarConfigurationRepository calendarConfigurationRepo;
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void createEntryMenu(CalendarConfiguration calendarConfiguration) {
+
+    String menuName = NAME + calendarConfiguration.getId();
+    String title = calendarConfiguration.getName();
+
+    MetaAction metaAction = this.createMetaAction(menuName.replaceAll("-", "."), title);
+    MetaMenu metaMenu =
+        this.createMetaMenu(
+            menuName,
+            title,
+            calendarConfiguration.getCalendarGroup(),
+            calendarConfiguration.getCalendarUser(),
+            metaAction);
+    Beans.get(MetaMenuRepository.class).save(metaMenu);
+
+    calendarConfiguration.setMetaAction(metaAction);
+    calendarConfigurationRepo.save(calendarConfiguration);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void deleteEntryMenu(CalendarConfiguration calendarConfiguration) {
+
+    calendarConfiguration.setMetaAction(null);
+
+    String menuName = NAME + calendarConfiguration.getId();
+
+    MetaMenuRepository metaMenuRepository = Beans.get(MetaMenuRepository.class);
+
+    MetaMenu metaMenu = metaMenuRepository.findByName(menuName);
+
+    metaMenuRepository.remove(metaMenu);
+
+    MetaActionRepository metaActionRepository = Beans.get(MetaActionRepository.class);
+
+    MetaAction metaAction = metaActionRepository.findByName(menuName.replaceAll("-", "."));
+
+    metaActionRepository.remove(metaAction);
+  }
+
+  public MetaMenu createMetaMenu(
+      String name, String title, Group group, User user, MetaAction metaAction) {
+    MetaMenu metaMenu = new MetaMenu();
+    metaMenu.setName(name);
+    metaMenu.setAction(metaAction);
+    metaMenu.setGroups(new HashSet<Group>());
+    metaMenu.getGroups().add(group);
+    metaMenu.setModule("axelor-crm");
+    metaMenu.setTitle(title);
+
+    return metaMenu;
+  }
+
+  public MetaAction createMetaAction(String name, String title) {
+
+    MetaAction metaAction = new MetaAction();
+    metaAction.setModel("com.axelor.apps.crm.db.Event");
+    metaAction.setModule("axelor-crm");
+    metaAction.setName(name);
+    metaAction.setType("action-view");
+
+    String xml =
+        "<action-view title=\""
+            + title
+            + "\" icon=\"img/16px/calendarTask_16px.png\" model=\"com.axelor.apps.crm.db.Event\" name=\""
+            + name
+            + "\"> "
+            + "<view type=\"calendar\" name=\"event-calendar\"/>"
+            + "<view type=\"grid\" name=\"event-grid\"/>"
+            + "<view type=\"form\" name=\"event-form\"/>"
+            + "<context name=\"_typeSelect\" expr=\"2\"/>"
+            + "</action-view>";
+
+    metaAction.setXml(xml);
+
+    return metaAction;
+  }
 }

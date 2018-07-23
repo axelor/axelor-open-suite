@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,58 +17,52 @@
  */
 package com.axelor.apps.base.db.repo;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
 
+public class ProductBaseRepository extends ProductRepository {
 
-public class ProductBaseRepository extends ProductRepository{
-	
-	@Inject
-	private MetaFiles metaFiles;
+  @Inject private MetaFiles metaFiles;
 
-	@Inject
-	protected GeneralService generalService;
+  @Inject protected GeneralService generalService;
 
-	
-	@Override
-	public Product save(Product product){
-		
-		product.setFullName("["+product.getCode()+"]"+product.getName());
-		
-		product = super.save(product);
-		
-		if((product.getBarCode() == null)&&
-           (generalService.getGeneral().getActivateBarCodeGeneration())) {
-			    	
-			try {
-				InputStream inStream = BarcodeGeneratorService.createBarCode(product.getId());
-				if (inStream != null) {
-			    	MetaFile barcodeFile =  metaFiles.upload(inStream, String.format("ProductBarCode%d.png", product.getId()));
-					product.setBarCode(barcodeFile);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	    	
-		}
-		
-		return super.save(product);
-	}
-	
-	@Override
-	public Product copy(Product product, boolean deep) {
-		
-		Product copy = super.copy(product, deep);
-		copy.setBarCode(null);
-		
-		return copy;
-		
-	}
+  @Override
+  public Product save(Product product) {
+
+    product.setFullName("[" + product.getCode() + "]" + product.getName());
+
+    product = super.save(product);
+
+    if ((product.getBarCode() == null)
+        && (generalService.getGeneral().getActivateBarCodeGeneration())) {
+
+      try {
+        InputStream inStream = BarcodeGeneratorService.createBarCode(product.getId());
+        if (inStream != null) {
+          MetaFile barcodeFile =
+              metaFiles.upload(inStream, String.format("ProductBarCode%d.png", product.getId()));
+          product.setBarCode(barcodeFile);
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return super.save(product);
+  }
+
+  @Override
+  public Product copy(Product product, boolean deep) {
+
+    Product copy = super.copy(product, deep);
+    copy.setBarCode(null);
+
+    return copy;
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,19 +26,21 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class WeeklyPlanningController {
-	
-	@Inject
-	private WeeklyPlanningService weeklyPlanningService;
-	
-	public void initPlanning(ActionRequest request, ActionResponse response){
-		WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
-		planning = weeklyPlanningService.initPlanning(planning);
-		response.setValue("weekDays",planning.getWeekDays());
-	}
-	
-	public void checkPlanning(ActionRequest request, ActionResponse response){
-		WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
-		try{planning = weeklyPlanningService.checkPlanning(planning);}
-		catch(AxelorException e){TraceBackService.trace(response, e);}
-	}
+
+  @Inject private WeeklyPlanningService weeklyPlanningService;
+
+  public void initPlanning(ActionRequest request, ActionResponse response) {
+    WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
+    planning = weeklyPlanningService.initPlanning(planning);
+    response.setValue("weekDays", planning.getWeekDays());
+  }
+
+  public void checkPlanning(ActionRequest request, ActionResponse response) {
+    WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
+    try {
+      planning = weeklyPlanningService.checkPlanning(planning);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

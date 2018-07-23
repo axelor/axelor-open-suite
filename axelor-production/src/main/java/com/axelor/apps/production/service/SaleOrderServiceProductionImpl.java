@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -35,39 +35,48 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderServiceProductionImpl extends SaleOrderServiceSupplychainImpl {
-	
-	protected ProductionOrderSaleOrderService productionOrderSaleOrderService;
-	
-	@Inject
-	public SaleOrderServiceProductionImpl(SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService,
-			SequenceService sequenceService, PartnerService partnerService, PartnerRepository partnerRepo, SaleOrderRepository saleOrderRepo,
-			GeneralService generalService, UserService userService, SaleOrderStockService saleOrderStockService, SaleOrderPurchaseService saleOrderPurchaseService,
-			ProductionOrderSaleOrderService productionOrderSaleOrderService, AccountConfigService accountConfigService) {
-		
-		super(saleOrderLineService, saleOrderLineTaxService, sequenceService,partnerService, partnerRepo, saleOrderRepo, generalService,
-				userService, saleOrderStockService, saleOrderPurchaseService, accountConfigService);
-		
-		this.productionOrderSaleOrderService = productionOrderSaleOrderService;
-		
-	}
-	
-	
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirmSaleOrder(SaleOrder saleOrder) throws Exception  {
 
-		super.confirmSaleOrder(saleOrder);
-		
-		if(general.getProductionOrderGenerationAuto())  {
-			productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-		}
-		
-	}
-	
-	
+  protected ProductionOrderSaleOrderService productionOrderSaleOrderService;
+
+  @Inject
+  public SaleOrderServiceProductionImpl(
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderLineTaxService saleOrderLineTaxService,
+      SequenceService sequenceService,
+      PartnerService partnerService,
+      PartnerRepository partnerRepo,
+      SaleOrderRepository saleOrderRepo,
+      GeneralService generalService,
+      UserService userService,
+      SaleOrderStockService saleOrderStockService,
+      SaleOrderPurchaseService saleOrderPurchaseService,
+      ProductionOrderSaleOrderService productionOrderSaleOrderService,
+      AccountConfigService accountConfigService) {
+
+    super(
+        saleOrderLineService,
+        saleOrderLineTaxService,
+        sequenceService,
+        partnerService,
+        partnerRepo,
+        saleOrderRepo,
+        generalService,
+        userService,
+        saleOrderStockService,
+        saleOrderPurchaseService,
+        accountConfigService);
+
+    this.productionOrderSaleOrderService = productionOrderSaleOrderService;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void confirmSaleOrder(SaleOrder saleOrder) throws Exception {
+
+    super.confirmSaleOrder(saleOrder);
+
+    if (general.getProductionOrderGenerationAuto()) {
+      productionOrderSaleOrderService.generateProductionOrder(saleOrder);
+    }
+  }
 }
-
-
-
-
-

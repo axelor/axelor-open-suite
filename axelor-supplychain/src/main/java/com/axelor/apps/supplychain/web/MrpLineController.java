@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,18 +26,15 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class MrpLineController {
-	
-	@Inject
-	protected MrpLineService mrpLineService;
-	
-	@Inject
-	protected MrpLineRepository mrpLineRepository;
-	
-	
-	public void generateProposal(ActionRequest request, ActionResponse response) throws AxelorException  {
-		MrpLine mrpLine = request.getContext().asType(MrpLine.class);
-		mrpLineService.generateProposal(mrpLineRepository.find(mrpLine.getId()));
-		response.setReload(true);
-	}
-	
+
+  @Inject protected MrpLineService mrpLineService;
+
+  @Inject protected MrpLineRepository mrpLineRepository;
+
+  public void generateProposal(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    MrpLine mrpLine = request.getContext().asType(MrpLine.class);
+    mrpLineService.generateProposal(mrpLineRepository.find(mrpLine.getId()));
+    response.setReload(true);
+  }
 }

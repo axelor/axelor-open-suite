@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,13 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
-
-import java.io.File;
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -49,186 +42,194 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
-public class BankOrderFile00100103Service extends BankOrderFileService  {
+public class BankOrderFile00100103Service extends BankOrderFileService {
 
-	@Inject
-	public BankOrderFile00100103Service(BankOrder bankOrder)  {
-		
-		super(bankOrder);
-		
-		context = "com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03";
-		fileExtension = FILE_EXTENSION_XML;
+  @Inject
+  public BankOrderFile00100103Service(BankOrder bankOrder) {
 
-	}
-	
-	
-	/**
-	 * Method to create an XML file for SEPA transfer pain.001.001.03
-	 * 
-	 * @throws AxelorException
-	 * @throws DatatypeConfigurationException
-	 * @throws JAXBException
-	 * @throws IOException
-	 */
-	@Override
-	public File generateFile() throws JAXBException, IOException, AxelorException, DatatypeConfigurationException  {
+    super(bankOrder);
 
-		DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+    context = "com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03";
+    fileExtension = FILE_EXTENSION_XML;
+  }
 
-		ObjectFactory factory = new ObjectFactory();
+  /**
+   * Method to create an XML file for SEPA transfer pain.001.001.03
+   *
+   * @throws AxelorException
+   * @throws DatatypeConfigurationException
+   * @throws JAXBException
+   * @throws IOException
+   */
+  @Override
+  public File generateFile()
+      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
 
-		ServiceLevel8Choice svcLvl = factory.createServiceLevel8Choice();
-		svcLvl.setCd("SEPA");
+    DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 
-		PaymentTypeInformation19 pmtTpInf = factory.createPaymentTypeInformation19();
-		pmtTpInf.setSvcLvl(svcLvl);
+    ObjectFactory factory = new ObjectFactory();
 
-		// Payer
-		PartyIdentification32 dbtr = factory.createPartyIdentification32();
-		dbtr.setNm(senderBankDetails.getOwnerName());
+    ServiceLevel8Choice svcLvl = factory.createServiceLevel8Choice();
+    svcLvl.setCd("SEPA");
 
-		// IBAN
-		AccountIdentification4Choice iban = factory.createAccountIdentification4Choice();
-		iban.setIBAN(senderBankDetails.getIban());
+    PaymentTypeInformation19 pmtTpInf = factory.createPaymentTypeInformation19();
+    pmtTpInf.setSvcLvl(svcLvl);
 
-		CashAccount16 dbtrAcct = factory.createCashAccount16();
-		dbtrAcct.setId(iban);
+    // Payer
+    PartyIdentification32 dbtr = factory.createPartyIdentification32();
+    dbtr.setNm(senderBankDetails.getOwnerName());
 
-		// BIC
-		FinancialInstitutionIdentification7 finInstnId = factory.createFinancialInstitutionIdentification7();
-		finInstnId.setBIC(senderBankDetails.getBank().getCode());
+    // IBAN
+    AccountIdentification4Choice iban = factory.createAccountIdentification4Choice();
+    iban.setIBAN(senderBankDetails.getIban());
 
-		BranchAndFinancialInstitutionIdentification4 dbtrAgt = factory.createBranchAndFinancialInstitutionIdentification4();
-		dbtrAgt.setFinInstnId(finInstnId);
+    CashAccount16 dbtrAcct = factory.createCashAccount16();
+    dbtrAcct.setId(iban);
 
-		PaymentInstructionInformation3 pmtInf = factory.createPaymentInstructionInformation3();
-		pmtInf.setPmtInfId(bankOrderSeq);
-		pmtInf.setPmtMtd(PaymentMethod3Code.TRF);
-		pmtInf.setPmtTpInf(pmtTpInf);
-		
-		/**
-		 * RequestedExecutionDate
-		 * Definition : Date at which the initiating party asks the Debtor's Bank to process the payment. This is the
-		 * date on which the debtor's account(s) is (are) to be debited.
-		 * XML Tag : <ReqdExctnDt>
-		 * Occurrences : [1..1]
-		 * Format : YYYY-MM-DD
-		 * Rules : date is limited to maximum one year in the future. 
-		 */
-		pmtInf.setReqdExctnDt(datatypeFactory.newXMLGregorianCalendar(bankOrderDate.toString("yyyy-MM-dd")));
-		pmtInf.setDbtr(dbtr);
-		pmtInf.setDbtrAcct(dbtrAcct);
-		pmtInf.setDbtrAgt(dbtrAgt);
+    // BIC
+    FinancialInstitutionIdentification7 finInstnId =
+        factory.createFinancialInstitutionIdentification7();
+    finInstnId.setBIC(senderBankDetails.getBank().getCode());
 
-		CreditTransferTransactionInformation10 cdtTrfTxInf = null; PaymentIdentification1 pmtId = null;
-		AmountType3Choice amt = null; ActiveOrHistoricCurrencyAndAmount instdAmt = null;
-		PartyIdentification32 cbtr = null; CashAccount16 cbtrAcct = null;
-		BranchAndFinancialInstitutionIdentification4 cbtrAgt = null;
-		RemittanceInformation5 rmtInf = null;
-		
-		for (BankOrderLine bankOrderLine : bankOrderLineList)  { 
+    BranchAndFinancialInstitutionIdentification4 dbtrAgt =
+        factory.createBranchAndFinancialInstitutionIdentification4();
+    dbtrAgt.setFinInstnId(finInstnId);
 
-			BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+    PaymentInstructionInformation3 pmtInf = factory.createPaymentInstructionInformation3();
+    pmtInf.setPmtInfId(bankOrderSeq);
+    pmtInf.setPmtMtd(PaymentMethod3Code.TRF);
+    pmtInf.setPmtTpInf(pmtTpInf);
 
-			// Reference
-			pmtId = factory.createPaymentIdentification1();
-//			pmtId.setInstrId(bankOrderLine.getSequence());
-			pmtId.setEndToEndId(bankOrderLine.getSequence());
+    /**
+     * RequestedExecutionDate Definition : Date at which the initiating party asks the Debtor's Bank
+     * to process the payment. This is the date on which the debtor's account(s) is (are) to be
+     * debited. XML Tag : <ReqdExctnDt> Occurrences : [1..1] Format : YYYY-MM-DD Rules : date is
+     * limited to maximum one year in the future.
+     */
+    pmtInf.setReqdExctnDt(
+        datatypeFactory.newXMLGregorianCalendar(bankOrderDate.toString("yyyy-MM-dd")));
+    pmtInf.setDbtr(dbtr);
+    pmtInf.setDbtrAcct(dbtrAcct);
+    pmtInf.setDbtrAgt(dbtrAgt);
 
-			// Amount
-			instdAmt = factory.createActiveOrHistoricCurrencyAndAmount();
-			instdAmt.setCcy(bankOrderCurrency.getCode());
-			instdAmt.setValue(bankOrderLine.getBankOrderAmount());
+    CreditTransferTransactionInformation10 cdtTrfTxInf = null;
+    PaymentIdentification1 pmtId = null;
+    AmountType3Choice amt = null;
+    ActiveOrHistoricCurrencyAndAmount instdAmt = null;
+    PartyIdentification32 cbtr = null;
+    CashAccount16 cbtrAcct = null;
+    BranchAndFinancialInstitutionIdentification4 cbtrAgt = null;
+    RemittanceInformation5 rmtInf = null;
 
-			amt = factory.createAmountType3Choice();
-			amt.setInstdAmt(instdAmt);
+    for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
-			// Receiver
-			cbtr = factory.createPartyIdentification32();
-			cbtr.setNm(receiverBankDetails.getOwnerName());
+      BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
 
-			// IBAN
-			iban = factory.createAccountIdentification4Choice();
-			iban.setIBAN(receiverBankDetails.getIban());
+      // Reference
+      pmtId = factory.createPaymentIdentification1();
+      //			pmtId.setInstrId(bankOrderLine.getSequence());
+      pmtId.setEndToEndId(bankOrderLine.getSequence());
 
-			cbtrAcct = factory.createCashAccount16();
-			cbtrAcct.setId(iban);
+      // Amount
+      instdAmt = factory.createActiveOrHistoricCurrencyAndAmount();
+      instdAmt.setCcy(bankOrderCurrency.getCode());
+      instdAmt.setValue(bankOrderLine.getBankOrderAmount());
 
-			// BIC
-			finInstnId = factory.createFinancialInstitutionIdentification7();
-			finInstnId.setBIC(receiverBankDetails.getBank().getCode());
+      amt = factory.createAmountType3Choice();
+      amt.setInstdAmt(instdAmt);
 
-			cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification4();
-			cbtrAgt.setFinInstnId(finInstnId);
+      // Receiver
+      cbtr = factory.createPartyIdentification32();
+      cbtr.setNm(receiverBankDetails.getOwnerName());
 
-			rmtInf = factory.createRemittanceInformation5();
-			
-			String ustrd = "";
-			if(!Strings.isNullOrEmpty(bankOrderLine.getReceiverReference()))  {  ustrd += bankOrderLine.getReceiverReference();  }
-			if(!Strings.isNullOrEmpty(bankOrderLine.getReceiverLabel()))  {  
-				if(!Strings.isNullOrEmpty(ustrd))  {  ustrd += " - ";  }
-				ustrd += bankOrderLine.getReceiverLabel();
-			}
-			
-			if(!Strings.isNullOrEmpty(ustrd))  {  
-				rmtInf.getUstrd().add(ustrd);
-			}
-						
-//			StructuredRemittanceInformation7 strd = factory.createStructuredRemittanceInformation7();
-//			
-//			CreditorReferenceInformation2 cdtrRefInf = factory.createCreditorReferenceInformation2();
-//			cdtrRefInf.setRef(bankOrderLine.getReceiverReference());
-//			
-//			strd.setCdtrRefInf(cdtrRefInf);
-//			
-//			rmtInf.getStrd().add(strd);
-			
-			// Transaction
-			cdtTrfTxInf = factory.createCreditTransferTransactionInformation10();
-			cdtTrfTxInf.setPmtId(pmtId);
-			cdtTrfTxInf.setAmt(amt);
-			cdtTrfTxInf.setCdtr(cbtr);
-			cdtTrfTxInf.setCdtrAcct(cbtrAcct);
-			cdtTrfTxInf.setCdtrAgt(cbtrAgt);
-			cdtTrfTxInf.setRmtInf(rmtInf);
+      // IBAN
+      iban = factory.createAccountIdentification4Choice();
+      iban.setIBAN(receiverBankDetails.getIban());
 
-			pmtInf.getCdtTrfTxInf().add(cdtTrfTxInf);
-		}
+      cbtrAcct = factory.createCashAccount16();
+      cbtrAcct.setId(iban);
 
-		// Header
-		GroupHeader32 grpHdr = factory.createGroupHeader32();
-		
-		/**
-		 * Référence du message qui n'est pas utilisée comme référence fonctionnelle.
-		 */
-		grpHdr.setMsgId(bankOrderSeq);
-		
-		/**
-		 * CreationDateTime
-		 * Definition : Date and Time at which a (group of) payment instruction(s) was created by the instructing party.
-		 * XML Tag : <CreDtTm>
-		 * Occurrences : [1..1]
-		 * Format : YYYY-MM-DDThh:mm:ss 
-		 */
-		grpHdr.setCreDtTm(datatypeFactory.newXMLGregorianCalendar(generationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss")));
-		grpHdr.setNbOfTxs(Integer.toString(nbOfLines));
-		grpHdr.setCtrlSum(arithmeticTotal);
-		grpHdr.setInitgPty(dbtr);
+      // BIC
+      finInstnId = factory.createFinancialInstitutionIdentification7();
+      finInstnId.setBIC(receiverBankDetails.getBank().getCode());
 
-		// Parent
-		CustomerCreditTransferInitiationV03 customerCreditTransferInitiationV03 = factory.createCustomerCreditTransferInitiationV03();
-		customerCreditTransferInitiationV03.setGrpHdr(grpHdr);
-		customerCreditTransferInitiationV03.getPmtInf().add(pmtInf);
-		
-		// Document
-		Document xml = factory.createDocument();
-		xml.setCstmrCdtTrfInitn(customerCreditTransferInitiationV03);
+      cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification4();
+      cbtrAgt.setFinInstnId(finInstnId);
 
-		fileToCreate = factory.createDocument(xml);
-		
-		return super.generateFile();
-	}
-	
-	
+      rmtInf = factory.createRemittanceInformation5();
+
+      String ustrd = "";
+      if (!Strings.isNullOrEmpty(bankOrderLine.getReceiverReference())) {
+        ustrd += bankOrderLine.getReceiverReference();
+      }
+      if (!Strings.isNullOrEmpty(bankOrderLine.getReceiverLabel())) {
+        if (!Strings.isNullOrEmpty(ustrd)) {
+          ustrd += " - ";
+        }
+        ustrd += bankOrderLine.getReceiverLabel();
+      }
+
+      if (!Strings.isNullOrEmpty(ustrd)) {
+        rmtInf.getUstrd().add(ustrd);
+      }
+
+      //			StructuredRemittanceInformation7 strd = factory.createStructuredRemittanceInformation7();
+      //
+      //			CreditorReferenceInformation2 cdtrRefInf = factory.createCreditorReferenceInformation2();
+      //			cdtrRefInf.setRef(bankOrderLine.getReceiverReference());
+      //
+      //			strd.setCdtrRefInf(cdtrRefInf);
+      //
+      //			rmtInf.getStrd().add(strd);
+
+      // Transaction
+      cdtTrfTxInf = factory.createCreditTransferTransactionInformation10();
+      cdtTrfTxInf.setPmtId(pmtId);
+      cdtTrfTxInf.setAmt(amt);
+      cdtTrfTxInf.setCdtr(cbtr);
+      cdtTrfTxInf.setCdtrAcct(cbtrAcct);
+      cdtTrfTxInf.setCdtrAgt(cbtrAgt);
+      cdtTrfTxInf.setRmtInf(rmtInf);
+
+      pmtInf.getCdtTrfTxInf().add(cdtTrfTxInf);
+    }
+
+    // Header
+    GroupHeader32 grpHdr = factory.createGroupHeader32();
+
+    /** Référence du message qui n'est pas utilisée comme référence fonctionnelle. */
+    grpHdr.setMsgId(bankOrderSeq);
+
+    /**
+     * CreationDateTime Definition : Date and Time at which a (group of) payment instruction(s) was
+     * created by the instructing party. XML Tag : <CreDtTm> Occurrences : [1..1] Format :
+     * YYYY-MM-DDThh:mm:ss
+     */
+    grpHdr.setCreDtTm(
+        datatypeFactory.newXMLGregorianCalendar(
+            generationDateTime.toString("yyyy-MM-dd'T'HH:mm:ss")));
+    grpHdr.setNbOfTxs(Integer.toString(nbOfLines));
+    grpHdr.setCtrlSum(arithmeticTotal);
+    grpHdr.setInitgPty(dbtr);
+
+    // Parent
+    CustomerCreditTransferInitiationV03 customerCreditTransferInitiationV03 =
+        factory.createCustomerCreditTransferInitiationV03();
+    customerCreditTransferInitiationV03.setGrpHdr(grpHdr);
+    customerCreditTransferInitiationV03.getPmtInf().add(pmtInf);
+
+    // Document
+    Document xml = factory.createDocument();
+    xml.setCstmrCdtTrfInitn(customerCreditTransferInitiationV03);
+
+    fileToCreate = factory.createDocument(xml);
+
+    return super.generateFile();
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -31,7 +26,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -47,205 +41,254 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.Map;
 
 public class InvoiceLineService {
 
-	protected AccountManagementService accountManagementService;
-	protected CurrencyService currencyService;
-	protected PriceListService priceListService;
-	protected GeneralService generalService;
-	protected AnalyticMoveLineService analyticMoveLineService;
-	protected ProductService productService;
+  protected AccountManagementService accountManagementService;
+  protected CurrencyService currencyService;
+  protected PriceListService priceListService;
+  protected GeneralService generalService;
+  protected AnalyticMoveLineService analyticMoveLineService;
+  protected ProductService productService;
 
-	@Inject
-	public InvoiceLineService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService, 
-			GeneralService generalService, AnalyticMoveLineService analyticMoveLineService, ProductService productService)  {
-		
-		this.accountManagementService = accountManagementService;
-		this.currencyService = currencyService;
-		this.priceListService = priceListService;
-		this.generalService = generalService;
-		this.analyticMoveLineService = analyticMoveLineService;
-		this.productService = productService;
-		
-	}
-	
-	
-	public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException{
-		
-		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return invoiceLine;  }
-		
-		Invoice invoice = invoiceLine.getInvoice();
-		List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
-		if((analyticMoveLineList == null || analyticMoveLineList.isEmpty()))  {
-			analyticMoveLineList = analyticMoveLineService.generateLines(invoice.getPartner(), invoiceLine.getProduct(), invoice.getCompany(), invoiceLine.getExTaxTotal());
-			invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
-		}
-		if(analyticMoveLineList != null)  {
-			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-				this.updateAnalyticMoveLine(analyticMoveLine, invoiceLine);
-			}
-		}
-		return invoiceLine;
-	}
-	
-	public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, InvoiceLine invoiceLine)  {
-		
-		analyticMoveLine.setInvoiceLine(invoiceLine);
-		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-		analyticMoveLine.setDate(generalService.getTodayDate());
-		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+  @Inject
+  public InvoiceLineService(
+      AccountManagementService accountManagementService,
+      CurrencyService currencyService,
+      PriceListService priceListService,
+      GeneralService generalService,
+      AnalyticMoveLineService analyticMoveLineService,
+      ProductService productService) {
 
-	}
-	
-	public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) throws AxelorException{
-		List<AnalyticMoveLine> analyticMoveLineList = null;
-		analyticMoveLineList = analyticMoveLineService.generateLinesWithTemplate(invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getExTaxTotal());
-		if(analyticMoveLineList != null)  {
-			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList)  {
-				analyticMoveLine.setInvoiceLine(invoiceLine);
-			}
-		}
-		invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
-		return invoiceLine;
-	}
-	
-	
-	public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
+    this.accountManagementService = accountManagementService;
+    this.currencyService = currencyService;
+    this.priceListService = priceListService;
+    this.generalService = generalService;
+    this.analyticMoveLineService = analyticMoveLineService;
+    this.productService = productService;
+  }
 
-		return accountManagementService.getTaxLine(
-				generalService.getTodayDate(), invoiceLine.getProduct(), invoice.getCompany(), invoice.getPartner().getFiscalPosition(), isPurchase);
+  public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException {
 
-	}
+    if (generalService.getGeneral().getAnalyticDistributionTypeSelect()
+        == GeneralRepository.DISTRIBUTION_TYPE_FREE) {
+      return invoiceLine;
+    }
 
+    Invoice invoice = invoiceLine.getInvoice();
+    List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
+    if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
+      analyticMoveLineList =
+          analyticMoveLineService.generateLines(
+              invoice.getPartner(),
+              invoiceLine.getProduct(),
+              invoice.getCompany(),
+              invoiceLine.getExTaxTotal());
+      invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
+    if (analyticMoveLineList != null) {
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        this.updateAnalyticMoveLine(analyticMoveLine, invoiceLine);
+      }
+    }
+    return invoiceLine;
+  }
 
-	public BigDecimal getUnitPrice(Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase) throws AxelorException  {
+  public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, InvoiceLine invoiceLine) {
 
-		Product product = invoiceLine.getProduct();
-		
-		BigDecimal price = null;
-		Currency productCurrency;
-		
-		if(isPurchase)  {
-			price = this.convertUnitPrice(product, taxLine, product.getPurchasePrice(), invoice);
-			productCurrency = product.getPurchaseCurrency();
-		}
-		else  {
-			price = this.convertUnitPrice(product, taxLine, product.getSalePrice(), invoice);
-			productCurrency = product.getSaleCurrency();
-		}
-		
-		return currencyService.getAmountCurrencyConvertedAtDate(
-				productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate()).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-	}
+    analyticMoveLine.setInvoiceLine(invoiceLine);
+    analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
+    analyticMoveLine.setDate(generalService.getTodayDate());
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+  }
 
+  public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine)
+      throws AxelorException {
+    List<AnalyticMoveLine> analyticMoveLineList = null;
+    analyticMoveLineList =
+        analyticMoveLineService.generateLinesWithTemplate(
+            invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getExTaxTotal());
+    if (analyticMoveLineList != null) {
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        analyticMoveLine.setInvoiceLine(invoiceLine);
+      }
+    }
+    invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+    return invoiceLine;
+  }
 
-	public boolean isPurchase(Invoice invoice)  {
-		int operation = invoice.getOperationTypeSelect();
-		if(operation == 1 || operation == 2)  { return true; }
-		else  { return false; }
-	}
+  public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
+      throws AxelorException {
 
+    return accountManagementService.getTaxLine(
+        generalService.getTodayDate(),
+        invoiceLine.getProduct(),
+        invoice.getCompany(),
+        invoice.getPartner().getFiscalPosition(),
+        isPurchase);
+  }
 
-	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
+  public BigDecimal getUnitPrice(
+      Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
+      throws AxelorException {
 
-		return currencyService.getAmountCurrencyConvertedAtDate(
-				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-	}
+    Product product = invoiceLine.getProduct();
 
+    BigDecimal price = null;
+    Currency productCurrency;
 
-	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
+    if (isPurchase) {
+      price = this.convertUnitPrice(product, taxLine, product.getPurchasePrice(), invoice);
+      productCurrency = product.getPurchaseCurrency();
+    } else {
+      price = this.convertUnitPrice(product, taxLine, product.getSalePrice(), invoice);
+      productCurrency = product.getSaleCurrency();
+    }
 
-		return currencyService.getAmountCurrencyConvertedAtDate(
-				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate()).setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-	}
+    return currencyService
+        .getAmountCurrencyConvertedAtDate(
+            productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate())
+        .setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+  }
 
+  public boolean isPurchase(Invoice invoice) {
+    int operation = invoice.getOperationTypeSelect();
+    if (operation == 1 || operation == 2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-	public PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList)  {
+  public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice)
+      throws AxelorException {
 
-		return priceListService.getPriceListLine(invoiceLine.getProduct(), invoiceLine.getQty(), priceList);
+    return currencyService
+        .getAmountCurrencyConvertedAtDate(
+            invoice.getCurrency(),
+            invoice.getPartner().getCurrency(),
+            exTaxTotal,
+            invoice.getInvoiceDate())
+        .setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
 
-	}
+  public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice)
+      throws AxelorException {
 
-	public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice)  {
-		BigDecimal unitPrice = invoiceLine.getPrice();
+    return currencyService
+        .getAmountCurrencyConvertedAtDate(
+            invoice.getCurrency(),
+            invoice.getCompany().getCurrency(),
+            exTaxTotal,
+            invoice.getInvoiceDate())
+        .setScale(generalService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+  }
 
-		return priceListService.computeDiscount(unitPrice, invoiceLine.getDiscountTypeSelect(), invoiceLine.getDiscountAmount());
-	}
-	
-	public BigDecimal computeDiscount(int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice,Invoice invoice)  {
+  public PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList) {
 
-		return priceListService.computeDiscount(unitPrice,discountTypeSelect, discountAmount);
-	}
+    return priceListService.getPriceListLine(
+        invoiceLine.getProduct(), invoiceLine.getQty(), priceList);
+  }
 
-	public BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, Invoice invoice){
-		
-		if(taxLine == null)  {  return price;  }
+  public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice) {
+    BigDecimal unitPrice = invoiceLine.getPrice();
 
-		if(product.getInAti() && !invoice.getInAti()){
-			price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-		}
-		else if(!product.getInAti() && invoice.getInAti()){
-			price = price.add(price.multiply(taxLine.getValue()));
-		}
-		return price;
-	}
-	
-	
-	public Map<String,Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)  {
-		
-		PriceList priceList = invoice.getPriceList();
-		BigDecimal discountAmount = BigDecimal.ZERO;
-		Map<String, Object> discounts = null;
-		
-		int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
+    return priceListService.computeDiscount(
+        unitPrice, invoiceLine.getDiscountTypeSelect(), invoiceLine.getDiscountAmount());
+  }
 
-		if(priceList != null)  {
-			PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
-			discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+  public BigDecimal computeDiscount(
+      int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice, Invoice invoice) {
 
-			discountAmount = (BigDecimal) discounts.get("discountAmount");
-		}
+    return priceListService.computeDiscount(unitPrice, discountTypeSelect, discountAmount);
+  }
 
-		if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE && discountAmount.compareTo(BigDecimal.ZERO) == 0){
-			List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
-			if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
-				SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",invoiceLine.getProduct(),invoiceLine.getQty(),invoice.getPartner()).fetchOne();
-				if(supplierCatalog != null){
-					
-					discounts = productService.getDiscountsFromCatalog(supplierCatalog,price);
+  public BigDecimal convertUnitPrice(
+      Product product, TaxLine taxLine, BigDecimal price, Invoice invoice) {
 
-					if(computeMethodDiscountSelect != GeneralRepository.DISCOUNT_SEPARATE){
-						discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount")));
-					}
-				}
-			}
-		}
-		
-		return discounts;
-	}
-	
-	
-	public int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine){
-		PriceList priceList = invoice.getPriceList();
-		if(priceList != null)  {
-			PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
+    if (taxLine == null) {
+      return price;
+    }
 
-			return priceListLine.getTypeSelect();
-		}
-		return 0;
-	}
-	
-	public Unit getUnit(Product product, boolean isPurchase){
-		return product.getUnit();
-	}
-	
-	public boolean unitPriceShouldBeUpdate(Invoice invoice, Product product)  {
-		
-		if(product != null && product.getInAti() != invoice.getInAti())  {
-			return true;
-		}
-		return false;
-		
-	}
+    if (product.getInAti() && !invoice.getInAti()) {
+      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+    } else if (!product.getInAti() && invoice.getInAti()) {
+      price = price.add(price.multiply(taxLine.getValue()));
+    }
+    return price;
+  }
+
+  public Map<String, Object> getDiscount(
+      Invoice invoice, InvoiceLine invoiceLine, BigDecimal price) {
+
+    PriceList priceList = invoice.getPriceList();
+    BigDecimal discountAmount = BigDecimal.ZERO;
+    Map<String, Object> discounts = null;
+
+    int computeMethodDiscountSelect = generalService.getGeneral().getComputeMethodDiscountSelect();
+
+    if (priceList != null) {
+      PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
+      discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+
+      discountAmount = (BigDecimal) discounts.get("discountAmount");
+    }
+
+    if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        && discountAmount.compareTo(BigDecimal.ZERO) == 0) {
+      List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
+      if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
+        SupplierCatalog supplierCatalog =
+            Beans.get(SupplierCatalogRepository.class)
+                .all()
+                .filter(
+                    "self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",
+                    invoiceLine.getProduct(),
+                    invoiceLine.getQty(),
+                    invoice.getPartner())
+                .fetchOne();
+        if (supplierCatalog != null) {
+
+          discounts = productService.getDiscountsFromCatalog(supplierCatalog, price);
+
+          if (computeMethodDiscountSelect != GeneralRepository.DISCOUNT_SEPARATE) {
+            discounts.put(
+                "price",
+                priceListService.computeDiscount(
+                    price,
+                    (int) discounts.get("discountTypeSelect"),
+                    (BigDecimal) discounts.get("discountAmount")));
+          }
+        }
+      }
+    }
+
+    return discounts;
+  }
+
+  public int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine) {
+    PriceList priceList = invoice.getPriceList();
+    if (priceList != null) {
+      PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
+
+      return priceListLine.getTypeSelect();
+    }
+    return 0;
+  }
+
+  public Unit getUnit(Product product, boolean isPurchase) {
+    return product.getUnit();
+  }
+
+  public boolean unitPriceShouldBeUpdate(Invoice invoice, Product product) {
+
+    if (product != null && product.getInAti() != invoice.getInAti()) {
+      return true;
+    }
+    return false;
+  }
 }

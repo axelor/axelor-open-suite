@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,19 +19,15 @@ package com.axelor.apps.crm.db;
 
 /**
  * Interface of Event object. Enum all static variable of object.
- * 
+ *
  * @author dubaux
- * 
  */
 public interface IEventReminder {
 
+  /** Static duration type select */
+  static final int DURATION_MINUTES = 1;
 
-	/**
-	 * Static duration type select
-	 */
-	static final int DURATION_MINUTES = 1;
-	static final int DURATION_HOURS = 2;
-	static final int DURATION_DAYS = 3;
-	static final int DURATION_WEEKS = 4;
-	
+  static final int DURATION_HOURS = 2;
+  static final int DURATION_DAYS = 3;
+  static final int DURATION_WEEKS = 4;
 }

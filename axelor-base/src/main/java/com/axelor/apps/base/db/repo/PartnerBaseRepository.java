@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.base.db.repo;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -34,70 +29,70 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.PersistenceException;
 
 public class PartnerBaseRepository extends PartnerRepository {
-	
-	@Inject
-	PartnerService partnerService;
-	
-	@Override
-	public Partner save(Partner partner) {
-		try {
 
-			if (partner.getPartnerSeq() == null){
-				String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER);
-				if (seq == null)
-					throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
-							IException.CONFIGURATION_ERROR);
-				partner.setPartnerSeq(seq);
-			}
+  @Inject PartnerService partnerService;
 
-			return super.save(partner);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-	
-	@Override
-	public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-		if (!context.containsKey("json-enhance")) {
-			return json;
-		}
-		try {
-			Long id = (Long) json.get("id");
-			Partner partner = find(id);
-			json.put("address", partnerService.getDefaultAddress(partner));
-		} catch (Exception e) {
-			e.printStackTrace();
-	
-		}
+  @Override
+  public Partner save(Partner partner) {
+    try {
 
-		return json;
-		
-	}
+      if (partner.getPartnerSeq() == null) {
+        String seq = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PARTNER);
+        if (seq == null)
+          throw new AxelorException(
+              I18n.get(IExceptionMessage.PARTNER_1), IException.CONFIGURATION_ERROR);
+        partner.setPartnerSeq(seq);
+      }
 
-	@Override
-	public Partner copy(Partner partner, boolean deep) {
+      return super.save(partner);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 
-		Partner copy = super.copy(partner, deep);
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    if (!context.containsKey("json-enhance")) {
+      return json;
+    }
+    try {
+      Long id = (Long) json.get("id");
+      Partner partner = find(id);
+      json.put("address", partnerService.getDefaultAddress(partner));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
-		copy.setPartnerSeq(null);
-		copy.setEmailAddress(null);
+    return json;
+  }
 
-		PartnerAddressRepository partnerAddressRepository = Beans.get(PartnerAddressRepository.class);
+  @Override
+  public Partner copy(Partner partner, boolean deep) {
 
-		List<PartnerAddress> partnerAddressList = Lists.newArrayList();
+    Partner copy = super.copy(partner, deep);
 
-		if (deep && copy.getPartnerAddressList() != null) {
-			for (PartnerAddress partnerAddress : copy.getPartnerAddressList()) {
+    copy.setPartnerSeq(null);
+    copy.setEmailAddress(null);
 
-				partnerAddressList.add(partnerAddressRepository.copy(partnerAddress, deep));
-			}
-		}
-		copy.setPartnerAddressList(partnerAddressList);
-		copy.setBlockingList(null);
-		copy.setBankDetailsList(null);
+    PartnerAddressRepository partnerAddressRepository = Beans.get(PartnerAddressRepository.class);
 
-		return copy;
-	}
+    List<PartnerAddress> partnerAddressList = Lists.newArrayList();
+
+    if (deep && copy.getPartnerAddressList() != null) {
+      for (PartnerAddress partnerAddress : copy.getPartnerAddressList()) {
+
+        partnerAddressList.add(partnerAddressRepository.copy(partnerAddress, deep));
+      }
+    }
+    copy.setPartnerAddressList(partnerAddressList);
+    copy.setBlockingList(null);
+    copy.setBankDetailsList(null);
+
+    return copy;
+  }
 }

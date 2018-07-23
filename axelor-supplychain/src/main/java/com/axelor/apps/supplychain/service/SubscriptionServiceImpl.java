@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -35,106 +30,142 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SubscriptionServiceImpl implements SubscriptionService{
-	
-	@Inject
-	private SaleOrderLineService saleOrderLineService;
-	
-	@Inject
-	protected SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
-	
-	@Inject
-	private SaleOrderService saleOrderService;
+public class SubscriptionServiceImpl implements SubscriptionService {
 
-	@Override
-	@Transactional
-	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLine) throws AxelorException{
-		int iterator = 0;
+  @Inject private SaleOrderLineService saleOrderLineService;
 
-		if(saleOrderLine.getToSubDate() == null){
-			throw new AxelorException(I18n.get("Field Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
-		}
+  @Inject protected SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
 
-		while(iterator != saleOrderLine.getPeriodNumber()){
-			Subscription subscription = new Subscription();
-			if(saleOrderLine.getSubscripInvTypeSelect() == SaleOrderRepository.SUBSCRIPTION_PERIOD_BEGINNING){
-				subscription.setInvoicingDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*iterator));
-			}
-			else{
-				subscription.setInvoicingDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*(iterator+1)).minusDays(1));
-			}
-			subscription.setFromPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*iterator));
-			subscription.setToPeriodDate(saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity()*(iterator+1)).minusDays(1));
-			subscription.setInvoiced(false);
-			saleOrderLine.addSubscriptionListItem(subscription);
-			iterator++;
-		}
-		return saleOrderLine;
-	}
+  @Inject private SaleOrderService saleOrderService;
 
-	@Override
-	@Transactional
-	public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLineIt,SaleOrder saleOrder) throws AxelorException{
-		int iterator = 0;
-		int oldLine = 0;
-		if(saleOrderLineIt.getSubscriptionList() != null && !saleOrderLineIt.getSubscriptionList().isEmpty()){
-			oldLine = saleOrderLineIt.getSubscriptionList().size();
-		}
-		BigDecimal oldExTaxTotal = saleOrderLineIt.getExTaxTotal();
-		BigDecimal oldInTaxTotal = saleOrderLineIt.getInTaxTotal();
-		if(oldLine != 0){
-			oldExTaxTotal = oldExTaxTotal.divide(new BigDecimal(oldLine), 2 ,RoundingMode.HALF_UP);
-			oldInTaxTotal = oldInTaxTotal.divide(new BigDecimal(oldLine), 2 ,RoundingMode.HALF_UP);
-		}
-		if(saleOrder.getToSubDate() == null){
-			throw new AxelorException(I18n.get("Field Date To is empty because fields periodicity, date from or number of periods are empty"), 1);
-		}
+  @Override
+  @Transactional
+  public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLine) throws AxelorException {
+    int iterator = 0;
 
-		List<Subscription> subscriptionItList = new ArrayList<Subscription>(saleOrderLineIt.getSubscriptionList());
-		for (Subscription subscription : subscriptionItList) {
-			if(!subscription.getInvoiced()){
-				saleOrderLineIt.removeSubscriptionListItem(subscription);
-			}
-		}
+    if (saleOrderLine.getToSubDate() == null) {
+      throw new AxelorException(
+          I18n.get(
+              "Field Date To is empty because fields periodicity, date from or number of periods are empty"),
+          1);
+    }
 
-		while(iterator != saleOrder.getPeriodNumber()){
-			Subscription subscription = new Subscription();
-			if(saleOrder.getSubscripInvTypeSelect() == SaleOrderRepository.SUBSCRIPTION_PERIOD_BEGINNING){
-				subscription.setInvoicingDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*iterator));
-			}
-			else{
-				subscription.setInvoicingDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*(iterator+1)).minusDays(1));
-			}
-			subscription.setFromPeriodDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*iterator));
-			subscription.setToPeriodDate(saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity()*(iterator+1)).minusDays(1));
-			subscription.setInvoiced(false);
-			saleOrderLineIt.addSubscriptionListItem(subscription);
-			iterator++;
-		}
-		BigDecimal totalLines = new BigDecimal(saleOrderLineIt.getSubscriptionList().size());
-		
-		if(totalLines.compareTo(BigDecimal.ZERO) != 0){
-			saleOrderLineIt.setExTaxTotal(oldExTaxTotal.multiply(totalLines));
-			saleOrderLineIt.setInTaxTotal(oldInTaxTotal.multiply(totalLines));
-		}
-		saleOrderLineIt.setCompanyExTaxTotal(saleOrderLineService.getAmountInCompanyCurrency(saleOrderLineIt.getExTaxTotal(), saleOrder));
-		saleOrderLineIt.setCompanyInTaxTotal(saleOrderLineService.getAmountInCompanyCurrency(saleOrderLineIt.getInTaxTotal(), saleOrder));
-		
+    while (iterator != saleOrderLine.getPeriodNumber()) {
+      Subscription subscription = new Subscription();
+      if (saleOrderLine.getSubscripInvTypeSelect()
+          == SaleOrderRepository.SUBSCRIPTION_PERIOD_BEGINNING) {
+        subscription.setInvoicingDate(
+            saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity() * iterator));
+      } else {
+        subscription.setInvoicingDate(
+            saleOrderLine
+                .getFromSubDate()
+                .plusMonths(saleOrderLine.getPeriodicity() * (iterator + 1))
+                .minusDays(1));
+      }
+      subscription.setFromPeriodDate(
+          saleOrderLine.getFromSubDate().plusMonths(saleOrderLine.getPeriodicity() * iterator));
+      subscription.setToPeriodDate(
+          saleOrderLine
+              .getFromSubDate()
+              .plusMonths(saleOrderLine.getPeriodicity() * (iterator + 1))
+              .minusDays(1));
+      subscription.setInvoiced(false);
+      saleOrderLine.addSubscriptionListItem(subscription);
+      iterator++;
+    }
+    return saleOrderLine;
+  }
 
-		Beans.get(SaleOrderLineRepository.class).save(saleOrderLineIt);
+  @Override
+  @Transactional
+  public SaleOrderLine generateSubscriptions(SaleOrderLine saleOrderLineIt, SaleOrder saleOrder)
+      throws AxelorException {
+    int iterator = 0;
+    int oldLine = 0;
+    if (saleOrderLineIt.getSubscriptionList() != null
+        && !saleOrderLineIt.getSubscriptionList().isEmpty()) {
+      oldLine = saleOrderLineIt.getSubscriptionList().size();
+    }
+    BigDecimal oldExTaxTotal = saleOrderLineIt.getExTaxTotal();
+    BigDecimal oldInTaxTotal = saleOrderLineIt.getInTaxTotal();
+    if (oldLine != 0) {
+      oldExTaxTotal = oldExTaxTotal.divide(new BigDecimal(oldLine), 2, RoundingMode.HALF_UP);
+      oldInTaxTotal = oldInTaxTotal.divide(new BigDecimal(oldLine), 2, RoundingMode.HALF_UP);
+    }
+    if (saleOrder.getToSubDate() == null) {
+      throw new AxelorException(
+          I18n.get(
+              "Field Date To is empty because fields periodicity, date from or number of periods are empty"),
+          1);
+    }
 
-		return saleOrderLineIt;
-	}
-	
-	@Transactional
-	public void generateAllSubscriptions(SaleOrder saleOrder) throws AxelorException{
-		for (SaleOrderLine saleOrderLineIt : saleOrder.getSaleOrderLineList()) {
-			if(saleOrderLineIt.getProduct().getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE)){
-				this.generateSubscriptions(saleOrderLineIt,saleOrder);
-			}
-		}
-		saleOrder = saleOrderService.computeSaleOrder(saleOrder);
-		Beans.get(SaleOrderRepository.class).save(saleOrder);
-	}
+    List<Subscription> subscriptionItList =
+        new ArrayList<Subscription>(saleOrderLineIt.getSubscriptionList());
+    for (Subscription subscription : subscriptionItList) {
+      if (!subscription.getInvoiced()) {
+        saleOrderLineIt.removeSubscriptionListItem(subscription);
+      }
+    }
+
+    while (iterator != saleOrder.getPeriodNumber()) {
+      Subscription subscription = new Subscription();
+      if (saleOrder.getSubscripInvTypeSelect()
+          == SaleOrderRepository.SUBSCRIPTION_PERIOD_BEGINNING) {
+        subscription.setInvoicingDate(
+            saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity() * iterator));
+      } else {
+        subscription.setInvoicingDate(
+            saleOrder
+                .getFromSubDate()
+                .plusMonths(saleOrder.getPeriodicity() * (iterator + 1))
+                .minusDays(1));
+      }
+      subscription.setFromPeriodDate(
+          saleOrder.getFromSubDate().plusMonths(saleOrder.getPeriodicity() * iterator));
+      subscription.setToPeriodDate(
+          saleOrder
+              .getFromSubDate()
+              .plusMonths(saleOrder.getPeriodicity() * (iterator + 1))
+              .minusDays(1));
+      subscription.setInvoiced(false);
+      saleOrderLineIt.addSubscriptionListItem(subscription);
+      iterator++;
+    }
+    BigDecimal totalLines = new BigDecimal(saleOrderLineIt.getSubscriptionList().size());
+
+    if (totalLines.compareTo(BigDecimal.ZERO) != 0) {
+      saleOrderLineIt.setExTaxTotal(oldExTaxTotal.multiply(totalLines));
+      saleOrderLineIt.setInTaxTotal(oldInTaxTotal.multiply(totalLines));
+    }
+    saleOrderLineIt.setCompanyExTaxTotal(
+        saleOrderLineService.getAmountInCompanyCurrency(
+            saleOrderLineIt.getExTaxTotal(), saleOrder));
+    saleOrderLineIt.setCompanyInTaxTotal(
+        saleOrderLineService.getAmountInCompanyCurrency(
+            saleOrderLineIt.getInTaxTotal(), saleOrder));
+
+    Beans.get(SaleOrderLineRepository.class).save(saleOrderLineIt);
+
+    return saleOrderLineIt;
+  }
+
+  @Transactional
+  public void generateAllSubscriptions(SaleOrder saleOrder) throws AxelorException {
+    for (SaleOrderLine saleOrderLineIt : saleOrder.getSaleOrderLineList()) {
+      if (saleOrderLineIt
+          .getProduct()
+          .getProductTypeSelect()
+          .equals(ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE)) {
+        this.generateSubscriptions(saleOrderLineIt, saleOrder);
+      }
+    }
+    saleOrder = saleOrderService.computeSaleOrder(saleOrder);
+    Beans.get(SaleOrderRepository.class).save(saleOrder);
+  }
 }

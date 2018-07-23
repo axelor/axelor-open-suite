@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -29,118 +29,115 @@ import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.inject.Beans;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
-    /**
-     * In this implementation, we use the O2M in payment mode.
-     * @param company
-     * @param paymentMode
-     * @return
-     */
-    @Override
-    public String createCompanyBankDetailsDomain(Company company,
-                                                 PaymentMode paymentMode) {
+  /**
+   * In this implementation, we use the O2M in payment mode.
+   *
+   * @param company
+   * @param paymentMode
+   * @return
+   */
+  @Override
+  public String createCompanyBankDetailsDomain(Company company, PaymentMode paymentMode) {
 
-        if (!Beans.get(GeneralService.class).getGeneral().getManageMultiBanks()) {
-            return super.createCompanyBankDetailsDomain(company, paymentMode);
-        } else {
-            if (paymentMode == null) {
-                return "self.id IN (0)";
-            }
-            List<AccountManagement> accountManagementList = paymentMode.getAccountManagementList();
+    if (!Beans.get(GeneralService.class).getGeneral().getManageMultiBanks()) {
+      return super.createCompanyBankDetailsDomain(company, paymentMode);
+    } else {
+      if (paymentMode == null) {
+        return "self.id IN (0)";
+      }
+      List<AccountManagement> accountManagementList = paymentMode.getAccountManagementList();
 
-            List<BankDetails> authorizedBankDetails = new ArrayList<>();
+      List<BankDetails> authorizedBankDetails = new ArrayList<>();
 
-            for (AccountManagement accountManagement : accountManagementList) {
-                if (accountManagement.getCompany() != null
-                        && accountManagement.getCompany().equals(company)) {
-                    authorizedBankDetails.add(accountManagement.getBankDetails());
-                }
-            }
-            if (authorizedBankDetails.isEmpty()) {
-                return "self.id IN (0)";
-            } else {
-                return "self.id IN ("
-                        + StringTool.getIdFromCollection(authorizedBankDetails)
-                        + ") AND self.active = true";
-            }
+      for (AccountManagement accountManagement : accountManagementList) {
+        if (accountManagement.getCompany() != null
+            && accountManagement.getCompany().equals(company)) {
+          authorizedBankDetails.add(accountManagement.getBankDetails());
         }
+      }
+      if (authorizedBankDetails.isEmpty()) {
+        return "self.id IN (0)";
+      } else {
+        return "self.id IN ("
+            + StringTool.getIdFromCollection(authorizedBankDetails)
+            + ") AND self.active = true";
+      }
     }
+  }
 
-	/**
-	 * Find a default bank details.
-	 * @param company
-	 * @param paymentMode
-	 * @param partner
-	 * @return  the default bank details in accounting situation if it is active
-	 *          and allowed by the payment mode, or an authorized bank details if
-     *          he is the only one authorized.
-	 */
-    @Override
-    public BankDetails getDefaultCompanyBankDetails(Company company,
-                                                    PaymentMode paymentMode,
-                                                    Partner partner) {
+  /**
+   * Find a default bank details.
+   *
+   * @param company
+   * @param paymentMode
+   * @param partner
+   * @return the default bank details in accounting situation if it is active and allowed by the
+   *     payment mode, or an authorized bank details if he is the only one authorized.
+   */
+  @Override
+  public BankDetails getDefaultCompanyBankDetails(
+      Company company, PaymentMode paymentMode, Partner partner) {
 
-        if (!Beans.get(GeneralService.class).getGeneral().getManageMultiBanks()) {
-            return super.getDefaultCompanyBankDetails(company, paymentMode, partner);
-        } else {
-            if (paymentMode == null) {
-                return null;
-            }
+    if (!Beans.get(GeneralService.class).getGeneral().getManageMultiBanks()) {
+      return super.getDefaultCompanyBankDetails(company, paymentMode, partner);
+    } else {
+      if (paymentMode == null) {
+        return null;
+      }
 
-            BankDetails candidateBankDetails = getDefaultCompanyBankDetailsFromPartner(company, paymentMode, partner);
+      BankDetails candidateBankDetails =
+          getDefaultCompanyBankDetailsFromPartner(company, paymentMode, partner);
 
-            List<BankDetails> authorizedBankDetails = Beans.get(PaymentModeService.class).
-                    getCompatibleBankDetailsList(paymentMode, company);
-            if (candidateBankDetails != null
-                    && authorizedBankDetails.contains(candidateBankDetails)
-                    && candidateBankDetails.getActive()) {
-                return candidateBankDetails;
-            }
-            //we did not find a bank details in accounting situation
-            else {
-                if (authorizedBankDetails.size() == 1) {
-                    return authorizedBankDetails.get(0);
-                } else {
-                    return null;
-                }
-            }
-        }
-    }
-
-    /**
-     * Looks for the bank details in accounting situation.
-     * @param company
-     * @param paymentMode
-     * @param partner
-     * @return The bank details corresponding to the partner and the company
-     *         with the right payment mode
-     *         null if the partner is null or the accounting situation empty
-     */
-    protected BankDetails getDefaultCompanyBankDetailsFromPartner(Company company,
-                                                                  PaymentMode paymentMode,
-                                                                  Partner partner) {
-
-        if (partner == null) {
-            return null;
-        }
-        AccountingSituation accountingSituation = Beans
-                .get(AccountingSituationService.class)
-                .getAccountingSituation(partner, company);
-        if (accountingSituation == null) {
-            return null;
-        }
-
-        BankDetails candidateBankDetails = null;
-        if (paymentMode.getInOutSelect() == PaymentModeRepository.IN) {
-            candidateBankDetails = accountingSituation.getCompanyInBankDetails();
-        } else if (paymentMode.getInOutSelect() == PaymentModeRepository.OUT) {
-            candidateBankDetails = accountingSituation.getCompanyOutBankDetails();
-        }
+      List<BankDetails> authorizedBankDetails =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
+      if (candidateBankDetails != null
+          && authorizedBankDetails.contains(candidateBankDetails)
+          && candidateBankDetails.getActive()) {
         return candidateBankDetails;
+      }
+      // we did not find a bank details in accounting situation
+      else {
+        if (authorizedBankDetails.size() == 1) {
+          return authorizedBankDetails.get(0);
+        } else {
+          return null;
+        }
+      }
     }
+  }
+
+  /**
+   * Looks for the bank details in accounting situation.
+   *
+   * @param company
+   * @param paymentMode
+   * @param partner
+   * @return The bank details corresponding to the partner and the company with the right payment
+   *     mode null if the partner is null or the accounting situation empty
+   */
+  protected BankDetails getDefaultCompanyBankDetailsFromPartner(
+      Company company, PaymentMode paymentMode, Partner partner) {
+
+    if (partner == null) {
+      return null;
+    }
+    AccountingSituation accountingSituation =
+        Beans.get(AccountingSituationService.class).getAccountingSituation(partner, company);
+    if (accountingSituation == null) {
+      return null;
+    }
+
+    BankDetails candidateBankDetails = null;
+    if (paymentMode.getInOutSelect() == PaymentModeRepository.IN) {
+      candidateBankDetails = accountingSituation.getCompanyInBankDetails();
+    } else if (paymentMode.getInOutSelect() == PaymentModeRepository.OUT) {
+      candidateBankDetails = accountingSituation.getCompanyOutBankDetails();
+    }
+    return candidateBankDetails;
+  }
 }

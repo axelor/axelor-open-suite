@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -22,15 +22,14 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.google.inject.Inject;
 
 public class EbicsCertificateAccountRepository extends EbicsCertificateRepository {
-	
-	@Inject
-	private EbicsCertificateService certificateService;
-	
-	@Override
-	public EbicsCertificate save(EbicsCertificate entity) {
-		
-		certificateService.computeFullName(entity);
-		
-		return super.save(entity);
-	}
+
+  @Inject private EbicsCertificateService certificateService;
+
+  @Override
+  public EbicsCertificate save(EbicsCertificate entity) {
+
+    certificateService.computeFullName(entity);
+
+    return super.save(entity);
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,222 +17,214 @@
  */
 package com.axelor.apps.sale.web;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.inject.Beans;
-import com.axelor.rpc.Context;
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaleOrderController {
-	
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
-	private SaleOrderService saleOrderService;
-	
-	@Inject
-	private SaleOrderRepository saleOrderRepo;
-	
-	public void compute(ActionRequest request, ActionResponse response)  {
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		
-		try {
-			saleOrder = saleOrderService.computeSaleOrder(saleOrder);
-			response.setValues(saleOrder);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+  @Inject private SaleOrderService saleOrderService;
 
+  @Inject private SaleOrderRepository saleOrderRepo;
 
-	/**
-	 * Method that print the sale order as a Pdf
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
-	 */
-	public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void compute(ActionRequest request, ActionResponse response) {
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
-		
-		String name = saleOrderService.getFileName(saleOrder);
-		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_PDF); 
+    try {
+      saleOrder = saleOrderService.computeSaleOrder(saleOrder);
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-		logger.debug("Printing "+name);
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
-	}
+  /**
+   * Method that print the sale order as a Pdf
+   *
+   * @param request
+   * @param response
+   * @return
+   * @throws BirtException
+   * @throws IOException
+   */
+  public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 
-	public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    String language = saleOrderService.getLanguageForPrinting(saleOrder);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+    String name = saleOrderService.getFileName(saleOrder);
 
-		String name = saleOrderService.getFileName(saleOrder);
-		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_XLS); 
+    String fileLink =
+        saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_PDF);
 
-		logger.debug("Printing "+name);
+    logger.debug("Printing " + name);
 
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
-	}
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
+  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-	public void exportSaleOrderWord(ActionRequest request, ActionResponse response) throws AxelorException {
+    String language = saleOrderService.getLanguageForPrinting(saleOrder);
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    String name = saleOrderService.getFileName(saleOrder);
 
-		String language = saleOrderService.getLanguageForPrinting(saleOrder);
+    String fileLink =
+        saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_XLS);
 
-		String name = saleOrderService.getFileName(saleOrder);
-		
-		String fileLink = saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_DOC);
-		
+    logger.debug("Printing " + name);
 
-		logger.debug("Printing "+name);
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
-	}
+  public void exportSaleOrderWord(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-	public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    String language = saleOrderService.getLanguageForPrinting(saleOrder);
 
-		saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+    String name = saleOrderService.getFileName(saleOrder);
 
-		response.setFlash("The sale order was canceled");
-		response.setCanClose(true);
+    String fileLink =
+        saleOrderService.getReportLink(saleOrder, name, language, ReportSettings.FORMAT_DOC);
 
-	}
+    logger.debug("Printing " + name);
 
-	public void finalizeSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		saleOrder = saleOrderRepo.find(saleOrder.getId());
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-		try {
-			saleOrderService.finalizeSaleOrder(saleOrder);
-		} catch (AxelorException e) {
-			response.setFlash(e.getMessage());
-		}
+  public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
 
-		response.setReload(true);
-	}
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-	public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
+    saleOrderService.cancelSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    response.setFlash("The sale order was canceled");
+    response.setCanClose(true);
+  }
 
-		saleOrderService.confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+  public void finalizeSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = saleOrderRepo.find(saleOrder.getId());
 
-		response.setReload(true);
+    try {
+      saleOrderService.finalizeSaleOrder(saleOrder);
+    } catch (AxelorException e) {
+      response.setFlash(e.getMessage());
+    }
 
-	}
+    response.setReload(true);
+  }
 
-	public void generateViewSaleOrder(ActionRequest request, ActionResponse response){
-		SaleOrder context = request.getContext().asType(SaleOrder.class);
-		context = saleOrderRepo.find(context.getId());
-		response.setView(ActionView
-	            .define("Sale Order")
-	            .model(SaleOrder.class.getName())
-	            .add("form", "sale-order-form-wizard")
-	            .context("_idCopy", context.getId().toString())
-	            .map());
-	}
+  public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
 
-	public void generateViewTemplate(ActionRequest request, ActionResponse response){
-		SaleOrder context = request.getContext().asType(SaleOrder.class);
-		context = saleOrderRepo.find(context.getId());
-		response.setView(ActionView
-	            .define("Template")
-	            .model(SaleOrder.class.getName())
-	            .add("form", "sale-order-template-form-wizard")
-	            .context("_idCopy", context.getId().toString())
-	            .map());
-	}
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-	public void createSaleOrder(ActionRequest request, ActionResponse response)  {
-		SaleOrder origin = saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
-		if (origin != null) {
-			SaleOrder copy = saleOrderService.createSaleOrder(origin);
-			response.setValues(copy);
-		}
-	}
+    saleOrderService.confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
-	public void createTemplate(ActionRequest request, ActionResponse response) {
-	    Context context = request.getContext();
-	    if (context.get("_idCopy") != null) {
-	    	String idCopy = context.get("_idCopy").toString();
-			SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
-			SaleOrder copy = saleOrderService.createSaleOrder(origin);
-			response.setValues(copy);
-		}
-	}
+    response.setReload(true);
+  }
 
-	public void computeEndOfValidityDate(ActionRequest request, ActionResponse response)  {
+  public void generateViewSaleOrder(ActionRequest request, ActionResponse response) {
+    SaleOrder context = request.getContext().asType(SaleOrder.class);
+    context = saleOrderRepo.find(context.getId());
+    response.setView(
+        ActionView.define("Sale Order")
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form-wizard")
+            .context("_idCopy", context.getId().toString())
+            .map());
+  }
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+  public void generateViewTemplate(ActionRequest request, ActionResponse response) {
+    SaleOrder context = request.getContext().asType(SaleOrder.class);
+    context = saleOrderRepo.find(context.getId());
+    response.setView(
+        ActionView.define("Template")
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-template-form-wizard")
+            .context("_idCopy", context.getId().toString())
+            .map());
+  }
 
-		try {
-			saleOrder = saleOrderService.computeEndOfValidityDate(saleOrder);
-			response.setValue("endOfValidityDate", saleOrder.getEndOfValidityDate());
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-	
+  public void createSaleOrder(ActionRequest request, ActionResponse response) {
+    SaleOrder origin =
+        saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
+    if (origin != null) {
+      SaleOrder copy = saleOrderService.createSaleOrder(origin);
+      response.setValues(copy);
+    }
+  }
 
-	/**
-	 * Called on partner, company or payment change.
-	 * Fill the bank details with a default value.
-	 * @param request
-	 * @param response
-	 */
-	public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
-		Company company = saleOrder.getCompany();
-		Partner partner = saleOrder.getClientPartner();
-		if(company == null) {
-			return;
-		}
-		if (partner != null) {
-			partner = Beans.get(PartnerRepository.class).find(partner.getId());
-		}
-		BankDetails defaultBankDetails = Beans.get(BankDetailsService.class)
-				.getDefaultCompanyBankDetails(company, paymentMode, partner);
-		response.setValue("companyBankDetails", defaultBankDetails);
-	}
+  public void createTemplate(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    if (context.get("_idCopy") != null) {
+      String idCopy = context.get("_idCopy").toString();
+      SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
+      SaleOrder copy = saleOrderService.createSaleOrder(origin);
+      response.setValues(copy);
+    }
+  }
+
+  public void computeEndOfValidityDate(ActionRequest request, ActionResponse response) {
+
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    try {
+      saleOrder = saleOrderService.computeEndOfValidityDate(saleOrder);
+      response.setValue("endOfValidityDate", saleOrder.getEndOfValidityDate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called on partner, company or payment change. Fill the bank details with a default value.
+   *
+   * @param request
+   * @param response
+   */
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
+    Company company = saleOrder.getCompany();
+    Partner partner = saleOrder.getClientPartner();
+    if (company == null) {
+      return;
+    }
+    if (partner != null) {
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    }
+    BankDetails defaultBankDetails =
+        Beans.get(BankDetailsService.class)
+            .getDefaultCompanyBankDetails(company, paymentMode, partner);
+    response.setValue("companyBankDetails", defaultBankDetails);
+  }
 }

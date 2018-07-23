@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.hr.service.bankorder;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -40,52 +33,70 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BankOrderCreateServiceHr extends BankOrderCreateService {
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	public BankOrderCreateServiceHr(BankOrderRepository bankOrderRepo, BankOrderService bankOrderService, AccountConfigBankPaymentService accountConfigBankPaymentService, BankOrderLineService bankOrderLineService)  {
-		super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService);
-	}
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	
-	/**
-	 * Method to create a bank order for an expense
-	 * 
-	 * 
-	 * @param expense
-	 * 			An expense
-	 * 
-	 * @throws AxelorException
-	 * 		
-	 */
-	public BankOrder createBankOrder(Expense expense, BankDetails bankDetails) throws AxelorException {
-		Company company = expense.getCompany();
-		Partner partner = expense.getUser().getPartner();
-		PaymentMode paymentMode = expense.getPaymentMode();
-		BigDecimal amount = expense.getInTaxTotal().subtract(expense.getAdvanceAmount()).subtract(expense.getWithdrawnCash()).subtract(expense.getPersonalExpenseAmount());
-		Currency currency = company.getCurrency();
-		LocalDate paymentDate = Beans.get(GeneralService.class).getTodayDate();
+  @Inject
+  public BankOrderCreateServiceHr(
+      BankOrderRepository bankOrderRepo,
+      BankOrderService bankOrderService,
+      AccountConfigBankPaymentService accountConfigBankPaymentService,
+      BankOrderLineService bankOrderLineService) {
+    super(bankOrderRepo, bankOrderService, accountConfigBankPaymentService, bankOrderLineService);
+  }
 
-		BankOrder bankOrder = super.createBankOrder( 
-								paymentMode,
-								BankOrderRepository.PARTNER_TYPE_EMPLOYEE,
-								paymentDate,
-								company,
-								bankDetails,
-								currency,
-								expense.getFullName(),
-								expense.getFullName());
+  /**
+   * Method to create a bank order for an expense
+   *
+   * @param expense An expense
+   * @throws AxelorException
+   */
+  public BankOrder createBankOrder(Expense expense, BankDetails bankDetails)
+      throws AxelorException {
+    Company company = expense.getCompany();
+    Partner partner = expense.getUser().getPartner();
+    PaymentMode paymentMode = expense.getPaymentMode();
+    BigDecimal amount =
+        expense
+            .getInTaxTotal()
+            .subtract(expense.getAdvanceAmount())
+            .subtract(expense.getWithdrawnCash())
+            .subtract(expense.getPersonalExpenseAmount());
+    Currency currency = company.getCurrency();
+    LocalDate paymentDate = Beans.get(GeneralService.class).getTodayDate();
 
-		bankOrder.addBankOrderLineListItem(bankOrderLineService.createBankOrderLine(paymentMode.getBankOrderFileFormat(), partner, amount, currency, paymentDate, expense.getExpenseSeq(), expense.getFullName()));
-		bankOrder = bankOrderRepo.save(bankOrder);
+    BankOrder bankOrder =
+        super.createBankOrder(
+            paymentMode,
+            BankOrderRepository.PARTNER_TYPE_EMPLOYEE,
+            paymentDate,
+            company,
+            bankDetails,
+            currency,
+            expense.getFullName(),
+            expense.getFullName());
 
-		return bankOrder;
-	}
+    bankOrder.addBankOrderLineListItem(
+        bankOrderLineService.createBankOrderLine(
+            paymentMode.getBankOrderFileFormat(),
+            partner,
+            amount,
+            currency,
+            paymentDate,
+            expense.getExpenseSeq(),
+            expense.getFullName()));
+    bankOrder = bankOrderRepo.save(bankOrder);
 
-	public BankOrder createBankOrder(Expense expense) throws AxelorException {
-		return createBankOrder(expense, expense.getCompany().getDefaultBankDetails());
-	}
+    return bankOrder;
+  }
 
+  public BankOrder createBankOrder(Expense expense) throws AxelorException {
+    return createBankOrder(expense, expense.getCompany().getDefaultBankDetails());
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,23 +17,20 @@
  */
 package com.axelor.apps;
 
-import com.axelor.apps.report.engine.ExternalReportSettings;
 import com.axelor.apps.report.engine.EmbeddedReportSettings;
+import com.axelor.apps.report.engine.ExternalReportSettings;
 import com.axelor.apps.report.engine.ReportSettings;
 
 public class ReportFactory {
-	
-	public static ReportSettings createReport(String rptdesign, String outputName)  {
-		
-		if(ReportSettings.useIntegratedEngine())  {
-			
-			return new EmbeddedReportSettings(rptdesign, outputName);
-		}
-		else  {
-			
-			return new ExternalReportSettings(rptdesign, outputName);
-		}
-	}
 
+  public static ReportSettings createReport(String rptdesign, String outputName) {
+
+    if (ReportSettings.useIntegratedEngine()) {
+
+      return new EmbeddedReportSettings(rptdesign, outputName);
+    } else {
+
+      return new ExternalReportSettings(rptdesign, outputName);
+    }
+  }
 }
-

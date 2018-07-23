@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,39 +17,34 @@
  */
 package com.axelor.csv.script;
 
-import java.lang.invoke.MethodHandles;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailMessageRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClearMessage {
-	
-	@Inject
-	MailMessageRepository mailRepo;
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	//Delete all mail messages generated on import
-	
-	@Transactional
-	public Object clearAllMailMessages(Object bean, Map<String,Object> values) {
-		
-		for(MailMessage mailMessage : mailRepo.all().fetch()) {
-			try{
-				mailRepo.remove(mailMessage);
-			} catch(Exception e) {
-				LOG.debug("MailMessage: {}, Exception: {}",mailMessage.getId(),e.getMessage());
-			}
-		}
-		
-		return bean;
-		
-	}
+  @Inject MailMessageRepository mailRepo;
 
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  // Delete all mail messages generated on import
+
+  @Transactional
+  public Object clearAllMailMessages(Object bean, Map<String, Object> values) {
+
+    for (MailMessage mailMessage : mailRepo.all().fetch()) {
+      try {
+        mailRepo.remove(mailMessage);
+      } catch (Exception e) {
+        LOG.debug("MailMessage: {}, Exception: {}", mailMessage.getId(), e.getMessage());
+      }
+    }
+
+    return bean;
+  }
 }

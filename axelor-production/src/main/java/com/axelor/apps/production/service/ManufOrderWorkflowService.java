@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.util.List;
-
-import org.joda.time.LocalDateTime;
-
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -33,203 +29,180 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
+import org.joda.time.LocalDateTime;
 
 public class ManufOrderWorkflowService {
 
-	@Inject
-	private OperationOrderWorkflowService operationOrderWorkflowService;
-	
-	@Inject
-	private OperationOrderRepository operationOrderRepo;
-	
-	@Inject
-	private ManufOrderStockMoveService manufOrderStockMoveService;
-	
-	@Inject
-	protected GeneralService generalService;
-	
-	@Inject
-	protected ManufOrderRepository manufOrderRepo;
+  @Inject private OperationOrderWorkflowService operationOrderWorkflowService;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void start(ManufOrder manufOrder)  {
-		
-		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
-		
-		manufOrderRepo.save(manufOrder);
-		
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void pause(ManufOrder manufOrder)  {
-		
-		if(manufOrder.getOperationOrderList() != null)  {
-			
-			for(OperationOrder operationOrder : manufOrder.getOperationOrderList())  {
-				
-				if(operationOrder.getStatusSelect() == IOperationOrder.STATUS_IN_PROGRESS)  {
-					
-					operationOrder.setStatusSelect(IOperationOrder.STATUS_STANDBY);
-					
-					operationOrder.setStoppedBy(AuthUtils.getUser());
-					
-					operationOrder.setStoppingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
-					
-				}
-				
-			}
-			
-		}
-		
-		manufOrder.setStatusSelect(IManufOrder.STATUS_STANDBY);
-		
-		manufOrderRepo.save(manufOrder);
-		
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void resume(ManufOrder manufOrder)  {
-		
-		if(manufOrder.getOperationOrderList() != null)  {
-			
-			for(OperationOrder operationOrder : manufOrder.getOperationOrderList())  {
-				
-				if(operationOrder.getStatusSelect() == IOperationOrder.STATUS_STANDBY)  {
-					
-					operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
-					
-					operationOrder.setStartedBy(AuthUtils.getUser());
-					
-					operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
-					
-				}
-				
-			}
-			
-		}
-		
-		manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
-		
-		manufOrderRepo.save(manufOrder);
-		
-	}
-	
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void finish(ManufOrder manufOrder) throws AxelorException  {
-		
-		if(manufOrder.getOperationOrderList() != null)  {
-			
-			for(OperationOrder operationOrder : manufOrder.getOperationOrderList())  {
-				
-				if(operationOrder.getStatusSelect() != IManufOrder.STATUS_FINISHED)  {
-					
-					if (operationOrder.getStatusSelect() != IManufOrder.STATUS_IN_PROGRESS && operationOrder.getStatusSelect() != IManufOrder.STATUS_STANDBY) {
-						operationOrderWorkflowService.start(operationOrder);
-					}
-					
-					operationOrderWorkflowService.finish(operationOrder);
-				}
-				
-			}
-			
-		}
-		
-		manufOrderStockMoveService.finish(manufOrder);
-		
-		manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
-		
-		manufOrderRepo.save(manufOrder);
-		
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(ManufOrder manufOrder) throws AxelorException  {
-		
-		if(manufOrder.getOperationOrderList() != null)  {
-			
-			for(OperationOrder operationOrder : manufOrder.getOperationOrderList())  {
-				
-				if(operationOrder.getStatusSelect() != IOperationOrder.STATUS_CANCELED)  {
-					operationOrderWorkflowService.cancel(operationOrder);
-				}
-			}
-			
-		}
-		
-		manufOrderStockMoveService.cancel(manufOrder);
-		
-		manufOrder.setStatusSelect(IManufOrder.STATUS_CANCELED);
-		
-		manufOrderRepo.save(manufOrder);
-		
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException  {
-		
-		if(manufOrder.getOperationOrderList() != null)  {
-			
-			for(OperationOrder operationOrder : manufOrder.getOperationOrderList())  {
-				
-				operationOrderWorkflowService.plan(operationOrder);
-				
-			}
-			
-		}
-		
-		manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
-		
-		if(!manufOrder.getIsConsProOnOperation())  {
-			manufOrderStockMoveService.createToConsumeStockMove(manufOrder);
-		}
+  @Inject private OperationOrderRepository operationOrderRepo;
 
-		manufOrderStockMoveService.createToProduceStockMove(manufOrder);
-		
-		manufOrder.setStatusSelect(IManufOrder.STATUS_PLANNED);
-		
-		ManufOrderService mfService = Beans.get(ManufOrderService.class);
-		
-		manufOrder.setManufOrderSeq(mfService.getManufOrderSeq());
-		
-		return manufOrderRepo.save(manufOrder);
-	}
-	
-	
-	public LocalDateTime computePlannedEndDateT(ManufOrder manufOrder)  {
-		
-		OperationOrder lastOperationOrder = operationOrderRepo.all().filter("self.manufOrder = ?1 ORDER BY self.plannedEndDateT DESC", manufOrder).fetchOne();
-		
-		if(lastOperationOrder != null)  {
-			
-			return lastOperationOrder.getPlannedEndDateT();
-			
-		}
-		
-		return manufOrder.getPlannedStartDateT();
-		
-	}
-	
-	@Transactional
-	public void allOpFinished(ManufOrder manufOrder) throws AxelorException  {
-		int count = 0;
-		List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
-		for (OperationOrder operationOrderIt : operationOrderList) {
-			if(operationOrderIt.getStatusSelect() == IOperationOrder.STATUS_FINISHED){
-				count++;
-			}
-		}
-		if(count == operationOrderList.size()){
-			Beans.get(ManufOrderStockMoveService.class).finish(manufOrder);
-			
-			manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
-			
-			manufOrderRepo.save(manufOrder);
-		}
-	}
+  @Inject private ManufOrderStockMoveService manufOrderStockMoveService;
+
+  @Inject protected GeneralService generalService;
+
+  @Inject protected ManufOrderRepository manufOrderRepo;
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void start(ManufOrder manufOrder) {
+
+    manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
+
+    manufOrderRepo.save(manufOrder);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void pause(ManufOrder manufOrder) {
+
+    if (manufOrder.getOperationOrderList() != null) {
+
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+
+        if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_IN_PROGRESS) {
+
+          operationOrder.setStatusSelect(IOperationOrder.STATUS_STANDBY);
+
+          operationOrder.setStoppedBy(AuthUtils.getUser());
+
+          operationOrder.setStoppingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+        }
+      }
+    }
+
+    manufOrder.setStatusSelect(IManufOrder.STATUS_STANDBY);
+
+    manufOrderRepo.save(manufOrder);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void resume(ManufOrder manufOrder) {
+
+    if (manufOrder.getOperationOrderList() != null) {
+
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+
+        if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_STANDBY) {
+
+          operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
+
+          operationOrder.setStartedBy(AuthUtils.getUser());
+
+          operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+        }
+      }
+    }
+
+    manufOrder.setStatusSelect(IManufOrder.STATUS_IN_PROGRESS);
+
+    manufOrderRepo.save(manufOrder);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void finish(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getOperationOrderList() != null) {
+
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+
+        if (operationOrder.getStatusSelect() != IManufOrder.STATUS_FINISHED) {
+
+          if (operationOrder.getStatusSelect() != IManufOrder.STATUS_IN_PROGRESS
+              && operationOrder.getStatusSelect() != IManufOrder.STATUS_STANDBY) {
+            operationOrderWorkflowService.start(operationOrder);
+          }
+
+          operationOrderWorkflowService.finish(operationOrder);
+        }
+      }
+    }
+
+    manufOrderStockMoveService.finish(manufOrder);
+
+    manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
+
+    manufOrderRepo.save(manufOrder);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void cancel(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getOperationOrderList() != null) {
+
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+
+        if (operationOrder.getStatusSelect() != IOperationOrder.STATUS_CANCELED) {
+          operationOrderWorkflowService.cancel(operationOrder);
+        }
+      }
+    }
+
+    manufOrderStockMoveService.cancel(manufOrder);
+
+    manufOrder.setStatusSelect(IManufOrder.STATUS_CANCELED);
+
+    manufOrderRepo.save(manufOrder);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getOperationOrderList() != null) {
+
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+
+        operationOrderWorkflowService.plan(operationOrder);
+      }
+    }
+
+    manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
+
+    if (!manufOrder.getIsConsProOnOperation()) {
+      manufOrderStockMoveService.createToConsumeStockMove(manufOrder);
+    }
+
+    manufOrderStockMoveService.createToProduceStockMove(manufOrder);
+
+    manufOrder.setStatusSelect(IManufOrder.STATUS_PLANNED);
+
+    ManufOrderService mfService = Beans.get(ManufOrderService.class);
+
+    manufOrder.setManufOrderSeq(mfService.getManufOrderSeq());
+
+    return manufOrderRepo.save(manufOrder);
+  }
+
+  public LocalDateTime computePlannedEndDateT(ManufOrder manufOrder) {
+
+    OperationOrder lastOperationOrder =
+        operationOrderRepo
+            .all()
+            .filter("self.manufOrder = ?1 ORDER BY self.plannedEndDateT DESC", manufOrder)
+            .fetchOne();
+
+    if (lastOperationOrder != null) {
+
+      return lastOperationOrder.getPlannedEndDateT();
+    }
+
+    return manufOrder.getPlannedStartDateT();
+  }
+
+  @Transactional
+  public void allOpFinished(ManufOrder manufOrder) throws AxelorException {
+    int count = 0;
+    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+    for (OperationOrder operationOrderIt : operationOrderList) {
+      if (operationOrderIt.getStatusSelect() == IOperationOrder.STATUS_FINISHED) {
+        count++;
+      }
+    }
+    if (count == operationOrderList.size()) {
+      Beans.get(ManufOrderStockMoveService.class).finish(manufOrder);
+
+      manufOrder.setStatusSelect(IManufOrder.STATUS_FINISHED);
+
+      manufOrderRepo.save(manufOrder);
+    }
+  }
 }

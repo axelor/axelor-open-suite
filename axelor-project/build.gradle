@@ -8,3 +8,9 @@ module {
 	// module dependencies
 	module "modules:axelor-base"
 }
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}

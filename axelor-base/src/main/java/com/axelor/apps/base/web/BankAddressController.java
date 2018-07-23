@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,18 +25,15 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class BankAddressController {
-    @Inject
-    BankAddressRepository bankAddressRepository;
+  @Inject BankAddressRepository bankAddressRepository;
 
-    @Inject
-    BankAddressService bankAddressService;
+  @Inject BankAddressService bankAddressService;
 
-    public void fillFullName(ActionRequest request, ActionResponse response) {
-          BankAddress bankAddress = request.getContext().asType(BankAddress.class);
-          if (bankAddress.getAddress() != null) {
-              String fullAddress = bankAddressService.computeFullAddress(bankAddress);
-              response.setValue("fullAddress", fullAddress);
-          }
-
+  public void fillFullName(ActionRequest request, ActionResponse response) {
+    BankAddress bankAddress = request.getContext().asType(BankAddress.class);
+    if (bankAddress.getAddress() != null) {
+      String fullAddress = bankAddressService.computeFullAddress(bankAddress);
+      response.setValue("fullAddress", fullAddress);
     }
+  }
 }

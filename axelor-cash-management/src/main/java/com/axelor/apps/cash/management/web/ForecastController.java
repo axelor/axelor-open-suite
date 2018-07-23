@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,14 +24,12 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class ForecastController {
-	
-	@Inject
-	protected ForecastService forecastService;
-	
-	public void generate(ActionRequest request, ActionResponse response){
-		ForecastGenerator forecastGenerator = request.getContext().asType(ForecastGenerator.class);
-		forecastService.generate(forecastGenerator);
-		response.setValues(forecastGenerator);
-	}
-	
+
+  @Inject protected ForecastService forecastService;
+
+  public void generate(ActionRequest request, ActionResponse response) {
+    ForecastGenerator forecastGenerator = request.getContext().asType(ForecastGenerator.class);
+    forecastService.generate(forecastGenerator);
+    response.setValues(forecastGenerator);
+  }
 }

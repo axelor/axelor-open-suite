@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,11 +21,10 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.marketing.service.CampaignService;
 import com.axelor.apps.marketing.service.CampaignServiceImpl;
 
-public class MarketingModule extends AxelorModule{
+public class MarketingModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(CampaignService.class).to(CampaignServiceImpl.class);
-	}
-	
+  @Override
+  protected void configure() {
+    bind(CampaignService.class).to(CampaignServiceImpl.class);
+  }
 }

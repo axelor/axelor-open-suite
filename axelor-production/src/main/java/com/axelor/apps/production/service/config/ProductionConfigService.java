@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,34 +26,32 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
 public class ProductionConfigService {
-	
-	public ProductionConfig getProductionConfig(Company company) throws AxelorException  {
-		
-		ProductionConfig productionConfig = company.getProductionConfig(); 
-		
-		if(productionConfig == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_CONFIG_1),
-					company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		return productionConfig;
-		
-	}
-	
-	
-	
-	/******************************** LOCATION ********************************************/
-	
-	public Location getProductionVirtualLocation(ProductionConfig productionConfig) throws AxelorException  {
-		
-		if(productionConfig.getProductionVirtualLocation() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2),
-					productionConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		return productionConfig.getProductionVirtualLocation();
-		
-	}
-	
-	
+
+  public ProductionConfig getProductionConfig(Company company) throws AxelorException {
+
+    ProductionConfig productionConfig = company.getProductionConfig();
+
+    if (productionConfig == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.PRODUCTION_CONFIG_1), company.getName()),
+          IException.CONFIGURATION_ERROR);
+    }
+
+    return productionConfig;
+  }
+
+  /** ****************************** LOCATION ******************************************* */
+  public Location getProductionVirtualLocation(ProductionConfig productionConfig)
+      throws AxelorException {
+
+    if (productionConfig.getProductionVirtualLocation() == null) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.PRODUCTION_CONFIG_2),
+              productionConfig.getCompany().getName()),
+          IException.CONFIGURATION_ERROR);
+    }
+
+    return productionConfig.getProductionVirtualLocation();
+  }
 }

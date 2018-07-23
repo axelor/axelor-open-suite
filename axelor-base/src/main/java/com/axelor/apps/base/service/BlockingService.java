@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,38 +17,34 @@
  */
 package com.axelor.apps.base.service;
 
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-
+import org.joda.time.LocalDate;
 
 public class BlockingService {
 
-	private LocalDate today;
+  private LocalDate today;
 
-	@Inject
-	public BlockingService() {
+  @Inject
+  public BlockingService() {
 
-		this.today = Beans.get(GeneralService.class).getTodayDate();
-	}
+    this.today = Beans.get(GeneralService.class).getTodayDate();
+  }
 
+  public Blocking getBlocking(Partner partner, Company company) {
 
-	public Blocking getBlocking(Partner partner, Company company)  {
+    if (partner != null && company != null && partner.getBlockingList() != null) {
+      for (Blocking blocking : partner.getBlockingList()) {
+        if (blocking.getCompany().equals(company)) {
+          return blocking;
+        }
+      }
+    }
 
-		if(partner != null && company != null && partner.getBlockingList() != null)  {
-			for(Blocking blocking : partner.getBlockingList())  {
-				if(blocking.getCompany().equals(company))  {
-					return blocking;
-				}
-			}
-		}
-
-		return null;
-
-	}
+    return null;
+  }
 }

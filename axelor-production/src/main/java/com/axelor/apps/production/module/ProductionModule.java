@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -49,23 +49,22 @@ import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 
 public class ProductionModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(ManufOrderRepository.class).to(ManufOrderManagementRepository.class);
-		bind(OperationOrderRepository.class).to(OperationOrderManagementRepository.class);
-		bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
-		bind(BillOfMaterialService.class).to(BillOfMaterialServiceImpl.class);
-		bind(ManufOrderService.class).to(ManufOrderServiceImpl.class);
-		bind(OperationOrderService.class).to(OperationOrderServiceImpl.class);
-		bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
-		bind(ProductionOrderWizardService.class).to(ProductionOrderWizardServiceImpl.class);		
-		bind(ProductionOrderSaleOrderService.class).to(ProductionOrderSaleOrderServiceImpl.class);
-		bind(MrpLineServiceImpl.class).to(MrpLineServiceProductionImpl.class);
-		bind(MrpServiceImpl.class).to(MrpServiceProductionImpl.class);
-		bind(CostSheetService.class).to(CostSheetServiceImpl.class);
-		bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
-		bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceProductionImpl.class);
-		bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
-	}
-
+  @Override
+  protected void configure() {
+    bind(ManufOrderRepository.class).to(ManufOrderManagementRepository.class);
+    bind(OperationOrderRepository.class).to(OperationOrderManagementRepository.class);
+    bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
+    bind(BillOfMaterialService.class).to(BillOfMaterialServiceImpl.class);
+    bind(ManufOrderService.class).to(ManufOrderServiceImpl.class);
+    bind(OperationOrderService.class).to(OperationOrderServiceImpl.class);
+    bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
+    bind(ProductionOrderWizardService.class).to(ProductionOrderWizardServiceImpl.class);
+    bind(ProductionOrderSaleOrderService.class).to(ProductionOrderSaleOrderServiceImpl.class);
+    bind(MrpLineServiceImpl.class).to(MrpLineServiceProductionImpl.class);
+    bind(MrpServiceImpl.class).to(MrpServiceProductionImpl.class);
+    bind(CostSheetService.class).to(CostSheetServiceImpl.class);
+    bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
+    bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceProductionImpl.class);
+    bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);
+  }
 }

@@ -9,3 +9,9 @@ module {
 
 	module "modules:axelor-exception"
 }
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}

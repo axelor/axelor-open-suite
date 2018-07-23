@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,13 +25,14 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
 public class CrmConfigService {
-	public CrmConfig getCrmConfig(Company company) throws AxelorException  {
-		CrmConfig crmConfig = company.getCrmConfig();
+  public CrmConfig getCrmConfig(Company company) throws AxelorException {
+    CrmConfig crmConfig = company.getCrmConfig();
 
-		if(crmConfig == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CRM_CONFIG_1), company.getName()),IException.CONFIGURATION_ERROR);
-		}
-		return crmConfig;
-	}
-
+    if (crmConfig == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.CRM_CONFIG_1), company.getName()),
+          IException.CONFIGURATION_ERROR);
+    }
+    return crmConfig;
+  }
 }

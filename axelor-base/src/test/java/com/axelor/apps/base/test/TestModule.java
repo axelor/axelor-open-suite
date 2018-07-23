@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,21 +17,20 @@
  */
 package com.axelor.apps.base.test;
 
-import net.sf.ehcache.CacheManager; 
-
 import com.axelor.auth.AuthModule;
 import com.axelor.db.JpaModule;
 import com.google.inject.AbstractModule;
+import net.sf.ehcache.CacheManager;
 
 public class TestModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
-		// shutdown the cache manager if running : Breaking the test
-		if (CacheManager.ALL_CACHE_MANAGERS.size() > 0) {
-			CacheManager.getInstance().shutdown();
-		}
-        install(new JpaModule("testUnit", true, true));
-        install(new AuthModule());
-	}
+  @Override
+  protected void configure() {
+    // shutdown the cache manager if running : Breaking the test
+    if (CacheManager.ALL_CACHE_MANAGERS.size() > 0) {
+      CacheManager.getInstance().shutdown();
+    }
+    install(new JpaModule("testUnit", true, true));
+    install(new AuthModule());
+  }
 }

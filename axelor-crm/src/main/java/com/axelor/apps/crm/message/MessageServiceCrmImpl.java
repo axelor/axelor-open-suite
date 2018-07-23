@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -34,41 +34,48 @@ import com.google.inject.persist.Transactional;
 
 public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
-	@Inject
-	public MessageServiceCrmImpl( MetaAttachmentRepository metaAttachmentRepository, MailAccountService mailAccountService, UserService userService ) {
-		super(metaAttachmentRepository, mailAccountService, userService);
-	}
+  @Inject
+  public MessageServiceCrmImpl(
+      MetaAttachmentRepository metaAttachmentRepository,
+      MailAccountService mailAccountService,
+      UserService userService) {
+    super(metaAttachmentRepository, mailAccountService, userService);
+  }
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message createMessage( Event event ) throws AxelorException, Exception  {
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Message createMessage(Event event) throws AxelorException, Exception {
 
-			//Get template depending on event type
-		Template template = null;
+    // Get template depending on event type
+    Template template = null;
 
-		switch (event.getTypeSelect()) {
-		case IEvent.TASK:
-			template = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getTaskTemplate();
-			break;
+    switch (event.getTypeSelect()) {
+      case IEvent.TASK:
+        template =
+            Beans.get(CrmConfigService.class)
+                .getCrmConfig(event.getUser().getActiveCompany())
+                .getTaskTemplate();
+        break;
 
-		case IEvent.CALL:
-			template = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getCallTemplate();
-			break;
+      case IEvent.CALL:
+        template =
+            Beans.get(CrmConfigService.class)
+                .getCrmConfig(event.getUser().getActiveCompany())
+                .getCallTemplate();
+        break;
 
-		case IEvent.MEETING:
-			template = Beans.get(CrmConfigService.class).getCrmConfig(event.getUser().getActiveCompany()).getMeetingTemplate();
-			break;
+      case IEvent.MEETING:
+        template =
+            Beans.get(CrmConfigService.class)
+                .getCrmConfig(event.getUser().getActiveCompany())
+                .getMeetingTemplate();
+        break;
 
-		default:
-			break;
-		}
+      default:
+        break;
+    }
 
-		Message message = Beans.get(TemplateMessageService.class).generateMessage(event, template);
+    Message message = Beans.get(TemplateMessageService.class).generateMessage(event, template);
 
-		return messageRepo.save(message);
-	}
-
-
-
-
-
+    return messageRepo.save(message);
+  }
 }

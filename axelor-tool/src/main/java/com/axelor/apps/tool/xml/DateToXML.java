@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,34 +17,31 @@
  */
 package com.axelor.apps.tool.xml;
 
+import java.lang.invoke.MethodHandles;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
-
 public abstract class DateToXML {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	public static XMLGregorianCalendar convert(LocalDateTime in) {
-		
-		XMLGregorianCalendar date = null;
-		
-		try {
-			
-			date = DatatypeFactory.newInstance().newXMLGregorianCalendar(in.toString());
-			
-		} catch (DatatypeConfigurationException e) {
-			
-			LOG.error(e.getMessage());
-			
-		}
-		
-		return date;
-	}
+  public static XMLGregorianCalendar convert(LocalDateTime in) {
+
+    XMLGregorianCalendar date = null;
+
+    try {
+
+      date = DatatypeFactory.newInstance().newXMLGregorianCalendar(in.toString());
+
+    } catch (DatatypeConfigurationException e) {
+
+      LOG.error(e.getMessage());
+    }
+
+    return date;
+  }
 }

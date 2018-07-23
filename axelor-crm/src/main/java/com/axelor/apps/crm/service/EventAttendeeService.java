@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,34 +24,27 @@ import com.axelor.apps.crm.db.Lead;
 
 public class EventAttendeeService {
 
-	
-	public EventAttendee createEventAttendee(Event event, Lead lead, Partner contactPartner)  {
-		
-		EventAttendee eventAttendee = new EventAttendee();
-		eventAttendee.setEvent(event);
-		eventAttendee.setLead(lead);
-		eventAttendee.setContactPartner(contactPartner);
+  public EventAttendee createEventAttendee(Event event, Lead lead, Partner contactPartner) {
 
-		eventAttendee.setName(this.getName(eventAttendee));
-		
-		return eventAttendee;
-		
-	}
-	
-	public String getName(EventAttendee eventAttendee)  {
-		
-		if(eventAttendee.getContactPartner() != null)  {
-			return eventAttendee.getContactPartner().getFullName();
-		}
-		if(eventAttendee.getLead() != null)  {
-			return eventAttendee.getLead().getFullName();
-		}
-		
-		return "";
-		
-	}
- 	
-	
-	
-	
+    EventAttendee eventAttendee = new EventAttendee();
+    eventAttendee.setEvent(event);
+    eventAttendee.setLead(lead);
+    eventAttendee.setContactPartner(contactPartner);
+
+    eventAttendee.setName(this.getName(eventAttendee));
+
+    return eventAttendee;
+  }
+
+  public String getName(EventAttendee eventAttendee) {
+
+    if (eventAttendee.getContactPartner() != null) {
+      return eventAttendee.getContactPartner().getFullName();
+    }
+    if (eventAttendee.getLead() != null) {
+      return eventAttendee.getLead().getFullName();
+    }
+
+    return "";
+  }
 }

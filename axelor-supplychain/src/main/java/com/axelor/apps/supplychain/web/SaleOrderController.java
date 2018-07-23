@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,11 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.web;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Partner;
@@ -53,316 +48,362 @@ import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class SaleOrderController{
-	
-	@Inject
-	private SaleOrderRepository saleOrderRepo;
+public class SaleOrderController {
 
-	@Inject
-	protected GeneralService generalService;
+  @Inject private SaleOrderRepository saleOrderRepo;
 
-	@Inject
-	private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
+  @Inject protected GeneralService generalService;
 
-	@Inject
-	private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychain;
-	
-	@Inject
-	private StockMoveRepository stockMoveRepo;
-	
+  @Inject private SaleOrderInvoiceServiceImpl saleOrderInvoiceServiceImpl;
 
-	public void createStockMove(ActionRequest request, ActionResponse response) throws AxelorException {
+  @Inject private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychain;
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+  @Inject private StockMoveRepository stockMoveRepo;
 
-		if(saleOrder.getId() != null) {
+  public void createStockMove(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-			SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
-			StockMove stockMove = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrderRepo.find(saleOrder.getId()));
-			
-			if(stockMove != null)  {
-				response.setView(ActionView
-					.define(I18n.get("Stock Move"))
-					.model(StockMove.class.getName())
-					.add("grid", "stock-move-grid")
-					.add("form", "stock-move-form")
-					.param("forceEdit", "true")
-					.context("_showRecord", String.valueOf(stockMove.getId())).map());
-			}
-			else  {
-				response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
-			}
-		}
-	}
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-	public void getLocation(ActionRequest request, ActionResponse response) {
+    if (saleOrder.getId() != null) {
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
+      StockMove stockMove =
+          saleOrderStockService.createStocksMovesFromSaleOrder(
+              saleOrderRepo.find(saleOrder.getId()));
 
-		if(saleOrder != null) {
+      if (stockMove != null) {
+        response.setView(
+            ActionView.define(I18n.get("Stock Move"))
+                .model(StockMove.class.getName())
+                .add("grid", "stock-move-grid")
+                .add("form", "stock-move-form")
+                .param("forceEdit", "true")
+                .context("_showRecord", String.valueOf(stockMove.getId()))
+                .map());
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+      }
+    }
+  }
 
-			Location location = Beans.get(SaleOrderStockService.class).getLocation(saleOrder.getCompany());
+  public void getLocation(ActionRequest request, ActionResponse response) {
 
-			if(location != null) {
-				response.setValue("location", location);
-			}
-		}
-	}
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
+    if (saleOrder != null) {
 
-	@SuppressWarnings("rawtypes")
-	public void generatePurchaseOrdersFromSelectedSOLines(ActionRequest request, ActionResponse response) throws AxelorException {
+      Location location =
+          Beans.get(SaleOrderStockService.class).getLocation(saleOrder.getCompany());
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      if (location != null) {
+        response.setValue("location", location);
+      }
+    }
+  }
 
-		if(saleOrder.getId() != null) {
+  @SuppressWarnings("rawtypes")
+  public void generatePurchaseOrdersFromSelectedSOLines(
+      ActionRequest request, ActionResponse response) throws AxelorException {
 
-			if (request.getContext().get("supplierPartnerSelect") != null){
-				Partner partner = JPA.em().find(Partner.class, new Long((Integer)((Map)request.getContext().get("supplierPartnerSelect")).get("id")));
-				List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
-				String saleOrderLineIdSelectedStr = (String)request.getContext().get("saleOrderLineIdSelected");
-				for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-					saleOrderLineIdSelected.add(new Long(saleOrderId));
-				}
-				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
-				PurchaseOrder purchaseOrder = Beans.get(SaleOrderPurchaseService.class).createPurchaseOrder(partner, saleOrderLinesSelected, saleOrderRepo.find(saleOrder.getId()));
-				response.setView(ActionView
-						.define(I18n.get("Purchase Order"))
-						.model(PurchaseOrder.class.getName())
-						.add("form", "purchase-order-form")
-						.param("forceEdit", "true")
-						.context("_showRecord", String.valueOf(purchaseOrder.getId()))
-						.map());
-				response.setCanClose(true);
-			}else{
-				Partner supplierPartner = null;
-				List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-				//Check if supplier partners of each sale order line are the same. If it is, send the partner id to view to load this partner by default into select
-				for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-					if (saleOrderLine.isSelected()){
-						if (supplierPartner == null){
-							supplierPartner = saleOrderLine.getSupplierPartner();
-						}else{
-							if (!supplierPartner.equals(saleOrderLine.getSupplierPartner())){
-								supplierPartner = null;
-								break;
-							}
-						}
-						saleOrderLineIdSelected.add(saleOrderLine.getId());
-					}
-				}
+    if (saleOrder.getId() != null) {
 
-				if (saleOrderLineIdSelected.isEmpty()){
-					response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
-				}else{
-					response.setView(ActionView
-									.define("SaleOrder")
-									.model(SaleOrder.class.getName())
-									.add("form", "sale-order-generate-po-select-supplierpartner-form")
-									.param("popup", "true")
-									.param("show-toolbar", "false")
-									.param("show-confirm", "false")
-									.param("popup-save", "false")
-									.param("forceEdit", "true")
-									.context("_showRecord", String.valueOf(saleOrder.getId()))
-									.context("supplierPartnerId", ((supplierPartner != null) ? String.valueOf(supplierPartner.getId()) : "NULL"))
-									.context("saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
-									.map());
-				}
-			}
+      if (request.getContext().get("supplierPartnerSelect") != null) {
+        Partner partner =
+            JPA.em()
+                .find(
+                    Partner.class,
+                    new Long(
+                        (Integer)
+                            ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
+        List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+        String saleOrderLineIdSelectedStr =
+            (String) request.getContext().get("saleOrderLineIdSelected");
+        for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
+          saleOrderLineIdSelected.add(new Long(saleOrderId));
+        }
+        List<SaleOrderLine> saleOrderLinesSelected =
+            JPA.all(SaleOrderLine.class)
+                .filter("self.id IN (:saleOderLineIdList)")
+                .bind("saleOderLineIdList", saleOrderLineIdSelected)
+                .fetch();
+        PurchaseOrder purchaseOrder =
+            Beans.get(SaleOrderPurchaseService.class)
+                .createPurchaseOrder(
+                    partner, saleOrderLinesSelected, saleOrderRepo.find(saleOrder.getId()));
+        response.setView(
+            ActionView.define(I18n.get("Purchase Order"))
+                .model(PurchaseOrder.class.getName())
+                .add("form", "purchase-order-form")
+                .param("forceEdit", "true")
+                .context("_showRecord", String.valueOf(purchaseOrder.getId()))
+                .map());
+        response.setCanClose(true);
+      } else {
+        Partner supplierPartner = null;
+        List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
 
-		}
-	}
+        // Check if supplier partners of each sale order line are the same. If it is, send the
+        // partner id to view to load this partner by default into select
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          if (saleOrderLine.isSelected()) {
+            if (supplierPartner == null) {
+              supplierPartner = saleOrderLine.getSupplierPartner();
+            } else {
+              if (!supplierPartner.equals(saleOrderLine.getSupplierPartner())) {
+                supplierPartner = null;
+                break;
+              }
+            }
+            saleOrderLineIdSelected.add(saleOrderLine.getId());
+          }
+        }
 
+        if (saleOrderLineIdSelected.isEmpty()) {
+          response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+        } else {
+          response.setView(
+              ActionView.define("SaleOrder")
+                  .model(SaleOrder.class.getName())
+                  .add("form", "sale-order-generate-po-select-supplierpartner-form")
+                  .param("popup", "true")
+                  .param("show-toolbar", "false")
+                  .param("show-confirm", "false")
+                  .param("popup-save", "false")
+                  .param("forceEdit", "true")
+                  .context("_showRecord", String.valueOf(saleOrder.getId()))
+                  .context(
+                      "supplierPartnerId",
+                      ((supplierPartner != null)
+                          ? String.valueOf(supplierPartner.getId())
+                          : "NULL"))
+                  .context("saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
+                  .map());
+        }
+      }
+    }
+  }
 
-	public void generateInvoice(ActionRequest request, ActionResponse response)  {
+  public void generateInvoice(ActionRequest request, ActionResponse response) {
 
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-		try {
+    try {
 
-			saleOrder = saleOrderRepo.find(saleOrder.getId());
-			//Check if at least one row is selected. If yes, then invoiced only the selected rows, else invoiced all rows
-			List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
-			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				if (saleOrderLine.isSelected()){
-					saleOrderLineIdSelected.add(saleOrderLine.getId());
-				}
-			}
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      // Check if at least one row is selected. If yes, then invoiced only the selected rows, else
+      // invoiced all rows
+      List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (saleOrderLine.isSelected()) {
+          saleOrderLineIdSelected.add(saleOrderLine.getId());
+        }
+      }
 
-			Invoice invoice = null;
+      Invoice invoice = null;
 
-			if (!saleOrderLineIdSelected.isEmpty()){
-				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder, saleOrderLinesSelected);
-			}else{
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder);
-			}
+      if (!saleOrderLineIdSelected.isEmpty()) {
+        List<SaleOrderLine> saleOrderLinesSelected =
+            JPA.all(SaleOrderLine.class)
+                .filter("self.id IN (:saleOderLineIdList)")
+                .bind("saleOderLineIdList", saleOrderLineIdSelected)
+                .fetch();
+        invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder, saleOrderLinesSelected);
+      } else {
+        invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder);
+      }
 
-			if(invoice != null)  {
-				response.setReload(true);
-				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
-				response.setView(ActionView
-		            .define(I18n.get("Invoice generated"))
-		            .model(Invoice.class.getName())
-		            .add("form", "invoice-form")
-		            .add("grid", "invoice-grid")
-		            .context("_showRecord",String.valueOf(invoice.getId()))
-		            .map());
-			}
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-	
-	
-	public void generateInvoiceFromPopup(ActionRequest request, ActionResponse response)  {
+      if (invoice != null) {
+        response.setReload(true);
+        response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
+        response.setView(
+            ActionView.define(I18n.get("Invoice generated"))
+                .model(Invoice.class.getName())
+                .add("form", "invoice-form")
+                .add("grid", "invoice-grid")
+                .context("_showRecord", String.valueOf(invoice.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-		 String saleOrderId = request.getContext().get("_id").toString();
+  public void generateInvoiceFromPopup(ActionRequest request, ActionResponse response) {
 
-		try {
+    String saleOrderId = request.getContext().get("_id").toString();
 
-			SaleOrder saleOrder = saleOrderRepo.find( Long.valueOf(saleOrderId) );
-			//Check if at least one row is selected. If yes, then invoiced only the selected rows, else invoiced all rows
-			List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
-			for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-				if (saleOrderLine.isSelected()){
-					saleOrderLineIdSelected.add(saleOrderLine.getId());
-				}
-			}
-			 	
-			Invoice invoice = null;
+    try {
 
-			if (!saleOrderLineIdSelected.isEmpty()){
-				List<SaleOrderLine> saleOrderLinesSelected = JPA.all(SaleOrderLine.class).filter("self.id IN (:saleOderLineIdList)").bind("saleOderLineIdList", saleOrderLineIdSelected).fetch();
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder, saleOrderLinesSelected);
-			}else{
-				invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder);
-			}
+      SaleOrder saleOrder = saleOrderRepo.find(Long.valueOf(saleOrderId));
+      // Check if at least one row is selected. If yes, then invoiced only the selected rows, else
+      // invoiced all rows
+      List<Long> saleOrderLineIdSelected = new ArrayList<Long>();
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (saleOrderLine.isSelected()) {
+          saleOrderLineIdSelected.add(saleOrderLine.getId());
+        }
+      }
 
-			if(invoice != null)  {
-				
-				response.setCanClose(true);
-				
-				response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
-				response.setView(ActionView
-		            .define(I18n.get("Invoice generated"))
-		            .model(Invoice.class.getName())
-		            .add("form", "invoice-form")
-		            .add("grid", "invoice-grid")
-		            .context("_showRecord",String.valueOf(invoice.getId()))
-		            .map());
-			}
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+      Invoice invoice = null;
 
-	public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) {
+      if (!saleOrderLineIdSelected.isEmpty()) {
+        List<SaleOrderLine> saleOrderLinesSelected =
+            JPA.all(SaleOrderLine.class)
+                .filter("self.id IN (:saleOderLineIdList)")
+                .bind("saleOderLineIdList", saleOrderLineIdSelected)
+                .fetch();
+        invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder, saleOrderLinesSelected);
+      } else {
+        invoice = saleOrderInvoiceServiceImpl.generateInvoice(saleOrder);
+      }
 
-		List<Subscription> subscriptionList = Beans.get(SubscriptionRepository.class).all().filter("self.invoiced = false AND self.invoicingDate <= ?1",generalService.getTodayDate()).fetch();
-		List<Long> listId = new ArrayList<Long>();
-		for (Subscription subscription : subscriptionList) {
-			listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
-		}
-		if (listId.isEmpty()) {
-			TraceBackService.trace(response, new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR));
-		}
-		else {
-			String domain = "self.id in ("+Joiner.on(",").join(listId)+")";
-			if (listId.size() == 1) {
-				domain = "self.id = "+listId.get(0);
-			}
-			response.setView(ActionView
-					.define(I18n.get("Subscription Sale Orders"))
-					.model(SaleOrder.class.getName())
-					.add("grid", "sale-order-subscription-grid")
-					.add("form", "sale-order-form")
-					.domain(domain)
-					.map());
-		}
-	}
+      if (invoice != null) {
 
-	@SuppressWarnings("unchecked")
-	public void invoiceSubscriptions(ActionRequest request, ActionResponse response) throws AxelorException{
-		List<Integer> listSelectedSaleOrder = (List<Integer>) request.getContext().get("_ids");
-		if(listSelectedSaleOrder != null){
-			SaleOrder saleOrder = null;
-			List<Long> listInvoiceId = new ArrayList<Long>();
-			for (Integer integer : listSelectedSaleOrder) {
-				saleOrder = saleOrderRepo.find(integer.longValue());
-				Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
-				if(invoice != null){
-					listInvoiceId.add(invoice.getId());
-				}
-			}
-			if(listInvoiceId.isEmpty()){
-				throw new AxelorException(I18n.get("No sale order selected or no subscription to invoice"), IException.CONFIGURATION_ERROR);
-			}
-			response.setReload(true);
-			if(listInvoiceId.size() == 1){
-				response.setView(ActionView
-			            .define(I18n.get("Invoice Generated"))
-			            .model(Invoice.class.getName())
-			            .add("grid", "invoice-grid")
-			            .add("form", "invoice-form")
-			            .domain("self.id = "+listInvoiceId.get(0))
-			            .map());
-			}
-			response.setView(ActionView
-		            .define(I18n.get("Invoices Generated"))
-		            .model(Invoice.class.getName())
-		            .add("grid", "invoice-grid")
-		            .add("form", "invoice-form")
-		            .domain("self.id in ("+Joiner.on(",").join(listInvoiceId)+")")
-		            .map());
-		}
-	}
+        response.setCanClose(true);
 
-	public void invoiceSubscriptionsSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException{
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		saleOrder = saleOrderRepo.find(saleOrder.getId());
-		Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
-		if(invoice == null){
-			throw new AxelorException(I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
-		}
-		response.setReload(true);
-		response.setView(ActionView
-	            .define(I18n.get("Invoice Generated"))
-	            .model(Invoice.class.getName())
-	            .add("form", "invoice-form")
-	            .add("grid", "invoice-grid")
-	            .context("_showRecord",String.valueOf(invoice.getId()))
-	            .map());
-	}
-	
-	@Transactional
-	public void updateSaleOrderOnCancel(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		StockMove stockMove = request.getContext().asType(StockMove.class);
-		SaleOrder so = saleOrderRepo.find(stockMove.getSaleOrder().getId());
-		
-		List<StockMove> stockMoveList = Lists.newArrayList();
-		stockMoveList = stockMoveRepo.all().filter("self.saleOrder = ?1", so).fetch();
-		so.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
-		for (StockMove stock : stockMoveList){
-			if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED && !stock.getId().equals(stockMove.getId())){ 
-				so.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
-				break;
-			}
-		}
-		
-		if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED  && generalService.getGeneral().getTerminateSaleOrderOnDelivery()){
-			so.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
-		}
-		
-		saleOrderRepo.save(so);
-		
-	}
+        response.setFlash(I18n.get(IExceptionMessage.PO_INVOICE_2));
+        response.setView(
+            ActionView.define(I18n.get("Invoice generated"))
+                .model(Invoice.class.getName())
+                .add("form", "invoice-form")
+                .add("grid", "invoice-grid")
+                .context("_showRecord", String.valueOf(invoice.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	public void updateAmountToBeSpreadOverTheTimetable(ActionRequest request, ActionResponse response) {
-		SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-		saleOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(saleOrder);
-		response.setValue("amountToBeSpreadOverTheTimetable" , saleOrder.getAmountToBeSpreadOverTheTimetable());
-	}
+  public void getSubscriptionSaleOrdersToInvoice(ActionRequest request, ActionResponse response) {
+
+    List<Subscription> subscriptionList =
+        Beans.get(SubscriptionRepository.class)
+            .all()
+            .filter(
+                "self.invoiced = false AND self.invoicingDate <= ?1", generalService.getTodayDate())
+            .fetch();
+    List<Long> listId = new ArrayList<Long>();
+    for (Subscription subscription : subscriptionList) {
+      listId.add(subscription.getSaleOrderLine().getSaleOrder().getId());
+    }
+    if (listId.isEmpty()) {
+      TraceBackService.trace(
+          response,
+          new AxelorException(
+              I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR));
+    } else {
+      String domain = "self.id in (" + Joiner.on(",").join(listId) + ")";
+      if (listId.size() == 1) {
+        domain = "self.id = " + listId.get(0);
+      }
+      response.setView(
+          ActionView.define(I18n.get("Subscription Sale Orders"))
+              .model(SaleOrder.class.getName())
+              .add("grid", "sale-order-subscription-grid")
+              .add("form", "sale-order-form")
+              .domain(domain)
+              .map());
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void invoiceSubscriptions(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    List<Integer> listSelectedSaleOrder = (List<Integer>) request.getContext().get("_ids");
+    if (listSelectedSaleOrder != null) {
+      SaleOrder saleOrder = null;
+      List<Long> listInvoiceId = new ArrayList<Long>();
+      for (Integer integer : listSelectedSaleOrder) {
+        saleOrder = saleOrderRepo.find(integer.longValue());
+        Invoice invoice =
+            saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
+        if (invoice != null) {
+          listInvoiceId.add(invoice.getId());
+        }
+      }
+      if (listInvoiceId.isEmpty()) {
+        throw new AxelorException(
+            I18n.get("No sale order selected or no subscription to invoice"),
+            IException.CONFIGURATION_ERROR);
+      }
+      response.setReload(true);
+      if (listInvoiceId.size() == 1) {
+        response.setView(
+            ActionView.define(I18n.get("Invoice Generated"))
+                .model(Invoice.class.getName())
+                .add("grid", "invoice-grid")
+                .add("form", "invoice-form")
+                .domain("self.id = " + listInvoiceId.get(0))
+                .map());
+      }
+      response.setView(
+          ActionView.define(I18n.get("Invoices Generated"))
+              .model(Invoice.class.getName())
+              .add("grid", "invoice-grid")
+              .add("form", "invoice-form")
+              .domain("self.id in (" + Joiner.on(",").join(listInvoiceId) + ")")
+              .map());
+    }
+  }
+
+  public void invoiceSubscriptionsSaleOrder(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = saleOrderRepo.find(saleOrder.getId());
+    Invoice invoice = saleOrderInvoiceServiceImpl.generateSubcriptionInvoiceForSaleOrder(saleOrder);
+    if (invoice == null) {
+      throw new AxelorException(
+          I18n.get("No Subscription to Invoice"), IException.CONFIGURATION_ERROR);
+    }
+    response.setReload(true);
+    response.setView(
+        ActionView.define(I18n.get("Invoice Generated"))
+            .model(Invoice.class.getName())
+            .add("form", "invoice-form")
+            .add("grid", "invoice-grid")
+            .context("_showRecord", String.valueOf(invoice.getId()))
+            .map());
+  }
+
+  @Transactional
+  public void updateSaleOrderOnCancel(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    SaleOrder so = saleOrderRepo.find(stockMove.getSaleOrder().getId());
+
+    List<StockMove> stockMoveList = Lists.newArrayList();
+    stockMoveList = stockMoveRepo.all().filter("self.saleOrder = ?1", so).fetch();
+    so.setDeliveryState(SaleOrderRepository.STATE_NOT_DELIVERED);
+    for (StockMove stock : stockMoveList) {
+      if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED
+          && !stock.getId().equals(stockMove.getId())) {
+        so.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
+        break;
+      }
+    }
+
+    if (so.getStatusSelect() == ISaleOrder.STATUS_FINISHED
+        && generalService.getGeneral().getTerminateSaleOrderOnDelivery()) {
+      so.setStatusSelect(ISaleOrder.STATUS_ORDER_CONFIRMED);
+    }
+
+    saleOrderRepo.save(so);
+  }
+
+  public void updateAmountToBeSpreadOverTheTimetable(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(saleOrder);
+    response.setValue(
+        "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
+  }
 }

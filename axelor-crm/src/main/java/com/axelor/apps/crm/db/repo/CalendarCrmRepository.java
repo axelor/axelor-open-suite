@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -20,13 +20,13 @@ package com.axelor.apps.crm.db.repo;
 import com.axelor.apps.crm.db.Calendar;
 
 public class CalendarCrmRepository extends CalendarRepository {
-	
-	@Override
-	public Calendar copy(Calendar calendar, boolean deep) {
-		
-		calendar.setIsValid(false);
-		calendar.setEventsCrm(null);
-		
-		return super.copy(calendar, deep);
-	}
+
+  @Override
+  public Calendar copy(Calendar calendar, boolean deep) {
+
+    calendar.setIsValid(false);
+    calendar.setEventsCrm(null);
+
+    return super.copy(calendar, deep);
+  }
 }

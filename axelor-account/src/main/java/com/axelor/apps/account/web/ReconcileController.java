@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,33 +27,33 @@ import com.google.inject.Inject;
 
 public class ReconcileController {
 
-	@Inject
-	private ReconcileService reconcileService;
-	
-	@Inject
-	private ReconcileRepository reconcileRepo;
-		
-	// Unreconcile button
-	public void unreconcile(ActionRequest request, ActionResponse response) {
-		
-		Reconcile reconcile = request.getContext().asType(Reconcile.class);
-				
-		try {	
-			reconcileService.unreconcile(reconcileRepo.find(reconcile.getId()));
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-	
-	// Reconcile button
-	public void reconcile(ActionRequest request, ActionResponse response) {
-		
-		Reconcile reconcile = request.getContext().asType(Reconcile.class);
-			
-		try {
-			reconcileService.confirmReconcile(reconcileRepo.find(reconcile.getId()), true);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }		
-	}
+  @Inject private ReconcileService reconcileService;
+
+  @Inject private ReconcileRepository reconcileRepo;
+
+  // Unreconcile button
+  public void unreconcile(ActionRequest request, ActionResponse response) {
+
+    Reconcile reconcile = request.getContext().asType(Reconcile.class);
+
+    try {
+      reconcileService.unreconcile(reconcileRepo.find(reconcile.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  // Reconcile button
+  public void reconcile(ActionRequest request, ActionResponse response) {
+
+    Reconcile reconcile = request.getContext().asType(Reconcile.class);
+
+    try {
+      reconcileService.confirmReconcile(reconcileRepo.find(reconcile.getId()), true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

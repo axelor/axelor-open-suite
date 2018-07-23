@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,21 +25,21 @@ import com.google.inject.Inject;
 
 public class CalendarConfigurationController {
 
-	@Inject
-	private CalendarConfigurationService calendarConfigurationService;
-	
-	public void createAction(ActionRequest request, ActionResponse response) {
-		
-		CalendarConfiguration calendarConfiguration = request.getContext().asType(CalendarConfiguration.class);
-		
-		calendarConfigurationService.createEntryMenu(calendarConfiguration);		
-	}
-	
-	public void deleteAction(ActionRequest request, ActionResponse response) {
-	
-		CalendarConfiguration calendarConfiguration = request.getContext().asType(CalendarConfiguration.class);
-		
-		calendarConfigurationService.deleteEntryMenu(calendarConfiguration);
-	}
+  @Inject private CalendarConfigurationService calendarConfigurationService;
 
+  public void createAction(ActionRequest request, ActionResponse response) {
+
+    CalendarConfiguration calendarConfiguration =
+        request.getContext().asType(CalendarConfiguration.class);
+
+    calendarConfigurationService.createEntryMenu(calendarConfiguration);
+  }
+
+  public void deleteAction(ActionRequest request, ActionResponse response) {
+
+    CalendarConfiguration calendarConfiguration =
+        request.getContext().asType(CalendarConfiguration.class);
+
+    calendarConfigurationService.deleteEntryMenu(calendarConfiguration);
+  }
 }

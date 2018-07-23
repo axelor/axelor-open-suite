@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -37,9 +37,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,134 +44,165 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 public class EbicsPartnerServiceImpl implements EbicsPartnerService {
-	
-	protected BankStatementCreateService bankStatementCreateService;
-	protected EbicsService ebicsService;
-	protected BankStatementRepository bankStatementRepository;
-	
-	@Inject
-	public EbicsPartnerServiceImpl(BankStatementCreateService bankStatementCreateService, EbicsService ebicsService, BankStatementRepository bankStatementRepository)  {
-		
-		this.bankStatementCreateService = bankStatementCreateService;
-		this.ebicsService = ebicsService;
-		this.bankStatementRepository = bankStatementRepository;
-		
-	}
 
-    @Transactional
-    public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner) throws AxelorException, IOException  {
-        return getBankStatements(ebicsPartner, null);
+  protected BankStatementCreateService bankStatementCreateService;
+  protected EbicsService ebicsService;
+  protected BankStatementRepository bankStatementRepository;
+
+  @Inject
+  public EbicsPartnerServiceImpl(
+      BankStatementCreateService bankStatementCreateService,
+      EbicsService ebicsService,
+      BankStatementRepository bankStatementRepository) {
+
+    this.bankStatementCreateService = bankStatementCreateService;
+    this.ebicsService = ebicsService;
+    this.bankStatementRepository = bankStatementRepository;
+  }
+
+  @Transactional
+  public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner)
+      throws AxelorException, IOException {
+    return getBankStatements(ebicsPartner, null);
+  }
+
+  @Transactional
+  public List<BankStatement> getBankStatements(
+      EbicsPartner ebicsPartner,
+      Collection<BankStatementFileFormat> bankStatementFileFormatCollection)
+      throws AxelorException, IOException {
+
+    List<BankStatement> bankStatementList = Lists.newArrayList();
+
+    EbicsUser transportEbicsUser = ebicsPartner.getTransportEbicsUser();
+
+    if (ebicsPartner.getBankStatementFileFormatSet() == null
+        || ebicsPartner.getBankStatementFileFormatSet().isEmpty()
+        || transportEbicsUser == null) {
+      return bankStatementList;
     }
 
-    @Transactional
-    public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner,
-            Collection<BankStatementFileFormat> bankStatementFileFormatCollection) throws AxelorException, IOException {
+    LocalDateTime executionDateTime = LocalDateTime.now();
 
-		List<BankStatement> bankStatementList = Lists.newArrayList();
-		
-		EbicsUser transportEbicsUser = ebicsPartner.getTransportEbicsUser();
-		
-		if(ebicsPartner.getBankStatementFileFormatSet() == null || ebicsPartner.getBankStatementFileFormatSet().isEmpty() || transportEbicsUser == null)  {  return bankStatementList;  }
-		
-		LocalDateTime executionDateTime = LocalDateTime.now();
-		
-		Date startDate = null;
-		Date endDate = null;
-		LocalDate bankStatementStartDate = null;
-		LocalDate bankStatementToDate = null;
-		
-		if(ebicsPartner.getBankStatementGetModeSelect() == EbicsPartnerRepository.GET_MODE_PERIOD)  {
-			bankStatementStartDate = ebicsPartner.getBankStatementStartDate();
-			if(bankStatementStartDate != null)  {
-				startDate = bankStatementStartDate.toDate();
-			}
-			bankStatementToDate = ebicsPartner.getBankStatementEndDate();
-			if(bankStatementToDate != null)  {
-				endDate = bankStatementToDate.toDate();
-			}
-		}
-		else  {
-			if(ebicsPartner.getBankStatementLastExeDateT() != null) {
-				bankStatementStartDate = ebicsPartner.getBankStatementLastExeDateT().toLocalDate();
-			}
-			bankStatementToDate = executionDateTime.toLocalDate();
-		}
-		
-		for(BankStatementFileFormat bankStatementFileFormat : ebicsPartner.getBankStatementFileFormatSet())  {
-            if (bankStatementFileFormatCollection != null && !bankStatementFileFormatCollection.isEmpty()
-                    && !bankStatementFileFormatCollection.contains(bankStatementFileFormat)) {
-                continue;
+    Date startDate = null;
+    Date endDate = null;
+    LocalDate bankStatementStartDate = null;
+    LocalDate bankStatementToDate = null;
+
+    if (ebicsPartner.getBankStatementGetModeSelect() == EbicsPartnerRepository.GET_MODE_PERIOD) {
+      bankStatementStartDate = ebicsPartner.getBankStatementStartDate();
+      if (bankStatementStartDate != null) {
+        startDate = bankStatementStartDate.toDate();
+      }
+      bankStatementToDate = ebicsPartner.getBankStatementEndDate();
+      if (bankStatementToDate != null) {
+        endDate = bankStatementToDate.toDate();
+      }
+    } else {
+      if (ebicsPartner.getBankStatementLastExeDateT() != null) {
+        bankStatementStartDate = ebicsPartner.getBankStatementLastExeDateT().toLocalDate();
+      }
+      bankStatementToDate = executionDateTime.toLocalDate();
+    }
+
+    for (BankStatementFileFormat bankStatementFileFormat :
+        ebicsPartner.getBankStatementFileFormatSet()) {
+      if (bankStatementFileFormatCollection != null
+          && !bankStatementFileFormatCollection.isEmpty()
+          && !bankStatementFileFormatCollection.contains(bankStatementFileFormat)) {
+        continue;
+      }
+
+      try {
+        File file =
+            ebicsService.sendFDLRequest(
+                transportEbicsUser,
+                null,
+                startDate,
+                endDate,
+                bankStatementFileFormat.getStatementFileFormatSelect());
+
+        BankStatement bankStatement =
+            bankStatementCreateService.createBankStatement(
+                file,
+                bankStatementStartDate,
+                bankStatementToDate,
+                bankStatementFileFormat,
+                ebicsPartner,
+                executionDateTime);
+
+        bankStatementRepository.save(bankStatement);
+
+        bankStatementList.add(bankStatement);
+
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
+    }
+
+    ebicsPartner.setBankStatementLastExeDateT(executionDateTime);
+
+    Beans.get(EbicsPartnerRepository.class).save(ebicsPartner);
+
+    return bankStatementList;
+  }
+
+  public void checkBankDetailsMissingCurrency(EbicsPartner ebicsPartner) throws AxelorException {
+    List<com.axelor.apps.bankpayment.db.EbicsPartnerService> ebicsPartnerServiceSet =
+        ebicsPartner.getEbicsPartnerServiceList();
+    if (ebicsPartnerServiceSet == null) {
+      return;
+    }
+    boolean allowOrderCurrDiffFromBankDetails = false;
+    for (com.axelor.apps.bankpayment.db.EbicsPartnerService ebicsPartnerService :
+        ebicsPartnerServiceSet) {
+      allowOrderCurrDiffFromBankDetails =
+          allowOrderCurrDiffFromBankDetails
+              || ebicsPartnerService
+                  .getBankOrderFileFormat()
+                  .getAllowOrderCurrDiffFromBankDetails();
+      if (allowOrderCurrDiffFromBankDetails) {
+        break;
+      }
+    }
+
+    if (!allowOrderCurrDiffFromBankDetails) {
+      return;
+    }
+
+    Set<BankDetails> bankDetailsSet = ebicsPartner.getBankDetailsSet();
+    if (bankDetailsSet == null) {
+      return;
+    }
+
+    List<String> bankDetailsWithoutCurrency = new ArrayList<>();
+    for (BankDetails bankDetails : bankDetailsSet) {
+      if (bankDetails.getCurrency() == null) {
+        bankDetailsWithoutCurrency.add(bankDetails.getFullName());
+      }
+    }
+
+    if (!bankDetailsWithoutCurrency.isEmpty()) {
+      Function<String, String> addLi =
+          new Function<String, String>() {
+            @Override
+            public String apply(String s) {
+              return "<li>".concat(s).concat("</li>").toString();
             }
+          };
 
-			try  {
-				File file = ebicsService.sendFDLRequest(transportEbicsUser, null, startDate, endDate, bankStatementFileFormat.getStatementFileFormatSelect());
-				
-				BankStatement bankStatement = bankStatementCreateService.createBankStatement(file, bankStatementStartDate, bankStatementToDate, bankStatementFileFormat, ebicsPartner, executionDateTime);
-				
-				bankStatementRepository.save(bankStatement);
-				
-				bankStatementList.add(bankStatement);
-				
-			}
-			catch (Exception e) {
-				TraceBackService.trace(e);
-			}
-		}
-		
-		ebicsPartner.setBankStatementLastExeDateT(executionDateTime);
-		
-		Beans.get(EbicsPartnerRepository.class).save(ebicsPartner);
-		
-		return bankStatementList;
-	}
-
-	public void checkBankDetailsMissingCurrency(EbicsPartner ebicsPartner) throws AxelorException {
-		List<com.axelor.apps.bankpayment.db.EbicsPartnerService> ebicsPartnerServiceSet = ebicsPartner.getEbicsPartnerServiceList();
-		if (ebicsPartnerServiceSet == null) {
-			return;
-		}
-		boolean allowOrderCurrDiffFromBankDetails = false;
-		for (com.axelor.apps.bankpayment.db.EbicsPartnerService ebicsPartnerService : ebicsPartnerServiceSet) {
-			allowOrderCurrDiffFromBankDetails = allowOrderCurrDiffFromBankDetails || ebicsPartnerService.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails();
-			if (allowOrderCurrDiffFromBankDetails) {
-				break;
-			}
-		}
-
-		if (!allowOrderCurrDiffFromBankDetails) {
-			return;
-		}
-
-	    Set<BankDetails> bankDetailsSet = ebicsPartner.getBankDetailsSet();
-	    if (bankDetailsSet == null) {
-	    	return;
-		}
-
-		List<String> bankDetailsWithoutCurrency = new ArrayList<>();
-	    for (BankDetails bankDetails : bankDetailsSet) {
-	        if (bankDetails.getCurrency() == null) {
-	            bankDetailsWithoutCurrency.add(bankDetails.getFullName());
-			}
-		}
-
-		if (!bankDetailsWithoutCurrency.isEmpty()) {
-	    	Function<String,String> addLi = new Function<String,String>() {
-				  @Override public String apply(String s) {
-				    return "<li>".concat(s).concat("</li>").toString();
-				  }
-				};
-
-			throw new AxelorException(
-					String.format(
-							I18n.get(IExceptionMessage.EBICS_PARTNER_BANK_DETAILS_WARNING),
-							"<ul>" + Joiner.on("")
-									.join(Iterables.transform(bankDetailsWithoutCurrency, addLi)) + "<ul>"
-					),
-					IException.CONFIGURATION_ERROR,
-					ebicsPartner);
-		}
-	}
-
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.EBICS_PARTNER_BANK_DETAILS_WARNING),
+              "<ul>"
+                  + Joiner.on("").join(Iterables.transform(bankDetailsWithoutCurrency, addLi))
+                  + "<ul>"),
+          IException.CONFIGURATION_ERROR,
+          ebicsPartner);
+    }
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,21 +17,17 @@
  */
 package com.axelor.csv.script;
 
-import javax.inject.Inject;
-
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import javax.inject.Inject;
 
-public class ImportLead{
-	
-	@Inject
-	private UserRepository userRepo;
-	
-	public User importCreatedBy(String importId){
-		User user = userRepo.all().filter("self.importId = ?1",importId).fetchOne();
-		if(user != null)
-			return user;
-		return userRepo.all().filter("self.code = 'democrm'").fetchOne();
-	}
+public class ImportLead {
 
+  @Inject private UserRepository userRepo;
+
+  public User importCreatedBy(String importId) {
+    User user = userRepo.all().filter("self.importId = ?1", importId).fetchOne();
+    if (user != null) return user;
+    return userRepo.all().filter("self.code = 'democrm'").fetchOne();
+  }
 }

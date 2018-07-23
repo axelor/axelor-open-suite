@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,25 +17,22 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Location;
 import com.axelor.apps.stock.db.LocationLine;
 import com.axelor.apps.stock.db.MinStockRules;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public interface MinStockRulesService {
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException; 
-	
-	
-	public boolean useMinStockRules(LocationLine locationLine, MinStockRules minStockRules, BigDecimal qty, int type); 
-	
-	public MinStockRules getMinStockRules(Product product, Location location, int type); 
-	
-	
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generatePurchaseOrder(
+      Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException;
+
+  public boolean useMinStockRules(
+      LocationLine locationLine, MinStockRules minStockRules, BigDecimal qty, int type);
+
+  public MinStockRules getMinStockRules(Product product, Location location, int type);
 }

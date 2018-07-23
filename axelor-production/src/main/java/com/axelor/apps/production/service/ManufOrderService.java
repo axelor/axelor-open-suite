@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,47 +17,51 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-
-import org.joda.time.LocalDateTime;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import org.joda.time.LocalDateTime;
 
 public interface ManufOrderService {
 
-	public static int DEFAULT_PRIORITY = 10;
-	public static int DEFAULT_PRIORITY_INTERVAL = 10;
-	public static boolean IS_TO_INVOICE = false;
-	
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ManufOrder generateManufOrder(Product product, BigDecimal qtyRequested, int priority, boolean isToInvoice, 
-			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException;
-	
-	
-	public void createToConsumeProdProductList(ManufOrder manufOrder);
-	
-	
-	public void createToProduceProdProductList(ManufOrder manufOrder);
-		
-	
-	public ManufOrder createManufOrder(Product product, BigDecimal qty, int priority, boolean isToInvoice, Company company,
-			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException;
-	
-	@Transactional
-	public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
-	
-	
-	public String getManufOrderSeq() throws AxelorException;
-	
-	public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
-	
-	public String getLanguageToPrinting(ManufOrder manufOrder);
+  public static int DEFAULT_PRIORITY = 10;
+  public static int DEFAULT_PRIORITY_INTERVAL = 10;
+  public static boolean IS_TO_INVOICE = false;
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public ManufOrder generateManufOrder(
+      Product product,
+      BigDecimal qtyRequested,
+      int priority,
+      boolean isToInvoice,
+      BillOfMaterial billOfMaterial,
+      LocalDateTime plannedStartDateT)
+      throws AxelorException;
+
+  public void createToConsumeProdProductList(ManufOrder manufOrder);
+
+  public void createToProduceProdProductList(ManufOrder manufOrder);
+
+  public ManufOrder createManufOrder(
+      Product product,
+      BigDecimal qty,
+      int priority,
+      boolean isToInvoice,
+      Company company,
+      BillOfMaterial billOfMaterial,
+      LocalDateTime plannedStartDateT)
+      throws AxelorException;
+
+  @Transactional
+  public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
+
+  public String getManufOrderSeq() throws AxelorException;
+
+  public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
+
+  public String getLanguageToPrinting(ManufOrder manufOrder);
 }

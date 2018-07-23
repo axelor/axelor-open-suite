@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,31 +21,30 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.google.common.base.Strings;
 
 public class ProjectTaskManagementRepository extends ProjectTaskRepository {
-	
-	
-	@Override
-	public ProjectTask save(ProjectTask projectTask){
-		
-		String projectCode = ( Strings.isNullOrEmpty(projectTask.getCode()) ) ? "" : projectTask.getCode() + " - ";
-		projectTask.setFullName(projectCode + projectTask.getName());
-		if (projectTask.getChildProjectTaskList() != null && !projectTask.getChildProjectTaskList().isEmpty()){
-			for (ProjectTask child : projectTask.getChildProjectTaskList()) {
-				String code = ( Strings.isNullOrEmpty(child.getCode()) ) ? "" : child.getCode() + " - ";
-				child.setFullName(code + child.getName());
-			}
-		}
-		
-		return super.save(projectTask);
-	}
 
-	@Override
-	public ProjectTask copy(ProjectTask entity, boolean deep) {
-		
-		ProjectTask project = super.copy(entity, false);
-		project.setStatusSelect(STATE_PLANNED);
-		
-		return project;
-	
-	}
+  @Override
+  public ProjectTask save(ProjectTask projectTask) {
 
+    String projectCode =
+        (Strings.isNullOrEmpty(projectTask.getCode())) ? "" : projectTask.getCode() + " - ";
+    projectTask.setFullName(projectCode + projectTask.getName());
+    if (projectTask.getChildProjectTaskList() != null
+        && !projectTask.getChildProjectTaskList().isEmpty()) {
+      for (ProjectTask child : projectTask.getChildProjectTaskList()) {
+        String code = (Strings.isNullOrEmpty(child.getCode())) ? "" : child.getCode() + " - ";
+        child.setFullName(code + child.getName());
+      }
+    }
+
+    return super.save(projectTask);
+  }
+
+  @Override
+  public ProjectTask copy(ProjectTask entity, boolean deep) {
+
+    ProjectTask project = super.copy(entity, false);
+    project.setStatusSelect(STATE_PLANNED);
+
+    return project;
+  }
 }

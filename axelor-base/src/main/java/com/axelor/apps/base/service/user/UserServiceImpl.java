@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -29,152 +29,152 @@ import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-/**
- * UserService is a class that implement all methods for user informations
- * 
- */
-public class UserServiceImpl implements UserService  {
+/** UserService is a class that implement all methods for user informations */
+public class UserServiceImpl implements UserService {
 
-	@Inject
-	private UserRepository userRepo;
-	
-	/**
-	 * Method that return the current connected user
-	 * 
-	 * @return user
-	 * 		the current connected user
-	 */
-	public User getUser() {
-		User user = null;
-		try{
-			user = AuthUtils.getUser();
-		}
-		catch(Exception ex){}
-		if(user == null) {
-			user = userRepo.findByCode("admin");			
-		}
-		return user;
-	}
-	
-	/**
-	 * Method that return the id of the current connected user
-	 * 
-	 * @return user
-	 * 		the id of current connected user
-	 */
-	public Long getUserId() {
-		
-		final User user = this.getUser();
-	
-		if(user == null)  {  return null;  }
-		
-		return user.getId();
-	}
-	
-	/**
-	 * Method that return the active company of the current connected user
-	 * 
-	 * @return Company
-	 * 		the active company
-	 */
-	public Company getUserActiveCompany() {
-		
-		User user = getUser();
-		
-		if(user == null)  {  return null;  }
-		
-		return user.getActiveCompany();
-	}
-	
-	/**
-	 * Method that return the active company id of the current connected user
-	 * 
-	 * @return Company
-	 * 		the active company id
-	 */
-	public Long getUserActiveCompanyId() {
-		
-		final Company company = this.getUserActiveCompany();
-		
-		if(company == null)  {  return null;  }
-	
-		return company.getId();
-	}
-	
-	/**
-	 * Method that return the active team of the current connected user
-	 * 
-	 * @return Team
-	 * 		the active team
-	 */
-	public MetaFile getUserActiveCompanyLogo() {
+  @Inject private UserRepository userRepo;
 
-		final Company company = this.getUserActiveCompany();
-		
-		if(company == null)  {  return null;  }
-		
-		return company.getLogo();
-		
-	}
-	
-	/**
-	 * Method that return the active team of the current connected user
-	 * 
-	 * @return Team
-	 * 		the active team
-	 */
-	public Team getUserActiveTeam() {
-		
-		final User user = getUser();
-		
-		if(user == null)  {  return null;  }
-	
-		return user.getActiveTeam();
-	}
-	
-	/**
-	 * Method that return the active team of the current connected user
-	 * 
-	 * @return Team
-	 * 		the active team id
-	 */
-	public Long getUserActiveTeamId() {
-		
-		final Team team = this.getUserActiveTeam();
-		
-		if(team == null)  {  return null;  }
-		
-		return team.getId();
-	}
-	
-	/**
-	 * Method that return the partner of the current connected user
-	 * 
-	 * @return Partner
-	 * 		the user partner
-	 */
-	public Partner getUserPartner() {
-		
-		final User user = getUser();
+  /**
+   * Method that return the current connected user
+   *
+   * @return user the current connected user
+   */
+  public User getUser() {
+    User user = null;
+    try {
+      user = AuthUtils.getUser();
+    } catch (Exception ex) {
+    }
+    if (user == null) {
+      user = userRepo.findByCode("admin");
+    }
+    return user;
+  }
 
-		if (user == null)  {  return null;  }
-			
-		return user.getPartner();
-	}
+  /**
+   * Method that return the id of the current connected user
+   *
+   * @return user the id of current connected user
+   */
+  public Long getUserId() {
 
-	@Transactional
-	public void createPartner(User user) {
-		Partner partner = new Partner();
-		partner.setPartnerTypeSelect(2);
-		partner.setIsContact(true);
-		partner.setName(user.getName());
-		partner.setFullName(user.getName());
-		partner.setTeam(user.getActiveTeam());
-		partner.setUser(user);
-		Beans.get(PartnerRepository.class).save(partner);
+    final User user = this.getUser();
 
-		user.setPartner(partner);
-		userRepo.save(user);
-	}
+    if (user == null) {
+      return null;
+    }
+
+    return user.getId();
+  }
+
+  /**
+   * Method that return the active company of the current connected user
+   *
+   * @return Company the active company
+   */
+  public Company getUserActiveCompany() {
+
+    User user = getUser();
+
+    if (user == null) {
+      return null;
+    }
+
+    return user.getActiveCompany();
+  }
+
+  /**
+   * Method that return the active company id of the current connected user
+   *
+   * @return Company the active company id
+   */
+  public Long getUserActiveCompanyId() {
+
+    final Company company = this.getUserActiveCompany();
+
+    if (company == null) {
+      return null;
+    }
+
+    return company.getId();
+  }
+
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team
+   */
+  public MetaFile getUserActiveCompanyLogo() {
+
+    final Company company = this.getUserActiveCompany();
+
+    if (company == null) {
+      return null;
+    }
+
+    return company.getLogo();
+  }
+
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team
+   */
+  public Team getUserActiveTeam() {
+
+    final User user = getUser();
+
+    if (user == null) {
+      return null;
+    }
+
+    return user.getActiveTeam();
+  }
+
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team id
+   */
+  public Long getUserActiveTeamId() {
+
+    final Team team = this.getUserActiveTeam();
+
+    if (team == null) {
+      return null;
+    }
+
+    return team.getId();
+  }
+
+  /**
+   * Method that return the partner of the current connected user
+   *
+   * @return Partner the user partner
+   */
+  public Partner getUserPartner() {
+
+    final User user = getUser();
+
+    if (user == null) {
+      return null;
+    }
+
+    return user.getPartner();
+  }
+
+  @Transactional
+  public void createPartner(User user) {
+    Partner partner = new Partner();
+    partner.setPartnerTypeSelect(2);
+    partner.setIsContact(true);
+    partner.setName(user.getName());
+    partner.setFullName(user.getName());
+    partner.setTeam(user.getActiveTeam());
+    partner.setUser(user);
+    Beans.get(PartnerRepository.class).save(partner);
+
+    user.setPartner(partner);
+    userRepo.save(user);
+  }
 }
- 

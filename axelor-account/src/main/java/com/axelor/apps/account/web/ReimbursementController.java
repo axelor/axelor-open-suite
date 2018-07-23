@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,19 +28,17 @@ import com.google.inject.Inject;
 
 public class ReimbursementController {
 
-	@Inject
-	private ReimbursementService reimbursementService;
-	
-	public void validateReimbursement(ActionRequest request, ActionResponse response) {
-		
-		Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
-		reimbursementService.updatePartnerCurrentRIB(reimbursement);
-		
-		if (reimbursement.getBankDetails() != null) {
-			response.setValue("statusSelect", ReimbursementRepository.STATUS_VALIDATED);
-		}
-		else {
-			response.setFlash(I18n.get(IExceptionMessage.REIMBURSEMENT_4));
-		}
-	}
+  @Inject private ReimbursementService reimbursementService;
+
+  public void validateReimbursement(ActionRequest request, ActionResponse response) {
+
+    Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
+    reimbursementService.updatePartnerCurrentRIB(reimbursement);
+
+    if (reimbursement.getBankDetails() != null) {
+      response.setValue("statusSelect", ReimbursementRepository.STATUS_VALIDATED);
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.REIMBURSEMENT_4));
+    }
+  }
 }

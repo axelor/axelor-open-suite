@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -33,56 +31,56 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public class MoveCancelService {
 
-	protected MoveRepository moveRepository;
-	protected AccountConfigService accountConfigService;
+  protected MoveRepository moveRepository;
+  protected AccountConfigService accountConfigService;
 
-	@Inject
-	public MoveCancelService(AccountConfigService accountConfigService, MoveRepository moveRepository) {
+  @Inject
+  public MoveCancelService(
+      AccountConfigService accountConfigService, MoveRepository moveRepository) {
 
-		this.accountConfigService = accountConfigService;
-		this.moveRepository = moveRepository;
-		
-	}
+    this.accountConfigService = accountConfigService;
+    this.moveRepository = moveRepository;
+  }
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(Move move) throws AxelorException{
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void cancel(Move move) throws AxelorException {
 
-		if(move == null)   {  return;  }
+    if (move == null) {
+      return;
+    }
 
-		for(MoveLine moveLine : move.getMoveLineList())  {
-			
-			if(moveLine.getAccount().getReconcileOk() && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0)  {
-				throw new AxelorException(I18n.get(IExceptionMessage.MOVE_CANCEL_1), IException.CONFIGURATION_ERROR);
-			}
-			
-		}
+    for (MoveLine moveLine : move.getMoveLineList()) {
 
-		Period period = Beans.get(PeriodService.class).getPeriod(move.getDate(), move.getCompany());
-		if(period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)  {
-			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_CANCEL_2), IException.CONFIGURATION_ERROR);
-		}
+      if (moveLine.getAccount().getReconcileOk()
+          && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
+        throw new AxelorException(
+            I18n.get(IExceptionMessage.MOVE_CANCEL_1), IException.CONFIGURATION_ERROR);
+      }
+    }
 
-		try{
+    Period period = Beans.get(PeriodService.class).getPeriod(move.getDate(), move.getCompany());
+    if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.MOVE_CANCEL_2), IException.CONFIGURATION_ERROR);
+    }
 
-			if(accountConfigService.getAccountConfig(move.getCompany()).getAllowRemovalValidatedMove())  {
-				moveRepository.remove(move);
-			}
-			else  {
-				move.setStatusSelect(MoveRepository.STATUS_CANCELED);
-				moveRepository.save(move);
-			}
+    try {
 
-		}
-		catch(Exception e)  {
+      if (accountConfigService.getAccountConfig(move.getCompany()).getAllowRemovalValidatedMove()) {
+        moveRepository.remove(move);
+      } else {
+        move.setStatusSelect(MoveRepository.STATUS_CANCELED);
+        moveRepository.save(move);
+      }
 
-			throw new AxelorException(I18n.get(IExceptionMessage.MOVE_CANCEL_3), IException.CONFIGURATION_ERROR);
+    } catch (Exception e) {
 
-		}
-
-
-	}
-	
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.MOVE_CANCEL_3), IException.CONFIGURATION_ERROR);
+    }
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,9 +24,6 @@ import com.google.inject.persist.Transactional;
 
 public interface CostSheetService {
 
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
-	
-
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 }

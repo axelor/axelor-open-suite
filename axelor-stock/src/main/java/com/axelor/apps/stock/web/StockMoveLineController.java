@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,19 +26,18 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class StockMoveLineController {
-	
-	@Inject
-	protected StockMoveLineService stockMoveLineService;
-	
-	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
-		StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-		StockMove stockMove = stockMoveLine.getStockMove();
-		if(stockMove == null){
-			stockMove = request.getContext().getParentContext().asType(StockMove.class);
-		}
-		stockMoveLine.getStockMove();
-		stockMoveLine = stockMoveLineService.compute(stockMoveLine, stockMove);
-		response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
-		response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
-	}
+
+  @Inject protected StockMoveLineService stockMoveLineService;
+
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove == null) {
+      stockMove = request.getContext().getParentContext().asType(StockMove.class);
+    }
+    stockMoveLine.getStockMove();
+    stockMoveLine = stockMoveLineService.compute(stockMoveLine, stockMove);
+    response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
+    response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
+  }
 }

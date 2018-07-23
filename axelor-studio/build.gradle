@@ -18,6 +18,12 @@ It will save changes in xml and deploy app.
 
 }
 
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}
+
 dependencies {
 	compile 'commons-lang:commons-lang:2.3'
 	compile 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'

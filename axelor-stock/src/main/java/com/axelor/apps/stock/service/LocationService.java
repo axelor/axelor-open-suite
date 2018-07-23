@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,18 +17,16 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.stock.db.Location;
 import java.math.BigDecimal;
 
-import com.axelor.apps.stock.db.Location;
-
 public interface LocationService {
-	
-	public Location getDefaultLocation();
-	
-	public BigDecimal getQty(Long productId, Long locationId, String qtyType);
-	
-	public BigDecimal getRealQty(Long productId, Long locationId);
-	
-	public BigDecimal getFutureQty(Long productId, Long locationId);
-	
+
+  public Location getDefaultLocation();
+
+  public BigDecimal getQty(Long productId, Long locationId, String qtyType);
+
+  public BigDecimal getRealQty(Long productId, Long locationId);
+
+  public BigDecimal getFutureQty(Long productId, Long locationId);
 }

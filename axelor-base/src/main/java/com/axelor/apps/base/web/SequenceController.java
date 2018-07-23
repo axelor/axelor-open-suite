@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,9 +25,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class SequenceController {
-    public void getDefaultTitle(ActionRequest request, ActionResponse response) {
-        Sequence sequence = request.getContext().asType(Sequence.class);
-        String defautlTitle = Beans.get(SequenceService.class).getDefaultTitle(sequence);
-        response.setValue("name", I18n.get(defautlTitle));
-    }
+  public void getDefaultTitle(ActionRequest request, ActionResponse response) {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    String defautlTitle = Beans.get(SequenceService.class).getDefaultTitle(sequence);
+    response.setValue("name", I18n.get(defautlTitle));
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,10 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -43,115 +39,143 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TimetableService {
 
-	@Transactional
-	public Invoice generateInvoice(Timetable timetable) throws AxelorException{
-		if(Strings.isNullOrEmpty(timetable.getProductName())){
-			throw new AxelorException(I18n.get(IExceptionMessage.TIMETABLE_MISSING_PRODUCT_NAME), IException.CONFIGURATION_ERROR);
-		}
-		Invoice invoice = this.createInvoice(timetable);
-		Beans.get(InvoiceRepository.class).save(invoice);
-		timetable.setInvoice(invoice);
-		Beans.get(TimetableRepository.class).save(timetable);
-		return invoice;
-	}
-	
-	public Invoice createInvoice(Timetable timetable) throws AxelorException{
-		SaleOrder saleOrder = timetable.getSaleOrder();
-		PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
-		if(saleOrder != null){
-			if(saleOrder.getCurrency() == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR);
-			}
-			InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(saleOrder) {
+  @Transactional
+  public Invoice generateInvoice(Timetable timetable) throws AxelorException {
+    if (Strings.isNullOrEmpty(timetable.getProductName())) {
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.TIMETABLE_MISSING_PRODUCT_NAME),
+          IException.CONFIGURATION_ERROR);
+    }
+    Invoice invoice = this.createInvoice(timetable);
+    Beans.get(InvoiceRepository.class).save(invoice);
+    timetable.setInvoice(invoice);
+    Beans.get(TimetableRepository.class).save(timetable);
+    return invoice;
+  }
 
-				@Override
-				public Invoice generate() throws AxelorException {
+  public Invoice createInvoice(Timetable timetable) throws AxelorException {
+    SaleOrder saleOrder = timetable.getSaleOrder();
+    PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
+    if (saleOrder != null) {
+      if (saleOrder.getCurrency() == null) {
+        throw new AxelorException(
+            String.format(I18n.get(IExceptionMessage.SO_INVOICE_6), saleOrder.getSaleOrderSeq()),
+            IException.CONFIGURATION_ERROR);
+      }
+      InvoiceGenerator invoiceGenerator =
+          new InvoiceGeneratorSupplyChain(saleOrder) {
 
-					return super.createInvoiceHeader();
-				}
-			};
-			Invoice invoice = invoiceGenerator.generate();
-			invoiceGenerator.populate(invoice, this.createInvoiceLine(invoice, timetable));
-			this.fillInLines(invoice);
-			return invoice;
-		}
-		
-		if(purchaseOrder != null){
-			if(purchaseOrder.getCurrency() == null)  {
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq()), IException.CONFIGURATION_ERROR);
-			}
-			InvoiceGenerator invoiceGenerator = new InvoiceGeneratorSupplyChain(purchaseOrder) {
+            @Override
+            public Invoice generate() throws AxelorException {
 
-				@Override
-				public Invoice generate() throws AxelorException {
+              return super.createInvoiceHeader();
+            }
+          };
+      Invoice invoice = invoiceGenerator.generate();
+      invoiceGenerator.populate(invoice, this.createInvoiceLine(invoice, timetable));
+      this.fillInLines(invoice);
+      return invoice;
+    }
 
-					return super.createInvoiceHeader();
-				}
-			};
-			
-			Invoice invoice = invoiceGenerator.generate();
-			invoiceGenerator.populate(invoice, this.createInvoiceLine(invoice, timetable));
-			return invoice;
-		}
-		
-		return null;
-	}
-	
-	public void fillInLines(Invoice invoice){
-		List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-		for (InvoiceLine invoiceLine : invoiceLineList) {
-			invoiceLine.setSaleOrder(invoice.getSaleOrder());
-		}
-	}
-	
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Timetable timetable) throws AxelorException  {
+    if (purchaseOrder != null) {
+      if (purchaseOrder.getCurrency() == null) {
+        throw new AxelorException(
+            String.format(
+                I18n.get(IExceptionMessage.PO_INVOICE_1), purchaseOrder.getPurchaseOrderSeq()),
+            IException.CONFIGURATION_ERROR);
+      }
+      InvoiceGenerator invoiceGenerator =
+          new InvoiceGeneratorSupplyChain(purchaseOrder) {
 
-		Product product = timetable.getProduct();
+            @Override
+            public Invoice generate() throws AxelorException {
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGeneratorSupplyChain(invoice, product, timetable.getProductName(),
-				timetable.getAmount(), timetable.getAmount(), timetable.getComments(), timetable.getQty(),
-				timetable.getUnit(), null, 1, BigDecimal.ZERO, IPriceListLine.AMOUNT_TYPE_NONE,
-				timetable.getAmount().multiply(timetable.getQty()),null, false,
-				this.findFirstSaleOrderLine(timetable), this.findFirstPurchaseOrderLine(timetable), null) {
+              return super.createInvoiceHeader();
+            }
+          };
 
-			@Override
-			public List<InvoiceLine> creates() throws AxelorException {
+      Invoice invoice = invoiceGenerator.generate();
+      invoiceGenerator.populate(invoice, this.createInvoiceLine(invoice, timetable));
+      return invoice;
+    }
 
-				InvoiceLine invoiceLine = this.createInvoiceLine();
+    return null;
+  }
 
-				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-				invoiceLines.add(invoiceLine);
-				return invoiceLines;
-			}
-		};
+  public void fillInLines(Invoice invoice) {
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      invoiceLine.setSaleOrder(invoice.getSaleOrder());
+    }
+  }
 
-		return invoiceLineGenerator.creates();
-	}
+  public List<InvoiceLine> createInvoiceLine(Invoice invoice, Timetable timetable)
+      throws AxelorException {
 
-	public SaleOrderLine findFirstSaleOrderLine(Timetable timetable) {
-	    SaleOrder saleOrder = timetable.getSaleOrder();
-	    if (saleOrder != null) {
-	    	for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-	    		if (!saleOrderLine.getIsTitleLine()) {
-	    			return saleOrderLine;
-				}
-			}
-		}
-		return null;
-	}
+    Product product = timetable.getProduct();
 
-	public PurchaseOrderLine findFirstPurchaseOrderLine(Timetable timetable) {
-		PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
-		if (purchaseOrder != null) {
-			for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-				if (!purchaseOrderLine.getIsTitleLine()) {
-					return purchaseOrderLine;
-				}
-			}
-		}
-		return null;
-	}
+    InvoiceLineGenerator invoiceLineGenerator =
+        new InvoiceLineGeneratorSupplyChain(
+            invoice,
+            product,
+            timetable.getProductName(),
+            timetable.getAmount(),
+            timetable.getAmount(),
+            timetable.getComments(),
+            timetable.getQty(),
+            timetable.getUnit(),
+            null,
+            1,
+            BigDecimal.ZERO,
+            IPriceListLine.AMOUNT_TYPE_NONE,
+            timetable.getAmount().multiply(timetable.getQty()),
+            null,
+            false,
+            this.findFirstSaleOrderLine(timetable),
+            this.findFirstPurchaseOrderLine(timetable),
+            null) {
+
+          @Override
+          public List<InvoiceLine> creates() throws AxelorException {
+
+            InvoiceLine invoiceLine = this.createInvoiceLine();
+
+            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+            invoiceLines.add(invoiceLine);
+            return invoiceLines;
+          }
+        };
+
+    return invoiceLineGenerator.creates();
+  }
+
+  public SaleOrderLine findFirstSaleOrderLine(Timetable timetable) {
+    SaleOrder saleOrder = timetable.getSaleOrder();
+    if (saleOrder != null) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (!saleOrderLine.getIsTitleLine()) {
+          return saleOrderLine;
+        }
+      }
+    }
+    return null;
+  }
+
+  public PurchaseOrderLine findFirstPurchaseOrderLine(Timetable timetable) {
+    PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
+    if (purchaseOrder != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        if (!purchaseOrderLine.getIsTitleLine()) {
+          return purchaseOrderLine;
+        }
+      }
+    }
+    return null;
+  }
 }

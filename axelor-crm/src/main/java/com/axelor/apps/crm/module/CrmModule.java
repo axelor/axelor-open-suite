@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -20,10 +20,10 @@ package com.axelor.apps.crm.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
-import com.axelor.apps.crm.db.repo.CrmBatchCrmRepository;
-import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.db.repo.CalendarCrmRepository;
 import com.axelor.apps.crm.db.repo.CalendarRepository;
+import com.axelor.apps.crm.db.repo.CrmBatchCrmRepository;
+import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.db.repo.EventManagementRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
@@ -33,17 +33,16 @@ import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 
-
 public class CrmModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(MessageServiceBaseImpl.class).to(MessageServiceCrmImpl.class);
-        bind(EventRepository.class).to(EventManagementRepository.class);
-        bind(OpportunityRepository.class).to(OpportunityManagementRepository.class);
-        bind(OpportunityService.class).to(OpportunityServiceImpl.class);
-        bind(ICalendarService.class).to(CalendarService.class);
-        bind(CrmBatchRepository.class).to(CrmBatchCrmRepository.class);
-        bind(CalendarRepository.class).to(CalendarCrmRepository.class);
-    }
+  @Override
+  protected void configure() {
+    bind(MessageServiceBaseImpl.class).to(MessageServiceCrmImpl.class);
+    bind(EventRepository.class).to(EventManagementRepository.class);
+    bind(OpportunityRepository.class).to(OpportunityManagementRepository.class);
+    bind(OpportunityService.class).to(OpportunityServiceImpl.class);
+    bind(ICalendarService.class).to(CalendarService.class);
+    bind(CrmBatchRepository.class).to(CrmBatchCrmRepository.class);
+    bind(CalendarRepository.class).to(CalendarCrmRepository.class);
+  }
 }

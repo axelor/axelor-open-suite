@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,26 +17,23 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
+import java.math.BigDecimal;
 
 public class InventoryLineService {
 
-	public InventoryLine createInventoryLine(Inventory inventory, Product product, BigDecimal currentQty, TrackingNumber trackingNumber)  {
-		
-		InventoryLine inventoryLine = new InventoryLine();
-		inventoryLine.setInventory(inventory);
-		inventoryLine.setProduct(product);
-		inventoryLine.setCurrentQty(currentQty);
-		inventoryLine.setTrackingNumber(trackingNumber);
-		
-		return inventoryLine;
-		
-	}
+  public InventoryLine createInventoryLine(
+      Inventory inventory, Product product, BigDecimal currentQty, TrackingNumber trackingNumber) {
 
-	
+    InventoryLine inventoryLine = new InventoryLine();
+    inventoryLine.setInventory(inventory);
+    inventoryLine.setProduct(product);
+    inventoryLine.setCurrentQty(currentQty);
+    inventoryLine.setTrackingNumber(trackingNumber);
+
+    return inventoryLine;
+  }
 }

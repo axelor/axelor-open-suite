@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,32 +17,28 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.service.MoveLineReportService;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class MoveLineReportManagementRepository extends MoveLineReportRepository {
 
-	@Inject
-	protected MoveLineReportService moveLineReportService;
+  @Inject protected MoveLineReportService moveLineReportService;
 
-	@Override
-	public MoveLineReport save(MoveLineReport moveLineReport) {
-		try {
+  @Override
+  public MoveLineReport save(MoveLineReport moveLineReport) {
+    try {
 
-			if (moveLineReport.getRef() == null) {
+      if (moveLineReport.getRef() == null) {
 
-				String seq = moveLineReportService.getSequence(moveLineReport);
-				moveLineReportService.setSequence(moveLineReport, seq);
-			}
-			
-			return super.save(moveLineReport);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-	
+        String seq = moveLineReportService.getSequence(moveLineReport);
+        moveLineReportService.setSequence(moveLineReport, seq);
+      }
 
+      return super.save(moveLineReport);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 }

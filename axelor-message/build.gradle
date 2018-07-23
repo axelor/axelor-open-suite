@@ -15,3 +15,9 @@ dependencies {
 	compile 	libs.javax_mail
 	testCompile libs.greenmail
 }
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}

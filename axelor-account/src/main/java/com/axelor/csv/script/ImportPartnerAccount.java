@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,55 +17,60 @@
  */
 package com.axelor.csv.script;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.google.inject.Inject;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public class ImportPartnerAccount {
-		
-		@Inject
-		private PartnerRepository partnerRepo;
-		
-		@Inject
-		private AccountRepository accountRepo;
-	
-		public Object importAccountingSituation(Object bean, Map<String,Object> values) {
-			assert bean instanceof Partner;
-	        try{
-	            Partner partner = (Partner) bean;
-				partner.setContactPartnerSet(new HashSet<Partner>());
-				List<? extends Partner> partnerList = partnerRepo.all().filter("self.mainPartner.id = ?1",partner.getId()).fetch();
-				for(Partner pt : partnerList)
-					partner.getContactPartnerSet().add(pt);
-				for(Company company : partner.getCompanySet())  {
-					AccountingSituation accountingSituation = new AccountingSituation();
-					accountingSituation.setPartner(partner);
-					accountingSituation.setCompany(company);
-					accountingSituation.setCustomerAccount(accountRepo.all().filter("self.code = ?1 AND self.company = ?2",values.get("customerAccount_code").toString(),company).fetchOne());
-					accountingSituation.setSupplierAccount(accountRepo.all().filter("self.code = ?1 AND self.company = ?2",values.get("supplierAccount_code").toString(),company).fetchOne());
-					if(partner.getAccountingSituationList() == null)  {
-						partner.setAccountingSituationList(new ArrayList<AccountingSituation>());
-					}
-					partner.getAccountingSituationList().add(accountingSituation);
-						
-				}
-				return partner;
-	        }catch(Exception e){
-	            e.printStackTrace();
-	        }
-	        return bean;
-		}
-		
+
+  @Inject private PartnerRepository partnerRepo;
+
+  @Inject private AccountRepository accountRepo;
+
+  public Object importAccountingSituation(Object bean, Map<String, Object> values) {
+    assert bean instanceof Partner;
+    try {
+      Partner partner = (Partner) bean;
+      partner.setContactPartnerSet(new HashSet<Partner>());
+      List<? extends Partner> partnerList =
+          partnerRepo.all().filter("self.mainPartner.id = ?1", partner.getId()).fetch();
+      for (Partner pt : partnerList) partner.getContactPartnerSet().add(pt);
+      for (Company company : partner.getCompanySet()) {
+        AccountingSituation accountingSituation = new AccountingSituation();
+        accountingSituation.setPartner(partner);
+        accountingSituation.setCompany(company);
+        accountingSituation.setCustomerAccount(
+            accountRepo
+                .all()
+                .filter(
+                    "self.code = ?1 AND self.company = ?2",
+                    values.get("customerAccount_code").toString(),
+                    company)
+                .fetchOne());
+        accountingSituation.setSupplierAccount(
+            accountRepo
+                .all()
+                .filter(
+                    "self.code = ?1 AND self.company = ?2",
+                    values.get("supplierAccount_code").toString(),
+                    company)
+                .fetchOne());
+        if (partner.getAccountingSituationList() == null) {
+          partner.setAccountingSituationList(new ArrayList<AccountingSituation>());
+        }
+        partner.getAccountingSituationList().add(accountingSituation);
+      }
+      return partner;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return bean;
+  }
 }
-
-
-

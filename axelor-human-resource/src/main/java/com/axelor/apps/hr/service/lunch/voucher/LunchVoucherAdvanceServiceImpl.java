@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,36 +28,40 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class LunchVoucherAdvanceServiceImpl implements LunchVoucherAdvanceService {
-	
-	protected HRConfigService hrConfigService;
-	
-	@Inject
-	public LunchVoucherAdvanceServiceImpl(HRConfigService hrConfigService) {
-		this.hrConfigService = hrConfigService;
-	}
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void onNewAdvance(LunchVoucherAdvance lunchVoucherAdvance) throws AxelorException {
-		
-		HRConfig config = hrConfigService.getHRConfig(lunchVoucherAdvance.getEmployee().getMainEmploymentContract().getPayCompany());
-		config.setAvailableStockLunchVoucher(config.getAvailableStockLunchVoucher() - lunchVoucherAdvance.getNbrLunchVouchers());
-		
-		Beans.get(LunchVoucherAdvanceRepository.class).save(lunchVoucherAdvance);
-		Beans.get(HRConfigRepository.class).save(config);
-	}
+  protected HRConfigService hrConfigService;
 
-	@Override
-	public int useAdvance(LunchVoucherAdvance lunchVoucherAdvance, int qty) throws AxelorException {
-		int toUse = lunchVoucherAdvance.getNbrLunchVouchers() - lunchVoucherAdvance.getNbrLunchVouchersUsed();
-		
-		if(qty > toUse) {
-			lunchVoucherAdvance.setNbrLunchVouchersUsed(lunchVoucherAdvance.getNbrLunchVouchers());
-			return qty - toUse ;
-		}
-		
-		lunchVoucherAdvance.setNbrLunchVouchersUsed(lunchVoucherAdvance.getNbrLunchVouchersUsed() + qty);
-		return 0;
-	}
-	
+  @Inject
+  public LunchVoucherAdvanceServiceImpl(HRConfigService hrConfigService) {
+    this.hrConfigService = hrConfigService;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void onNewAdvance(LunchVoucherAdvance lunchVoucherAdvance) throws AxelorException {
+
+    HRConfig config =
+        hrConfigService.getHRConfig(
+            lunchVoucherAdvance.getEmployee().getMainEmploymentContract().getPayCompany());
+    config.setAvailableStockLunchVoucher(
+        config.getAvailableStockLunchVoucher() - lunchVoucherAdvance.getNbrLunchVouchers());
+
+    Beans.get(LunchVoucherAdvanceRepository.class).save(lunchVoucherAdvance);
+    Beans.get(HRConfigRepository.class).save(config);
+  }
+
+  @Override
+  public int useAdvance(LunchVoucherAdvance lunchVoucherAdvance, int qty) throws AxelorException {
+    int toUse =
+        lunchVoucherAdvance.getNbrLunchVouchers() - lunchVoucherAdvance.getNbrLunchVouchersUsed();
+
+    if (qty > toUse) {
+      lunchVoucherAdvance.setNbrLunchVouchersUsed(lunchVoucherAdvance.getNbrLunchVouchers());
+      return qty - toUse;
+    }
+
+    lunchVoucherAdvance.setNbrLunchVouchersUsed(
+        lunchVoucherAdvance.getNbrLunchVouchersUsed() + qty);
+    return 0;
+  }
 }

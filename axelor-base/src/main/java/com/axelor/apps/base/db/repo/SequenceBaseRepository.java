@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,15 +19,15 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Sequence;
 
-public class SequenceBaseRepository extends SequenceRepository{
-	
-	@Override
-	public Sequence copy(Sequence sequence, boolean deep) {
-		
-		Sequence copy = super.copy(sequence, deep);
-				
-		copy.clearSequenceVersionList();
-		
-		return copy;
-	}
+public class SequenceBaseRepository extends SequenceRepository {
+
+  @Override
+  public Sequence copy(Sequence sequence, boolean deep) {
+
+    Sequence copy = super.copy(sequence, deep);
+
+    copy.clearSequenceVersionList();
+
+    return copy;
+  }
 }

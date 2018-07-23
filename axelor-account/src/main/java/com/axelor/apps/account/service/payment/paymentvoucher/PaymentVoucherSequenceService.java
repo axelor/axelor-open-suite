@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -32,63 +32,62 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class PaymentVoucherSequenceService  {
+public class PaymentVoucherSequenceService {
 
-	protected SequenceService sequenceService;
-	protected PaymentModeService paymentModeService;
+  protected SequenceService sequenceService;
+  protected PaymentModeService paymentModeService;
 
-	@Inject
-	public PaymentVoucherSequenceService(SequenceService sequenceService, PaymentModeService paymentModeService)  {
-		
-		this.sequenceService = sequenceService;
-		this.paymentModeService = paymentModeService;
-	}
+  @Inject
+  public PaymentVoucherSequenceService(
+      SequenceService sequenceService, PaymentModeService paymentModeService) {
 
+    this.sequenceService = sequenceService;
+    this.paymentModeService = paymentModeService;
+  }
 
-	public void setReference(PaymentVoucher paymentVoucher) throws AxelorException  {
+  public void setReference(PaymentVoucher paymentVoucher) throws AxelorException {
 
-		if (Strings.isNullOrEmpty(paymentVoucher.getRef()))  {
+    if (Strings.isNullOrEmpty(paymentVoucher.getRef())) {
 
-			paymentVoucher.setRef(this.getReference(paymentVoucher));
-		}
+      paymentVoucher.setRef(this.getReference(paymentVoucher));
+    }
+  }
 
-	}
+  public String getReference(PaymentVoucher paymentVoucher) throws AxelorException {
 
+    PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+    Company company = paymentVoucher.getCompany();
 
-	public String getReference(PaymentVoucher paymentVoucher) throws AxelorException  {
+    return sequenceService.getSequenceNumber(
+        paymentModeService.getPaymentModeSequence(
+            paymentMode, company, paymentVoucher.getCompanyBankDetails()));
+  }
 
-		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
-		Company company = paymentVoucher.getCompany();
+  public void setReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal) {
 
-		return sequenceService.getSequenceNumber(paymentModeService.getPaymentModeSequence(paymentMode, company, paymentVoucher.getCompanyBankDetails()));
-	}
+    if (journal.getEditReceiptOk()) {
 
+      paymentVoucher.setReceiptNo(this.getReceiptNo(paymentVoucher, company, journal));
+    }
+  }
 
-	public void setReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)  {
+  public String getReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal) {
 
-		if(journal.getEditReceiptOk())  {
+    return sequenceService.getSequenceNumber(
+        IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company);
+  }
 
-			paymentVoucher.setReceiptNo(this.getReceiptNo(paymentVoucher, company, journal));
+  public void checkReceipt(PaymentVoucher paymentVoucher) throws AxelorException {
 
-		}
-	}
+    Company company = paymentVoucher.getCompany();
 
-	public String getReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)  {
-
-		return sequenceService.getSequenceNumber(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company);
-
-	}
-
-
-	public void checkReceipt(PaymentVoucher paymentVoucher) throws AxelorException  {
-
-		Company company = paymentVoucher.getCompany();
-
-		if(!sequenceService.hasSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company))  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_SEQUENCE_1),
-					GeneralServiceImpl.EXCEPTION,company.getName()), IException.CONFIGURATION_ERROR);
-		}
-
-	}
-
+    if (!sequenceService.hasSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company)) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.PAYMENT_VOUCHER_SEQUENCE_1),
+              GeneralServiceImpl.EXCEPTION,
+              company.getName()),
+          IException.CONFIGURATION_ERROR);
+    }
+  }
 }

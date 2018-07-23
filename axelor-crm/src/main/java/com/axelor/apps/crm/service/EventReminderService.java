@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,56 +17,55 @@
  */
 package com.axelor.apps.crm.service;
 
+import java.lang.invoke.MethodHandles;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandles;
-
 public class EventReminderService {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
-		
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
-		
-	}
-	
-	public int getHoursDuration(Duration duration)  {
-		
-		return duration.toStandardHours().getHours();
-		
-	}
-	
-	public int getMinutesDuration(Duration duration)  {
-		
-		int minutes = duration.toStandardMinutes().getMinutes() % 60;
-		
-		LOG.debug("Minutes : {}", minutes);	
-		
-		if(minutes >= 53 && minutes < 8)  {  return 00;  }
-		else if(minutes >= 8 && minutes < 23)  {  return 15;  }
-		else if(minutes >= 23 && minutes < 38)  {  return 30;  }
-		else if(minutes >= 38 && minutes < 53)  {  return 45;  }
-		
-		return 00;
-		
-	}
-	
-	public LocalDateTime computeStartDateTime(int durationHours, int durationMinutes, LocalDateTime endDateTime)  {
-			
-		return endDateTime.minusHours(durationHours).minusMinutes(durationMinutes);	
-		
-	}
-	
-	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, int durationHours, int durationMinutes)  {
-		
-		return startDateTime.plusHours(durationHours).plusMinutes(durationMinutes);
-		
-	}
-	
-	
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+
+    return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
+  }
+
+  public int getHoursDuration(Duration duration) {
+
+    return duration.toStandardHours().getHours();
+  }
+
+  public int getMinutesDuration(Duration duration) {
+
+    int minutes = duration.toStandardMinutes().getMinutes() % 60;
+
+    LOG.debug("Minutes : {}", minutes);
+
+    if (minutes >= 53 && minutes < 8) {
+      return 00;
+    } else if (minutes >= 8 && minutes < 23) {
+      return 15;
+    } else if (minutes >= 23 && minutes < 38) {
+      return 30;
+    } else if (minutes >= 38 && minutes < 53) {
+      return 45;
+    }
+
+    return 00;
+  }
+
+  public LocalDateTime computeStartDateTime(
+      int durationHours, int durationMinutes, LocalDateTime endDateTime) {
+
+    return endDateTime.minusHours(durationHours).minusMinutes(durationMinutes);
+  }
+
+  public LocalDateTime computeEndDateTime(
+      LocalDateTime startDateTime, int durationHours, int durationMinutes) {
+
+    return startDateTime.plusHours(durationHours).plusMinutes(durationMinutes);
+  }
 }

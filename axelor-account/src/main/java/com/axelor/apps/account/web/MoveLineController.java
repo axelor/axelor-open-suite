@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -31,68 +31,67 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class MoveLineController {
-	
-	@Inject
-	private Injector injector;
-	
-	@Inject
-	private MoveLineService moveLineService;
-	
-	@Inject
-	private MoveLineRepository moveLineRepo;
-	
-	
-	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response){
-		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		Move move = moveLine.getMove();
-		if(move == null){
-			move = request.getContext().getParentContext().asType(Move.class);
-			moveLine.setMove(move);
-		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
-			moveLine = moveLineService.computeAnalyticDistribution(moveLine);
-			response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-		}
-	}
-	
-	public void usherProcess(ActionRequest request, ActionResponse response) {
-		
-		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = moveLineRepo.find(moveLine.getId());
-		
-		MoveLineService mls = injector.getInstance(MoveLineService.class);
-		
-		try {
-			mls.usherProcess(moveLine);
-		}
-		catch (Exception e){ TraceBackService.trace(response, e); }
-	}
-	
-	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
-		
-		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = moveLineRepo.find(moveLine.getId());
-		
-		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
-		
-		try  {
-			is.passInIrrecoverable(moveLine, true, true);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-	
-	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
-		
-		MoveLine moveLine = request.getContext().asType(MoveLine.class);
-		moveLine = moveLineRepo.find(moveLine.getId());
-		
-		IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
-		
-		try  {
-			is.notPassInIrrecoverable(moveLine, true);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+
+  @Inject private Injector injector;
+
+  @Inject private MoveLineService moveLineService;
+
+  @Inject private MoveLineRepository moveLineRepo;
+
+  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = moveLine.getMove();
+    if (move == null) {
+      move = request.getContext().getParentContext().asType(Move.class);
+      moveLine.setMove(move);
+    }
+    if (Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()) {
+      moveLine = moveLineService.computeAnalyticDistribution(moveLine);
+      response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    }
+  }
+
+  public void usherProcess(ActionRequest request, ActionResponse response) {
+
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    moveLine = moveLineRepo.find(moveLine.getId());
+
+    MoveLineService mls = injector.getInstance(MoveLineService.class);
+
+    try {
+      mls.usherProcess(moveLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void passInIrrecoverable(ActionRequest request, ActionResponse response) {
+
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    moveLine = moveLineRepo.find(moveLine.getId());
+
+    IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
+
+    try {
+      is.passInIrrecoverable(moveLine, true, true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void notPassInIrrecoverable(ActionRequest request, ActionResponse response) {
+
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    moveLine = moveLineRepo.find(moveLine.getId());
+
+    IrrecoverableService is = injector.getInstance(IrrecoverableService.class);
+
+    try {
+      is.notPassInIrrecoverable(moveLine, true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

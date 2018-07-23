@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,25 +24,25 @@ import com.axelor.apps.supplychain.db.Subscription;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
-	@Override
-	public SaleOrder copy(SaleOrder entity, boolean deep) {
+  @Override
+  public SaleOrder copy(SaleOrder entity, boolean deep) {
 
-		SaleOrder copy = super.copy(entity, deep);
+    SaleOrder copy = super.copy(entity, deep);
 
-		copy.setShipmentDate(null);
-		copy.setDeliveryState(STATE_NOT_DELIVERED);
-		copy.setAmountInvoiced(null);
+    copy.setShipmentDate(null);
+    copy.setDeliveryState(STATE_NOT_DELIVERED);
+    copy.setAmountInvoiced(null);
 
-		if (copy.getSaleOrderLineList() != null){
-			for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-				if (saleOrderLine.getSubscriptionList() != null){
-					for (Subscription subscription : saleOrderLine.getSubscriptionList()) {
-						subscription.setInvoiced(false);
-					}
-				}
-			}
-		}
+    if (copy.getSaleOrderLineList() != null) {
+      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
+        if (saleOrderLine.getSubscriptionList() != null) {
+          for (Subscription subscription : saleOrderLine.getSubscriptionList()) {
+            subscription.setInvoiced(false);
+          }
+        }
+      }
+    }
 
-		return copy;
-	}
+    return copy;
+  }
 }

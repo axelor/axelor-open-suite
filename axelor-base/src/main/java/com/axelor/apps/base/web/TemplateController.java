@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,16 +25,15 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class TemplateController {
-	
-	@Inject
-	private TemplateService ts;
-	
-	public void checkTargetReceptor(ActionRequest request, ActionResponse response){
-		
-		try {
-			ts.checkTargetReceptor(request.getContext().asType(Template.class));
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
 
+  @Inject private TemplateService ts;
+
+  public void checkTargetReceptor(ActionRequest request, ActionResponse response) {
+
+    try {
+      ts.checkTargetReceptor(request.getContext().asType(Template.class));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,24 +21,23 @@ import com.axelor.studio.db.MenuBuilder;
 
 public class MenuBuilderRepo extends MenuBuilderRepository {
 
+  @Override
+  public void remove(MenuBuilder menuBuilder) {
 
-	@Override
-	public void remove(MenuBuilder menuBuilder) {
+    if (menuBuilder.getMenuGenerated() != null) {
+      menuBuilder.getMenuGenerated().setRemoveMenu(true);
+    }
 
-		if (menuBuilder.getMenuGenerated() != null) {
-			menuBuilder.getMenuGenerated().setRemoveMenu(true);
-		}
+    super.remove(menuBuilder);
+  }
 
-		super.remove(menuBuilder);
-	}
-	
-	@Override
-	public MenuBuilder save(MenuBuilder menuBuilder) {
-		
-		if (menuBuilder.getActionBuilder() != null) {
-			menuBuilder.getActionBuilder().setEdited(true);
-		}
-		
-		return super.save(menuBuilder);
-	}
+  @Override
+  public MenuBuilder save(MenuBuilder menuBuilder) {
+
+    if (menuBuilder.getActionBuilder() != null) {
+      menuBuilder.getActionBuilder().setEdited(true);
+    }
+
+    return super.save(menuBuilder);
+  }
 }

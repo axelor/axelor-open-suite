@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,10 @@
  */
 package com.axelor.apps.base.db;
 
-/**
- * Interface of Product package. Enum all static variable of packages.
- * 
- */
+/** Interface of Product package. Enum all static variable of packages. */
 public interface IProductVariant {
 
-	// APPLICATION PRICE SELECT
-	static final int APPLICATION_SALE_PRICE = 0;
-	static final int APPLICATION_COST_PRICE = 1;
-	
+  // APPLICATION PRICE SELECT
+  static final int APPLICATION_SALE_PRICE = 0;
+  static final int APPLICATION_COST_PRICE = 1;
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.AccountCustomerService;
@@ -28,61 +25,57 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MoveCustAccountService {
 
-	protected AccountCustomerService accountCustomerService;
+  protected AccountCustomerService accountCustomerService;
 
-	@Inject
-	public MoveCustAccountService(AccountCustomerService accountCustomerService) {
+  @Inject
+  public MoveCustAccountService(AccountCustomerService accountCustomerService) {
 
-		this.accountCustomerService = accountCustomerService;
+    this.accountCustomerService = accountCustomerService;
+  }
 
-	}
+  public void flagPartners(Move move) {
 
+    accountCustomerService.flagPartners(this.getPartnerOfMove(move), move.getCompany());
+  }
 
-	public void flagPartners(Move move)  {
+  /**
+   * Mise à jour du compte client
+   *
+   * @param move
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateCustomerAccount(Move move) throws AxelorException {
 
-		accountCustomerService.flagPartners(this.getPartnerOfMove(move), move.getCompany());
+    if (AccountingService.getUpdateCustomerAccount()) {
+      accountCustomerService.updatePartnerAccountingSituation(
+          this.getPartnerOfMove(move), move.getCompany(), true, true, false);
+    } else {
+      this.flagPartners(move);
+    }
+  }
 
-	}
-
-
-	/**
-	 * Mise à jour du compte client
-	 *
-	 * @param move
-	 *
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateCustomerAccount(Move move) throws AxelorException {
-
-		if( AccountingService.getUpdateCustomerAccount() )  {
-			accountCustomerService.updatePartnerAccountingSituation(this.getPartnerOfMove(move), move.getCompany(), true, true, false);
-		}
-		else  {
-			this.flagPartners(move);
-		}
-	}
-
-	
-	/**
-	 * Méthode permettant de récupérer la liste des tiers distincts impactés par l'écriture
-	 * @param move
-	 * 			Une écriture
-	 * @return
-	 */
-	public List<Partner> getPartnerOfMove(Move move)  {
-		List<Partner> partnerList = new ArrayList<Partner>();
-		for(MoveLine moveLine : move.getMoveLineList())  {
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getPartner() != null
-					&& !partnerList.contains(moveLine.getPartner()))  {
-				partnerList.add(moveLine.getPartner());
-			}
-		}
-		return partnerList;
-	}
-
-		
+  /**
+   * Méthode permettant de récupérer la liste des tiers distincts impactés par l'écriture
+   *
+   * @param move Une écriture
+   * @return
+   */
+  public List<Partner> getPartnerOfMove(Move move) {
+    List<Partner> partnerList = new ArrayList<Partner>();
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine.getAccount() != null
+          && moveLine.getAccount().getReconcileOk()
+          && moveLine.getPartner() != null
+          && !partnerList.contains(moveLine.getPartner())) {
+        partnerList.add(moveLine.getPartner());
+      }
+    }
+    return partnerList;
+  }
 }

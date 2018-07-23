@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,16 +17,6 @@
  */
 package com.axelor.apps.base.service.alarm;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import org.hibernate.proxy.HibernateProxy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.repo.AlarmRepository;
@@ -37,114 +27,120 @@ import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.util.Map;
+import javax.inject.Inject;
+import org.hibernate.proxy.HibernateProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AlarmEngineBatchService extends AbstractBatch {
 
-	static final Logger LOG = LoggerFactory
-			.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	protected AlarmEngineService<Model> alarmEngineService;
-	
-	@Inject
-	private AlarmRepository alarmRepo;
-	
-	@Inject
-	public AlarmEngineBatchService (AlarmEngineService<Model> alarmEngineService) {
-		
-		this.alarmEngineService = alarmEngineService; 
-		
-	}
+  static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void process() {
-				
-		for (AlarmEngine alarmEngine : batch.getAlarmEngineBatch().getAlarmEngineSet()) {
-			
-			try {
-				
-				persistAlarm (
-					alarmEngineService.get( 
-						alarmEngine, (Class<Model>)Class.forName( alarmEngine.getMetaModel().getFullName() ) 
-					)
-				);
-				
+  protected AlarmEngineService<Model> alarmEngineService;
 
-			} catch (Exception e) {
+  @Inject private AlarmRepository alarmRepo;
 
-				TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_1), alarmEngine.getCode()), e), "", batch.getId());
-				incrementAnomaly();
+  @Inject
+  public AlarmEngineBatchService(AlarmEngineService<Model> alarmEngineService) {
 
-			} finally {
-				
-				JPA.clear();
-				
-			}
+    this.alarmEngineService = alarmEngineService;
+  }
 
-		}		
-		
-	}
+  @SuppressWarnings("unchecked")
+  @Override
+  protected void process() {
 
-	@Override
-	protected void stop() {
+    for (AlarmEngine alarmEngine : batch.getAlarmEngineBatch().getAlarmEngineSet()) {
 
-		String comment = I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_2) + "\n";
-		comment += String.format("\t" + I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_3) + "\n", batch.getDone() );
-		comment += String.format("\t" + I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly() );
-		
-		super.stop();
-		addComment(comment);
-		
-		
-	}
-	
-	@Transactional
-	protected <T extends Model> void persistAlarm(Map<T, Alarm> alarms) throws IllegalArgumentException, IllegalAccessException{
-		
-		Alarm alarm = null;
-		for (T t : alarms.keySet()) {
-			
-			alarm = alarms.get(t); associateAlarm(alarm, t);
-			alarmRepo.save(alarm); incrementDone();
-		}
-		
-	}
-	
-	private <T extends Model> void associateAlarm(Alarm alarm, T t) throws IllegalArgumentException, IllegalAccessException{
-		
-		LOG.debug("ASSOCIATE alarm:{} TO model:{}", new Object[] { batch, model });
-		
-		for (Field field : alarm.getClass().getDeclaredFields()){
-		
-			LOG.debug("TRY TO ASSOCIATE field:{} TO model:{}", new Object[] { field.getType().getName(), t.getClass().getName() });
-			if ( isAssociable(field, t) ){
-				
-				LOG.debug("FIELD ASSOCIATE TO MODEL");
-				field.setAccessible(true);
-				field.set(alarm, t);
-				field.setAccessible(false);
-				
-				break;
-				
-			}
-			
-		}
-		
-	}
-	
-	private <T extends Model> boolean isAssociable(Field field, T t){
-		
-		return field.getType().equals( persistentClass(t) );
-		
-	}
-	
-	private <T extends Model> Class<?> persistentClass(T t){
-		
-		if (t instanceof HibernateProxy) {
-		      return ((HibernateProxy) t).getHibernateLazyInitializer().getPersistentClass();
-		}
-		else { return t.getClass(); }
-		
-	}
+      try {
 
+        persistAlarm(
+            alarmEngineService.get(
+                alarmEngine,
+                (Class<Model>) Class.forName(alarmEngine.getMetaModel().getFullName())));
+
+      } catch (Exception e) {
+
+        TraceBackService.trace(
+            new Exception(
+                String.format(
+                    I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_1), alarmEngine.getCode()),
+                e),
+            "",
+            batch.getId());
+        incrementAnomaly();
+
+      } finally {
+
+        JPA.clear();
+      }
+    }
+  }
+
+  @Override
+  protected void stop() {
+
+    String comment = I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_2) + "\n";
+    comment +=
+        String.format(
+            "\t" + I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_3) + "\n", batch.getDone());
+    comment +=
+        String.format("\t" + I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+
+    super.stop();
+    addComment(comment);
+  }
+
+  @Transactional
+  protected <T extends Model> void persistAlarm(Map<T, Alarm> alarms)
+      throws IllegalArgumentException, IllegalAccessException {
+
+    Alarm alarm = null;
+    for (T t : alarms.keySet()) {
+
+      alarm = alarms.get(t);
+      associateAlarm(alarm, t);
+      alarmRepo.save(alarm);
+      incrementDone();
+    }
+  }
+
+  private <T extends Model> void associateAlarm(Alarm alarm, T t)
+      throws IllegalArgumentException, IllegalAccessException {
+
+    LOG.debug("ASSOCIATE alarm:{} TO model:{}", new Object[] {batch, model});
+
+    for (Field field : alarm.getClass().getDeclaredFields()) {
+
+      LOG.debug(
+          "TRY TO ASSOCIATE field:{} TO model:{}",
+          new Object[] {field.getType().getName(), t.getClass().getName()});
+      if (isAssociable(field, t)) {
+
+        LOG.debug("FIELD ASSOCIATE TO MODEL");
+        field.setAccessible(true);
+        field.set(alarm, t);
+        field.setAccessible(false);
+
+        break;
+      }
+    }
+  }
+
+  private <T extends Model> boolean isAssociable(Field field, T t) {
+
+    return field.getType().equals(persistentClass(t));
+  }
+
+  private <T extends Model> Class<?> persistentClass(T t) {
+
+    if (t instanceof HibernateProxy) {
+      return ((HibernateProxy) t).getHibernateLazyInitializer().getPersistentClass();
+    } else {
+      return t.getClass();
+    }
+  }
 }

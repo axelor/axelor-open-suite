@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,46 +17,50 @@
  */
 package com.axelor.apps.bankpayment.service.bankstatement;
 
-import java.math.BigDecimal;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import org.joda.time.LocalDate;
 
 public class BankStatementLineService {
 
-	@Inject
-	public BankStatementLineService()  {
-		
-	}
+  @Inject
+  public BankStatementLineService() {}
 
-	
-	public BankStatementLine createBankStatementLine(BankStatement bankStatement, int sequence, BankDetails bankDetails, BigDecimal debit, BigDecimal credit, Currency currency, 
-			String description, LocalDate operationDate, LocalDate valueDate, InterbankCodeLine operationInterbankCodeLine, InterbankCodeLine rejectInterbankCodeLine, String origin, String reference)  {
-		
-		BankStatementLine bankStatementLine = new BankStatementLine();
-		bankStatementLine.setBankStatement(bankStatement);
-		bankStatementLine.setSequence(sequence);
-		bankStatementLine.setBankDetails(bankDetails);
-		bankStatementLine.setDebit(debit);
-		bankStatementLine.setCredit(credit);
-		bankStatementLine.setCurrency(currency);
-		bankStatementLine.setDescription(description);
-		bankStatementLine.setOperationDate(operationDate);
-		bankStatementLine.setValueDate(valueDate);
-		bankStatementLine.setOperationInterbankCodeLine(operationInterbankCodeLine);
-		bankStatementLine.setRejectInterbankCodeLine(rejectInterbankCodeLine);
-		bankStatementLine.setOrigin(origin);
-		bankStatementLine.setReference(reference);
-		
-		return bankStatementLine;
-		
-	}
-	
+  public BankStatementLine createBankStatementLine(
+      BankStatement bankStatement,
+      int sequence,
+      BankDetails bankDetails,
+      BigDecimal debit,
+      BigDecimal credit,
+      Currency currency,
+      String description,
+      LocalDate operationDate,
+      LocalDate valueDate,
+      InterbankCodeLine operationInterbankCodeLine,
+      InterbankCodeLine rejectInterbankCodeLine,
+      String origin,
+      String reference) {
 
+    BankStatementLine bankStatementLine = new BankStatementLine();
+    bankStatementLine.setBankStatement(bankStatement);
+    bankStatementLine.setSequence(sequence);
+    bankStatementLine.setBankDetails(bankDetails);
+    bankStatementLine.setDebit(debit);
+    bankStatementLine.setCredit(credit);
+    bankStatementLine.setCurrency(currency);
+    bankStatementLine.setDescription(description);
+    bankStatementLine.setOperationDate(operationDate);
+    bankStatementLine.setValueDate(valueDate);
+    bankStatementLine.setOperationInterbankCodeLine(operationInterbankCodeLine);
+    bankStatementLine.setRejectInterbankCodeLine(rejectInterbankCodeLine);
+    bankStatementLine.setOrigin(origin);
+    bankStatementLine.setReference(reference);
+
+    return bankStatementLine;
+  }
 }

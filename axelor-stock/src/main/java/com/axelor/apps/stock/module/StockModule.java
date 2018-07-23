@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -36,19 +36,18 @@ import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 
-
 public class StockModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
-        bind(AddressServiceStockImpl.class);
-        bind(InventoryRepository.class).to(InventoryManagementRepository.class);
-        bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
-        bind(LocationLineService.class).to(LocationLineServiceImpl.class);
-		bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
-        bind(StockMoveService.class).to(StockMoveServiceImpl.class);
-        bind(LocationService.class).to(LocationServiceImpl.class);
-        IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
-    }
+  @Override
+  protected void configure() {
+    bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
+    bind(AddressServiceStockImpl.class);
+    bind(InventoryRepository.class).to(InventoryManagementRepository.class);
+    bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
+    bind(LocationLineService.class).to(LocationLineServiceImpl.class);
+    bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
+    bind(StockMoveService.class).to(StockMoveServiceImpl.class);
+    bind(LocationService.class).to(LocationServiceImpl.class);
+    IPartner.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
+  }
 }

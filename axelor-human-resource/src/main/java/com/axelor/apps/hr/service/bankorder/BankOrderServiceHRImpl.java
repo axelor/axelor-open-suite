@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -33,25 +33,40 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
-    @Inject
-    public BankOrderServiceHRImpl(BankOrderRepository bankOrderRepo, InvoicePaymentRepository invoicePaymentRepo,
-                                  BankOrderLineService bankOrderLineService, EbicsService ebicsService,
-                                  InvoicePaymentToolService invoicePaymentToolService, AccountConfigBankPaymentService accountConfigBankPaymentService,
-                      			SequenceService sequenceService) {
+  @Inject
+  public BankOrderServiceHRImpl(
+      BankOrderRepository bankOrderRepo,
+      InvoicePaymentRepository invoicePaymentRepo,
+      BankOrderLineService bankOrderLineService,
+      EbicsService ebicsService,
+      InvoicePaymentToolService invoicePaymentToolService,
+      AccountConfigBankPaymentService accountConfigBankPaymentService,
+      SequenceService sequenceService) {
 
-        super(bankOrderRepo, invoicePaymentRepo, bankOrderLineService, ebicsService, invoicePaymentToolService, accountConfigBankPaymentService, sequenceService);
+    super(
+        bankOrderRepo,
+        invoicePaymentRepo,
+        bankOrderLineService,
+        ebicsService,
+        invoicePaymentToolService,
+        accountConfigBankPaymentService,
+        sequenceService);
+  }
+
+  @Override
+  public void realize(BankOrder bankOrder) throws AxelorException {
+    super.realize(bankOrder);
+
+    if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
+      Expense expense =
+          Beans.get(ExpenseRepository.class)
+              .all()
+              .filter("self.bankOrder.id = ?", bankOrder.getId())
+              .fetchOne();
+      if (expense != null) {
+        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+      }
     }
-
-    @Override
-    public void realize(BankOrder bankOrder) throws AxelorException {
-        super.realize(bankOrder);
-
-        if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
-            Expense expense = Beans.get(ExpenseRepository.class).all().filter("self.bankOrder.id = ?", bankOrder.getId()).fetchOne();
-            if (expense != null) {
-                expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-                expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-            }
-        }
-    }
+  }
 }

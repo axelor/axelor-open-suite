@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,30 +27,29 @@ import com.google.inject.Inject;
 
 public class ReminderController {
 
+  private ReminderRepository reminderRepository;
+  private ReminderActionService reminderService;
 
-    private ReminderRepository reminderRepository;
-    private ReminderActionService reminderService;
+  @Inject
+  public ReminderController(
+      ReminderRepository reminderRepository, ReminderActionService reminderService) {
+    this.reminderRepository = reminderRepository;
+    this.reminderService = reminderService;
+  }
 
-    @Inject
-    public ReminderController(ReminderRepository reminderRepository, ReminderActionService reminderService) {
-        this.reminderRepository = reminderRepository;
-        this.reminderService = reminderService;
+  public void runReminder(ActionRequest request, ActionResponse response) {
+    Reminder reminder = request.getContext().asType(Reminder.class);
+
+    reminder = reminderRepository.find(reminder.getId());
+    try {
+      reminder.setReminderMethodLine(reminder.getWaitReminderMethodLine());
+      reminderService.runManualAction(reminder);
+      // find the updated reminder
+      reminder = reminderRepository.find(reminder.getId());
+      reminderService.runMessage(reminder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    public void runReminder(ActionRequest request, ActionResponse response) {
-        Reminder reminder = request.getContext().asType(Reminder.class);
-
-        reminder = reminderRepository.find(reminder.getId());
-        try {
-            reminder.setReminderMethodLine(reminder.getWaitReminderMethodLine());
-            reminderService.runManualAction(reminder);
-            //find the updated reminder
-            reminder = reminderRepository.find(reminder.getId());
-            reminderService.runMessage(reminder);
-            response.setReload(true);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
-
-    }
+  }
 }

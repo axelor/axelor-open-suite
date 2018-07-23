@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,23 +21,23 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 
-public class FiscalPositionServiceImpl implements FiscalPositionService  {
+public class FiscalPositionServiceImpl implements FiscalPositionService {
 
-    public Tax getTax(FiscalPosition fiscalPosition, Tax tax)  {
-        TaxEquiv taxEquiv = getTaxEquiv(fiscalPosition, tax);
+  public Tax getTax(FiscalPosition fiscalPosition, Tax tax) {
+    TaxEquiv taxEquiv = getTaxEquiv(fiscalPosition, tax);
 
-        return taxEquiv == null ? tax : taxEquiv.getToTax();
-    }
+    return taxEquiv == null ? tax : taxEquiv.getToTax();
+  }
 
-	public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax) {
-        if (fiscalPosition != null && fiscalPosition.getTaxEquivList() != null)  {
-            for (TaxEquiv taxEquiv : fiscalPosition.getTaxEquivList())  {
-                if (taxEquiv.getFromTax().equals(tax) && taxEquiv.getToTax() != null)  {
-                    return taxEquiv;
-                }
-            }
+  public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax) {
+    if (fiscalPosition != null && fiscalPosition.getTaxEquivList() != null) {
+      for (TaxEquiv taxEquiv : fiscalPosition.getTaxEquivList()) {
+        if (taxEquiv.getFromTax().equals(tax) && taxEquiv.getToTax() != null) {
+          return taxEquiv;
         }
-
-        return null;
+      }
     }
+
+    return null;
+  }
 }

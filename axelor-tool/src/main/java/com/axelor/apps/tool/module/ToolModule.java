@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,9 +23,8 @@ import com.axelor.apps.tool.service.CipherServiceImpl;
 
 public class ToolModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(CipherService.class).to(CipherServiceImpl.class);
-	}
-
+  @Override
+  protected void configure() {
+    bind(CipherService.class).to(CipherServiceImpl.class);
+  }
 }

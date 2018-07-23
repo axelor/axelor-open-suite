@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -18,8 +18,7 @@
 package com.axelor.apps.businessproject.report;
 
 public interface IReport {
-	
-	public static final String PROJECT_TASK = "ProjectTask.rptdesign";
-	public static final String INVOICE_ANNEX = "InvoiceAnnex.rptdesign";
-	
+
+  public static final String PROJECT_TASK = "ProjectTask.rptdesign";
+  public static final String INVOICE_ANNEX = "InvoiceAnnex.rptdesign";
 }

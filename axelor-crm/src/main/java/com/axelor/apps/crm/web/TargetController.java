@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,24 +27,23 @@ import com.google.inject.Inject;
 
 public class TargetController {
 
-	@Inject
-	private TargetService targetService;
-	
-	@Inject
-	private TargetRepository targetRepo;
-	
-	public void update(ActionRequest request, ActionResponse response){
-		
-		Target target = request.getContext().asType(Target.class);
-		
-		try {
-			targetService.update(targetRepo.find(target.getId()));
-			response.setValue("opportunityAmountWon", target.getOpportunityAmountWon());
-			response.setValue("opportunityCreatedNumber", target.getOpportunityCreatedNumber());
-			response.setValue("opportunityCreatedWon", target.getOpportunityCreatedWon());
-			response.setValue("callEmittedNumber", target.getCallEmittedNumber());
-			response.setValue("meetingNumber", target.getMeetingNumber());
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
+  @Inject private TargetService targetService;
+
+  @Inject private TargetRepository targetRepo;
+
+  public void update(ActionRequest request, ActionResponse response) {
+
+    Target target = request.getContext().asType(Target.class);
+
+    try {
+      targetService.update(targetRepo.find(target.getId()));
+      response.setValue("opportunityAmountWon", target.getOpportunityAmountWon());
+      response.setValue("opportunityCreatedNumber", target.getOpportunityCreatedNumber());
+      response.setValue("opportunityCreatedWon", target.getOpportunityCreatedWon());
+      response.setValue("callEmittedNumber", target.getCallEmittedNumber());
+      response.setValue("meetingNumber", target.getMeetingNumber());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,19 +25,17 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 
 public class PurchaseConfigService {
-	
-	public PurchaseConfig getPurchaseConfig(Company company) throws AxelorException  {
-		
-		PurchaseConfig purchaseConfig = company.getPurchaseConfig();
-		
-		if(purchaseConfig == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.PURCHASE_CONFIG_1),
-					company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		return purchaseConfig;
-		
-	}
-	
-	
+
+  public PurchaseConfig getPurchaseConfig(Company company) throws AxelorException {
+
+    PurchaseConfig purchaseConfig = company.getPurchaseConfig();
+
+    if (purchaseConfig == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.PURCHASE_CONFIG_1), company.getName()),
+          IException.CONFIGURATION_ERROR);
+    }
+
+    return purchaseConfig;
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
-import java.math.BigDecimal;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
@@ -28,21 +24,28 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import org.joda.time.LocalDate;
 
-public interface InvoicePaymentCreateService   {
-	
-	public InvoicePayment createInvoicePayment(Invoice invoice, BigDecimal amount, LocalDate paymentDate, Currency currency, PaymentMode paymentMode,  int typeSelect);
-	
-	public InvoicePayment createInvoicePayment(Invoice invoice, BigDecimal amount, Move paymentMove) throws AxelorException;
+public interface InvoicePaymentCreateService {
 
-	/**
-	 * Create an invoice payment for the specified invoice and with the specified bank details.
-	 * 
-	 * @param invoice
-	 * @param bankDetails
-	 * @return
-	 */
-	public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails bankDetails);
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice,
+      BigDecimal amount,
+      LocalDate paymentDate,
+      Currency currency,
+      PaymentMode paymentMode,
+      int typeSelect);
 
-	
+  public InvoicePayment createInvoicePayment(Invoice invoice, BigDecimal amount, Move paymentMove)
+      throws AxelorException;
+
+  /**
+   * Create an invoice payment for the specified invoice and with the specified bank details.
+   *
+   * @param invoice
+   * @param bankDetails
+   * @return
+   */
+  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails bankDetails);
 }

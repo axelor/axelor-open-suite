@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,20 +28,21 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class OpportunitySaleOrderController{
-	
-	@Inject 
-	private OpportunitySaleOrderService opportunitySaleOrderService;
-	
-	public void generateSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException{
-		Opportunity opportunity = request.getContext().asType(Opportunity.class);
-		opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
-		SaleOrder saleOrder = opportunitySaleOrderService.createSaleOrderFromOpportunity(opportunity);
-		response.setReload(true);
-		response.setView(ActionView
-				.define("Sale Order")
-				.model(SaleOrder.class.getName())
-				.add("form", "sale-order-form")
-				.context("_showRecord", String.valueOf(saleOrder.getId())).map());
-	}
+public class OpportunitySaleOrderController {
+
+  @Inject private OpportunitySaleOrderService opportunitySaleOrderService;
+
+  public void generateSaleOrder(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
+    SaleOrder saleOrder = opportunitySaleOrderService.createSaleOrderFromOpportunity(opportunity);
+    response.setReload(true);
+    response.setView(
+        ActionView.define("Sale Order")
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form")
+            .context("_showRecord", String.valueOf(saleOrder.getId()))
+            .map());
+  }
 }

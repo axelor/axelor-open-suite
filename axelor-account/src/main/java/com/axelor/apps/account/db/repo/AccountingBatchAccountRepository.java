@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,11 +21,10 @@ import com.axelor.apps.account.db.AccountingBatch;
 
 public class AccountingBatchAccountRepository extends AccountingBatchRepository {
 
-    @Override
-    public AccountingBatch copy(AccountingBatch entity, boolean deep) {
-        AccountingBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public AccountingBatch copy(AccountingBatch entity, boolean deep) {
+    AccountingBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

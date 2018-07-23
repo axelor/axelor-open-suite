@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,35 +17,30 @@
  */
 package com.axelor.apps.production.service;
 
-import java.util.List;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public interface BillOfMaterialService {
 
-	static final String UNIT_MIN_CODE = "MIN";
-	
-	static final String UNIT_DAY_CODE = "JR";
-	
-	
-	public List<BillOfMaterial> getBillOfMaterialSet(Product product);
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
-		
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine);
-	
-	public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public TempBomTree generateTree(BillOfMaterial billOfMaterial);
-	
+  static final String UNIT_MIN_CODE = "MIN";
+
+  static final String UNIT_DAY_CODE = "JR";
+
+  public List<BillOfMaterial> getBillOfMaterialSet(Product product);
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine);
+
+  public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public TempBomTree generateTree(BillOfMaterial billOfMaterial);
 }

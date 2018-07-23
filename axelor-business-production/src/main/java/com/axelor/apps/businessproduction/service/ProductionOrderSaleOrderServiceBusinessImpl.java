@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -42,129 +33,142 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProductionOrderSaleOrderServiceBusinessImpl extends ProductionOrderSaleOrderServiceImpl {
+public class ProductionOrderSaleOrderServiceBusinessImpl
+    extends ProductionOrderSaleOrderServiceImpl {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected ProductionOrderServiceBusinessImpl productionOrderService;
+  protected ProductionOrderServiceBusinessImpl productionOrderService;
 
-	@Inject
-	public ProductionOrderSaleOrderServiceBusinessImpl(
-			UserService userInfoService, ProductionOrderServiceBusinessImpl productionOrderService) {
-		super(userInfoService);
-		
-		this.productionOrderService = productionOrderService;
-	}
+  @Inject
+  public ProductionOrderSaleOrderServiceBusinessImpl(
+      UserService userInfoService, ProductionOrderServiceBusinessImpl productionOrderService) {
+    super(userInfoService);
 
-	@Override
-	public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException  {
+    this.productionOrderService = productionOrderService;
+  }
 
-		List<Long> productionOrderIdList = new ArrayList<Long>();
-		if(saleOrder.getSaleOrderLineList() != null)  {
+  @Override
+  public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
-			ProductionOrder productionOrder = null;
-			for(SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList())  {
+    List<Long> productionOrderIdList = new ArrayList<Long>();
+    if (saleOrder.getSaleOrderLineList() != null) {
 
-				productionOrder = this.generateProductionOrder(saleOrderLine);
-				if (productionOrder != null){
-					productionOrderIdList.add(productionOrder.getId());
-				}
+      ProductionOrder productionOrder = null;
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
-			}
+        productionOrder = this.generateProductionOrder(saleOrderLine);
+        if (productionOrder != null) {
+          productionOrderIdList.add(productionOrder.getId());
+        }
+      }
+    }
 
-		}
+    return productionOrderIdList;
+  }
 
-		return productionOrderIdList;
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public ProductionOrder generateProductionOrder(SaleOrderLine saleOrderLine)
+      throws AxelorException {
 
-	}
+    Product product = saleOrderLine.getProduct();
 
+    if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE
+        && product != null
+        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(SaleOrderLine saleOrderLine) throws AxelorException  {
+      BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 
-		Product product = saleOrderLine.getProduct();
+      if (billOfMaterial == null) {
 
-		if(saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE && product != null && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE) )  {
+        billOfMaterial = product.getDefaultBillOfMaterial();
+      }
 
-			BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+      if (billOfMaterial == null && product.getParentProduct() != null) {
 
-			if(billOfMaterial == null)  {
+        billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
+      }
 
-				billOfMaterial = product.getDefaultBillOfMaterial();
+      if (billOfMaterial == null) {
 
-			}
+        throw new AxelorException(
+            String.format(
+                I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM),
+                product.getName(),
+                product.getCode()),
+            IException.CONFIGURATION_ERROR);
+      }
+      Unit unit = saleOrderLine.getProduct().getUnit();
+      BigDecimal qty = saleOrderLine.getQty();
+      if (!unit.equals(saleOrderLine.getUnit())) {
+        qty =
+            unitConversionService.convertWithProduct(
+                saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+      }
+      return productionOrderRepo.save(
+          productionOrderService.generateProductionOrder(
+              product,
+              billOfMaterial,
+              qty,
+              saleOrderLine.getSaleOrder().getProject(),
+              new LocalDateTime()));
+    }
 
-			if(billOfMaterial == null && product.getParentProduct() != null)  {
+    return null;
+  }
 
-				billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void createSaleOrder(ProductionOrder productionOrder) throws AxelorException {
 
-			}
+    logger.debug(
+        "Création d'un devis client pour l'ordre de production : {}",
+        new Object[] {productionOrder.getProductionOrderSeq()});
 
-			if(billOfMaterial == null)  {
+    ProjectTask projectTask = productionOrder.getProjectTask();
 
-				throw new AxelorException(
-						String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()),
-						IException.CONFIGURATION_ERROR);
+    projectTask.getClientPartner();
 
-			}
-			Unit unit = saleOrderLine.getProduct().getUnit();
-			BigDecimal qty = saleOrderLine.getQty();
-			if(!unit.equals(saleOrderLine.getUnit())){
-				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
-			}
-			return productionOrderRepo.save(productionOrderService.generateProductionOrder(product, billOfMaterial, qty, saleOrderLine.getSaleOrder().getProject(), new LocalDateTime()));
-
-		}
-
-		return null;
-
-	}
-
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createSaleOrder(ProductionOrder productionOrder) throws AxelorException  {
-
-		logger.debug("Création d'un devis client pour l'ordre de production : {}",
-				new Object[] { productionOrder.getProductionOrderSeq() });
-
-		ProjectTask projectTask = productionOrder.getProjectTask();
-
-		projectTask.getClientPartner();
-
-//		if(businessFolder.getCompany() != null)  {
-//
-//			SaleOrder saleOrder = saleOrderServiceStockImpl.createSaleOrder(
-//					businessFolder,
-//					user,
-//					businessFolder.getCompany(),
-//					null,
-//					partner.getCurrency(),
-//					null,
-//					null,
-//					null,
-//					saleOrderServiceStockImpl.getLocation(businessProject.getCompany()),
-//					today,
-//					Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect = 1", partner).fetchOne(),
-//					partner);
-//
-//			Beans.get(SaleOrderRepository.class).save(saleOrder);
-//
-//		}
-//
-//		//TODO
-//
-//		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
-//
-//			purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLineService.createPurchaseOrderLine(purchaseOrder, saleOrderLine));
-//
-//		}
-//
-//		purchaseOrderService.computePurchaseOrder(purchaseOrder);
-//
-//		purchaseOrder.save();
-	}
-
-
+    //		if(businessFolder.getCompany() != null)  {
+    //
+    //			SaleOrder saleOrder = saleOrderServiceStockImpl.createSaleOrder(
+    //					businessFolder,
+    //					user,
+    //					businessFolder.getCompany(),
+    //					null,
+    //					partner.getCurrency(),
+    //					null,
+    //					null,
+    //					null,
+    //					saleOrderServiceStockImpl.getLocation(businessProject.getCompany()),
+    //					today,
+    //					Beans.get(PriceListRepository.class).all().filter("self.partner = ?1 AND self.typeSelect
+    // = 1", partner).fetchOne(),
+    //					partner);
+    //
+    //			Beans.get(SaleOrderRepository.class).save(saleOrder);
+    //
+    //		}
+    //
+    //		//TODO
+    //
+    //		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
+    //
+    //
+    //	purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLineService.createPurchaseOrderLine(purchaseOrder, saleOrderLine));
+    //
+    //		}
+    //
+    //		purchaseOrderService.computePurchaseOrder(purchaseOrder);
+    //
+    //		purchaseOrder.save();
+  }
 }

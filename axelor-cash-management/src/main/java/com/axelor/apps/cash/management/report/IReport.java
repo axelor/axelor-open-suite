@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,8 +19,5 @@ package com.axelor.apps.cash.management.report;
 
 public interface IReport {
 
-	
-	public static final String FORECAST_RECAP = "ForecastRecap.rptdesign";
-	
-	
+  public static final String FORECAST_RECAP = "ForecastRecap.rptdesign";
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,23 +24,19 @@ import com.axelor.inject.Beans;
 
 public class VentilateFactory {
 
-	public VentilateState getVentilator(Invoice invoice){
+  public VentilateState getVentilator(Invoice invoice) {
 
-		VentilateState ventilateState = ventilatorByType(invoice.getEndOfCycleOk());
-		ventilateState.init(invoice);
-		return ventilateState;
+    VentilateState ventilateState = ventilatorByType(invoice.getEndOfCycleOk());
+    ventilateState.init(invoice);
+    return ventilateState;
+  }
 
-	}
+  protected VentilateState ventilatorByType(boolean endOfCycleOk) {
 
-	protected VentilateState ventilatorByType(boolean endOfCycleOk){
-
-		if(endOfCycleOk)  {
-			return Beans.get(MajorEndCycleVentilateState.class);
-		}
-		else  {
-			return Beans.get(VentilateState.class);
-		}
-
-	}
-
+    if (endOfCycleOk) {
+      return Beans.get(MajorEndCycleVentilateState.class);
+    } else {
+      return Beans.get(VentilateState.class);
+    }
+  }
 }

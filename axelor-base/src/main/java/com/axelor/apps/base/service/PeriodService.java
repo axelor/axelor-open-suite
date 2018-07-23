@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,16 +17,16 @@
  */
 package com.axelor.apps.base.service;
 
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.exception.AxelorException;
+import org.joda.time.LocalDate;
 
 public interface PeriodService {
 
   /**
    * Recupère la bonne période pour la date passée en paramètre
+   *
    * @param date
    * @param company
    * @return
@@ -42,6 +42,7 @@ public interface PeriodService {
 
   /**
    * Check if the period corresponding to the date and the company is closed
+   *
    * @param company
    * @param date
    * @throws AxelorException
@@ -49,12 +50,14 @@ public interface PeriodService {
   public void checkPeriod(Company company, LocalDate date) throws AxelorException;
 
   /**
-     * Check if the periods corresponding to the dates and the company are closed.
+   * Check if the periods corresponding to the dates and the company are closed.
+   *
    * @param company
    * @param fromDate
    * @param toDate
    */
-  public void checkPeriod(Company company, LocalDate fromDate, LocalDate toDate) throws AxelorException;
+  public void checkPeriod(Company company, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
 
   /**
    * @param period

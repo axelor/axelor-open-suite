@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,25 +24,22 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-/**
- * Controller called from multiple forms,
- */
+/** Controller called from multiple forms, */
 public class CompanyBankDetailsController {
 
-    /**
-     * Set the domain of company bank details field
-     *
-     * @param request
-     * @param response
-     */
-    public void fillCompanyBankDetailsDomain(ActionRequest request, ActionResponse response) {
-        Company company = (Company) request.getContext().get("company");
-        PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
-        response.setAttr(
-                "companyBankDetails",
-                "domain",
-                Beans.get(BankDetailsServiceImpl.class)
-                        .createCompanyBankDetailsDomain(company, paymentMode)
-        );
-    }
+  /**
+   * Set the domain of company bank details field
+   *
+   * @param request
+   * @param response
+   */
+  public void fillCompanyBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    Company company = (Company) request.getContext().get("company");
+    PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
+    response.setAttr(
+        "companyBankDetails",
+        "domain",
+        Beans.get(BankDetailsServiceImpl.class)
+            .createCompanyBankDetailsDomain(company, paymentMode));
+  }
 }

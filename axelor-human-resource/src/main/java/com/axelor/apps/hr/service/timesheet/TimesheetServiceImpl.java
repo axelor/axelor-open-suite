@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.GeneralRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -56,17 +55,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.Minutes;
-
-import javax.mail.MessagingException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -75,558 +66,663 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.mail.MessagingException;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
-/**
- * @author axelor
- *
- */
-public class TimesheetServiceImpl implements TimesheetService{
+/** @author axelor */
+public class TimesheetServiceImpl implements TimesheetService {
 
-	@Inject
-	protected EmployeeService employeeService;
+  @Inject protected EmployeeService employeeService;
 
-	@Inject
-	protected PriceListService priceListService;
+  @Inject protected PriceListService priceListService;
 
-	@Inject
-	protected GeneralService generalService;
-	
-	@Inject
-	protected ProjectTaskService projectTaskService;
+  @Inject protected GeneralService generalService;
 
-	@Inject
-	protected EmployeeRepository employeeRepo;
-	
-	@Inject
-	protected TimesheetRepository timesheetRepository;
-	
-	@Inject
-	protected HRConfigService  hrConfigService;
-	
-	@Inject
-	protected TemplateMessageService  templateMessageService;
+  @Inject protected ProjectTaskService projectTaskService;
 
-	@Override
-	@Transactional(rollbackOn={Exception.class})
-	public void getTimeFromTask(Timesheet timesheet){
+  @Inject protected EmployeeRepository employeeRepo;
 
-		List<TimesheetLine> timesheetLineList = TimesheetLineRepository.of(TimesheetLine.class).all().filter("self.user = ?1 AND self.timesheet = null AND self.projectTask != null", timesheet.getUser()).fetch();
-		for (TimesheetLine timesheetLine : timesheetLineList) {
-			timesheet.addTimesheetLineListItem(timesheetLine);
-		}
-	}
+  @Inject protected TimesheetRepository timesheetRepository;
 
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirm(Timesheet timesheet) throws AxelorException  {
-				
-		this.validToDate(timesheet);
-		
-		timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
-		timesheet.setSentDate(generalService.getTodayDate());
-		
-		if (timesheet.getToDate() == null) {
-			List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-			LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
-			for (TimesheetLine timesheetLine : timesheetLineList.subList(1, timesheetLineList.size())) {
-				if (timesheetLine.getDate().compareTo(timesheetLineLastDate) > 0) {
-					timesheetLineLastDate = timesheetLine.getDate();
-				}
-			}
+  @Inject protected HRConfigService hrConfigService;
 
-			timesheet.setToDate(timesheetLineLastDate);
-		}
-	}
-	
-	
-	public Message sendConfirmationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
-		
-		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
-		
-		if(hrConfig.getTimesheetMailNotification())  {
-				
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getSentTimesheetTemplate(hrConfig));
-				
-		}
-		
-		return null;
-		
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Timesheet timesheet) throws AxelorException  {
-		
-		timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
-		timesheet.setValidatedBy(AuthUtils.getUser());
-		timesheet.setValidationDate(generalService.getTodayDate());
-	}
-	
-	
-	public Message sendValidationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
-		
-		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
-		
-		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
-		}
-		
-		return null;
-		
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void refuse(Timesheet timesheet) throws AxelorException  {
-		
-		timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
-		timesheet.setRefusedBy(AuthUtils.getUser());
-		timesheet.setRefusalDate(generalService.getTodayDate());
-	}
-	
-	public Message sendRefusalEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
-		
-		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
-		
-		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
-		}
-		
-		return null;
-		
-	}
-	
-	@Transactional(rollbackOn={Exception.class})
-	public void cancel(Timesheet timesheet){
-		timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
-	}
-	
-	public Message sendCancellationEmail(Timesheet timesheet) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+  @Inject protected TemplateMessageService templateMessageService;
 
-		HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void getTimeFromTask(Timesheet timesheet) {
 
-		if (hrConfig.getTimesheetMailNotification()) {
-			return templateMessageService.generateAndSendMessage(timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
-		}
+    List<TimesheetLine> timesheetLineList =
+        TimesheetLineRepository.of(TimesheetLine.class)
+            .all()
+            .filter(
+                "self.user = ?1 AND self.timesheet = null AND self.projectTask != null",
+                timesheet.getUser())
+            .fetch();
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+      timesheet.addTimesheetLineListItem(timesheetLine);
+    }
+  }
 
-		return null;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void confirm(Timesheet timesheet) throws AxelorException {
 
-	}
+    this.validToDate(timesheet);
 
-	@Override
-	public Timesheet generateLines(Timesheet timesheet, LocalDate fromGenerationDate, LocalDate toGenerationDate, BigDecimal logTime, ProjectTask projectTask, Product product) throws AxelorException{
+    timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
+    timesheet.setSentDate(generalService.getTodayDate());
 
-		User user = timesheet.getUser();
-		Employee employee = user.getEmployee();
-		
-		if(fromGenerationDate == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE)), IException.MISSING_FIELD);
-		}
-		if(toGenerationDate == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.MISSING_FIELD);
-		}
-		if(product == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.MISSING_FIELD);
-		}
-		if(employee == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),user.getName()), IException.CONFIGURATION_ERROR);
-		}
-		WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
-		if(planning == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING), user.getName()), IException.CONFIGURATION_ERROR);
-		}
-		List<DayPlanning> dayPlanningList = planning.getWeekDays();
+    if (timesheet.getToDate() == null) {
+      List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+      LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
+      for (TimesheetLine timesheetLine : timesheetLineList.subList(1, timesheetLineList.size())) {
+        if (timesheetLine.getDate().compareTo(timesheetLineLastDate) > 0) {
+          timesheetLineLastDate = timesheetLine.getDate();
+        }
+      }
 
-		LocalDate fromDate = fromGenerationDate;
-		LocalDate toDate = toGenerationDate;
-		Map<Integer,String> correspMap = new HashMap<>();
-		correspMap.put(1, "monday");
-		correspMap.put(2, "tuesday");
-		correspMap.put(3, "wednesday");
-		correspMap.put(4, "thursday");
-		correspMap.put(5, "friday");
-		correspMap.put(6, "saturday");
-		correspMap.put(7, "sunday");
-		
-		//Leaving list
-		List<LeaveRequest> leaveList = LeaveRequestRepository.of(LeaveRequest.class).all().filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", user).fetch();
-		
-		//Public holidays list
-		List<EventsPlanningLine> publicHolidayList = employee.getPublicHolidayEventsPlanning().getEventsPlanningLineList();
-		 
-		while(!fromDate.isAfter(toDate)){
-			DayPlanning dayPlanningCurr = new DayPlanning();
-			for (DayPlanning dayPlanning : dayPlanningList) {
-				if(dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))){
-					dayPlanningCurr = dayPlanning;
-					break;
-				}
-			}
-			if(dayPlanningCurr.getMorningFrom() != null || dayPlanningCurr.getMorningTo() != null || dayPlanningCurr.getAfternoonFrom() != null || dayPlanningCurr.getAfternoonTo() != null)
-			{
-				/*Check if the day is not a leaving day */
-				boolean noLeave = true;
-				if(leaveList != null){
-					for (LeaveRequest leave : leaveList) {
-						if((leave.getFromDate().isBefore(fromDate) && leave.getToDate().isAfter(fromDate))
-							|| leave.getFromDate().isEqual(fromDate) || leave.getToDate().isEqual(fromDate))
-						{
-							noLeave = false;
-							break;
-						}
-					}
-				}
-				
-				/*Check if the day is not a public holiday */
-				boolean noPublicHoliday = true;
-				if(publicHolidayList != null){
-					for (EventsPlanningLine publicHoliday : publicHolidayList) {
-						if(publicHoliday.getDate().isEqual(fromDate))
-						{
-							noPublicHoliday = false;
-							break;
-						}
-					}
-				}
-				
-				if(noLeave && noPublicHoliday){
-					TimesheetLine timesheetLine = createTimesheetLine(projectTask, product, user, fromDate, timesheet, employeeService.getUserDuration(logTime, user, true), "");
-					timesheetLine.setVisibleDuration(logTime);
-				}
-				
-			}
-			fromDate=fromDate.plusDays(1);
-		}
-		return timesheet;
-	}
+      timesheet.setToDate(timesheetLineLastDate);
+    }
+  }
 
-	@Override
-	public LocalDate getFromPeriodDate(){
-		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.user = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser()).fetchOne();
-		if(timesheet != null){
-			return timesheet.getToDate();
-		}
-		else{
-			return null;
-		}
-	}
-	
-	public Timesheet getCurrentTimesheet(){
-		Timesheet timesheet = Beans.get(TimesheetRepository.class).all().filter("self.statusSelect = ?1 AND self.user.id = ?2", TimesheetRepository.STATUS_DRAFT, AuthUtils.getUser().getId()).order("-id").fetchOne();
-		if(timesheet != null){
-			return timesheet;
-		}
-		else{
-			return null;
-		}
-	}
-	
-	public Timesheet getCurrentOrCreateTimesheet(){
-		Timesheet timesheet = getCurrentTimesheet();
-		if(timesheet == null)
-			timesheet = createTimesheet(AuthUtils.getUser(), generalService.getTodayDateTime().toLocalDate(), null);
-		return timesheet;
-	}
-	
-	public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate){
-		Timesheet timesheet = new Timesheet();
-		
-		timesheet.setUser(user);
-		Company company = null;
-		if (user.getEmployee() != null
-				&& user.getEmployee().getMainEmploymentContract() != null) {
-			company = user.getEmployee().getMainEmploymentContract().getPayCompany();
-		}
-		timesheet.setCompany(company);
-		timesheet.setFromDate(fromDate);
-		timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
-		timesheet.setFullName(computeFullName(timesheet));
-		
-		return timesheet;
-	}
-	
-	public TimesheetLine createTimesheetLine(ProjectTask project, Product product, User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments){
-		TimesheetLine timesheetLine = new TimesheetLine();
-		
-		timesheetLine.setDate(date);
-		timesheetLine.setComments(comments);
-		timesheetLine.setProduct(product);
-		timesheetLine.setProjectTask(project);
-		timesheetLine.setUser(user);
-		timesheetLine.setDurationStored(hours);
-		timesheet.addTimesheetLineListItem(timesheetLine);
-		
-		return timesheetLine;
-	}
+  public Message sendConfirmationEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
 
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException  {
+    HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
-		List<InvoiceLine> invoiceLineList = new ArrayList<>();
-		int count = 0;
-		DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
-		HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<>();
-		//Check if a consolidation by product and user must be done
-		boolean consolidate = generalService.getGeneral().getConsolidateTSLine();
+    if (hrConfig.getTimesheetMailNotification()) {
 
-		for (TimesheetLine timesheetLine : timesheetLineList) {
-			Object[] tabInformations = new Object[5];
-			tabInformations[0] = timesheetLine.getProduct();
-			tabInformations[1] = timesheetLine.getUser();
-			//Start date
-			tabInformations[2] = timesheetLine.getDate();
-			//End date, useful only for consolidation
-			tabInformations[3] = timesheetLine.getDate();
-			tabInformations[4] = timesheetLine.getDurationStored();
+      return templateMessageService.generateAndSendMessage(
+          timesheet, hrConfigService.getSentTimesheetTemplate(hrConfig));
+    }
 
-			String key = null;
-			if(consolidate){
-				key = timesheetLine.getProduct().getId() + "|" + timesheetLine.getUser().getId();
-				if (timeSheetInformationsMap.containsKey(key)){
-					tabInformations = timeSheetInformationsMap.get(key);
-					//Update date
-					if (timesheetLine.getDate().compareTo((LocalDate)tabInformations[2]) < 0){
-						//If date is lower than start date then replace start date by this one
-						tabInformations[2] = timesheetLine.getDate();
-					}else if (timesheetLine.getDate().compareTo((LocalDate)tabInformations[3]) > 0){
-						//If date is upper than end date then replace end date by this one
-						tabInformations[3] = timesheetLine.getDate();
-					}
-					tabInformations[4] = ((BigDecimal)tabInformations[4]).add(timesheetLine.getDurationStored());
-				}else{
-					timeSheetInformationsMap.put(key, tabInformations);
-				}
-			}else{
-				key = String.valueOf(timesheetLine.getId());
-				timeSheetInformationsMap.put(key, tabInformations);
-			}
+    return null;
+  }
 
-			timesheetLine.setInvoiced(true);
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validate(Timesheet timesheet) throws AxelorException {
 
-		}
+    timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
+    timesheet.setValidatedBy(AuthUtils.getUser());
+    timesheet.setValidationDate(generalService.getTodayDate());
+  }
 
-		for(Object[] timesheetInformations : timeSheetInformationsMap.values())  {
+  public Message sendValidationEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
 
-			String strDate = null;
-			Product product = (Product)timesheetInformations[0];
-			User user = (User)timesheetInformations[1];
-			LocalDate startDate = (LocalDate)timesheetInformations[2];
-			LocalDate endDate = (LocalDate)timesheetInformations[3];
-			BigDecimal durationStored = (BigDecimal) timesheetInformations[4];
+    HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
-			if (consolidate){
-				strDate = ddmmFormat.format(startDate.toDate()) + " - " + ddmmFormat.format(endDate.toDate());
-			}else{
-				strDate = ddmmFormat.format(startDate.toDate());
-			}
+    if (hrConfig.getTimesheetMailNotification()) {
+      return templateMessageService.generateAndSendMessage(
+          timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
+    }
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, product, user, strDate, durationStored, priority*100+count));
-			count++;
-		}
+    return null;
+  }
 
-		return invoiceLineList;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void refuse(Timesheet timesheet) throws AxelorException {
 
-	}
+    timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
+    timesheet.setRefusedBy(AuthUtils.getUser());
+    timesheet.setRefusalDate(generalService.getTodayDate());
+  }
 
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, User user, String date, BigDecimal durationStored, int priority) throws AxelorException  {
+  public Message sendRefusalEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
 
-		int discountTypeSelect = 1;
-		if(product == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.CONFIGURATION_ERROR);
-		}
-		BigDecimal price = product.getSalePrice();
-		BigDecimal discountAmount = product.getCostPrice();
+    HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
+    if (hrConfig.getTimesheetMailNotification()) {
+      return templateMessageService.generateAndSendMessage(
+          timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
+    }
 
-		BigDecimal qtyConverted = durationStored;
-		qtyConverted = Beans.get(UnitConversionService.class).convert(generalService.getGeneral().getUnitHours(), product.getUnit(), durationStored);
+    return null;
+  }
 
-		PriceList priceList = invoice.getPartner().getSalePriceList();
-		if(priceList != null)  {
-			PriceListLine priceListLine = priceListService.getPriceListLine(product, qtyConverted, priceList);
-			if(priceListLine!=null){
-				discountTypeSelect = priceListLine.getTypeSelect();
-			}
-			if((generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY && discountTypeSelect == IPriceListLine.TYPE_REPLACE) || generalService.getGeneral().getComputeMethodDiscountSelect() == GeneralRepository.INCLUDE_DISCOUNT)
-			{
-				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-				if(discounts != null){
-					discountAmount = (BigDecimal) discounts.get("discountAmount");
-					price = priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), discountAmount);
-				}
-			}
-			else{
-				Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-				if(discounts != null){
-					discountAmount = (BigDecimal) discounts.get("discountAmount");
-					if(discounts.get("price") != null)  {
-						price = (BigDecimal) discounts.get("price");
-					}
-				}
-			}
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancel(Timesheet timesheet) {
+    timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
+  }
 
-		}
+  public Message sendCancellationEmail(Timesheet timesheet)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
 
-		String 	description = user.getFullName(),
-				productName = product.getName() + " " + "(" + date + ")";
+    HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
 
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price,
-					price, description, qtyConverted, product.getUnit(), null, priority, discountAmount, discountTypeSelect,
-					price.multiply(qtyConverted), null, false)  {
+    if (hrConfig.getTimesheetMailNotification()) {
+      return templateMessageService.generateAndSendMessage(
+          timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
+    }
 
-			@Override
-			public List<InvoiceLine> creates() throws AxelorException {
+    return null;
+  }
 
-				InvoiceLine invoiceLine = this.createInvoiceLine();
+  @Override
+  public Timesheet generateLines(
+      Timesheet timesheet,
+      LocalDate fromGenerationDate,
+      LocalDate toGenerationDate,
+      BigDecimal logTime,
+      ProjectTask projectTask,
+      Product product)
+      throws AxelorException {
 
-				List<InvoiceLine> invoiceLines = new ArrayList<>();
-				invoiceLines.add(invoiceLine);
+    User user = timesheet.getUser();
+    Employee employee = user.getEmployee();
 
-				return invoiceLines;
-			}
-		};
+    if (fromGenerationDate == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE)), IException.MISSING_FIELD);
+    }
+    if (toGenerationDate == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.TIMESHEET_TO_DATE)), IException.MISSING_FIELD);
+    }
+    if (product == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)), IException.MISSING_FIELD);
+    }
+    if (employee == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE), user.getName()),
+          IException.CONFIGURATION_ERROR);
+    }
+    WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
+    if (planning == null) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING), user.getName()),
+          IException.CONFIGURATION_ERROR);
+    }
+    List<DayPlanning> dayPlanningList = planning.getWeekDays();
 
-		return invoiceLineGenerator.creates();
-	}
+    LocalDate fromDate = fromGenerationDate;
+    LocalDate toDate = toGenerationDate;
+    Map<Integer, String> correspMap = new HashMap<>();
+    correspMap.put(1, "monday");
+    correspMap.put(2, "tuesday");
+    correspMap.put(3, "wednesday");
+    correspMap.put(4, "thursday");
+    correspMap.put(5, "friday");
+    correspMap.put(6, "saturday");
+    correspMap.put(7, "sunday");
 
-	@Override
-	@Transactional
-	public void computeTimeSpent(Timesheet timesheet){
-		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		for (TimesheetLine timesheetLine : timesheetLineList) {
-			ProjectTask projectTask = timesheetLine.getProjectTask();
-			if(projectTask != null){
-				projectTask.setTimeSpent(timesheetLine.getDurationStored().add(this.computeSubTimeSpent(projectTask)));
-				this.computeParentTimeSpent(projectTask);
-				Beans.get(ProjectTaskRepository.class).save(projectTask);
-			}
-		}
-	}
+    // Leaving list
+    List<LeaveRequest> leaveList =
+        LeaveRequestRepository.of(LeaveRequest.class)
+            .all()
+            .filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", user)
+            .fetch();
 
-	public BigDecimal computeSubTimeSpent(ProjectTask projectTask){
-		BigDecimal sum = BigDecimal.ZERO;
-		List<ProjectTask> subProjectTaskList = Beans.get(ProjectTaskRepository.class).all().filter("self.project = ?1", projectTask).fetch();
-		if(subProjectTaskList == null || subProjectTaskList.isEmpty()){
-			return projectTask.getTimeSpent();
-		}
-		for (ProjectTask projectTaskIt : subProjectTaskList) {
-			sum = sum.add(this.computeSubTimeSpent(projectTaskIt));
-		}
-		return sum;
-	}
+    // Public holidays list
+    List<EventsPlanningLine> publicHolidayList =
+        employee.getPublicHolidayEventsPlanning().getEventsPlanningLineList();
 
-	public void computeParentTimeSpent(ProjectTask projectTask){
-		ProjectTask parentProject = projectTask.getProject();
-		if(parentProject == null){
-			return;
-		}
-		parentProject.setTimeSpent(projectTask.getTimeSpent().add(this.computeTimeSpent(parentProject)));
-		this.computeParentTimeSpent(parentProject);
-	}
+    while (!fromDate.isAfter(toDate)) {
+      DayPlanning dayPlanningCurr = new DayPlanning();
+      for (DayPlanning dayPlanning : dayPlanningList) {
+        if (dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek()))) {
+          dayPlanningCurr = dayPlanning;
+          break;
+        }
+      }
+      if (dayPlanningCurr.getMorningFrom() != null
+          || dayPlanningCurr.getMorningTo() != null
+          || dayPlanningCurr.getAfternoonFrom() != null
+          || dayPlanningCurr.getAfternoonTo() != null) {
+        /*Check if the day is not a leaving day */
+        boolean noLeave = true;
+        if (leaveList != null) {
+          for (LeaveRequest leave : leaveList) {
+            if ((leave.getFromDate().isBefore(fromDate) && leave.getToDate().isAfter(fromDate))
+                || leave.getFromDate().isEqual(fromDate)
+                || leave.getToDate().isEqual(fromDate)) {
+              noLeave = false;
+              break;
+            }
+          }
+        }
 
-	public BigDecimal computeTimeSpent(ProjectTask projectTask){
-		BigDecimal sum = BigDecimal.ZERO;
-		List<TimesheetLine> timesheetLineList = Beans.get(TimesheetLineRepository.class).all().filter("self.projectTask = ?1 AND self.timesheet.statusSelect = ?2", projectTask, TimesheetRepository.STATUS_VALIDATED).fetch();
-		for (TimesheetLine timesheetLine : timesheetLineList) {
-			sum = sum.add(timesheetLine.getDurationStored());
-		}
-		return sum;
-	}
-	
-	public String computeFullName(Timesheet timesheet){
-		
-		User timesheetUser = timesheet.getUser();
-		LocalDateTime createdOn = timesheet.getCreatedOn();
-		
-  		if(timesheetUser != null && createdOn != null){
-  			return timesheetUser.getFullName() + " " + createdOn.getDayOfMonth() + "/" + createdOn.getMonthOfYear()
-  				+ "/" + timesheet.getCreatedOn().getYear() + " " + createdOn.getHourOfDay() + ":" + createdOn.getMinuteOfHour();
-  		}
-  		else if (timesheetUser != null){
-  			return timesheetUser.getFullName()+" N°"+timesheet.getId();
-  		}
-  		else{
-  			return "N°"+timesheet.getId();
-  		}
-	}
-	
-	public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet) throws AxelorException {
-		
-		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		
-		for(TimesheetLine timesheetLine : timesheetLineList)  {
-			
-			timesheetLine.setVisibleDuration(employeeService.getUserDuration(timesheetLine.getDurationStored(), timesheet.getUser(), false));
-			
-		}
-		
-		timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);
-		
-		return timesheetLineList;
-	}
-	
-	
-	public void validToDate(Timesheet timesheet) throws AxelorException  {
-		
-		List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-		List<Integer> listId = new ArrayList<>();
-		int count = 0;
-		
-		if(timesheet.getFromDate() == null){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE)), IException.MISSING_FIELD);
-		}
-		else if(timesheet.getToDate() != null){
-			if(timesheetLineList != null && !timesheetLineList.isEmpty()){
-				for (TimesheetLine timesheetLine : timesheetLineList) {
-					count++;
-					if(timesheetLine.getDate().isAfter(timesheet.getToDate())){
-						listId.add(count);
-					}
-					else if(timesheetLine.getDate().isBefore(timesheet.getFromDate())){
-						listId.add(count);
-					}
-				}
-			}
-		}
-		else{
-			if(timesheetLineList != null && !timesheetLineList.isEmpty()){
-				for (TimesheetLine timesheetLine : timesheetLineList) {
-					count++;
-					if(timesheetLine.getDate().isBefore(timesheet.getFromDate())){
-						listId.add(count);
-					}
-				}
-			}
-		}
-		if(!listId.isEmpty()){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT), Joiner.on(",").join(listId)), IException.FUNCTIONNAL);
+        /*Check if the day is not a public holiday */
+        boolean noPublicHoliday = true;
+        if (publicHolidayList != null) {
+          for (EventsPlanningLine publicHoliday : publicHolidayList) {
+            if (publicHoliday.getDate().isEqual(fromDate)) {
+              noPublicHoliday = false;
+              break;
+            }
+          }
+        }
 
-		}
-	}
+        if (noLeave && noPublicHoliday) {
+          TimesheetLine timesheetLine =
+              createTimesheetLine(
+                  projectTask,
+                  product,
+                  user,
+                  fromDate,
+                  timesheet,
+                  employeeService.getUserDuration(logTime, user, true),
+                  "");
+          timesheetLine.setVisibleDuration(logTime);
+        }
+      }
+      fromDate = fromDate.plusDays(1);
+    }
+    return timesheet;
+  }
 
-	@Override
-	public BigDecimal computePeriodTotal(Timesheet timesheet) {
-		BigDecimal periodTotal = BigDecimal.ZERO;
+  @Override
+  public LocalDate getFromPeriodDate() {
+    Timesheet timesheet =
+        Beans.get(TimesheetRepository.class)
+            .all()
+            .filter("self.user = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser())
+            .fetchOne();
+    if (timesheet != null) {
+      return timesheet.getToDate();
+    } else {
+      return null;
+    }
+  }
 
-		List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+  public Timesheet getCurrentTimesheet() {
+    Timesheet timesheet =
+        Beans.get(TimesheetRepository.class)
+            .all()
+            .filter(
+                "self.statusSelect = ?1 AND self.user.id = ?2",
+                TimesheetRepository.STATUS_DRAFT,
+                AuthUtils.getUser().getId())
+            .order("-id")
+            .fetchOne();
+    if (timesheet != null) {
+      return timesheet;
+    } else {
+      return null;
+    }
+  }
 
-		if (timesheetLines != null) {
-			for (TimesheetLine timesheetLine : timesheetLines) {
-				periodTotal = periodTotal.add(timesheetLine.getDurationStored());
-			}
-		}
+  public Timesheet getCurrentOrCreateTimesheet() {
+    Timesheet timesheet = getCurrentTimesheet();
+    if (timesheet == null)
+      timesheet =
+          createTimesheet(
+              AuthUtils.getUser(), generalService.getTodayDateTime().toLocalDate(), null);
+    return timesheet;
+  }
 
-		return periodTotal;
-	}
+  public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate) {
+    Timesheet timesheet = new Timesheet();
 
-	@Override
-	public String getPeriodTotalConvertTitleByUserPref(User user) {
-		String title;
-		if (user.getEmployee() != null) {
-			if (user.getEmployee().getTimeLoggingPreferenceSelect() != null) {
-				title = user.getEmployee().getTimeLoggingPreferenceSelect().equals("days") ? I18n.get("Days") : user.getEmployee().getTimeLoggingPreferenceSelect().equals("minutes") ? I18n.get("Minutes") : I18n.get("Hours");
-				return title;
-			}
-		}
-		return null;
-	}
+    timesheet.setUser(user);
+    Company company = null;
+    if (user.getEmployee() != null && user.getEmployee().getMainEmploymentContract() != null) {
+      company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+    }
+    timesheet.setCompany(company);
+    timesheet.setFromDate(fromDate);
+    timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+    timesheet.setFullName(computeFullName(timesheet));
+
+    return timesheet;
+  }
+
+  public TimesheetLine createTimesheetLine(
+      ProjectTask project,
+      Product product,
+      User user,
+      LocalDate date,
+      Timesheet timesheet,
+      BigDecimal hours,
+      String comments) {
+    TimesheetLine timesheetLine = new TimesheetLine();
+
+    timesheetLine.setDate(date);
+    timesheetLine.setComments(comments);
+    timesheetLine.setProduct(product);
+    timesheetLine.setProjectTask(project);
+    timesheetLine.setUser(user);
+    timesheetLine.setDurationStored(hours);
+    timesheet.addTimesheetLineListItem(timesheetLine);
+
+    return timesheetLine;
+  }
+
+  public List<InvoiceLine> createInvoiceLines(
+      Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException {
+
+    List<InvoiceLine> invoiceLineList = new ArrayList<>();
+    int count = 0;
+    DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
+    HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<>();
+    // Check if a consolidation by product and user must be done
+    boolean consolidate = generalService.getGeneral().getConsolidateTSLine();
+
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+      Object[] tabInformations = new Object[5];
+      tabInformations[0] = timesheetLine.getProduct();
+      tabInformations[1] = timesheetLine.getUser();
+      // Start date
+      tabInformations[2] = timesheetLine.getDate();
+      // End date, useful only for consolidation
+      tabInformations[3] = timesheetLine.getDate();
+      tabInformations[4] = timesheetLine.getDurationStored();
+
+      String key = null;
+      if (consolidate) {
+        key = timesheetLine.getProduct().getId() + "|" + timesheetLine.getUser().getId();
+        if (timeSheetInformationsMap.containsKey(key)) {
+          tabInformations = timeSheetInformationsMap.get(key);
+          // Update date
+          if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[2]) < 0) {
+            // If date is lower than start date then replace start date by this one
+            tabInformations[2] = timesheetLine.getDate();
+          } else if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[3]) > 0) {
+            // If date is upper than end date then replace end date by this one
+            tabInformations[3] = timesheetLine.getDate();
+          }
+          tabInformations[4] =
+              ((BigDecimal) tabInformations[4]).add(timesheetLine.getDurationStored());
+        } else {
+          timeSheetInformationsMap.put(key, tabInformations);
+        }
+      } else {
+        key = String.valueOf(timesheetLine.getId());
+        timeSheetInformationsMap.put(key, tabInformations);
+      }
+
+      timesheetLine.setInvoiced(true);
+    }
+
+    for (Object[] timesheetInformations : timeSheetInformationsMap.values()) {
+
+      String strDate = null;
+      Product product = (Product) timesheetInformations[0];
+      User user = (User) timesheetInformations[1];
+      LocalDate startDate = (LocalDate) timesheetInformations[2];
+      LocalDate endDate = (LocalDate) timesheetInformations[3];
+      BigDecimal durationStored = (BigDecimal) timesheetInformations[4];
+
+      if (consolidate) {
+        strDate =
+            ddmmFormat.format(startDate.toDate()) + " - " + ddmmFormat.format(endDate.toDate());
+      } else {
+        strDate = ddmmFormat.format(startDate.toDate());
+      }
+
+      invoiceLineList.addAll(
+          this.createInvoiceLine(
+              invoice, product, user, strDate, durationStored, priority * 100 + count));
+      count++;
+    }
+
+    return invoiceLineList;
+  }
+
+  public List<InvoiceLine> createInvoiceLine(
+      Invoice invoice,
+      Product product,
+      User user,
+      String date,
+      BigDecimal durationStored,
+      int priority)
+      throws AxelorException {
+
+    int discountTypeSelect = 1;
+    if (product == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.TIMESHEET_PRODUCT)),
+          IException.CONFIGURATION_ERROR);
+    }
+    BigDecimal price = product.getSalePrice();
+    BigDecimal discountAmount = product.getCostPrice();
+
+    BigDecimal qtyConverted = durationStored;
+    qtyConverted =
+        Beans.get(UnitConversionService.class)
+            .convert(generalService.getGeneral().getUnitHours(), product.getUnit(), durationStored);
+
+    PriceList priceList = invoice.getPartner().getSalePriceList();
+    if (priceList != null) {
+      PriceListLine priceListLine =
+          priceListService.getPriceListLine(product, qtyConverted, priceList);
+      if (priceListLine != null) {
+        discountTypeSelect = priceListLine.getTypeSelect();
+      }
+      if ((generalService.getGeneral().getComputeMethodDiscountSelect()
+                  == GeneralRepository.INCLUDE_DISCOUNT_REPLACE_ONLY
+              && discountTypeSelect == IPriceListLine.TYPE_REPLACE)
+          || generalService.getGeneral().getComputeMethodDiscountSelect()
+              == GeneralRepository.INCLUDE_DISCOUNT) {
+        Map<String, Object> discounts =
+            priceListService.getDiscounts(priceList, priceListLine, price);
+        if (discounts != null) {
+          discountAmount = (BigDecimal) discounts.get("discountAmount");
+          price =
+              priceListService.computeDiscount(
+                  price, (int) discounts.get("discountTypeSelect"), discountAmount);
+        }
+      } else {
+        Map<String, Object> discounts =
+            priceListService.getDiscounts(priceList, priceListLine, price);
+        if (discounts != null) {
+          discountAmount = (BigDecimal) discounts.get("discountAmount");
+          if (discounts.get("price") != null) {
+            price = (BigDecimal) discounts.get("price");
+          }
+        }
+      }
+    }
+
+    String description = user.getFullName(),
+        productName = product.getName() + " " + "(" + date + ")";
+
+    InvoiceLineGenerator invoiceLineGenerator =
+        new InvoiceLineGenerator(
+            invoice,
+            product,
+            productName,
+            price,
+            price,
+            description,
+            qtyConverted,
+            product.getUnit(),
+            null,
+            priority,
+            discountAmount,
+            discountTypeSelect,
+            price.multiply(qtyConverted),
+            null,
+            false) {
+
+          @Override
+          public List<InvoiceLine> creates() throws AxelorException {
+
+            InvoiceLine invoiceLine = this.createInvoiceLine();
+
+            List<InvoiceLine> invoiceLines = new ArrayList<>();
+            invoiceLines.add(invoiceLine);
+
+            return invoiceLines;
+          }
+        };
+
+    return invoiceLineGenerator.creates();
+  }
+
+  @Override
+  @Transactional
+  public void computeTimeSpent(Timesheet timesheet) {
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+      ProjectTask projectTask = timesheetLine.getProjectTask();
+      if (projectTask != null) {
+        projectTask.setTimeSpent(
+            timesheetLine.getDurationStored().add(this.computeSubTimeSpent(projectTask)));
+        this.computeParentTimeSpent(projectTask);
+        Beans.get(ProjectTaskRepository.class).save(projectTask);
+      }
+    }
+  }
+
+  public BigDecimal computeSubTimeSpent(ProjectTask projectTask) {
+    BigDecimal sum = BigDecimal.ZERO;
+    List<ProjectTask> subProjectTaskList =
+        Beans.get(ProjectTaskRepository.class)
+            .all()
+            .filter("self.project = ?1", projectTask)
+            .fetch();
+    if (subProjectTaskList == null || subProjectTaskList.isEmpty()) {
+      return projectTask.getTimeSpent();
+    }
+    for (ProjectTask projectTaskIt : subProjectTaskList) {
+      sum = sum.add(this.computeSubTimeSpent(projectTaskIt));
+    }
+    return sum;
+  }
+
+  public void computeParentTimeSpent(ProjectTask projectTask) {
+    ProjectTask parentProject = projectTask.getProject();
+    if (parentProject == null) {
+      return;
+    }
+    parentProject.setTimeSpent(
+        projectTask.getTimeSpent().add(this.computeTimeSpent(parentProject)));
+    this.computeParentTimeSpent(parentProject);
+  }
+
+  public BigDecimal computeTimeSpent(ProjectTask projectTask) {
+    BigDecimal sum = BigDecimal.ZERO;
+    List<TimesheetLine> timesheetLineList =
+        Beans.get(TimesheetLineRepository.class)
+            .all()
+            .filter(
+                "self.projectTask = ?1 AND self.timesheet.statusSelect = ?2",
+                projectTask,
+                TimesheetRepository.STATUS_VALIDATED)
+            .fetch();
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+      sum = sum.add(timesheetLine.getDurationStored());
+    }
+    return sum;
+  }
+
+  public String computeFullName(Timesheet timesheet) {
+
+    User timesheetUser = timesheet.getUser();
+    LocalDateTime createdOn = timesheet.getCreatedOn();
+
+    if (timesheetUser != null && createdOn != null) {
+      return timesheetUser.getFullName()
+          + " "
+          + createdOn.getDayOfMonth()
+          + "/"
+          + createdOn.getMonthOfYear()
+          + "/"
+          + timesheet.getCreatedOn().getYear()
+          + " "
+          + createdOn.getHourOfDay()
+          + ":"
+          + createdOn.getMinuteOfHour();
+    } else if (timesheetUser != null) {
+      return timesheetUser.getFullName() + " N°" + timesheet.getId();
+    } else {
+      return "N°" + timesheet.getId();
+    }
+  }
+
+  public List<TimesheetLine> computeVisibleDuration(Timesheet timesheet) throws AxelorException {
+
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+
+      timesheetLine.setVisibleDuration(
+          employeeService.getUserDuration(
+              timesheetLine.getDurationStored(), timesheet.getUser(), false));
+    }
+
+    timesheetLineList = projectTaskService._sortTimesheetLineByDate(timesheetLineList);
+
+    return timesheetLineList;
+  }
+
+  public void validToDate(Timesheet timesheet) throws AxelorException {
+
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+    List<Integer> listId = new ArrayList<>();
+    int count = 0;
+
+    if (timesheet.getFromDate() == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE)),
+          IException.MISSING_FIELD);
+    } else if (timesheet.getToDate() != null) {
+      if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
+        for (TimesheetLine timesheetLine : timesheetLineList) {
+          count++;
+          if (timesheetLine.getDate().isAfter(timesheet.getToDate())) {
+            listId.add(count);
+          } else if (timesheetLine.getDate().isBefore(timesheet.getFromDate())) {
+            listId.add(count);
+          }
+        }
+      }
+    } else {
+      if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
+        for (TimesheetLine timesheetLine : timesheetLineList) {
+          count++;
+          if (timesheetLine.getDate().isBefore(timesheet.getFromDate())) {
+            listId.add(count);
+          }
+        }
+      }
+    }
+    if (!listId.isEmpty()) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT), Joiner.on(",").join(listId)),
+          IException.FUNCTIONNAL);
+    }
+  }
+
+  @Override
+  public BigDecimal computePeriodTotal(Timesheet timesheet) {
+    BigDecimal periodTotal = BigDecimal.ZERO;
+
+    List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+
+    if (timesheetLines != null) {
+      for (TimesheetLine timesheetLine : timesheetLines) {
+        periodTotal = periodTotal.add(timesheetLine.getDurationStored());
+      }
+    }
+
+    return periodTotal;
+  }
+
+  @Override
+  public String getPeriodTotalConvertTitleByUserPref(User user) {
+    String title;
+    if (user.getEmployee() != null) {
+      if (user.getEmployee().getTimeLoggingPreferenceSelect() != null) {
+        title =
+            user.getEmployee().getTimeLoggingPreferenceSelect().equals("days")
+                ? I18n.get("Days")
+                : user.getEmployee().getTimeLoggingPreferenceSelect().equals("minutes")
+                    ? I18n.get("Minutes")
+                    : I18n.get("Hours");
+        return title;
+      }
+    }
+    return null;
+  }
 }
-
-

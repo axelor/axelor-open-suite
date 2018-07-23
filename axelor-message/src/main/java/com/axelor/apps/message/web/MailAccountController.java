@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,42 +27,41 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class MailAccountController {
-	
-	@Inject
-	MailAccountService mailAccountService;
-	
-	public void validateSmtpAccount(ActionRequest request,ActionResponse response){
-		MailAccount account = request.getContext().asType(MailAccount.class);
-		
-		try {
-			
-			mailAccountService.checkMailAccountConfiguration(account);
 
-			response.setValue("isValid", Boolean.TRUE );
-			response.setFlash( I18n.get(IExceptionMessage.MAIL_ACCOUNT_3) );
-			
-		} catch ( Exception e) {
-			
-			TraceBackService.trace(response, e);
-			response.setValue("isValid",Boolean.FALSE);
-			
-		}
-		
-	}
-	
-	public void checkDefaultMailAccount(ActionRequest request, ActionResponse response){
-		MailAccount account = request.getContext().asType(MailAccount.class);
-		
-		if(!mailAccountService.checkDefaultMailAccount(account)){
-			response.setError(I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
-			response.setValue("isDefault", false);
-		}
-	}
-	
-	public void validate(ActionRequest request, ActionResponse response) {
-		
-		if (request.getContext().get("newPassword") != null)
-			response.setValue("password", mailAccountService.getEncryptPassword(request.getContext().get("newPassword").toString()));
-	}
+  @Inject MailAccountService mailAccountService;
 
+  public void validateSmtpAccount(ActionRequest request, ActionResponse response) {
+    MailAccount account = request.getContext().asType(MailAccount.class);
+
+    try {
+
+      mailAccountService.checkMailAccountConfiguration(account);
+
+      response.setValue("isValid", Boolean.TRUE);
+      response.setFlash(I18n.get(IExceptionMessage.MAIL_ACCOUNT_3));
+
+    } catch (Exception e) {
+
+      TraceBackService.trace(response, e);
+      response.setValue("isValid", Boolean.FALSE);
+    }
+  }
+
+  public void checkDefaultMailAccount(ActionRequest request, ActionResponse response) {
+    MailAccount account = request.getContext().asType(MailAccount.class);
+
+    if (!mailAccountService.checkDefaultMailAccount(account)) {
+      response.setError(I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
+      response.setValue("isDefault", false);
+    }
+  }
+
+  public void validate(ActionRequest request, ActionResponse response) {
+
+    if (request.getContext().get("newPassword") != null)
+      response.setValue(
+          "password",
+          mailAccountService.getEncryptPassword(
+              request.getContext().get("newPassword").toString()));
+  }
 }

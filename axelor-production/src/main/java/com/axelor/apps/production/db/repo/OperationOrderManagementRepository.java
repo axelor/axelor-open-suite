@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,38 +17,35 @@
  */
 package com.axelor.apps.production.db.repo;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
-
+import java.io.IOException;
+import java.io.InputStream;
 
 public class OperationOrderManagementRepository extends OperationOrderRepository {
-	
-	@Inject
-	private MetaFiles metaFiles;
-	
-	@Override
-	public OperationOrder save(OperationOrder entity){
-		
-		if(entity.getBarCode() == null) {
-			entity = super.save(entity);
-			try {
-				InputStream inStream = BarcodeGeneratorService.createBarCode(entity.getId());
-				if (inStream != null) {
-			    	MetaFile barcodeFile =  metaFiles.upload(inStream, String.format("OppOrderBarcode%d.png", entity.getId()));
-			    	entity.setBarCode(barcodeFile);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	    	
-		}
-		
-		return super.save(entity);
-	}
+
+  @Inject private MetaFiles metaFiles;
+
+  @Override
+  public OperationOrder save(OperationOrder entity) {
+
+    if (entity.getBarCode() == null) {
+      entity = super.save(entity);
+      try {
+        InputStream inStream = BarcodeGeneratorService.createBarCode(entity.getId());
+        if (inStream != null) {
+          MetaFile barcodeFile =
+              metaFiles.upload(inStream, String.format("OppOrderBarcode%d.png", entity.getId()));
+          entity.setBarCode(barcodeFile);
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return super.save(entity);
+  }
 }

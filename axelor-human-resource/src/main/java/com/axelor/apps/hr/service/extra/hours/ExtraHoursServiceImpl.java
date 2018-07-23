@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.hr.service.extra.hours;
 
-import java.io.IOException;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.HRConfig;
@@ -32,121 +28,122 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import javax.mail.MessagingException;
 
-public class ExtraHoursServiceImpl implements ExtraHoursService  {
-	
-	protected ExtraHoursRepository extraHoursRepo;
-	protected GeneralService generalService;
-	protected HRConfigService hrConfigService;
-	protected TemplateMessageService templateMessageService;
-	
-	@Inject
-	public ExtraHoursServiceImpl(ExtraHoursRepository extraHoursRepo, GeneralService generalService,
-			HRConfigService hrConfigService, TemplateMessageService templateMessageService)  {
-		
-		this.extraHoursRepo = extraHoursRepo;
-		this.generalService = generalService;
-		this.hrConfigService = hrConfigService;
-		this.templateMessageService = templateMessageService;
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(ExtraHours extraHours) throws AxelorException {
-		
-		extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CANCELED);
-		extraHoursRepo.save(extraHours);
-	}
-	
-	public Message sendCancellationEmail(ExtraHours extraHours) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
+public class ExtraHoursServiceImpl implements ExtraHoursService {
 
-		HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
+  protected ExtraHoursRepository extraHoursRepo;
+  protected GeneralService generalService;
+  protected HRConfigService hrConfigService;
+  protected TemplateMessageService templateMessageService;
 
-		if(hrConfig.getTimesheetMailNotification())  {
+  @Inject
+  public ExtraHoursServiceImpl(
+      ExtraHoursRepository extraHoursRepo,
+      GeneralService generalService,
+      HRConfigService hrConfigService,
+      TemplateMessageService templateMessageService) {
 
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getCanceledExtraHoursTemplate(hrConfig));
+    this.extraHoursRepo = extraHoursRepo;
+    this.generalService = generalService;
+    this.hrConfigService = hrConfigService;
+    this.templateMessageService = templateMessageService;
+  }
 
-		}
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void cancel(ExtraHours extraHours) throws AxelorException {
 
-		return null;
+    extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CANCELED);
+    extraHoursRepo.save(extraHours);
+  }
 
-	}
+  public Message sendCancellationEmail(ExtraHours extraHours)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
 
+    HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void confirm(ExtraHours extraHours) throws AxelorException  {
-				
-		extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CONFIRMED);
-		extraHours.setSentDate(generalService.getTodayDate()); 
-		
-		extraHoursRepo.save(extraHours);
-		
-	}
+    if (hrConfig.getTimesheetMailNotification()) {
 
-	
-	public Message sendConfirmationEmail(ExtraHours extraHours) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
-		
-		HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
-		
-		if(hrConfig.getExtraHoursMailNotification())  {
-				
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getSentExtraHoursTemplate(hrConfig));
-				
-		}
-		
-		return null;
-		
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(ExtraHours extraHours) throws AxelorException  {
-		
-		extraHours.setStatusSelect(ExtraHoursRepository.STATUS_VALIDATED);
-		extraHours.setValidatedBy(AuthUtils.getUser());
-		extraHours.setValidationDate(generalService.getTodayDate());
-		
-		extraHoursRepo.save(extraHours);
-		
-	}
-	
-	
-	public Message sendValidationEmail(ExtraHours extraHours) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
-		
-		HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
-		
-		if(hrConfig.getExtraHoursMailNotification())  {
-				
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getValidatedExtraHoursTemplate(hrConfig));
-				
-		}
-		
-		return null;
-		
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void refuse(ExtraHours extraHours) throws AxelorException  {
-		
-		extraHours.setStatusSelect(ExtraHoursRepository.STATUS_REFUSED);
-		extraHours.setRefusedBy(AuthUtils.getUser());
-		extraHours.setRefusalDate(generalService.getTodayDate());
-		
-		extraHoursRepo.save(extraHours);
-		
-	}
-	
-	public Message sendRefusalEmail(ExtraHours extraHours) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, MessagingException, IOException  {
-		
-		HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
-		
-		if(hrConfig.getExtraHoursMailNotification())  {
-				
-			return templateMessageService.generateAndSendMessage(extraHours, hrConfigService.getRefusedExtraHoursTemplate(hrConfig));
-				
-		}
-		
-		return null;
-		
-	}
+      return templateMessageService.generateAndSendMessage(
+          extraHours, hrConfigService.getCanceledExtraHoursTemplate(hrConfig));
+    }
+
+    return null;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void confirm(ExtraHours extraHours) throws AxelorException {
+
+    extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CONFIRMED);
+    extraHours.setSentDate(generalService.getTodayDate());
+
+    extraHoursRepo.save(extraHours);
+  }
+
+  public Message sendConfirmationEmail(ExtraHours extraHours)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
+
+    HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
+
+    if (hrConfig.getExtraHoursMailNotification()) {
+
+      return templateMessageService.generateAndSendMessage(
+          extraHours, hrConfigService.getSentExtraHoursTemplate(hrConfig));
+    }
+
+    return null;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validate(ExtraHours extraHours) throws AxelorException {
+
+    extraHours.setStatusSelect(ExtraHoursRepository.STATUS_VALIDATED);
+    extraHours.setValidatedBy(AuthUtils.getUser());
+    extraHours.setValidationDate(generalService.getTodayDate());
+
+    extraHoursRepo.save(extraHours);
+  }
+
+  public Message sendValidationEmail(ExtraHours extraHours)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
+
+    HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
+
+    if (hrConfig.getExtraHoursMailNotification()) {
+
+      return templateMessageService.generateAndSendMessage(
+          extraHours, hrConfigService.getValidatedExtraHoursTemplate(hrConfig));
+    }
+
+    return null;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void refuse(ExtraHours extraHours) throws AxelorException {
+
+    extraHours.setStatusSelect(ExtraHoursRepository.STATUS_REFUSED);
+    extraHours.setRefusedBy(AuthUtils.getUser());
+    extraHours.setRefusalDate(generalService.getTodayDate());
+
+    extraHoursRepo.save(extraHours);
+  }
+
+  public Message sendRefusalEmail(ExtraHours extraHours)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
+
+    HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
+
+    if (hrConfig.getExtraHoursMailNotification()) {
+
+      return templateMessageService.generateAndSendMessage(
+          extraHours, hrConfigService.getRefusedExtraHoursTemplate(hrConfig));
+    }
+
+    return null;
+  }
 }

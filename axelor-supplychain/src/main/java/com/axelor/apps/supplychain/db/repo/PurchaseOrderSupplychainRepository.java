@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,16 +23,12 @@ import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.google.inject.Inject;
 
 public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementRepository {
-	
-	@Inject
-	protected PurchaseOrderServiceSupplychainImpl purchaseOrderService;
-	
-	
-	@Override
-	public PurchaseOrder save(PurchaseOrder purchaseOrder) {
-		purchaseOrderService.generateBudgetDistribution(purchaseOrder);
-		return super.save(purchaseOrder);
-		
-	}
-		
+
+  @Inject protected PurchaseOrderServiceSupplychainImpl purchaseOrderService;
+
+  @Override
+  public PurchaseOrder save(PurchaseOrder purchaseOrder) {
+    purchaseOrderService.generateBudgetDistribution(purchaseOrder);
+    return super.save(purchaseOrder);
+  }
 }

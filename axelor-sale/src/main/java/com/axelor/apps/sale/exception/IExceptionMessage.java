@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,24 +19,20 @@ package com.axelor.apps.sale.exception;
 
 /**
  * Interface of Exceptions.
- * 
+ *
  * @author dubaux
- * 
  */
 public interface IExceptionMessage {
 
-	/**
-	 * Sales Order Stock Move Service
-	 */
-	static final String SALES_ORDER_STOCK_MOVE_1 = /*$$(*/ "Invoice by delivery impose that all sale order lines must have service or stockable product with provision from stock" /*)*/ ;
-	
-	/**
-	 * Sales Order Service Impl
-	 */
-	static final String SALES_ORDER_1 = /*$$(*/ "The company %s doesn't have any configured sequence for sale orders" /*)*/ ;
-	
-	/**
-	 * Sale Config Service
-	 */
-	static final String SALE_CONFIG_1 = /*$$(*/ "%s : You must configure Sales module for company %s" /*)*/ ;
+  /** Sales Order Stock Move Service */
+  static final String SALES_ORDER_STOCK_MOVE_1 = /*$$(*/
+      "Invoice by delivery impose that all sale order lines must have service or stockable product with provision from stock" /*)*/;
+
+  /** Sales Order Service Impl */
+  static final String SALES_ORDER_1 = /*$$(*/
+      "The company %s doesn't have any configured sequence for sale orders" /*)*/;
+
+  /** Sale Config Service */
+  static final String SALE_CONFIG_1 = /*$$(*/
+      "%s : You must configure Sales module for company %s" /*)*/;
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,16 +17,14 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Duration;
 import java.math.BigDecimal;
-
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.base.db.Duration;
-
 public interface DurationService {
-	
-	
-	public LocalDate computeDuration(Duration duration, LocalDate date);
-	public BigDecimal computeDurationInDays(DateTime startDate, DateTime endDate);
+
+  public LocalDate computeDuration(Duration duration, LocalDate date);
+
+  public BigDecimal computeDurationInDays(DateTime startDate, DateTime endDate);
 }

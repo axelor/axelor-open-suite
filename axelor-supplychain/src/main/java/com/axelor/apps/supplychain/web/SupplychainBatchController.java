@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,23 +26,22 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class SupplychainBatchController {
-	
-	@Inject 
-	protected SupplychainBatchService supplychainBatchService;
-	
-	@Inject
-	protected SupplychainBatchRepository supplychainBatchRepo;
-	
-	public void billSubscriptions(ActionRequest request, ActionResponse response){
-		
-		SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
-		
-		Batch batch = null;
-		
-		batch = supplychainBatchService.billSubscriptions(supplychainBatchRepo.find(supplychainBatch.getId()));
-		
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+
+  @Inject protected SupplychainBatchService supplychainBatchService;
+
+  @Inject protected SupplychainBatchRepository supplychainBatchRepo;
+
+  public void billSubscriptions(ActionRequest request, ActionResponse response) {
+
+    SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+
+    Batch batch = null;
+
+    batch =
+        supplychainBatchService.billSubscriptions(
+            supplychainBatchRepo.find(supplychainBatch.getId()));
+
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 }

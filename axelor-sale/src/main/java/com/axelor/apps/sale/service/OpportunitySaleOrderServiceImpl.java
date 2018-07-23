@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,34 +26,39 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService  {
+public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService {
 
-	@Inject
-	protected SaleOrderServiceImpl saleOrderService;
-	
-	@Inject
-	protected SaleOrderRepository saleOrderRepo;
+  @Inject protected SaleOrderServiceImpl saleOrderService;
 
-	@Inject
-	protected GeneralService generalService;
+  @Inject protected SaleOrderRepository saleOrderRepo;
 
-	@Inject
-	protected OpportunityRepository opportunityRepository;
+  @Inject protected GeneralService generalService;
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException  {
+  @Inject protected OpportunityRepository opportunityRepository;
 
-		SaleOrder saleOrder = saleOrderService.createSaleOrder(opportunity.getUser(), opportunity.getCompany(), null, opportunity.getCurrency(), null, opportunity.getName(), null,
-				generalService.getTodayDate(), opportunity.getPartner().getSalePriceList(), opportunity.getPartner(), opportunity.getTeam());
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException {
 
-		saleOrderRepo.save(saleOrder);
+    SaleOrder saleOrder =
+        saleOrderService.createSaleOrder(
+            opportunity.getUser(),
+            opportunity.getCompany(),
+            null,
+            opportunity.getCurrency(),
+            null,
+            opportunity.getName(),
+            null,
+            generalService.getTodayDate(),
+            opportunity.getPartner().getSalePriceList(),
+            opportunity.getPartner(),
+            opportunity.getTeam());
 
-		opportunity.setSaleOrder(saleOrder);
-		opportunityRepository.save(opportunity);
+    saleOrderRepo.save(saleOrder);
 
-		return saleOrder;
-	}
+    opportunity.setSaleOrder(saleOrder);
+    opportunityRepository.save(opportunity);
 
-
+    return saleOrder;
+  }
 }

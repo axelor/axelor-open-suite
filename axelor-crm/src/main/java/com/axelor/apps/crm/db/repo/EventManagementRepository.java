@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.crm.db.repo;
 
-import java.util.List;
-
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
@@ -36,95 +34,94 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.util.List;
 
 public class EventManagementRepository extends EventRepository {
-	
-	@Inject
-	protected CalendarService calendarService;
 
-	@Override
-	public Event copy(Event entity, boolean deep) {
-		int eventType=entity.getTypeSelect();
-		switch(eventType){
-			case 1: //call
-			case 2: //metting
-				break;
-			case 3: //task s
-				entity.setStatusSelect(IEvent.STATUS_NOT_STARTED);
-				break;
-			case 5: //tickets
-				entity.setStatusSelect(IEvent.STATUS_NEW);
-				entity.setProgressSelect(0);
-				break;
+  @Inject protected CalendarService calendarService;
 
-		}
-		return super.copy(entity, deep);
-	}
-	
-	@Override
-	public Event save(Event entity){
-		if(entity.getTypeSelect() == EventRepository.TYPE_MEETING){
-			super.save(entity);
-			Beans.get(EventService.class).manageFollowers(entity);
-		}
-		User creator = entity.getCreatedBy();
-		if(creator == null){
-			creator = AuthUtils.getUser();
-		}
-		if(entity.getOrganizer() == null && creator != null){
-			if(creator.getPartner() != null && creator.getPartner().getEmailAddress() != null){
-				String email = creator.getPartner().getEmailAddress().getAddress();
-				if(!Strings.isNullOrEmpty(email)){
-					ICalendarUser organizer = Beans.get(ICalendarUserRepository.class).all().filter("self.email = ?1 AND self.user.id = ?2",email, creator.getId()).fetchOne();
-					if(organizer == null){
-						organizer = new ICalendarUser();
-						organizer.setEmail(email);
-						organizer.setName(creator.getFullName());
-						organizer.setUser(creator);
-					}
-					entity.setOrganizer(organizer);
-				}
-			}
-		}
-		
-		
-		entity.setSubjectTeam(entity.getSubject());
-		if(entity.getVisibilitySelect() == ICalendarEventRepository.VISIBILITY_PRIVATE){
-			entity.setSubjectTeam(I18n.get("Available"));
-			if(entity.getDisponibilitySelect() == ICalendarEventRepository.DISPONIBILITY_BUSY){
-				entity.setSubjectTeam(I18n.get("Busy"));
-			}
-		}
-		
-		return super.save(entity);
-	}
-	
-	
-	@Override
-	public void remove(Event entity){
-		try{
-			User user = AuthUtils.getUser();
-			List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
-			if(calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendarCrm().getId())){
-				throw new AxelorException(I18n.get("You don't have the rights to delete this event"), IException.CONFIGURATION_ERROR);
-			}
-		
-			calendarService.removeEventFromIcal(entity);
-		}
-		catch(Exception e){
-			TraceBackService.trace(e);
-		}
-		Calendar calendar = entity.getCalendarCrm();
-		super.remove(entity);
-		if(calendar != null){
-			try{
-				calendarService.sync(calendar);
-			}
-			catch(Exception e){
-				TraceBackService.trace(e);
-			}
-		}
-		
-	}
+  @Override
+  public Event copy(Event entity, boolean deep) {
+    int eventType = entity.getTypeSelect();
+    switch (eventType) {
+      case 1: // call
+      case 2: // metting
+        break;
+      case 3: // task s
+        entity.setStatusSelect(IEvent.STATUS_NOT_STARTED);
+        break;
+      case 5: // tickets
+        entity.setStatusSelect(IEvent.STATUS_NEW);
+        entity.setProgressSelect(0);
+        break;
+    }
+    return super.copy(entity, deep);
+  }
 
+  @Override
+  public Event save(Event entity) {
+    if (entity.getTypeSelect() == EventRepository.TYPE_MEETING) {
+      super.save(entity);
+      Beans.get(EventService.class).manageFollowers(entity);
+    }
+    User creator = entity.getCreatedBy();
+    if (creator == null) {
+      creator = AuthUtils.getUser();
+    }
+    if (entity.getOrganizer() == null && creator != null) {
+      if (creator.getPartner() != null && creator.getPartner().getEmailAddress() != null) {
+        String email = creator.getPartner().getEmailAddress().getAddress();
+        if (!Strings.isNullOrEmpty(email)) {
+          ICalendarUser organizer =
+              Beans.get(ICalendarUserRepository.class)
+                  .all()
+                  .filter("self.email = ?1 AND self.user.id = ?2", email, creator.getId())
+                  .fetchOne();
+          if (organizer == null) {
+            organizer = new ICalendarUser();
+            organizer.setEmail(email);
+            organizer.setName(creator.getFullName());
+            organizer.setUser(creator);
+          }
+          entity.setOrganizer(organizer);
+        }
+      }
+    }
+
+    entity.setSubjectTeam(entity.getSubject());
+    if (entity.getVisibilitySelect() == ICalendarEventRepository.VISIBILITY_PRIVATE) {
+      entity.setSubjectTeam(I18n.get("Available"));
+      if (entity.getDisponibilitySelect() == ICalendarEventRepository.DISPONIBILITY_BUSY) {
+        entity.setSubjectTeam(I18n.get("Busy"));
+      }
+    }
+
+    return super.save(entity);
+  }
+
+  @Override
+  public void remove(Event entity) {
+    try {
+      User user = AuthUtils.getUser();
+      List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
+      if (calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendarCrm().getId())) {
+        throw new AxelorException(
+            I18n.get("You don't have the rights to delete this event"),
+            IException.CONFIGURATION_ERROR);
+      }
+
+      calendarService.removeEventFromIcal(entity);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    Calendar calendar = entity.getCalendarCrm();
+    super.remove(entity);
+    if (calendar != null) {
+      try {
+        calendarService.sync(calendar);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
+    }
+  }
 }

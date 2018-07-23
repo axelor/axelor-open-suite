@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
@@ -36,34 +33,51 @@ import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ExpenseServiceProjectImpl extends ExpenseServiceImpl  {
+public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
 
-	@Inject
-	public ExpenseServiceProjectImpl(MoveService moveService, ExpenseRepository expenseRepository, ExpenseLineRepository expenseLineRepository, MoveLineService moveLineService,
-									 AccountManagementServiceAccountImpl accountManagementService, GeneralService generalService,
-									 AccountConfigHRService accountConfigService, AnalyticMoveLineService analyticMoveLineService,
-									 HRConfigService hrConfigService, TemplateMessageService templateMessageService) {
-		
-		super(moveService, expenseRepository, expenseLineRepository, moveLineService, accountManagementService, generalService, accountConfigService, analyticMoveLineService, hrConfigService, templateMessageService);
-	
-	}
+  @Inject
+  public ExpenseServiceProjectImpl(
+      MoveService moveService,
+      ExpenseRepository expenseRepository,
+      ExpenseLineRepository expenseLineRepository,
+      MoveLineService moveLineService,
+      AccountManagementServiceAccountImpl accountManagementService,
+      GeneralService generalService,
+      AccountConfigHRService accountConfigService,
+      AnalyticMoveLineService analyticMoveLineService,
+      HRConfigService hrConfigService,
+      TemplateMessageService templateMessageService) {
 
-	@Override
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException  {
+    super(
+        moveService,
+        expenseRepository,
+        expenseLineRepository,
+        moveLineService,
+        accountManagementService,
+        generalService,
+        accountConfigService,
+        analyticMoveLineService,
+        hrConfigService,
+        templateMessageService);
+  }
 
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-		int count = 0;
-		for(ExpenseLine expenseLine : expenseLineList)  {
+  @Override
+  public List<InvoiceLine> createInvoiceLines(
+      Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException {
 
-			invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine,priority*100+count));
-			count++;
-			expenseLine.setInvoiced(true);
-			invoiceLineList.get(invoiceLineList.size()-1).setProject(expenseLine.getProjectTask());
+    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+    int count = 0;
+    for (ExpenseLine expenseLine : expenseLineList) {
 
-		}
+      invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine, priority * 100 + count));
+      count++;
+      expenseLine.setInvoiced(true);
+      invoiceLineList.get(invoiceLineList.size() - 1).setProject(expenseLine.getProjectTask());
+    }
 
-		return invoiceLineList;
-
-	}
+    return invoiceLineList;
+  }
 }

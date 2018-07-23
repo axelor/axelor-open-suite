@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -29,27 +29,28 @@ import com.google.inject.Inject;
 
 public class MessageController {
 
-	@Inject
-	private MessageRepository messageRepo;
-	
-	@Inject
-	private MessageService messageService;
-	
-	public void sendMessage(ActionRequest request, ActionResponse response) throws AxelorException {
+  @Inject private MessageRepository messageRepo;
 
-		Message message = request.getContext().asType(Message.class);
+  @Inject private MessageService messageService;
 
-		message = messageService.sendMessage( messageRepo.find( message.getId() ) );
-		
-		response.setReload(true);
-		
-		if ( message.getStatusSelect() == MessageRepository.STATUS_SENT ) {
+  public void sendMessage(ActionRequest request, ActionResponse response) throws AxelorException {
 
-			if ( message.getSentByEmail() ) { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_4 ) ); }
-			else { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_5 ) ); }
+    Message message = request.getContext().asType(Message.class);
 
-		} else  { response.setFlash( I18n.get( IExceptionMessage.MESSAGE_6 ) );	}
+    message = messageService.sendMessage(messageRepo.find(message.getId()));
 
-	}
+    response.setReload(true);
 
+    if (message.getStatusSelect() == MessageRepository.STATUS_SENT) {
+
+      if (message.getSentByEmail()) {
+        response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.MESSAGE_5));
+      }
+
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.MESSAGE_6));
+    }
+  }
 }

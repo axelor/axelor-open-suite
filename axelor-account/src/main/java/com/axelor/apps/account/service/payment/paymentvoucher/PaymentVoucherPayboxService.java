@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,38 +17,37 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public class PaymentVoucherPayboxService {
-	
-	protected PaymentVoucherRepository paymentVoucherRepository;
-	
-	@Inject
-	public PaymentVoucherPayboxService(PaymentVoucherRepository paymentVoucherRepository)  {
-		
-		this.paymentVoucherRepository = paymentVoucherRepository;
-		
-	}
-	
-	/**
-	 * Procédure permettant d'autauriser la confirmation de la saisie paiement
-	 * @param paymentVoucher
-	 * 			Une saisie paiement
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void authorizeConfirmPaymentVoucher(PaymentVoucher paymentVoucher, String bankCardTransactionNumber, String payboxAmountPaid)  {
-		
-		paymentVoucher.setPayboxPaidOk(true);
-		paymentVoucher.setBankCardTransactionNumber(bankCardTransactionNumber);
-		paymentVoucher.setPayboxAmountPaid(new BigDecimal(payboxAmountPaid).divide(new BigDecimal("100")));
-		
-		paymentVoucherRepository.save(paymentVoucher);
-	}
-	
+
+  protected PaymentVoucherRepository paymentVoucherRepository;
+
+  @Inject
+  public PaymentVoucherPayboxService(PaymentVoucherRepository paymentVoucherRepository) {
+
+    this.paymentVoucherRepository = paymentVoucherRepository;
+  }
+
+  /**
+   * Procédure permettant d'autauriser la confirmation de la saisie paiement
+   *
+   * @param paymentVoucher Une saisie paiement
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void authorizeConfirmPaymentVoucher(
+      PaymentVoucher paymentVoucher, String bankCardTransactionNumber, String payboxAmountPaid) {
+
+    paymentVoucher.setPayboxPaidOk(true);
+    paymentVoucher.setBankCardTransactionNumber(bankCardTransactionNumber);
+    paymentVoucher.setPayboxAmountPaid(
+        new BigDecimal(payboxAmountPaid).divide(new BigDecimal("100")));
+
+    paymentVoucherRepository.save(paymentVoucher);
+  }
 }

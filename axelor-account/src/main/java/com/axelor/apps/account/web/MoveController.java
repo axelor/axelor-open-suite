@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,23 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.move.MoveService;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -41,145 +31,154 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.util.List;
 
 public class MoveController {
-	
-	@Inject
-	protected MoveService moveService;
-	
-	@Inject
-	protected MoveRepository moveRepo;
-	
-	public void validate(ActionRequest request, ActionResponse response) {
 
-		Move move = request.getContext().asType(Move.class);
-		move = moveRepo.find(move.getId());
-		
-		try {
-			moveService.getMoveValidateService().validate(move);
-			response.setReload(true);
-		}
-		catch (Exception e){ TraceBackService.trace(response, e); }
-	}
-	
-	public void getPeriod(ActionRequest request, ActionResponse response) {
-		
-		Move move = request.getContext().asType(Move.class);
-	
-		try {
-			if(move.getDate() != null && move.getCompany() != null) {
-				
-				response.setValue("period", Beans.get(PeriodService.class).rightPeriod(move.getDate(), move.getCompany()));				
-			}
-			else {
-				response.setValue("period", null);
-			}
-		}
-		catch (Exception e){ TraceBackService.trace(response, e); }
-	}
-	
-	public void generateReverse(ActionRequest request, ActionResponse response) {
-		
-		Move move = request.getContext().asType(Move.class);
-		
-		try {
-			Move newMove = moveService.generateReverse(moveRepo.find(move.getId()));
-			if(newMove != null){
-				response.setView(ActionView
-							.define(I18n.get("Account move"))
-							.model("com.axelor.apps.account.db.Move")
-							.param("forceEdit", "true")
-							.context("_showRecord", newMove.getId().toString())
-							.map());
-			}
-		}
-		catch (Exception e){ TraceBackService.trace(response, e); }
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void validateMultipleMoves(ActionRequest request, ActionResponse response){
-		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-		if(!moveIds.isEmpty()){
-			List<? extends Move> moveList = moveRepo.all().filter("self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)", moveIds, MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_CANCELED).fetch();
-			if(!moveList.isEmpty()){
-				boolean error = moveService.getMoveValidateService().validateMultiple(moveList);
-				if(error)
-					response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
-				else{
-					response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
-					response.setReload(true);
-				}
-			}
-			else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
-		}
-		else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
-	}
-	
-	//change move status to Archived=true
-	public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException{
+  @Inject protected MoveService moveService;
 
-		Move move = request.getContext().asType(Move.class);
-		move = moveRepo.find(move.getId());
+  @Inject protected MoveRepository moveRepo;
 
-		if(move.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
-			moveRepo.remove(move);
-			response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-			response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-			response.setView(ActionView
-					.define("Moves")
-					.model(Move.class.getName())
-					.add("grid", "move-grid")
-					.add("form", "move-grid").map());
-			response.setCanClose(true);
-		}
-		else{
-			try {
-				moveRepo.remove(move);
-				response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
-			} 
-			catch (Exception e){ TraceBackService.trace(response, e); }{
-			}
-		}
+  public void validate(ActionRequest request, ActionResponse response) {
 
-	}
+    Move move = request.getContext().asType(Move.class);
+    move = moveRepo.find(move.getId());
 
-	@SuppressWarnings("unchecked")
-	public void deleteMultipleMoves(ActionRequest request, ActionResponse response){
+    try {
+      moveService.getMoveValidateService().validate(move);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-		List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-		if(!moveIds.isEmpty()){
-			List<? extends Move> moveList = moveRepo.all().filter("self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)", moveIds, MoveRepository.STATUS_DRAFT).fetch();
-			if(!moveList.isEmpty()){
-				moveService.getMoveRemoveService().deleteMultiple(moveList);
-				response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-				response.setReload(true);
-			}
-			else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
-		}
-		else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void printMove(ActionRequest request, ActionResponse response) throws AxelorException {
-			
-		Move move = request.getContext().asType(Move.class);
-		move = moveRepo.find(move.getId());
-		
-		String moveName = move.getReference().toString();
-				
-		String fileLink = ReportFactory.createReport(IReport.ACCOUNT_MOVE, moveName+"-${date}")
-						.addParam("Locale", moveService.getLanguageToPrinting(move))
-						.addParam("moveId", move.getId())
-						.generate()
-						.getFileLink();
-				
-		response.setView(ActionView
-						.define(moveName)
-						.add("html", fileLink).map());
-	}
-	
+  public void getPeriod(ActionRequest request, ActionResponse response) {
+
+    Move move = request.getContext().asType(Move.class);
+
+    try {
+      if (move.getDate() != null && move.getCompany() != null) {
+
+        response.setValue(
+            "period",
+            Beans.get(PeriodService.class).rightPeriod(move.getDate(), move.getCompany()));
+      } else {
+        response.setValue("period", null);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateReverse(ActionRequest request, ActionResponse response) {
+
+    Move move = request.getContext().asType(Move.class);
+
+    try {
+      Move newMove = moveService.generateReverse(moveRepo.find(move.getId()));
+      if (newMove != null) {
+        response.setView(
+            ActionView.define(I18n.get("Account move"))
+                .model("com.axelor.apps.account.db.Move")
+                .param("forceEdit", "true")
+                .context("_showRecord", newMove.getId().toString())
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void validateMultipleMoves(ActionRequest request, ActionResponse response) {
+    List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+    if (!moveIds.isEmpty()) {
+      List<? extends Move> moveList =
+          moveRepo
+              .all()
+              .filter(
+                  "self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)",
+                  moveIds,
+                  MoveRepository.STATUS_VALIDATED,
+                  MoveRepository.STATUS_CANCELED)
+              .fetch();
+      if (!moveList.isEmpty()) {
+        boolean error = moveService.getMoveValidateService().validateMultiple(moveList);
+        if (error) response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
+        else {
+          response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
+          response.setReload(true);
+        }
+      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
+    } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
+  }
+
+  // change move status to Archived=true
+  public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Move move = request.getContext().asType(Move.class);
+    move = moveRepo.find(move.getId());
+
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)) {
+      moveRepo.remove(move);
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
+      response.setView(
+          ActionView.define("Moves")
+              .model(Move.class.getName())
+              .add("grid", "move-grid")
+              .add("form", "move-grid")
+              .map());
+      response.setCanClose(true);
+    } else {
+      try {
+        moveRepo.remove(move);
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
+      } catch (Exception e) {
+        TraceBackService.trace(response, e);
+      }
+      {
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
+
+    List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+    if (!moveIds.isEmpty()) {
+      List<? extends Move> moveList =
+          moveRepo
+              .all()
+              .filter(
+                  "self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)",
+                  moveIds,
+                  MoveRepository.STATUS_DRAFT)
+              .fetch();
+      if (!moveList.isEmpty()) {
+        moveService.getMoveRemoveService().deleteMultiple(moveList);
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
+        response.setReload(true);
+      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
+    } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
+  }
+
+  @SuppressWarnings("unchecked")
+  public void printMove(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Move move = request.getContext().asType(Move.class);
+    move = moveRepo.find(move.getId());
+
+    String moveName = move.getReference().toString();
+
+    String fileLink =
+        ReportFactory.createReport(IReport.ACCOUNT_MOVE, moveName + "-${date}")
+            .addParam("Locale", moveService.getLanguageToPrinting(move))
+            .addParam("moveId", move.getId())
+            .generate()
+            .getFileLink();
+
+    response.setView(ActionView.define(moveName).add("html", fileLink).map());
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,69 +17,60 @@
  */
 package com.axelor.apps.base.service.administration;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.db.Model;
+import java.math.BigDecimal;
+import java.util.List;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 public interface GeneralService {
 
-	public General getGeneral();
+  public General getGeneral();
 
-// Date du jour
+  // Date du jour
 
-	/**
-	 * Récupérer la date du jour avec l'heure.
-	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
-	 * sinon récupère celle de l'administration générale,
-	 * sinon date du jour.
-	 * private
-	 * @return
-	 */
-	public DateTime getTodayDateTime();
+  /**
+   * Récupérer la date du jour avec l'heure. Retourne la date du jour paramétré dans l'utilisateur
+   * si existe, sinon récupère celle de l'administration générale, sinon date du jour. private
+   *
+   * @return
+   */
+  public DateTime getTodayDateTime();
 
-	/**
-	 * Récupérer la date du jour.
-	 * Retourne la date du jour paramétré dans l'utilisateur si existe,
-	 * sinon récupère celle de l'administration générale,
-	 * sinon date du jour.
-	 *
-	 * @return
-	 */
-	public LocalDate getTodayDate();
+  /**
+   * Récupérer la date du jour. Retourne la date du jour paramétré dans l'utilisateur si existe,
+   * sinon récupère celle de l'administration générale, sinon date du jour.
+   *
+   * @return
+   */
+  public LocalDate getTodayDate();
 
-	public Unit getUnit();
+  public Unit getUnit();
 
+  public int getNbDecimalDigitForUnitPrice();
 
-	public int getNbDecimalDigitForUnitPrice();
+  // Conversion de devise
 
+  /**
+   * Obtenir la tva à 0%
+   *
+   * @return
+   */
+  public List<CurrencyConversionLine> getCurrencyConfigurationLineList();
 
-// Conversion de devise
+  public Class<? extends Model> getPersistentClass(Model model);
 
-	/**
-	 * Obtenir la tva à 0%
-	 *
-	 * @return
-	 */
-	public List<CurrencyConversionLine> getCurrencyConfigurationLineList();
+  public BigDecimal getDurationHours(BigDecimal duration);
 
-	public Class<? extends Model> getPersistentClass(Model model);
+  public BigDecimal getGeneralDuration(BigDecimal duration);
 
-	public BigDecimal getDurationHours(BigDecimal duration);
-
-	public BigDecimal getGeneralDuration(BigDecimal duration);
-
-	/**
-	 * Set the manageMultiBanks boolean in the general object.
-	 * 
-	 * @param manageMultiBanks the new value for the manageMultiBanks boolean
-	 */
-	void setManageMultiBanks(boolean manageMultiBanks);
-
+  /**
+   * Set the manageMultiBanks boolean in the general object.
+   *
+   * @param manageMultiBanks the new value for the manageMultiBanks boolean
+   */
+  void setManageMultiBanks(boolean manageMultiBanks);
 }

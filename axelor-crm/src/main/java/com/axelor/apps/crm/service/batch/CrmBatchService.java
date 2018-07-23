@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.crm.service.batch;
 
-
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
@@ -30,56 +29,53 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 /**
- * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
- * comptabilité et assimilé.
- * 
+ * InvoiceBatchService est une classe implémentant l'ensemble des batchs de comptabilité et
+ * assimilé.
+ *
  * @author Geoffrey DUBAUX
- * 
  * @version 0.1
  */
 public class CrmBatchService extends AbstractBatchService {
 
-	@Override
-	protected Class<? extends Model> getModelClass() {
-		return CrmBatch.class;
-	}
+  @Override
+  protected Class<? extends Model> getModelClass() {
+    return CrmBatch.class;
+  }
 
-	@Override
-	public Batch run(Model batchModel) throws AxelorException {
-				
-		Batch batch;
-		CrmBatch crmBatch = (CrmBatch) batchModel;
-		
-		switch (crmBatch.getActionSelect()) {
-		
-		case ICrmBatch.BATCH_EVENT_REMINDER:
-			batch = eventReminder(crmBatch);
-			break;
-			
-		case ICrmBatch.BATCH_TARGET:
-			batch = target(crmBatch);
-			break;
-			
-		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), crmBatch.getActionSelect(), crmBatch.getCode()), IException.INCONSISTENCY);
-		}
-		
-		return batch;
-	}
-	
-	
-	public Batch eventReminder(CrmBatch crmBatch) {
-		
-		return Beans.get(BatchEventReminder.class).run(crmBatch);
-		
-	}
-	
-	public Batch target(CrmBatch crmBatch) {
-		
-		return Beans.get(BatchTarget.class).run(crmBatch);
-		
-	}
+  @Override
+  public Batch run(Model batchModel) throws AxelorException {
 
-	
-	
+    Batch batch;
+    CrmBatch crmBatch = (CrmBatch) batchModel;
+
+    switch (crmBatch.getActionSelect()) {
+      case ICrmBatch.BATCH_EVENT_REMINDER:
+        batch = eventReminder(crmBatch);
+        break;
+
+      case ICrmBatch.BATCH_TARGET:
+        batch = target(crmBatch);
+        break;
+
+      default:
+        throw new AxelorException(
+            String.format(
+                I18n.get(IExceptionMessage.BASE_BATCH_1),
+                crmBatch.getActionSelect(),
+                crmBatch.getCode()),
+            IException.INCONSISTENCY);
+    }
+
+    return batch;
+  }
+
+  public Batch eventReminder(CrmBatch crmBatch) {
+
+    return Beans.get(BatchEventReminder.class).run(crmBatch);
+  }
+
+  public Batch target(CrmBatch crmBatch) {
+
+    return Beans.get(BatchTarget.class).run(crmBatch);
+  }
 }

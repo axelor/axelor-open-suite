@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.account.service.batch;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-
-import javax.inject.Inject;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.repo.MoveLineReportRepository;
@@ -38,130 +29,159 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import javax.inject.Inject;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BatchMoveLineExport extends BatchStrategy {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected boolean stop = false;
+  protected boolean stop = false;
 
-	protected long moveLineDone = 0;
-	protected long moveDone = 0;
-	protected BigDecimal debit = BigDecimal.ZERO;
-	protected BigDecimal credit = BigDecimal.ZERO;
-	protected BigDecimal balance = BigDecimal.ZERO;
+  protected long moveLineDone = 0;
+  protected long moveDone = 0;
+  protected BigDecimal debit = BigDecimal.ZERO;
+  protected BigDecimal credit = BigDecimal.ZERO;
+  protected BigDecimal balance = BigDecimal.ZERO;
 
-	protected MoveLineReportRepository moveLineReportRepository;
+  protected MoveLineReportRepository moveLineReportRepository;
 
-	@Inject
-	public BatchMoveLineExport(MoveLineExportService moveLineExportService, MoveLineReportRepository moveLineReportRepository) {
+  @Inject
+  public BatchMoveLineExport(
+      MoveLineExportService moveLineExportService,
+      MoveLineReportRepository moveLineReportRepository) {
 
-		super(moveLineExportService);
-		
-		this.moveLineReportRepository = moveLineReportRepository;
-	}
+    super(moveLineExportService);
 
+    this.moveLineReportRepository = moveLineReportRepository;
+  }
 
-	@Override
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  @Override
+  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
 
-		super.start();
+    super.start();
 
-		try {
+    try {
 
-			this.testAccountingBatchField();
+      this.testAccountingBatchField();
 
-		} catch (AxelorException e) {
+    } catch (AxelorException e) {
 
-			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
-			incrementAnomaly();
-			stop = true;
-		}
+      TraceBackService.trace(
+          new AxelorException("", e, e.getcategory()),
+          IException.MOVE_LINE_EXPORT_ORIGIN,
+          batch.getId());
+      incrementAnomaly();
+      stop = true;
+    }
 
-		checkPoint();
+    checkPoint();
+  }
 
-	}
+  @Override
+  protected void process() {
 
+    if (!stop) {
+      try {
+        Company company = batch.getAccountingBatch().getCompany();
+        LocalDate startDate = batch.getAccountingBatch().getStartDate();
+        LocalDate endDate = batch.getAccountingBatch().getEndDate();
+        int exportTypeSelect = batch.getAccountingBatch().getMoveLineExportTypeSelect();
 
-	@Override
-	protected void process() {
+        MoveLineReport moveLineReport =
+            moveLineExportService.createMoveLineReport(
+                company, exportTypeSelect, startDate, endDate);
+        moveLineExportService.exportMoveLine(moveLineReport);
 
-		if(!stop)  {
-			try  {
-				Company company = batch.getAccountingBatch().getCompany();
-				LocalDate startDate = batch.getAccountingBatch().getStartDate();
-				LocalDate endDate = batch.getAccountingBatch().getEndDate();
-				int exportTypeSelect = batch.getAccountingBatch().getMoveLineExportTypeSelect();
+        JPA.clear();
 
-				MoveLineReport moveLineReport = moveLineExportService.createMoveLineReport(company, exportTypeSelect, startDate, endDate);
-				moveLineExportService.exportMoveLine(moveLineReport);
+        moveLineReport = moveLineReportRepository.find(moveLineReport.getId());
 
-				JPA.clear();
+        moveLineDone =
+            moveLineRepo.all().filter("self.move.moveLineReport = ?1", moveLineReport).count();
+        moveDone = moveRepo.all().filter("self.moveLineReport = ?1", moveLineReport).count();
+        debit = moveLineReport.getTotalDebit();
+        credit = moveLineReport.getTotalCredit();
+        balance = moveLineReport.getBalance();
 
-				moveLineReport = moveLineReportRepository.find(moveLineReport.getId());
+        updateMoveLineReport(moveLineReport);
 
-				moveLineDone = moveLineRepo.all().filter("self.move.moveLineReport = ?1", moveLineReport).count();
-				moveDone = moveRepo.all().filter("self.moveLineReport = ?1", moveLineReport).count();
-				debit = moveLineReport.getTotalDebit();
-				credit = moveLineReport.getTotalCredit();
-				balance = moveLineReport.getBalance();
+      } catch (AxelorException e) {
 
-				updateMoveLineReport(moveLineReport);
+        TraceBackService.trace(
+            new AxelorException(String.format("%s", e), e, e.getcategory()),
+            IException.MOVE_LINE_EXPORT_ORIGIN,
+            batch.getId());
+        incrementAnomaly();
 
-			} catch (AxelorException e) {
+      } catch (Exception e) {
 
-				TraceBackService.trace(new AxelorException(String.format("%s", e), e, e.getcategory()), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
-				incrementAnomaly();
+        TraceBackService.trace(
+            new Exception(String.format("%s", e), e),
+            IException.MOVE_LINE_EXPORT_ORIGIN,
+            batch.getId());
 
-			} catch (Exception e) {
+        incrementAnomaly();
 
-				TraceBackService.trace(new Exception(String.format("%s", e), e), IException.MOVE_LINE_EXPORT_ORIGIN, batch.getId());
+        log.error("Bug(Anomalie) généré(e) pour le batch {}", batch.getId());
+      }
+    }
+  }
 
-				incrementAnomaly();
+  public void testAccountingBatchField() throws AxelorException {
+    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    if (accountingBatch.getCompany() == null) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_1),
+              GeneralServiceImpl.EXCEPTION,
+              accountingBatch.getCode()),
+          IException.CONFIGURATION_ERROR);
+    }
+    if (accountingBatch.getEndDate() == null) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_2),
+              GeneralServiceImpl.EXCEPTION,
+              accountingBatch.getCode()),
+          IException.CONFIGURATION_ERROR);
+    }
+    if (accountingBatch.getMoveLineExportTypeSelect() == null) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_3),
+              GeneralServiceImpl.EXCEPTION,
+              accountingBatch.getCode()),
+          IException.CONFIGURATION_ERROR);
+    }
+  }
 
-				log.error("Bug(Anomalie) généré(e) pour le batch {}", batch.getId());
+  /**
+   * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the
+   * entity in the persistant context. Warning : {@code batch} entity have to be saved before.
+   */
+  @Override
+  protected void stop() {
 
-			}
-		}
+    String comment = I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_4) + "\n";
+    comment +=
+        String.format(
+            "\t* %s (%s)" + I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_5) + "\n",
+            moveLineDone,
+            moveDone);
+    comment += String.format("\t* " + I18n.get("Debit") + " : %s\n", debit);
+    comment += String.format("\t* " + I18n.get("Credit") + " : %s\n", credit);
+    comment += String.format("\t* " + I18n.get("Balance") + " : %s\n", balance);
+    comment +=
+        String.format(
+            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
+            batch.getAnomaly());
 
-	}
-
-
-	public void testAccountingBatchField() throws AxelorException  {
-		AccountingBatch accountingBatch = batch.getAccountingBatch();
-		if(accountingBatch.getCompany() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_1),
-					GeneralServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
-		}
-		if(accountingBatch.getEndDate() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_2),
-					GeneralServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
-		}
-		if(accountingBatch.getMoveLineExportTypeSelect() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_3),
-					GeneralServiceImpl.EXCEPTION, accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
-		}
-	}
-
-
-
-	/**
-	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
-	 * Warning : {@code batch} entity have to be saved before.
-	 */
-	@Override
-	protected void stop() {
-
-		String comment = I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_4) + "\n";
-		comment += String.format("\t* %s (%s)"+I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_5)+"\n", moveLineDone, moveDone);
-		comment += String.format("\t* "+I18n.get("Debit")+" : %s\n", debit);
-		comment += String.format("\t* "+I18n.get("Credit")+" : %s\n", credit);
-		comment += String.format("\t* "+I18n.get("Balance")+" : %s\n", balance);
-		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
-
-		super.stop();
-		addComment(comment);
-
-	}
-
+    super.stop();
+    addComment(comment);
+  }
 }

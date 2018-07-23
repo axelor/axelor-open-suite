@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.csv.script;
 
-import java.io.File;
-import java.lang.invoke.MethodHandles;
-import java.nio.file.Path;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
@@ -32,57 +24,60 @@ import com.axelor.common.StringUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import java.io.File;
+import java.lang.invoke.MethodHandles;
+import java.nio.file.Path;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportProduct {
-	
-	private final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	ProductService productService;
-	
-	@Inject
-	ProductRepository productRepo;
-	
-	@Inject
-	MetaFiles metaFiles;
-	
-	public Object importProduct(Object bean, Map<String,Object> values) {
-		
-		assert bean instanceof Product;
-		
-		Product product = (Product) bean;
-		String fileName = (String) values.get("picture_fileName");
-		
-		if(!StringUtils.isEmpty(fileName)) {
-			final Path path = (Path) values.get("__path__");
-			
-			try {
-				final File image = path.resolve(fileName).toFile();
-				if(image != null && image.isFile()) {
-					final MetaFile metaFile = metaFiles.upload(image);
-					product.setPicture(metaFile);
-				}
-			} catch (Exception e) {
-				LOG.error("Error when importing product picture : {}", e);
-			}
-		}
-		
-		return productRepo.save(product);
-	}
-	
-	public Object generateVariant(Object bean, Map<String,Object> values) {
-		
-		assert bean instanceof Product;
-		
-		Product product = (Product) bean;
-		
-		LOG.debug("Product : {}, Variant config: {}", product.getCode(), product.getProductVariantConfig());
-		
-		if(product.getProductVariantConfig() != null){
-			productService.generateProductVariants(product);
-		}
-		
-		return bean;
-	}
 
+  private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Inject ProductService productService;
+
+  @Inject ProductRepository productRepo;
+
+  @Inject MetaFiles metaFiles;
+
+  public Object importProduct(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof Product;
+
+    Product product = (Product) bean;
+    String fileName = (String) values.get("picture_fileName");
+
+    if (!StringUtils.isEmpty(fileName)) {
+      final Path path = (Path) values.get("__path__");
+
+      try {
+        final File image = path.resolve(fileName).toFile();
+        if (image != null && image.isFile()) {
+          final MetaFile metaFile = metaFiles.upload(image);
+          product.setPicture(metaFile);
+        }
+      } catch (Exception e) {
+        LOG.error("Error when importing product picture : {}", e);
+      }
+    }
+
+    return productRepo.save(product);
+  }
+
+  public Object generateVariant(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof Product;
+
+    Product product = (Product) bean;
+
+    LOG.debug(
+        "Product : {}, Variant config: {}", product.getCode(), product.getProductVariantConfig());
+
+    if (product.getProductVariantConfig() != null) {
+      productService.generateProductVariants(product);
+    }
+
+    return bean;
+  }
 }

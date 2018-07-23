@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,23 +17,22 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.inject.Beans;
+import javax.persistence.PersistenceException;
 
 public class AdvancePaymentSupplychainRepository extends AdvancePaymentRepository {
 
-	@Override
-	public AdvancePayment save(AdvancePayment advancePayment) {
-		try {
+  @Override
+  public AdvancePayment save(AdvancePayment advancePayment) {
+    try {
 
-			Beans.get(AdvancePaymentServiceSupplychainImpl.class).validate(advancePayment);
-			return super.save(advancePayment);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
+      Beans.get(AdvancePaymentServiceSupplychainImpl.class).validate(advancePayment);
+      return super.save(advancePayment);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 }

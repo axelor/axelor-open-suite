@@ -13,3 +13,9 @@ module {
 	module "modules:axelor-account"
 	module "modules:axelor-crm"
 }
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}

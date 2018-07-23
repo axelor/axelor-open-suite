@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -40,56 +40,70 @@ import com.google.inject.Provider;
 import org.joda.time.LocalDate;
 
 public class LunchVoucherAdvanceController {
-	
-	@Inject
-	private Provider<LunchVoucherAdvanceService> lunchVoucherAdvanceServiceProvider;
-	
-	@Inject
-	private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
-	
-	@Inject
-	private Provider<HRConfigService> hrConfigService;
-	
-	public void checkOnNewAdvance(ActionRequest request, ActionResponse response) throws AxelorException  {
-		LunchVoucherAdvance lunchVoucherAdvance = EntityHelper.getEntity(request.getContext().asType(LunchVoucherAdvance.class));
 
-		if (lunchVoucherAdvance.getEmployee().getMainEmploymentContract() == null) {
-			response.setError(String.format(I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), lunchVoucherAdvance.getEmployee().getName()));
-			return;
-		}
-		Company company = lunchVoucherAdvance.getEmployee().getMainEmploymentContract().getPayCompany();
-		HRConfig hrConfig = hrConfigService.get().getHRConfig(company);
-		int stock = lunchVoucherMgtProvider.get().checkStock(company, lunchVoucherAdvance.getNbrLunchVouchers());
-		
-		if (stock <= 0) {
-			response.setAlert(String.format(I18n.get(IExceptionMessage.LUNCH_VOUCHER_MIN_STOCK),company.getName(),
-					hrConfig.getMinStockLunchVoucher(), hrConfig.getAvailableStockLunchVoucher(), IException.INCONSISTENCY));
-		}
-	}
-	
-	public void onNewAdvance(ActionRequest request, ActionResponse response) {
-		LunchVoucherAdvance lunchVoucherAdvance = EntityHelper.getEntity(request.getContext().asType(LunchVoucherAdvance.class));
-		
-		try {
-			lunchVoucherAdvanceServiceProvider.get().onNewAdvance(lunchVoucherAdvance);
-			response.setCanClose(true);
-		}  catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-	}
+  @Inject private Provider<LunchVoucherAdvanceService> lunchVoucherAdvanceServiceProvider;
 
-	public void print(ActionRequest request, ActionResponse response) {
-	    LunchVoucherAdvance lunchVoucherAdvance = request.getContext().asType(LunchVoucherAdvance.class);
-	    String name = lunchVoucherAdvance.getEmployee().getName() + "-" + LocalDate.now().toString("YYYY-MM-dd");
-	    try {
-	    	String fileLink = ReportFactory.createReport(IReport.LUNCH_VOUCHER_ADVANCE, name)
-					.addParam("lunchVoucherAdvId", lunchVoucherAdvance.getId())
-					.addFormat(ReportSettings.FORMAT_PDF)
-					.generate()
-					.getFileLink();
-	    	response.setView(ActionView.define(name).add("html", fileLink).map());
-		} catch (AxelorException e) {
-	    	TraceBackService.trace(response, e);
-		}
-	}
+  @Inject private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
+
+  @Inject private Provider<HRConfigService> hrConfigService;
+
+  public void checkOnNewAdvance(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    LunchVoucherAdvance lunchVoucherAdvance =
+        EntityHelper.getEntity(request.getContext().asType(LunchVoucherAdvance.class));
+
+    if (lunchVoucherAdvance.getEmployee().getMainEmploymentContract() == null) {
+      response.setError(
+          String.format(
+              I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
+              lunchVoucherAdvance.getEmployee().getName()));
+      return;
+    }
+    Company company = lunchVoucherAdvance.getEmployee().getMainEmploymentContract().getPayCompany();
+    HRConfig hrConfig = hrConfigService.get().getHRConfig(company);
+    int stock =
+        lunchVoucherMgtProvider
+            .get()
+            .checkStock(company, lunchVoucherAdvance.getNbrLunchVouchers());
+
+    if (stock <= 0) {
+      response.setAlert(
+          String.format(
+              I18n.get(IExceptionMessage.LUNCH_VOUCHER_MIN_STOCK),
+              company.getName(),
+              hrConfig.getMinStockLunchVoucher(),
+              hrConfig.getAvailableStockLunchVoucher(),
+              IException.INCONSISTENCY));
+    }
+  }
+
+  public void onNewAdvance(ActionRequest request, ActionResponse response) {
+    LunchVoucherAdvance lunchVoucherAdvance =
+        EntityHelper.getEntity(request.getContext().asType(LunchVoucherAdvance.class));
+
+    try {
+      lunchVoucherAdvanceServiceProvider.get().onNewAdvance(lunchVoucherAdvance);
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void print(ActionRequest request, ActionResponse response) {
+    LunchVoucherAdvance lunchVoucherAdvance =
+        request.getContext().asType(LunchVoucherAdvance.class);
+    String name =
+        lunchVoucherAdvance.getEmployee().getName() + "-" + LocalDate.now().toString("YYYY-MM-dd");
+    try {
+      String fileLink =
+          ReportFactory.createReport(IReport.LUNCH_VOUCHER_ADVANCE, name)
+              .addParam("lunchVoucherAdvId", lunchVoucherAdvance.getId())
+              .addFormat(ReportSettings.FORMAT_PDF)
+              .generate()
+              .getFileLink();
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

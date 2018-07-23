@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,27 +17,23 @@
  */
 package com.axelor.apps.account.service.invoice.generator;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import java.util.List;
 
 /**
- * InvoiceLineTaxService est une classe implémentant l'ensemble des services
- * pour les lignes de taxes des factures.
+ * InvoiceLineTaxService est une classe implémentant l'ensemble des services pour les lignes de
+ * taxes des factures.
  */
 public abstract class TaxGenerator extends InvoiceLineManagement {
-	
-	protected Invoice invoice;
-	protected List<InvoiceLine> invoiceLines;
 
-	protected  TaxGenerator (Invoice invoice, List<InvoiceLine> invoiceLines) {
-		
-		this.invoice = invoice;
-		this.invoiceLines = invoiceLines;
-		
-	}
-	
+  protected Invoice invoice;
+  protected List<InvoiceLine> invoiceLines;
 
+  protected TaxGenerator(Invoice invoice, List<InvoiceLine> invoiceLines) {
+
+    this.invoice = invoice;
+    this.invoiceLines = invoiceLines;
+  }
 }

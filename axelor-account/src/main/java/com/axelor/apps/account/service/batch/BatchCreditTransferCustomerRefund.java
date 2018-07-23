@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,16 +25,17 @@ import com.google.inject.Inject;
 
 public class BatchCreditTransferCustomerRefund extends BatchCreditTransferInvoice {
 
-	@Inject
-	public BatchCreditTransferCustomerRefund(GeneralService generalService, InvoiceRepository invoiceRepo,
-			InvoicePaymentCreateService invoicePaymentCreateService,
-			InvoicePaymentRepository invoicePaymentRepository) {
-		super(generalService, invoiceRepo, invoicePaymentCreateService, invoicePaymentRepository);
-	}
+  @Inject
+  public BatchCreditTransferCustomerRefund(
+      GeneralService generalService,
+      InvoiceRepository invoiceRepo,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentRepository invoicePaymentRepository) {
+    super(generalService, invoiceRepo, invoicePaymentCreateService, invoicePaymentRepository);
+  }
 
-	@Override
-	protected void process() {
-		processInvoices(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
-	}
-
+  @Override
+  protected void process() {
+    processInvoices(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+  }
 }

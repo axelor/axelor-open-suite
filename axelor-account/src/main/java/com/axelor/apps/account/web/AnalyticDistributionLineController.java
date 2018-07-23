@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,20 +25,22 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class AnalyticDistributionLineController {
-	
-	@Inject
-	protected AnalyticMoveLineService analyticMoveLineService;
-	
-	public void computeAmount(ActionRequest request, ActionResponse response){
-		AnalyticMoveLine AnalyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-		response.setValue("amount", analyticMoveLineService.chooseComputeWay(request.getContext(), AnalyticMoveLine));
-	}
-	
-	public void validateLines(ActionRequest request, ActionResponse response){
-		AnalyticDistributionTemplate analyticDistributionTemplate = request.getContext().asType(AnalyticDistributionTemplate.class);
-		if(!analyticMoveLineService.validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())){
-			response.setError("The distribution is wrong, some axes percentage values are higher than 100%");
-		}
-	}
-	
+
+  @Inject protected AnalyticMoveLineService analyticMoveLineService;
+
+  public void computeAmount(ActionRequest request, ActionResponse response) {
+    AnalyticMoveLine AnalyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+    response.setValue(
+        "amount", analyticMoveLineService.chooseComputeWay(request.getContext(), AnalyticMoveLine));
+  }
+
+  public void validateLines(ActionRequest request, ActionResponse response) {
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        request.getContext().asType(AnalyticDistributionTemplate.class);
+    if (!analyticMoveLineService.validateLines(
+        analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      response.setError(
+          "The distribution is wrong, some axes percentage values are higher than 100%");
+    }
+  }
 }

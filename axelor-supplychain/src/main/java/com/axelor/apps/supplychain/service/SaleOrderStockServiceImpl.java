@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,9 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
@@ -42,185 +39,220 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 
-public class SaleOrderStockServiceImpl implements SaleOrderStockService  {
+public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
-	protected StockMoveService stockMoveService;
-	protected StockMoveLineService stockMoveLineService;
-	protected StockConfigService stockConfigService;
-	protected LocationRepository locationRepo;
-	protected StockMoveRepository stockMoveRepo;
-	protected UnitConversionService unitConversionService;
-	
-	@Inject
-	public SaleOrderStockServiceImpl(StockMoveService stockMoveService, StockMoveLineService stockMoveLineService, StockConfigService stockConfigService,
-			LocationRepository locationRepo, StockMoveRepository stockMoveRepo, UnitConversionService unitConversionService)  {
-		
-		this.stockMoveService = stockMoveService;
-		this.stockMoveLineService = stockMoveLineService;
-		this.stockConfigService = stockConfigService;
-		this.locationRepo = locationRepo;
-		this.stockMoveRepo = stockMoveRepo;
-		this.unitConversionService = unitConversionService;
-		
-	}
+  protected StockMoveService stockMoveService;
+  protected StockMoveLineService stockMoveLineService;
+  protected StockConfigService stockConfigService;
+  protected LocationRepository locationRepo;
+  protected StockMoveRepository stockMoveRepo;
+  protected UnitConversionService unitConversionService;
 
+  @Inject
+  public SaleOrderStockServiceImpl(
+      StockMoveService stockMoveService,
+      StockMoveLineService stockMoveLineService,
+      StockConfigService stockConfigService,
+      LocationRepository locationRepo,
+      StockMoveRepository stockMoveRepo,
+      UnitConversionService unitConversionService) {
 
-	public Location getLocation(Company company)  {
+    this.stockMoveService = stockMoveService;
+    this.stockMoveLineService = stockMoveLineService;
+    this.stockConfigService = stockConfigService;
+    this.locationRepo = locationRepo;
+    this.stockMoveRepo = stockMoveRepo;
+    this.unitConversionService = unitConversionService;
+  }
 
-		return locationRepo.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
-				company, true, LocationRepository.TYPE_INTERNAL).fetchOne();
-	}
+  public Location getLocation(Company company) {
 
+    return locationRepo
+        .all()
+        .filter(
+            "self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3",
+            company,
+            true,
+            LocationRepository.TYPE_INTERNAL)
+        .fetchOne();
+  }
 
-	/**
-	 * Method that create a delivery StockMove from a SaleOrder.
-	 * @param saleOrder
-	 * @throws AxelorException No sequence for StockMove (delivery) has been set.
-	 */
-	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
+  /**
+   * Method that create a delivery StockMove from a SaleOrder.
+   *
+   * @param saleOrder
+   * @throws AxelorException No sequence for StockMove (delivery) has been set.
+   */
+  public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-		if (this.existActiveStockMoveForSaleOrder(saleOrder)){
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST),
-					saleOrder.getSaleOrderSeq()), IException.CONFIGURATION_ERROR); 
-		}
-		
-		Company company = saleOrder.getCompany();
+    if (this.existActiveStockMoveForSaleOrder(saleOrder)) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXIST),
+              saleOrder.getSaleOrderSeq()),
+          IException.CONFIGURATION_ERROR);
+    }
 
-		if(saleOrder.getSaleOrderLineList() != null && company != null) {
+    Company company = saleOrder.getCompany();
 
-			StockMove stockMove = this.createStockMove(saleOrder, company);
+    if (saleOrder.getSaleOrderLineList() != null && company != null) {
 
-			for(SaleOrderLine saleOrderLine: saleOrder.getSaleOrderLineList()) {
-				if(saleOrderLine.getProduct() != null || saleOrderLine.getIsTitleLine()){
-					this.createStockMoveLine(stockMove, saleOrderLine, company);
-				}
-			}
+      StockMove stockMove = this.createStockMove(saleOrder, company);
 
-			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
-				stockMoveService.plan(stockMove);
-				return stockMove;
-			}
-		}
-		
-		return null;
-		
-	}
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (saleOrderLine.getProduct() != null || saleOrderLine.getIsTitleLine()) {
+          this.createStockMoveLine(stockMove, saleOrderLine, company);
+        }
+      }
 
+      if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
+        stockMove.setExTaxTotal(stockMoveService.compute(stockMove));
+        stockMoveService.plan(stockMove);
+        return stockMove;
+      }
+    }
 
-	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException  {
+    return null;
+  }
 
-		Location toLocation = locationRepo.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, LocationRepository.TYPE_EXTERNAL).fetchOne();
+  public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException {
 
-		if(toLocation == null)  {
+    Location toLocation =
+        locationRepo
+            .all()
+            .filter(
+                "self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2",
+                company,
+                LocationRepository.TYPE_EXTERNAL)
+            .fetchOne();
 
-			toLocation = stockConfigService.getCustomerVirtualLocation(stockConfigService.getStockConfig(company));
-		}
+    if (toLocation == null) {
 
-		StockMove stockMove = stockMoveService.createStockMove(
-				null,
-				saleOrder.getDeliveryAddress(),
-				company,
-				saleOrder.getClientPartner(),
-				saleOrder.getLocation(),
-				toLocation,
-				saleOrder.getShipmentDate(),
-				saleOrder.getDescription(),
-				saleOrder.getShipmentMode(),
-				saleOrder.getFreightCarrierMode());
+      toLocation =
+          stockConfigService.getCustomerVirtualLocation(stockConfigService.getStockConfig(company));
+    }
 
-		stockMove.setSaleOrder(saleOrder);
-		stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
-		return stockMove;
-	}
+    StockMove stockMove =
+        stockMoveService.createStockMove(
+            null,
+            saleOrder.getDeliveryAddress(),
+            company,
+            saleOrder.getClientPartner(),
+            saleOrder.getLocation(),
+            toLocation,
+            saleOrder.getShipmentDate(),
+            saleOrder.getDescription(),
+            saleOrder.getShipmentMode(),
+            saleOrder.getFreightCarrierMode());
 
+    stockMove.setSaleOrder(saleOrder);
+    stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
+    return stockMove;
+  }
 
-	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, Company company) throws AxelorException  {
+  public StockMoveLine createStockMoveLine(
+      StockMove stockMove, SaleOrderLine saleOrderLine, Company company) throws AxelorException {
 
-		Product product = saleOrderLine.getProduct();
+    Product product = saleOrderLine.getProduct();
 
-		if(product != null && this.isStockMoveProduct(saleOrderLine)
-				&& !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
-			
-			Unit unit = saleOrderLine.getProduct().getUnit();
-			BigDecimal qty = saleOrderLine.getQty();
-			BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
-			if(unit != null && !unit.equals(saleOrderLine.getUnit())){
-				qty = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
-				priceDiscounted = unitConversionService.convertWithProduct(saleOrderLine.getUnit(), unit, priceDiscounted, saleOrderLine.getProduct());
-			}
-			
-			BigDecimal taxRate = BigDecimal.ZERO;
-			TaxLine taxLine = saleOrderLine.getTaxLine();
-			if(taxLine != null)  {
-				taxRate = taxLine.getValue();
-			}
-			
-			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
-					product,
-					saleOrderLine.getProductName(),
-					saleOrderLine.getDescription(),
-					qty,
-					priceDiscounted,
-					unit,
-					stockMove,
-					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), taxRate);
+    if (product != null
+        && this.isStockMoveProduct(saleOrderLine)
+        && !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(product.getProductTypeSelect())) {
 
-			stockMoveLine.setSaleOrderLine(saleOrderLine);
+      Unit unit = saleOrderLine.getProduct().getUnit();
+      BigDecimal qty = saleOrderLine.getQty();
+      BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
+      if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
+        qty =
+            unitConversionService.convertWithProduct(
+                saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+        priceDiscounted =
+            unitConversionService.convertWithProduct(
+                saleOrderLine.getUnit(), unit, priceDiscounted, saleOrderLine.getProduct());
+      }
 
-			if(stockMoveLine != null) {
-				stockMove.addStockMoveLineListItem(stockMoveLine);
-			}
-			return stockMoveLine;
-		}
-		else if(saleOrderLine.getIsTitleLine()){
-			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
-					null,
-					saleOrderLine.getProductName(),
-					saleOrderLine.getDescription(),
-					BigDecimal.ZERO,
-					BigDecimal.ZERO,
-					null,
-					stockMove,
-					StockMoveLineService.TYPE_SALES, saleOrderLine.getSaleOrder().getInAti(), null);
+      BigDecimal taxRate = BigDecimal.ZERO;
+      TaxLine taxLine = saleOrderLine.getTaxLine();
+      if (taxLine != null) {
+        taxRate = taxLine.getValue();
+      }
 
-			stockMoveLine.setSaleOrderLine(saleOrderLine);
+      StockMoveLine stockMoveLine =
+          stockMoveLineService.createStockMoveLine(
+              product,
+              saleOrderLine.getProductName(),
+              saleOrderLine.getDescription(),
+              qty,
+              priceDiscounted,
+              unit,
+              stockMove,
+              StockMoveLineService.TYPE_SALES,
+              saleOrderLine.getSaleOrder().getInAti(),
+              taxRate);
 
-			if(stockMoveLine != null) {
-				stockMove.addStockMoveLineListItem(stockMoveLine);
-			}
-			return stockMoveLine;
-		}
-		return null;
-	}
+      stockMoveLine.setSaleOrderLine(saleOrderLine);
 
+      if (stockMoveLine != null) {
+        stockMove.addStockMoveLineListItem(stockMoveLine);
+      }
+      return stockMoveLine;
+    } else if (saleOrderLine.getIsTitleLine()) {
+      StockMoveLine stockMoveLine =
+          stockMoveLineService.createStockMoveLine(
+              null,
+              saleOrderLine.getProductName(),
+              saleOrderLine.getDescription(),
+              BigDecimal.ZERO,
+              BigDecimal.ZERO,
+              null,
+              stockMove,
+              StockMoveLineService.TYPE_SALES,
+              saleOrderLine.getSaleOrder().getInAti(),
+              null);
 
+      stockMoveLine.setSaleOrderLine(saleOrderLine);
 
-	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException  {
+      if (stockMoveLine != null) {
+        stockMove.addStockMoveLineListItem(stockMoveLine);
+      }
+      return stockMoveLine;
+    }
+    return null;
+  }
 
-		Company company = saleOrderLine.getSaleOrder().getCompany();
+  public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException {
 
-		StockConfig stockConfig = stockConfigService.getStockConfig(company);
+    Company company = saleOrderLine.getSaleOrder().getCompany();
 
-		Product product = saleOrderLine.getProduct();
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
 
-		if(product != null
-				&& ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && stockConfig.getHasOutSmForNonStorableProduct())
-						|| (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect()) && stockConfig.getHasOutSmForStorableProduct())) )  {
+    Product product = saleOrderLine.getProduct();
 
-			return true;
-		}
+    if (product != null
+        && ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
+                && stockConfig.getHasOutSmForNonStorableProduct())
+            || (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())
+                && stockConfig.getHasOutSmForStorableProduct()))) {
 
-		return false;
-	}
+      return true;
+    }
 
-	//Check if existing at least one stockMove not canceled for the saleOrder
-	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder){
-		long nbStockMove = stockMoveRepo.all().filter("self.saleOrder = ? AND self.statusSelect <> ?", saleOrder, StockMoveRepository.STATUS_CANCELED).count();
-		return nbStockMove > 0;
-	}
+    return false;
+  }
+
+  // Check if existing at least one stockMove not canceled for the saleOrder
+  public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder) {
+    long nbStockMove =
+        stockMoveRepo
+            .all()
+            .filter(
+                "self.saleOrder = ? AND self.statusSelect <> ?",
+                saleOrder,
+                StockMoveRepository.STATUS_CANCELED)
+            .count();
+    return nbStockMove > 0;
+  }
 }
-
-
-

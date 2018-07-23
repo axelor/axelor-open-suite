@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -52,135 +52,137 @@ import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
-	protected ReminderService reminderService;
-	protected DoubtfulCustomerService doubtfulCustomerService;
-	protected ReimbursementExportService reimbursementExportService;
-	protected ReimbursementImportService reimbursementImportService;
-	protected RejectImportService rejectImportService;
-	protected CfonbExportService cfonbExportService;
-	protected CfonbImportService cfonbImportService;
-	protected PaymentModeService paymentModeService;
-	protected AccountCustomerService accountCustomerService;
-	protected MoveLineExportService moveLineExportService;
-	protected BatchAccountCustomer batchAccountCustomer;
+  protected ReminderService reminderService;
+  protected DoubtfulCustomerService doubtfulCustomerService;
+  protected ReimbursementExportService reimbursementExportService;
+  protected ReimbursementImportService reimbursementImportService;
+  protected RejectImportService rejectImportService;
+  protected CfonbExportService cfonbExportService;
+  protected CfonbImportService cfonbImportService;
+  protected PaymentModeService paymentModeService;
+  protected AccountCustomerService accountCustomerService;
+  protected MoveLineExportService moveLineExportService;
+  protected BatchAccountCustomer batchAccountCustomer;
 
-	@Inject
-	protected BatchRepository batchRepo;
+  @Inject protected BatchRepository batchRepo;
 
-	@Inject
-	protected CompanyRepository companyRepo;
+  @Inject protected CompanyRepository companyRepo;
 
-	@Inject
-	protected MoveService moveService;
-	
-	@Inject
-	protected MoveRepository moveRepo;
+  @Inject protected MoveService moveService;
 
-	@Inject
-	protected MoveLineService moveLineService;
-	
-	@Inject
-	protected MoveLineRepository  moveLineRepo;
+  @Inject protected MoveRepository moveRepo;
 
-	@Inject
-	protected ReimbursementService reimbursementService;
-	
-	protected BatchStrategy() {
-	}
+  @Inject protected MoveLineService moveLineService;
 
-	protected BatchStrategy(ReminderService reminderService) {
-		super();
-		this.reminderService = reminderService;
-	}
+  @Inject protected MoveLineRepository moveLineRepo;
 
-	protected BatchStrategy(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.doubtfulCustomerService = doubtfulCustomerService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
+  @Inject protected ReimbursementService reimbursementService;
 
-	protected BatchStrategy(ReimbursementExportService reimbursementExportService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.reimbursementExportService = reimbursementExportService;
-		this.cfonbExportService = cfonbExportService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
+  protected BatchStrategy() {}
 
-	protected BatchStrategy(ReimbursementImportService reimbursementImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
-		super();
-		this.reimbursementImportService = reimbursementImportService;
-		this.rejectImportService = rejectImportService;
-		this.batchAccountCustomer = batchAccountCustomer;
-	}
+  protected BatchStrategy(ReminderService reminderService) {
+    super();
+    this.reminderService = reminderService;
+  }
 
-	protected BatchStrategy(AccountCustomerService accountCustomerService) {
-		super();
-		this.accountCustomerService = accountCustomerService;
-	}
+  protected BatchStrategy(
+      DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
+    super();
+    this.doubtfulCustomerService = doubtfulCustomerService;
+    this.batchAccountCustomer = batchAccountCustomer;
+  }
 
-	protected BatchStrategy(MoveLineExportService moveLineExportService) {
-		super();
-		this.moveLineExportService = moveLineExportService;
-	}
+  protected BatchStrategy(
+      ReimbursementExportService reimbursementExportService,
+      CfonbExportService cfonbExportService,
+      BatchAccountCustomer batchAccountCustomer) {
+    super();
+    this.reimbursementExportService = reimbursementExportService;
+    this.cfonbExportService = cfonbExportService;
+    this.batchAccountCustomer = batchAccountCustomer;
+  }
 
-	protected void updateInvoice( Invoice invoice ){
+  protected BatchStrategy(
+      ReimbursementImportService reimbursementImportService,
+      RejectImportService rejectImportService,
+      BatchAccountCustomer batchAccountCustomer) {
+    super();
+    this.reimbursementImportService = reimbursementImportService;
+    this.rejectImportService = rejectImportService;
+    this.batchAccountCustomer = batchAccountCustomer;
+  }
 
-		invoice.addBatchSetItem( batchRepo.find( batch.getId() ) );
+  protected BatchStrategy(AccountCustomerService accountCustomerService) {
+    super();
+    this.accountCustomerService = accountCustomerService;
+  }
 
-		incrementDone();
-	}
+  protected BatchStrategy(MoveLineExportService moveLineExportService) {
+    super();
+    this.moveLineExportService = moveLineExportService;
+  }
 
-	protected void updateReimbursement( Reimbursement reimbursement ){
+  protected void updateInvoice(Invoice invoice) {
 
-		reimbursement.addBatchSetItem( batchRepo.find( batch.getId() ) );
+    invoice.addBatchSetItem(batchRepo.find(batch.getId()));
 
-		incrementDone();
-	}
+    incrementDone();
+  }
 
-	protected void updatePaymentScheduleLine( PaymentScheduleLine paymentScheduleLine ){
+  protected void updateReimbursement(Reimbursement reimbursement) {
 
-		paymentScheduleLine.addBatchSetItem( batchRepo.find( batch.getId() ) );
+    reimbursement.addBatchSetItem(batchRepo.find(batch.getId()));
 
-		incrementDone();
-	}
+    incrementDone();
+  }
 
-	protected void updatePaymentVoucher( PaymentVoucher paymentVoucher ){
+  protected void updatePaymentScheduleLine(PaymentScheduleLine paymentScheduleLine) {
 
-		paymentVoucher.addBatchSetItem( batchRepo.find( batch.getId() ) );
+    paymentScheduleLine.addBatchSetItem(batchRepo.find(batch.getId()));
 
-		incrementDone();
-	}
+    incrementDone();
+  }
 
-	protected void updatePartner( Partner partner ){
+  protected void updatePaymentVoucher(PaymentVoucher paymentVoucher) {
 
-		partner.addBatchSetItem( batchRepo.find( batch.getId() ) );
+    paymentVoucher.addBatchSetItem(batchRepo.find(batch.getId()));
 
-		incrementDone();
-	}
+    incrementDone();
+  }
 
-	protected void updateAccountingSituation( AccountingSituation accountingSituation ){
+  protected void updatePartner(Partner partner) {
 
-		accountingSituation.addBatchSetItem( batchRepo.find( batch.getId() ) );
+    partner.addBatchSetItem(batchRepo.find(batch.getId()));
 
-		incrementDone();
-	}
+    incrementDone();
+  }
 
-	protected void updateMoveLineReport( MoveLineReport moveLineReport){
+  protected void updateAccountingSituation(AccountingSituation accountingSituation) {
 
-		moveLineReport.addBatchSetItem( batchRepo.find( batch.getId() ) );
+    accountingSituation.addBatchSetItem(batchRepo.find(batch.getId()));
 
-		incrementDone();
-	}
+    incrementDone();
+  }
 
-	public void testAccountingBatchBankDetails(AccountingBatch accountingBatch) throws AxelorException  {
+  protected void updateMoveLineReport(MoveLineReport moveLineReport) {
 
-		if(accountingBatch.getBankDetails() == null) {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BATCH_STRATEGY_1),
-					GeneralServiceImpl.EXCEPTION,accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
-		}
+    moveLineReport.addBatchSetItem(batchRepo.find(batch.getId()));
 
-		this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());
+    incrementDone();
+  }
 
-	}
+  public void testAccountingBatchBankDetails(AccountingBatch accountingBatch)
+      throws AxelorException {
 
+    if (accountingBatch.getBankDetails() == null) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.BATCH_STRATEGY_1),
+              GeneralServiceImpl.EXCEPTION,
+              accountingBatch.getCode()),
+          IException.CONFIGURATION_ERROR);
+    }
+
+    this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());
+  }
 }

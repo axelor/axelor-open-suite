@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -30,61 +30,87 @@ import com.google.inject.Inject;
 
 public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
-	@Inject
-	protected GeneralService generalService;
+  @Inject protected GeneralService generalService;
 
-	protected SaleOrder saleOrder;
+  protected SaleOrder saleOrder;
 
-	protected PurchaseOrder purchaseOrder;
+  protected PurchaseOrder purchaseOrder;
 
-	protected InvoiceGeneratorSupplyChain(SaleOrder saleOrder) throws AxelorException {
+  protected InvoiceGeneratorSupplyChain(SaleOrder saleOrder) throws AxelorException {
 
-		super(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, saleOrder.getCompany(), saleOrder.getPaymentCondition(), saleOrder.getPaymentMode(), saleOrder.getMainInvoicingAddress(), 
-				saleOrder.getClientPartner(), saleOrder.getContactPartner(), saleOrder.getCurrency(), saleOrder.getPriceList(), saleOrder.getSaleOrderSeq(), 
-				saleOrder.getExternalReference(), saleOrder.getInAti(), saleOrder.getCompanyBankDetails());
-		this.saleOrder = saleOrder;
-		
-	}
+    super(
+        InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+        saleOrder.getCompany(),
+        saleOrder.getPaymentCondition(),
+        saleOrder.getPaymentMode(),
+        saleOrder.getMainInvoicingAddress(),
+        saleOrder.getClientPartner(),
+        saleOrder.getContactPartner(),
+        saleOrder.getCurrency(),
+        saleOrder.getPriceList(),
+        saleOrder.getSaleOrderSeq(),
+        saleOrder.getExternalReference(),
+        saleOrder.getInAti(),
+        saleOrder.getCompanyBankDetails());
+    this.saleOrder = saleOrder;
+  }
 
-	protected InvoiceGeneratorSupplyChain(PurchaseOrder purchaseOrder) throws AxelorException {
+  protected InvoiceGeneratorSupplyChain(PurchaseOrder purchaseOrder) throws AxelorException {
 
-		super(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE, purchaseOrder.getCompany(), purchaseOrder.getPaymentCondition(), purchaseOrder.getPaymentMode(), null, 
-				purchaseOrder.getSupplierPartner(), purchaseOrder.getContactPartner(), purchaseOrder.getCurrency(), purchaseOrder.getPriceList(), purchaseOrder.getPurchaseOrderSeq(),  
-				purchaseOrder.getExternalReference(), purchaseOrder.getInAti(), purchaseOrder.getCompanyBankDetails());
-		this.purchaseOrder = purchaseOrder;
-		
-	}
+    super(
+        InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+        purchaseOrder.getCompany(),
+        purchaseOrder.getPaymentCondition(),
+        purchaseOrder.getPaymentMode(),
+        null,
+        purchaseOrder.getSupplierPartner(),
+        purchaseOrder.getContactPartner(),
+        purchaseOrder.getCurrency(),
+        purchaseOrder.getPriceList(),
+        purchaseOrder.getPurchaseOrderSeq(),
+        purchaseOrder.getExternalReference(),
+        purchaseOrder.getInAti(),
+        purchaseOrder.getCompanyBankDetails());
+    this.purchaseOrder = purchaseOrder;
+  }
 
-	/**
-	 * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupérés du tiers
-	 * @param operationType
-	 * @param company
-	 * @param partner
-	 * @param contactPartner
-	 * @throws AxelorException
-	 */
-	protected InvoiceGeneratorSupplyChain(StockMove stockMove, int invoiceOperationType) throws AxelorException {
+  /**
+   * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupérés du tiers
+   *
+   * @param operationType
+   * @param company
+   * @param partner
+   * @param contactPartner
+   * @throws AxelorException
+   */
+  protected InvoiceGeneratorSupplyChain(StockMove stockMove, int invoiceOperationType)
+      throws AxelorException {
 
-		super(invoiceOperationType, stockMove.getCompany(), stockMove.getPartner(), null, null, stockMove.getStockMoveSeq(), stockMove.getTrackingNumber(), null);
-		
-	}
+    super(
+        invoiceOperationType,
+        stockMove.getCompany(),
+        stockMove.getPartner(),
+        null,
+        null,
+        stockMove.getStockMoveSeq(),
+        stockMove.getTrackingNumber(),
+        null);
+  }
 
+  @Override
+  protected Invoice createInvoiceHeader() throws AxelorException {
 
-	@Override
-	protected Invoice createInvoiceHeader() throws AxelorException  {
+    Invoice invoice = super.createInvoiceHeader();
 
-		Invoice invoice = super.createInvoiceHeader();
+    if (!Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine()) {
+      if (saleOrder != null) {
+        invoice.setSaleOrder(saleOrder);
 
-		if (!Beans.get(GeneralService.class).getGeneral().getManageInvoicedAmountByLine())  {
-			if(saleOrder != null)  {
-				invoice.setSaleOrder(saleOrder);
-				
-			}  else  {
-				invoice.setPurchaseOrder(purchaseOrder);
-			}
-		}
-		
-		return invoice;
-	}
+      } else {
+        invoice.setPurchaseOrder(purchaseOrder);
+      }
+    }
 
+    return invoice;
+  }
 }

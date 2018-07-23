@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,48 +27,47 @@ import com.axelor.inject.Beans;
 
 public class AccountingBatchBankPaymentService extends AccountingBatchService {
 
-    @Override
-    public Batch run(Model batchModel) throws AxelorException {
-        Batch batch;
-        AccountingBatch accountingBatch = (AccountingBatch) batchModel;
+  @Override
+  public Batch run(Model batchModel) throws AxelorException {
+    Batch batch;
+    AccountingBatch accountingBatch = (AccountingBatch) batchModel;
 
-        switch (accountingBatch.getActionSelect()) {
-        case AccountingBatchRepository.ACTION_DIRECT_DEBIT:
-            batch = directDebit(accountingBatch);
-            break;
-        case AccountingBatchRepository.ACTION_BANK_STATEMENT:
-            batch = bankStatement(accountingBatch);
-            break;
-        default:
-            batch = super.run(accountingBatch);
-        }
-
-        return batch;
+    switch (accountingBatch.getActionSelect()) {
+      case AccountingBatchRepository.ACTION_DIRECT_DEBIT:
+        batch = directDebit(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_BANK_STATEMENT:
+        batch = bankStatement(accountingBatch);
+        break;
+      default:
+        batch = super.run(accountingBatch);
     }
 
-    @Override
-    public Batch directDebit(AccountingBatch accountingBatch) {
-        Class<? extends BatchDirectDebit> batchClass;
+    return batch;
+  }
 
-        switch (accountingBatch.getDirectDebitDataTypeSelect()) {
-        case AccountingBatchRepository.DIRECT_DEBIT_DATA_CUSTOMER_INVOICE:
-            batchClass = BatchDirectDebitCustomerInvoice.class;
-            break;
-        case AccountingBatchRepository.DIRECT_DEBIT_DATA_PAYMENT_SCHEDULE:
-            batchClass = BatchDirectDebitPaymentSchedule.class;
-            break;
-        case AccountingBatchRepository.DIRECT_DEBIT_DATA_MONTHLY_PAYMENT_SCHEDULE:
-            batchClass = BatchDirectDebitMonthlyPaymentSchedule.class;
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid direct debit data type");
-        }
+  @Override
+  public Batch directDebit(AccountingBatch accountingBatch) {
+    Class<? extends BatchDirectDebit> batchClass;
 
-        return Beans.get(batchClass).run(accountingBatch);
+    switch (accountingBatch.getDirectDebitDataTypeSelect()) {
+      case AccountingBatchRepository.DIRECT_DEBIT_DATA_CUSTOMER_INVOICE:
+        batchClass = BatchDirectDebitCustomerInvoice.class;
+        break;
+      case AccountingBatchRepository.DIRECT_DEBIT_DATA_PAYMENT_SCHEDULE:
+        batchClass = BatchDirectDebitPaymentSchedule.class;
+        break;
+      case AccountingBatchRepository.DIRECT_DEBIT_DATA_MONTHLY_PAYMENT_SCHEDULE:
+        batchClass = BatchDirectDebitMonthlyPaymentSchedule.class;
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid direct debit data type");
     }
 
-    public Batch bankStatement(AccountingBatch accountingBatch) {
-        return Beans.get(BatchBankStatement.class).run(accountingBatch);
-    }
+    return Beans.get(batchClass).run(accountingBatch);
+  }
 
+  public Batch bankStatement(AccountingBatch accountingBatch) {
+    return Beans.get(BatchBankStatement.class).run(accountingBatch);
+  }
 }

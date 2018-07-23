@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,33 +26,24 @@ import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
-	protected InvoiceService invoiceService;
-	
-	@Inject
-	private BatchRepository batchRepo;
-	
-	@Inject
-	protected InvoiceRepository invoiceRepo;
+  protected InvoiceService invoiceService;
 
-	
-	protected BatchStrategy( InvoiceService invoiceService ) {
+  @Inject private BatchRepository batchRepo;
 
-		super();
-		this.invoiceService = invoiceService;
-		
-		
-	}
-	
-	
-	protected void updateInvoice( Invoice invoice ){
-		
-		if (invoice != null) {
-			
-			invoice.addBatchSetItem( batchRepo.find( batch.getId() ) );
-			incrementDone();
-			
-		}
-		
-	}
-	
+  @Inject protected InvoiceRepository invoiceRepo;
+
+  protected BatchStrategy(InvoiceService invoiceService) {
+
+    super();
+    this.invoiceService = invoiceService;
+  }
+
+  protected void updateInvoice(Invoice invoice) {
+
+    if (invoice != null) {
+
+      invoice.addBatchSetItem(batchRepo.find(batch.getId()));
+      incrementDone();
+    }
+  }
 }

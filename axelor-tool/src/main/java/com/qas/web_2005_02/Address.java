@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
+ * Classe Java pour anonymous complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -40,41 +39,33 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "qaAddress"
-})
+@XmlType(
+  name = "",
+  propOrder = {"qaAddress"}
+)
 @XmlRootElement(name = "Address")
 public class Address {
 
-    @XmlElement(name = "QAAddress", required = true)
-    protected QAAddressType qaAddress;
+  @XmlElement(name = "QAAddress", required = true)
+  protected QAAddressType qaAddress;
 
-    /**
-     * Obtient la valeur de la propriété qaAddress.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QAAddressType }
-     *     
-     */
-    public QAAddressType getQAAddress() {
-        return qaAddress;
-    }
+  /**
+   * Obtient la valeur de la propriété qaAddress.
+   *
+   * @return possible object is {@link QAAddressType }
+   */
+  public QAAddressType getQAAddress() {
+    return qaAddress;
+  }
 
-    /**
-     * Définit la valeur de la propriété qaAddress.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QAAddressType }
-     *     
-     */
-    public void setQAAddress(QAAddressType value) {
-        this.qaAddress = value;
-    }
-
+  /**
+   * Définit la valeur de la propriété qaAddress.
+   *
+   * @param value allowed object is {@link QAAddressType }
+   */
+  public void setQAAddress(QAAddressType value) {
+    this.qaAddress = value;
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -22,21 +22,19 @@ import com.axelor.apps.account.db.AccountEquiv;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 
-public class FiscalPositionServiceAccountImpl extends FiscalPositionServiceImpl  {
-	
+public class FiscalPositionServiceAccountImpl extends FiscalPositionServiceImpl {
 
-	public Account getAccount(FiscalPosition fiscalPosition, Account account)  {
-		
-		if(fiscalPosition != null && fiscalPosition.getAccountEquivList() != null)  {
-			for(AccountEquiv accountEquiv : fiscalPosition.getAccountEquivList())  {
-				
-				if(accountEquiv.getFromAccount().equals(account) && accountEquiv.getToAccount() != null)  {
-					return accountEquiv.getToAccount();
-				}
-			}
-		}
-		
-		return account;
-	}
-	
+  public Account getAccount(FiscalPosition fiscalPosition, Account account) {
+
+    if (fiscalPosition != null && fiscalPosition.getAccountEquivList() != null) {
+      for (AccountEquiv accountEquiv : fiscalPosition.getAccountEquivList()) {
+
+        if (accountEquiv.getFromAccount().equals(account) && accountEquiv.getToAccount() != null) {
+          return accountEquiv.getToAccount();
+        }
+      }
+    }
+
+    return account;
+  }
 }

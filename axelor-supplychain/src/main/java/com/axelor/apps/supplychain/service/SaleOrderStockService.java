@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,20 +27,17 @@ import com.axelor.exception.AxelorException;
 
 public interface SaleOrderStockService {
 
+  public Location getLocation(Company company);
 
-	public Location getLocation(Company company);
+  public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-	public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
 
-	public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
-	
-	public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine, Company company) throws AxelorException;
+  public StockMoveLine createStockMoveLine(
+      StockMove stockMove, SaleOrderLine saleOrderLine, Company company) throws AxelorException;
 
-	public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException;
+  public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException;
 
-	//Check if existing at least one stockMove not canceled for the saleOrder
-	public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder);
+  // Check if existing at least one stockMove not canceled for the saleOrder
+  public boolean existActiveStockMoveForSaleOrder(SaleOrder saleOrder);
 }
-
-
-

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,22 +27,22 @@ import com.google.inject.Inject;
 
 public class AccountingBatchController {
 
-    protected final AccountingBatchBankPaymentService accountingBatchService;
-    protected final AccountingBatchRepository accountingBatchRepo;
+  protected final AccountingBatchBankPaymentService accountingBatchService;
+  protected final AccountingBatchRepository accountingBatchRepo;
 
-    @Inject
-    public AccountingBatchController(AccountingBatchBankPaymentService accountingBatchService,
-            AccountingBatchRepository accountingBatchRepo) {
-        this.accountingBatchService = accountingBatchService;
-        this.accountingBatchRepo = accountingBatchRepo;
-    }
+  @Inject
+  public AccountingBatchController(
+      AccountingBatchBankPaymentService accountingBatchService,
+      AccountingBatchRepository accountingBatchRepo) {
+    this.accountingBatchService = accountingBatchService;
+    this.accountingBatchRepo = accountingBatchRepo;
+  }
 
-    public void actionBankStatement(ActionRequest request, ActionResponse response) {
-        AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
-        accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
-        Batch batch = accountingBatchService.bankStatement(accountingBatch);
-        response.setFlash(batch.getComments());
-        response.setReload(true);
-    }
-
+  public void actionBankStatement(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+    Batch batch = accountingBatchService.bankStatement(accountingBatch);
+    response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 }

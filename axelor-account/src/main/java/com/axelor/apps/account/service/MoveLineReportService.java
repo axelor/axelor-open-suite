@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,66 +17,54 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public interface MoveLineReportService {
 
+  public String getMoveLineList(MoveLineReport moveLineReport) throws AxelorException;
 
-	public String getMoveLineList(MoveLineReport moveLineReport) throws AxelorException;
-	
-	
-	public String buildQuery(MoveLineReport moveLineReport) throws AxelorException;
+  public String buildQuery(MoveLineReport moveLineReport) throws AxelorException;
 
+  public String addParams(String paramQuery, Object param);
 
+  public String addParams(String paramQuery);
 
-	public String addParams(String paramQuery, Object param);
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void setSequence(MoveLineReport moveLineReport, String sequence);
 
-	public String addParams(String paramQuery);
+  public String getSequence(MoveLineReport moveLineReport) throws AxelorException;
 
+  public JournalType getJournalType(MoveLineReport moveLineReport) throws AxelorException;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setSequence(MoveLineReport moveLineReport, String sequence);
+  public Account getAccount(MoveLineReport moveLineReport);
 
-	public String getSequence(MoveLineReport moveLineReport) throws AxelorException;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void setStatus(MoveLineReport moveLineReport);
 
-	public JournalType getJournalType(MoveLineReport moveLineReport) throws AxelorException;
+  /** @param moveLineReport */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void setPublicationDateTime(MoveLineReport moveLineReport);
 
-	public Account getAccount(MoveLineReport moveLineReport);
+  /**
+   * @param queryFilter
+   * @return
+   */
+  public BigDecimal getDebitBalance();
 
+  /**
+   * @param queryFilter
+   * @return
+   */
+  public BigDecimal getCreditBalance();
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setStatus(MoveLineReport moveLineReport);
+  public BigDecimal getDebitBalanceType4();
 
-	/**
-	 * @param moveLineReport
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void setPublicationDateTime(MoveLineReport moveLineReport);
+  public BigDecimal getCreditBalance(MoveLineReport moveLineReport, String queryFilter);
 
-	/**
-	 * @param queryFilter
-	 * @return
-	 */
-	public BigDecimal getDebitBalance();
-
-
-	/**
-	 * @param queryFilter
-	 * @return
-	 */
-	public BigDecimal getCreditBalance();
-
-
-	public BigDecimal getDebitBalanceType4();
-
-
-	public BigDecimal getCreditBalance(MoveLineReport moveLineReport, String queryFilter);
-
-	public BigDecimal getCreditBalanceType4();
+  public BigDecimal getCreditBalanceType4();
 }

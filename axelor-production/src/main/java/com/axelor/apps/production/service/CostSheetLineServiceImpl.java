@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.UnitRepository;
@@ -38,153 +30,255 @@ import com.axelor.apps.production.db.repo.CostSheetLineRepository;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class CostSheetLineServiceImpl implements CostSheetLineService  {
+public class CostSheetLineServiceImpl implements CostSheetLineService {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	protected GeneralService generalService;
-	
-	@Inject
-	protected CostSheetLineRepository costSheetLineRepository;
-	
-	@Inject
-	protected CostSheetGroupRepository costSheetGroupRepository;
-	
-	@Inject
-	protected UnitConversionService unitConversionService;
-	
-	@Inject
-	protected UnitRepository unitRepo;
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	public CostSheetLine createCostSheetLine(String name, String code, int bomLevel, BigDecimal consumptionQty, BigDecimal costPrice, 
-			CostSheetGroup costSheetGroup, Product product, int typeSelect, Unit unit, WorkCenter workCenter, CostSheetLine parentCostSheetLine)  {
-		
-		logger.debug("Add a new line of cost sheet ({} - {} - BOM level {} - cost price : {})", code, name, bomLevel, costPrice);
-		
-		CostSheetLine costSheetLine = new CostSheetLine(code, name);
-		costSheetLine.setBomLevel(bomLevel);
-		costSheetLine.setConsumptionQty(consumptionQty);
-		costSheetLine.setCostSheetGroup(costSheetGroup);
-		costSheetLine.setProduct(product);
-		costSheetLine.setTypeSelect(typeSelect);
-		if(unit != null){
-			costSheetLine.setUnit(unitRepo.find(unit.getId()));
-		}
-		costSheetLine.setWorkCenter(workCenter);
-		
-		if(costPrice == null)  {
-			costPrice = BigDecimal.ZERO;
-		}
+  @Inject protected GeneralService generalService;
 
-		costSheetLine.setCostPrice(costPrice.setScale(generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN));
-		
-		if(parentCostSheetLine != null)  {
-			parentCostSheetLine.addCostSheetLineListItem(costSheetLine);
-			this.createIndirectCostSheetGroups(costSheetGroup, parentCostSheetLine, costSheetLine.getCostPrice());
-		}
-		
-		return costSheetLine;
-	}
+  @Inject protected CostSheetLineRepository costSheetLineRepository;
 
-	public CostSheetLine createProducedProductCostSheetLine(Product product, Unit unit, BigDecimal consumptionQty)  {
-		
-		return this.createCostSheetLine(product.getName(), product.getCode(), 0, consumptionQty, null, product.getCostSheetGroup(), 
-				product, CostSheetLineRepository.TYPE_PRODUCED_PRODUCT, unit, null, null);
-	}
-	
-	public CostSheetLine createResidualProductCostSheetLine(Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException  {
-		
-		if(generalService.getGeneral().getSubtractProdResidualOnCostSheet())  {  consumptionQty = consumptionQty.negate();  }
-		
-		BigDecimal costPrice = unitConversionService.convert(product.getUnit(), unit, product.getCostPrice().multiply(consumptionQty));
-		
-		return this.createCostSheetLine(product.getName(), product.getCode(), 0, consumptionQty, costPrice, product.getCostSheetGroup(), 
-				product, CostSheetLineRepository.TYPE_PRODUCED_PRODUCT, unit, null, null);
-	}
- 	
-	public CostSheetLine createConsumedProductCostSheetLine(Product product, Unit unit, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty) throws AxelorException  {
-		
-		BigDecimal costPrice = unitConversionService.convert(product.getUnit(), unit, product.getCostPrice().multiply(consumptionQty));
-		
-		return this.createCostSheetLine(product.getName(), product.getCode(), bomLevel, consumptionQty, costPrice, product.getCostSheetGroup(), 
-				product, CostSheetLineRepository.TYPE_CONSUMED_PRODUCT, unit, null, parentCostSheetLine);
-	
-	}
-	
-	public CostSheetLine createWorkCenterCostSheetLine(WorkCenter workCenter, int priority, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal costPrice, Unit unit)  {
-		
-		return this.createCostSheetLine(workCenter.getName(), priority + " - " + workCenter.getCode(), bomLevel, consumptionQty, costPrice, workCenter.getCostSheetGroup(), 
-				null, CostSheetLineRepository.TYPE_WORK_CENTER, unit, workCenter, parentCostSheetLine);
-		
-	}
- 	
-	protected List<CostSheetGroup> getIndirectCostSheetGroups(CostSheetGroup costSheetGroup)  {
-		
-		if(costSheetGroup == null)  {  return Lists.newArrayList();  }
-		
-		return costSheetGroupRepository.all().filter("?1 member of self.costSheetGroupSet AND self.costTypeSelect = ?2", costSheetGroup, CostSheetGroupRepository.COST_TYPE_INDIRECT).fetch();
-		
-	}
-	
-	protected void createIndirectCostSheetGroups(CostSheetGroup costSheetGroup, CostSheetLine parentCostSheetLine, BigDecimal costPrice)  {
-		
-		if(costSheetGroup == null)  {  return;  }
-		
-		for(CostSheetGroup indirectCostSheetGroup : this.getIndirectCostSheetGroups(costSheetGroup))  {
-			
-			this.createIndirectCostSheetLine(parentCostSheetLine, indirectCostSheetGroup, costPrice);
-		}
-	}
-	
-	protected CostSheetLine createIndirectCostSheetLine(CostSheetLine parentCostSheetLine, CostSheetGroup costSheetGroup, BigDecimal costPrice)  {
-		
-		CostSheetLine indirectCostSheetLine = this.getCostSheetLine(costSheetGroup, parentCostSheetLine);
-		
-		if(indirectCostSheetLine == null)  {  
-				indirectCostSheetLine = this.createCostSheetLine(costSheetGroup.getCode(), costSheetGroup.getName(), parentCostSheetLine.getBomLevel()+1, BigDecimal.ONE, null, 
-						costSheetGroup, null, CostSheetLineRepository.TYPE_INDIRECT_COST, null, null, parentCostSheetLine);
-				parentCostSheetLine.addCostSheetLineListItem(indirectCostSheetLine);		
-		}
-		
-		indirectCostSheetLine.setCostPrice(indirectCostSheetLine.getCostPrice().add(this.getIndirectCostPrice(costSheetGroup, costPrice)));
-		
-		return indirectCostSheetLine;
-		
-	}
-	
-	protected BigDecimal getIndirectCostPrice(CostSheetGroup costSheetGroup, BigDecimal costPrice)  {
+  @Inject protected CostSheetGroupRepository costSheetGroupRepository;
 
-		BigDecimal indirectCostPrice = BigDecimal.ZERO;
-		
-		indirectCostPrice = costPrice.multiply(costSheetGroup.getRate()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN);
-		
-		if(costSheetGroup.getRateTypeSelect() == CostSheetGroupRepository.COST_TYPE_SURCHARGE) {
-			indirectCostPrice = indirectCostPrice.add(costPrice);
-		}
-		
-		return indirectCostPrice;
-		
-	}
-	
-	protected CostSheetLine getCostSheetLine(CostSheetGroup indirectCostSheetGroup, CostSheetLine parentCostSheetLine)  {
-		
-		for(CostSheetLine costSheetLine : parentCostSheetLine.getCostSheetLineList())  {
-			
-			CostSheetGroup costSheetGroup = costSheetLine.getCostSheetGroup();
-			
-			if(costSheetGroup != null && costSheetGroup.getCostTypeSelect() == CostSheetGroupRepository.COST_TYPE_INDIRECT && costSheetGroup.equals(indirectCostSheetGroup))  {
-				return costSheetLine;
-			}
-			
-		}
-		
-		return null;
-		
-	}
-	
-	
-	
-	
+  @Inject protected UnitConversionService unitConversionService;
+
+  @Inject protected UnitRepository unitRepo;
+
+  public CostSheetLine createCostSheetLine(
+      String name,
+      String code,
+      int bomLevel,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice,
+      CostSheetGroup costSheetGroup,
+      Product product,
+      int typeSelect,
+      Unit unit,
+      WorkCenter workCenter,
+      CostSheetLine parentCostSheetLine) {
+
+    logger.debug(
+        "Add a new line of cost sheet ({} - {} - BOM level {} - cost price : {})",
+        code,
+        name,
+        bomLevel,
+        costPrice);
+
+    CostSheetLine costSheetLine = new CostSheetLine(code, name);
+    costSheetLine.setBomLevel(bomLevel);
+    costSheetLine.setConsumptionQty(consumptionQty);
+    costSheetLine.setCostSheetGroup(costSheetGroup);
+    costSheetLine.setProduct(product);
+    costSheetLine.setTypeSelect(typeSelect);
+    if (unit != null) {
+      costSheetLine.setUnit(unitRepo.find(unit.getId()));
+    }
+    costSheetLine.setWorkCenter(workCenter);
+
+    if (costPrice == null) {
+      costPrice = BigDecimal.ZERO;
+    }
+
+    costSheetLine.setCostPrice(
+        costPrice.setScale(
+            generalService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN));
+
+    if (parentCostSheetLine != null) {
+      parentCostSheetLine.addCostSheetLineListItem(costSheetLine);
+      this.createIndirectCostSheetGroups(
+          costSheetGroup, parentCostSheetLine, costSheetLine.getCostPrice());
+    }
+
+    return costSheetLine;
+  }
+
+  public CostSheetLine createProducedProductCostSheetLine(
+      Product product, Unit unit, BigDecimal consumptionQty) {
+
+    return this.createCostSheetLine(
+        product.getName(),
+        product.getCode(),
+        0,
+        consumptionQty,
+        null,
+        product.getCostSheetGroup(),
+        product,
+        CostSheetLineRepository.TYPE_PRODUCED_PRODUCT,
+        unit,
+        null,
+        null);
+  }
+
+  public CostSheetLine createResidualProductCostSheetLine(
+      Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException {
+
+    if (generalService.getGeneral().getSubtractProdResidualOnCostSheet()) {
+      consumptionQty = consumptionQty.negate();
+    }
+
+    BigDecimal costPrice =
+        unitConversionService.convert(
+            product.getUnit(), unit, product.getCostPrice().multiply(consumptionQty));
+
+    return this.createCostSheetLine(
+        product.getName(),
+        product.getCode(),
+        0,
+        consumptionQty,
+        costPrice,
+        product.getCostSheetGroup(),
+        product,
+        CostSheetLineRepository.TYPE_PRODUCED_PRODUCT,
+        unit,
+        null,
+        null);
+  }
+
+  public CostSheetLine createConsumedProductCostSheetLine(
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty)
+      throws AxelorException {
+
+    BigDecimal costPrice =
+        unitConversionService.convert(
+            product.getUnit(), unit, product.getCostPrice().multiply(consumptionQty));
+
+    return this.createCostSheetLine(
+        product.getName(),
+        product.getCode(),
+        bomLevel,
+        consumptionQty,
+        costPrice,
+        product.getCostSheetGroup(),
+        product,
+        CostSheetLineRepository.TYPE_CONSUMED_PRODUCT,
+        unit,
+        null,
+        parentCostSheetLine);
+  }
+
+  public CostSheetLine createWorkCenterCostSheetLine(
+      WorkCenter workCenter,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice,
+      Unit unit) {
+
+    return this.createCostSheetLine(
+        workCenter.getName(),
+        priority + " - " + workCenter.getCode(),
+        bomLevel,
+        consumptionQty,
+        costPrice,
+        workCenter.getCostSheetGroup(),
+        null,
+        CostSheetLineRepository.TYPE_WORK_CENTER,
+        unit,
+        workCenter,
+        parentCostSheetLine);
+  }
+
+  protected List<CostSheetGroup> getIndirectCostSheetGroups(CostSheetGroup costSheetGroup) {
+
+    if (costSheetGroup == null) {
+      return Lists.newArrayList();
+    }
+
+    return costSheetGroupRepository
+        .all()
+        .filter(
+            "?1 member of self.costSheetGroupSet AND self.costTypeSelect = ?2",
+            costSheetGroup,
+            CostSheetGroupRepository.COST_TYPE_INDIRECT)
+        .fetch();
+  }
+
+  protected void createIndirectCostSheetGroups(
+      CostSheetGroup costSheetGroup, CostSheetLine parentCostSheetLine, BigDecimal costPrice) {
+
+    if (costSheetGroup == null) {
+      return;
+    }
+
+    for (CostSheetGroup indirectCostSheetGroup : this.getIndirectCostSheetGroups(costSheetGroup)) {
+
+      this.createIndirectCostSheetLine(parentCostSheetLine, indirectCostSheetGroup, costPrice);
+    }
+  }
+
+  protected CostSheetLine createIndirectCostSheetLine(
+      CostSheetLine parentCostSheetLine, CostSheetGroup costSheetGroup, BigDecimal costPrice) {
+
+    CostSheetLine indirectCostSheetLine =
+        this.getCostSheetLine(costSheetGroup, parentCostSheetLine);
+
+    if (indirectCostSheetLine == null) {
+      indirectCostSheetLine =
+          this.createCostSheetLine(
+              costSheetGroup.getCode(),
+              costSheetGroup.getName(),
+              parentCostSheetLine.getBomLevel() + 1,
+              BigDecimal.ONE,
+              null,
+              costSheetGroup,
+              null,
+              CostSheetLineRepository.TYPE_INDIRECT_COST,
+              null,
+              null,
+              parentCostSheetLine);
+      parentCostSheetLine.addCostSheetLineListItem(indirectCostSheetLine);
+    }
+
+    indirectCostSheetLine.setCostPrice(
+        indirectCostSheetLine
+            .getCostPrice()
+            .add(this.getIndirectCostPrice(costSheetGroup, costPrice)));
+
+    return indirectCostSheetLine;
+  }
+
+  protected BigDecimal getIndirectCostPrice(CostSheetGroup costSheetGroup, BigDecimal costPrice) {
+
+    BigDecimal indirectCostPrice = BigDecimal.ZERO;
+
+    indirectCostPrice =
+        costPrice
+            .multiply(costSheetGroup.getRate())
+            .divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN);
+
+    if (costSheetGroup.getRateTypeSelect() == CostSheetGroupRepository.COST_TYPE_SURCHARGE) {
+      indirectCostPrice = indirectCostPrice.add(costPrice);
+    }
+
+    return indirectCostPrice;
+  }
+
+  protected CostSheetLine getCostSheetLine(
+      CostSheetGroup indirectCostSheetGroup, CostSheetLine parentCostSheetLine) {
+
+    for (CostSheetLine costSheetLine : parentCostSheetLine.getCostSheetLineList()) {
+
+      CostSheetGroup costSheetGroup = costSheetLine.getCostSheetGroup();
+
+      if (costSheetGroup != null
+          && costSheetGroup.getCostTypeSelect() == CostSheetGroupRepository.COST_TYPE_INDIRECT
+          && costSheetGroup.equals(indirectCostSheetGroup)) {
+        return costSheetLine;
+      }
+    }
+
+    return null;
+  }
 }

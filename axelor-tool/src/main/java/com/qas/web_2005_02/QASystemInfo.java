@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,12 +25,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
+ * Classe Java pour anonymous complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -42,46 +41,37 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "systemInfo"
-})
+@XmlType(
+  name = "",
+  propOrder = {"systemInfo"}
+)
 @XmlRootElement(name = "QASystemInfo")
 public class QASystemInfo {
 
-    @XmlElement(name = "SystemInfo")
-    protected List<String> systemInfo;
+  @XmlElement(name = "SystemInfo")
+  protected List<String> systemInfo;
 
-    /**
-     * Gets the value of the systemInfo property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the systemInfo property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getSystemInfo().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
-     */
-    public List<String> getSystemInfo() {
-        if (systemInfo == null) {
-            systemInfo = new ArrayList<String>();
-        }
-        return this.systemInfo;
+  /**
+   * Gets the value of the systemInfo property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the systemInfo property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   *    getSystemInfo().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link String }
+   */
+  public List<String> getSystemInfo() {
+    if (systemInfo == null) {
+      systemInfo = new ArrayList<String>();
     }
-
+    return this.systemInfo;
+  }
 }

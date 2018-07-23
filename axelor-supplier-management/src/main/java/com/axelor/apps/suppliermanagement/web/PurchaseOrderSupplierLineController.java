@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -30,25 +30,30 @@ import com.google.inject.Inject;
 
 public class PurchaseOrderSupplierLineController {
 
-	@Inject
-	private PurchaseOrderSupplierLineRepository purchaseOrderSupplierLineRepo;
-	
-	@Inject
-	private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
-	
-	public void accept(ActionRequest request, ActionResponse response){
-		
-		PurchaseOrderSupplierLine purchaseOrderSupplierLine = purchaseOrderSupplierLineRepo.find( request.getContext().asType(PurchaseOrderSupplierLine.class).getId() );
-		
-		if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null && request.getContext().getParentContext() != null){
-			purchaseOrderSupplierLine.setPurchaseOrderLine( Beans.get(PurchaseOrderLineRepository.class).find(request.getContext().getParentContext().asType(PurchaseOrderLine.class).getId()) );
-		}
-		
-		try {
-			purchaseOrderSupplierLineService.accept(purchaseOrderSupplierLine);
-			response.setReload(true);
-			response.setSignal("refresh-app", true);
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
+  @Inject private PurchaseOrderSupplierLineRepository purchaseOrderSupplierLineRepo;
+
+  @Inject private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
+
+  public void accept(ActionRequest request, ActionResponse response) {
+
+    PurchaseOrderSupplierLine purchaseOrderSupplierLine =
+        purchaseOrderSupplierLineRepo.find(
+            request.getContext().asType(PurchaseOrderSupplierLine.class).getId());
+
+    if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null
+        && request.getContext().getParentContext() != null) {
+      purchaseOrderSupplierLine.setPurchaseOrderLine(
+          Beans.get(PurchaseOrderLineRepository.class)
+              .find(
+                  request.getContext().getParentContext().asType(PurchaseOrderLine.class).getId()));
+    }
+
+    try {
+      purchaseOrderSupplierLineService.accept(purchaseOrderSupplierLine);
+      response.setReload(true);
+      response.setSignal("refresh-app", true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

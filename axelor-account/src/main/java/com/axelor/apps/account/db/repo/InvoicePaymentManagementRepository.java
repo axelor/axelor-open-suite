@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,24 +17,22 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.persistence.PersistenceException;
 
 public class InvoicePaymentManagementRepository extends InvoicePaymentRepository {
 
-	@Override
-	public InvoicePayment save(InvoicePayment invoicePayment) {
-		try {
-			Beans.get(InvoicePaymentValidateServiceImpl.class).validate(invoicePayment);
-			return super.save(invoicePayment);
-		} catch (Exception e) {
-			TraceBackService.trace(e);
-			throw new PersistenceException(e);
-		}
-	}
+  @Override
+  public InvoicePayment save(InvoicePayment invoicePayment) {
+    try {
+      Beans.get(InvoicePaymentValidateServiceImpl.class).validate(invoicePayment);
+      return super.save(invoicePayment);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      throw new PersistenceException(e);
+    }
+  }
 }

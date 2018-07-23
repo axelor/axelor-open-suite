@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,24 +17,19 @@
  */
 package com.axelor.apps.base.db;
 
-/**
- * Interface of PriceListLine object. Enum all static variable of packages.
- * 
- */
+/** Interface of PriceListLine object. Enum all static variable of packages. */
 public interface IPriceListLine {
 
-	/**
-	 * Static select for PriceListLine
-	 */
-	
-	// AMOUNT TYPE SELECT
-	static final int AMOUNT_TYPE_PERCENT = 1;
-	static final int AMOUNT_TYPE_FIXED = 2;
-	static final int AMOUNT_TYPE_NONE = 3;
-	
-	// AMOUNT TYPE SELECT
-	static final int TYPE_DISCOUNT = 1;
-	static final int TYPE_ADDITIONNAL = 2;
-	static final int TYPE_REPLACE = 3;
-	
+  /** Static select for PriceListLine */
+
+  // AMOUNT TYPE SELECT
+  static final int AMOUNT_TYPE_PERCENT = 1;
+
+  static final int AMOUNT_TYPE_FIXED = 2;
+  static final int AMOUNT_TYPE_NONE = 3;
+
+  // AMOUNT TYPE SELECT
+  static final int TYPE_DISCOUNT = 1;
+  static final int TYPE_ADDITIONNAL = 2;
+  static final int TYPE_REPLACE = 3;
 }

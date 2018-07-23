@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,33 +27,29 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class MrpController {
-	
-	@Inject
-	protected MrpService mrpService;
-	
-	@Inject
-	protected MrpRepository mrpRepository;
-	
-	public void runCalculation(ActionRequest request, ActionResponse response)  {
-	
-		Mrp mrp = request.getContext().asType(Mrp.class);
-		
-		try {
-			mrpService.runCalculation(mrpRepository.find(mrp.getId()));
-		} catch (AxelorException e) {
-			TraceBackService.trace(response, e);
-			mrpService.reset(mrpRepository.find(mrp.getId()));
-		}
-		finally  {
-			response.setReload(true);
-		}
-		
-	}
-	
-	public void generateAllProposals(ActionRequest request, ActionResponse response) throws AxelorException  {
-		Mrp mrp = request.getContext().asType(Mrp.class);
-		mrpService.generateProposals(mrpRepository.find(mrp.getId()));
-		response.setReload(true);
-	}
-	
+
+  @Inject protected MrpService mrpService;
+
+  @Inject protected MrpRepository mrpRepository;
+
+  public void runCalculation(ActionRequest request, ActionResponse response) {
+
+    Mrp mrp = request.getContext().asType(Mrp.class);
+
+    try {
+      mrpService.runCalculation(mrpRepository.find(mrp.getId()));
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+      mrpService.reset(mrpRepository.find(mrp.getId()));
+    } finally {
+      response.setReload(true);
+    }
+  }
+
+  public void generateAllProposals(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Mrp mrp = request.getContext().asType(Mrp.class);
+    mrpService.generateProposals(mrpRepository.find(mrp.getId()));
+    response.setReload(true);
+  }
 }

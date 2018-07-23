@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,13 +17,9 @@
  */
 package com.axelor.apps.account.service;
 
-import java.util.List;
-import java.util.Set;
-
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -33,123 +29,127 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
+import java.util.Set;
 
+public class AccountingSituationService {
 
-public class AccountingSituationService	{
+  protected AccountingSituationRepository accountingSituationRepo;
 
-	protected AccountingSituationRepository accountingSituationRepo;
+  @Inject
+  public AccountingSituationService(AccountingSituationRepository situationRepository) {
+    this.accountingSituationRepo = situationRepository;
+  }
 
-	@Inject
-	public AccountingSituationService(AccountingSituationRepository situationRepository)  {
-		this.accountingSituationRepo = situationRepository;
-	}
+  public boolean checkAccountingSituationList(
+      List<AccountingSituation> accountingSituationList, Company company) {
 
-	public boolean checkAccountingSituationList(List<AccountingSituation> accountingSituationList, Company company) {
+    if (accountingSituationList != null) {
+      for (AccountingSituation accountingSituation : accountingSituationList) {
 
-		if(accountingSituationList != null)  { 
-			for(AccountingSituation accountingSituation : accountingSituationList) {
-	
-				if(accountingSituation.getCompany().equals(company))  { 
-					return true;
-				}
-			}
-		}
-	
-		return false;
-	}
+        if (accountingSituation.getCompany().equals(company)) {
+          return true;
+        }
+      }
+    }
 
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public List<AccountingSituation> createAccountingSituation(Partner partner) throws AxelorException {
-		Set<Company> companySet = partner.getCompanySet();
+    return false;
+  }
 
-		if (companySet != null) {
-			for (Company company : companySet) {
-				if (!checkAccountingSituationList(partner.getAccountingSituationList(), company)) {
-					createAccountingSituation(partner, company);
-				}
-			}
-		}
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public List<AccountingSituation> createAccountingSituation(Partner partner)
+      throws AxelorException {
+    Set<Company> companySet = partner.getCompanySet();
 
-		return partner.getAccountingSituationList();
-	}
+    if (companySet != null) {
+      for (Company company : companySet) {
+        if (!checkAccountingSituationList(partner.getAccountingSituationList(), company)) {
+          createAccountingSituation(partner, company);
+        }
+      }
+    }
 
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public AccountingSituation createAccountingSituation(Partner partner, Company company) throws AxelorException {
-		AccountingSituation accountingSituation = new AccountingSituation();
-		accountingSituation.setCompany(company);
-		partner.addCompanySetItem(company);
+    return partner.getAccountingSituationList();
+  }
 
-		PaymentMode inPaymentMode = partner.getInPaymentMode();
-		PaymentMode outPaymentMode = partner.getOutPaymentMode();
-		BankDetails defaultBankDetails = company.getDefaultBankDetails();
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public AccountingSituation createAccountingSituation(Partner partner, Company company)
+      throws AxelorException {
+    AccountingSituation accountingSituation = new AccountingSituation();
+    accountingSituation.setCompany(company);
+    partner.addCompanySetItem(company);
 
-		if (inPaymentMode != null) {
-			List<BankDetails> authorizedInBankDetails = Beans.get(PaymentModeService.class)
-					.getCompatibleBankDetailsList(inPaymentMode, company);
-			if (authorizedInBankDetails.contains(defaultBankDetails)) {
-				accountingSituation.setCompanyInBankDetails(defaultBankDetails);
-			}
-		}
+    PaymentMode inPaymentMode = partner.getInPaymentMode();
+    PaymentMode outPaymentMode = partner.getOutPaymentMode();
+    BankDetails defaultBankDetails = company.getDefaultBankDetails();
 
-		if (outPaymentMode != null) {
-			List<BankDetails> authorizedOutBankDetails = Beans.get(PaymentModeService.class)
-					.getCompatibleBankDetailsList(outPaymentMode, company);
-			if (authorizedOutBankDetails.contains(defaultBankDetails)) {
-				accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
-			}
-		}
+    if (inPaymentMode != null) {
+      List<BankDetails> authorizedInBankDetails =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(inPaymentMode, company);
+      if (authorizedInBankDetails.contains(defaultBankDetails)) {
+        accountingSituation.setCompanyInBankDetails(defaultBankDetails);
+      }
+    }
 
-		partner.addAccountingSituationListItem(accountingSituation);
-		return accountingSituationRepo.save(accountingSituation);
-	}
+    if (outPaymentMode != null) {
+      List<BankDetails> authorizedOutBankDetails =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(outPaymentMode, company);
+      if (authorizedOutBankDetails.contains(defaultBankDetails)) {
+        accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
+      }
+    }
 
-	public AccountingSituation getAccountingSituation(Partner partner, Company company)  {
-		
-		if(partner.getAccountingSituationList() == null)  {  return null;  }
-		
-		for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
-			
-			if(accountingSituation.getCompany().equals(company))  {
-				
-				return accountingSituation;
-				
-			}
-		}
-		
-		return null;
-		
-	}
+    partner.addAccountingSituationListItem(accountingSituation);
+    return accountingSituationRepo.save(accountingSituation);
+  }
 
-	/**
-	 * Creates the domain for the bank details in Accounting Situation
-	 * @param accountingSituation
-	 * @param isInBankDetails  true if the field is companyInBankDetails
-	 *                         false if the field is companyOutBankDetails
-	 * @return the domain of the bank details field
-	 */
-	public String createDomainForBankDetails(AccountingSituation accountingSituation, boolean isInBankDetails) {
-	    String domain = "";
-	    List<BankDetails> authorizedBankDetails;
-		if (isInBankDetails) {
-			authorizedBankDetails = Beans.get(PaymentModeService.class).
-					getCompatibleBankDetailsList(
-							accountingSituation.getPartner().getInPaymentMode(),
-							accountingSituation.getCompany()
-					);
-		}
-		else {
-			authorizedBankDetails = Beans.get(PaymentModeService.class).
-					getCompatibleBankDetailsList(
-							accountingSituation.getPartner().getOutPaymentMode(),
-							accountingSituation.getCompany()
-					);
-		}
-		String idList = StringTool.getIdFromCollection(authorizedBankDetails);
-		if(idList.equals("")) {
-			return domain;
-		}
-		domain = "self.id IN (" + idList + ") AND self.active = true";
-		return domain;
-	}
+  public AccountingSituation getAccountingSituation(Partner partner, Company company) {
 
+    if (partner.getAccountingSituationList() == null) {
+      return null;
+    }
+
+    for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
+
+      if (accountingSituation.getCompany().equals(company)) {
+
+        return accountingSituation;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Creates the domain for the bank details in Accounting Situation
+   *
+   * @param accountingSituation
+   * @param isInBankDetails true if the field is companyInBankDetails false if the field is
+   *     companyOutBankDetails
+   * @return the domain of the bank details field
+   */
+  public String createDomainForBankDetails(
+      AccountingSituation accountingSituation, boolean isInBankDetails) {
+    String domain = "";
+    List<BankDetails> authorizedBankDetails;
+    if (isInBankDetails) {
+      authorizedBankDetails =
+          Beans.get(PaymentModeService.class)
+              .getCompatibleBankDetailsList(
+                  accountingSituation.getPartner().getInPaymentMode(),
+                  accountingSituation.getCompany());
+    } else {
+      authorizedBankDetails =
+          Beans.get(PaymentModeService.class)
+              .getCompatibleBankDetailsList(
+                  accountingSituation.getPartner().getOutPaymentMode(),
+                  accountingSituation.getCompany());
+    }
+    String idList = StringTool.getIdFromCollection(authorizedBankDetails);
+    if (idList.equals("")) {
+      return domain;
+    }
+    domain = "self.id IN (" + idList + ") AND self.active = true";
+    return domain;
+  }
 }

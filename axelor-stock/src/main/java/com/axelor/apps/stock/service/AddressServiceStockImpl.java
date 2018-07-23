@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,23 +21,22 @@ import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.google.inject.Inject;
 
+public class AddressServiceStockImpl extends AddressServiceImpl {
 
-public class AddressServiceStockImpl extends AddressServiceImpl  {
-	
-	@Inject
-	private StockMoveRepository stockMoveRepo;
-	
-	@Override
-	public boolean checkAddressUsed(Long addressId){
-		
-		super.checkAddressUsed(addressId);
+  @Inject private StockMoveRepository stockMoveRepo;
 
-		if(addressId != null){
-			if(stockMoveRepo.all().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
-				return true;
-		}
-		return false;
-	}
-	
-	
+  @Override
+  public boolean checkAddressUsed(Long addressId) {
+
+    super.checkAddressUsed(addressId);
+
+    if (addressId != null) {
+      if (stockMoveRepo
+              .all()
+              .filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1", addressId)
+              .fetchOne()
+          != null) return true;
+    }
+    return false;
+  }
 }

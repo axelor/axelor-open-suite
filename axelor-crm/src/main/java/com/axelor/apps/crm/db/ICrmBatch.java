@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,19 +19,15 @@ package com.axelor.apps.crm.db;
 
 /**
  * Interface of Event object. Enum all static variable of object.
- * 
+ *
  * @author dubaux
- * 
  */
 public interface ICrmBatch {
 
+  /** Static select in CrmBatch */
 
-	/**
-	 * Static select in CrmBatch
-	 */
+  // ACTION TYPE
+  static final int BATCH_EVENT_REMINDER = 21;
 
-	// ACTION TYPE
-	static final int BATCH_EVENT_REMINDER = 21;
-	static final int BATCH_TARGET = 22;
-	
+  static final int BATCH_TARGET = 22;
 }

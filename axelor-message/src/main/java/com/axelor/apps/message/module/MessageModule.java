@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -29,15 +29,14 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.mail.service.MailServiceImpl;
 
-
 public class MessageModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-    	bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
-        bind(MessageService.class).to(MessageServiceImpl.class);
-        bind(MessageRepository.class).to(MessageManagementRepository.class);
-        bind(MailAccountService.class).to(MailAccountServiceImpl.class);
-        bind(MailServiceImpl.class).to(MailServiceMessageImpl.class);
-    }
+  @Override
+  protected void configure() {
+    bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
+    bind(MessageService.class).to(MessageServiceImpl.class);
+    bind(MessageRepository.class).to(MessageManagementRepository.class);
+    bind(MailAccountService.class).to(MailAccountServiceImpl.class);
+    bind(MailServiceImpl.class).to(MailServiceMessageImpl.class);
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -18,10 +18,8 @@
 package com.axelor.apps.bankpayment.ebics.web;
 
 public class EbicsBankController {
-	
-	public String normalizeFaxNumber(String faxNumber){
-		return faxNumber.replaceAll("\\s|\\.", "");
-	}
-	
-	
+
+  public String normalizeFaxNumber(String faxNumber) {
+    return faxNumber.replaceAll("\\s|\\.", "");
+  }
 }

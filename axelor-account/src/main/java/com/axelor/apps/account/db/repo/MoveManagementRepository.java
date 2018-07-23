@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveSequenceService;
@@ -28,57 +26,56 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.persistence.PersistenceException;
 
 public class MoveManagementRepository extends MoveRepository {
 
-	@Override
-	public Move copy(Move entity, boolean deep) {
+  @Override
+  public Move copy(Move entity, boolean deep) {
 
-		Move copy = super.copy(entity, deep);
+    Move copy = super.copy(entity, deep);
 
-		Period period=null;
-		try {
-			period = Beans.get(PeriodService.class).rightPeriod(entity.getDate(),entity.getCompany());
-		} catch (AxelorException e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-		copy.setStatusSelect(STATUS_DRAFT);
-		copy.setReference(null);
-		copy.setDate(Beans.get(GeneralService.class).getTodayDate());
-		copy.setExportNumber(null);
-		copy.setExportDate(null);
-		copy.setMoveLineReport(null);
-		copy.setValidationDate(null);
-		copy.setPeriod(period);
-		copy.setAccountingOk(false);
-		copy.setIgnoreInReminderOk(false);
-		copy.setPaymentVoucher(null);
-		copy.setRejectOk(false);
+    Period period = null;
+    try {
+      period = Beans.get(PeriodService.class).rightPeriod(entity.getDate(), entity.getCompany());
+    } catch (AxelorException e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+    copy.setStatusSelect(STATUS_DRAFT);
+    copy.setReference(null);
+    copy.setDate(Beans.get(GeneralService.class).getTodayDate());
+    copy.setExportNumber(null);
+    copy.setExportDate(null);
+    copy.setMoveLineReport(null);
+    copy.setValidationDate(null);
+    copy.setPeriod(period);
+    copy.setAccountingOk(false);
+    copy.setIgnoreInReminderOk(false);
+    copy.setPaymentVoucher(null);
+    copy.setRejectOk(false);
 
-		return copy;
-	}
-	
-	
-	@Override
-	public Move save(Move move) {
-		try {
+    return copy;
+  }
 
-			Beans.get(MoveSequenceService.class).setDraftSequence(move);
+  @Override
+  public Move save(Move move) {
+    try {
 
-			return super.save(move);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-	
+      Beans.get(MoveSequenceService.class).setDraftSequence(move);
 
-	@Override
-	public void remove(Move entity){
-		
-		if(!entity.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)){
-			throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
-		}else{
-			entity.setArchived(true);
-		}
-	}
+      return super.save(move);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
+
+  @Override
+  public void remove(Move entity) {
+
+    if (!entity.getStatusSelect().equals(MoveRepository.STATUS_DRAFT)) {
+      throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
+    } else {
+      entity.setArchived(true);
+    }
+  }
 }

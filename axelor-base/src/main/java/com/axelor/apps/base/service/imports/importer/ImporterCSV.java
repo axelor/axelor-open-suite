@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,26 +17,22 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
-import java.io.IOException;
-
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
+import java.io.IOException;
 
 class ImporterCSV extends Importer {
 
-	@Override
-	protected ImportHistory process( String bind, String data ) throws IOException {
+  @Override
+  protected ImportHistory process(String bind, String data) throws IOException {
 
-		CSVImporter importer = new CSVImporter( bind, data );
-		
-		ImporterListener listener = new ImporterListener( getConfiguration().getName() ); 		
-		importer.addListener( listener );
-		importer.run();
-		
-		return addHistory( listener );
-		
-	}
+    CSVImporter importer = new CSVImporter(bind, data);
 
+    ImporterListener listener = new ImporterListener(getConfiguration().getName());
+    importer.addListener(listener);
+    importer.run();
 
+    return addHistory(listener);
+  }
 }

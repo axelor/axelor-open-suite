@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.production.web;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
@@ -34,113 +30,123 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
+import java.util.List;
+import javax.inject.Inject;
 
 public class BillOfMaterialController {
 
-	@Inject
-	BillOfMaterialService billOfMaterialService;
-	
-	@Inject
-	CostSheetService costSheetService;
-	
-	@Inject
-	BillOfMaterialRepository billOfMaterialRepo;
-	
-	@Inject
-	protected ProdProcessService prodProcessService;
-	
-	public void computeCostPrice (ActionRequest request, ActionResponse response) throws AxelorException {
+  @Inject BillOfMaterialService billOfMaterialService;
 
-		BillOfMaterial billOfMaterial = request.getContext().asType( BillOfMaterial.class );
+  @Inject CostSheetService costSheetService;
 
-		CostSheet costSheet = costSheetService.computeCostPrice(billOfMaterialRepo.find(billOfMaterial.getId()));
-		
-		response.setView(ActionView
-				.define(String.format(I18n.get("Cost sheet - %s"), billOfMaterial.getName()))
-				.model(CostSheet.class.getName())
-				.param("popup", "true")
-				.param("show-toolbar", "false")
-				.param("show-confirm", "false")
-				.param("popup-save", "false")
-				.add("grid", "cost-sheet-bill-of-material-grid")
-				.add("form", "cost-sheet-bill-of-material-form")
-				.context("_showRecord", String.valueOf(costSheet.getId())).map());
-		
-		response.setReload(true);
-		
-	}
-	
-	
-	public void updateProductCostPrice (ActionRequest request, ActionResponse response) throws AxelorException {
+  @Inject BillOfMaterialRepository billOfMaterialRepo;
 
-		BillOfMaterial billOfMaterial = request.getContext().asType( BillOfMaterial.class );
+  @Inject protected ProdProcessService prodProcessService;
 
-		billOfMaterialService.updateProductCostPrice(billOfMaterialRepo.find(billOfMaterial.getId()));
-		
-		response.setReload(true);
-		
-	}
-	
-	public void checkOriginalBillOfMaterial(ActionRequest request, ActionResponse response){
-		
-		BillOfMaterial billOfMaterial = billOfMaterialRepo.find( request.getContext().asType(BillOfMaterial.class).getId() );
-		
-		List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
-		BillOfMaterialSet = billOfMaterialRepo.all().filter("self.originalBillOfMaterial = :origin").bind("origin", billOfMaterial).fetch();
-		String message;
-		
-		if(!BillOfMaterialSet.isEmpty()){
-			
-			String existingVersions = "";
-			for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
-				existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
-			}
-			message = String.format(I18n.get("This bill of material already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"), existingVersions);
-		}
-		else{
-			message = I18n.get("Do you really wish to create a new version of this bill of material ?");
-		}
-		
-		response.setAlert(message);
-		
-	}
-	
-	public void generateNewVersion(ActionRequest request, ActionResponse response){
-		
-		BillOfMaterial billOfMaterial = billOfMaterialRepo.find( request.getContext().asType(BillOfMaterial.class).getId() );
-		
-		BillOfMaterial copy = billOfMaterialService.generateNewVersion(billOfMaterial);
-		
-		response.setView(ActionView.define("Bill of material")
-				.model(BillOfMaterial.class.getName())
-				   .add("form","bill-of-material-form")
-				   .add("grid","bill-of-material-grid")
-				   .domain("self.isRawMaterial = false AND self.personalized = false")
-				   .context("_showRecord", String.valueOf(copy.getId()))
-				   .map());
-	}
-	
-	public void validateProdProcess(ActionRequest request, ActionResponse response) throws AxelorException{
-		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-		if (billOfMaterial != null && billOfMaterial.getProdProcess() != null){
-			if(billOfMaterial.getProdProcess().getIsConsProOnOperation()){
-				prodProcessService.validateProdProcess(billOfMaterial.getProdProcess(),billOfMaterial);
-			}
-		}
-	}
-	
-	public void openBomTree(ActionRequest request, ActionResponse response) {
-		
-		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-		billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
-		
-		TempBomTree tempBomTree = billOfMaterialService.generateTree(billOfMaterial);
-		
-		response.setView(ActionView.define(I18n.get("Bill of material"))
-				.model(TempBomTree.class.getName())
-				.add("tree", "bill-of-material-tree")
-				.context("_tempBomTreeId", tempBomTree.getId())
-				.map());
-				
-	}
+  public void computeCostPrice(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+
+    CostSheet costSheet =
+        costSheetService.computeCostPrice(billOfMaterialRepo.find(billOfMaterial.getId()));
+
+    response.setView(
+        ActionView.define(String.format(I18n.get("Cost sheet - %s"), billOfMaterial.getName()))
+            .model(CostSheet.class.getName())
+            .param("popup", "true")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("popup-save", "false")
+            .add("grid", "cost-sheet-bill-of-material-grid")
+            .add("form", "cost-sheet-bill-of-material-form")
+            .context("_showRecord", String.valueOf(costSheet.getId()))
+            .map());
+
+    response.setReload(true);
+  }
+
+  public void updateProductCostPrice(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+
+    billOfMaterialService.updateProductCostPrice(billOfMaterialRepo.find(billOfMaterial.getId()));
+
+    response.setReload(true);
+  }
+
+  public void checkOriginalBillOfMaterial(ActionRequest request, ActionResponse response) {
+
+    BillOfMaterial billOfMaterial =
+        billOfMaterialRepo.find(request.getContext().asType(BillOfMaterial.class).getId());
+
+    List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
+    BillOfMaterialSet =
+        billOfMaterialRepo
+            .all()
+            .filter("self.originalBillOfMaterial = :origin")
+            .bind("origin", billOfMaterial)
+            .fetch();
+    String message;
+
+    if (!BillOfMaterialSet.isEmpty()) {
+
+      String existingVersions = "";
+      for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
+        existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
+      }
+      message =
+          String.format(
+              I18n.get(
+                  "This bill of material already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
+              existingVersions);
+    } else {
+      message = I18n.get("Do you really wish to create a new version of this bill of material ?");
+    }
+
+    response.setAlert(message);
+  }
+
+  public void generateNewVersion(ActionRequest request, ActionResponse response) {
+
+    BillOfMaterial billOfMaterial =
+        billOfMaterialRepo.find(request.getContext().asType(BillOfMaterial.class).getId());
+
+    BillOfMaterial copy = billOfMaterialService.generateNewVersion(billOfMaterial);
+
+    response.setView(
+        ActionView.define("Bill of material")
+            .model(BillOfMaterial.class.getName())
+            .add("form", "bill-of-material-form")
+            .add("grid", "bill-of-material-grid")
+            .domain("self.isRawMaterial = false AND self.personalized = false")
+            .context("_showRecord", String.valueOf(copy.getId()))
+            .map());
+  }
+
+  public void validateProdProcess(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    if (billOfMaterial != null && billOfMaterial.getProdProcess() != null) {
+      if (billOfMaterial.getProdProcess().getIsConsProOnOperation()) {
+        prodProcessService.validateProdProcess(billOfMaterial.getProdProcess(), billOfMaterial);
+      }
+    }
+  }
+
+  public void openBomTree(ActionRequest request, ActionResponse response) {
+
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
+
+    TempBomTree tempBomTree = billOfMaterialService.generateTree(billOfMaterial);
+
+    response.setView(
+        ActionView.define(I18n.get("Bill of material"))
+            .model(TempBomTree.class.getName())
+            .add("tree", "bill-of-material-tree")
+            .context("_tempBomTreeId", tempBomTree.getId())
+            .map());
+  }
 }

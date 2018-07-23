@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,11 +21,10 @@ import com.axelor.apps.base.db.AlarmEngineBatch;
 
 public class AlarmEngineBatchBaseRepository extends AlarmEngineBatchRepository {
 
-    @Override
-    public AlarmEngineBatch copy(AlarmEngineBatch entity, boolean deep) {
-        AlarmEngineBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public AlarmEngineBatch copy(AlarmEngineBatch entity, boolean deep) {
+    AlarmEngineBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

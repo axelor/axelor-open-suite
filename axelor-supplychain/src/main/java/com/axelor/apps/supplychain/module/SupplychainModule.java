@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -77,40 +77,40 @@ import com.axelor.apps.supplychain.service.SubscriptionServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.CancelStateSupplyChain;
 import com.axelor.apps.supplychain.service.workflow.VentilateStateSupplyChain;
 
-
 public class SupplychainModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-    	bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
-        bind(MinStockRulesServiceImpl.class).to(MinStockRulesServiceSupplychainImpl.class);
-        bind(StockMoveService.class).to(StockMoveServiceImpl.class);
-        bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
-        bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
-        bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
-        bind(PurchaseOrderInvoiceService.class).to(PurchaseOrderInvoiceServiceImpl.class);
-        bind(SaleOrderInvoiceService.class).to(SaleOrderInvoiceServiceImpl.class);
-        bind(SaleOrderPurchaseService.class).to(SaleOrderPurchaseServiceImpl.class);
-        bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
-        bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
-        bind(StockMoveServiceImpl.class).to(StockMoveServiceSupplychainImpl.class);
-        bind(VentilateState.class).to(VentilateStateSupplyChain.class);
-        bind(CancelState.class).to(CancelStateSupplyChain.class);
-        bind(SubscriptionService.class).to(SubscriptionServiceImpl.class);
-        bind(OpportunitySaleOrderServiceImpl.class).to(OpportunitySaleOrderServiceSupplychainImpl.class);
-        bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
-        bind(SaleOrderLineServiceImpl.class).to(SaleOrderLineServiceSupplyChainImpl.class);
-        bind(AdvancePaymentRepository.class).to(AdvancePaymentSupplychainRepository.class);
-        bind(AdvancePaymentServiceImpl.class).to(AdvancePaymentServiceSupplychainImpl.class);
-        bind(MrpService.class).to(MrpServiceImpl.class);
-        bind(MrpLineService.class).to(MrpLineServiceImpl.class);
-        bind(AnalyticMoveLineMngtRepository.class).to(AnalyticMoveLineSupplychainRepository.class);
-        bind(StockMoveLineServiceImpl.class).to(StockMoveLineSupplychainServiceImpl.class);
-        bind(BudgetService.class).to(BudgetSupplychainService.class);
-        bind(InvoiceLineService.class).to(InvoiceLineSupplychainService.class);
-        bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
-        bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
-        bind(AccountCustomerService.class).to(AccountCustomerServiceSupplyChain.class);
-        bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);
-    }
+  @Override
+  protected void configure() {
+    bind(MinStockRulesService.class).to(MinStockRulesServiceImpl.class);
+    bind(MinStockRulesServiceImpl.class).to(MinStockRulesServiceSupplychainImpl.class);
+    bind(StockMoveService.class).to(StockMoveServiceImpl.class);
+    bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
+    bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
+    bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
+    bind(PurchaseOrderInvoiceService.class).to(PurchaseOrderInvoiceServiceImpl.class);
+    bind(SaleOrderInvoiceService.class).to(SaleOrderInvoiceServiceImpl.class);
+    bind(SaleOrderPurchaseService.class).to(SaleOrderPurchaseServiceImpl.class);
+    bind(StockMoveInvoiceService.class).to(StockMoveInvoiceServiceImpl.class);
+    bind(SaleOrderManagementRepository.class).to(SaleOrderSupplychainRepository.class);
+    bind(StockMoveServiceImpl.class).to(StockMoveServiceSupplychainImpl.class);
+    bind(VentilateState.class).to(VentilateStateSupplyChain.class);
+    bind(CancelState.class).to(CancelStateSupplyChain.class);
+    bind(SubscriptionService.class).to(SubscriptionServiceImpl.class);
+    bind(OpportunitySaleOrderServiceImpl.class)
+        .to(OpportunitySaleOrderServiceSupplychainImpl.class);
+    bind(CustomerCreditLineService.class).to(CustomerCreditLineServiceImpl.class);
+    bind(SaleOrderLineServiceImpl.class).to(SaleOrderLineServiceSupplyChainImpl.class);
+    bind(AdvancePaymentRepository.class).to(AdvancePaymentSupplychainRepository.class);
+    bind(AdvancePaymentServiceImpl.class).to(AdvancePaymentServiceSupplychainImpl.class);
+    bind(MrpService.class).to(MrpServiceImpl.class);
+    bind(MrpLineService.class).to(MrpLineServiceImpl.class);
+    bind(AnalyticMoveLineMngtRepository.class).to(AnalyticMoveLineSupplychainRepository.class);
+    bind(StockMoveLineServiceImpl.class).to(StockMoveLineSupplychainServiceImpl.class);
+    bind(BudgetService.class).to(BudgetSupplychainService.class);
+    bind(InvoiceLineService.class).to(InvoiceLineSupplychainService.class);
+    bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
+    bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
+    bind(AccountCustomerService.class).to(AccountCustomerServiceSupplyChain.class);
+    bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);
+  }
 }

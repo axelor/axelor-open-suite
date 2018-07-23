@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,15 +24,18 @@ import com.axelor.apps.supplychain.db.CustomerCreditLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
-
 public interface CustomerCreditLineService {
-	
-	public CustomerCreditLine computeUsedCredit(CustomerCreditLine customerCreditLine);
-	public Partner generateLines(Partner partner) throws AxelorException;
-	public void updateLines(Partner partner) throws AxelorException;
-	public void updateLinesFromOrder(Partner partner,SaleOrder saleOrder) throws AxelorException;
-	public boolean testUsedCredit(CustomerCreditLine customerCreditLine);
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public boolean checkBlockedPartner(Partner partner, Company company) throws AxelorException;
+
+  public CustomerCreditLine computeUsedCredit(CustomerCreditLine customerCreditLine);
+
+  public Partner generateLines(Partner partner) throws AxelorException;
+
+  public void updateLines(Partner partner) throws AxelorException;
+
+  public void updateLinesFromOrder(Partner partner, SaleOrder saleOrder) throws AxelorException;
+
+  public boolean testUsedCredit(CustomerCreditLine customerCreditLine);
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public boolean checkBlockedPartner(Partner partner, Company company) throws AxelorException;
 }

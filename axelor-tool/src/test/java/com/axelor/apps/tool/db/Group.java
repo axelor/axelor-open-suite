@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.tool.db;
 
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
+import com.axelor.db.Query;
+import com.google.common.base.Objects;
+import com.google.common.base.Objects.ToStringHelper;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,72 +30,66 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.axelor.db.JPA;
-import com.axelor.db.Model;
-import com.axelor.db.Query;
-import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
-
 @Entity
 @Table(name = "CONTACT_GROUP")
 public class Group extends Model {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CONTACT_GROUP_SEQ")
-	@SequenceGenerator(name = "CONTACT_GROUP_SEQ", sequenceName = "CONTACT_GROUP_SEQ", allocationSize = 1)
-	private Long id;
-	
-	@NotNull
-	private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CONTACT_GROUP_SEQ")
+  @SequenceGenerator(
+    name = "CONTACT_GROUP_SEQ",
+    sequenceName = "CONTACT_GROUP_SEQ",
+    allocationSize = 1
+  )
+  private Long id;
 
-	@NotNull
-	private String title;
+  @NotNull private String name;
 
-	public Group() {
-	}
-	
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
+  @NotNull private String title;
 
-	public Group(String name, String title) {
-		this.name = name;
-		this.title = title;
-	}
+  public Group() {}
 
-	public String getName() {
-		return name;
-	}
+  public Long getId() {
+    return id;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	public String getTitle() {
-		return title;
-	}
+  public Group(String name, String title) {
+    this.name = name;
+    this.title = title;
+  }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
-	@Override
-	public String toString() {
-		ToStringHelper tsh = Objects.toStringHelper(getClass());
-		
-		tsh.add("id", getId());
-		tsh.add("name", getName());
-		tsh.add("title", getTitle());
-		
-		return tsh.omitNullValues().toString();
-	}
-	
-	public static Query<Group> all() {
-		return JPA.all(Group.class);
-	}
+  public String getName() {
+    return name;
+  }
 
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  @Override
+  public String toString() {
+    ToStringHelper tsh = Objects.toStringHelper(getClass());
+
+    tsh.add("id", getId());
+    tsh.add("name", getName());
+    tsh.add("title", getTitle());
+
+    return tsh.omitNullValues().toString();
+  }
+
+  public static Query<Group> all() {
+    return JPA.all(Group.class);
+  }
 }

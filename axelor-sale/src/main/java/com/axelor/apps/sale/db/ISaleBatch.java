@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,12 +19,8 @@ package com.axelor.apps.sale.db;
 
 public interface ISaleBatch {
 
-	/**
-	 * Static select in SaleBatch
-	 */
+  /** Static select in SaleBatch */
 
-
-	// ACTION TYPE
-	static final int BATCH_INVOICING = 1;
-	
+  // ACTION TYPE
+  static final int BATCH_INVOICING = 1;
 }

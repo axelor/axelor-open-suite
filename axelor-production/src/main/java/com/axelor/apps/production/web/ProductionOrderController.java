@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.production.web;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -40,68 +32,68 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import java.math.BigDecimal;
+import java.util.Map;
+import javax.inject.Inject;
+import org.joda.time.DateTime;
 
 public class ProductionOrderController {
 
-	@Inject
-	ProductionOrderService productionOrderService;
-	
-	@Inject
-	ProductionOrderSaleOrderService productionOrderSaleOrderService;
-	
-	@Inject
-	private BillOfMaterialRepository billOfMaterialRepo;
-	
-	@Inject
-	private ProductionOrderRepository productionOrderRepo;
-	
-	@Inject
-	private ProductRepository productRepo;
-	
-	@Inject
-	private GeneralService generalService;
-	
-	@SuppressWarnings("unchecked")
-	public void addManufOrder (ActionRequest request, ActionResponse response) throws AxelorException {
+  @Inject ProductionOrderService productionOrderService;
 
-		Context context = request.getContext();
-		
-		if(context.get("qty") == null || new BigDecimal(context.get("qty").toString()).compareTo(BigDecimal.ZERO) <= 0)  {
-			response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_3)+"!");
-		}
-		else if(context.get("billOfMaterial") == null)  {
-			response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_4)+"!");
-		}
-		else  {
-			Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
-			BillOfMaterial billOfMaterial = billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
-			
-			BigDecimal qty = new BigDecimal(context.get("qty").toString());
-			
-			Product product = null;
-			
-			if(context.get("product") != null)  {
-				Map<String, Object> productContext = (Map<String, Object>) context.get("product");
-				product = productRepo.find(((Integer) productContext.get("id")).longValue());
-			}
-			else  {
-				product = billOfMaterial.getProduct();
-			}
-			
-			DateTime startDate;
-			if (context.containsKey("_startDate") && context.get("_startDate") != null ){
-				startDate = new DateTime(context.get("_startDate") );
-			}else{
-				startDate = generalService.getTodayDateTime().toDateTime();
-			}
-			
-			ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
-			
-			productionOrderService.addManufOrder(productionOrderRepo.find(productionOrder.getId()), product, billOfMaterial, qty, startDate.toLocalDateTime());
-			
-			response.setReload(true);
-		}
-		
-	}
-	
+  @Inject ProductionOrderSaleOrderService productionOrderSaleOrderService;
+
+  @Inject private BillOfMaterialRepository billOfMaterialRepo;
+
+  @Inject private ProductionOrderRepository productionOrderRepo;
+
+  @Inject private ProductRepository productRepo;
+
+  @Inject private GeneralService generalService;
+
+  @SuppressWarnings("unchecked")
+  public void addManufOrder(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Context context = request.getContext();
+
+    if (context.get("qty") == null
+        || new BigDecimal(context.get("qty").toString()).compareTo(BigDecimal.ZERO) <= 0) {
+      response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_3) + "!");
+    } else if (context.get("billOfMaterial") == null) {
+      response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_4) + "!");
+    } else {
+      Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
+      BillOfMaterial billOfMaterial =
+          billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
+
+      BigDecimal qty = new BigDecimal(context.get("qty").toString());
+
+      Product product = null;
+
+      if (context.get("product") != null) {
+        Map<String, Object> productContext = (Map<String, Object>) context.get("product");
+        product = productRepo.find(((Integer) productContext.get("id")).longValue());
+      } else {
+        product = billOfMaterial.getProduct();
+      }
+
+      DateTime startDate;
+      if (context.containsKey("_startDate") && context.get("_startDate") != null) {
+        startDate = new DateTime(context.get("_startDate"));
+      } else {
+        startDate = generalService.getTodayDateTime().toDateTime();
+      }
+
+      ProductionOrder productionOrder = request.getContext().asType(ProductionOrder.class);
+
+      productionOrderService.addManufOrder(
+          productionOrderRepo.find(productionOrder.getId()),
+          product,
+          billOfMaterial,
+          qty,
+          startDate.toLocalDateTime());
+
+      response.setReload(true);
+    }
+  }
 }

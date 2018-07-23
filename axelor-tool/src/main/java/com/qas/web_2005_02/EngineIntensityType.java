@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,12 +21,13 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour EngineIntensityType.
- * 
+ * Classe Java pour EngineIntensityType.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <p>
+ *
  * <pre>
  * &lt;simpleType name="EngineIntensityType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -36,35 +37,32 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- * 
  */
 @XmlType(name = "EngineIntensityType")
 @XmlEnum
 public enum EngineIntensityType {
+  @XmlEnumValue("Exact")
+  EXACT("Exact"),
+  @XmlEnumValue("Close")
+  CLOSE("Close"),
+  @XmlEnumValue("Extensive")
+  EXTENSIVE("Extensive");
+  private final String value;
 
-    @XmlEnumValue("Exact")
-    EXACT("Exact"),
-    @XmlEnumValue("Close")
-    CLOSE("Close"),
-    @XmlEnumValue("Extensive")
-    EXTENSIVE("Extensive");
-    private final String value;
+  EngineIntensityType(String v) {
+    value = v;
+  }
 
-    EngineIntensityType(String v) {
-        value = v;
+  public String value() {
+    return value;
+  }
+
+  public static EngineIntensityType fromValue(String v) {
+    for (EngineIntensityType c : EngineIntensityType.values()) {
+      if (c.value.equals(v)) {
+        return c;
+      }
     }
-
-    public String value() {
-        return value;
-    }
-
-    public static EngineIntensityType fromValue(String v) {
-        for (EngineIntensityType c: EngineIntensityType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
-
+    throw new IllegalArgumentException(v);
+  }
 }

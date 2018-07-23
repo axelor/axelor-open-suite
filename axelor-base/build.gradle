@@ -10,6 +10,12 @@ module {
 	module "modules:axelor-message"
 }
 
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}
+
 dependencies {
 	compile "commons-validator:commons-validator:1.4.0"
 	compile "org.apache.commons:commons-lang3:3.1"

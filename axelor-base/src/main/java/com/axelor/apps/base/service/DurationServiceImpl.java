@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,43 +17,34 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Duration;
+import com.axelor.apps.base.db.repo.DurationRepository;
 import java.math.BigDecimal;
-
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.base.db.Duration;
-import com.axelor.apps.base.db.repo.DurationRepository;
+public class DurationServiceImpl implements DurationService {
 
+  public LocalDate computeDuration(Duration duration, LocalDate date) {
 
-public class DurationServiceImpl implements DurationService  {
-	
-	
-	public LocalDate computeDuration(Duration duration, LocalDate date)  {
-		
-		if(duration == null)  {  return date;  }
-			
-		switch (duration.getTypeSelect()) {
-		
-		case DurationRepository.TYPE_MONTH:
-			
-			return date.plusMonths(duration.getValue());
-			
-		case DurationRepository.TYPE_DAY:
-			
-			return date.plusDays(duration.getValue());
+    if (duration == null) {
+      return date;
+    }
 
-		default:
-			
-			return date;
-		}
-		
-		
-	}
-	
-	public BigDecimal computeDurationInDays(DateTime startDate, DateTime endDate){
-		return new BigDecimal(new Interval(startDate,endDate).toDuration().toStandardDays().getDays());
-	}
-	
+    switch (duration.getTypeSelect()) {
+      case DurationRepository.TYPE_MONTH:
+        return date.plusMonths(duration.getValue());
+
+      case DurationRepository.TYPE_DAY:
+        return date.plusDays(duration.getValue());
+
+      default:
+        return date;
+    }
+  }
+
+  public BigDecimal computeDurationInDays(DateTime startDate, DateTime endDate) {
+    return new BigDecimal(new Interval(startDate, endDate).toDuration().toStandardDays().getDays());
+  }
 }

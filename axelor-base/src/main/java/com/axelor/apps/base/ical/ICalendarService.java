@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,6 +17,17 @@
  */
 package com.axelor.apps.base.ical;
 
+import com.axelor.apps.base.db.ICalendar;
+import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.ICalendarUserRepository;
+import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -36,7 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import net.fortuna.ical4j.connector.ObjectStoreException;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.data.CalendarBuilder;
@@ -73,519 +83,487 @@ import net.fortuna.ical4j.util.InetAddressHostInfo;
 import net.fortuna.ical4j.util.SimpleHostInfo;
 import net.fortuna.ical4j.util.UidGenerator;
 import net.fortuna.ical4j.util.Uris;
-
 import org.joda.time.LocalDateTime;
 
-import com.axelor.apps.base.db.ICalendar;
-import com.axelor.apps.base.db.ICalendarEvent;
-import com.axelor.apps.base.db.ICalendarUser;
-import com.axelor.apps.base.db.repo.ICalendarEventRepository;
-import com.axelor.apps.base.db.repo.ICalendarUserRepository;
-import com.axelor.inject.Beans;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-
-/**
- * Provides calendars utilities.
- *
- */
+/** Provides calendars utilities. */
 public class ICalendarService {
 
-	static final String PRODUCT_ID = "-//Axelor//ADK Calendar 1.0//EN";
-	static final String X_WR_CALNAME = "X-WR-CALNAME";
+  static final String PRODUCT_ID = "-//Axelor//ADK Calendar 1.0//EN";
+  static final String X_WR_CALNAME = "X-WR-CALNAME";
 
-	protected static UidGenerator generator;
-	
-	@Inject
-	protected ICalendarUserRepository iCalendarUserRepository;
-	
-	@Inject
-	protected ICalendarEventRepository iEventRepo;
-	
-	/**
-	 * Generate next {@link Uid} to be used with calendar event.
-	 *
-	 * @return an {@link Uid} instance
-	 * @throws SocketException
-	 *             if unable to determine host name
-	 */
-	public static Uid nextUid() throws SocketException {
-		if (generator == null) {
-			HostInfo info = new SimpleHostInfo("localhost");
-			try {
-				info = new InetAddressHostInfo(InetAddress.getLocalHost());
-			} catch (Exception e) {
-			}
-			generator = new UidGenerator(info, "" + new SecureRandom().nextInt(Integer.MAX_VALUE));
-		}
-		return generator.generateUid();
-	}
+  protected static UidGenerator generator;
 
-	public static Calendar newCalendar() {
-		final Calendar cal = new Calendar();
-		cal.getProperties().add(new ProdId(PRODUCT_ID));
-		cal.getProperties().add(Version.VERSION_2_0);
-		cal.getProperties().add(CalScale.GREGORIAN);
-		return cal;
-	}
+  @Inject protected ICalendarUserRepository iCalendarUserRepository;
 
-	/**
-	 * Load the calendar events from the given source.
-	 *
-	 * @param calendar
-	 *            the target {@link ICalendar}
-	 * @param text
-	 *            the raw calendar text
-	 * @throws ParserException
-	 */
-	@Transactional
-	public void load(ICalendar calendar, String text) throws ParserException {
-		Preconditions.checkNotNull(calendar, "calendar can't be null");
-		Preconditions.checkNotNull(text, "calendar source can't be null");
-		final StringReader reader = new StringReader(text);
-		try {
-			load(calendar, reader);
-		} catch (IOException e) {
-		}
-	}
+  @Inject protected ICalendarEventRepository iEventRepo;
 
-	/**
-	 * Load the calendar events from the given source file.
-	 *
-	 * @param calendar
-	 *            the target {@link ICalendar}
-	 * @param file
-	 *            the input file
-	 * @throws IOException
-	 * @throws ParserException
-	 */
-	@Transactional
-	public void load(ICalendar calendar, File file) throws IOException, ParserException {
-		Preconditions.checkNotNull(calendar, "calendar can't be null");
-		Preconditions.checkNotNull(file, "input file can't be null");
-		Preconditions.checkArgument(file.exists(), "no such file: " + file);
+  /**
+   * Generate next {@link Uid} to be used with calendar event.
+   *
+   * @return an {@link Uid} instance
+   * @throws SocketException if unable to determine host name
+   */
+  public static Uid nextUid() throws SocketException {
+    if (generator == null) {
+      HostInfo info = new SimpleHostInfo("localhost");
+      try {
+        info = new InetAddressHostInfo(InetAddress.getLocalHost());
+      } catch (Exception e) {
+      }
+      generator = new UidGenerator(info, "" + new SecureRandom().nextInt(Integer.MAX_VALUE));
+    }
+    return generator.generateUid();
+  }
 
-		final Reader reader = new FileReader(file);
-		try {
-			load(calendar, reader);
-		} finally {
-			reader.close();
-		}
-	}
+  public static Calendar newCalendar() {
+    final Calendar cal = new Calendar();
+    cal.getProperties().add(new ProdId(PRODUCT_ID));
+    cal.getProperties().add(Version.VERSION_2_0);
+    cal.getProperties().add(CalScale.GREGORIAN);
+    return cal;
+  }
 
-	/**
-	 * Load the calendar events from the given reader.
-	 *
-	 * @param calendar
-	 *            the target {@link ICalendar}
-	 * @param reader
-	 *            the input source reader
-	 * @throws IOException
-	 * @throws ParserException
-	 */
-	@Transactional
-	public void load(ICalendar calendar, Reader reader) throws IOException, ParserException {
-		Preconditions.checkNotNull(calendar, "calendar can't be null");
-		Preconditions.checkNotNull(reader, "reader can't be null");
+  /**
+   * Load the calendar events from the given source.
+   *
+   * @param calendar the target {@link ICalendar}
+   * @param text the raw calendar text
+   * @throws ParserException
+   */
+  @Transactional
+  public void load(ICalendar calendar, String text) throws ParserException {
+    Preconditions.checkNotNull(calendar, "calendar can't be null");
+    Preconditions.checkNotNull(text, "calendar source can't be null");
+    final StringReader reader = new StringReader(text);
+    try {
+      load(calendar, reader);
+    } catch (IOException e) {
+    }
+  }
 
-		final CalendarBuilder builder = new CalendarBuilder();
-		final Calendar cal = builder.build(reader);
+  /**
+   * Load the calendar events from the given source file.
+   *
+   * @param calendar the target {@link ICalendar}
+   * @param file the input file
+   * @throws IOException
+   * @throws ParserException
+   */
+  @Transactional
+  public void load(ICalendar calendar, File file) throws IOException, ParserException {
+    Preconditions.checkNotNull(calendar, "calendar can't be null");
+    Preconditions.checkNotNull(file, "input file can't be null");
+    Preconditions.checkArgument(file.exists(), "no such file: " + file);
 
-		if (calendar.getName() == null && cal.getProperty(X_WR_CALNAME) != null) {
-			calendar.setName(cal.getProperty(X_WR_CALNAME).getValue());
-		}
+    final Reader reader = new FileReader(file);
+    try {
+      load(calendar, reader);
+    } finally {
+      reader.close();
+    }
+  }
 
-		for (Object item : cal.getComponents(Component.VEVENT)) {
-			findOrCreateEvent((VEvent) item, calendar);
-		}
-	}
+  /**
+   * Load the calendar events from the given reader.
+   *
+   * @param calendar the target {@link ICalendar}
+   * @param reader the input source reader
+   * @throws IOException
+   * @throws ParserException
+   */
+  @Transactional
+  public void load(ICalendar calendar, Reader reader) throws IOException, ParserException {
+    Preconditions.checkNotNull(calendar, "calendar can't be null");
+    Preconditions.checkNotNull(reader, "reader can't be null");
 
-	protected String getValue(Component component, String name) {
-		if (component.getProperty(name) != null) {
-			return component.getProperty(name).getValue();
-		}
-		return null;
-	}
-	
-	@Transactional
-	protected ICalendarEvent findOrCreateEvent(VEvent vEvent, ICalendar calendar) {
+    final CalendarBuilder builder = new CalendarBuilder();
+    final Calendar cal = builder.build(reader);
 
-		String uid = vEvent.getUid().getValue();
-		DtStart dtStart = vEvent.getStartDate();
-		DtEnd dtEnd = vEvent.getEndDate();
+    if (calendar.getName() == null && cal.getProperty(X_WR_CALNAME) != null) {
+      calendar.setName(cal.getProperty(X_WR_CALNAME).getValue());
+    }
 
-		ICalendarEvent event = iEventRepo.findByUid(uid);
-		if (event == null) {
-			event = new ICalendarEvent();
-			event.setUid(uid);
-			event.setCalendar(calendar);
-		}
+    for (Object item : cal.getComponents(Component.VEVENT)) {
+      findOrCreateEvent((VEvent) item, calendar);
+    }
+  }
 
-		event.setStartDateTime(new LocalDateTime(dtStart.getDate()));
-		event.setEndDateTime(new LocalDateTime(dtEnd.getDate()));
-		event.setAllDay(!(dtStart.getDate() instanceof DateTime));
+  protected String getValue(Component component, String name) {
+    if (component.getProperty(name) != null) {
+      return component.getProperty(name).getValue();
+    }
+    return null;
+  }
 
-		event.setSubject(getValue(vEvent, Property.SUMMARY));
-		event.setDescription(getValue(vEvent, Property.DESCRIPTION));
-		event.setLocation(getValue(vEvent, Property.LOCATION));
-		event.setGeo(getValue(vEvent, Property.GEO));
-		event.setUrl(getValue(vEvent, Property.URL));
+  @Transactional
+  protected ICalendarEvent findOrCreateEvent(VEvent vEvent, ICalendar calendar) {
 
-		ICalendarUser organizer = findOrCreateUser(vEvent.getOrganizer());
-		if (organizer != null) {
-			event.setOrganizer(organizer);
-			iCalendarUserRepository.save(organizer);
-		}
+    String uid = vEvent.getUid().getValue();
+    DtStart dtStart = vEvent.getStartDate();
+    DtEnd dtEnd = vEvent.getEndDate();
 
-		for (Object item : vEvent.getProperties(Property.ATTENDEE)) {
-			ICalendarUser attendee = findOrCreateUser((Property) item);
-			if (attendee != null) {
-				event.addAttendee(attendee);
-				iCalendarUserRepository.save(attendee);
-			}
-		}
+    ICalendarEvent event = iEventRepo.findByUid(uid);
+    if (event == null) {
+      event = new ICalendarEvent();
+      event.setUid(uid);
+      event.setCalendar(calendar);
+    }
 
-		return event;
-	}
+    event.setStartDateTime(new LocalDateTime(dtStart.getDate()));
+    event.setEndDateTime(new LocalDateTime(dtEnd.getDate()));
+    event.setAllDay(!(dtStart.getDate() instanceof DateTime));
 
-	protected ICalendarUser findOrCreateUser(Property source) {
-		URI addr = null;
-		if (source instanceof Organizer) {
-			addr = ((Organizer) source).getCalAddress();
-		}
-		if (source instanceof Attendee) {
-			addr = ((Attendee) source).getCalAddress();
-		}
-		if (addr == null) {
-			return null;
-		}
+    event.setSubject(getValue(vEvent, Property.SUMMARY));
+    event.setDescription(getValue(vEvent, Property.DESCRIPTION));
+    event.setLocation(getValue(vEvent, Property.LOCATION));
+    event.setGeo(getValue(vEvent, Property.GEO));
+    event.setUrl(getValue(vEvent, Property.URL));
 
-		String email = mailto(addr.toString(), true);
-		ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
-		ICalendarUser user = repo.findByEmail(email);
-		if (user == null) {
-			user = new ICalendarUser();
-			user.setEmail(email);
-		}
-		if (source.getParameter(Parameter.CN) != null) {
-			user.setName(source.getParameter(Parameter.CN).getValue());
-		}
+    ICalendarUser organizer = findOrCreateUser(vEvent.getOrganizer());
+    if (organizer != null) {
+      event.setOrganizer(organizer);
+      iCalendarUserRepository.save(organizer);
+    }
 
-		return user;
-	}
+    for (Object item : vEvent.getProperties(Property.ATTENDEE)) {
+      ICalendarUser attendee = findOrCreateUser((Property) item);
+      if (attendee != null) {
+        event.addAttendee(attendee);
+        iCalendarUserRepository.save(attendee);
+      }
+    }
 
-	public <T extends Property> T updateUser(T target, ICalendarUser user) {
+    return event;
+  }
 
-		if (user == null || user.getEmail() == null) {
-			return null;
-		}
+  protected ICalendarUser findOrCreateUser(Property source) {
+    URI addr = null;
+    if (source instanceof Organizer) {
+      addr = ((Organizer) source).getCalAddress();
+    }
+    if (source instanceof Attendee) {
+      addr = ((Attendee) source).getCalAddress();
+    }
+    if (addr == null) {
+      return null;
+    }
 
-		String email = mailto(user.getEmail(), false);
-		String name = user.getName();
+    String email = mailto(addr.toString(), true);
+    ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
+    ICalendarUser user = repo.findByEmail(email);
+    if (user == null) {
+      user = new ICalendarUser();
+      user.setEmail(email);
+    }
+    if (source.getParameter(Parameter.CN) != null) {
+      user.setName(source.getParameter(Parameter.CN).getValue());
+    }
 
-		if (target instanceof Organizer) {
-			((Organizer) target).setCalAddress(createUri(email));
-		}
-		if (target instanceof Attendee) {
-			((Attendee) target).setCalAddress(createUri(email));
-		}
-		if (name != null) {
-			target.getParameters().add(new Cn(name));
-		}
+    return user;
+  }
 
-		return target;
-	}
+  public <T extends Property> T updateUser(T target, ICalendarUser user) {
 
-	protected String mailto(final String mail, boolean strip) {
-		if (mail == null) {
-			return null;
-		}
-		String res = mail.trim();
-		if (strip) {
-			if (res.toLowerCase().startsWith("mailto:")) {
-				res = res.substring(7);
-			}
-		} else if (!res.toLowerCase().startsWith("mailto:")){
-			res = "mailto:" + res;
-		}
-		return res;
-	}
+    if (user == null || user.getEmail() == null) {
+      return null;
+    }
 
-	protected Date toDate(LocalDateTime dt, boolean allDay) {
-		if (dt == null) return null;
-		if (allDay) return new Date(dt.toDate());
-		return new DateTime(dt.toDate());
-	}
+    String email = mailto(user.getEmail(), false);
+    String name = user.getName();
 
-	protected URI createUri(String uri) {
-		try {
-			return Uris.create(uri);
-		} catch (URISyntaxException e) {
-			throw Throwables.propagate(e);
-		}
-	}
+    if (target instanceof Organizer) {
+      ((Organizer) target).setCalAddress(createUri(email));
+    }
+    if (target instanceof Attendee) {
+      ((Attendee) target).setCalAddress(createUri(email));
+    }
+    if (name != null) {
+      target.getParameters().add(new Cn(name));
+    }
 
-	protected VEvent createVEvent(ICalendarEvent event) throws SocketException, ParseException {
-		boolean allDay = event.getAllDay() == Boolean.TRUE;
+    return target;
+  }
 
-		Date start = toDate(event.getStartDateTime(), allDay);
-		Date end = toDate(event.getEndDateTime(), allDay);
+  protected String mailto(final String mail, boolean strip) {
+    if (mail == null) {
+      return null;
+    }
+    String res = mail.trim();
+    if (strip) {
+      if (res.toLowerCase().startsWith("mailto:")) {
+        res = res.substring(7);
+      }
+    } else if (!res.toLowerCase().startsWith("mailto:")) {
+      res = "mailto:" + res;
+    }
+    return res;
+  }
 
-		VEvent vevent = new VEvent();
+  protected Date toDate(LocalDateTime dt, boolean allDay) {
+    if (dt == null) return null;
+    if (allDay) return new Date(dt.toDate());
+    return new DateTime(dt.toDate());
+  }
 
-		PropertyList items = vevent.getProperties();
+  protected URI createUri(String uri) {
+    try {
+      return Uris.create(uri);
+    } catch (URISyntaxException e) {
+      throw Throwables.propagate(e);
+    }
+  }
 
-		items.add(new DtStart(start));
-		if (end != null) {
-			items.add(new DtEnd(end));
-		}
-		if (event.getSubject() != null) {
-			items.add(new Summary(event.getSubject()));
-		}
-		if (event.getDescription() != null) {
-			items.add(new Description(event.getDescription()));
-		}
-		if (event.getStatus() != null) {
-			items.add(new Status(event.getStatus()));
-		}
-		if (event.getLocation() != null) {
-			items.add(new Location(event.getLocation()));
-		}
-		if (event.getGeo() != null) {
-			items.add(new Geo(event.getGeo()));
-		}
-		if (event.getUid() == null) {
-			items.add(nextUid());
-		} else {
-			items.add(new Uid(event.getUid()));
-		}
-		if (event.getUrl() != null) {
-			items.add(createUri(event.getUrl()));
-		}
-		if (event.getUpdatedOn() != null) {
-			DateTime date = new DateTime(event.getUpdatedOn().toDate());
-			date.setUtc(true);
-			LastModified lastModified = new LastModified(date);
-			items.add(lastModified);
-		}
-		else{
-			DateTime date = new DateTime(event.getCreatedOn().toDate());
-			date.setUtc(true);
-			LastModified lastModified = new LastModified(date);
-			items.add(lastModified);
-		}
+  protected VEvent createVEvent(ICalendarEvent event) throws SocketException, ParseException {
+    boolean allDay = event.getAllDay() == Boolean.TRUE;
 
-		Organizer organizer = updateUser(new Organizer(), event.getOrganizer());
-		if (organizer != null) {
-			items.add(organizer);
-		}
+    Date start = toDate(event.getStartDateTime(), allDay);
+    Date end = toDate(event.getEndDateTime(), allDay);
 
-		if (event.getAttendees() != null) {
-			for (ICalendarUser user : event.getAttendees()) {
-				Attendee attendee = updateUser(new Attendee(), user);
-				if (attendee != null) {
-					items.add(attendee);
-				}
-			}
-		}
+    VEvent vevent = new VEvent();
 
-		return vevent;
-	}
+    PropertyList items = vevent.getProperties();
 
-	/**
-	 * Export the calendar to the given file.
-	 *
-	 * @param calendar
-	 *            the source {@link ICalendar}
-	 * @param file
-	 *            the target file
-	 * @throws IOException
-	 * @throws ValidationException
-	 * @throws ParseException 
-	 */
-	public void export(ICalendar calendar, File file) throws IOException, ValidationException, ParseException {
-		Preconditions.checkNotNull(calendar, "calendar can't be null");
-		Preconditions.checkNotNull(file, "input file can't be null");
+    items.add(new DtStart(start));
+    if (end != null) {
+      items.add(new DtEnd(end));
+    }
+    if (event.getSubject() != null) {
+      items.add(new Summary(event.getSubject()));
+    }
+    if (event.getDescription() != null) {
+      items.add(new Description(event.getDescription()));
+    }
+    if (event.getStatus() != null) {
+      items.add(new Status(event.getStatus()));
+    }
+    if (event.getLocation() != null) {
+      items.add(new Location(event.getLocation()));
+    }
+    if (event.getGeo() != null) {
+      items.add(new Geo(event.getGeo()));
+    }
+    if (event.getUid() == null) {
+      items.add(nextUid());
+    } else {
+      items.add(new Uid(event.getUid()));
+    }
+    if (event.getUrl() != null) {
+      items.add(createUri(event.getUrl()));
+    }
+    if (event.getUpdatedOn() != null) {
+      DateTime date = new DateTime(event.getUpdatedOn().toDate());
+      date.setUtc(true);
+      LastModified lastModified = new LastModified(date);
+      items.add(lastModified);
+    } else {
+      DateTime date = new DateTime(event.getCreatedOn().toDate());
+      date.setUtc(true);
+      LastModified lastModified = new LastModified(date);
+      items.add(lastModified);
+    }
 
-		final Writer writer = new FileWriter(file);
-		try {
-			export(calendar, writer);
-		} finally {
-			writer.close();
-		}
-	}
+    Organizer organizer = updateUser(new Organizer(), event.getOrganizer());
+    if (organizer != null) {
+      items.add(organizer);
+    }
 
-	/**
-	 * Export the calendar to the given output writer.
-	 *
-	 * @param calendar
-	 *            the source {@link ICalendar}
-	 * @param writer
-	 *            the output writer
-	 * @throws IOException
-	 * @throws ValidationException
-	 * @throws ParseException 
-	 */
-	public void export(ICalendar calendar, Writer writer) throws IOException, ValidationException, ParseException {
-		Preconditions.checkNotNull(calendar, "calendar can't be null");
-		Preconditions.checkNotNull(writer, "writer can't be null");
-		Preconditions.checkNotNull(getICalendarEvents(calendar), "can't export empty calendar");
+    if (event.getAttendees() != null) {
+      for (ICalendarUser user : event.getAttendees()) {
+        Attendee attendee = updateUser(new Attendee(), user);
+        if (attendee != null) {
+          items.add(attendee);
+        }
+      }
+    }
 
-		Calendar cal = newCalendar();
-		cal.getProperties().add(new XProperty(X_WR_CALNAME, calendar.getName()));
+    return vevent;
+  }
 
-		for (ICalendarEvent item : getICalendarEvents(calendar)) {
-			VEvent event = createVEvent(item);
-			cal.getComponents().add(event);
-		}
+  /**
+   * Export the calendar to the given file.
+   *
+   * @param calendar the source {@link ICalendar}
+   * @param file the target file
+   * @throws IOException
+   * @throws ValidationException
+   * @throws ParseException
+   */
+  public void export(ICalendar calendar, File file)
+      throws IOException, ValidationException, ParseException {
+    Preconditions.checkNotNull(calendar, "calendar can't be null");
+    Preconditions.checkNotNull(file, "input file can't be null");
 
-		CalendarOutputter outputter = new CalendarOutputter();
-		outputter.output(cal, writer);
-	}
+    final Writer writer = new FileWriter(file);
+    try {
+      export(calendar, writer);
+    } finally {
+      writer.close();
+    }
+  }
 
-	/**
-	 * Synchronize the calendar with the given CalDAV collection.
-	 *
-	 * @param calendar
-	 *            the {@link ICalendar} to sync
-	 * @param collection
-	 *            the remote CalDAV collection
-	 * @return the same update {@link ICalendar}
-	 * @throws ICalendarException
-	 *             if there is any error during sync
-	 */
-	public ICalendar sync(ICalendar calendar, CalDavCalendarCollection collection)
-			throws ICalendarException {
-		try {
-		return doSync(calendar, collection);
-		} catch (Exception e) {
-			throw new ICalendarException(e);
-		}
-	}
-	
+  /**
+   * Export the calendar to the given output writer.
+   *
+   * @param calendar the source {@link ICalendar}
+   * @param writer the output writer
+   * @throws IOException
+   * @throws ValidationException
+   * @throws ParseException
+   */
+  public void export(ICalendar calendar, Writer writer)
+      throws IOException, ValidationException, ParseException {
+    Preconditions.checkNotNull(calendar, "calendar can't be null");
+    Preconditions.checkNotNull(writer, "writer can't be null");
+    Preconditions.checkNotNull(getICalendarEvents(calendar), "can't export empty calendar");
 
-	protected ICalendar doSync(ICalendar calendar, CalDavCalendarCollection collection)
-			throws IOException, URISyntaxException, ParseException, ObjectStoreException, ConstraintViolationException {
+    Calendar cal = newCalendar();
+    cal.getProperties().add(new XProperty(X_WR_CALNAME, calendar.getName()));
 
-		final String[] names = {
-			Property.UID,
-			Property.URL,
-			Property.SUMMARY,
-			Property.DESCRIPTION,
-			Property.DTSTART,
-			Property.DTEND,
-			Property.ORGANIZER,
-			Property.ATTENDEE
-		};
+    for (ICalendarEvent item : getICalendarEvents(calendar)) {
+      VEvent event = createVEvent(item);
+      cal.getComponents().add(event);
+    }
 
-		final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;
+    CalendarOutputter outputter = new CalendarOutputter();
+    outputter.output(cal, writer);
+  }
 
-		final Map<String, VEvent> remoteEvents = new HashMap<>();
-		final List<VEvent> localEvents = new ArrayList<>();
-		final Set<String> synced = new HashSet<>();
+  /**
+   * Synchronize the calendar with the given CalDAV collection.
+   *
+   * @param calendar the {@link ICalendar} to sync
+   * @param collection the remote CalDAV collection
+   * @return the same update {@link ICalendar}
+   * @throws ICalendarException if there is any error during sync
+   */
+  public ICalendar sync(ICalendar calendar, CalDavCalendarCollection collection)
+      throws ICalendarException {
+    try {
+      return doSync(calendar, collection);
+    } catch (Exception e) {
+      throw new ICalendarException(e);
+    }
+  }
 
-		for (VEvent item : ICalendarStore.getEvents(collection)) {
-			remoteEvents.put(item.getUid().getValue(), item);
-		}
+  protected ICalendar doSync(ICalendar calendar, CalDavCalendarCollection collection)
+      throws IOException, URISyntaxException, ParseException, ObjectStoreException,
+          ConstraintViolationException {
 
-		for (ICalendarEvent item : getICalendarEvents(calendar)) {
-			VEvent source = createVEvent(item);
-			VEvent target = remoteEvents.get(source.getUid().getValue());
-			if (target == null && Strings.isNullOrEmpty(item.getUid())) {
-				target = source;
-			}
-			
-			if(target != null){
-				if (keepRemote) {
-					VEvent tmp = target;
-					target = source;
-					source = tmp;
-				}
-				else{
-					if(source.getLastModified() != null && target.getLastModified() != null){
-						LocalDateTime lastModifiedSource = new LocalDateTime(source.getLastModified().getDateTime());
-						LocalDateTime lastModifiedTarget = new LocalDateTime(target.getLastModified().getDateTime());
-						if(lastModifiedSource.isBefore(lastModifiedTarget)){
-							VEvent tmp = target;
-							target = source;
-							source = tmp;
-						}
-					}
-					else if(target.getLastModified() != null){
-						VEvent tmp = target;
-						target = source;
-						source = tmp;
-					}
-				}
-				localEvents.add(target);
-				synced.add(target.getUid().getValue());
+    final String[] names = {
+      Property.UID,
+      Property.URL,
+      Property.SUMMARY,
+      Property.DESCRIPTION,
+      Property.DTSTART,
+      Property.DTEND,
+      Property.ORGANIZER,
+      Property.ATTENDEE
+    };
 
-				if (source == target) {
-					continue;
-				}
+    final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;
 
-				for (String name : names) {
-					Property s = source.getProperty(name);
-					Property t = target.getProperty(name);
-					if (s == null && t == null) {
-						continue;
-					}
-					if (t == null) {
-						t = s;
-					}
-					if (s == null) {
-						target.getProperties().remove(t);
-					} else {
-						t.setValue(s.getValue());
-					}
-				}
-			}
-		}
+    final Map<String, VEvent> remoteEvents = new HashMap<>();
+    final List<VEvent> localEvents = new ArrayList<>();
+    final Set<String> synced = new HashSet<>();
 
-		for (String uid : remoteEvents.keySet()) {
-			if (!synced.contains(uid)) {
-				localEvents.add(remoteEvents.get(uid));
-			}
-		}
-		
-		List<ICalendarEvent> oldEvents = getICalendarEvents(calendar);
-		
-		for (VEvent item : localEvents) {
-			ICalendarEvent iEvent = findOrCreateEvent(item, calendar);
-			if (oldEvents.contains(iEvent)) {
-				oldEvents.remove(iEvent);
-			}
-		}
-		
-		removeOldEvents(oldEvents);
+    for (VEvent item : ICalendarStore.getEvents(collection)) {
+      remoteEvents.put(item.getUid().getValue(), item);
+    }
 
-		// update remote events
-		for (VEvent item : localEvents) {
-			if (!synced.contains(item.getUid().getValue())) {
-				continue;
-			}
-			Calendar cal = newCalendar();
-			cal.getComponents().add(item);
-			collection.addCalendar(cal);
-		}
+    for (ICalendarEvent item : getICalendarEvents(calendar)) {
+      VEvent source = createVEvent(item);
+      VEvent target = remoteEvents.get(source.getUid().getValue());
+      if (target == null && Strings.isNullOrEmpty(item.getUid())) {
+        target = source;
+      }
 
-		return calendar;
-	}
-	
-	@Transactional
-	public void removeOldEvents(List<ICalendarEvent> oldEvents) {
-		
-		for (ICalendarEvent event : oldEvents) {
-			iEventRepo.remove(event);
-		}
-	}
-	
-	private List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
-		
-		return iEventRepo.all().filter("self.calendar = ?1", calendar).fetch();
-	}
-	
+      if (target != null) {
+        if (keepRemote) {
+          VEvent tmp = target;
+          target = source;
+          source = tmp;
+        } else {
+          if (source.getLastModified() != null && target.getLastModified() != null) {
+            LocalDateTime lastModifiedSource =
+                new LocalDateTime(source.getLastModified().getDateTime());
+            LocalDateTime lastModifiedTarget =
+                new LocalDateTime(target.getLastModified().getDateTime());
+            if (lastModifiedSource.isBefore(lastModifiedTarget)) {
+              VEvent tmp = target;
+              target = source;
+              source = tmp;
+            }
+          } else if (target.getLastModified() != null) {
+            VEvent tmp = target;
+            target = source;
+            source = tmp;
+          }
+        }
+        localEvents.add(target);
+        synced.add(target.getUid().getValue());
+
+        if (source == target) {
+          continue;
+        }
+
+        for (String name : names) {
+          Property s = source.getProperty(name);
+          Property t = target.getProperty(name);
+          if (s == null && t == null) {
+            continue;
+          }
+          if (t == null) {
+            t = s;
+          }
+          if (s == null) {
+            target.getProperties().remove(t);
+          } else {
+            t.setValue(s.getValue());
+          }
+        }
+      }
+    }
+
+    for (String uid : remoteEvents.keySet()) {
+      if (!synced.contains(uid)) {
+        localEvents.add(remoteEvents.get(uid));
+      }
+    }
+
+    List<ICalendarEvent> oldEvents = getICalendarEvents(calendar);
+
+    for (VEvent item : localEvents) {
+      ICalendarEvent iEvent = findOrCreateEvent(item, calendar);
+      if (oldEvents.contains(iEvent)) {
+        oldEvents.remove(iEvent);
+      }
+    }
+
+    removeOldEvents(oldEvents);
+
+    // update remote events
+    for (VEvent item : localEvents) {
+      if (!synced.contains(item.getUid().getValue())) {
+        continue;
+      }
+      Calendar cal = newCalendar();
+      cal.getComponents().add(item);
+      collection.addCalendar(cal);
+    }
+
+    return calendar;
+  }
+
+  @Transactional
+  public void removeOldEvents(List<ICalendarEvent> oldEvents) {
+
+    for (ICalendarEvent event : oldEvents) {
+      iEventRepo.remove(event);
+    }
+  }
+
+  private List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
+
+    return iEventRepo.all().filter("self.calendar = ?1", calendar).fetch();
+  }
 }

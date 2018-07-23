@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,29 +17,32 @@
  */
 package com.axelor.apps.message.service;
 
-import java.io.IOException;
-import java.util.Set;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.tool.template.TemplateMaker;
+import java.io.IOException;
+import java.util.Set;
+import javax.mail.MessagingException;
 
 public interface TemplateMessageService {
 
-	public Message generateMessage(Model model, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
-	
-	public Message generateMessage(long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException, IOException;
-	
-	public Message generateAndSendMessage(Model model, Template template) throws MessagingException, IOException, AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException;
-	
-	public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException ;
-	
-	public TemplateMaker initMaker(long objectId, String model, String tag) throws InstantiationException, IllegalAccessException, ClassNotFoundException;
-	
-	
+  public Message generateMessage(Model model, Template template)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException;
+
+  public Message generateMessage(long objectId, String model, String tag, Template template)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException;
+
+  public Message generateAndSendMessage(Model model, Template template)
+      throws MessagingException, IOException, AxelorException, ClassNotFoundException,
+          InstantiationException, IllegalAccessException;
+
+  public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException;
+
+  public TemplateMaker initMaker(long objectId, String model, String tag)
+      throws InstantiationException, IllegalAccessException, ClassNotFoundException;
 }

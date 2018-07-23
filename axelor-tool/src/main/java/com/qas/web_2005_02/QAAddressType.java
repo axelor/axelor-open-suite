@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,12 +25,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour QAAddressType complex type.
- * 
+ * Classe Java pour QAAddressType complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType name="QAAddressType">
  *   &lt;complexContent>
@@ -44,105 +43,86 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "QAAddressType", propOrder = {
-    "addressLine"
-})
+@XmlType(
+  name = "QAAddressType",
+  propOrder = {"addressLine"}
+)
 public class QAAddressType {
 
-    @XmlElement(name = "AddressLine", required = true)
-    protected List<AddressLineType> addressLine;
-    @XmlAttribute(name = "Overflow")
-    protected Boolean overflow;
-    @XmlAttribute(name = "Truncated")
-    protected Boolean truncated;
+  @XmlElement(name = "AddressLine", required = true)
+  protected List<AddressLineType> addressLine;
 
-    /**
-     * Gets the value of the addressLine property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the addressLine property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAddressLine().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AddressLineType }
-     * 
-     * 
-     */
-    public List<AddressLineType> getAddressLine() {
-        if (addressLine == null) {
-            addressLine = new ArrayList<AddressLineType>();
-        }
-        return this.addressLine;
+  @XmlAttribute(name = "Overflow")
+  protected Boolean overflow;
+
+  @XmlAttribute(name = "Truncated")
+  protected Boolean truncated;
+
+  /**
+   * Gets the value of the addressLine property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the addressLine property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   *    getAddressLine().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link AddressLineType }
+   */
+  public List<AddressLineType> getAddressLine() {
+    if (addressLine == null) {
+      addressLine = new ArrayList<AddressLineType>();
     }
+    return this.addressLine;
+  }
 
-    /**
-     * Obtient la valeur de la propriété overflow.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public boolean isOverflow() {
-        if (overflow == null) {
-            return false;
-        } else {
-            return overflow;
-        }
+  /**
+   * Obtient la valeur de la propriété overflow.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public boolean isOverflow() {
+    if (overflow == null) {
+      return false;
+    } else {
+      return overflow;
     }
+  }
 
-    /**
-     * Définit la valeur de la propriété overflow.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setOverflow(Boolean value) {
-        this.overflow = value;
+  /**
+   * Définit la valeur de la propriété overflow.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setOverflow(Boolean value) {
+    this.overflow = value;
+  }
+
+  /**
+   * Obtient la valeur de la propriété truncated.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public boolean isTruncated() {
+    if (truncated == null) {
+      return false;
+    } else {
+      return truncated;
     }
+  }
 
-    /**
-     * Obtient la valeur de la propriété truncated.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public boolean isTruncated() {
-        if (truncated == null) {
-            return false;
-        } else {
-            return truncated;
-        }
-    }
-
-    /**
-     * Définit la valeur de la propriété truncated.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setTruncated(Boolean value) {
-        this.truncated = value;
-    }
-
+  /**
+   * Définit la valeur de la propriété truncated.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setTruncated(Boolean value) {
+    this.truncated = value;
+  }
 }

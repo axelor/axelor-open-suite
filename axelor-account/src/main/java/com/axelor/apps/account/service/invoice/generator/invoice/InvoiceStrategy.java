@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -22,6 +22,5 @@ import com.axelor.exception.AxelorException;
 
 public interface InvoiceStrategy {
 
-	Invoice generate() throws AxelorException;
-	
+  Invoice generate() throws AxelorException;
 }

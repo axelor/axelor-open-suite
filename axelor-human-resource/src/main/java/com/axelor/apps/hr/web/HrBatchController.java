@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.web;
 
-
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
@@ -27,30 +26,25 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-
 public class HrBatchController {
-	
-	@Inject
-	HrBatchService hrBatchService;
-	@Inject
-	HrBatchRepository hrBatchRepo;
-	
-	
-	/**
-	 * Launch any type of HR batch
-	 *
-	 * @param request
-	 * @param response
-	 * @throws AxelorException 
-	 */
-	public void launchHrBatch(ActionRequest request, ActionResponse response) throws AxelorException{
 
-		HrBatch hrBatch = request.getContext().asType(HrBatch.class);
+  @Inject HrBatchService hrBatchService;
+  @Inject HrBatchRepository hrBatchRepo;
 
-		Batch batch = hrBatchService.run(hrBatchRepo.find(hrBatch.getId()));
+  /**
+   * Launch any type of HR batch
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  public void launchHrBatch(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+    HrBatch hrBatch = request.getContext().asType(HrBatch.class);
+
+    Batch batch = hrBatchService.run(hrBatchRepo.find(hrBatch.getId()));
+
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 }

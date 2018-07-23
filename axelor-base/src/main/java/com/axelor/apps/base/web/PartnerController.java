@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,33 +17,18 @@
  */
 package com.axelor.apps.base.web;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.axelor.apps.base.db.Bank;
-import com.axelor.apps.base.db.repo.BankRepository;
-import com.axelor.apps.base.service.BankDetailsService;
-import org.eclipse.birt.core.exception.BirtException;
-import org.iban4j.IbanFormatException;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
@@ -64,261 +49,305 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.eclipse.birt.core.exception.BirtException;
+import org.iban4j.IbanFormatException;
+import org.iban4j.InvalidCheckDigitException;
+import org.iban4j.UnsupportedCountryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PartnerController {
 
-	@Inject
-	private SequenceService sequenceService;
+  @Inject private SequenceService sequenceService;
 
-	@Inject
-	private UserService userService;
+  @Inject private UserService userService;
 
-	@Inject
-	private PartnerService partnerService;
-	
-	@Inject
-	private PartnerRepository partnerRepo;
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  @Inject private PartnerService partnerService;
 
-	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
-		Partner partner = request.getContext().asType(Partner.class);
-		partner = partnerRepo.find(partner.getId());
-		if(partner.getPartnerSeq() ==  null) {
-			String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
-			if (seq == null)
-				throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_1),
-						IException.CONFIGURATION_ERROR);
-			else
-				response.setValue("partnerSeq", seq);
-		}
-	}
+  @Inject private PartnerRepository partnerRepo;
 
-	
-	/**
-	 * Fonction appeler par le bouton imprimer
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
-	 */
-	public void showPartnerInfo(ActionRequest request, ActionResponse response) throws AxelorException {
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		
-		Partner partner = request.getContext().asType(Partner.class);
-		User user = AuthUtils.getUser();
+  public void setPartnerSequence(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Partner partner = request.getContext().asType(Partner.class);
+    partner = partnerRepo.find(partner.getId());
+    if (partner.getPartnerSeq() == null) {
+      String seq = sequenceService.getSequenceNumber(IAdministration.PARTNER);
+      if (seq == null)
+        throw new AxelorException(
+            I18n.get(IExceptionMessage.PARTNER_1), IException.CONFIGURATION_ERROR);
+      else response.setValue("partnerSeq", seq);
+    }
+  }
 
-		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect();
-		
-		String name = I18n.get("Partner")+" "+partner.getPartnerSeq();
-		
-		String fileLink = ReportFactory.createReport(IReport.PARTNER, name+"-${date}")
-					.addParam("Locale", language)
-					.addParam("PartnerId", partner.getId())
-					.generate()
-					.getFileLink();
+  /**
+   * Fonction appeler par le bouton imprimer
+   *
+   * @param request
+   * @param response
+   * @return
+   * @throws BirtException
+   * @throws IOException
+   */
+  public void showPartnerInfo(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-		LOG.debug("Printing "+name);
+    Partner partner = request.getContext().asType(Partner.class);
+    User user = AuthUtils.getUser();
 
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
+    String language =
+        (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))
+            ? user != null
+                ? (user.getLanguage() == null || user.getLanguage().equals(""))
+                    ? "en"
+                    : user.getLanguage()
+                : "en"
+            : partner.getLanguageSelect();
 
-	}
+    String name = I18n.get("Partner") + " " + partner.getPartnerSeq();
 
-	/**
-	 * Fonction appeler par le bouton imprimer
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
-	 */
-	public void printContactPhonebook(ActionRequest request, ActionResponse response) throws AxelorException {
+    String fileLink =
+        ReportFactory.createReport(IReport.PARTNER, name + "-${date}")
+            .addParam("Locale", language)
+            .addParam("PartnerId", partner.getId())
+            .generate()
+            .getFileLink();
 
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
+    LOG.debug("Printing " + name);
 
-		String name = I18n.get("Phone Book");
-		
-		String fileLink = ReportFactory.createReport(IReport.PHONE_BOOK, name+"-${date}")
-					.addParam("Locale", language)
-					.addParam("UserId", user.getId())
-					.generate()
-					.getFileLink();
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-		LOG.debug("Printing "+name);
+  /**
+   * Fonction appeler par le bouton imprimer
+   *
+   * @param request
+   * @param response
+   * @return
+   * @throws BirtException
+   * @throws IOException
+   */
+  public void printContactPhonebook(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
-	}
+    User user = AuthUtils.getUser();
+    String language =
+        user != null
+            ? (user.getLanguage() == null || user.getLanguage().equals(""))
+                ? "en"
+                : user.getLanguage()
+            : "en";
 
-	/**
-	 * Fonction appeler par le bouton imprimer
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
-	 */
-	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) throws AxelorException {
+    String name = I18n.get("Phone Book");
 
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
+    String fileLink =
+        ReportFactory.createReport(IReport.PHONE_BOOK, name + "-${date}")
+            .addParam("Locale", language)
+            .addParam("UserId", user.getId())
+            .generate()
+            .getFileLink();
 
-		String name = I18n.get("Company PhoneBook");
-		
-		String fileLink = ReportFactory.createReport(IReport.COMPANY_PHONE_BOOK, name+"-${date}")
-					.addParam("Locale", language)
-					.addParam("UserId", user.getId())
-					.generate()
-					.getFileLink();
+    LOG.debug("Printing " + name);
 
-		LOG.debug("Printing "+name);
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
-	}
+  /**
+   * Fonction appeler par le bouton imprimer
+   *
+   * @param request
+   * @param response
+   * @return
+   * @throws BirtException
+   * @throws IOException
+   */
+  public void printCompanyPhonebook(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
+    User user = AuthUtils.getUser();
+    String language =
+        user != null
+            ? (user.getLanguage() == null || user.getLanguage().equals(""))
+                ? "en"
+                : user.getLanguage()
+            : "en";
 
-	/* Fonction appeler par le bouton imprimer
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	public void printClientSituation(ActionRequest request, ActionResponse response) throws AxelorException {
+    String name = I18n.get("Company PhoneBook");
 
-		Partner partner = request.getContext().asType(Partner.class);
+    String fileLink =
+        ReportFactory.createReport(IReport.COMPANY_PHONE_BOOK, name + "-${date}")
+            .addParam("Locale", language)
+            .addParam("UserId", user.getId())
+            .generate()
+            .getFileLink();
 
-		User user = AuthUtils.getUser();
-		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect();
+    LOG.debug("Printing " + name);
 
-		String name = I18n.get("Client Situation");
-		
-		String fileLink = ReportFactory.createReport(IReport.CLIENT_SITUATION, name+"-${date}")
-				.addParam("Locale", language)
-				.addParam("UserId", user.getId())
-				.addParam("PartnerId", partner.getId())
-				.addParam("PartnerPic",partner.getPicture() != null ? MetaFiles.getPath(partner.getPicture()).toString() : "")
-				.generate()
-				.getFileLink();
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-		LOG.debug("Printing "+name);
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());
-	}
+  /* Fonction appeler par le bouton imprimer
+   *
+   * @param request
+   * @param response
+   * @return
+   */
+  public void printClientSituation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-	public Set<Company> getActiveCompany(){
-		Set<Company> companySet = new HashSet<Company>();
-		Company company = userService.getUser().getActiveCompany();
-		if(company == null){
-			List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
-			if(companyList.size() == 1){
-				company = companyList.get(0);
-			}
-		}
-		companySet.add(company);
-		return companySet;
-	}
+    Partner partner = request.getContext().asType(Partner.class);
 
-	public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
-		Partner partner = request.getContext().asType(Partner.class);
-		Map<String,String> urlMap = partnerService.getSocialNetworkUrl(partner.getName(),partner.getFirstName(),partner.getPartnerTypeSelect());
-		response.setAttr("google", "title", urlMap.get("google"));
-		response.setAttr("facebook", "title", urlMap.get("facebook"));
-		response.setAttr("twitter", "title", urlMap.get("twitter"));
-		response.setAttr("linkedin", "title", urlMap.get("linkedin"));
-		response.setAttr("youtube", "title", urlMap.get("youtube"));
+    User user = AuthUtils.getUser();
+    String language =
+        (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))
+            ? user != null
+                ? (user.getLanguage() == null || user.getLanguage().equals(""))
+                    ? "en"
+                    : user.getLanguage()
+                : "en"
+            : partner.getLanguageSelect();
 
-	}
+    String name = I18n.get("Client Situation");
 
-	public void findPartnerMails(ActionRequest request, ActionResponse response) {
-		Partner partner = request.getContext().asType(Partner.class);
-		List<Long> idList = partnerService.findPartnerMails(partner);
+    String fileLink =
+        ReportFactory.createReport(IReport.CLIENT_SITUATION, name + "-${date}")
+            .addParam("Locale", language)
+            .addParam("UserId", user.getId())
+            .addParam("PartnerId", partner.getId())
+            .addParam(
+                "PartnerPic",
+                partner.getPicture() != null
+                    ? MetaFiles.getPath(partner.getPicture()).toString()
+                    : "")
+            .generate()
+            .getFileLink();
 
-		List<Message> emailsList = new ArrayList<Message>();
-		for (Long id : idList) {
-			Message message = Beans.get(MessageRepository.class).find(id);
-			if(!emailsList.contains(message)){
-				emailsList.add(message);
-			}
-		}
+    LOG.debug("Printing " + name);
 
-		response.setValue("$emailsList",emailsList);
-	}
-	
-	public void addContactToPartner(ActionRequest request, ActionResponse response) {
-		Partner contact = partnerRepo.find(request.getContext().asType(Partner.class).getId());
-		partnerService.addContactToPartner(contact);
-	}
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-	public void findContactMails(ActionRequest request, ActionResponse response) {
-		Partner partner = request.getContext().asType(Partner.class);
-		List<Long> idList = partnerService.findContactMails(partner);
+  public Set<Company> getActiveCompany() {
+    Set<Company> companySet = new HashSet<Company>();
+    Company company = userService.getUser().getActiveCompany();
+    if (company == null) {
+      List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
+      if (companyList.size() == 1) {
+        company = companyList.get(0);
+      }
+    }
+    companySet.add(company);
+    return companySet;
+  }
 
-		List<Message> emailsList = new ArrayList<Message>();
-		for (Long id : idList) {
-			Message message = Beans.get(MessageRepository.class).find(id);
-			if(!emailsList.contains(message)){
-				emailsList.add(message);
-			}
-		}
+  public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    Map<String, String> urlMap =
+        partnerService.getSocialNetworkUrl(
+            partner.getName(), partner.getFirstName(), partner.getPartnerTypeSelect());
+    response.setAttr("google", "title", urlMap.get("google"));
+    response.setAttr("facebook", "title", urlMap.get("facebook"));
+    response.setAttr("twitter", "title", urlMap.get("twitter"));
+    response.setAttr("linkedin", "title", urlMap.get("linkedin"));
+    response.setAttr("youtube", "title", urlMap.get("youtube"));
+  }
 
-		response.setValue("$emailsList",emailsList);
-	}
-	
-	public void checkIbanValidity(ActionRequest request, ActionResponse response) throws AxelorException{
-		
-		List<BankDetails> bankDetailsList = request.getContext().asType(Partner.class).getBankDetailsList();
-		List<String> ibanInError = Lists.newArrayList();
-		
-		if (bankDetailsList !=null && !bankDetailsList.isEmpty()){
-			for (BankDetails bankDetails : bankDetailsList) {
-				Bank bank = bankDetails.getBank();
-				if(bankDetails.getIban() != null && bank != null
-						&& bank.getBankDetailsTypeSelect()
-						== BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
-					LOG.debug("checking iban code : {}", bankDetails.getIban());
-					try {
-						Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
-					} catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
-						ibanInError.add(bankDetails.getIban());
-					}
-				}
-			}
-		}
-		if (!ibanInError.isEmpty()){
-			
-			Function<String,String> addLi = new Function<String,String>() {
-				  @Override public String apply(String s) {
-				    return "<li>".concat(s).concat("</li>").toString();
-				  }
-				};
-			
-			response.setAlert(String.format(IExceptionMessage.BANK_DETAILS_2, "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
-		}
-	}
-	
-	public String normalizePhoneNumber(String phoneNumber){
-		return phoneNumber.replaceAll("\\s|\\.", "");
-	}
-	
-	public void convertToIndividualPartner(ActionRequest request, ActionResponse response) throws AxelorException {
-		Partner partner = request.getContext().asType(Partner.class);
-		if (partner.getId() == null) {
-			throw new AxelorException(I18n.get(IExceptionMessage.PARTNER_3),
-					IException.CONFIGURATION_ERROR);
-		}
-		partner = partnerRepo.find(partner.getId());
-		partnerService.convertToIndividualPartner(partner);
-	}
+  public void findPartnerMails(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    List<Long> idList = partnerService.findPartnerMails(partner);
+
+    List<Message> emailsList = new ArrayList<Message>();
+    for (Long id : idList) {
+      Message message = Beans.get(MessageRepository.class).find(id);
+      if (!emailsList.contains(message)) {
+        emailsList.add(message);
+      }
+    }
+
+    response.setValue("$emailsList", emailsList);
+  }
+
+  public void addContactToPartner(ActionRequest request, ActionResponse response) {
+    Partner contact = partnerRepo.find(request.getContext().asType(Partner.class).getId());
+    partnerService.addContactToPartner(contact);
+  }
+
+  public void findContactMails(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    List<Long> idList = partnerService.findContactMails(partner);
+
+    List<Message> emailsList = new ArrayList<Message>();
+    for (Long id : idList) {
+      Message message = Beans.get(MessageRepository.class).find(id);
+      if (!emailsList.contains(message)) {
+        emailsList.add(message);
+      }
+    }
+
+    response.setValue("$emailsList", emailsList);
+  }
+
+  public void checkIbanValidity(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    List<BankDetails> bankDetailsList =
+        request.getContext().asType(Partner.class).getBankDetailsList();
+    List<String> ibanInError = Lists.newArrayList();
+
+    if (bankDetailsList != null && !bankDetailsList.isEmpty()) {
+      for (BankDetails bankDetails : bankDetailsList) {
+        Bank bank = bankDetails.getBank();
+        if (bankDetails.getIban() != null
+            && bank != null
+            && bank.getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
+          LOG.debug("checking iban code : {}", bankDetails.getIban());
+          try {
+            Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
+          } catch (IbanFormatException
+              | InvalidCheckDigitException
+              | UnsupportedCountryException e) {
+            ibanInError.add(bankDetails.getIban());
+          }
+        }
+      }
+    }
+    if (!ibanInError.isEmpty()) {
+
+      Function<String, String> addLi =
+          new Function<String, String>() {
+            @Override
+            public String apply(String s) {
+              return "<li>".concat(s).concat("</li>").toString();
+            }
+          };
+
+      response.setAlert(
+          String.format(
+              IExceptionMessage.BANK_DETAILS_2,
+              "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
+    }
+  }
+
+  public String normalizePhoneNumber(String phoneNumber) {
+    return phoneNumber.replaceAll("\\s|\\.", "");
+  }
+
+  public void convertToIndividualPartner(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Partner partner = request.getContext().asType(Partner.class);
+    if (partner.getId() == null) {
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.PARTNER_3), IException.CONFIGURATION_ERROR);
+    }
+    partner = partnerRepo.find(partner.getId());
+    partnerService.convertToIndividualPartner(partner);
+  }
 }

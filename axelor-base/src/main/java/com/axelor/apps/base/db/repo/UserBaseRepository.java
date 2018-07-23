@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,23 +21,23 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 
 public class UserBaseRepository extends UserRepository {
-	
-	@Override
-	public User copy(User entity, boolean deep) {
-		
-		User copy = new User();
-		
-		copy.setGroup(entity.getGroup());
-		copy.setRoles(entity.getRoles());
-		copy.setPermissions(entity.getPermissions());
-		copy.setMetaPermissions(entity.getMetaPermissions());
-		copy.setActiveCompany(entity.getActiveCompany());
-		copy.setCompanySet(entity.getCompanySet());
-		copy.setLanguage(entity.getLanguage());
-		copy.setHomeAction(entity.getHomeAction());
-		copy.setSingleTab(entity.getSingleTab());
-		copy.setNoHelp(entity.getNoHelp());
-		
-		return super.copy(copy, deep);
-	}
+
+  @Override
+  public User copy(User entity, boolean deep) {
+
+    User copy = new User();
+
+    copy.setGroup(entity.getGroup());
+    copy.setRoles(entity.getRoles());
+    copy.setPermissions(entity.getPermissions());
+    copy.setMetaPermissions(entity.getMetaPermissions());
+    copy.setActiveCompany(entity.getActiveCompany());
+    copy.setCompanySet(entity.getCompanySet());
+    copy.setLanguage(entity.getLanguage());
+    copy.setHomeAction(entity.getHomeAction());
+    copy.setSingleTab(entity.getSingleTab());
+    copy.setNoHelp(entity.getNoHelp());
+
+    return super.copy(copy, deep);
+  }
 }

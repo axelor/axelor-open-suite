@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -32,38 +32,42 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class ReconcileSequenceService {
-	
-	protected SequenceService sequenceService;
 
-	@Inject
-	public ReconcileSequenceService(SequenceService sequenceService) {
+  protected SequenceService sequenceService;
 
-		this.sequenceService = sequenceService;
-		
-	}
-	
-	public void setSequence(Reconcile reconcile)  throws AxelorException  {
-		reconcile.setReconcileSeq(this.getSequence(reconcile));
-	}
+  @Inject
+  public ReconcileSequenceService(SequenceService sequenceService) {
 
-	protected String getSequence(Reconcile reconcile) throws AxelorException  {
+    this.sequenceService = sequenceService;
+  }
 
-		SequenceService sequenceService = Beans.get(SequenceService.class);
-		String seq = sequenceService.getSequenceNumber(IAdministration.RECONCILE, reconcile.getDebitMoveLine().getMove().getCompany());
-		if(seq == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.RECONCILE_6),
-					GeneralServiceImpl.EXCEPTION, AuthUtils.getUser().getActiveCompany().getName()), IException.CONFIGURATION_ERROR);
-		}
-		return seq;
-	}
+  public void setSequence(Reconcile reconcile) throws AxelorException {
+    reconcile.setReconcileSeq(this.getSequence(reconcile));
+  }
 
-	public void setDraftSequence(Reconcile reconcile) throws AxelorException {
-			
-		if (reconcile.getId() != null && Strings.isNullOrEmpty(reconcile.getReconcileSeq())
-			&& reconcile.getStatusSelect() == ReconcileRepository.STATUS_DRAFT) {
-			reconcile.setReconcileSeq(sequenceService.getDraftSequenceNumber(reconcile));
-		}		
-		
-	}	
-	
+  protected String getSequence(Reconcile reconcile) throws AxelorException {
+
+    SequenceService sequenceService = Beans.get(SequenceService.class);
+    String seq =
+        sequenceService.getSequenceNumber(
+            IAdministration.RECONCILE, reconcile.getDebitMoveLine().getMove().getCompany());
+    if (seq == null) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.RECONCILE_6),
+              GeneralServiceImpl.EXCEPTION,
+              AuthUtils.getUser().getActiveCompany().getName()),
+          IException.CONFIGURATION_ERROR);
+    }
+    return seq;
+  }
+
+  public void setDraftSequence(Reconcile reconcile) throws AxelorException {
+
+    if (reconcile.getId() != null
+        && Strings.isNullOrEmpty(reconcile.getReconcileSeq())
+        && reconcile.getStatusSelect() == ReconcileRepository.STATUS_DRAFT) {
+      reconcile.setReconcileSeq(sequenceService.getDraftSequenceNumber(reconcile));
+    }
+  }
 }

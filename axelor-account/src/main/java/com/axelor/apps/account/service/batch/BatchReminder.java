@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -32,142 +32,158 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BatchReminder extends BatchStrategy {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	private List<Reminder> changedReminders = new ArrayList<>();
+  private List<Reminder> changedReminders = new ArrayList<>();
 
-	protected boolean stopping = false;
-	protected PartnerRepository partnerRepository;
-	
-	@Inject
-	public BatchReminder(ReminderService reminderService, PartnerRepository partnerRepository) {
-		
-		super(reminderService);
-		this.partnerRepository = partnerRepository;
-	}
+  protected boolean stopping = false;
+  protected PartnerRepository partnerRepository;
 
+  @Inject
+  public BatchReminder(ReminderService reminderService, PartnerRepository partnerRepository) {
 
-	@Override
-	protected void start() throws IllegalAccessException, AxelorException {
-		
-		super.start();
-		
-		Company company = batch.getAccountingBatch().getCompany();
-				
-		try {
-			
-			reminderService.testCompanyField(company);
-			
-		} catch (AxelorException e) {
-			
-			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.REMINDER, batch.getId());
-			incrementAnomaly();
-			stopping = true;
-		}
-		
-		checkPoint();
+    super(reminderService);
+    this.partnerRepository = partnerRepository;
+  }
 
-	}
-	
-	
-	@Override
-	protected void process() {
-		
-		if(!stopping)  {
-			
-			this.reminderPartner();
-			this.generateMail();
-		}
-	}
-	
-	
-	public void reminderPartner()  {
-		
-		int i = 0;
-		Company company = batch.getAccountingBatch().getCompany();
-		List<Partner> partnerList = partnerRepository.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", company).fetch();
-		
-		for (Partner partner : partnerList) {
+  @Override
+  protected void start() throws IllegalAccessException, AxelorException {
 
-			try {
-				partner = partnerRepository.find(partner.getId());
-				boolean remindedOk = reminderService.reminderGenerate(partner, company);
-				
-				if(remindedOk)  {
-					updatePartner(partner);
-					changedReminders.add(
-							reminderService.getReminder( partner, company)
-					);
-					i++;
-				}
+    super.start();
 
-				log.debug("Tiers traité : {}", partner.getName());	
+    Company company = batch.getAccountingBatch().getCompany();
 
-			} catch (AxelorException e) {
-				
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Tiers")+" %s", partner.getName()), e, e.getcategory()), IException.REMINDER, batch.getId());
-				incrementAnomaly();
-				
-			} catch (Exception e) {
-				
-				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+" %s", partner.getName()), e), IException.REMINDER, batch.getId());
-				
-				incrementAnomaly();
-				
-				log.error("Bug(Anomalie) généré(e) pour le tiers {}", partner.getName());
-				
-			} finally {
-				
-				if (i % 10 == 0) { JPA.clear(); }
-	
-			}
-		}
-	}
+    try {
 
-	void generateMail() {
-		for (Reminder reminder : changedReminders) {
-			try {
-				reminder = Beans.get(ReminderRepository.class).find(reminder.getId());
-				ReminderHistory reminderHistory = Beans.get(ReminderActionService.class).getReminderHistory(reminder);
-				if (reminderHistory == null) {
-					continue;
-				}
-				if (reminderHistory.getReminderMessage() == null) {
-					Beans.get(ReminderActionService.class).runMessage(reminder);
-				}
-			} catch (Exception e) {
-				TraceBackService.trace(new Exception(String.format(I18n.get("Tiers")+" %s", reminder.getAccountingSituation().getPartner().getName()), e), IException.REMINDER, batch.getId());
+      reminderService.testCompanyField(company);
 
-				incrementAnomaly();
-			}
-		}
-	}
+    } catch (AxelorException e) {
 
-	/**
-	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
-	 * Warning : {@code batch} entity have to be saved before.
-	 */
-	@Override
-	protected void stop() {
+      TraceBackService.trace(
+          new AxelorException("", e, e.getcategory()), IException.REMINDER, batch.getId());
+      incrementAnomaly();
+      stopping = true;
+    }
 
-		String comment = I18n.get(IExceptionMessage.BATCH_REMINDER_1) + "\n";
-		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_REMINDER_2)+"\n", batch.getDone());
-		comment += String.format("\t"+I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
-		
+    checkPoint();
+  }
 
-		super.stop();
-		addComment(comment);
-		
-	}
+  @Override
+  protected void process() {
 
+    if (!stopping) {
+
+      this.reminderPartner();
+      this.generateMail();
+    }
+  }
+
+  public void reminderPartner() {
+
+    int i = 0;
+    Company company = batch.getAccountingBatch().getCompany();
+    List<Partner> partnerList =
+        partnerRepository
+            .all()
+            .filter("self.isContact = false AND ?1 MEMBER OF self.companySet", company)
+            .fetch();
+
+    for (Partner partner : partnerList) {
+
+      try {
+        partner = partnerRepository.find(partner.getId());
+        boolean remindedOk = reminderService.reminderGenerate(partner, company);
+
+        if (remindedOk) {
+          updatePartner(partner);
+          changedReminders.add(reminderService.getReminder(partner, company));
+          i++;
+        }
+
+        log.debug("Tiers traité : {}", partner.getName());
+
+      } catch (AxelorException e) {
+
+        TraceBackService.trace(
+            new AxelorException(
+                String.format(I18n.get("Tiers") + " %s", partner.getName()), e, e.getcategory()),
+            IException.REMINDER,
+            batch.getId());
+        incrementAnomaly();
+
+      } catch (Exception e) {
+
+        TraceBackService.trace(
+            new Exception(String.format(I18n.get("Tiers") + " %s", partner.getName()), e),
+            IException.REMINDER,
+            batch.getId());
+
+        incrementAnomaly();
+
+        log.error("Bug(Anomalie) généré(e) pour le tiers {}", partner.getName());
+
+      } finally {
+
+        if (i % 10 == 0) {
+          JPA.clear();
+        }
+      }
+    }
+  }
+
+  void generateMail() {
+    for (Reminder reminder : changedReminders) {
+      try {
+        reminder = Beans.get(ReminderRepository.class).find(reminder.getId());
+        ReminderHistory reminderHistory =
+            Beans.get(ReminderActionService.class).getReminderHistory(reminder);
+        if (reminderHistory == null) {
+          continue;
+        }
+        if (reminderHistory.getReminderMessage() == null) {
+          Beans.get(ReminderActionService.class).runMessage(reminder);
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(
+            new Exception(
+                String.format(
+                    I18n.get("Tiers") + " %s",
+                    reminder.getAccountingSituation().getPartner().getName()),
+                e),
+            IException.REMINDER,
+            batch.getId());
+
+        incrementAnomaly();
+      }
+    }
+  }
+
+  /**
+   * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the
+   * entity in the persistant context. Warning : {@code batch} entity have to be saved before.
+   */
+  @Override
+  protected void stop() {
+
+    String comment = I18n.get(IExceptionMessage.BATCH_REMINDER_1) + "\n";
+    comment +=
+        String.format(
+            "\t* %s " + I18n.get(IExceptionMessage.BATCH_REMINDER_2) + "\n", batch.getDone());
+    comment +=
+        String.format(
+            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
+            batch.getAnomaly());
+
+    super.stop();
+    addComment(comment);
+  }
 }

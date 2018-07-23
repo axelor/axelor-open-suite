@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -35,18 +35,17 @@ import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderService;
 import com.axelor.apps.sale.service.SaleOrderServiceImpl;
 
-
 public class SaleModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-    	bind(PartnerService.class).to(PartnerSaleService.class);
-        bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
-        bind(SaleOrderLineService.class).to(SaleOrderLineServiceImpl.class);
-        bind(SaleOrderRepository.class).to(SaleOrderManagementRepository.class);
-        bind(OpportunitySaleOrderService.class).to(OpportunitySaleOrderServiceImpl.class);
-        bind(AdvancePaymentService.class).to(AdvancePaymentServiceImpl.class);
-        bind(SaleBatchRepository.class).to(SaleBatchSaleRepository.class);
-        IPartner.modelPartnerFieldMap.put(SaleOrder.class.getName(), "clientPartner");
-    }
+  @Override
+  protected void configure() {
+    bind(PartnerService.class).to(PartnerSaleService.class);
+    bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
+    bind(SaleOrderLineService.class).to(SaleOrderLineServiceImpl.class);
+    bind(SaleOrderRepository.class).to(SaleOrderManagementRepository.class);
+    bind(OpportunitySaleOrderService.class).to(OpportunitySaleOrderServiceImpl.class);
+    bind(AdvancePaymentService.class).to(AdvancePaymentServiceImpl.class);
+    bind(SaleBatchRepository.class).to(SaleBatchSaleRepository.class);
+    IPartner.modelPartnerFieldMap.put(SaleOrder.class.getName(), "clientPartner");
+  }
 }

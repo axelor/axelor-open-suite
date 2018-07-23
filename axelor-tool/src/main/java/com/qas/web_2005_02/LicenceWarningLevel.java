@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,12 +21,13 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour LicenceWarningLevel.
- * 
+ * Classe Java pour LicenceWarningLevel.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <p>
+ *
  * <pre>
  * &lt;simpleType name="LicenceWarningLevel">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -44,51 +45,48 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- * 
  */
 @XmlType(name = "LicenceWarningLevel")
 @XmlEnum
 public enum LicenceWarningLevel {
+  @XmlEnumValue("None")
+  NONE("None"),
+  @XmlEnumValue("DataExpiring")
+  DATA_EXPIRING("DataExpiring"),
+  @XmlEnumValue("LicenceExpiring")
+  LICENCE_EXPIRING("LicenceExpiring"),
+  @XmlEnumValue("ClicksLow")
+  CLICKS_LOW("ClicksLow"),
+  @XmlEnumValue("Evaluation")
+  EVALUATION("Evaluation"),
+  @XmlEnumValue("NoClicks")
+  NO_CLICKS("NoClicks"),
+  @XmlEnumValue("DataExpired")
+  DATA_EXPIRED("DataExpired"),
+  @XmlEnumValue("EvalLicenceExpired")
+  EVAL_LICENCE_EXPIRED("EvalLicenceExpired"),
+  @XmlEnumValue("FullLicenceExpired")
+  FULL_LICENCE_EXPIRED("FullLicenceExpired"),
+  @XmlEnumValue("LicenceNotFound")
+  LICENCE_NOT_FOUND("LicenceNotFound"),
+  @XmlEnumValue("DataUnreadable")
+  DATA_UNREADABLE("DataUnreadable");
+  private final String value;
 
-    @XmlEnumValue("None")
-    NONE("None"),
-    @XmlEnumValue("DataExpiring")
-    DATA_EXPIRING("DataExpiring"),
-    @XmlEnumValue("LicenceExpiring")
-    LICENCE_EXPIRING("LicenceExpiring"),
-    @XmlEnumValue("ClicksLow")
-    CLICKS_LOW("ClicksLow"),
-    @XmlEnumValue("Evaluation")
-    EVALUATION("Evaluation"),
-    @XmlEnumValue("NoClicks")
-    NO_CLICKS("NoClicks"),
-    @XmlEnumValue("DataExpired")
-    DATA_EXPIRED("DataExpired"),
-    @XmlEnumValue("EvalLicenceExpired")
-    EVAL_LICENCE_EXPIRED("EvalLicenceExpired"),
-    @XmlEnumValue("FullLicenceExpired")
-    FULL_LICENCE_EXPIRED("FullLicenceExpired"),
-    @XmlEnumValue("LicenceNotFound")
-    LICENCE_NOT_FOUND("LicenceNotFound"),
-    @XmlEnumValue("DataUnreadable")
-    DATA_UNREADABLE("DataUnreadable");
-    private final String value;
+  LicenceWarningLevel(String v) {
+    value = v;
+  }
 
-    LicenceWarningLevel(String v) {
-        value = v;
+  public String value() {
+    return value;
+  }
+
+  public static LicenceWarningLevel fromValue(String v) {
+    for (LicenceWarningLevel c : LicenceWarningLevel.values()) {
+      if (c.value.equals(v)) {
+        return c;
+      }
     }
-
-    public String value() {
-        return value;
-    }
-
-    public static LicenceWarningLevel fromValue(String v) {
-        for (LicenceWarningLevel c: LicenceWarningLevel.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
-
+    throw new IllegalArgumentException(v);
+  }
 }

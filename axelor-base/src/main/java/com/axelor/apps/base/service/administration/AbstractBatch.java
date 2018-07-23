@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.base.service.administration;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -36,188 +28,181 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBatch {
 
-	protected static final int FETCH_LIMIT = 10;
+  protected static final int FETCH_LIMIT = 10;
 
-	@Inject
-	protected GeneralService generalService;
+  @Inject protected GeneralService generalService;
 
-	protected static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected Batch batch;
-	protected Model model;
+  protected Batch batch;
+  protected Model model;
 
-	private int done, anomaly;
+  private int done, anomaly;
 
-	@Inject
-	protected BatchRepository batchRepo;
+  @Inject protected BatchRepository batchRepo;
 
-	protected AbstractBatch(  ){
+  protected AbstractBatch() {
 
-		this.batch = new Batch();
+    this.batch = new Batch();
 
-		this.batch.setStartDate(new DateTime());
+    this.batch.setStartDate(new DateTime());
 
-		this.done = 0;
-		this.anomaly = 0;
+    this.done = 0;
+    this.anomaly = 0;
 
-		this.batch.setDone(this.done);
-		this.batch.setAnomaly(this.anomaly);
+    this.batch.setDone(this.done);
+    this.batch.setAnomaly(this.anomaly);
+  }
 
-	}
+  public Batch getBatch() {
 
-	public Batch getBatch(){
+    return batch;
+  }
 
-		return batch;
+  public Batch run(AuditableModel model) {
 
-	}
+    Preconditions.checkNotNull(model);
 
-	public Batch run( AuditableModel model ){
+    if (isRunnable(model)) {
 
-		Preconditions.checkNotNull(model);
+      try {
 
-		if ( isRunnable( model ) ) {
+        start();
+        process();
+        stop();
+        return batch;
 
-			try {
+      } catch (Exception e) {
+        unarchived();
+        throw new RuntimeException(e);
+      }
+    } else {
+      throw new RuntimeException(I18n.get(IExceptionMessage.ABSTRACT_BATCH_1));
+    }
+  }
 
-				start();
-				process();
-				stop();
-				return batch;
+  protected abstract void process();
 
-			} catch (Exception e) {
-				unarchived();  throw new RuntimeException(e);
-			}
-		}
-		else { throw new RuntimeException(I18n.get(IExceptionMessage.ABSTRACT_BATCH_1)); }
+  protected boolean isRunnable(Model model) {
+    this.model = model;
+    if (model.getArchived() != null) {
+      return !model.getArchived();
+    } else {
+      return true;
+    }
+  }
 
-	}
+  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
 
-	abstract protected void process();
+    LOG.info("Début batch {} ::: {}", new Object[] {model, batch.getStartDate()});
 
-	protected boolean isRunnable ( Model model ) {
-		this.model = model;
-		if (model.getArchived() != null) {
-			return !model.getArchived() ;
-		}
-		else { return true; }
+    model.setArchived(true);
+    associateModel();
+    checkPoint();
+  }
 
-	}
+  /**
+   * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the
+   * entity in the persistant context. Warning : {@code batch} entity have to be saved before.
+   */
+  protected void stop() {
 
-	protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+    batch = batchRepo.find(batch.getId());
 
-		LOG.info("Début batch {} ::: {}", new Object[]{ model, batch.getStartDate() });
+    batch.setEndDate(new DateTime());
+    batch.setDuration(getDuring());
 
-		model.setArchived(true);
-		associateModel();
-		checkPoint();
+    checkPoint();
+    unarchived();
 
-	}
+    LOG.info("Fin batch {} ::: {}", new Object[] {model, batch.getEndDate()});
+  }
 
-	/**
-	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
-	 * Warning : {@code batch} entity have to be saved before.
-	 */
-	protected void stop(){
+  protected void incrementDone() {
 
-		batch = batchRepo.find( batch.getId() );
+    batch = batchRepo.find(batch.getId());
 
-		batch.setEndDate( new DateTime() );
-		batch.setDuration( getDuring() );
+    done += 1;
+    batch.setDone(done);
+    checkPoint();
 
-		checkPoint();
-		unarchived();
+    LOG.debug("Done ::: {}", done);
+  }
 
-		LOG.info("Fin batch {} ::: {}", new Object[]{ model, batch.getEndDate() });
+  protected void incrementAnomaly() {
 
+    batch = batchRepo.find(batch.getId());
 
-	}
+    anomaly += 1;
+    batch.setAnomaly(anomaly);
+    checkPoint();
 
-	protected void incrementDone(){
+    LOG.debug("Anomaly ::: {}", anomaly);
+  }
 
-		batch = batchRepo.find( batch.getId() );
+  protected void addComment(String comment) {
 
-		done += 1;
-		batch.setDone( done );
-		checkPoint();
+    batch = batchRepo.find(batch.getId());
 
-		LOG.debug("Done ::: {}", done);
+    batch.setComments(comment);
 
-	}
+    checkPoint();
+  }
 
-	protected void incrementAnomaly(){
+  @Transactional
+  protected Batch checkPoint() {
 
-		batch = batchRepo.find( batch.getId() );
+    return batchRepo.save(batch);
+  }
 
-		anomaly += 1;
-		batch.setAnomaly(anomaly);
-		checkPoint();
+  @Transactional
+  protected void unarchived() {
 
-		LOG.debug("Anomaly ::: {}", anomaly);
+    model = JPA.find(generalService.getPersistentClass(model), model.getId());
+    model.setArchived(false);
+  }
 
-	}
+  private int getDuring() {
 
-	protected void addComment(String comment){
+    return new Interval(batch.getStartDate(), batch.getEndDate())
+        .toDuration()
+        .toStandardSeconds()
+        .toStandardMinutes()
+        .getMinutes();
+  }
 
-		batch = batchRepo.find( batch.getId() );
+  private void associateModel() throws IllegalArgumentException, IllegalAccessException {
 
-		batch.setComments(comment);
+    LOG.debug("ASSOCIATE batch:{} TO model:{}", new Object[] {batch, model});
 
-		checkPoint();
+    for (Field field : batch.getClass().getDeclaredFields()) {
 
-	}
+      LOG.debug(
+          "TRY TO ASSOCIATE field:{} TO model:{}",
+          new Object[] {field.getType().getName(), model.getClass().getName()});
+      if (isAssociable(field)) {
 
-	@Transactional
-	protected Batch checkPoint(){
+        LOG.debug("FIELD ASSOCIATE TO MODEL");
+        field.setAccessible(true);
+        field.set(batch, model);
+        field.setAccessible(false);
 
-		return batchRepo.save(batch);
+        break;
+      }
+    }
+  }
 
-	}
+  private boolean isAssociable(Field field) {
 
-
-	@Transactional
-	protected void unarchived() {
-
-		model = JPA.find(generalService.getPersistentClass(model), model.getId());
-		model.setArchived( false );
-
-	}
-
-
-	private int getDuring(){
-
-		return new Interval(batch.getStartDate(), batch.getEndDate()).toDuration().toStandardSeconds().toStandardMinutes().getMinutes();
-
-	}
-
-	private void associateModel() throws IllegalArgumentException, IllegalAccessException{
-
-		LOG.debug("ASSOCIATE batch:{} TO model:{}", new Object[] { batch, model });
-
-		for (Field field : batch.getClass().getDeclaredFields()){
-
-			LOG.debug("TRY TO ASSOCIATE field:{} TO model:{}", new Object[] { field.getType().getName(), model.getClass().getName() });
-			if ( isAssociable(field) ){
-
-				LOG.debug("FIELD ASSOCIATE TO MODEL");
-				field.setAccessible(true);
-				field.set(batch, model);
-				field.setAccessible(false);
-
-				break;
-
-			}
-
-		}
-
-	}
-
-	private boolean isAssociable(Field field){
-
-		return field.getType().equals( generalService.getPersistentClass(model) );
-
-	}
-
+    return field.getType().equals(generalService.getPersistentClass(model));
+  }
 }

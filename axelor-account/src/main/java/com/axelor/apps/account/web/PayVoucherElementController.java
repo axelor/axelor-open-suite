@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,42 +27,42 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
-
 
 public class PayVoucherElementController {
 
-    private CurrencyService currencyService;
-    private PayVoucherElementToPayRepository elementToPayRepository;
+  private CurrencyService currencyService;
+  private PayVoucherElementToPayRepository elementToPayRepository;
 
-    @Inject
-    PayVoucherElementController(CurrencyService currencyService,
-                                PayVoucherElementToPayRepository elementToPayRepository) {
-        this.currencyService = currencyService;
-        this.elementToPayRepository = elementToPayRepository;
-    }
+  @Inject
+  PayVoucherElementController(
+      CurrencyService currencyService, PayVoucherElementToPayRepository elementToPayRepository) {
+    this.currencyService = currencyService;
+    this.elementToPayRepository = elementToPayRepository;
+  }
 
-    @Transactional
-    public void updateAmountToPayCurrency(ActionRequest request, ActionResponse response) {
-        PayVoucherElementToPay elementToPayContext = request.getContext().asType(PayVoucherElementToPay.class);
-        PayVoucherElementToPay elementToPay = this.elementToPayRepository.find(elementToPayContext.getId());
-        Currency paymentVoucherCurrency = elementToPay.getPaymentVoucher().getCurrency();
-        BigDecimal amountToPayCurrency = null;
-        try {
-            amountToPayCurrency = currencyService.getAmountCurrencyConvertedAtDate(
-                    elementToPay.getCurrency(),
-                    paymentVoucherCurrency,
-                    elementToPay.getAmountToPay(),
-                    elementToPay.getPaymentVoucher().getPaymentDate()
-            );
-        } catch(AxelorException e) {
-            TraceBackService.trace(response, e);
-        }
-        if (amountToPayCurrency != null) {
-            elementToPay.setAmountToPayCurrency(amountToPayCurrency);
-            elementToPayRepository.save(elementToPay);
-            response.setReload(true);
-        }
+  @Transactional
+  public void updateAmountToPayCurrency(ActionRequest request, ActionResponse response) {
+    PayVoucherElementToPay elementToPayContext =
+        request.getContext().asType(PayVoucherElementToPay.class);
+    PayVoucherElementToPay elementToPay =
+        this.elementToPayRepository.find(elementToPayContext.getId());
+    Currency paymentVoucherCurrency = elementToPay.getPaymentVoucher().getCurrency();
+    BigDecimal amountToPayCurrency = null;
+    try {
+      amountToPayCurrency =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              elementToPay.getCurrency(),
+              paymentVoucherCurrency,
+              elementToPay.getAmountToPay(),
+              elementToPay.getPaymentVoucher().getPaymentDate());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
     }
+    if (amountToPayCurrency != null) {
+      elementToPay.setAmountToPayCurrency(amountToPayCurrency);
+      elementToPayRepository.save(elementToPay);
+      response.setReload(true);
+    }
+  }
 }

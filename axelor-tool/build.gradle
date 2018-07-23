@@ -13,3 +13,9 @@ dependencies {
 	compile "com.sun.xml.bind:jaxb-impl:2.2.2"
 	compile libs.ST4
 }
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}

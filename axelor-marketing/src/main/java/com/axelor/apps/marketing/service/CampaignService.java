@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,7 +21,6 @@ import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.meta.db.MetaFile;
 
 public interface CampaignService {
-	
-	public MetaFile sendEmail(Campaign campaign);
-	
+
+  public MetaFile sendEmail(Campaign campaign);
 }

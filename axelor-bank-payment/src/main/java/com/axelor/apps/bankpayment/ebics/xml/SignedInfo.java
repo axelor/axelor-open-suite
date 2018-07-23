@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
-import java.io.ByteArrayInputStream;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.transforms.TransformationException;
-import org.apache.xml.security.utils.IgnoreAllErrorHandler;
-import org.apache.xpath.XPathAPI;
-
 import com.axelor.apps.account.ebics.schema.xmldsig.CanonicalizationMethodType;
 import com.axelor.apps.account.ebics.schema.xmldsig.DigestMethodType;
 import com.axelor.apps.account.ebics.schema.xmldsig.ReferenceType;
@@ -38,26 +27,30 @@ import com.axelor.apps.account.ebics.schema.xmldsig.TransformType;
 import com.axelor.apps.account.ebics.schema.xmldsig.TransformsType;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
-
+import java.io.ByteArrayInputStream;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.transforms.TransformationException;
+import org.apache.xml.security.utils.IgnoreAllErrorHandler;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
- * A representation of the SignedInfo element
- * performing signature for signed ebics requests
+ * A representation of the SignedInfo element performing signature for signed ebics requests
  *
  * @author hachani
- *
  */
 public class SignedInfo extends DefaultEbicsRootElement {
-	
+
   /**
    * Constructs a new <code>SignedInfo</code> element
+   *
    * @param digest the digest value
    */
   public SignedInfo(EbicsUser user, byte[] digest) {
@@ -67,36 +60,40 @@ public class SignedInfo extends DefaultEbicsRootElement {
 
   @Override
   public void build() throws AxelorException {
-    CanonicalizationMethodType 	canonicalizationMethod;
-    SignatureMethodType 	signatureMethod;
-    ReferenceType 		reference;
-    TransformsType 		transforms;
-    DigestMethodType 		digestMethod;
-    TransformType 		transform;
-    SignedInfoType		signedInfo;
+    CanonicalizationMethodType canonicalizationMethod;
+    SignatureMethodType signatureMethod;
+    ReferenceType reference;
+    TransformsType transforms;
+    DigestMethodType digestMethod;
+    TransformType transform;
+    SignedInfoType signedInfo;
 
     if (digest == null) {
       throw new AxelorException("digest value cannot be null", IException.CONFIGURATION_ERROR);
     }
 
     transform = EbicsXmlFactory.createTransformType(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-    digestMethod = EbicsXmlFactory.createDigestMethodType("http://www.w3.org/2001/04/xmlenc#sha256");
+    digestMethod =
+        EbicsXmlFactory.createDigestMethodType("http://www.w3.org/2001/04/xmlenc#sha256");
     transforms = EbicsXmlFactory.createTransformsType(new TransformType[] {transform});
-    reference = EbicsXmlFactory.createReferenceType("#xpointer(//*[@authenticate='true'])",
-	                                            transforms,
-	                                            digestMethod,
-	                                            digest);
-    signatureMethod = EbicsXmlFactory.createSignatureMethodType("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
-    canonicalizationMethod = EbicsXmlFactory.createCanonicalizationMethodType(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-    signedInfo = EbicsXmlFactory.createSignedInfoType(canonicalizationMethod,
-	                                              signatureMethod,
-	                                              new ReferenceType[] {reference});
+    reference =
+        EbicsXmlFactory.createReferenceType(
+            "#xpointer(//*[@authenticate='true'])", transforms, digestMethod, digest);
+    signatureMethod =
+        EbicsXmlFactory.createSignatureMethodType(
+            "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
+    canonicalizationMethod =
+        EbicsXmlFactory.createCanonicalizationMethodType(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+    signedInfo =
+        EbicsXmlFactory.createSignedInfoType(
+            canonicalizationMethod, signatureMethod, new ReferenceType[] {reference});
 
     document = EbicsXmlFactory.createSignatureType(signedInfo);
   }
 
   /**
    * Returns the digest value.
+   *
    * @return the digest value.
    */
   public byte[] getDigest() {
@@ -105,41 +102,40 @@ public class SignedInfo extends DefaultEbicsRootElement {
 
   /**
    * Returns the signed info element as an <code>XmlObject</code>
+   *
    * @return he signed info element
    * @throws EbicsException user Signature and Canonicalization errors
    */
   public SignatureType getSignatureType() {
-    return ((SignatureType)document);
+    return ((SignatureType) document);
   }
 
   /**
-   * Canonizes and signs a given input with the authentication private key.
-   * of the EBICS user.
-   * 
-   * <p>The given input to be signed is first Canonized using the 
+   * Canonizes and signs a given input with the authentication private key. of the EBICS user.
+   *
+   * <p>The given input to be signed is first Canonized using the
    * http://www.w3.org/TR/2001/REC-xml-c14n-20010315 algorithm.
-   * 
-   * <p>The element to be canonized is only the SignedInfo element that should be
-   * contained in the request to be signed. Otherwise, a {@link TransformationException}
-   * is thrown.
-   * 
-   * <p> The namespace of the SignedInfo element should be named <b>ds</b> as specified in
-   * the EBICS specification for common namespaces nomination.
-   * 
-   * <p> The signature is ensured using the user X002 private key. This step is done in
-   * {@link EbicsUser#authenticate(byte[]) authenticate}.
-   * 
+   *
+   * <p>The element to be canonized is only the SignedInfo element that should be contained in the
+   * request to be signed. Otherwise, a {@link TransformationException} is thrown.
+   *
+   * <p>The namespace of the SignedInfo element should be named <b>ds</b> as specified in the EBICS
+   * specification for common namespaces nomination.
+   *
+   * <p>The signature is ensured using the user X002 private key. This step is done in {@link
+   * EbicsUser#authenticate(byte[]) authenticate}.
+   *
    * @param toSign the input to sign
    * @return the signed input
    * @throws EbicsException signature fails.
    */
   public byte[] sign(byte[] toSign) throws AxelorException {
     try {
-      DocumentBuilderFactory 		factory;
-      DocumentBuilder			builder;
-      Document				document;
-      Node 				node;
-      Canonicalizer 			canonicalizer;
+      DocumentBuilderFactory factory;
+      DocumentBuilder builder;
+      Document document;
+      Node node;
+      Canonicalizer canonicalizer;
 
       factory = DocumentBuilderFactory.newInstance();
       factory.setNamespaceAware(true);
@@ -149,8 +145,9 @@ public class SignedInfo extends DefaultEbicsRootElement {
       document = builder.parse(new ByteArrayInputStream(toSign));
       node = XPathAPI.selectSingleNode(document, "//ds:SignedInfo");
       canonicalizer = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-      return Beans.get(EbicsUserService.class).authenticate(user, canonicalizer.canonicalizeSubtree(node));
-    } catch(Exception e) {
+      return Beans.get(EbicsUserService.class)
+          .authenticate(user, canonicalizer.canonicalizeSubtree(node));
+    } catch (Exception e) {
       e.printStackTrace();
       throw new AxelorException(e, IException.CONFIGURATION_ERROR);
     }
@@ -173,6 +170,6 @@ public class SignedInfo extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private byte[]			digest;
-  private EbicsUser 			user;
+  private byte[] digest;
+  private EbicsUser user;
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,23 +19,17 @@ package com.axelor.app.production.db;
 
 /**
  * Interface of Event package. Enum all static variable of packages.
- * 
+ *
  * @author dubaux
- * 
  */
 public interface IManufOrder {
 
+  /** Static status select */
+  static final int STATUS_DRAFT = 1;
 
-	/**
-	 * Static status select
-	 */
-
-	static final int STATUS_DRAFT = 1;
-	static final int STATUS_CANCELED = 2;
-	static final int STATUS_PLANNED = 3;
-	static final int STATUS_IN_PROGRESS = 4;
-	static final int STATUS_STANDBY = 5;
-	static final int STATUS_FINISHED = 6;
-
-	
+  static final int STATUS_CANCELED = 2;
+  static final int STATUS_PLANNED = 3;
+  static final int STATUS_IN_PROGRESS = 4;
+  static final int STATUS_STANDBY = 5;
+  static final int STATUS_FINISHED = 6;
 }

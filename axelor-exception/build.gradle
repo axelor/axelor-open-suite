@@ -7,3 +7,9 @@ module {
 
 	removable false
 }
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}

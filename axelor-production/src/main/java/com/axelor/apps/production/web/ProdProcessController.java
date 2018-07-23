@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,31 +28,41 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class ProdProcessController {
-	
-	@Inject
-	protected ProdProcessService prodProcessService;
-	
-	public void validateProdProcess(ActionRequest request, ActionResponse response) throws AxelorException{
-		ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
-		if(prodProcess.getIsConsProOnOperation()){
-			BillOfMaterial bom = null;
-			if(request.getContext().getParentContext() != null && request.getContext().getParentContext().getContextClass().getName().equals(BillOfMaterial.class.getName())){
-				bom = request.getContext().getParentContext().asType(BillOfMaterial.class);
-			}
-			else{
-				bom = Beans.get(BillOfMaterialRepository.class).all().filter("self.prodProcess.id = ?1", prodProcess.getId()).fetchOne();
-			}
-			if(bom != null){
-				prodProcessService.validateProdProcess(prodProcess,bom);
-			}
-		}
-	}
-	
-	public void changeProdProcessListOutsourcing(ActionRequest request, ActionResponse response) throws AxelorException{
-		ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
-		if (prodProcess.getProdProcessLineList() != null){
-			prodProcessService.changeProdProcessListOutsourcing(prodProcess);
-		}
-		response.setValue("prodProcessLineList", prodProcess.getProdProcessLineList());
-	}
+
+  @Inject protected ProdProcessService prodProcessService;
+
+  public void validateProdProcess(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+    if (prodProcess.getIsConsProOnOperation()) {
+      BillOfMaterial bom = null;
+      if (request.getContext().getParentContext() != null
+          && request
+              .getContext()
+              .getParentContext()
+              .getContextClass()
+              .getName()
+              .equals(BillOfMaterial.class.getName())) {
+        bom = request.getContext().getParentContext().asType(BillOfMaterial.class);
+      } else {
+        bom =
+            Beans.get(BillOfMaterialRepository.class)
+                .all()
+                .filter("self.prodProcess.id = ?1", prodProcess.getId())
+                .fetchOne();
+      }
+      if (bom != null) {
+        prodProcessService.validateProdProcess(prodProcess, bom);
+      }
+    }
+  }
+
+  public void changeProdProcessListOutsourcing(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+    if (prodProcess.getProdProcessLineList() != null) {
+      prodProcessService.changeProdProcessListOutsourcing(prodProcess);
+    }
+    response.setValue("prodProcessLineList", prodProcess.getProdProcessLineList());
+  }
 }

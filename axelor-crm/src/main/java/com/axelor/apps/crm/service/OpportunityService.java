@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,11 +24,9 @@ import com.google.inject.persist.Transactional;
 
 public interface OpportunityService {
 
-	@Transactional
-	public void saveOpportunity(Opportunity opportunity);
+  @Transactional
+  public void saveOpportunity(Opportunity opportunity);
 
-	@Transactional
-	public Partner createClientFromLead(Opportunity opportunity) throws AxelorException;
-	
-	
+  @Transactional
+  public Partner createClientFromLead(Opportunity opportunity) throws AxelorException;
 }

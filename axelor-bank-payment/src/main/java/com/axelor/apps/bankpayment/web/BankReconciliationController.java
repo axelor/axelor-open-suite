@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,36 +27,35 @@ import com.google.inject.Inject;
 
 public class BankReconciliationController {
 
-	@Inject
-	BankReconciliationService bankReconciliationService;
-	
-	@Inject
-	BankReconciliationRepository bankReconciliationRepo;
-	
-	public void compute(ActionRequest request, ActionResponse response) {
-		
-		BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+  @Inject BankReconciliationService bankReconciliationService;
 
-		try {
-			
-			bankReconciliationService.compute(bankReconciliationRepo.find(bankStatement.getId()));
-			response.setReload(true);
-			
-		}
-		catch (Exception e){ TraceBackService.trace(response, e); }
-	}
-	
-	public void validate(ActionRequest request, ActionResponse response) {
-		
-		BankStatement bankStatement = request.getContext().asType(BankStatement.class);
-		
-		try {
-			
-			bankReconciliationService.validate(bankReconciliationRepo.find(bankStatement.getId()));
-			response.setReload(true);
-			
-		}
-		catch (Exception e){ TraceBackService.trace(response, e); }
-	}
+  @Inject BankReconciliationRepository bankReconciliationRepo;
 
+  public void compute(ActionRequest request, ActionResponse response) {
+
+    BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+
+    try {
+
+      bankReconciliationService.compute(bankReconciliationRepo.find(bankStatement.getId()));
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validate(ActionRequest request, ActionResponse response) {
+
+    BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+
+    try {
+
+      bankReconciliationService.validate(bankReconciliationRepo.find(bankStatement.getId()));
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

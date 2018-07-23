@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -31,38 +28,38 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SaleOrderProjectService {
 
-	@Inject
-	protected GeneralService generalService;
+  @Inject protected GeneralService generalService;
 
-	@Inject
-	protected ProjectTaskBusinessService projectTaskBusinessService;
-	
-	@Inject
-	protected SaleOrderRepository saleOrderRepo;
+  @Inject protected ProjectTaskBusinessService projectTaskBusinessService;
 
-	@Transactional
-	public ProjectTask generateProject(SaleOrder saleOrder){
-		ProjectTask project = projectTaskBusinessService.generateProject(saleOrder);
-		saleOrderRepo.save(saleOrder);
-		return project;
-	}
+  @Inject protected SaleOrderRepository saleOrderRepo;
 
-	@Transactional
-	public List<Long> generateTasks(SaleOrder saleOrder){
-		List<Long> listId = new ArrayList<Long>();
-		List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-		for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-			Product product = saleOrderLine.getProduct();
-			if(ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()) && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE){
-				ProjectTask task = projectTaskBusinessService.generateTask(saleOrderLine, saleOrder.getProject());
-				Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
-				listId.add(task.getId());
-			}
-		}
-		return listId;
-	}
+  @Transactional
+  public ProjectTask generateProject(SaleOrder saleOrder) {
+    ProjectTask project = projectTaskBusinessService.generateProject(saleOrder);
+    saleOrderRepo.save(saleOrder);
+    return project;
+  }
 
+  @Transactional
+  public List<Long> generateTasks(SaleOrder saleOrder) {
+    List<Long> listId = new ArrayList<Long>();
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      Product product = saleOrderLine.getProduct();
+      if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
+          && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
+        ProjectTask task =
+            projectTaskBusinessService.generateTask(saleOrderLine, saleOrder.getProject());
+        Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
+        listId.add(task.getId());
+      }
+    }
+    return listId;
+  }
 }

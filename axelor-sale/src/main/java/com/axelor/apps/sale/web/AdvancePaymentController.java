@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,24 +26,18 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class AdvancePaymentController{
-	
+public class AdvancePaymentController {
 
-	@Inject
-	private AdvancePaymentService advancePaymentService;
+  @Inject private AdvancePaymentService advancePaymentService;
 
+  public void cancelAdvancePayment(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AdvancePayment advancePayment = request.getContext().asType(AdvancePayment.class);
 
-	
-	public void cancelAdvancePayment(ActionRequest request, ActionResponse response) throws AxelorException
-	{
-		AdvancePayment advancePayment = request.getContext().asType(AdvancePayment.class);
-		
-		advancePayment = Beans.get(AdvancePaymentRepository.class).find(advancePayment.getId());
-		
-		advancePaymentService.cancelAdvancePayment(advancePayment);
-		
-		response.setReload(true);
-	}
-	
-	
+    advancePayment = Beans.get(AdvancePaymentRepository.class).find(advancePayment.getId());
+
+    advancePaymentService.cancelAdvancePayment(advancePayment);
+
+    response.setReload(true);
+  }
 }

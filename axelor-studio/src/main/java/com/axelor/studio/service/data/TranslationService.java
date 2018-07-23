@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -24,45 +24,45 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TranslationService {
-	
-	@Inject
-	private MetaTranslationRepository metaTranslationRepo;
-	
-	public String getTranslation(String key, String lang) {
-		
-		if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(lang)) {
-			return null;
-		}
-		
-		MetaTranslation translation = metaTranslationRepo.findByKey(key, lang);
-		if (translation != null) {
-			return translation.getMessage();
-		}
-		
-		return null;
-	}
-	
-	@Transactional
-	public void addTranslation(String key, String message, String lang, String module) {
-		
-		if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(message) || Strings.isNullOrEmpty(lang)) {
-			return;
-		}
-		
-		if (key.equals(message)) {
-			return;
-		}
-		
-		MetaTranslation translation = metaTranslationRepo.findByKey(key, lang);
-		if (translation == null) {
-			translation = new MetaTranslation();
-			translation.setLanguage(lang);
-			translation.setKey(key);
-		}
-		translation.setModule(module);
-		translation.setMessage(message);
-		
-		metaTranslationRepo.save(translation);
-	}
-	
+
+  @Inject private MetaTranslationRepository metaTranslationRepo;
+
+  public String getTranslation(String key, String lang) {
+
+    if (Strings.isNullOrEmpty(key) || Strings.isNullOrEmpty(lang)) {
+      return null;
+    }
+
+    MetaTranslation translation = metaTranslationRepo.findByKey(key, lang);
+    if (translation != null) {
+      return translation.getMessage();
+    }
+
+    return null;
+  }
+
+  @Transactional
+  public void addTranslation(String key, String message, String lang, String module) {
+
+    if (Strings.isNullOrEmpty(key)
+        || Strings.isNullOrEmpty(message)
+        || Strings.isNullOrEmpty(lang)) {
+      return;
+    }
+
+    if (key.equals(message)) {
+      return;
+    }
+
+    MetaTranslation translation = metaTranslationRepo.findByKey(key, lang);
+    if (translation == null) {
+      translation = new MetaTranslation();
+      translation.setLanguage(lang);
+      translation.setKey(key);
+    }
+    translation.setModule(module);
+    translation.setMessage(message);
+
+    metaTranslationRepo.save(translation);
+  }
 }

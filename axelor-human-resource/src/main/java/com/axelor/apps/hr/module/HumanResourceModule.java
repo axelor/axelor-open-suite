@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -61,33 +61,31 @@ import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 
-
 public class HumanResourceModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		
-		bind(EmployeeService.class).to(EmployeeServiceImpl.class);
-		bind(TimesheetService.class).to(TimesheetServiceImpl.class);
-		bind(TimesheetTimerService.class).to(TimesheetTimerServiceImpl.class);
-		bind(TimesheetRepository.class).to(TimesheetHRRepository.class);
-		bind(TimesheetLineRepository.class).to(TimesheetLineHRRepository.class);
-		bind(TSTimerRepository.class).to(TimesheetTimerHRRepository.class);
-		bind(MailBatchService.class).to(MailBatchServiceHR.class);
-		bind(AccountConfigBankPaymentService.class).to(AccountConfigHRService.class);
-		bind(ProjectTaskService.class).to(ProjectTaskServiceImpl.class);
-		bind(ExtraHoursService.class).to(ExtraHoursServiceImpl.class);
-		bind(LeaveService.class).to(LeaveServiceImpl.class);
-		bind(ExpenseService.class).to(ExpenseServiceImpl.class);
-		bind(LunchVoucherMgtService.class).to(LunchVoucherMgtServiceImpl.class);
-		bind(LunchVoucherMgtLineService.class).to(LunchVoucherMgtLineServiceImpl.class);
-		bind(LunchVoucherAdvanceService.class).to(LunchVoucherAdvanceServiceImpl.class);
-		bind(UserHrService.class).to(UserHrServiceImpl.class);
-		bind(ExpenseRepository.class).to(ExpenseHRRepository.class);
-		bind(EmployeeRepository.class).to(EmployeeHRRepository.class);
-		bind(BatchCreditTransferExpensePayment.class).to(BatchCreditTransferExpensePaymentHR.class);
-        bind(BankOrderServiceImpl.class).to(BankOrderServiceHRImpl.class);
-        bind(HrBatchRepository.class).to(HrBatchHRRepository.class);
-	}
+  @Override
+  protected void configure() {
 
+    bind(EmployeeService.class).to(EmployeeServiceImpl.class);
+    bind(TimesheetService.class).to(TimesheetServiceImpl.class);
+    bind(TimesheetTimerService.class).to(TimesheetTimerServiceImpl.class);
+    bind(TimesheetRepository.class).to(TimesheetHRRepository.class);
+    bind(TimesheetLineRepository.class).to(TimesheetLineHRRepository.class);
+    bind(TSTimerRepository.class).to(TimesheetTimerHRRepository.class);
+    bind(MailBatchService.class).to(MailBatchServiceHR.class);
+    bind(AccountConfigBankPaymentService.class).to(AccountConfigHRService.class);
+    bind(ProjectTaskService.class).to(ProjectTaskServiceImpl.class);
+    bind(ExtraHoursService.class).to(ExtraHoursServiceImpl.class);
+    bind(LeaveService.class).to(LeaveServiceImpl.class);
+    bind(ExpenseService.class).to(ExpenseServiceImpl.class);
+    bind(LunchVoucherMgtService.class).to(LunchVoucherMgtServiceImpl.class);
+    bind(LunchVoucherMgtLineService.class).to(LunchVoucherMgtLineServiceImpl.class);
+    bind(LunchVoucherAdvanceService.class).to(LunchVoucherAdvanceServiceImpl.class);
+    bind(UserHrService.class).to(UserHrServiceImpl.class);
+    bind(ExpenseRepository.class).to(ExpenseHRRepository.class);
+    bind(EmployeeRepository.class).to(EmployeeHRRepository.class);
+    bind(BatchCreditTransferExpensePayment.class).to(BatchCreditTransferExpensePaymentHR.class);
+    bind(BankOrderServiceImpl.class).to(BankOrderServiceHRImpl.class);
+    bind(HrBatchRepository.class).to(HrBatchHRRepository.class);
+  }
 }

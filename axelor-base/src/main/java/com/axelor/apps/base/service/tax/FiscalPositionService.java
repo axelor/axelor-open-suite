@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.TaxEquiv;
 
 public interface FiscalPositionService {
 
-	public Tax getTax(FiscalPosition fiscalPosition, Tax tax);
+  public Tax getTax(FiscalPosition fiscalPosition, Tax tax);
 
-	public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax);
+  public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax);
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,9 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
-
-import java.io.IOException;
-import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -38,119 +35,114 @@ import com.axelor.apps.stock.db.MinStockRules;
 import com.axelor.apps.stock.db.repo.MinStockRulesRepository;
 import com.axelor.apps.stock.service.MinStockRulesServiceImpl;
 import com.axelor.auth.db.User;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.math.BigDecimal;
 
-public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImpl  {
+public class MinStockRulesServiceSupplychainImpl extends MinStockRulesServiceImpl {
 
-	@Inject
-	protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  @Inject protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 
-	@Inject
-	protected PurchaseOrderLineService purchaseOrderLineService;
+  @Inject protected PurchaseOrderLineService purchaseOrderLineService;
 
-	@Inject
-	protected PurchaseConfigService purchaseConfigService;
+  @Inject protected PurchaseConfigService purchaseConfigService;
 
-	protected User user;
+  protected User user;
 
-	@Inject
-	private PurchaseOrderRepository purchaseOrderRepo;
-	
-	@Inject
-	private TemplateRepository templateRepo;
-	
-	@Inject
-	private TemplateMessageService templateMessageService;
-	
-	@Inject
-	private MessageRepository messageRepo;
+  @Inject private PurchaseOrderRepository purchaseOrderRepo;
 
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void generatePurchaseOrder(Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException  {
+  @Inject private TemplateRepository templateRepo;
 
-		Location location = locationLine.getLocation();
+  @Inject private TemplateMessageService templateMessageService;
 
-		//TODO à supprimer après suppression des variantes
-		if(location == null)  {
-			return;
-		}
+  @Inject private MessageRepository messageRepo;
 
-		MinStockRules minStockRules = this.getMinStockRules(product, location, type);
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generatePurchaseOrder(
+      Product product, BigDecimal qty, LocationLine locationLine, int type) throws AxelorException {
 
-		if(minStockRules == null)  {
-			return;
-		}
+    Location location = locationLine.getLocation();
 
-		if(this.useMinStockRules(locationLine, minStockRules, qty, type))  {
+    // TODO à supprimer après suppression des variantes
+    if (location == null) {
+      return;
+    }
 
-			if(minStockRules.getOrderAlertSelect() ==  MinStockRulesRepository.ORDER_ALERT_ALERT)  {
-				
-				Template template = templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true",  MinStockRules.class.getName()).fetchOne();
-				try {
-					Message message = templateMessageService.generateMessage(minStockRules, template);
-					messageRepo.save(message);
-//					if (JPA.em().getTransaction().isActive()) {
-//						JPA.em().getTransaction().commit();
-//						JPA.em().getTransaction().begin();
-//					}
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException e) {
-					throw new AxelorException(e, IException.TECHNICAL);
-				}
-			}
-			else if(minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)  {
+    MinStockRules minStockRules = this.getMinStockRules(product, location, type);
 
+    if (minStockRules == null) {
+      return;
+    }
 
-			}
-			else if(minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_PURCHASE_ORDER)  {
+    if (this.useMinStockRules(locationLine, minStockRules, qty, type)) {
 
-				Partner supplierPartner = product.getDefaultSupplierPartner();
+      if (minStockRules.getOrderAlertSelect() == MinStockRulesRepository.ORDER_ALERT_ALERT) {
 
-				if(supplierPartner != null)  {
+        Template template =
+            templateRepo
+                .all()
+                .filter(
+                    "self.metaModel.fullName = ?1 AND self.isSystem != true",
+                    MinStockRules.class.getName())
+                .fetchOne();
+        try {
+          Message message = templateMessageService.generateMessage(minStockRules, template);
+          messageRepo.save(message);
+          //					if (JPA.em().getTransaction().isActive()) {
+          //						JPA.em().getTransaction().commit();
+          //						JPA.em().getTransaction().begin();
+          //					}
+        } catch (ClassNotFoundException
+            | InstantiationException
+            | IllegalAccessException
+            | IOException e) {
+          throw new AxelorException(e, IException.TECHNICAL);
+        }
+      } else if (minStockRules.getOrderAlertSelect()
+          == MinStockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
 
-					Company company = location.getCompany();
+      } else if (minStockRules.getOrderAlertSelect()
+          == MinStockRulesRepository.ORDER_ALERT_PURCHASE_ORDER) {
 
-					PurchaseOrder purchaseOrder = purchaseOrderRepo.save(purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-							this.user,
-							company,
-							null,
-							supplierPartner.getCurrency(),
-							this.today.plusDays(supplierPartner.getDeliveryDelay()),
-							minStockRules.getName(),
-							null,
-							location,
-							this.today,
-							supplierPartner.getPurchasePriceList(),
-							supplierPartner));
+        Partner supplierPartner = product.getDefaultSupplierPartner();
 
-					purchaseOrder.addPurchaseOrderLineListItem(
-							purchaseOrderLineService.createPurchaseOrderLine(
-									purchaseOrder,
-									product,
-									null,
-									null,
-									minStockRules.getReOrderQty(),
-									product.getUnit()));
+        if (supplierPartner != null) {
 
-					purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+          Company company = location.getCompany();
 
-					purchaseOrderRepo.save(purchaseOrder);
+          PurchaseOrder purchaseOrder =
+              purchaseOrderRepo.save(
+                  purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+                      this.user,
+                      company,
+                      null,
+                      supplierPartner.getCurrency(),
+                      this.today.plusDays(supplierPartner.getDeliveryDelay()),
+                      minStockRules.getName(),
+                      null,
+                      location,
+                      this.today,
+                      supplierPartner.getPurchasePriceList(),
+                      supplierPartner));
 
-				}
+          purchaseOrder.addPurchaseOrderLineListItem(
+              purchaseOrderLineService.createPurchaseOrderLine(
+                  purchaseOrder,
+                  product,
+                  null,
+                  null,
+                  minStockRules.getReOrderQty(),
+                  product.getUnit()));
 
+          purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
-			}
-
-
-
-
-		}
-
-	}
-
-
+          purchaseOrderRepo.save(purchaseOrder);
+        }
+      }
+    }
+  }
 }

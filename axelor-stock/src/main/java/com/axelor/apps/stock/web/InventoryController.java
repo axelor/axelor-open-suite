@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,14 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.web;
-
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
@@ -47,128 +39,137 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InventoryController {
-	
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
 
-	@Inject
-	InventoryService inventoryService;
-	
-	@Inject
-	InventoryRepository inventoryRepo;
-	
-	@Inject
-	ProductRepository productRepo;
-	
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	private static final String PATH = AppSettings.get().get("file.upload.dir");
-	
-	/**
-	 * Fonction appeler par le bouton imprimer
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws BirtException 
-	 * @throws IOException 
-	 */
-	public void showInventory(ActionRequest request, ActionResponse response) throws AxelorException {
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		Inventory inventory = request.getContext().asType(Inventory.class);
+  @Inject InventoryService inventoryService;
 
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+  @Inject InventoryRepository inventoryRepo;
 
-		String name = I18n.get("Inventory")+" "+inventory.getInventorySeq();
-		
-		String fileLink = ReportFactory.createReport(IReport.INVENTORY, name+"-${date}")
-				.addParam("InventoryId", inventory.getId())
-				.addParam("Locale", language)
-				.addFormat(inventory.getFormatSelect())
-				.generate()
-				.getFileLink();
+  @Inject ProductRepository productRepo;
 
-		logger.debug("Printing "+name);
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
-	}
-	
-	public void importFile(ActionRequest request, ActionResponse response) throws IOException, AxelorException {
-		
-		Inventory inventory = inventoryRepo.find( request.getContext().asType(Inventory.class).getId() );
-		MetaFile importFile = inventory.getImportFile();
-		char separator = ',';
-		
-		inventoryService.importFile(PATH + System.getProperty("file.separator") + importFile.getFilePath() , separator, inventory);
-		response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8),importFile.getFilePath()));
-	}
-	
-	public void realizeInventory(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Long id = request.getContext().asType(Inventory.class).getId();
-		Inventory inventory = Beans.get(InventoryRepository.class).find(id);
-		inventoryService.realizeInventory(inventory);
-		response.setReload(true);
-	}
-	
-	public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
-		Inventory inventory = request.getContext().asType(Inventory.class);
-		inventory = inventoryRepo.find(inventory.getId());
-		inventoryService.cancel(inventory);
-	}
-	
-	public void fillInventoryLineList(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Long inventoryId  = (Long) request.getContext().get("id");
-		if(inventoryId != null) {
-			Inventory inventory = inventoryRepo.find(inventoryId);
-			Boolean succeed = inventoryService.fillInventoryLineList(inventory);
-			if(succeed == null)  {
-				response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
-			}
-			else {
-				if(succeed) {
-					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
-				}
-				else  {
-					response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
-				}
-			}
-		}
-		response.setReload(true);
-	}
-	
-	
-	public void setInventorySequence(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Inventory inventory = request.getContext().asType(Inventory.class);
-		
-		if(inventory.getInventorySeq() ==  null) {
-			
-			Location location = inventory.getLocation();
-			
-			response.setValue("inventorySeq", inventoryService.getInventorySequence(location.getCompany()));
-		}
-	}
-	
-	public BigDecimal getCurrentQty(Location location, Product product){
-		
-		if(location != null && product != null){
-			LocationLine locationLine = Beans.get(LocationLineService.class).getLocationLine(location, product);
-			if(locationLine != null ){
-				LOG.debug("Current qty found: {}",locationLine.getCurrentQty());
-				return locationLine.getCurrentQty();
-			}
-		}
-		return BigDecimal.ZERO;
-	}
-	
-	
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private static final String PATH = AppSettings.get().get("file.upload.dir");
+
+  /**
+   * Fonction appeler par le bouton imprimer
+   *
+   * @param request
+   * @param response
+   * @return
+   * @throws BirtException
+   * @throws IOException
+   */
+  public void showInventory(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Inventory inventory = request.getContext().asType(Inventory.class);
+
+    User user = AuthUtils.getUser();
+    String language =
+        user != null
+            ? (user.getLanguage() == null || user.getLanguage().equals(""))
+                ? "en"
+                : user.getLanguage()
+            : "en";
+
+    String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
+
+    String fileLink =
+        ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
+            .addParam("InventoryId", inventory.getId())
+            .addParam("Locale", language)
+            .addFormat(inventory.getFormatSelect())
+            .generate()
+            .getFileLink();
+
+    logger.debug("Printing " + name);
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  public void importFile(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
+
+    Inventory inventory = inventoryRepo.find(request.getContext().asType(Inventory.class).getId());
+    MetaFile importFile = inventory.getImportFile();
+    char separator = ',';
+
+    inventoryService.importFile(
+        PATH + System.getProperty("file.separator") + importFile.getFilePath(),
+        separator,
+        inventory);
+    response.setFlash(
+        String.format(I18n.get(IExceptionMessage.INVENTORY_8), importFile.getFilePath()));
+  }
+
+  public void realizeInventory(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Long id = request.getContext().asType(Inventory.class).getId();
+    Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+    inventoryService.realizeInventory(inventory);
+    response.setReload(true);
+  }
+
+  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+    Inventory inventory = request.getContext().asType(Inventory.class);
+    inventory = inventoryRepo.find(inventory.getId());
+    inventoryService.cancel(inventory);
+  }
+
+  public void fillInventoryLineList(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Long inventoryId = (Long) request.getContext().get("id");
+    if (inventoryId != null) {
+      Inventory inventory = inventoryRepo.find(inventoryId);
+      Boolean succeed = inventoryService.fillInventoryLineList(inventory);
+      if (succeed == null) {
+        response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
+      } else {
+        if (succeed) {
+          response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
+        } else {
+          response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
+        }
+      }
+    }
+    response.setReload(true);
+  }
+
+  public void setInventorySequence(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Inventory inventory = request.getContext().asType(Inventory.class);
+
+    if (inventory.getInventorySeq() == null) {
+
+      Location location = inventory.getLocation();
+
+      response.setValue(
+          "inventorySeq", inventoryService.getInventorySequence(location.getCompany()));
+    }
+  }
+
+  public BigDecimal getCurrentQty(Location location, Product product) {
+
+    if (location != null && product != null) {
+      LocationLine locationLine =
+          Beans.get(LocationLineService.class).getLocationLine(location, product);
+      if (locationLine != null) {
+        LOG.debug("Current qty found: {}", locationLine.getCurrentQty());
+        return locationLine.getCurrentQty();
+      }
+    }
+    return BigDecimal.ZERO;
+  }
 }
-
-  

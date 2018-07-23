@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,24 +28,24 @@ import com.axelor.i18n.I18n;
 
 public class BaseBatchService extends AbstractBatchService {
 
-	@Override
-	protected Class<? extends Model> getModelClass() {
-		return BaseBatch.class;
-	}
+  @Override
+  protected Class<? extends Model> getModelClass() {
+    return BaseBatch.class;
+  }
 
-	@Override
-	public Batch run(Model batchModel) throws AxelorException {
+  @Override
+  public Batch run(Model batchModel) throws AxelorException {
 
-		BaseBatch baseBatch = (BaseBatch) batchModel;
+    BaseBatch baseBatch = (BaseBatch) batchModel;
 
-		switch (baseBatch.getActionSelect()) {
-
-		default:
-			throw new AxelorException(
-					String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), baseBatch.getActionSelect(), baseBatch.getCode()),
-					IException.INCONSISTENCY);
-		}
-
-	}
-
+    switch (baseBatch.getActionSelect()) {
+      default:
+        throw new AxelorException(
+            String.format(
+                I18n.get(IExceptionMessage.BASE_BATCH_1),
+                baseBatch.getActionSelect(),
+                baseBatch.getCode()),
+            IException.INCONSISTENCY);
+    }
+  }
 }

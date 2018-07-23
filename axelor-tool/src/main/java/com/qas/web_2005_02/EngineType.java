@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-
 /**
- * <p>Classe Java pour EngineType complex type.
- * 
+ * Classe Java pour EngineType complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType name="EngineType">
  *   &lt;simpleContent>
@@ -42,170 +41,136 @@ import javax.xml.bind.annotation.XmlValue;
  *   &lt;/simpleContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EngineType", propOrder = {
-    "value"
-})
+@XmlType(
+  name = "EngineType",
+  propOrder = {"value"}
+)
 public class EngineType {
 
-    @XmlValue
-    protected EngineEnumType value;
-    @XmlAttribute(name = "Flatten")
-    protected Boolean flatten;
-    @XmlAttribute(name = "Intensity")
-    protected EngineIntensityType intensity;
-    @XmlAttribute(name = "PromptSet")
-    protected PromptSetType promptSet;
-    @XmlAttribute(name = "Threshold")
-    protected Integer threshold;
-    @XmlAttribute(name = "Timeout")
-    protected Integer timeout;
+  @XmlValue protected EngineEnumType value;
 
-    /**
-     * Obtient la valeur de la propriété value.
-     * 
-     * @return
-     *     possible object is
-     *     {@link EngineEnumType }
-     *     
-     */
-    public EngineEnumType getValue() {
-        return value;
-    }
+  @XmlAttribute(name = "Flatten")
+  protected Boolean flatten;
 
-    /**
-     * Définit la valeur de la propriété value.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link EngineEnumType }
-     *     
-     */
-    public void setValue(EngineEnumType value) {
-        this.value = value;
-    }
+  @XmlAttribute(name = "Intensity")
+  protected EngineIntensityType intensity;
 
-    /**
-     * Obtient la valeur de la propriété flatten.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isFlatten() {
-        return flatten;
-    }
+  @XmlAttribute(name = "PromptSet")
+  protected PromptSetType promptSet;
 
-    /**
-     * Définit la valeur de la propriété flatten.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setFlatten(Boolean value) {
-        this.flatten = value;
-    }
+  @XmlAttribute(name = "Threshold")
+  protected Integer threshold;
 
-    /**
-     * Obtient la valeur de la propriété intensity.
-     * 
-     * @return
-     *     possible object is
-     *     {@link EngineIntensityType }
-     *     
-     */
-    public EngineIntensityType getIntensity() {
-        return intensity;
-    }
+  @XmlAttribute(name = "Timeout")
+  protected Integer timeout;
 
-    /**
-     * Définit la valeur de la propriété intensity.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link EngineIntensityType }
-     *     
-     */
-    public void setIntensity(EngineIntensityType value) {
-        this.intensity = value;
-    }
+  /**
+   * Obtient la valeur de la propriété value.
+   *
+   * @return possible object is {@link EngineEnumType }
+   */
+  public EngineEnumType getValue() {
+    return value;
+  }
 
-    /**
-     * Obtient la valeur de la propriété promptSet.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PromptSetType }
-     *     
-     */
-    public PromptSetType getPromptSet() {
-        return promptSet;
-    }
+  /**
+   * Définit la valeur de la propriété value.
+   *
+   * @param value allowed object is {@link EngineEnumType }
+   */
+  public void setValue(EngineEnumType value) {
+    this.value = value;
+  }
 
-    /**
-     * Définit la valeur de la propriété promptSet.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PromptSetType }
-     *     
-     */
-    public void setPromptSet(PromptSetType value) {
-        this.promptSet = value;
-    }
+  /**
+   * Obtient la valeur de la propriété flatten.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isFlatten() {
+    return flatten;
+  }
 
-    /**
-     * Obtient la valeur de la propriété threshold.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getThreshold() {
-        return threshold;
-    }
+  /**
+   * Définit la valeur de la propriété flatten.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setFlatten(Boolean value) {
+    this.flatten = value;
+  }
 
-    /**
-     * Définit la valeur de la propriété threshold.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setThreshold(Integer value) {
-        this.threshold = value;
-    }
+  /**
+   * Obtient la valeur de la propriété intensity.
+   *
+   * @return possible object is {@link EngineIntensityType }
+   */
+  public EngineIntensityType getIntensity() {
+    return intensity;
+  }
 
-    /**
-     * Obtient la valeur de la propriété timeout.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getTimeout() {
-        return timeout;
-    }
+  /**
+   * Définit la valeur de la propriété intensity.
+   *
+   * @param value allowed object is {@link EngineIntensityType }
+   */
+  public void setIntensity(EngineIntensityType value) {
+    this.intensity = value;
+  }
 
-    /**
-     * Définit la valeur de la propriété timeout.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setTimeout(Integer value) {
-        this.timeout = value;
-    }
+  /**
+   * Obtient la valeur de la propriété promptSet.
+   *
+   * @return possible object is {@link PromptSetType }
+   */
+  public PromptSetType getPromptSet() {
+    return promptSet;
+  }
 
+  /**
+   * Définit la valeur de la propriété promptSet.
+   *
+   * @param value allowed object is {@link PromptSetType }
+   */
+  public void setPromptSet(PromptSetType value) {
+    this.promptSet = value;
+  }
+
+  /**
+   * Obtient la valeur de la propriété threshold.
+   *
+   * @return possible object is {@link Integer }
+   */
+  public Integer getThreshold() {
+    return threshold;
+  }
+
+  /**
+   * Définit la valeur de la propriété threshold.
+   *
+   * @param value allowed object is {@link Integer }
+   */
+  public void setThreshold(Integer value) {
+    this.threshold = value;
+  }
+
+  /**
+   * Obtient la valeur de la propriété timeout.
+   *
+   * @return possible object is {@link Integer }
+   */
+  public Integer getTimeout() {
+    return timeout;
+  }
+
+  /**
+   * Définit la valeur de la propriété timeout.
+   *
+   * @param value allowed object is {@link Integer }
+   */
+  public void setTimeout(Integer value) {
+    this.timeout = value;
+  }
 }

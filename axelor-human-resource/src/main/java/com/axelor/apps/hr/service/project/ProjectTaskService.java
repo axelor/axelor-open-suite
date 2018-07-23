@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,16 +17,16 @@
  */
 package com.axelor.apps.hr.service.project;
 
-import java.util.List;
-
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public interface ProjectTaskService {
 
-	@Transactional
-	public List<TimesheetLine> computeVisibleDuration(ProjectTask project) throws AxelorException;
-	public List<TimesheetLine> _sortTimesheetLineByDate(List<TimesheetLine> timesheetLineList);
+  @Transactional
+  public List<TimesheetLine> computeVisibleDuration(ProjectTask project) throws AxelorException;
+
+  public List<TimesheetLine> _sortTimesheetLineByDate(List<TimesheetLine> timesheetLineList);
 }

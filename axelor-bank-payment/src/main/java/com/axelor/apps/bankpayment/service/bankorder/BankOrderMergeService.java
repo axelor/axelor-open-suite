@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,25 +17,24 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
-public interface BankOrderMergeService  {
-	
-	@Transactional
-	public BankOrder mergeBankOrderList(List<BankOrder> bankOrderList) throws AxelorException;
+public interface BankOrderMergeService {
 
-	/**
-	 * Merge bank orders from invoice payments.
-	 * 
-	 * @param invoicePaymentList
-	 * @return
-	 * @throws AxelorException
-	 */
-	BankOrder mergeFromInvoicePayments(List<InvoicePayment> invoicePaymentList) throws AxelorException;
+  @Transactional
+  public BankOrder mergeBankOrderList(List<BankOrder> bankOrderList) throws AxelorException;
 
+  /**
+   * Merge bank orders from invoice payments.
+   *
+   * @param invoicePaymentList
+   * @return
+   * @throws AxelorException
+   */
+  BankOrder mergeFromInvoicePayments(List<InvoicePayment> invoicePaymentList)
+      throws AxelorException;
 }

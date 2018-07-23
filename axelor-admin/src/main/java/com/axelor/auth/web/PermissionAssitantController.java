@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.auth.web;
 
-import org.joda.time.LocalDateTime;
-
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
 import com.axelor.auth.service.PermissionAssistantService;
@@ -26,38 +24,34 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import org.joda.time.LocalDateTime;
 
 public class PermissionAssitantController {
 
-	@Inject
-	PermissionAssistantRepository permissionAssistantRepo;
-	
-	@Inject
-	PermissionAssistantService permissionAssistantService;
+  @Inject PermissionAssistantRepository permissionAssistantRepo;
 
+  @Inject PermissionAssistantService permissionAssistantService;
 
-	public void createFile(ActionRequest request, ActionResponse response){
+  public void createFile(ActionRequest request, ActionResponse response) {
 
-		Long permissionAssistantId = (Long)request.getContext().get("id");
-		permissionAssistantService.createFile(permissionAssistantRepo.find(permissionAssistantId));
-		response.setReload(true);
+    Long permissionAssistantId = (Long) request.getContext().get("id");
+    permissionAssistantService.createFile(permissionAssistantRepo.find(permissionAssistantId));
+    response.setReload(true);
+  }
 
-	}
+  public void importPermissions(ActionRequest request, ActionResponse response) {
 
-	public void importPermissions(ActionRequest request, ActionResponse response){
+    Long permissionAssistantId = (Long) request.getContext().get("id");
+    String errors =
+        permissionAssistantService.importPermissions(
+            permissionAssistantRepo.find(permissionAssistantId));
+    response.setValue("importDate", LocalDateTime.now());
+    response.setValue("log", errors);
 
-		Long permissionAssistantId = (Long)request.getContext().get("id");
-		String errors = permissionAssistantService.importPermissions(permissionAssistantRepo.find(permissionAssistantId));
-		response.setValue("importDate", LocalDateTime.now());
-		response.setValue("log", errors);
-
-		if(errors.equals("")){
-			response.setFlash(I18n.get(IMessage.IMPORT_OK));
-		}
-		else{
-			response.setFlash(I18n.get(IMessage.ERR_IMPORT));
-		}
-
-	}
-
+    if (errors.equals("")) {
+      response.setFlash(I18n.get(IMessage.IMPORT_OK));
+    } else {
+      response.setFlash(I18n.get(IMessage.ERR_IMPORT));
+    }
+  }
 }

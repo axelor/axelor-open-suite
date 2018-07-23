@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,15 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import com.axelor.app.production.db.IManufOrder;
-import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.LocalDateTime;
-
 import com.axelor.app.production.db.IOperationOrder;
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -35,245 +27,239 @@ import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.web.ManufOrderController;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import org.joda.time.Duration;
+import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
 
 public class OperationOrderWorkflowService {
 
-	@Inject
-	private OperationOrderStockMoveService operationOrderStockMoveService;
+  @Inject private OperationOrderStockMoveService operationOrderStockMoveService;
+
+  @Inject protected GeneralService generalService;
+
+  @Inject protected OperationOrderRepository operationOrderRepo;
+
+  private LocalDateTime today;
+
+  @Inject
+  public OperationOrderWorkflowService(GeneralService generalService) {
+    this.generalService = generalService;
+    today = this.generalService.getTodayDateTime().toLocalDateTime();
+  }
+
+  @Transactional
+  public OperationOrder plan(OperationOrder operationOrder) throws AxelorException {
 
-	@Inject
-	protected GeneralService generalService;
-	
-	@Inject
-	protected OperationOrderRepository operationOrderRepo;
+    operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
 
-	private LocalDateTime today;
-	
-	@Inject
-	public OperationOrderWorkflowService(GeneralService generalService) {
-		this.generalService = generalService;
-		today = this.generalService.getTodayDateTime().toLocalDateTime();
+    operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
 
-	}
+    operationOrder.setPlannedDuration(
+        this.getDuration(
+            this.computeDuration(
+                operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
 
-	@Transactional
-	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
+    operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
 
-		operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
+    operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
 
-		operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
+    return Beans.get(OperationOrderRepository.class).save(operationOrder);
+  }
 
-		operationOrder.setPlannedDuration(
-				this.getDuration(
-				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+  @Transactional
+  public OperationOrder replan(OperationOrder operationOrder) throws AxelorException {
 
-		operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
+    operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
 
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
+    operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
 
-		return Beans.get(OperationOrderRepository.class).save(operationOrder);
+    operationOrder.setPlannedDuration(
+        this.getDuration(
+            this.computeDuration(
+                operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
 
-	}
-	
-	@Transactional
-	public OperationOrder replan(OperationOrder operationOrder) throws AxelorException  {
+    return Beans.get(OperationOrderRepository.class).save(operationOrder);
+  }
 
-		operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
+  public LocalDateTime getLastOperationOrder(OperationOrder operationOrder) {
 
-		operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
+    OperationOrder lastOperationOrder =
+        operationOrderRepo
+            .all()
+            .filter(
+                "self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6 AND self.id != ?3",
+                operationOrder.getManufOrder(),
+                operationOrder.getPriority(),
+                operationOrder.getId())
+            .order("-self.priority")
+            .order("-self.plannedEndDateT")
+            .fetchOne();
 
-		operationOrder.setPlannedDuration(
-				this.getDuration(
-				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+    if (lastOperationOrder != null) {
+      if (lastOperationOrder.getPriority() == operationOrder.getPriority()) {
+        if (lastOperationOrder.getPlannedStartDateT() != null
+            && lastOperationOrder
+                .getPlannedStartDateT()
+                .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
+          if (lastOperationOrder
+              .getMachineWorkCenter()
+              .equals(operationOrder.getMachineWorkCenter())) {
+            return lastOperationOrder.getPlannedEndDateT();
+          }
+          return lastOperationOrder.getPlannedStartDateT();
+        } else {
+          return operationOrder.getManufOrder().getPlannedStartDateT();
+        }
+      } else {
+        if (lastOperationOrder.getPlannedEndDateT() != null
+            && lastOperationOrder
+                .getPlannedEndDateT()
+                .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
+          return lastOperationOrder.getPlannedEndDateT();
+        } else {
+          return operationOrder.getManufOrder().getPlannedStartDateT();
+        }
+      }
+    }
 
-		return Beans.get(OperationOrderRepository.class).save(operationOrder);
+    return operationOrder.getManufOrder().getPlannedStartDateT();
+  }
 
-	}
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void start(OperationOrder operationOrder) {
 
+    if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED) {
 
-	public LocalDateTime getLastOperationOrder(OperationOrder operationOrder)  {
+      operationOrder.setRealStartDateT(today);
 
-		OperationOrder lastOperationOrder = operationOrderRepo.all().filter("self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6 AND self.id != ?3",
-				operationOrder.getManufOrder(), operationOrder.getPriority(), operationOrder.getId()).order("-self.priority").order("-self.plannedEndDateT").fetchOne();
-		
-		if(lastOperationOrder != null)  {
-			if(lastOperationOrder.getPriority() == operationOrder.getPriority())  {
-				if(lastOperationOrder.getPlannedStartDateT() != null && lastOperationOrder.getPlannedStartDateT().isAfter(operationOrder.getManufOrder().getPlannedStartDateT()))  {
-					if(lastOperationOrder.getMachineWorkCenter().equals(operationOrder.getMachineWorkCenter())){
-						return lastOperationOrder.getPlannedEndDateT();
-					}
-					return lastOperationOrder.getPlannedStartDateT();
-				}
-				else  {
-					return operationOrder.getManufOrder().getPlannedStartDateT();
-				}
-			}
-			else  {
-				if(lastOperationOrder.getPlannedEndDateT() != null && lastOperationOrder.getPlannedEndDateT().isAfter(operationOrder.getManufOrder().getPlannedStartDateT()))  {
-					return lastOperationOrder.getPlannedEndDateT();
-				}
-				else  {
-					return operationOrder.getManufOrder().getPlannedStartDateT();
-				}
-			}
-		}
+      operationOrder.setStartedBy(AuthUtils.getUser());
 
-		return operationOrder.getManufOrder().getPlannedStartDateT();
-	}
-	
+      operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
+    }
+    operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
+    Beans.get(OperationOrderRepository.class).save(operationOrder);
 
+    if (operationOrder.getManufOrder().getStatusSelect() != IManufOrder.STATUS_IN_PROGRESS) {
+      Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+    }
+  }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void cancel(OperationOrder operationOrder) throws AxelorException {
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void start(OperationOrder operationOrder)  {
+    operationOrderStockMoveService.cancel(operationOrder);
 
-		if (operationOrder.getStatusSelect() == IOperationOrder.STATUS_PLANNED) {
+    operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
 
-			operationOrder.setRealStartDateT(today);
+    Beans.get(OperationOrderRepository.class).save(operationOrder);
+  }
 
-			operationOrder.setStartedBy(AuthUtils.getUser());
+  @Transactional
+  public OperationOrder finish(OperationOrder operationOrder) throws AxelorException {
 
-			operationOrder.setStartingDateTime(new LocalDateTime(generalService.getTodayDateTime()));
-		}
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_IN_PROGRESS);
-		Beans.get(OperationOrderRepository.class).save(operationOrder);
+    operationOrderStockMoveService.finish(operationOrder);
 
-		if (operationOrder.getManufOrder().getStatusSelect()
-				!= IManufOrder.STATUS_IN_PROGRESS) {
-		    Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
-		}
+    operationOrder.setRealEndDateT(today);
 
-	}
+    operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
 
+    return Beans.get(OperationOrderRepository.class).save(operationOrder);
+  }
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(OperationOrder operationOrder) throws AxelorException  {
+  public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
 
-		operationOrderStockMoveService.cancel(operationOrder);
+    return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
+  }
 
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
+  public long getDuration(Duration duration) {
 
-		Beans.get(OperationOrderRepository.class).save(operationOrder);
+    return duration.toStandardSeconds().getSeconds();
+  }
 
-	}
+  public LocalDateTime computePlannedEndDateT(OperationOrder operationOrder) {
 
-	@Transactional
-	public OperationOrder finish(OperationOrder operationOrder) throws AxelorException  {
+    if (operationOrder.getWorkCenter() != null) {
+      return operationOrder
+          .getPlannedStartDateT()
+          .plusSeconds(
+              (int)
+                  this.computeEntireCycleDuration(
+                      operationOrder, operationOrder.getManufOrder().getQty()));
+    }
 
-		operationOrderStockMoveService.finish(operationOrder);
+    return operationOrder.getPlannedStartDateT();
+  }
 
-		operationOrder.setRealEndDateT(today);
+  public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty) {
 
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_FINISHED);
+    long machineDuration = this.computeMachineDuration(operationOrder, qty);
 
-		return Beans.get(OperationOrderRepository.class).save(operationOrder);
+    long humanDuration = this.computeHumanDuration(operationOrder, qty);
 
-	}
+    if (machineDuration >= humanDuration) {
+      return machineDuration;
+    } else {
+      return humanDuration;
+    }
+  }
 
+  public long computeMachineDuration(OperationOrder operationOrder, BigDecimal qty) {
+    ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+    WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
-	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
+    long duration = 0;
 
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
+    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
-	}
+    if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE
+        || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+      Machine machine = workCenter.getMachine();
+      duration += machine.getStartingDuration();
 
-	public long getDuration(Duration duration)  {
+      BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
+      BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
 
-		return duration.toStandardSeconds().getSeconds();
+      if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
+        duration += qty.multiply(durationPerCycle).longValue();
+      } else {
+        duration +=
+            (qty.divide(maxCapacityPerCycle, RoundingMode.HALF_UP))
+                .multiply(durationPerCycle)
+                .longValue();
+      }
 
-	}
+      duration += machine.getEndingDuration();
+    }
 
+    return duration;
+  }
 
-	public LocalDateTime computePlannedEndDateT(OperationOrder operationOrder)  {
+  public long computeHumanDuration(OperationOrder operationOrder, BigDecimal qty) {
+    WorkCenter workCenter = operationOrder.getProdProcessLine().getWorkCenter();
 
-		if(operationOrder.getWorkCenter() != null)  {
-			return operationOrder.getPlannedStartDateT()
-					.plusSeconds((int)this.computeEntireCycleDuration(operationOrder, operationOrder.getManufOrder().getQty()));
-		}
+    long duration = 0;
 
-		return operationOrder.getPlannedStartDateT();
-	}
+    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
+    if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN
+        || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
 
-	public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)  {
+      if (operationOrder.getProdHumanResourceList() != null) {
 
-		long machineDuration = this.computeMachineDuration(operationOrder, qty);
+        for (ProdHumanResource prodHumanResource : operationOrder.getProdHumanResourceList()) {
 
-		long humanDuration = this.computeHumanDuration(operationOrder, qty);
+          duration += prodHumanResource.getDuration();
+        }
+      }
+    }
 
-		if(machineDuration >= humanDuration)  {
-			return machineDuration;
-		}
-		else  {
-			return humanDuration;
-		}
-
-	}
-
-
-	public long computeMachineDuration(OperationOrder operationOrder, BigDecimal qty)  {
-		ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
-		WorkCenter workCenter = prodProcessLine.getWorkCenter();
-		
-		long duration = 0;
-
-		int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-
-		if(workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH)  {
-			Machine machine = workCenter.getMachine();
-			duration += machine.getStartingDuration();
-
-			BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
-			BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
-
-			if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
-				duration += qty.multiply(durationPerCycle).longValue();
-			} else {
-				duration += (qty.divide(maxCapacityPerCycle,RoundingMode.HALF_UP)).multiply(durationPerCycle).longValue();
-			}
-
-			duration += machine.getEndingDuration();
-
-		}
-
-		return duration;
-	}
-
-
-	public long computeHumanDuration(OperationOrder operationOrder, BigDecimal qty)  {
-		WorkCenter workCenter = operationOrder.getProdProcessLine().getWorkCenter();
-
-		long duration = 0;
-
-		int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-
-		if(workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH)  {
-
-			if(operationOrder.getProdHumanResourceList() != null)  {
-
-				for(ProdHumanResource prodHumanResource : operationOrder.getProdHumanResourceList())  {
-
-					duration += prodHumanResource.getDuration();
-
-				}
-
-			}
-
-		}
-
-		return qty.multiply(new BigDecimal(duration)).longValue();
-	}
-
-
-
-
-
-
+    return qty.multiply(new BigDecimal(duration)).longValue();
+  }
 }
-

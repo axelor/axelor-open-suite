@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.db.Partner;
@@ -28,20 +26,23 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import java.util.List;
 
 public class PartnerController {
 
-	@Inject
-	private AccountingSituationService accountingSituationService;
+  @Inject private AccountingSituationService accountingSituationService;
 
-	public void createAccountingSituations(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		Partner partner = request.getContext().asType(Partner.class);
-		
-		List<AccountingSituation> accountingSituationList = accountingSituationService.createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
-		
-		if(accountingSituationList != null) {
-			response.setValue("accountingSituationList", accountingSituationList);
-		}
-	}
+  public void createAccountingSituations(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Partner partner = request.getContext().asType(Partner.class);
+
+    List<AccountingSituation> accountingSituationList =
+        accountingSituationService.createAccountingSituation(
+            Beans.get(PartnerRepository.class).find(partner.getId()));
+
+    if (accountingSituationList != null) {
+      response.setValue("accountingSituationList", accountingSituationList);
+    }
+  }
 }

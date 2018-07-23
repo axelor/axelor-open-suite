@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,10 +23,12 @@ import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.exception.AxelorException;
 
 public interface LunchVoucherMgtLineService {
-	
-	public LunchVoucherMgtLine create(Employee employee, LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
-	
-	public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException;
 
-	public void computeAllAttrs(Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine);
+  public LunchVoucherMgtLine create(Employee employee, LunchVoucherMgt lunchVoucherMgt)
+      throws AxelorException;
+
+  public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException;
+
+  public void computeAllAttrs(
+      Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine);
 }

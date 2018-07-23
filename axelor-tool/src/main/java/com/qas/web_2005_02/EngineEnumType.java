@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,12 +21,13 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour EngineEnumType.
- * 
+ * Classe Java pour EngineEnumType.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <p>
+ *
  * <pre>
  * &lt;simpleType name="EngineEnumType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -36,35 +37,32 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- * 
  */
 @XmlType(name = "EngineEnumType")
 @XmlEnum
 public enum EngineEnumType {
+  @XmlEnumValue("Singleline")
+  SINGLELINE("Singleline"),
+  @XmlEnumValue("Typedown")
+  TYPEDOWN("Typedown"),
+  @XmlEnumValue("Verification")
+  VERIFICATION("Verification");
+  private final String value;
 
-    @XmlEnumValue("Singleline")
-    SINGLELINE("Singleline"),
-    @XmlEnumValue("Typedown")
-    TYPEDOWN("Typedown"),
-    @XmlEnumValue("Verification")
-    VERIFICATION("Verification");
-    private final String value;
+  EngineEnumType(String v) {
+    value = v;
+  }
 
-    EngineEnumType(String v) {
-        value = v;
+  public String value() {
+    return value;
+  }
+
+  public static EngineEnumType fromValue(String v) {
+    for (EngineEnumType c : EngineEnumType.values()) {
+      if (c.value.equals(v)) {
+        return c;
+      }
     }
-
-    public String value() {
-        return value;
-    }
-
-    public static EngineEnumType fromValue(String v) {
-        for (EngineEnumType c: EngineEnumType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
-
+    throw new IllegalArgumentException(v);
+  }
 }

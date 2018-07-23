@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -20,16 +20,16 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.stock.db.StockMove;
 
 public class StockMoveManagementRepository extends StockMoveRepository {
-	@Override
-	public StockMove copy(StockMove entity, boolean deep) {
+  @Override
+  public StockMove copy(StockMove entity, boolean deep) {
 
-		StockMove copy = super.copy(entity, deep);
+    StockMove copy = super.copy(entity, deep);
 
-		copy.setStatusSelect(STATUS_DRAFT);
-		copy.setStockMoveSeq(null);
-		copy.setName(null);
-		copy.setRealDate(null);
+    copy.setStatusSelect(STATUS_DRAFT);
+    copy.setStockMoveSeq(null);
+    copy.setName(null);
+    copy.setRealDate(null);
 
-		return copy;
-	}
+    return copy;
+  }
 }

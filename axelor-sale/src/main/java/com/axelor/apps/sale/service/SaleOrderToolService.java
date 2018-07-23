@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,52 +17,53 @@
  */
 package com.axelor.apps.sale.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaleOrderToolService {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	private CurrencyService currencyService;
-	
-	
-	/**
-	 * Calculer le montant HT d'une ligne de devis.
-	 * 
-	 * @param quantity
-	 *          Quantité.
-	 * @param price
-	 *          Le prix.
-	 * 
-	 * @return 
-	 * 			Le montant HT de la ligne.
-	 */
-	public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		BigDecimal amount = quantity.multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+  @Inject private CurrencyService currencyService;
 
-		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
+  /**
+   * Calculer le montant HT d'une ligne de devis.
+   *
+   * @param quantity Quantité.
+   * @param price Le prix.
+   * @return Le montant HT de la ligne.
+   */
+  public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
-		return amount;
-	}
-	
-	
-	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, SaleOrder saleOrder) throws AxelorException  {
-		
-		return currencyService.getAmountCurrencyConvertedAtDate(
-				saleOrder.getCurrency(), saleOrder.getClientPartner().getCurrency(), exTaxTotal, saleOrder.getCreationDate()).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);  
-	}
-	
+    BigDecimal amount =
+        quantity
+            .multiply(price)
+            .setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+
+    LOG.debug(
+        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        new Object[] {quantity, price, amount});
+
+    return amount;
+  }
+
+  public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, SaleOrder saleOrder)
+      throws AxelorException {
+
+    return currencyService
+        .getAmountCurrencyConvertedAtDate(
+            saleOrder.getCurrency(),
+            saleOrder.getClientPartner().getCurrency(),
+            exTaxTotal,
+            saleOrder.getCreationDate())
+        .setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
 }

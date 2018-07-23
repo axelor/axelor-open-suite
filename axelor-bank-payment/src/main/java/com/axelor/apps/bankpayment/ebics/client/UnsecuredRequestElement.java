@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -32,24 +32,20 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 
 /**
- * The <code>UnsecuredRequestElement</code> is the common element
- * used for key management requests.
+ * The <code>UnsecuredRequestElement</code> is the common element used for key management requests.
  *
  * @author hachani
- *
  */
 public class UnsecuredRequestElement extends DefaultEbicsRootElement {
 
   /**
    * Constructs a Unsecured Request Element.
+   *
    * @param session the ebics session.
    * @param orderType the order type (INI | HIA).
    * @param orderId the order id, if null a random one is generated.
    */
-  public UnsecuredRequestElement(EbicsSession session,
-                                 OrderType orderType,
-                                 byte[] orderData)
-  {
+  public UnsecuredRequestElement(EbicsSession session, OrderType orderType, byte[] orderData) {
     super(session);
     this.orderType = orderType;
     this.orderData = orderData;
@@ -57,52 +53,47 @@ public class UnsecuredRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public void build() throws AxelorException {
-    Header 					header;
-    Body 					body;
-    EmptyMutableHeaderType 			mutable;
-    UnsecuredRequestStaticHeaderType 		xstatic;
-    ProductElementType 				productType;
-    OrderDetailsType 				orderDetails;
-    DataTransfer 				dataTransfer;
-    OrderData 					orderData;
-    EbicsUnsecuredRequest			request;
+    Header header;
+    Body body;
+    EmptyMutableHeaderType mutable;
+    UnsecuredRequestStaticHeaderType xstatic;
+    ProductElementType productType;
+    OrderDetailsType orderDetails;
+    DataTransfer dataTransfer;
+    OrderData orderData;
+    EbicsUnsecuredRequest request;
 
-    orderDetails = EbicsXmlFactory.createOrderDetailsType("DZNNN",
-						          					  session.getUser().getNextOrderId(),
-	                                                  orderType.getOrderType());
+    orderDetails =
+        EbicsXmlFactory.createOrderDetailsType(
+            "DZNNN", session.getUser().getNextOrderId(), orderType.getOrderType());
 
-    productType = EbicsXmlFactory.creatProductElementType(AuthUtils.getUser().getLanguage(),
-	                                                  session.getProduct().getName());
+    productType =
+        EbicsXmlFactory.creatProductElementType(
+            AuthUtils.getUser().getLanguage(), session.getProduct().getName());
 
     try {
-		xstatic = EbicsXmlFactory.createUnsecuredRequestStaticHeaderType(session.getBankID(),
-									     session.getUser().getEbicsPartner().getPartnerId(),
-									     session.getUser().getUserId(),
-		                                                             productType,
-		                                                             orderDetails,
-		                                                             session.getUser().getSecurityMedium());
-		mutable = EbicsXmlFactory.createEmptyMutableHeaderType();
+      xstatic =
+          EbicsXmlFactory.createUnsecuredRequestStaticHeaderType(
+              session.getBankID(),
+              session.getUser().getEbicsPartner().getPartnerId(),
+              session.getUser().getUserId(),
+              productType,
+              orderDetails,
+              session.getUser().getSecurityMedium());
+      mutable = EbicsXmlFactory.createEmptyMutableHeaderType();
 
-	    header = EbicsXmlFactory.createHeader(true,
-		                                  mutable,
-		                                  xstatic);
-	    
-	    orderData = EbicsXmlFactory.createOrderData(this.orderData);
-	    dataTransfer = EbicsXmlFactory.createDataTransfer(orderData);
-	    body = EbicsXmlFactory.createBody(dataTransfer);
-	    request = EbicsXmlFactory.createEbicsUnsecuredRequest(header,
-		                                                  body,
-		                                                  1,
-		                                                  "H003");
+      header = EbicsXmlFactory.createHeader(true, mutable, xstatic);
 
-	    document = EbicsXmlFactory.createEbicsUnsecuredRequestDocument(request);
-	    
-	    
-	} catch (AxelorException e) {
-		e.printStackTrace();
-		
-	}
-   
+      orderData = EbicsXmlFactory.createOrderData(this.orderData);
+      dataTransfer = EbicsXmlFactory.createDataTransfer(orderData);
+      body = EbicsXmlFactory.createBody(dataTransfer);
+      request = EbicsXmlFactory.createEbicsUnsecuredRequest(header, body, 1, "H003");
+
+      document = EbicsXmlFactory.createEbicsUnsecuredRequestDocument(request);
+
+    } catch (AxelorException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -114,6 +105,6 @@ public class UnsecuredRequestElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private OrderType			orderType;
-  private byte[]			orderData;
+  private OrderType orderType;
+  private byte[] orderData;
 }

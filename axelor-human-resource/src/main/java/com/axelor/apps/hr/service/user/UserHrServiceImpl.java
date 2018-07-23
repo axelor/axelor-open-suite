@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -33,50 +33,49 @@ import com.google.inject.persist.Transactional;
 
 public class UserHrServiceImpl implements UserHrService {
 
-	@Inject
-	UserRepository userRepo;
+  @Inject UserRepository userRepo;
 
-	@Transactional
-	public void createEmployee(User user) {
-		if (user.getPartner() == null) {
-			Beans.get(UserService.class).createPartner(user);
-		}
+  @Transactional
+  public void createEmployee(User user) {
+    if (user.getPartner() == null) {
+      Beans.get(UserService.class).createPartner(user);
+    }
 
-		General config = Beans.get(GeneralService.class).getGeneral();
+    General config = Beans.get(GeneralService.class).getGeneral();
 
-		Employee employee = new Employee();
-		employee.setContactPartner(user.getPartner());
-		employee.setTimeLoggingPreferenceSelect(config.getTimeLoggingPreferenceSelect());
-		employee.setDailyWorkHours(config.getDailyWorkHours());
-		employee.setNegativeValueLeave(config.getAllowNegativeLeaveEmployees());
+    Employee employee = new Employee();
+    employee.setContactPartner(user.getPartner());
+    employee.setTimeLoggingPreferenceSelect(config.getTimeLoggingPreferenceSelect());
+    employee.setDailyWorkHours(config.getDailyWorkHours());
+    employee.setNegativeValueLeave(config.getAllowNegativeLeaveEmployees());
 
-		EventsPlanning planning = null;
-		Company company = user.getActiveCompany();
-		if (company != null) {
-			HRConfig hrConfig = company.getHrConfig();
-			if (hrConfig != null) {
-				planning = hrConfig.getPublicHolidayEventsPlanning();
-			}
-		}
-		employee.setPublicHolidayEventsPlanning(planning);
+    EventsPlanning planning = null;
+    Company company = user.getActiveCompany();
+    if (company != null) {
+      HRConfig hrConfig = company.getHrConfig();
+      if (hrConfig != null) {
+        planning = hrConfig.getPublicHolidayEventsPlanning();
+      }
+    }
+    employee.setPublicHolidayEventsPlanning(planning);
 
-		employee.setUser(user);
-		Beans.get(EmployeeRepository.class).save(employee);
+    employee.setUser(user);
+    Beans.get(EmployeeRepository.class).save(employee);
 
-		user.setEmployee(employee);
-		userRepo.save(user);
-	}
-	
-	@Transactional
-	public Company getPayCompany(User user) {
-		Company payCompany = null;
-		if (user.getEmployee() != null
-				&& user.getEmployee().getMainEmploymentContract() != null
-				&& user.getEmployee().getMainEmploymentContract().getPayCompany() != null) {
-			payCompany = user.getEmployee().getMainEmploymentContract().getPayCompany();
-		} else if (user.getActiveCompany() != null)  {
-			payCompany = user.getActiveCompany();
-		}
-		return payCompany;
-	}
+    user.setEmployee(employee);
+    userRepo.save(user);
+  }
+
+  @Transactional
+  public Company getPayCompany(User user) {
+    Company payCompany = null;
+    if (user.getEmployee() != null
+        && user.getEmployee().getMainEmploymentContract() != null
+        && user.getEmployee().getMainEmploymentContract().getPayCompany() != null) {
+      payCompany = user.getEmployee().getMainEmploymentContract().getPayCompany();
+    } else if (user.getActiveCompany() != null) {
+      payCompany = user.getActiveCompany();
+    }
+    return payCompany;
+  }
 }

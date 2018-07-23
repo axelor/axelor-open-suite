@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.tool.address;
 
-import java.lang.invoke.MethodHandles;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.tool.address.AddressTool;
-
 import com.qas.web_2005_02.Address;
 import com.qas.web_2005_02.EngineEnumType;
 import com.qas.web_2005_02.EngineType;
@@ -43,123 +29,127 @@ import com.qas.web_2005_02.QAPortType;
 import com.qas.web_2005_02.QASearch;
 import com.qas.web_2005_02.QASearchOk;
 import com.qas.web_2005_02.QASearchResult;
+import java.lang.invoke.MethodHandles;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AddressTool {
 
-	static private QName SERVICE_NAME = null;
-	static private QName PORT_NAME = null;
-	static private URL wsdlURL = null;
-	static private Service service = null;
-	static private QAPortType client = null;
-	
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	public void setService(String wsdlUrl) throws MalformedURLException {
-		// TODO: inject this
-		if (this.client == null) {
-			this.SERVICE_NAME = new QName("http://www.qas.com/web-2005-02"
-					,"ProWeb");
+  private static QName SERVICE_NAME = null;
+  private static QName PORT_NAME = null;
+  private static URL wsdlURL = null;
+  private static Service service = null;
+  private static QAPortType client = null;
 
-			this.PORT_NAME = new QName("http://www.qas.com/web-2005-02"
-					,"QAPortType");
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-			//def wsdlURL = new URL("http://ip.axelor.com:2021/proweb.wsdl")
-			this.wsdlURL = new URL(wsdlUrl);
-			//println this.wsdlURL
+  public void setService(String wsdlUrl) throws MalformedURLException {
+    // TODO: inject this
+    if (this.client == null) {
+      this.SERVICE_NAME = new QName("http://www.qas.com/web-2005-02", "ProWeb");
 
-			this.service = Service.create(this.wsdlURL, this.SERVICE_NAME);
-			this.client = service.getPort(QAPortType.class);
-			//QAPortType client = service.getPort(PORT_NAME, QAPortType.class)
-			LOG.debug("setService  this.client = {}", this.client);
+      this.PORT_NAME = new QName("http://www.qas.com/web-2005-02", "QAPortType");
 
-		}
-	}
-	
-	public boolean doCanSearch(String wsdlUrl) {
+      // def wsdlURL = new URL("http://ip.axelor.com:2021/proweb.wsdl")
+      this.wsdlURL = new URL(wsdlUrl);
+      // println this.wsdlURL
 
-		try {
-			QName SERVICE_NAME = new QName("http://www.qas.com/web-2005-02"
-					,"ProWeb");
+      this.service = Service.create(this.wsdlURL, this.SERVICE_NAME);
+      this.client = service.getPort(QAPortType.class);
+      // QAPortType client = service.getPort(PORT_NAME, QAPortType.class)
+      LOG.debug("setService  this.client = {}", this.client);
+    }
+  }
 
-			QName PORT_NAME = new QName("http://www.qas.com/web-2005-02"
-					,"QAPortType");
+  public boolean doCanSearch(String wsdlUrl) {
 
-			//def wsdlURL = new URL("http://ip.axelor.com:2021/proweb.wsdl")
-			URL wsdlURL = new URL(wsdlUrl);
+    try {
+      QName SERVICE_NAME = new QName("http://www.qas.com/web-2005-02", "ProWeb");
 
-			Service service = Service.create(wsdlURL, SERVICE_NAME);
-			QAPortType client = service.getPort(QAPortType.class);
-			//QAPortType client = service.getPort(PORT_NAME, QAPortType.class)
-			LOG.debug("setService  client = {}", client);
+      QName PORT_NAME = new QName("http://www.qas.com/web-2005-02", "QAPortType");
 
-			// 1. Pre-check.
+      // def wsdlURL = new URL("http://ip.axelor.com:2021/proweb.wsdl")
+      URL wsdlURL = new URL(wsdlUrl);
 
-			QAData qadata = client.doGetData();
-			QADataSet ds = qadata.getDataSet().get(0);
+      Service service = Service.create(wsdlURL, SERVICE_NAME);
+      QAPortType client = service.getPort(QAPortType.class);
+      // QAPortType client = service.getPort(PORT_NAME, QAPortType.class)
+      LOG.debug("setService  client = {}", client);
 
-			QACanSearch canSearch = new QACanSearch();
-			canSearch.setCountry("FRX");
-			canSearch.setLayout("AFNOR INSEE");
+      // 1. Pre-check.
 
-			EngineType engType = new EngineType();
-			engType.setFlatten(true);
+      QAData qadata = client.doGetData();
+      QADataSet ds = qadata.getDataSet().get(0);
 
-			engType.setValue(EngineEnumType.VERIFICATION);
-			canSearch.setEngine(engType);
-			QASearchOk resp = client.doCanSearch(canSearch);
+      QACanSearch canSearch = new QACanSearch();
+      canSearch.setCountry("FRX");
+      canSearch.setLayout("AFNOR INSEE");
 
-			return resp.isIsOk();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public Map<String,Object> doSearch(String wsdlUrl, String searchString) {
+      EngineType engType = new EngineType();
+      engType.setFlatten(true);
 
-		try {
-			this.setService(wsdlUrl);
-			// 2. Initial search.
-			QASearch search = new QASearch();
-			search.setCountry("FRX");
-			search.setLayout("AFNOR INSEE");
-			search.setSearch(searchString);
+      engType.setValue(EngineEnumType.VERIFICATION);
+      canSearch.setEngine(engType);
+      QASearchOk resp = client.doCanSearch(canSearch);
 
-			EngineType engTypeT = new EngineType();
-			engTypeT.setPromptSet(PromptSetType.ONE_LINE); //DEFAULT
-			engTypeT.setValue(EngineEnumType.VERIFICATION);
-			engTypeT.setFlatten(true);
-			search.setEngine(engTypeT);
+      return resp.isIsOk();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-			QASearchResult respSearch = this.client.doSearch(search);
+  public Map<String, Object> doSearch(String wsdlUrl, String searchString) {
 
-			Map<String,Object> mapSearch = new HashMap<String,Object>();
-			mapSearch.put("verifyLevel", respSearch.getVerifyLevel());
-			mapSearch.put("qaPicklist", respSearch.getQAPicklist());
-			mapSearch.put("qaAddress", respSearch.getQAAddress());
-			return mapSearch;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new HashMap<String,Object>();
-		}
-	}
+    try {
+      this.setService(wsdlUrl);
+      // 2. Initial search.
+      QASearch search = new QASearch();
+      search.setCountry("FRX");
+      search.setLayout("AFNOR INSEE");
+      search.setSearch(searchString);
 
-	public Address doGetAddress(String wsdlUrl, String moniker) {
-		try {
-			this.setService(wsdlUrl);
-			
-			// 4. Format the final address.
-			QAGetAddress getAddress = new QAGetAddress();
+      EngineType engTypeT = new EngineType();
+      engTypeT.setPromptSet(PromptSetType.ONE_LINE); // DEFAULT
+      engTypeT.setValue(EngineEnumType.VERIFICATION);
+      engTypeT.setFlatten(true);
+      search.setEngine(engTypeT);
 
-			getAddress.setMoniker(moniker);
-			getAddress.setLayout("AFNOR INSEE");
+      QASearchResult respSearch = this.client.doSearch(search);
 
-			Address formattedAddress = this.client.doGetAddress(getAddress);
-			
-			return formattedAddress;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+      Map<String, Object> mapSearch = new HashMap<String, Object>();
+      mapSearch.put("verifyLevel", respSearch.getVerifyLevel());
+      mapSearch.put("qaPicklist", respSearch.getQAPicklist());
+      mapSearch.put("qaAddress", respSearch.getQAAddress());
+      return mapSearch;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return new HashMap<String, Object>();
+    }
+  }
+
+  public Address doGetAddress(String wsdlUrl, String moniker) {
+    try {
+      this.setService(wsdlUrl);
+
+      // 4. Format the final address.
+      QAGetAddress getAddress = new QAGetAddress();
+
+      getAddress.setMoniker(moniker);
+      getAddress.setLayout("AFNOR INSEE");
+
+      Address formattedAddress = this.client.doGetAddress(getAddress);
+
+      return formattedAddress;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 }

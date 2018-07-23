@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.businessproduction.web;
 
-import javax.inject.Inject;
-
 import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderServiceBusinessImpl;
 import com.axelor.apps.production.db.ProductionOrder;
@@ -26,27 +24,24 @@ import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import javax.inject.Inject;
 
 public class ProductionOrderBusinessController {
 
-	@Inject
-	ProductionOrderRepository productionOrderRepo;
-	
-	@Inject
-	ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
-	
-	@Inject
-	ProductionOrderSaleOrderServiceBusinessImpl productionOrderSaleOrderServiceBusinessImpl;
-	
-	
-	public void generateSaleOrder (ActionRequest request, ActionResponse response) throws AxelorException {
+  @Inject ProductionOrderRepository productionOrderRepo;
 
-		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
+  @Inject ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
 
-		productionOrderSaleOrderServiceBusinessImpl.createSaleOrder(productionOrderRepo.find(productionOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
-	
+  @Inject ProductionOrderSaleOrderServiceBusinessImpl productionOrderSaleOrderServiceBusinessImpl;
+
+  public void generateSaleOrder(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    ProductionOrder productionOrder = request.getContext().asType(ProductionOrder.class);
+
+    productionOrderSaleOrderServiceBusinessImpl.createSaleOrder(
+        productionOrderRepo.find(productionOrder.getId()));
+
+    response.setReload(true);
+  }
 }

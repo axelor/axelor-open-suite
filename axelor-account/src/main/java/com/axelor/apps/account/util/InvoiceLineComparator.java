@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,15 +17,13 @@
  */
 package com.axelor.apps.account.util;
 
+import com.axelor.apps.account.db.InvoiceLine;
 import java.util.Comparator;
 
-import com.axelor.apps.account.db.InvoiceLine;
+public class InvoiceLineComparator implements Comparator<InvoiceLine> {
 
-public class InvoiceLineComparator implements Comparator<InvoiceLine>{
-
-	@Override
-	public int compare(InvoiceLine invl1, InvoiceLine invl2) {
-		return invl1.getSequence() - invl2.getSequence();
-	}
-
+  @Override
+  public int compare(InvoiceLine invl1, InvoiceLine invl2) {
+    return invl1.getSequence() - invl2.getSequence();
+  }
 }

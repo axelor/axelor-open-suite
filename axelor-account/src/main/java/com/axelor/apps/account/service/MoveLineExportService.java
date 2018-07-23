@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -20,17 +20,29 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
-import org.joda.time.LocalDate;
-
 import java.io.IOException;
+import org.joda.time.LocalDate;
 
 public interface MoveLineExportService {
 
-	public void exportMoveLine(MoveLineReport moveLineReport) throws AxelorException, IOException;
-	public void replayExportMoveLine(MoveLineReport moveLineReport) throws AxelorException, IOException;
-	public MoveLineReport createMoveLineReport(Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate) throws AxelorException;
-	public void exportMoveLineTypeSelect1006(MoveLineReport mlr, boolean replay) throws AxelorException, IOException;
-	public void exportMoveLineTypeSelect1007(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException;
-	public void exportMoveLineTypeSelect1008(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException;
-	public void exportMoveLineTypeSelect1009(MoveLineReport moveLineReport, boolean replay) throws AxelorException, IOException;
+  public void exportMoveLine(MoveLineReport moveLineReport) throws AxelorException, IOException;
+
+  public void replayExportMoveLine(MoveLineReport moveLineReport)
+      throws AxelorException, IOException;
+
+  public MoveLineReport createMoveLineReport(
+      Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate)
+      throws AxelorException;
+
+  public void exportMoveLineTypeSelect1006(MoveLineReport mlr, boolean replay)
+      throws AxelorException, IOException;
+
+  public void exportMoveLineTypeSelect1007(MoveLineReport moveLineReport, boolean replay)
+      throws AxelorException, IOException;
+
+  public void exportMoveLineTypeSelect1008(MoveLineReport moveLineReport, boolean replay)
+      throws AxelorException, IOException;
+
+  public void exportMoveLineTypeSelect1009(MoveLineReport moveLineReport, boolean replay)
+      throws AxelorException, IOException;
 }

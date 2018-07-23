@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -51,39 +51,40 @@ import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidat
 
 public class BankPaymentModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		
-		 bind(BankReconciliationRepository.class).to(BankReconciliationManagementRepository.class);
-		 
-		 bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
-		 
-		 bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
-	        
-		 bind(EbicsBankService.class).to(EbicsBankServiceImpl.class);
-		 
-		 bind(EbicsPartnerService.class).to(EbicsPartnerServiceImpl.class);
-        
-		 bind(EbicsCertificateRepository.class).to(EbicsCertificateAccountRepository.class);
-		 
-		 bind(BankOrderService.class).to(BankOrderServiceImpl.class);
-		 
-		 bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
-	        
-	     bind(BankOrderMoveService.class).to(BankOrderMoveServiceImpl.class);
-	    
-	     bind(InvoicePaymentCancelServiceImpl.class).to(InvoicePaymentCancelServiceBankPayImpl.class);
-	     
-	     bind(InvoicePaymentValidateServiceImpl.class).to(InvoicePaymentValidateServiceBankPayImpl.class);
+  @Override
+  protected void configure() {
 
-	     bind(AccountConfigService.class).to(AccountConfigBankPaymentService.class);
+    bind(BankReconciliationRepository.class).to(BankReconciliationManagementRepository.class);
 
-	     bind(BatchCreditTransferSupplierPayment.class).to(BatchCreditTransferSupplierPaymentBankPayment.class);
+    bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
 
-	     bind(BatchCreditTransferPartnerReimbursement.class).to(BatchCreditTransferPartnerReimbursementBankPayment.class);
+    bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
 
-	     bind(AccountingBatchService.class).to(AccountingBatchBankPaymentService.class);
+    bind(EbicsBankService.class).to(EbicsBankServiceImpl.class);
 
-	}
+    bind(EbicsPartnerService.class).to(EbicsPartnerServiceImpl.class);
 
+    bind(EbicsCertificateRepository.class).to(EbicsCertificateAccountRepository.class);
+
+    bind(BankOrderService.class).to(BankOrderServiceImpl.class);
+
+    bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
+
+    bind(BankOrderMoveService.class).to(BankOrderMoveServiceImpl.class);
+
+    bind(InvoicePaymentCancelServiceImpl.class).to(InvoicePaymentCancelServiceBankPayImpl.class);
+
+    bind(InvoicePaymentValidateServiceImpl.class)
+        .to(InvoicePaymentValidateServiceBankPayImpl.class);
+
+    bind(AccountConfigService.class).to(AccountConfigBankPaymentService.class);
+
+    bind(BatchCreditTransferSupplierPayment.class)
+        .to(BatchCreditTransferSupplierPaymentBankPayment.class);
+
+    bind(BatchCreditTransferPartnerReimbursement.class)
+        .to(BatchCreditTransferPartnerReimbursementBankPayment.class);
+
+    bind(AccountingBatchService.class).to(AccountingBatchBankPaymentService.class);
+  }
 }

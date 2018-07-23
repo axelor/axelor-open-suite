@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,8 +19,7 @@ package com.axelor.apps.bankpayment.report;
 
 public interface IReport {
 
-	public static final String BANK_ORDER = "BankOrder.rptdesign";
-	public static final String EBICS_CERTIFICATE = "EbicsCertificate.rptdesign";
-	public static final String BANK_STATEMENT_AFB120 = "BankStatementAFB120.rptdesign";
-
+  public static final String BANK_ORDER = "BankOrder.rptdesign";
+  public static final String EBICS_CERTIFICATE = "EbicsCertificate.rptdesign";
+  public static final String BANK_STATEMENT_AFB120 = "BankStatementAFB120.rptdesign";
 }

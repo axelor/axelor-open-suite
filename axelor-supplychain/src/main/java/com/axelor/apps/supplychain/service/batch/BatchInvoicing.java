@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.sale.db.ISaleOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -36,81 +28,110 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BatchInvoicing extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@Inject
-	private SaleOrderRepository saleOrderRepo;
+  @Inject private SaleOrderRepository saleOrderRepo;
 
-	@Inject
-	public BatchInvoicing(SaleOrderInvoiceService saleOrderInvoiceService) {
+  @Inject
+  public BatchInvoicing(SaleOrderInvoiceService saleOrderInvoiceService) {
 
-		super(saleOrderInvoiceService);
-	}
+    super(saleOrderInvoiceService);
+  }
 
+  @Override
+  protected void process() {
 
-	@Override
-	protected void process() {
+    int i = 0;
+    List<SaleOrder> saleOrderList =
+        saleOrderRepo
+            .all()
+            .filter(
+                "self.statusSelect = ?2 AND self.company = ?3",
+                ISaleOrder.STATUS_ORDER_CONFIRMED,
+                batch.getSaleBatch().getCompany())
+            .fetch();
 
-		int i = 0;
-		List<SaleOrder> saleOrderList = saleOrderRepo.all().filter("self.statusSelect = ?2 AND self.company = ?3",
-				ISaleOrder.STATUS_ORDER_CONFIRMED, batch.getSaleBatch().getCompany()).fetch();
+    for (SaleOrder saleOrder : saleOrderList) {
 
-		for (SaleOrder saleOrder : saleOrderList) {
+      try {
 
-			try {
+        Invoice invoice =
+            saleOrderInvoiceService.generateInvoice(saleOrderRepo.find(saleOrder.getId()));
 
-				Invoice invoice = saleOrderInvoiceService.generateInvoice(saleOrderRepo.find(saleOrder.getId()));
+        if (invoice != null) {
 
-				if(invoice != null)  {
+          updateSaleOrder(saleOrder);
+          LOG.debug(
+              "Facture créée ({}) pour le devis {}",
+              invoice.getInvoiceId(),
+              saleOrder.getSaleOrderSeq());
+          i++;
+        }
 
-					updateSaleOrder(saleOrder);
-					LOG.debug("Facture créée ({}) pour le devis {}", invoice.getInvoiceId(), saleOrder.getSaleOrderSeq());
-					i++;
+      } catch (AxelorException e) {
 
-				}
+        TraceBackService.trace(
+            new AxelorException(
+                String.format(
+                    I18n.get("Order") + " %s",
+                    saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()),
+                e,
+                e.getcategory()),
+            IException.INVOICE_ORIGIN,
+            batch.getId());
+        incrementAnomaly();
 
-			} catch (AxelorException e) {
+      } catch (Exception e) {
 
-				TraceBackService.trace(new AxelorException(String.format(I18n.get("Order")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e, e.getcategory()), IException.INVOICE_ORIGIN, batch.getId());
-				incrementAnomaly();
+        TraceBackService.trace(
+            new Exception(
+                String.format(
+                    I18n.get("Order") + " %s",
+                    saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()),
+                e),
+            IException.INVOICE_ORIGIN,
+            batch.getId());
 
-			} catch (Exception e) {
+        incrementAnomaly();
 
-				TraceBackService.trace(new Exception(String.format(I18n.get("Order")+" %s", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
+        LOG.error(
+            "Bug(Anomalie) généré(e) pour le devis {}",
+            saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq());
 
-				incrementAnomaly();
+      } finally {
 
-				LOG.error("Bug(Anomalie) généré(e) pour le devis {}", saleOrderRepo.find(saleOrder.getId()).getSaleOrderSeq());
+        if (i % 10 == 0) {
+          JPA.clear();
+        }
+      }
+    }
+  }
 
-			} finally {
+  /**
+   * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the
+   * entity in the persistant context. Warning : {@code batch} entity have to be saved before.
+   */
+  @Override
+  protected void stop() {
 
-				if (i % 10 == 0) { JPA.clear(); }
+    String comment = I18n.get(IExceptionMessage.BATCH_INVOICING_1) + " ";
+    comment +=
+        String.format(
+            "\t* %s " + I18n.get(IExceptionMessage.BATCH_INVOICING_2) + "\n", batch.getDone());
+    comment +=
+        String.format(
+            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
+            batch.getAnomaly());
 
-			}
-
-		}
-
-
-	}
-
-
-	/**
-	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
-	 * Warning : {@code batch} entity have to be saved before.
-	 */
-	@Override
-	protected void stop() {
-
-		String comment = I18n.get(IExceptionMessage.BATCH_INVOICING_1) + " ";
-		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_INVOICING_2)+"\n", batch.getDone());
-		comment += String.format("\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
-
-		super.stop();
-		addComment(comment);
-
-	}
-
+    super.stop();
+    addComment(comment);
+  }
 }

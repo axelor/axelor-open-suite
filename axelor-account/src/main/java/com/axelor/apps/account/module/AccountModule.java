@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -75,67 +75,63 @@ import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 
-
 public class AccountModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
+  @Override
+  protected void configure() {
+    bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
 
-        bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
+    bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
 
-        bind(FiscalPositionServiceImpl.class).to(FiscalPositionServiceAccountImpl.class);
+    bind(FiscalPositionServiceImpl.class).to(FiscalPositionServiceAccountImpl.class);
 
-        bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
+    bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
 
-        bind(InvoiceRepository.class).to(InvoiceManagementRepository.class);
+    bind(InvoiceRepository.class).to(InvoiceManagementRepository.class);
 
-        bind(MoveRepository.class).to(MoveManagementRepository.class);
-        
-        bind(MoveLineRepository.class).to(MoveLineManagementRepository.class);
-        
-        bind(MoveLineReportRepository.class).to(MoveLineReportManagementRepository.class);
-        
-        bind(MoveLineReportService.class).to(MoveLineReportServiceImpl.class);
-        
-        bind(JournalRepository.class).to(JournalManagementRepository.class);
+    bind(MoveRepository.class).to(MoveManagementRepository.class);
 
-        bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
+    bind(MoveLineRepository.class).to(MoveLineManagementRepository.class);
 
-        bind(InvoiceService.class).to(InvoiceServiceImpl.class);
+    bind(MoveLineReportRepository.class).to(MoveLineReportManagementRepository.class);
 
-        bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
-        
-        bind(AnalyticMoveLineService.class).to(AnalyticMoveLineServiceImpl.class);
-        
-        bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
+    bind(MoveLineReportService.class).to(MoveLineReportServiceImpl.class);
 
-        bind(InvoicePaymentValidateService.class).to(InvoicePaymentValidateServiceImpl.class);
-        
-        bind(InvoicePaymentCreateService.class).to(InvoicePaymentCreateServiceImpl.class);
-        
-        bind(InvoicePaymentCancelService.class).to(InvoicePaymentCancelServiceImpl.class);
-        
-        bind(InvoicePaymentToolService.class).to(InvoicePaymentToolServiceImpl.class);
+    bind(JournalRepository.class).to(JournalManagementRepository.class);
 
-        bind(AnalyticMoveLineRepository.class).to(AnalyticMoveLineMngtRepository.class);
-        
-        bind(ReconcileService.class).to(ReconcileServiceImpl.class);
-        
-        bind(ReconcileRepository.class).to(ReconcileManagementRepository.class);
-        
-        bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
+    bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
 
-        bind(BankDetailsServiceImpl.class).to(BankDetailsServiceAccountImpl.class);
+    bind(InvoiceService.class).to(InvoiceServiceImpl.class);
 
-        bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
+    bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
 
-        bind(AccountingBatchRepository.class).to(AccountingBatchAccountRepository.class);
-        bind(InvoiceBatchRepository.class).to(InvoiceBatchAccountRepository.class);
+    bind(AnalyticMoveLineService.class).to(AnalyticMoveLineServiceImpl.class);
 
-        IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
-    }
-    
-    
+    bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
+
+    bind(InvoicePaymentValidateService.class).to(InvoicePaymentValidateServiceImpl.class);
+
+    bind(InvoicePaymentCreateService.class).to(InvoicePaymentCreateServiceImpl.class);
+
+    bind(InvoicePaymentCancelService.class).to(InvoicePaymentCancelServiceImpl.class);
+
+    bind(InvoicePaymentToolService.class).to(InvoicePaymentToolServiceImpl.class);
+
+    bind(AnalyticMoveLineRepository.class).to(AnalyticMoveLineMngtRepository.class);
+
+    bind(ReconcileService.class).to(ReconcileServiceImpl.class);
+
+    bind(ReconcileRepository.class).to(ReconcileManagementRepository.class);
+
+    bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
+
+    bind(BankDetailsServiceImpl.class).to(BankDetailsServiceAccountImpl.class);
+
+    bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
+
+    bind(AccountingBatchRepository.class).to(AccountingBatchAccountRepository.class);
+    bind(InvoiceBatchRepository.class).to(InvoiceBatchAccountRepository.class);
+
+    IPartner.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
+  }
 }
-

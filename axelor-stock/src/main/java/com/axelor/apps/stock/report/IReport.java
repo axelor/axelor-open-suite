@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,10 +19,7 @@ package com.axelor.apps.stock.report;
 
 public interface IReport {
 
-	
-	public static final String STOCK_MOVE = "StockMove.rptdesign";
-	public static final String INVENTORY = "Inventory.rptdesign";
-	public static final String STOCK_LOCATION = "StockLocation.rptdesign";
-	
-	
+  public static final String STOCK_MOVE = "StockMove.rptdesign";
+  public static final String INVENTORY = "Inventory.rptdesign";
+  public static final String STOCK_LOCATION = "StockLocation.rptdesign";
 }

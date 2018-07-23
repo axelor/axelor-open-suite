@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,27 +21,25 @@ import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 
-public class DurationTool{
-	
-	public static Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
-		
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
-	}
-	
-	
-	public static int getDaysDuration(Duration duration)  {
-		
-		return duration.toStandardDays().getDays();
-	}
-	
-	public static int getHoursDuration(Duration duration)  {
-		
-		return duration.toStandardHours().getHours();
-	}
-	
-	public static int getMinutesDuration(Duration duration)  {
-		
-		return duration.toStandardMinutes().getMinutes();
-	}
-	
+public class DurationTool {
+
+  public static Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+
+    return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
+  }
+
+  public static int getDaysDuration(Duration duration) {
+
+    return duration.toStandardDays().getDays();
+  }
+
+  public static int getHoursDuration(Duration duration) {
+
+    return duration.toStandardHours().getHours();
+  }
+
+  public static int getMinutesDuration(Duration duration) {
+
+    return duration.toStandardMinutes().getMinutes();
+  }
 }

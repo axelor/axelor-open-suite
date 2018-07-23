@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TrackingNumber;
@@ -34,77 +30,78 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import org.joda.time.LocalDate;
 
 public class TrackingNumberService {
 
-	@Inject
-	private SequenceService sequenceService;
-	
-	@Inject
-	private TrackingNumberRepository trackingNumberRepo;
+  @Inject private SequenceService sequenceService;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public TrackingNumber getTrackingNumber(Product product, BigDecimal sizeOfLot, Company company, LocalDate date) throws AxelorException  {
+  @Inject private TrackingNumberRepository trackingNumberRepo;
 
-		TrackingNumber trackingNumber = trackingNumberRepo.all().filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot).fetchOne();
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public TrackingNumber getTrackingNumber(
+      Product product, BigDecimal sizeOfLot, Company company, LocalDate date)
+      throws AxelorException {
 
-		if(trackingNumber == null)  {
-			trackingNumber = trackingNumberRepo.save(this.createTrackingNumber(product, company, date));
-		}
+    TrackingNumber trackingNumber =
+        trackingNumberRepo
+            .all()
+            .filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot)
+            .fetchOne();
 
-		trackingNumber.setCounter(trackingNumber.getCounter().add(sizeOfLot));
+    if (trackingNumber == null) {
+      trackingNumber = trackingNumberRepo.save(this.createTrackingNumber(product, company, date));
+    }
 
-		return trackingNumber;
+    trackingNumber.setCounter(trackingNumber.getCounter().add(sizeOfLot));
 
-	}
+    return trackingNumber;
+  }
 
+  public String getOrderMethod(TrackingNumberConfiguration trackingNumberConfiguration) {
+    switch (trackingNumberConfiguration.getSaleAutoTrackingNbrOrderSelect()) {
+      case ProductRepository.SALE_TRACKING_ORDER_FIFO:
+        return " ORDER BY self.trackingNumber ASC";
 
+      case ProductRepository.SALE_TRACKING_ORDER_LIFO:
+        return " ORDER BY self.trackingNumber DESC";
 
-	public String getOrderMethod(TrackingNumberConfiguration trackingNumberConfiguration)  {
-		switch (trackingNumberConfiguration.getSaleAutoTrackingNbrOrderSelect()) {
-			case ProductRepository.SALE_TRACKING_ORDER_FIFO:
-				return " ORDER BY self.trackingNumber ASC";
+      default:
+        return "";
+    }
+  }
 
-			case ProductRepository.SALE_TRACKING_ORDER_LIFO:
-				return " ORDER BY self.trackingNumber DESC";
+  public TrackingNumber createTrackingNumber(Product product, Company company, LocalDate date)
+      throws AxelorException {
 
-			default:
-				return "";
-		}
-	}
+    TrackingNumber trackingNumber = new TrackingNumber();
 
+    if (product.getIsPerishable()) {
+      trackingNumber.setPerishableExpirationDate(
+          date.plusMonths(product.getPerishableNbrOfMonths()));
+    }
+    if (product.getHasWarranty()) {
+      trackingNumber.setWarrantyExpirationDate(date.plusMonths(product.getWarrantyNbrOfMonths()));
+    }
 
+    trackingNumber.setProduct(product);
+    trackingNumber.setCounter(BigDecimal.ZERO);
 
-	public TrackingNumber createTrackingNumber(Product product, Company company, LocalDate date) throws AxelorException  {
+    TrackingNumberConfiguration trackingNumberConfiguration =
+        product.getTrackingNumberConfiguration();
 
-		TrackingNumber trackingNumber = new TrackingNumber();
+    if (trackingNumberConfiguration.getSequence() == null) {
+      throw new AxelorException(
+          String.format(
+              I18n.get(IExceptionMessage.TRACKING_NUMBER_1), company.getName(), product.getCode()),
+          IException.CONFIGURATION_ERROR);
+    }
 
-		if(product.getIsPerishable())  {
-			trackingNumber.setPerishableExpirationDate(date.plusMonths(product.getPerishableNbrOfMonths()));
-		}
-		if(product.getHasWarranty())  {
-			trackingNumber.setWarrantyExpirationDate(date.plusMonths(product.getWarrantyNbrOfMonths()));
-		}
+    String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence());
 
-		trackingNumber.setProduct(product);
-		trackingNumber.setCounter(BigDecimal.ZERO);
+    trackingNumber.setTrackingNumberSeq(seq);
 
-		TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
-
-		if (trackingNumberConfiguration.getSequence() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TRACKING_NUMBER_1),
-					company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
-		}
-
-		String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence());
-
-		trackingNumber.setTrackingNumberSeq(seq);
-
-		return trackingNumber;
-	}
-
-
-
-
-
+    return trackingNumber;
+  }
 }

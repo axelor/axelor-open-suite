@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.supplychain.service.workflow;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -40,165 +32,188 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CancelStateSupplyChain extends CancelState {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	protected SaleOrderInvoiceService saleOrderInvoiceService;
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@Inject
-	protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
-	
-	@Inject
-	protected SaleOrderRepository saleOrderRepository;
-	
-	@Inject 
-	protected PurchaseOrderRepository purchaseOrderRepository;
+  @Inject protected SaleOrderInvoiceService saleOrderInvoiceService;
 
-	
-	@Override
-	public void process() throws AxelorException {
+  @Inject protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
 
-		Integer oldInvoiceStatusSelect = invoice.getStatusSelect();
+  @Inject protected SaleOrderRepository saleOrderRepository;
 
-		super.process();
+  @Inject protected PurchaseOrderRepository purchaseOrderRepository;
 
-		if (oldInvoiceStatusSelect == InvoiceRepository.STATUS_VENTILATED)  {
-			
-			if (InvoiceToolService.isPurchase(invoice))  {
-				
-				//Update amount invoiced on PurchaseOrder
-				this.purchaseOrderProcess();
-				
-			}  else  {
-				
-				//Update amount remaining to invoiced on SaleOrder
-				this.saleOrderProcess();
-				
-			}
-		}
+  @Override
+  public void process() throws AxelorException {
 
-	}
-	
-	public void saleOrderProcess() throws AxelorException  {
-		
-		SaleOrder invoiceSaleOrder = invoice.getSaleOrder();
-		
-		if (invoiceSaleOrder != null)  {
-			
-			log.debug("Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
-			invoiceSaleOrder.setAmountInvoiced(saleOrderInvoiceService.getInvoicedAmount(invoiceSaleOrder, invoice.getId(), true));
+    Integer oldInvoiceStatusSelect = invoice.getStatusSelect();
 
-		}  else  {
-			
-			//Get all different saleOrders from invoice
-			List<SaleOrder> saleOrderList = Lists.newArrayList();
-			
-			for (InvoiceLine invoiceLine : invoice.getInvoiceLineList())  {
-				
-				SaleOrder saleOrder = this.saleOrderLineProcess(invoiceLine);
-				
-				if (saleOrder != null && !saleOrderList.contains(saleOrder))  {   saleOrderList.add(saleOrder);  }
+    super.process();
 
-			}
+    if (oldInvoiceStatusSelect == InvoiceRepository.STATUS_VENTILATED) {
 
-			for (SaleOrder saleOrder : saleOrderList) {
-				log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
-				saleOrder.setAmountInvoiced(saleOrderInvoiceService.getInvoicedAmount(saleOrder, invoice.getId(), true));
-				saleOrderRepository.save(saleOrder);
-			}
-		}
-	}
-	
-	
-	public SaleOrder saleOrderLineProcess(InvoiceLine invoiceLine) throws AxelorException  {
-		
-		SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
-		
-		if (saleOrderLine == null)  {  return null;  }
-		
-		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-		
-		//Update invoiced amount on sale order line
-		BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
-		
-		// If is it a refund invoice, so we negate the amount invoiced
-		if(InvoiceToolService.isRefund(invoiceLine.getInvoice()))  {  invoicedAmountToAdd = invoicedAmountToAdd.negate();  }
-		
-		if (!invoice.getCurrency().equals(saleOrder.getCurrency()) && saleOrderLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0)  {
-			//If the sale order currency is different from the invoice currency, use company currency to calculate a rate. This rate will be applied to sale order line
-			BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
-			BigDecimal rate = currentCompanyInvoicedAmount.divide(saleOrderLine.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-			invoicedAmountToAdd = rate.multiply(saleOrderLine.getExTaxTotal());
-		}
-		
-		saleOrderLine.setAmountInvoiced(saleOrderLine.getAmountInvoiced().subtract(invoicedAmountToAdd));
-		
-		return saleOrder;
-		
-	}
-	
-	
-	public void purchaseOrderProcess() throws AxelorException  {
-		
-		PurchaseOrder invoicePurchaseOrder = invoice.getPurchaseOrder();
-		
-		if (invoicePurchaseOrder != null)  {
-			
-			log.debug("Update the invoiced amount of the purchase order : {}", invoicePurchaseOrder.getPurchaseOrderSeq());
-			invoicePurchaseOrder.setAmountInvoiced(purchaseOrderInvoiceService.getInvoicedAmount(invoicePurchaseOrder, invoice.getId(), true));
-			
-		}  else  {
-			
-			//Get all different purchaseOrders from invoice
+      if (InvoiceToolService.isPurchase(invoice)) {
 
-			List<PurchaseOrder> purchaseOrderList = Lists.newArrayList();;
-			
-			for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-				
-				PurchaseOrder purchaseOrder = this.purchaseOrderLineProcess(invoiceLine);
-				
-				if(purchaseOrder != null && !purchaseOrderList.contains(purchaseOrder))  {  purchaseOrderList.add(purchaseOrder);  }
-				
-			}
-			
-			for (PurchaseOrder purchaseOrder : purchaseOrderList)  {
-				log.debug("Update the invoiced amount of the purchase order : {}", purchaseOrder.getPurchaseOrderSeq());
-				purchaseOrder.setAmountInvoiced(purchaseOrderInvoiceService.getInvoicedAmount(purchaseOrder, invoice.getId(), true));
-				purchaseOrderRepository.save(purchaseOrder);
-			}
-		}
-		
-	}
-	
-	public PurchaseOrder purchaseOrderLineProcess(InvoiceLine invoiceLine) throws AxelorException  {
-		
-		PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
-		
-		if(purchaseOrderLine == null)  {  return null;  }
-		
-		PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-		
-		BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
-		
-		// If is it a refund invoice, so we negate the amount invoiced
-		if(InvoiceToolService.isRefund(invoiceLine.getInvoice()))  {  invoicedAmountToAdd = invoicedAmountToAdd.negate();  }
-		
-		//Update invoiced amount on purchase order line
-		if (!invoice.getCurrency().equals(purchaseOrder.getCurrency()) && purchaseOrderLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0){
-			//If the purchase order currency is different from the invoice currency, use company currency to calculate a rate. This rate will be applied to purchase order line
-			BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
-			BigDecimal rate = currentCompanyInvoicedAmount.divide(purchaseOrderLine.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-			invoicedAmountToAdd = rate.multiply(purchaseOrderLine.getExTaxTotal());
-		}
-		
-		purchaseOrderLine.setAmountInvoiced(purchaseOrderLine.getAmountInvoiced().subtract(invoicedAmountToAdd));
-			
-		return purchaseOrder;
-		
-	}
-	
-	
+        // Update amount invoiced on PurchaseOrder
+        this.purchaseOrderProcess();
+
+      } else {
+
+        // Update amount remaining to invoiced on SaleOrder
+        this.saleOrderProcess();
+      }
+    }
+  }
+
+  public void saleOrderProcess() throws AxelorException {
+
+    SaleOrder invoiceSaleOrder = invoice.getSaleOrder();
+
+    if (invoiceSaleOrder != null) {
+
+      log.debug(
+          "Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
+      invoiceSaleOrder.setAmountInvoiced(
+          saleOrderInvoiceService.getInvoicedAmount(invoiceSaleOrder, invoice.getId(), true));
+
+    } else {
+
+      // Get all different saleOrders from invoice
+      List<SaleOrder> saleOrderList = Lists.newArrayList();
+
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+
+        SaleOrder saleOrder = this.saleOrderLineProcess(invoiceLine);
+
+        if (saleOrder != null && !saleOrderList.contains(saleOrder)) {
+          saleOrderList.add(saleOrder);
+        }
+      }
+
+      for (SaleOrder saleOrder : saleOrderList) {
+        log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
+        saleOrder.setAmountInvoiced(
+            saleOrderInvoiceService.getInvoicedAmount(saleOrder, invoice.getId(), true));
+        saleOrderRepository.save(saleOrder);
+      }
+    }
+  }
+
+  public SaleOrder saleOrderLineProcess(InvoiceLine invoiceLine) throws AxelorException {
+
+    SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
+
+    if (saleOrderLine == null) {
+      return null;
+    }
+
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+
+    // Update invoiced amount on sale order line
+    BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
+
+    // If is it a refund invoice, so we negate the amount invoiced
+    if (InvoiceToolService.isRefund(invoiceLine.getInvoice())) {
+      invoicedAmountToAdd = invoicedAmountToAdd.negate();
+    }
+
+    if (!invoice.getCurrency().equals(saleOrder.getCurrency())
+        && saleOrderLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
+      // If the sale order currency is different from the invoice currency, use company currency to
+      // calculate a rate. This rate will be applied to sale order line
+      BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
+      BigDecimal rate =
+          currentCompanyInvoicedAmount.divide(
+              saleOrderLine.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+      invoicedAmountToAdd = rate.multiply(saleOrderLine.getExTaxTotal());
+    }
+
+    saleOrderLine.setAmountInvoiced(
+        saleOrderLine.getAmountInvoiced().subtract(invoicedAmountToAdd));
+
+    return saleOrder;
+  }
+
+  public void purchaseOrderProcess() throws AxelorException {
+
+    PurchaseOrder invoicePurchaseOrder = invoice.getPurchaseOrder();
+
+    if (invoicePurchaseOrder != null) {
+
+      log.debug(
+          "Update the invoiced amount of the purchase order : {}",
+          invoicePurchaseOrder.getPurchaseOrderSeq());
+      invoicePurchaseOrder.setAmountInvoiced(
+          purchaseOrderInvoiceService.getInvoicedAmount(
+              invoicePurchaseOrder, invoice.getId(), true));
+
+    } else {
+
+      // Get all different purchaseOrders from invoice
+
+      List<PurchaseOrder> purchaseOrderList = Lists.newArrayList();
+      ;
+
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+
+        PurchaseOrder purchaseOrder = this.purchaseOrderLineProcess(invoiceLine);
+
+        if (purchaseOrder != null && !purchaseOrderList.contains(purchaseOrder)) {
+          purchaseOrderList.add(purchaseOrder);
+        }
+      }
+
+      for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+        log.debug(
+            "Update the invoiced amount of the purchase order : {}",
+            purchaseOrder.getPurchaseOrderSeq());
+        purchaseOrder.setAmountInvoiced(
+            purchaseOrderInvoiceService.getInvoicedAmount(purchaseOrder, invoice.getId(), true));
+        purchaseOrderRepository.save(purchaseOrder);
+      }
+    }
+  }
+
+  public PurchaseOrder purchaseOrderLineProcess(InvoiceLine invoiceLine) throws AxelorException {
+
+    PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
+
+    if (purchaseOrderLine == null) {
+      return null;
+    }
+
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+
+    BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
+
+    // If is it a refund invoice, so we negate the amount invoiced
+    if (InvoiceToolService.isRefund(invoiceLine.getInvoice())) {
+      invoicedAmountToAdd = invoicedAmountToAdd.negate();
+    }
+
+    // Update invoiced amount on purchase order line
+    if (!invoice.getCurrency().equals(purchaseOrder.getCurrency())
+        && purchaseOrderLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
+      // If the purchase order currency is different from the invoice currency, use company currency
+      // to calculate a rate. This rate will be applied to purchase order line
+      BigDecimal currentCompanyInvoicedAmount = invoiceLine.getCompanyExTaxTotal();
+      BigDecimal rate =
+          currentCompanyInvoicedAmount.divide(
+              purchaseOrderLine.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
+      invoicedAmountToAdd = rate.multiply(purchaseOrderLine.getExTaxTotal());
+    }
+
+    purchaseOrderLine.setAmountInvoiced(
+        purchaseOrderLine.getAmountInvoiced().subtract(invoicedAmountToAdd));
+
+    return purchaseOrder;
+  }
 }

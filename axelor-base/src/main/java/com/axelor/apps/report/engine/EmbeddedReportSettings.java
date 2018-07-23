@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,47 +17,38 @@
  */
 package com.axelor.apps.report.engine;
 
-import java.io.IOException;
-
-import org.eclipse.birt.core.exception.BirtException;
-
 import com.axelor.app.internal.AppFilter;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.inject.Beans;
 import com.axelor.report.ReportGenerator;
+import java.io.IOException;
+import org.eclipse.birt.core.exception.BirtException;
 
-public class EmbeddedReportSettings  extends ReportSettings  {
-	
-	
-	public EmbeddedReportSettings(String rptdesign, String outputName)  {
-		
-		super(rptdesign, outputName);
-		
-	}
-	
-	
-	@Override
-	public EmbeddedReportSettings generate() throws AxelorException  {
-		
-		super.generate();
-		
-		try  {
-			
-			final ReportGenerator generator = Beans.get(ReportGenerator.class);
+public class EmbeddedReportSettings extends ReportSettings {
 
-			this.output = generator.generate(rptdesign, format, params, AppFilter.getLocale());
+  public EmbeddedReportSettings(String rptdesign, String outputName) {
 
-			this.attach();
-		
-		} catch(IOException | BirtException e)  {
-			throw new AxelorException(e, IException.CONFIGURATION_ERROR);
-		}
-		
-		return this;
-        
-	}
-	
-	
+    super(rptdesign, outputName);
+  }
+
+  @Override
+  public EmbeddedReportSettings generate() throws AxelorException {
+
+    super.generate();
+
+    try {
+
+      final ReportGenerator generator = Beans.get(ReportGenerator.class);
+
+      this.output = generator.generate(rptdesign, format, params, AppFilter.getLocale());
+
+      this.attach();
+
+    } catch (IOException | BirtException e) {
+      throw new AxelorException(e, IException.CONFIGURATION_ERROR);
+    }
+
+    return this;
+  }
 }
-

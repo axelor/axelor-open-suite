@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -30,36 +30,39 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class PurchaseOrderLineController {
-	
-	@Inject
-	protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
-	
-	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) throws AxelorException{
-		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-		PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-		if(purchaseOrder == null){
-			purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
-			purchaseOrderLine.setPurchaseOrder(purchaseOrder);
-		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
-			purchaseOrderLine = purchaseOrderLineServiceSupplychainImpl.computeAnalyticDistribution(purchaseOrderLine);
-			response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
-		}
-	}
-	
-	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
-		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-		PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-		if(purchaseOrder == null){
-			purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
-			purchaseOrderLine.setPurchaseOrder(purchaseOrder);
-		}
-		if(purchaseOrderLine.getAnalyticDistributionTemplate() != null){
-			purchaseOrderLine = purchaseOrderLineServiceSupplychainImpl.createAnalyticDistributionWithTemplate(purchaseOrderLine);
-			response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
-		}
-		else{
-			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
-		}
-	}
+
+  @Inject protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
+
+  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    if (purchaseOrder == null) {
+      purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
+      purchaseOrderLine.setPurchaseOrder(purchaseOrder);
+    }
+    if (Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()) {
+      purchaseOrderLine =
+          purchaseOrderLineServiceSupplychainImpl.computeAnalyticDistribution(purchaseOrderLine);
+      response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+    }
+  }
+
+  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    if (purchaseOrder == null) {
+      purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
+      purchaseOrderLine.setPurchaseOrder(purchaseOrder);
+    }
+    if (purchaseOrderLine.getAnalyticDistributionTemplate() != null) {
+      purchaseOrderLine =
+          purchaseOrderLineServiceSupplychainImpl.createAnalyticDistributionWithTemplate(
+              purchaseOrderLine);
+      response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+    } else {
+      throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+    }
+  }
 }

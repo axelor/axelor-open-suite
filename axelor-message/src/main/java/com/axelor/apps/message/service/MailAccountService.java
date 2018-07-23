@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -22,20 +22,20 @@ import com.axelor.exception.AxelorException;
 
 public interface MailAccountService {
 
-	public boolean checkDefaultMailAccount(MailAccount mailAccount);
-	
-	public MailAccount getDefaultMailAccount();
-	
-	public void checkMailAccountConfiguration(MailAccount mailAccount) throws AxelorException, Exception;
-	
-	public String getSmtpSecurity(MailAccount mailAccount);
-	
-	public String getProtocol(MailAccount mailAccount);
-	
-	public String getSignature(MailAccount mailAccount);
-	
-	public String getEncryptPassword(String password);
-	
-	public String getDecryptPassword(String password);
-	
+  public boolean checkDefaultMailAccount(MailAccount mailAccount);
+
+  public MailAccount getDefaultMailAccount();
+
+  public void checkMailAccountConfiguration(MailAccount mailAccount)
+      throws AxelorException, Exception;
+
+  public String getSmtpSecurity(MailAccount mailAccount);
+
+  public String getProtocol(MailAccount mailAccount);
+
+  public String getSignature(MailAccount mailAccount);
+
+  public String getEncryptPassword(String password);
+
+  public String getDecryptPassword(String password);
 }

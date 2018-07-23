@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,18 +17,21 @@
  */
 package com.axelor.apps.hr.service.timesheet.timer;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.TimesheetLine;
+import java.math.BigDecimal;
 
 public interface TimesheetTimerService {
 
-	public void pause(TSTimer timer);
-	public void stop(TSTimer timer);
-	public void calculateDuration(TSTimer timer);
-	public TimesheetLine generateTimesheetLine(TSTimer timer);
-	public TSTimer getCurrentTSTimer();
-	public BigDecimal convertSecondDurationInHours(long durationInSeconds);
+  public void pause(TSTimer timer);
 
+  public void stop(TSTimer timer);
+
+  public void calculateDuration(TSTimer timer);
+
+  public TimesheetLine generateTimesheetLine(TSTimer timer);
+
+  public TSTimer getCurrentTSTimer();
+
+  public BigDecimal convertSecondDurationInHours(long durationInSeconds);
 }

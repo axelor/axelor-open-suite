@@ -12,3 +12,9 @@ module {
 	module "modules:axelor-bank-payment"
 
 }
+
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}

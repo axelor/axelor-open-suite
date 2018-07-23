@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,8 +19,7 @@ package com.axelor.apps.tool.service;
 
 public interface CipherService {
 
-	public String encrypt(String unencryptedString);
+  public String encrypt(String unencryptedString);
 
-	public String decrypt(String encryptedString);
-
+  public String decrypt(String encryptedString);
 }

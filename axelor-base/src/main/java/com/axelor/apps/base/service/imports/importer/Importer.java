@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,21 +17,6 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-
-import org.apache.commons.io.FileUtils;
-import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -44,150 +29,181 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+import org.apache.commons.io.FileUtils;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class Importer {
 
-	private static final File DEFAULT_WORKSPACE = createDefaultWorkspace();
-	
-	protected Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private static final File DEFAULT_WORKSPACE = createDefaultWorkspace();
 
-	private ImportConfiguration configuration;
-	private File workspace;
+  protected Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	public void setConfiguration( ImportConfiguration configuration ) { this.configuration = configuration; }
+  private ImportConfiguration configuration;
+  private File workspace;
 
-	public void setWorkspace(File workspace) {
-		Preconditions.checkArgument(workspace.exists() && workspace.isDirectory());
-		this.workspace = workspace;
-	}
+  public void setConfiguration(ImportConfiguration configuration) {
+    this.configuration = configuration;
+  }
 
-	public ImportConfiguration getConfiguration() { return this.configuration; }
-	public File getWorkspace() { return this.workspace; }
+  public void setWorkspace(File workspace) {
+    Preconditions.checkArgument(workspace.exists() && workspace.isDirectory());
+    this.workspace = workspace;
+  }
 
-	public Importer init( ImportConfiguration configuration ) {
-		return init(configuration, DEFAULT_WORKSPACE);
-	}
+  public ImportConfiguration getConfiguration() {
+    return this.configuration;
+  }
 
-	public Importer init( ImportConfiguration configuration, File workspace ) {
-		setConfiguration(configuration);
-		setWorkspace(workspace);
-		log.debug("Initialisation de l'import pour la configuration {}", configuration.getName());
-		return this;
-	}
+  public File getWorkspace() {
+    return this.workspace;
+  }
 
-	public ImportHistory run() throws AxelorException, IOException {
+  public Importer init(ImportConfiguration configuration) {
+    return init(configuration, DEFAULT_WORKSPACE);
+  }
 
-		File 
-			bind = MetaFiles.getPath( configuration.getBindMetaFile() ).toFile(), 
-			data = MetaFiles.getPath( configuration.getDataMetaFile() ).toFile();
+  public Importer init(ImportConfiguration configuration, File workspace) {
+    setConfiguration(configuration);
+    setWorkspace(workspace);
+    log.debug("Initialisation de l'import pour la configuration {}", configuration.getName());
+    return this;
+  }
 
-		if (!bind.exists()) {
-			throw new AxelorException(I18n.get(IExceptionMessage.IMPORTER_1), IException.CONFIGURATION_ERROR);
-		}
-		if (!data.exists()) {
-			throw new AxelorException(I18n.get(IExceptionMessage.IMPORTER_2), IException.CONFIGURATION_ERROR);
-		}
+  public ImportHistory run() throws AxelorException, IOException {
 
-		File workspace = createFinalWorkspace(configuration.getDataMetaFile());
-		ImportHistory importHistory = process( bind.getAbsolutePath(), workspace.getAbsolutePath() );
-		deleteFinalWorkspace(workspace);
+    File bind = MetaFiles.getPath(configuration.getBindMetaFile()).toFile(),
+        data = MetaFiles.getPath(configuration.getDataMetaFile()).toFile();
 
-		log.debug("Import terminé : {}", importHistory.getLog());
-		
-		return importHistory;
-		
-	}
-	
-	abstract protected ImportHistory process( String bind, String data ) throws IOException;
-	
-	protected void deleteFinalWorkspace( File workspace ) throws IOException {
+    if (!bind.exists()) {
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.IMPORTER_1), IException.CONFIGURATION_ERROR);
+    }
+    if (!data.exists()) {
+      throw new AxelorException(
+          I18n.get(IExceptionMessage.IMPORTER_2), IException.CONFIGURATION_ERROR);
+    }
 
-		if ( workspace.isDirectory() ){ FileUtils.deleteDirectory(workspace); }
-		else { workspace.delete(); }
-		
-	}
-	
-	protected File createFinalWorkspace( MetaFile metaFile ) throws IOException {
+    File workspace = createFinalWorkspace(configuration.getDataMetaFile());
+    ImportHistory importHistory = process(bind.getAbsolutePath(), workspace.getAbsolutePath());
+    deleteFinalWorkspace(workspace);
 
-		File data = MetaFiles.getPath( metaFile ).toFile();
-		File finalWorkspace =  new File( workspace, computeFinalWorkspaceName(data) );
-		finalWorkspace.mkdir();
-		
-		if ( isZip( data ) ) { unZip( data, finalWorkspace ); }
-		else { FileUtils.copyFile(data, new File( finalWorkspace, metaFile.getFileName() ) ); }
-		
-		return finalWorkspace;
-		
-	}
-	
-	protected String computeFinalWorkspaceName( File data ){ return String.format("%s-%s", Files.getNameWithoutExtension( data.getName() ) , LocalDateTime.now().toString("yyyyMMdd")); }
+    log.debug("Import terminé : {}", importHistory.getLog());
 
-	protected boolean isZip(File file) { return Files.getFileExtension(file.getName()).equals("zip"); }
-	
-	protected void unZip(File file, File directory) throws ZipException, IOException {
+    return importHistory;
+  }
 
-		File extractFile = null;
-		FileOutputStream fileOutputStream = null;
-		ZipFile zipFile = new ZipFile(file);
-		Enumeration<? extends ZipEntry> entries = zipFile.entries();
+  protected abstract ImportHistory process(String bind, String data) throws IOException;
 
-		while (entries.hasMoreElements()) {
-			try {
-				ZipEntry entry = entries.nextElement();
-				InputStream entryInputStream = zipFile.getInputStream(entry);
-				byte[] buffer = new byte[1024];
-				int bytesRead = 0;
+  protected void deleteFinalWorkspace(File workspace) throws IOException {
 
-				extractFile = new File(directory, entry.getName());
-				if (entry.isDirectory()) {
-					extractFile.mkdirs();
-					continue;
-				} else {
-					extractFile.getParentFile().mkdirs();
-					extractFile.createNewFile();
-				}
+    if (workspace.isDirectory()) {
+      FileUtils.deleteDirectory(workspace);
+    } else {
+      workspace.delete();
+    }
+  }
 
-				fileOutputStream = new FileOutputStream(extractFile);
-				while ((bytesRead = entryInputStream.read(buffer)) != -1) {
-					fileOutputStream.write(buffer, 0, bytesRead);
-				}
+  protected File createFinalWorkspace(MetaFile metaFile) throws IOException {
 
-			} catch (IOException ioException) {
-				log.error( ioException.getMessage() );
-				continue;
-			} finally {
-				if (fileOutputStream == null) { continue; }
-				try { fileOutputStream.close(); } catch (IOException e) { }
-			}
-		}
-		
-		zipFile.close();
+    File data = MetaFiles.getPath(metaFile).toFile();
+    File finalWorkspace = new File(workspace, computeFinalWorkspaceName(data));
+    finalWorkspace.mkdir();
 
-	}
-	
-	/**
-	 * Ajout d'un nouveau log dans la table des historiques pour la configuration données.
-	 * 
-	 * @param listener
-	 * @return
-	 */
-	protected ImportHistory addHistory( ImporterListener listener ) {
-		
-		ImportHistory importHistory = new ImportHistory( AuthUtils.getUser(), configuration.getDataMetaFile() );
-		importHistory.setLog( listener.getImportLog() );
-		importHistory.setImportConfiguration( configuration );
-		
+    if (isZip(data)) {
+      unZip(data, finalWorkspace);
+    } else {
+      FileUtils.copyFile(data, new File(finalWorkspace, metaFile.getFileName()));
+    }
 
-		return importHistory;
-		
-	}
-	
-	private static File createDefaultWorkspace(){
-		
-		File file = Files.createTempDir();
-		file.deleteOnExit();
-		return file;
-		
-	}
+    return finalWorkspace;
+  }
 
+  protected String computeFinalWorkspaceName(File data) {
+    return String.format(
+        "%s-%s",
+        Files.getNameWithoutExtension(data.getName()), LocalDateTime.now().toString("yyyyMMdd"));
+  }
+
+  protected boolean isZip(File file) {
+    return Files.getFileExtension(file.getName()).equals("zip");
+  }
+
+  protected void unZip(File file, File directory) throws ZipException, IOException {
+
+    File extractFile = null;
+    FileOutputStream fileOutputStream = null;
+    ZipFile zipFile = new ZipFile(file);
+    Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+    while (entries.hasMoreElements()) {
+      try {
+        ZipEntry entry = entries.nextElement();
+        InputStream entryInputStream = zipFile.getInputStream(entry);
+        byte[] buffer = new byte[1024];
+        int bytesRead = 0;
+
+        extractFile = new File(directory, entry.getName());
+        if (entry.isDirectory()) {
+          extractFile.mkdirs();
+          continue;
+        } else {
+          extractFile.getParentFile().mkdirs();
+          extractFile.createNewFile();
+        }
+
+        fileOutputStream = new FileOutputStream(extractFile);
+        while ((bytesRead = entryInputStream.read(buffer)) != -1) {
+          fileOutputStream.write(buffer, 0, bytesRead);
+        }
+
+      } catch (IOException ioException) {
+        log.error(ioException.getMessage());
+        continue;
+      } finally {
+        if (fileOutputStream == null) {
+          continue;
+        }
+        try {
+          fileOutputStream.close();
+        } catch (IOException e) {
+        }
+      }
+    }
+
+    zipFile.close();
+  }
+
+  /**
+   * Ajout d'un nouveau log dans la table des historiques pour la configuration données.
+   *
+   * @param listener
+   * @return
+   */
+  protected ImportHistory addHistory(ImporterListener listener) {
+
+    ImportHistory importHistory =
+        new ImportHistory(AuthUtils.getUser(), configuration.getDataMetaFile());
+    importHistory.setLog(listener.getImportLog());
+    importHistory.setImportConfiguration(configuration);
+
+    return importHistory;
+  }
+
+  private static File createDefaultWorkspace() {
+
+    File file = Files.createTempDir();
+    file.deleteOnExit();
+    return file;
+  }
 }

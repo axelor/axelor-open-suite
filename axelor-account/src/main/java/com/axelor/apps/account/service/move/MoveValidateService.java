@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -40,170 +32,180 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveValidateService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected SequenceService sequenceService;
-	protected MoveCustAccountService moveCustAccountService;
-	protected MoveRepository moveRepository;
+  protected SequenceService sequenceService;
+  protected MoveCustAccountService moveCustAccountService;
+  protected MoveRepository moveRepository;
 
-	@Inject
-	public MoveValidateService(GeneralService generalService, SequenceService sequenceService, MoveCustAccountService moveCustAccountService, MoveRepository moveRepository) {
+  @Inject
+  public MoveValidateService(
+      GeneralService generalService,
+      SequenceService sequenceService,
+      MoveCustAccountService moveCustAccountService,
+      MoveRepository moveRepository) {
 
-		this.sequenceService = sequenceService;
-		this.moveCustAccountService = moveCustAccountService;
-		this.moveRepository = moveRepository;
-	}
+    this.sequenceService = sequenceService;
+    this.moveCustAccountService = moveCustAccountService;
+    this.moveRepository = moveRepository;
+  }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validate(Move move) throws AxelorException {
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validate(Move move) throws AxelorException  {
+    LocalDate date = move.getDate();
+    Partner partner = move.getPartner();
 
-		LocalDate date = move.getDate();
-		Partner partner = move.getPartner();
+    int counter = 1;
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine.getDate() == null) {
+        moveLine.setDate(date);
+      }
 
-		int counter = 1;
-		for(MoveLine moveLine : move.getMoveLineList())  {
-			if (moveLine.getDate() == null) {
-				moveLine.setDate(date);
-			}
-						
-			if(moveLine.getAccount() != null && moveLine.getAccount().getReconcileOk() && moveLine.getDueDate() == null)  {
-				moveLine.setDueDate(date);
-			}
-			if (partner != null){
-				moveLine.setPartner(partner);
-			}
-			moveLine.setCounter(counter);
-			counter++;
-		}
+      if (moveLine.getAccount() != null
+          && moveLine.getAccount().getReconcileOk()
+          && moveLine.getDueDate() == null) {
+        moveLine.setDueDate(date);
+      }
+      if (partner != null) {
+        moveLine.setPartner(partner);
+      }
+      moveLine.setCounter(counter);
+      counter++;
+    }
 
-		this.validateMove(move);
-		moveRepository.save(move);
-	}
+    this.validateMove(move);
+    moveRepository.save(move);
+  }
 
+  /**
+   * Valider une écriture comptable.
+   *
+   * @param move
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validateMove(Move move) throws AxelorException {
 
-	/**
-	 * Valider une écriture comptable.
-	 *
-	 * @param move
-	 *
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validateMove(Move move) throws AxelorException {
+    this.validateMove(move, true);
+  }
 
-		this.validateMove(move, true);
+  /**
+   * Valider une écriture comptable.
+   *
+   * @param move
+   * @throws AxelorException
+   */
+  public void validateMove(Move move, boolean updateCustomerAccount) throws AxelorException {
 
-	}
+    log.debug("Validation de l'écriture comptable {}", move.getReference());
+    Journal journal = move.getJournal();
+    Company company = move.getCompany();
+    if (journal == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.MOVE_2)), IException.CONFIGURATION_ERROR);
+    }
+    if (company == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.MOVE_3)), IException.CONFIGURATION_ERROR);
+    }
 
+    if (move.getPeriod() == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.MOVE_4)), IException.CONFIGURATION_ERROR);
+    }
 
+    if (journal.getSequence() == null) {
+      throw new AxelorException(
+          String.format(I18n.get(IExceptionMessage.MOVE_5), journal.getName()),
+          IException.CONFIGURATION_ERROR);
+    }
 
-	/**
-	 * Valider une écriture comptable.
-	 *
-	 * @param move
-	 *
-	 * @throws AxelorException
-	 */
-	public void validateMove(Move move, boolean updateCustomerAccount) throws AxelorException {
+    move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
 
-		log.debug("Validation de l'écriture comptable {}", move.getReference());
-		Journal journal = move.getJournal();
-		Company company = move.getCompany();
-		if(journal == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_2)),IException.CONFIGURATION_ERROR);
-		}
-		if(company == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_3)),IException.CONFIGURATION_ERROR);
-		}
+    this.validateEquiponderanteMove(move);
+    this.fillMoveLines(move);
+    moveRepository.save(move);
 
-		if(move.getPeriod() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_4)),IException.CONFIGURATION_ERROR);
-		}
+    moveCustAccountService.updateCustomerAccount(move);
 
-		if (journal.getSequence() == null)  {
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_5), journal.getName()), IException.CONFIGURATION_ERROR);
-		}
+    move.setValidationDate(LocalDate.now());
+  }
 
-		move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
+  /**
+   * Procédure permettant de vérifier qu'une écriture est équilibré, et la validé si c'est le cas
+   *
+   * @param move Une écriture
+   * @throws AxelorException
+   */
+  public void validateEquiponderanteMove(Move move) throws AxelorException {
 
-		this.validateEquiponderanteMove(move);
-		this.fillMoveLines(move);
-		moveRepository.save(move);
-			
-		moveCustAccountService.updateCustomerAccount(move);
+    log.debug("Validation de l'écriture comptable {}", move.getReference());
 
-		move.setValidationDate(LocalDate.now());
+    if (move.getMoveLineList() != null) {
 
-	}
+      BigDecimal totalDebit = BigDecimal.ZERO;
+      BigDecimal totalCredit = BigDecimal.ZERO;
 
+      for (MoveLine moveLine : move.getMoveLineList()) {
 
+        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 1) {
+          throw new AxelorException(
+              String.format(I18n.get(IExceptionMessage.MOVE_6), moveLine.getName()),
+              IException.INCONSISTENCY);
+        }
 
-	/**
-	 * Procédure permettant de vérifier qu'une écriture est équilibré, et la validé si c'est le cas
-	 * @param move
-	 * 			Une écriture
-	 * @throws AxelorException
-	 */
-	public void validateEquiponderanteMove(Move move) throws AxelorException {
+        totalDebit = totalDebit.add(moveLine.getDebit());
+        totalCredit = totalCredit.add(moveLine.getCredit());
+      }
 
-		log.debug("Validation de l'écriture comptable {}", move.getReference());
+      if (totalDebit.compareTo(totalCredit) != 0) {
+        throw new AxelorException(
+            String.format(
+                I18n.get(IExceptionMessage.MOVE_7), move.getReference(), totalDebit, totalCredit),
+            IException.INCONSISTENCY);
+      }
+      move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
+    }
+  }
 
-		if (move.getMoveLineList() != null){
+  // Procédure permettant de remplir les champs dans les lignes d'écriture relatifs au compte
+  // comptable et au tiers
+  @Transactional
+  public void fillMoveLines(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLine.setAccountCode(moveLine.getAccount().getCode());
+      moveLine.setAccountName(moveLine.getAccount().getName());
+      if (move.getPartner() != null) {
+        moveLine.setPartnerFullName(move.getPartner().getFullName());
+        moveLine.setPartnerSeq(move.getPartner().getPartnerSeq());
+      } else if (moveLine.getPartner() != null) {
+        moveLine.setPartnerFullName(moveLine.getPartner().getFullName());
+        moveLine.setPartnerSeq(moveLine.getPartner().getPartnerSeq());
+      }
+    }
+  }
 
-			BigDecimal totalDebit = BigDecimal.ZERO;
-			BigDecimal totalCredit = BigDecimal.ZERO;
-
-			for (MoveLine moveLine : move.getMoveLineList()){
-
-				if(moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 1)  {
-					throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_6),
-							moveLine.getName()), IException.INCONSISTENCY);
-				}
-
-				totalDebit = totalDebit.add(moveLine.getDebit());
-				totalCredit = totalCredit.add(moveLine.getCredit());
-			}
-
-			if (totalDebit.compareTo(totalCredit) != 0){
-				throw new AxelorException(String.format(I18n.get(IExceptionMessage.MOVE_7),
-						move.getReference(), totalDebit, totalCredit), IException.INCONSISTENCY);
-			}
-			move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
-		}
-	}
-
-	//Procédure permettant de remplir les champs dans les lignes d'écriture relatifs au compte comptable et au tiers
-	@Transactional
-	public void fillMoveLines(Move move){
-		for (MoveLine moveLine : move.getMoveLineList()) {
-			moveLine.setAccountCode(moveLine.getAccount().getCode());
-			moveLine.setAccountName(moveLine.getAccount().getName());
-			if(move.getPartner() != null){
-				moveLine.setPartnerFullName(move.getPartner().getFullName());
-				moveLine.setPartnerSeq(move.getPartner().getPartnerSeq());
-			}else if(moveLine.getPartner() != null){
-				moveLine.setPartnerFullName(moveLine.getPartner().getFullName());
-				moveLine.setPartnerSeq(moveLine.getPartner().getPartnerSeq());
-			}
-		}
-	}
-	
-	public boolean validateMultiple(List<? extends Move> moveList){
-		boolean error = false;
-		for(Move move: moveList){
-			try{
-				validate(move);
-			}catch (Exception e){
-				TraceBackService.trace(e);
-				error = true;
-			}
-		}
-		return error;
-	}
-	
-		
+  public boolean validateMultiple(List<? extends Move> moveList) {
+    boolean error = false;
+    for (Move move : moveList) {
+      try {
+        validate(move);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        error = true;
+      }
+    }
+    return error;
+  }
 }

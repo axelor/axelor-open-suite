@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-
-import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -36,112 +29,122 @@ import com.axelor.apps.production.service.ManufOrderServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl  {
+public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void propagateIsToInvoice(ManufOrder manufOrder) {
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		logger.debug("{} is to invoice ? {}", manufOrder.getManufOrderSeq(), manufOrder.getIsToInvoice());
-		
-		boolean isToInvoice = manufOrder.getIsToInvoice();
-		
-		if(manufOrder.getOperationOrderList() != null)  {
-			for(OperationOrder operationOrder : manufOrder.getOperationOrderList())  {
-				
-				operationOrder.setIsToInvoice(isToInvoice);
-				
-			}
-		}
-		
-		manufOrderRepo.save(manufOrder);
-		
-	}
+  @Inject protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
 
-	
-	
-	@Override
-	public ManufOrder createManufOrder(Product product, BigDecimal qty, int priority, boolean isToInvoice, Company company,
-			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException  {
-		
-		logger.debug("Création d'un OF {}", priority);
-		
-		ProdProcess prodProcess = billOfMaterial.getProdProcess();
-		
-		ManufOrder manufOrder = new ManufOrder(
-				qty,
-				company, 
-				null, 
-				priority, 
-				this.isManagedConsumedProduct(billOfMaterial), 
-				billOfMaterial, 
-				product,
-				prodProcess, 
-				plannedStartDateT, 
-				IManufOrder.STATUS_DRAFT);
-		
-		manufOrder.setIsToInvoice(isToInvoice);
-			
-		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
-			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
-				
-				manufOrder.addOperationOrderListItem(
-						operationOrderServiceBusinessImpl.createOperationOrder(manufOrder, prodProcessLine, isToInvoice));
-				
-			}
-		}	
-			
-		if(!manufOrder.getIsConsProOnOperation())  {
-			this.createToConsumeProdProductList(manufOrder);
-		}
-		
-		this.createToProduceProdProductList(manufOrder);
-		
-		return manufOrder; 
-		
-	}
-	
-	@Override
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void preFillOperations(ManufOrder manufOrder) throws AxelorException{
-		
-		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
-		
-		manufOrder.setIsConsProOnOperation(this.isManagedConsumedProduct(billOfMaterial));
-		
-		if(manufOrder.getProdProcess() == null){
-			manufOrder.setProdProcess(billOfMaterial.getProdProcess());
-		}
-		ProdProcess prodProcess = manufOrder.getProdProcess();
-		
-		if(manufOrder.getPlannedStartDateT() == null){
-			manufOrder.setPlannedStartDateT(generalService.getTodayDateTime().toLocalDateTime());
-		}
-		
-		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
-			
-			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
-				manufOrder.addOperationOrderListItem(operationOrderServiceBusinessImpl.createOperationOrder(manufOrder, prodProcessLine, manufOrder.getIsToInvoice()));
-			}
-			
-		}
-		
-		manufOrderRepo.save(manufOrder);
-		
-		manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
-		
-		if(!manufOrder.getIsConsProOnOperation())  {
-			this.createToConsumeProdProductList(manufOrder);
-		}
-		
-		this.createToProduceProdProductList(manufOrder);
-		
-		manufOrderRepo.save(manufOrder);
-	}
-	
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void propagateIsToInvoice(ManufOrder manufOrder) {
+
+    logger.debug(
+        "{} is to invoice ? {}", manufOrder.getManufOrderSeq(), manufOrder.getIsToInvoice());
+
+    boolean isToInvoice = manufOrder.getIsToInvoice();
+
+    if (manufOrder.getOperationOrderList() != null) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+
+        operationOrder.setIsToInvoice(isToInvoice);
+      }
+    }
+
+    manufOrderRepo.save(manufOrder);
+  }
+
+  @Override
+  public ManufOrder createManufOrder(
+      Product product,
+      BigDecimal qty,
+      int priority,
+      boolean isToInvoice,
+      Company company,
+      BillOfMaterial billOfMaterial,
+      LocalDateTime plannedStartDateT)
+      throws AxelorException {
+
+    logger.debug("Création d'un OF {}", priority);
+
+    ProdProcess prodProcess = billOfMaterial.getProdProcess();
+
+    ManufOrder manufOrder =
+        new ManufOrder(
+            qty,
+            company,
+            null,
+            priority,
+            this.isManagedConsumedProduct(billOfMaterial),
+            billOfMaterial,
+            product,
+            prodProcess,
+            plannedStartDateT,
+            IManufOrder.STATUS_DRAFT);
+
+    manufOrder.setIsToInvoice(isToInvoice);
+
+    if (prodProcess != null && prodProcess.getProdProcessLineList() != null) {
+      for (ProdProcessLine prodProcessLine :
+          this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList())) {
+
+        manufOrder.addOperationOrderListItem(
+            operationOrderServiceBusinessImpl.createOperationOrder(
+                manufOrder, prodProcessLine, isToInvoice));
+      }
+    }
+
+    if (!manufOrder.getIsConsProOnOperation()) {
+      this.createToConsumeProdProductList(manufOrder);
+    }
+
+    this.createToProduceProdProductList(manufOrder);
+
+    return manufOrder;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void preFillOperations(ManufOrder manufOrder) throws AxelorException {
+
+    BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+
+    manufOrder.setIsConsProOnOperation(this.isManagedConsumedProduct(billOfMaterial));
+
+    if (manufOrder.getProdProcess() == null) {
+      manufOrder.setProdProcess(billOfMaterial.getProdProcess());
+    }
+    ProdProcess prodProcess = manufOrder.getProdProcess();
+
+    if (manufOrder.getPlannedStartDateT() == null) {
+      manufOrder.setPlannedStartDateT(generalService.getTodayDateTime().toLocalDateTime());
+    }
+
+    if (prodProcess != null && prodProcess.getProdProcessLineList() != null) {
+
+      for (ProdProcessLine prodProcessLine :
+          this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList())) {
+        manufOrder.addOperationOrderListItem(
+            operationOrderServiceBusinessImpl.createOperationOrder(
+                manufOrder, prodProcessLine, manufOrder.getIsToInvoice()));
+      }
+    }
+
+    manufOrderRepo.save(manufOrder);
+
+    manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
+
+    if (!manufOrder.getIsConsProOnOperation()) {
+      this.createToConsumeProdProductList(manufOrder);
+    }
+
+    this.createToProduceProdProductList(manufOrder);
+
+    manufOrderRepo.save(manufOrder);
+  }
 }

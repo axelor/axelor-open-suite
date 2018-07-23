@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,9 +19,6 @@ package com.axelor.apps.production.report;
 
 public interface IReport {
 
-	
-	public static final String MANUF_ORDER = "ManufOrder.rptdesign";
-	public static final String OPERATION_ORDER = "OperationOrder.rptdesign";
-	
-	
+  public static final String MANUF_ORDER = "ManufOrder.rptdesign";
+  public static final String OPERATION_ORDER = "OperationOrder.rptdesign";
 }

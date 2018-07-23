@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -30,36 +30,38 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class SaleOrderLineController {
-	
-	@Inject
-	protected SaleOrderLineServiceSupplyChainImpl saleOrderLineServiceSupplyChainImpl;
-	
-	public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) throws AxelorException{
-		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-		if(saleOrder == null){
-			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
-			saleOrderLine.setSaleOrder(saleOrder);
-		}
-		if(Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()){
-			saleOrderLine = saleOrderLineServiceSupplyChainImpl.computeAnalyticDistribution(saleOrderLine);
-			response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
-		}
-	}
-	
-	public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) throws AxelorException{
-		SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-		if(saleOrder == null){
-			saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
-			saleOrderLine.setSaleOrder(saleOrder);
-		}
-		if(saleOrderLine.getAnalyticDistributionTemplate() != null){
-			saleOrderLine = saleOrderLineServiceSupplyChainImpl.createAnalyticDistributionWithTemplate(saleOrderLine);
-			response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
-		}
-		else{
-			throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
-		}
-	}
+
+  @Inject protected SaleOrderLineServiceSupplyChainImpl saleOrderLineServiceSupplyChainImpl;
+
+  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+      saleOrderLine.setSaleOrder(saleOrder);
+    }
+    if (Beans.get(GeneralService.class).getGeneral().getManageAnalyticAccounting()) {
+      saleOrderLine =
+          saleOrderLineServiceSupplyChainImpl.computeAnalyticDistribution(saleOrderLine);
+      response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
+    }
+  }
+
+  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      saleOrder = request.getContext().getParentContext().asType(SaleOrder.class);
+      saleOrderLine.setSaleOrder(saleOrder);
+    }
+    if (saleOrderLine.getAnalyticDistributionTemplate() != null) {
+      saleOrderLine =
+          saleOrderLineServiceSupplyChainImpl.createAnalyticDistributionWithTemplate(saleOrderLine);
+      response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
+    } else {
+      throw new AxelorException(I18n.get("No template selected"), IException.CONFIGURATION_ERROR);
+    }
+  }
 }

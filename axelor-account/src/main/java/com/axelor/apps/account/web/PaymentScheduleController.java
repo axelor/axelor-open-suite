@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -32,89 +32,95 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class PaymentScheduleController {
-	
-	@Inject
-	PaymentScheduleService paymentScheduleService;
-	
-	@Inject
-	PaymentScheduleRepository paymentScheduleRepo;
-	
-	// Validation button
-	public void validate(ActionRequest request, ActionResponse response) {
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		try {
-			paymentScheduleService.validatePaymentSchedule(paymentSchedule);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-	
-	// Cancel button
-	public void cancel(ActionRequest request, ActionResponse response) {
+  @Inject PaymentScheduleService paymentScheduleService;
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		try {
-			paymentScheduleService.toCancelPaymentSchedule(paymentSchedule);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-	
-	//Called on onSave event
-	public void paymentScheduleScheduleId(ActionRequest request, ActionResponse response){
+  @Inject PaymentScheduleRepository paymentScheduleRepo;
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		
-		if (paymentSchedule.getPaymentScheduleSeq() == null) {
-		
-			String num = Beans.get(SequenceService.class).getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, paymentSchedule.getCompany());
-		
-			if(num == null || num.isEmpty()) {
-				
-				response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)+" "+paymentSchedule.getCompany().getName()); 
-			}
-			else {
-				response.setValue("paymentScheduleSeq", num);			
-			}
-		}
-	}
-	
-	// Creating payment schedule lines button
-	public void createPaymentScheduleLines(ActionRequest request, ActionResponse response) {
+  // Validation button
+  public void validate(ActionRequest request, ActionResponse response) {
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		paymentScheduleService.createPaymentScheduleLines(paymentSchedule);
-		response.setReload(true);
-	}
-	
-	public void passInIrrecoverable(ActionRequest request, ActionResponse response)  {
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		try  {
-			Beans.get(IrrecoverableService.class).passInIrrecoverable(paymentSchedule);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }		
-	}
-	
-	public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)  {
+    try {
+      paymentScheduleService.validatePaymentSchedule(paymentSchedule);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-		PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);		
-		paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
-		
-		try  {
-			Beans.get(IrrecoverableService.class).notPassInIrrecoverable(paymentSchedule);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+  // Cancel button
+  public void cancel(ActionRequest request, ActionResponse response) {
+
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
+
+    try {
+      paymentScheduleService.toCancelPaymentSchedule(paymentSchedule);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  // Called on onSave event
+  public void paymentScheduleScheduleId(ActionRequest request, ActionResponse response) {
+
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+
+    if (paymentSchedule.getPaymentScheduleSeq() == null) {
+
+      String num =
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(IAdministration.PAYMENT_SCHEDULE, paymentSchedule.getCompany());
+
+      if (num == null || num.isEmpty()) {
+
+        response.setFlash(
+            I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5)
+                + " "
+                + paymentSchedule.getCompany().getName());
+      } else {
+        response.setValue("paymentScheduleSeq", num);
+      }
+    }
+  }
+
+  // Creating payment schedule lines button
+  public void createPaymentScheduleLines(ActionRequest request, ActionResponse response) {
+
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
+
+    paymentScheduleService.createPaymentScheduleLines(paymentSchedule);
+    response.setReload(true);
+  }
+
+  public void passInIrrecoverable(ActionRequest request, ActionResponse response) {
+
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
+
+    try {
+      Beans.get(IrrecoverableService.class).passInIrrecoverable(paymentSchedule);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void notPassInIrrecoverable(ActionRequest request, ActionResponse response) {
+
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+    paymentSchedule = paymentScheduleRepo.find(paymentSchedule.getId());
+
+    try {
+      Beans.get(IrrecoverableService.class).notPassInIrrecoverable(paymentSchedule);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

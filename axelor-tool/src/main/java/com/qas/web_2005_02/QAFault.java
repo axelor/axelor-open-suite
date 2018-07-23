@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
+ * Classe Java pour anonymous complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -41,68 +40,54 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "errorCode",
-    "errorMessage"
-})
+@XmlType(
+  name = "",
+  propOrder = {"errorCode", "errorMessage"}
+)
 @XmlRootElement(name = "QAFault")
 public class QAFault {
 
-    @XmlElement(name = "ErrorCode", required = true)
-    protected String errorCode;
-    @XmlElement(name = "ErrorMessage", required = true)
-    protected String errorMessage;
+  @XmlElement(name = "ErrorCode", required = true)
+  protected String errorCode;
 
-    /**
-     * Obtient la valeur de la propriété errorCode.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getErrorCode() {
-        return errorCode;
-    }
+  @XmlElement(name = "ErrorMessage", required = true)
+  protected String errorMessage;
 
-    /**
-     * Définit la valeur de la propriété errorCode.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setErrorCode(String value) {
-        this.errorCode = value;
-    }
+  /**
+   * Obtient la valeur de la propriété errorCode.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getErrorCode() {
+    return errorCode;
+  }
 
-    /**
-     * Obtient la valeur de la propriété errorMessage.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+  /**
+   * Définit la valeur de la propriété errorCode.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setErrorCode(String value) {
+    this.errorCode = value;
+  }
 
-    /**
-     * Définit la valeur de la propriété errorMessage.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setErrorMessage(String value) {
-        this.errorMessage = value;
-    }
+  /**
+   * Obtient la valeur de la propriété errorMessage.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getErrorMessage() {
+    return errorMessage;
+  }
 
+  /**
+   * Définit la valeur de la propriété errorMessage.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setErrorMessage(String value) {
+    this.errorMessage = value;
+  }
 }

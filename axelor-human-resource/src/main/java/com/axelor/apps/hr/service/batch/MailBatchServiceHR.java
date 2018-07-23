@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,29 +28,31 @@ import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
-public class MailBatchServiceHR extends MailBatchService{
-	@Override
-	public Batch run(Model batchModel) throws AxelorException {
-		Batch batch = super.run(batchModel);
-		MailBatch mailBatch = (MailBatch) batchModel;
-		
-		switch (mailBatch.getActionSelect()) {
-		case MailBatchRepository.ACTION_REMIN_TIMESHEET:
-			batch = reminderTimesheet(mailBatch);
-			break;
-		
-		default:
-			throw new AxelorException(String.format(I18n.get(IExceptionMessage.BASE_BATCH_1), mailBatch.getActionSelect(), mailBatch.getCode()), IException.INCONSISTENCY);
-		}
-		
-		return batch;
-	}
-	
-	
-	public Batch reminderTimesheet(MailBatch mailBatch) {
-		
-		return Beans.get(BatchReminderTimesheet.class).run(mailBatch);
-		
-	}
-	
+public class MailBatchServiceHR extends MailBatchService {
+  @Override
+  public Batch run(Model batchModel) throws AxelorException {
+    Batch batch = super.run(batchModel);
+    MailBatch mailBatch = (MailBatch) batchModel;
+
+    switch (mailBatch.getActionSelect()) {
+      case MailBatchRepository.ACTION_REMIN_TIMESHEET:
+        batch = reminderTimesheet(mailBatch);
+        break;
+
+      default:
+        throw new AxelorException(
+            String.format(
+                I18n.get(IExceptionMessage.BASE_BATCH_1),
+                mailBatch.getActionSelect(),
+                mailBatch.getCode()),
+            IException.INCONSISTENCY);
+    }
+
+    return batch;
+  }
+
+  public Batch reminderTimesheet(MailBatch mailBatch) {
+
+    return Beans.get(BatchReminderTimesheet.class).run(mailBatch);
+  }
 }

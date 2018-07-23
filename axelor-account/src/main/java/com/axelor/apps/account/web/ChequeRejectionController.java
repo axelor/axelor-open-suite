@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,21 +27,20 @@ import com.google.inject.Inject;
 
 public class ChequeRejectionController {
 
-	@Inject
-	private ChequeRejectionService crs;
-	
-	@Inject
-	private ChequeRejectionRepository chequeRejectionRepo;
-	
-	public void validateChequeRejection(ActionRequest request, ActionResponse response)  {
-		
-		ChequeRejection chequeRejection = request.getContext().asType(ChequeRejection.class);
-		chequeRejection = chequeRejectionRepo.find(chequeRejection.getId());
-		
-		try {
-			crs.validateChequeRejection(chequeRejection);
-			response.setReload(true);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }		
-	}
+  @Inject private ChequeRejectionService crs;
+
+  @Inject private ChequeRejectionRepository chequeRejectionRepo;
+
+  public void validateChequeRejection(ActionRequest request, ActionResponse response) {
+
+    ChequeRejection chequeRejection = request.getContext().asType(ChequeRejection.class);
+    chequeRejection = chequeRejectionRepo.find(chequeRejection.getId());
+
+    try {
+      crs.validateChequeRejection(chequeRejection);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

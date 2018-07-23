@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,23 +17,20 @@
  */
 package com.axelor.csv.script;
 
-import java.util.Map;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.AddressService;
 import com.google.inject.Inject;
+import java.util.Map;
 
 public class ImportAddress {
-	
-	@Inject
-	protected AddressService addressService;
-	
-	public Object importAddress(Object bean, Map<String,Object> values) {
-		
-		Address address = (Address) bean;
-		address.setFullName(addressService.computeFullName(address));
-		
-		return address;
-	}
 
+  @Inject protected AddressService addressService;
+
+  public Object importAddress(Object bean, Map<String, Object> values) {
+
+    Address address = (Address) bean;
+    address.setFullName(addressService.computeFullName(address));
+
+    return address;
+  }
 }

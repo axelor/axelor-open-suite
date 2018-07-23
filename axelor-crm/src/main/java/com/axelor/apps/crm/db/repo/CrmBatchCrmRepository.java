@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,11 +21,10 @@ import com.axelor.apps.crm.db.CrmBatch;
 
 public class CrmBatchCrmRepository extends CrmBatchRepository {
 
-    @Override
-    public CrmBatch copy(CrmBatch entity, boolean deep) {
-        CrmBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public CrmBatch copy(CrmBatch entity, boolean deep) {
+    CrmBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -20,18 +20,17 @@ package com.axelor.apps.base.ical;
 @SuppressWarnings("serial")
 public class ICalendarException extends Exception {
 
-	public ICalendarException() {
-	}
+  public ICalendarException() {}
 
-	public ICalendarException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public ICalendarException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public ICalendarException(String message) {
-		super(message);
-	}
+  public ICalendarException(String message) {
+    super(message);
+  }
 
-	public ICalendarException(Throwable cause) {
-		super(cause);
-	}
+  public ICalendarException(Throwable cause) {
+    super(cause);
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,27 +17,26 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-
 import java.util.List;
 
-public interface InvoicePaymentToolService  {
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateAmountPaid(Invoice invoice) throws AxelorException;
+public interface InvoicePaymentToolService {
 
-	void updateHasPendingPayments(Invoice invoice);
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateAmountPaid(Invoice invoice) throws AxelorException;
 
-	/**
-	 * @param company  company from the invoice
-	 * @param invoicePayment
-	 * @return list of bankdetails in the payment mode for the given company.
-	 */
-	public List<BankDetails> findCompatibleBankDetails(Company company, InvoicePayment invoicePayment);
+  void updateHasPendingPayments(Invoice invoice);
+
+  /**
+   * @param company company from the invoice
+   * @param invoicePayment
+   * @return list of bankdetails in the payment mode for the given company.
+   */
+  public List<BankDetails> findCompatibleBankDetails(
+      Company company, InvoicePayment invoicePayment);
 }

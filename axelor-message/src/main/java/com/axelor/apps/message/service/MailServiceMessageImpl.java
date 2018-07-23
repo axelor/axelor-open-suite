@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,15 +19,6 @@ package com.axelor.apps.message.service;
 
 import static com.axelor.common.StringUtils.isBlank;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Singleton;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.db.Model;
@@ -35,54 +26,61 @@ import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.mail.service.MailServiceImpl;
 import com.google.common.base.Joiner;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.inject.Singleton;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 @Singleton
-public class MailServiceMessageImpl extends MailServiceImpl{
-	
-	@Override
-	public Model resolve(String email) {
-		final EmailAddressRepository addresses = Beans.get(EmailAddressRepository.class);
-		final EmailAddress address = addresses.all().filter("self.address = ?1", email).fetchOne();
-		if (address != null) {
-			return address;
-		}
-		return super.resolve(email);
-	}
-	
-	@Override
-	public List<InternetAddress> findEmails(String matching, List<String> selected, int maxResult) {
+public class MailServiceMessageImpl extends MailServiceImpl {
 
-		final List<String> where = new ArrayList<>();
-		final Map<String, Object> params = new HashMap<>();
+  @Override
+  public Model resolve(String email) {
+    final EmailAddressRepository addresses = Beans.get(EmailAddressRepository.class);
+    final EmailAddress address = addresses.all().filter("self.address = ?1", email).fetchOne();
+    if (address != null) {
+      return address;
+    }
+    return super.resolve(email);
+  }
 
-		where.add("self.address is not null");
+  @Override
+  public List<InternetAddress> findEmails(String matching, List<String> selected, int maxResult) {
 
-		if (!isBlank(matching)) {
-			where.add("(LOWER(self.address) like LOWER(:email))");
-			params.put("email", "%" + matching + "%");
-		}
-		if (selected != null && !selected.isEmpty()) {
-			where.add("self.address not in (:selected)");
-			params.put("selected", selected);
-		}
+    final List<String> where = new ArrayList<>();
+    final Map<String, Object> params = new HashMap<>();
 
-		final String filter = Joiner.on(" AND ").join(where);
-		final Query<EmailAddress> query = Query.of(EmailAddress.class);
+    where.add("self.address is not null");
 
-		if (!isBlank(filter)) {
-			query.filter(filter);
-			query.bind(params);
-		}
+    if (!isBlank(matching)) {
+      where.add("(LOWER(self.address) like LOWER(:email))");
+      params.put("email", "%" + matching + "%");
+    }
+    if (selected != null && !selected.isEmpty()) {
+      where.add("self.address not in (:selected)");
+      params.put("selected", selected);
+    }
 
-		final List<InternetAddress> addresses = new ArrayList<>();
-		for (EmailAddress emailAddress : query.fetch(maxResult)) {
-			try {
-				final InternetAddress item = new InternetAddress(emailAddress.getAddress());
-				addresses.add(item);
-			} catch (AddressException e){
-			}
-		}
+    final String filter = Joiner.on(" AND ").join(where);
+    final Query<EmailAddress> query = Query.of(EmailAddress.class);
 
-		return addresses;
-	}
+    if (!isBlank(filter)) {
+      query.filter(filter);
+      query.bind(params);
+    }
+
+    final List<InternetAddress> addresses = new ArrayList<>();
+    for (EmailAddress emailAddress : query.fetch(maxResult)) {
+      try {
+        final InternetAddress item = new InternetAddress(emailAddress.getAddress());
+        addresses.add(item);
+      } catch (AddressException e) {
+      }
+    }
+
+    return addresses;
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,19 +17,14 @@
  */
 package com.axelor.apps.base.db;
 
-/**
- * Interface of Imports package. Enum all static variable of packages.
- * 
- */
+/** Interface of Imports package. Enum all static variable of packages. */
 public interface IImports {
 
-	/**
-	 * Static select in Import
-	 */
+  /** Static select in Import */
 
-	// IMPORT TYPE
-	static final String CSV = "csv";
-	static final String XML = "xml";
-	static final String BDD = "bdd";
+  // IMPORT TYPE
+  static final String CSV = "csv";
 
+  static final String XML = "xml";
+  static final String BDD = "bdd";
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,5 @@
  */
 package com.axelor.apps.base.db;
 
-/**
- * Interface of Scheduler object. Enum all static variable of object.
- */
-public interface IScheduler {
-
-	
-}
+/** Interface of Scheduler object. Enum all static variable of object. */
+public interface IScheduler {}

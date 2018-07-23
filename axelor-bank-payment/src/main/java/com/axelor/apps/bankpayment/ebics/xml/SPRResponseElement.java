@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,16 +25,15 @@ import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
 
 /**
- * The <code>SPRResponseElement</code> is the response element
- * for an ebics subscriber revoking.
+ * The <code>SPRResponseElement</code> is the response element for an ebics subscriber revoking.
  *
  * @author Hachani
- *
  */
 public class SPRResponseElement extends DefaultResponseElement {
 
   /**
    * Constructs a new SPR response element.
+   *
    * @param factory the content factory
    */
   public SPRResponseElement(ContentFactory factory, EbicsUser ebicsUser) {
@@ -43,11 +42,11 @@ public class SPRResponseElement extends DefaultResponseElement {
 
   @Override
   public void build() throws AxelorException {
-    String			code;
-    String			text;
+    String code;
+    String text;
 
     parse(factory);
-    response = ((EbicsResponseDocument)document).getEbicsResponse();
+    response = ((EbicsResponseDocument) document).getEbicsResponse();
     code = response.getHeader().getMutable().getReturnCode();
     text = response.getHeader().getMutable().getReportText();
     returnCode = ReturnCode.toReturnCode(code, text);
@@ -57,5 +56,5 @@ public class SPRResponseElement extends DefaultResponseElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private EbicsResponse				response;
+  private EbicsResponse response;
 }

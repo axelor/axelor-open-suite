@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -77,39 +77,38 @@ import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.message.service.TemplateService;
 import com.axelor.auth.db.repo.UserRepository;
 
-
 public class BaseModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(AddressService.class).to(AddressServiceImpl.class);
-        bind(UserService.class).to(UserServiceImpl.class);
-        bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
-        bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
-        bind(AccountManagementService.class).to(AccountManagementServiceImpl.class);
-        bind(FiscalPositionService.class).to(FiscalPositionServiceImpl.class);
-        bind(ProductService.class).to(ProductServiceImpl.class);
-        bind(TemplateService.class).to(TemplateBaseService.class);
-        bind(TemplateMessageServiceImpl.class).to(TemplateMessageServiceBaseImpl.class);
-        bind(PartnerRepository.class).to(PartnerBaseRepository.class);
-        bind(DurationRepository.class).to(DurationBaseRepository.class);
-        bind(DurationService.class).to(DurationServiceImpl.class);
-        bind(GeneralService.class).to(GeneralServiceImpl.class);
-        bind(SequenceRepository.class).to(SequenceBaseRepository.class);
-        bind(ProductRepository.class).to(ProductBaseRepository.class);
-        bind(WeeklyPlanningService.class).to(WeeklyPlanningServiceImp.class);
-        bind(MailServiceMessageImpl.class).to(MailServiceBaseImpl.class);
-        bind(AddressRepository.class).to(AddressBaseRepository.class);
-        bind(YearRepository.class).to(YearBaseRepository.class);
-        bind(BankService.class).to(BankServiceImpl.class);
-        bind(BankRepository.class).to(BankBaseRepository.class);
-        bind(CompanyService.class).to(CompanyServiceImpl.class);
-        bind(BankAddressRepository.class).to(BankAddressBaseRepository.class);
-        bind(UserRepository.class).to(UserBaseRepository.class);
-        bind(BankDetailsService.class).to(BankDetailsServiceImpl.class);
-        bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
-        bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
-        bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
-        bind(PeriodService.class).to(PeriodServiceImpl.class);
-    }
+  @Override
+  protected void configure() {
+    bind(AddressService.class).to(AddressServiceImpl.class);
+    bind(UserService.class).to(UserServiceImpl.class);
+    bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
+    bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
+    bind(AccountManagementService.class).to(AccountManagementServiceImpl.class);
+    bind(FiscalPositionService.class).to(FiscalPositionServiceImpl.class);
+    bind(ProductService.class).to(ProductServiceImpl.class);
+    bind(TemplateService.class).to(TemplateBaseService.class);
+    bind(TemplateMessageServiceImpl.class).to(TemplateMessageServiceBaseImpl.class);
+    bind(PartnerRepository.class).to(PartnerBaseRepository.class);
+    bind(DurationRepository.class).to(DurationBaseRepository.class);
+    bind(DurationService.class).to(DurationServiceImpl.class);
+    bind(GeneralService.class).to(GeneralServiceImpl.class);
+    bind(SequenceRepository.class).to(SequenceBaseRepository.class);
+    bind(ProductRepository.class).to(ProductBaseRepository.class);
+    bind(WeeklyPlanningService.class).to(WeeklyPlanningServiceImp.class);
+    bind(MailServiceMessageImpl.class).to(MailServiceBaseImpl.class);
+    bind(AddressRepository.class).to(AddressBaseRepository.class);
+    bind(YearRepository.class).to(YearBaseRepository.class);
+    bind(BankService.class).to(BankServiceImpl.class);
+    bind(BankRepository.class).to(BankBaseRepository.class);
+    bind(CompanyService.class).to(CompanyServiceImpl.class);
+    bind(BankAddressRepository.class).to(BankAddressBaseRepository.class);
+    bind(UserRepository.class).to(UserBaseRepository.class);
+    bind(BankDetailsService.class).to(BankDetailsServiceImpl.class);
+    bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
+    bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
+    bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
+    bind(PeriodService.class).to(PeriodServiceImpl.class);
+  }
 }

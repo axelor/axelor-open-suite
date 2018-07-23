@@ -10,6 +10,12 @@ module {
 	module "modules:axelor-account"
 }
 
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}
+
 configurations {
 	jaxb
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,9 +21,8 @@ import com.axelor.i18n.I18n;
 
 public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
-	@Override
-	protected void process() {
-		throw new UnsupportedOperationException(I18n.get("Not implemented"));
-	}
-
+  @Override
+  protected void process() {
+    throw new UnsupportedOperationException(I18n.get("Not implemented"));
+  }
 }

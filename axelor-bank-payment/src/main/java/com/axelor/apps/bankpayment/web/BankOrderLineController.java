@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,49 +28,47 @@ import com.google.inject.Inject;
 
 public class BankOrderLineController {
 
-    protected BankOrderLineService bankOrderLineService;
+  protected BankOrderLineService bankOrderLineService;
 
-    @Inject
-    public BankOrderLineController(BankOrderLineService bankOrderLineService) {
-        this.bankOrderLineService = bankOrderLineService;
+  @Inject
+  public BankOrderLineController(BankOrderLineService bankOrderLineService) {
+    this.bankOrderLineService = bankOrderLineService;
+  }
+
+  // settings the domain for the bank details view.
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
+    BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
+    String domain = bankOrderLineService.createDomainForBankDetails(bankOrderLine, bankOrder);
+    // if nothing was found for the domain, we set it at a default value.
+    if (domain.equals("")) {
+      response.setAttr("receiverBankDetails", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("receiverBankDetails", "domain", domain);
     }
+  }
 
-    //settings the domain for the bank details view.
-    public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
-        BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
-        BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
-        String domain = bankOrderLineService.createDomainForBankDetails(bankOrderLine, bankOrder);
-        //if nothing was found for the domain, we set it at a default value.
-        if (domain.equals("")) {
-            response.setAttr("receiverBankDetails","domain", "self.id IN (0)");
-        }
-        else {
-            response.setAttr("receiverBankDetails","domain", domain);
-       }
+  public void fillBankDetail(ActionRequest request, ActionResponse response) {
+    BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
+    BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
+
+    BankDetails bankDetails = bankOrderLineService.getDefaultBankDetails(bankOrderLine, bankOrder);
+    response.setValue("receiverBankDetails", bankDetails);
+  }
+
+  public void computeCompanyCurrencyAmount(ActionRequest request, ActionResponse response) {
+
+    BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
+    BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
+
+    try {
+
+      response.setValue(
+          "companyCurrencyAmount",
+          bankOrderLineService.computeCompanyCurrencyAmount(bankOrder, bankOrderLine));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    public void fillBankDetail(ActionRequest request, ActionResponse response) {
-        BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
-        BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
-
-        BankDetails bankDetails = bankOrderLineService.getDefaultBankDetails(bankOrderLine,bankOrder);
-        response.setValue("receiverBankDetails", bankDetails);
-
-    }
-    
-    public void computeCompanyCurrencyAmount(ActionRequest request, ActionResponse response) {
-    	
-        BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
-        BankOrder bankOrder = request.getContext().getParentContext().asType(BankOrder.class);
-
-        try {
-        	
-			response.setValue("companyCurrencyAmount", bankOrderLineService.computeCompanyCurrencyAmount(bankOrder, bankOrderLine));
-			
-        } catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-    }
-    
-    
+  }
 }

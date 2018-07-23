@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -16,9 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -38,71 +35,96 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl{
-	
-	@Inject
-	public GeneralService generalService;
-	
-	@Inject
-	public SaleOrderInvoiceProjectServiceImpl(GeneralService generalService) {
-		super(generalService);
-	}
+public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl {
 
-	@Override
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException  {
+  @Inject public GeneralService generalService;
 
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+  @Inject
+  public SaleOrderInvoiceProjectServiceImpl(GeneralService generalService) {
+    super(generalService);
+  }
 
-		for(SaleOrderLine saleOrderLine : saleOrderLineList)  {
+  @Override
+  public List<InvoiceLine> createInvoiceLines(
+      Invoice invoice, List<SaleOrderLine> saleOrderLineList) throws AxelorException {
 
-			//Lines of subscription type are invoiced directly from sale order line or from the subscription batch
-			
-			if (saleOrderLine.getProduct() == null || (saleOrderLine.getProduct() != null && !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect()))){
-				invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
-				invoiceLineList.get(invoiceLineList.size()-1).setProject(saleOrderLine.getProject());
-				saleOrderLine.setInvoiced(true);
-			}
-		}
+    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
-		return invoiceLineList;
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
-	}
+      // Lines of subscription type are invoiced directly from sale order line or from the
+      // subscription batch
 
-	@Override
-	public List<InvoiceLine> createSubscriptionInvoiceLines(Invoice invoice, List<Subscription> subscriptionList) throws AxelorException  {
+      if (saleOrderLine.getProduct() == null
+          || (saleOrderLine.getProduct() != null
+              && !ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(
+                  saleOrderLine.getProduct().getProductTypeSelect()))) {
+        invoiceLineList.addAll(this.createInvoiceLine(invoice, saleOrderLine));
+        invoiceLineList.get(invoiceLineList.size() - 1).setProject(saleOrderLine.getProject());
+        saleOrderLine.setInvoiced(true);
+      }
+    }
 
-		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+    return invoiceLineList;
+  }
 
-		Integer sequence = 10;
+  @Override
+  public List<InvoiceLine> createSubscriptionInvoiceLines(
+      Invoice invoice, List<Subscription> subscriptionList) throws AxelorException {
 
-		for(Subscription subscription : subscriptionList)  {
+    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
-			invoiceLineList.addAll(this.createSubscriptionInvoiceLine(invoice, subscription, sequence));
-			invoiceLineList.get(invoiceLineList.size()-1).setProject(subscription.getSaleOrderLine().getProject());
-			subscription.setInvoiced(true);
+    Integer sequence = 10;
 
-			sequence += 10;
-		}
+    for (Subscription subscription : subscriptionList) {
 
-		return invoiceLineList;
+      invoiceLineList.addAll(this.createSubscriptionInvoiceLine(invoice, subscription, sequence));
+      invoiceLineList
+          .get(invoiceLineList.size() - 1)
+          .setProject(subscription.getSaleOrderLine().getProject());
+      subscription.setInvoiced(true);
 
-	}
+      sequence += 10;
+    }
 
-	@Transactional
-	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
-			Partner partner, Partner contactPartner, PriceList priceList,
-			PaymentMode paymentMode, PaymentCondition paymentCondition, SaleOrder saleOrder,ProjectTask project)
-					throws AxelorException {
-		Invoice invoiceMerged = super.mergeInvoice(invoiceList,company,currency,partner,contactPartner,priceList,paymentMode,paymentCondition,saleOrder);
-		if (project != null){
-			if(!generalService.getGeneral().getProjectTaskInvoiceLines()){
-				invoiceMerged.setProject(project);
-				for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()){
-					invoiceLine.setProject(project);
-				}
-			}
-		}
-		return invoiceMerged;
-	}
+    return invoiceLineList;
+  }
+
+  @Transactional
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      SaleOrder saleOrder,
+      ProjectTask project)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        super.mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition,
+            saleOrder);
+    if (project != null) {
+      if (!generalService.getGeneral().getProjectTaskInvoiceLines()) {
+        invoiceMerged.setProject(project);
+        for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()) {
+          invoiceLine.setProject(project);
+        }
+      }
+    }
+    return invoiceMerged;
+  }
 }

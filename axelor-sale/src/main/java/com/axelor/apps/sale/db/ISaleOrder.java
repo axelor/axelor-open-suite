@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,16 +19,11 @@ package com.axelor.apps.sale.db;
 
 public interface ISaleOrder {
 
+  /** Static saleOrder status select */
+  static final int STATUS_DRAFT = 1;
 
-	/**
-	 * Static saleOrder status select
-	 */
-
-	static final int STATUS_DRAFT = 1;
-	static final int STATUS_FINALIZE = 2;
-	static final int STATUS_ORDER_CONFIRMED = 3;
-	static final int STATUS_FINISHED = 4;
-	static final int STATUS_CANCELED = 5;
-
-
+  static final int STATUS_FINALIZE = 2;
+  static final int STATUS_ORDER_CONFIRMED = 3;
+  static final int STATUS_FINISHED = 4;
+  static final int STATUS_CANCELED = 5;
 }

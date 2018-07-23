@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -30,42 +30,52 @@ import com.google.inject.persist.Transactional;
 
 public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
 
-	@Inject
-	public AccountCustomerServiceSupplyChain(AccountingSituationService accountingSituationService,
-			AccountingSituationRepository accSituationRepo, GeneralService generalService) {
-		super(accountingSituationService, accSituationRepo, generalService);
-	}
+  @Inject
+  public AccountCustomerServiceSupplyChain(
+      AccountingSituationService accountingSituationService,
+      AccountingSituationRepository accSituationRepo,
+      GeneralService generalService) {
+    super(accountingSituationService, accSituationRepo, generalService);
+  }
 
-	@Override
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void updateCustomerAccount(AccountingSituation accountingSituation) throws AxelorException {
-		super.updateCustomerAccount(accountingSituation);
-		updateCustomerCreditLines(accountingSituation.getPartner());
-	}
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateCustomerAccount(AccountingSituation accountingSituation)
+      throws AxelorException {
+    super.updateCustomerAccount(accountingSituation);
+    updateCustomerCreditLines(accountingSituation.getPartner());
+  }
 
-	@Override
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation,
-			boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)
-			throws AxelorException {
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public AccountingSituation updateAccountingSituationCustomerAccount(
+      AccountingSituation accountingSituation,
+      boolean updateCustAccount,
+      boolean updateDueCustAccount,
+      boolean updateDueReminderCustAccount)
+      throws AxelorException {
 
-		accountingSituation = super.updateAccountingSituationCustomerAccount(accountingSituation, updateCustAccount,
-				updateDueCustAccount, updateDueReminderCustAccount);
+    accountingSituation =
+        super.updateAccountingSituationCustomerAccount(
+            accountingSituation,
+            updateCustAccount,
+            updateDueCustAccount,
+            updateDueReminderCustAccount);
 
-		if (updateCustAccount) {
-			updateCustomerCreditLines(accountingSituation.getPartner());
-		}
+    if (updateCustAccount) {
+      updateCustomerCreditLines(accountingSituation.getPartner());
+    }
 
-		return accountingSituation;
-	}
+    return accountingSituation;
+  }
 
-	@Override
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void updateCustomerCreditLines(Partner partner) throws AxelorException {
-		if (!partner.getIsContact() && partner.getIsCustomer()
-				&& Beans.get(GeneralService.class).getGeneral().getManageCustomerCredit()) {
-			Beans.get(CustomerCreditLineService.class).updateLines(partner);
-		}
-	}
-
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateCustomerCreditLines(Partner partner) throws AxelorException {
+    if (!partner.getIsContact()
+        && partner.getIsCustomer()
+        && Beans.get(GeneralService.class).getGeneral().getManageCustomerCredit()) {
+      Beans.get(CustomerCreditLineService.class).updateLines(partner);
+    }
+  }
 }

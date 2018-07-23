@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,33 +17,29 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
-import com.axelor.exception.AxelorException;
-
-import javax.xml.XMLConstants;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.client.UnsecuredRequestElement;
-
+import com.axelor.exception.AxelorException;
 import java.lang.invoke.MethodHandles;
+import javax.xml.XMLConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * The INI request XML element. This root element is to be sent
- * to the ebics server to initiate the signature certificate.
+ * The INI request XML element. This root element is to be sent to the ebics server to initiate the
+ * signature certificate.
  *
  * @author hachani
- *
  */
 public class INIRequestElement extends DefaultEbicsRootElement {
-	
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * Constructs a new INI request element.
+   *
    * @param session the ebics session.
    * @param orderId the order id, if null a random one is generated.
    */
@@ -58,17 +54,17 @@ public class INIRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public void build() throws AxelorException {
-    SignaturePubKeyOrderDataElement		signaturePubKey;
-    
+    SignaturePubKeyOrderDataElement signaturePubKey;
+
     signaturePubKey = new SignaturePubKeyOrderDataElement(session);
     log.debug("SignaturePubKeyOrderDataElement OK");
     signaturePubKey.build();
     log.debug("signaturePubKey.build OK");
-	unsecuredRequest = new UnsecuredRequestElement(session,
-	                                           OrderType.INI,
-	                                           EbicsUtils.zip(signaturePubKey.prettyPrint()));
-	
-	log.debug("UnsecuredRequestElement OK");
+    unsecuredRequest =
+        new UnsecuredRequestElement(
+            session, OrderType.INI, EbicsUtils.zip(signaturePubKey.prettyPrint()));
+
+    log.debug("UnsecuredRequestElement OK");
     unsecuredRequest.build();
     log.debug("unsecuredRequest.build OK");
   }
@@ -89,5 +85,5 @@ public class INIRequestElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private UnsecuredRequestElement	unsecuredRequest;
+  private UnsecuredRequestElement unsecuredRequest;
 }

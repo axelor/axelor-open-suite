@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,18 +27,16 @@ import com.google.inject.persist.Transactional;
 
 public class UserHrController {
 
-	@Inject
-	UserRepository userRepo;
+  @Inject UserRepository userRepo;
 
-	@Inject
-	UserHrService userHrService;
+  @Inject UserHrService userHrService;
 
-	@Transactional
-	public void createEmployee(ActionRequest request, ActionResponse response) {
-		User user = userRepo.find(request.getContext().asType(User.class).getId());
+  @Transactional
+  public void createEmployee(ActionRequest request, ActionResponse response) {
+    User user = userRepo.find(request.getContext().asType(User.class).getId());
 
-		userHrService.createEmployee(user);
+    userHrService.createEmployee(user);
 
-		response.setReload(true);
-	}
+    response.setReload(true);
+  }
 }

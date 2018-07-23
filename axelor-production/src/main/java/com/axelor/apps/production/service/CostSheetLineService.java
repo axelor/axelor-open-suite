@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,26 +17,49 @@
  */
 package com.axelor.apps.production.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 
 public interface CostSheetLineService {
 
-	public CostSheetLine createCostSheetLine(String name, String code, int bomLevel, BigDecimal consumptionQty, BigDecimal costPrice, 
-			CostSheetGroup costSheetGroup, Product product, int typeSelect, Unit unit, WorkCenter workCenter, CostSheetLine parentCostSheetLine);
+  public CostSheetLine createCostSheetLine(
+      String name,
+      String code,
+      int bomLevel,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice,
+      CostSheetGroup costSheetGroup,
+      Product product,
+      int typeSelect,
+      Unit unit,
+      WorkCenter workCenter,
+      CostSheetLine parentCostSheetLine);
 
-	public CostSheetLine createProducedProductCostSheetLine(Product product, Unit unit, BigDecimal consumptionQty);
-	
-	public CostSheetLine createResidualProductCostSheetLine(Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException ;
- 	
-	public CostSheetLine createConsumedProductCostSheetLine(Product product, Unit unit, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty) throws AxelorException;
-	
-	public CostSheetLine createWorkCenterCostSheetLine(WorkCenter workCenter, int priority, int bomLevel, CostSheetLine parentCostSheetLine, BigDecimal consumptionQty, BigDecimal costPrice, Unit unit);
+  public CostSheetLine createProducedProductCostSheetLine(
+      Product product, Unit unit, BigDecimal consumptionQty);
 
+  public CostSheetLine createResidualProductCostSheetLine(
+      Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException;
+
+  public CostSheetLine createConsumedProductCostSheetLine(
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty)
+      throws AxelorException;
+
+  public CostSheetLine createWorkCenterCostSheetLine(
+      WorkCenter workCenter,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice,
+      Unit unit);
 }

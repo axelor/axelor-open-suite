@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -37,80 +29,101 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.SaleOrderLineServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl  {
+public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Inject protected GeneralService generalService;
 
-	@Inject
-	protected GeneralService generalService;
-	
-	@Inject
-	protected AnalyticMoveLineService analyticMoveLineService;
+  @Inject protected AnalyticMoveLineService analyticMoveLineService;
 
-	@Override
-	public BigDecimal computeAmount(SaleOrderLine saleOrderLine) {
+  @Override
+  public BigDecimal computeAmount(SaleOrderLine saleOrderLine) {
 
-		BigDecimal price = this.computeDiscount(saleOrderLine);
+    BigDecimal price = this.computeDiscount(saleOrderLine);
 
+    BigDecimal amount =
+        saleOrderLine
+            .getQty()
+            .multiply(price)
+            .setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
-		BigDecimal amount = saleOrderLine.getQty().multiply(price).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+    if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(
+        saleOrderLine.getProduct().getProductTypeSelect())) {
+      if (saleOrderLine.getSubscriptionList() != null
+          && !saleOrderLine.getSubscriptionList().isEmpty()) {
+        amount =
+            amount
+                .multiply(new BigDecimal(saleOrderLine.getSubscriptionList().size()))
+                .setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+      } else {
+        amount = BigDecimal.ZERO;
+      }
+    }
 
-		if (ProductRepository.PRODUCT_TYPE_SUBSCRIPTABLE.equals(saleOrderLine.getProduct().getProductTypeSelect())) {
-			if(saleOrderLine.getSubscriptionList() != null
-				&& !saleOrderLine.getSubscriptionList().isEmpty()){
-				amount = amount.multiply(new BigDecimal(saleOrderLine.getSubscriptionList().size())).setScale(IAdministration.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-			}
-			else  {
-				amount = BigDecimal.ZERO;
-			}
-		}
+    LOG.debug(
+        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        new Object[] {saleOrderLine.getQty(), price, amount});
 
-		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { saleOrderLine.getQty(), price, amount });
+    return amount;
+  }
 
-		return amount;
-	}
-	
-	
-	public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine) throws AxelorException{
-		
-		if(generalService.getGeneral().getAnalyticDistributionTypeSelect() == GeneralRepository.DISTRIBUTION_TYPE_FREE)  {  return saleOrderLine;  }
-		
-		SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-		List<AnalyticMoveLine> analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
-		if((analyticMoveLineList == null || analyticMoveLineList.isEmpty()))  {
-			analyticMoveLineList = analyticMoveLineService.generateLines(saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany(), saleOrderLine.getExTaxTotal());
-			saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
-		}
-		if(analyticMoveLineList != null)  {
-			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-				this.updateAnalyticMoveLine(analyticMoveLine, saleOrderLine);
-			}
-		}
-		return saleOrderLine;
-	}
-	
-	public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, SaleOrderLine saleOrderLine)  {
-		
-		analyticMoveLine.setSaleOrderLine(saleOrderLine);
-		analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-		analyticMoveLine.setDate(generalService.getTodayDate());
+  public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine)
+      throws AxelorException {
 
-		analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
-		
-	}
-	
-	public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine) throws AxelorException{
-		List<AnalyticMoveLine> analyticMoveLineList = null;
-		analyticMoveLineList = analyticMoveLineService.generateLinesWithTemplate(saleOrderLine.getAnalyticDistributionTemplate(), saleOrderLine.getExTaxTotal());
-		if(analyticMoveLineList != null)  {
-			for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList)  {
-				analyticMoveLine.setSaleOrderLine(saleOrderLine);
-			}
-		}
-		saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
-		return saleOrderLine;
-	}
+    if (generalService.getGeneral().getAnalyticDistributionTypeSelect()
+        == GeneralRepository.DISTRIBUTION_TYPE_FREE) {
+      return saleOrderLine;
+    }
 
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    List<AnalyticMoveLine> analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
+    if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
+      analyticMoveLineList =
+          analyticMoveLineService.generateLines(
+              saleOrder.getClientPartner(),
+              saleOrderLine.getProduct(),
+              saleOrder.getCompany(),
+              saleOrderLine.getExTaxTotal());
+      saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
+    if (analyticMoveLineList != null) {
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        this.updateAnalyticMoveLine(analyticMoveLine, saleOrderLine);
+      }
+    }
+    return saleOrderLine;
+  }
+
+  public void updateAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, SaleOrderLine saleOrderLine) {
+
+    analyticMoveLine.setSaleOrderLine(saleOrderLine);
+    analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
+    analyticMoveLine.setDate(generalService.getTodayDate());
+
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+  }
+
+  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    List<AnalyticMoveLine> analyticMoveLineList = null;
+    analyticMoveLineList =
+        analyticMoveLineService.generateLinesWithTemplate(
+            saleOrderLine.getAnalyticDistributionTemplate(), saleOrderLine.getExTaxTotal());
+    if (analyticMoveLineList != null) {
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        analyticMoveLine.setSaleOrderLine(saleOrderLine);
+      }
+    }
+    saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
+    return saleOrderLine;
+  }
 }

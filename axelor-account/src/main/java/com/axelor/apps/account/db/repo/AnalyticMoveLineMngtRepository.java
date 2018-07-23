@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -19,12 +19,12 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 
-public class AnalyticMoveLineMngtRepository extends AnalyticMoveLineRepository{
-	@Override
-	public AnalyticMoveLine copy(AnalyticMoveLine entity, boolean deep) {
-		AnalyticMoveLine copy = super.copy(entity, deep);
-		copy.setMoveLine(null);
-		copy.setInvoiceLine(null);
-		return copy;
-	}
+public class AnalyticMoveLineMngtRepository extends AnalyticMoveLineRepository {
+  @Override
+  public AnalyticMoveLine copy(AnalyticMoveLine entity, boolean deep) {
+    AnalyticMoveLine copy = super.copy(entity, deep);
+    copy.setMoveLine(null);
+    copy.setInvoiceLine(null);
+    return copy;
+  }
 }

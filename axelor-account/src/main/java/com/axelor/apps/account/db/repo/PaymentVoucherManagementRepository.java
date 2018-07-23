@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,51 +17,49 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.inject.Beans;
+import javax.persistence.PersistenceException;
 
 public class PaymentVoucherManagementRepository extends PaymentVoucherRepository {
 
+  @Override
+  public PaymentVoucher copy(PaymentVoucher entity, boolean deep) {
 
-	@Override
-	public PaymentVoucher copy(PaymentVoucher entity, boolean deep) {
+    PaymentVoucher copy = super.copy(entity, deep);
 
-		PaymentVoucher copy = super.copy(entity, deep);
+    copy.setStatusSelect(STATUS_DRAFT);
+    copy.setRef(null);
+    copy.setPaymentDate(Beans.get(GeneralService.class).getTodayDate());
+    copy.clearPayVoucherDueElementList();
+    copy.clearPayVoucherElementToPayList();
+    copy.setGeneratedMove(null);
+    copy.setBankCardTransactionNumber(null);
+    copy.clearBatchSet();
+    copy.setImportId(null);
+    copy.setPayboxAmountPaid(null);
+    copy.setPayboxPaidOk(false);
+    copy.setReceiptNo(null);
+    copy.setRemainingAmount(null);
+    copy.setRemainingAllocatedAmount(null);
+    copy.setToSaveEmailOk(false);
+    copy.setDefaultEmailOk(false);
+    copy.setEmail(null);
 
-		copy.setStatusSelect(STATUS_DRAFT);
-		copy.setRef(null);
-		copy.setPaymentDate(Beans.get(GeneralService.class).getTodayDate());
-		copy.clearPayVoucherDueElementList();
-		copy.clearPayVoucherElementToPayList();
-		copy.setGeneratedMove(null);
-		copy.setBankCardTransactionNumber(null);
-		copy.clearBatchSet();
-		copy.setImportId(null);
-		copy.setPayboxAmountPaid(null);
-		copy.setPayboxPaidOk(false);
-		copy.setReceiptNo(null);
-		copy.setRemainingAmount(null);
-		copy.setRemainingAllocatedAmount(null);
-		copy.setToSaveEmailOk(false);
-		copy.setDefaultEmailOk(false);
-		copy.setEmail(null);
+    return copy;
+  }
 
-		return copy;
-	}
-	
-	@Override
-	public PaymentVoucher save(PaymentVoucher paymentVoucher) {
-		try {
+  @Override
+  public PaymentVoucher save(PaymentVoucher paymentVoucher) {
+    try {
 
-			Beans.get(PaymentVoucherSequenceService.class).setReference(paymentVoucher);
+      Beans.get(PaymentVoucherSequenceService.class).setReference(paymentVoucher);
 
-			return super.save(paymentVoucher);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
+      return super.save(paymentVoucher);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 }

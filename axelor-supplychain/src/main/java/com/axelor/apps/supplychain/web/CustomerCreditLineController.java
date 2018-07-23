@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,32 +27,31 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class CustomerCreditLineController {
-	
-	@Inject
-	protected CustomerCreditLineService customerCreditLineService;
-	
-	@Inject
-	protected PartnerRepository partnerRepo;
-	
-	public void computeUsedCredit(ActionRequest request, ActionResponse response)  {
-		CustomerCreditLine customerCreditLine = request.getContext().asType(CustomerCreditLine.class);
-		customerCreditLine = customerCreditLineService.computeUsedCredit(customerCreditLine);
-		response.setValues(customerCreditLine);
-	}
-	
-	public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException  {
-		Partner partner = request.getContext().asType(Partner.class);
-		partner.setCustomerCreditLineList(customerCreditLineService.generateLines(partner).getCustomerCreditLineList());
-		response.setValues(partner);
-	}
-	
-	public void updateLinesFromPartner(ActionRequest request, ActionResponse response) throws AxelorException  {
-		Partner partnerView = request.getContext().asType(Partner.class);
-		if(partnerView.getId() != null && partnerView.getId() > 0){
-			Partner partner = partnerRepo.find(partnerView.getId());
-			customerCreditLineService.updateLines(partner);
-			response.setValue("customerCreditLineList", partner.getCustomerCreditLineList());
-		}
-	}
 
+  @Inject protected CustomerCreditLineService customerCreditLineService;
+
+  @Inject protected PartnerRepository partnerRepo;
+
+  public void computeUsedCredit(ActionRequest request, ActionResponse response) {
+    CustomerCreditLine customerCreditLine = request.getContext().asType(CustomerCreditLine.class);
+    customerCreditLine = customerCreditLineService.computeUsedCredit(customerCreditLine);
+    response.setValues(customerCreditLine);
+  }
+
+  public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException {
+    Partner partner = request.getContext().asType(Partner.class);
+    partner.setCustomerCreditLineList(
+        customerCreditLineService.generateLines(partner).getCustomerCreditLineList());
+    response.setValues(partner);
+  }
+
+  public void updateLinesFromPartner(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Partner partnerView = request.getContext().asType(Partner.class);
+    if (partnerView.getId() != null && partnerView.getId() > 0) {
+      Partner partner = partnerRepo.find(partnerView.getId());
+      customerCreditLineService.updateLines(partner);
+      response.setValue("customerCreditLineList", partner.getCustomerCreditLineList());
+    }
+  }
 }

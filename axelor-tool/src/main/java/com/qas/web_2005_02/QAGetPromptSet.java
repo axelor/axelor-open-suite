@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
+ * Classe Java pour anonymous complex type.
+ *
  * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -43,122 +42,96 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "country",
-    "engine",
-    "promptSet",
-    "qaConfig"
-})
+@XmlType(
+  name = "",
+  propOrder = {"country", "engine", "promptSet", "qaConfig"}
+)
 @XmlRootElement(name = "QAGetPromptSet")
 public class QAGetPromptSet {
 
-    @XmlElement(name = "Country", required = true)
-    protected String country;
-    @XmlElement(name = "Engine")
-    protected EngineType engine;
-    @XmlElement(name = "PromptSet", required = true)
-    protected PromptSetType promptSet;
-    @XmlElement(name = "QAConfig")
-    protected QAConfigType qaConfig;
+  @XmlElement(name = "Country", required = true)
+  protected String country;
 
-    /**
-     * Obtient la valeur de la propriété country.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCountry() {
-        return country;
-    }
+  @XmlElement(name = "Engine")
+  protected EngineType engine;
 
-    /**
-     * Définit la valeur de la propriété country.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCountry(String value) {
-        this.country = value;
-    }
+  @XmlElement(name = "PromptSet", required = true)
+  protected PromptSetType promptSet;
 
-    /**
-     * Obtient la valeur de la propriété engine.
-     * 
-     * @return
-     *     possible object is
-     *     {@link EngineType }
-     *     
-     */
-    public EngineType getEngine() {
-        return engine;
-    }
+  @XmlElement(name = "QAConfig")
+  protected QAConfigType qaConfig;
 
-    /**
-     * Définit la valeur de la propriété engine.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link EngineType }
-     *     
-     */
-    public void setEngine(EngineType value) {
-        this.engine = value;
-    }
+  /**
+   * Obtient la valeur de la propriété country.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getCountry() {
+    return country;
+  }
 
-    /**
-     * Obtient la valeur de la propriété promptSet.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PromptSetType }
-     *     
-     */
-    public PromptSetType getPromptSet() {
-        return promptSet;
-    }
+  /**
+   * Définit la valeur de la propriété country.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setCountry(String value) {
+    this.country = value;
+  }
 
-    /**
-     * Définit la valeur de la propriété promptSet.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PromptSetType }
-     *     
-     */
-    public void setPromptSet(PromptSetType value) {
-        this.promptSet = value;
-    }
+  /**
+   * Obtient la valeur de la propriété engine.
+   *
+   * @return possible object is {@link EngineType }
+   */
+  public EngineType getEngine() {
+    return engine;
+  }
 
-    /**
-     * Obtient la valeur de la propriété qaConfig.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public QAConfigType getQAConfig() {
-        return qaConfig;
-    }
+  /**
+   * Définit la valeur de la propriété engine.
+   *
+   * @param value allowed object is {@link EngineType }
+   */
+  public void setEngine(EngineType value) {
+    this.engine = value;
+  }
 
-    /**
-     * Définit la valeur de la propriété qaConfig.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QAConfigType }
-     *     
-     */
-    public void setQAConfig(QAConfigType value) {
-        this.qaConfig = value;
-    }
+  /**
+   * Obtient la valeur de la propriété promptSet.
+   *
+   * @return possible object is {@link PromptSetType }
+   */
+  public PromptSetType getPromptSet() {
+    return promptSet;
+  }
 
+  /**
+   * Définit la valeur de la propriété promptSet.
+   *
+   * @param value allowed object is {@link PromptSetType }
+   */
+  public void setPromptSet(PromptSetType value) {
+    this.promptSet = value;
+  }
+
+  /**
+   * Obtient la valeur de la propriété qaConfig.
+   *
+   * @return possible object is {@link QAConfigType }
+   */
+  public QAConfigType getQAConfig() {
+    return qaConfig;
+  }
+
+  /**
+   * Définit la valeur de la propriété qaConfig.
+   *
+   * @param value allowed object is {@link QAConfigType }
+   */
+  public void setQAConfig(QAConfigType value) {
+    this.qaConfig = value;
+  }
 }

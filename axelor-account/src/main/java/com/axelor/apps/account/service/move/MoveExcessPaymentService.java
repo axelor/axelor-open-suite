@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -34,69 +27,77 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveExcessPaymentService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected MoveLineRepository moveLineRepository;
-	protected MoveToolService moveToolService;
+  protected MoveLineRepository moveLineRepository;
+  protected MoveToolService moveToolService;
 
-	
-	@Inject
-	public MoveExcessPaymentService(MoveLineRepository moveLineRepository, MoveToolService moveToolService) {
+  @Inject
+  public MoveExcessPaymentService(
+      MoveLineRepository moveLineRepository, MoveToolService moveToolService) {
 
-		this.moveLineRepository = moveLineRepository;
-		this.moveToolService = moveToolService;
+    this.moveLineRepository = moveLineRepository;
+    this.moveToolService = moveToolService;
+  }
 
-	}
-	
-	
-	/**
-	 * Méthode permettant de récupérer les trop-perçus pour un compte donné (411) et une facture
-	 * @param invoice
-	 * 			Une facture
-	 * @param account
-	 * 			Un compte
-	 * @return
-	 * @throws AxelorException
-	 */
-	public List<MoveLine> getExcessPayment(Invoice invoice, Account account) throws AxelorException {
-		 Company company = invoice.getCompany();
+  /**
+   * Méthode permettant de récupérer les trop-perçus pour un compte donné (411) et une facture
+   *
+   * @param invoice Une facture
+   * @param account Un compte
+   * @return
+   * @throws AxelorException
+   */
+  public List<MoveLine> getExcessPayment(Invoice invoice, Account account) throws AxelorException {
+    Company company = invoice.getCompany();
 
-		 List<MoveLine> creditMoveLines =  moveLineRepository.all()
-		 .filter("self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
-		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
-		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
-		 company, MoveRepository.STATUS_VALIDATED, true, invoice.getPartner(), account).fetch();
+    List<MoveLine> creditMoveLines =
+        moveLineRepository
+            .all()
+            .filter(
+                "self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)"
+                    + " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0"
+                    + " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
+                company,
+                MoveRepository.STATUS_VALIDATED,
+                true,
+                invoice.getPartner(),
+                account)
+            .fetch();
 
-		 log.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
+    log.debug(
+        "Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
 
-		 return creditMoveLines;
-	}
-		
-	
-	public List<MoveLine> getAdvancePaymentMoveList(Invoice invoice)  {
-		
-		List<MoveLine> moveLineList = Lists.newArrayList();
-		
-		if (invoice.getInvoicePaymentList() != null)  {
-			
-			for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList())  {
-				
-				for (MoveLine moveLine : invoicePayment.getMove().getMoveLineList())  {
-					
-					if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0)  {
-						moveLineList.add(moveLine);
-					}
-				}
-			}
-			
-			return moveToolService.orderListByDate(moveLineList);
-		}
-		
-		return moveLineList;
-	}
-	
-	
+    return creditMoveLines;
+  }
+
+  public List<MoveLine> getAdvancePaymentMoveList(Invoice invoice) {
+
+    List<MoveLine> moveLineList = Lists.newArrayList();
+
+    if (invoice.getInvoicePaymentList() != null) {
+
+      for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+
+        for (MoveLine moveLine : invoicePayment.getMove().getMoveLineList()) {
+
+          if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0) {
+            moveLineList.add(moveLine);
+          }
+        }
+      }
+
+      return moveToolService.orderListByDate(moveLineList);
+    }
+
+    return moveLineList;
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,29 +28,34 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class EmploymentContractService {
-	
-	@Inject
-	private EmploymentContractRepository employmentContractRepo;
-	
-	@Transactional
-    public int addAmendment( EmploymentContract EmploymentContract ) throws AxelorException  {
 
-    	User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
-    	
-    	String name = EmploymentContract.getFullName() + "_" + EmploymentContract.getEmploymentContractVersion();
-		
-    	ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name+"-${date}")
-				.addParam("ContractId", EmploymentContract.getId())
-				.addParam("Locale", language)
-				.toAttach(EmploymentContract)
-				.generate()
-				.getFileLink();
+  @Inject private EmploymentContractRepository employmentContractRepo;
 
-    	int version = EmploymentContract.getEmploymentContractVersion() + 1;
-    	EmploymentContract.setEmploymentContractVersion( version );
-    	employmentContractRepo.save(EmploymentContract);
+  @Transactional
+  public int addAmendment(EmploymentContract EmploymentContract) throws AxelorException {
 
-    	return version;
-	}
+    User user = AuthUtils.getUser();
+    String language =
+        user != null
+            ? (user.getLanguage() == null || user.getLanguage().equals(""))
+                ? "en"
+                : user.getLanguage()
+            : "en";
+
+    String name =
+        EmploymentContract.getFullName() + "_" + EmploymentContract.getEmploymentContractVersion();
+
+    ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name + "-${date}")
+        .addParam("ContractId", EmploymentContract.getId())
+        .addParam("Locale", language)
+        .toAttach(EmploymentContract)
+        .generate()
+        .getFileLink();
+
+    int version = EmploymentContract.getEmploymentContractVersion() + 1;
+    EmploymentContract.setEmploymentContractVersion(version);
+    employmentContractRepo.save(EmploymentContract);
+
+    return version;
+  }
 }

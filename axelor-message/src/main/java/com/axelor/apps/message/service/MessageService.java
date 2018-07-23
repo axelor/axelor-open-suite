@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,41 +17,51 @@
  */
 package com.axelor.apps.message.service;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+import javax.mail.MessagingException;
 
 public interface MessageService {
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Message createMessage(String model, int id, String subject, String content, EmailAddress fromEmailAddress, List<EmailAddress> replytoEmailAddressList, List<EmailAddress> toEmailAddressList, 
-			List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, Set<MetaFile> metaFiles, String addressBlock, int mediaTypeSelect) throws IOException;
 
-	@Transactional(rollbackOn = Exception.class)
-	public void attachMetaFiles( Message message, Set<MetaFile> metaFiles ) throws IOException;
-	
-	public Set<MetaAttachment> getMetaAttachments( Message message );
-	
-	public Message sendMessage(Message message) throws AxelorException;
-	
-	@Transactional(rollbackOn = { MessagingException.class, IOException.class, Exception.class })
-	public Message sendByEmail(Message message) throws MessagingException, IOException, AxelorException;
-	
-	@Transactional(rollbackOn = Exception.class)
-	public Message sendToUser(Message message);
-	
-	@Transactional(rollbackOn = Exception.class)
-	public Message sendByMail(Message message);
-	
-	public String printMessage(Message message) throws AxelorException;
-	
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Message createMessage(
+      String model,
+      int id,
+      String subject,
+      String content,
+      EmailAddress fromEmailAddress,
+      List<EmailAddress> replytoEmailAddressList,
+      List<EmailAddress> toEmailAddressList,
+      List<EmailAddress> ccEmailAddressList,
+      List<EmailAddress> bccEmailAddressList,
+      Set<MetaFile> metaFiles,
+      String addressBlock,
+      int mediaTypeSelect)
+      throws IOException;
+
+  @Transactional(rollbackOn = Exception.class)
+  public void attachMetaFiles(Message message, Set<MetaFile> metaFiles) throws IOException;
+
+  public Set<MetaAttachment> getMetaAttachments(Message message);
+
+  public Message sendMessage(Message message) throws AxelorException;
+
+  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
+  public Message sendByEmail(Message message)
+      throws MessagingException, IOException, AxelorException;
+
+  @Transactional(rollbackOn = Exception.class)
+  public Message sendToUser(Message message);
+
+  @Transactional(rollbackOn = Exception.class)
+  public Message sendByMail(Message message);
+
+  public String printMessage(Message message) throws AxelorException;
 }

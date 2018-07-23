@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,36 +17,33 @@
  */
 package com.axelor.apps.base.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.batch.BaseBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BaseBatchController {
 
-	@Inject
-	private BaseBatchService baseBatchService;
-	
-	
-	// WS
-	
-	/**
-	 * Lancer le batch à travers un web service.
-	 *
-	 * @param request
-	 * @param response
-	 * @throws AxelorException 
-	 */
-	public void run(ActionRequest request, ActionResponse response) throws AxelorException{
-	    
-		Batch batch = baseBatchService.run((String) request.getContext().get("code"));
-	    Map<String,Object> mapData = new HashMap<String,Object>();   
-		mapData.put("anomaly", batch.getAnomaly());
-		response.setData(mapData);	       
-	}
+  @Inject private BaseBatchService baseBatchService;
+
+  // WS
+
+  /**
+   * Lancer le batch à travers un web service.
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  public void run(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Batch batch = baseBatchService.run((String) request.getContext().get("code"));
+    Map<String, Object> mapData = new HashMap<String, Object>();
+    mapData.put("anomaly", batch.getAnomaly());
+    response.setData(mapData);
+  }
 }

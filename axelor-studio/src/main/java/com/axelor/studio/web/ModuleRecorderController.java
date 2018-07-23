@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,51 +17,44 @@
  */
 package com.axelor.studio.web;
 
-import java.io.IOException;
-
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ModuleRecorder;
 import com.axelor.studio.service.ModuleRecorderService;
 import com.google.inject.Inject;
+import java.io.IOException;
 
 public class ModuleRecorderController {
 
-	@Inject
-	private ModuleRecorderService moduleRecorderService;
+  @Inject private ModuleRecorderService moduleRecorderService;
 
-	public void update(ActionRequest request, ActionResponse response) {
-		
-		ModuleRecorder moduleRecorder = request.getContext().asType(
-				ModuleRecorder.class);
-		
-		response.setSignal("refresh-app", true);
-		try {
-			String msg = moduleRecorderService.update(moduleRecorder);
-			response.setFlash(msg);
-		} catch(Exception e) {
-			e.printStackTrace();
-			response.setFlash(e.getMessage());
-		}
-		
-	}
+  public void update(ActionRequest request, ActionResponse response) {
 
-	public void reset(ActionRequest request, ActionResponse response) 
-			throws IOException, AxelorException {
-		
-		ModuleRecorder moduleRecorder = request.getContext().asType(
-				ModuleRecorder.class);
-		
-		response.setSignal("refresh-app", true);
-		try {
-			String msg = moduleRecorderService.reset(moduleRecorder);
-			response.setFlash(msg);
-		} catch(Exception e) {
-			e.printStackTrace();
-			response.setFlash(e.getMessage());
-		}
-		
-	}
-	
+    ModuleRecorder moduleRecorder = request.getContext().asType(ModuleRecorder.class);
+
+    response.setSignal("refresh-app", true);
+    try {
+      String msg = moduleRecorderService.update(moduleRecorder);
+      response.setFlash(msg);
+    } catch (Exception e) {
+      e.printStackTrace();
+      response.setFlash(e.getMessage());
+    }
+  }
+
+  public void reset(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
+
+    ModuleRecorder moduleRecorder = request.getContext().asType(ModuleRecorder.class);
+
+    response.setSignal("refresh-app", true);
+    try {
+      String msg = moduleRecorderService.reset(moduleRecorder);
+      response.setFlash(msg);
+    } catch (Exception e) {
+      e.printStackTrace();
+      response.setFlash(e.getMessage());
+    }
+  }
 }

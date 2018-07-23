@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -27,17 +27,16 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class QuerieController {
-	
-	@Inject
-	private QuerieService qs;
-	
-	public void checkQuerie(ActionRequest request, ActionResponse response){
-		
-		try {
-			qs.checkQuerie(request.getContext().asType(Querie.class));
-			response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
 
+  @Inject private QuerieService qs;
+
+  public void checkQuerie(ActionRequest request, ActionResponse response) {
+
+    try {
+      qs.checkQuerie(request.getContext().asType(Querie.class));
+      response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

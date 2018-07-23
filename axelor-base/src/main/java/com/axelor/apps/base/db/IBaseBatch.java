@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,12 +17,5 @@
  */
 package com.axelor.apps.base.db;
 
-/**
- * Interface of Event object. Enum all static variable of object.
- * 
- */
-public interface IBaseBatch {
-
-
-	
-}
+/** Interface of Event object. Enum all static variable of object. */
+public interface IBaseBatch {}

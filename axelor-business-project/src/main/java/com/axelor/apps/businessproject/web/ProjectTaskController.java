@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-
-import com.axelor.exception.service.TraceBackService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.hr.service.employee.EmployeeService;
@@ -32,73 +25,87 @@ import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProjectTaskController {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@Inject
-	private ProjectTaskService projectTaskService;
-	
-	public void printProjectTask(ActionRequest request,ActionResponse response) throws AxelorException  {
+  @Inject private ProjectTaskService projectTaskService;
 
-		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+  public void printProjectTask(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-		User user = AuthUtils.getUser();
-		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en";
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-		String name = I18n.get("Project Task") + " " + projectTask.getCode();
-		
-		String fileLink = ReportFactory.createReport(IReport.PROJECT_TASK, name+"-${date}")
-				.addParam("ProjectTaskId", projectTask.getId())
-				.addParam("Locale", language)
-				.toAttach(projectTask)
-				.generate()
-				.getFileLink();
+    User user = AuthUtils.getUser();
+    String language =
+        user != null
+            ? (user.getLanguage() == null || user.getLanguage().equals(""))
+                ? "en"
+                : user.getLanguage()
+            : "en";
 
-		logger.debug("Printing "+name);
-	
-		response.setView(ActionView
-				.define(name)
-				.add("html", fileLink).map());	
-	}
+    String name = I18n.get("Project Task") + " " + projectTask.getCode();
 
-	public void computeProgress(ActionRequest request,ActionResponse response){
+    String fileLink =
+        ReportFactory.createReport(IReport.PROJECT_TASK, name + "-${date}")
+            .addParam("ProjectTaskId", projectTask.getId())
+            .addParam("Locale", language)
+            .toAttach(projectTask)
+            .generate()
+            .getFileLink();
 
-		ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-		
-		BigDecimal duration = BigDecimal.ZERO;
-		if(BigDecimal.ZERO.compareTo(projectTask.getDuration()) != 0){
-			duration = projectTask.getTimeSpent().add(projectTask.getLeadDelay()).divide(projectTask.getDuration(), 2, java.math.RoundingMode.HALF_UP).multiply(new BigDecimal(100));
-		}
-		
-		if(duration.compareTo(BigDecimal.ZERO) == -1 || duration.compareTo(new BigDecimal(100)) == 1){
-			duration = BigDecimal.ZERO;
-		}
+    logger.debug("Printing " + name);
 
-		response.setValue("progress", duration);
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-	}
+  public void computeProgress(ActionRequest request, ActionResponse response) {
 
-	public void computeDurationFromChildren(ActionRequest request, ActionResponse response) {
-		try {
-			ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-			BigDecimal duration = projectTaskService.computeDurationFromChildren(projectTask.getId());
+    BigDecimal duration = BigDecimal.ZERO;
+    if (BigDecimal.ZERO.compareTo(projectTask.getDuration()) != 0) {
+      duration =
+          projectTask
+              .getTimeSpent()
+              .add(projectTask.getLeadDelay())
+              .divide(projectTask.getDuration(), 2, java.math.RoundingMode.HALF_UP)
+              .multiply(new BigDecimal(100));
+    }
 
-			BigDecimal visibleDuration = Beans.get(EmployeeService.class).getUserDuration(duration, AuthUtils.getUser(), false);
+    if (duration.compareTo(BigDecimal.ZERO) == -1 || duration.compareTo(new BigDecimal(100)) == 1) {
+      duration = BigDecimal.ZERO;
+    }
 
-			response.setValue("duration", duration);
-			response.setValue("$visibleDuration", visibleDuration);
+    response.setValue("progress", duration);
+  }
 
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+  public void computeDurationFromChildren(ActionRequest request, ActionResponse response) {
+    try {
+      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+      BigDecimal duration = projectTaskService.computeDurationFromChildren(projectTask.getId());
+
+      BigDecimal visibleDuration =
+          Beans.get(EmployeeService.class).getUserDuration(duration, AuthUtils.getUser(), false);
+
+      response.setValue("duration", duration);
+      response.setValue("$visibleDuration", visibleDuration);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

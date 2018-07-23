@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -25,12 +25,12 @@ import java.util.Map;
  * A simple mean to cache created files.
  *
  * @author hachani
- *
  */
 public class FileCache {
 
   /**
    * Constructs a new <code>FileCache</code> object
+   *
    * @param isTraceEnabled is trace enabled?
    */
   public FileCache(boolean isTraceEnabled) {
@@ -40,6 +40,7 @@ public class FileCache {
 
   /**
    * Cache a new <code>java.io.File</code> in the cache buffer
+   *
    * @param file the file to cache
    * @return True if the file is cached
    */
@@ -55,6 +56,7 @@ public class FileCache {
 
   /**
    * Removes the given <code>java.io.file</code> from the cache.
+   *
    * @param filename the file to remove
    * @return True if the file is removed
    */
@@ -68,13 +70,11 @@ public class FileCache {
     return true;
   }
 
-  /**
-   * Clears the cache buffer
-   */
+  /** Clears the cache buffer */
   public void clear() {
     if (isTraceEnabled) {
       for (File file : cache.values()) {
-	file.delete();
+        file.delete();
       }
     }
 
@@ -83,6 +83,7 @@ public class FileCache {
 
   /**
    * Sets the trace ability.
+   *
    * @param enabled is trace enabled?
    */
   public void setTraceEnabled(boolean enabled) {
@@ -93,6 +94,6 @@ public class FileCache {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private Map<String, File>			cache;
-  private boolean 				isTraceEnabled;
+  private Map<String, File> cache;
+  private boolean isTraceEnabled;
 }

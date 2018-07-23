@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,19 +17,16 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.Period;
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.exception.AxelorException;
-
 import java.util.List;
+import org.joda.time.LocalDate;
 
 public interface YearService {
-	
-	
-	public Year getYear(LocalDate date, Company company);
 
-	List<Period> generatePeriods(Year year) throws AxelorException;
+  public Year getYear(LocalDate date, Company company);
+
+  List<Period> generatePeriods(Year year) throws AxelorException;
 }

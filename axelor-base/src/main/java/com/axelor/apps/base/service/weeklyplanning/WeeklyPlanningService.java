@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,18 +17,22 @@
  */
 package com.axelor.apps.base.service.weeklyplanning;
 
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.exception.AxelorException;
-
+import org.joda.time.LocalDate;
 
 public interface WeeklyPlanningService {
-	public WeeklyPlanning initPlanning(WeeklyPlanning planning);
-	public WeeklyPlanning checkPlanning(WeeklyPlanning planning) throws AxelorException;
-	public double workingDayValue(WeeklyPlanning planning, LocalDate date);
-	public double workingDayValueWithSelect(WeeklyPlanning planning, LocalDate date, boolean morning, boolean afternoon);
-	public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date);
-	public DayPlanning findDayWithName(WeeklyPlanning planning, String name);
+  public WeeklyPlanning initPlanning(WeeklyPlanning planning);
+
+  public WeeklyPlanning checkPlanning(WeeklyPlanning planning) throws AxelorException;
+
+  public double workingDayValue(WeeklyPlanning planning, LocalDate date);
+
+  public double workingDayValueWithSelect(
+      WeeklyPlanning planning, LocalDate date, boolean morning, boolean afternoon);
+
+  public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date);
+
+  public DayPlanning findDayWithName(WeeklyPlanning planning, String name);
 }

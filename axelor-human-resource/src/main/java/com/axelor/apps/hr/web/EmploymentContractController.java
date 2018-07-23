@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -26,25 +26,27 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class EmploymentContractController {
-	
-	@Inject
-    private EmploymentContractService employmentContractService;
-	
-	@Inject
-	private EmploymentContractRepository employmentContractRepo;
 
-    public void addAmendment(ActionRequest request, ActionResponse response)  {
+  @Inject private EmploymentContractService employmentContractService;
 
-    	EmploymentContract employmentContract = request.getContext().asType(EmploymentContract.class);
+  @Inject private EmploymentContractRepository employmentContractRepo;
 
-		try {
+  public void addAmendment(ActionRequest request, ActionResponse response) {
 
-			employmentContractService.addAmendment( employmentContractRepo.find( employmentContract.getId() ) );
-	    	response.setFlash( String.format( "Contrat %s - avenant %s", employmentContract.getFullName(), employmentContract.getEmploymentContractVersion() ) );
-			response.setReload(true);
+    EmploymentContract employmentContract = request.getContext().asType(EmploymentContract.class);
 
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
+    try {
+
+      employmentContractService.addAmendment(
+          employmentContractRepo.find(employmentContract.getId()));
+      response.setFlash(
+          String.format(
+              "Contrat %s - avenant %s",
+              employmentContract.getFullName(), employmentContract.getEmploymentContractVersion()));
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.sale.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.ISaleOrder;
@@ -26,66 +24,67 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
-	@Inject
-	protected GeneralService generalService;
+  @Inject protected GeneralService generalService;
 
-	@Override
-	public SaleOrder copy(SaleOrder entity, boolean deep) {
+  @Override
+  public SaleOrder copy(SaleOrder entity, boolean deep) {
 
-		SaleOrder copy = super.copy(entity, deep);
+    SaleOrder copy = super.copy(entity, deep);
 
-		copy.setStatusSelect(ISaleOrder.STATUS_DRAFT);
-		copy.setSaleOrderSeq(null);
-		copy.clearBatchSet();
-		copy.setImportId(null);
-		copy.setCreationDate(generalService.getTodayDate());
-		copy.setConfirmationDate(null);
-		copy.setConfirmedByUser(null);
-		copy.setOrderDate(null);
-		copy.setOrderNumber(null);
-		copy.setVersionNumber(1);
+    copy.setStatusSelect(ISaleOrder.STATUS_DRAFT);
+    copy.setSaleOrderSeq(null);
+    copy.clearBatchSet();
+    copy.setImportId(null);
+    copy.setCreationDate(generalService.getTodayDate());
+    copy.setConfirmationDate(null);
+    copy.setConfirmedByUser(null);
+    copy.setOrderDate(null);
+    copy.setOrderNumber(null);
+    copy.setVersionNumber(1);
 
-		return copy;
-	}
+    return copy;
+  }
 
-	@Override
-	public SaleOrder save(SaleOrder saleOrder) {
-		try {
-			computeSeq(saleOrder);
-			computeFullName(saleOrder);
-			return super.save(saleOrder);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-	
-	public void computeSeq(SaleOrder saleOrder){
-		try{
-			
-			if((saleOrder.getSaleOrderSeq() == null || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) && !saleOrder.getTemplate()){
-				if ( saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT ){
-				    saleOrder.setSaleOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
-				}
-			}
-				
-		}
-		catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
-	
-	public void computeFullName(SaleOrder saleOrder){
-		try{
-			if(!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()))
-				saleOrder.setFullName(saleOrder.getSaleOrderSeq()+"-"+saleOrder.getClientPartner().getName());
-			else
-				saleOrder.setFullName(saleOrder.getClientPartner().getName());
-		}
-		catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
+  @Override
+  public SaleOrder save(SaleOrder saleOrder) {
+    try {
+      computeSeq(saleOrder);
+      computeFullName(saleOrder);
+      return super.save(saleOrder);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
+
+  public void computeSeq(SaleOrder saleOrder) {
+    try {
+
+      if ((saleOrder.getSaleOrderSeq() == null
+              || Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()))
+          && !saleOrder.getTemplate()) {
+        if (saleOrder.getStatusSelect() == ISaleOrder.STATUS_DRAFT) {
+          saleOrder.setSaleOrderSeq(
+              Beans.get(SequenceService.class).getDraftSequenceNumber(saleOrder));
+        }
+      }
+
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
+
+  public void computeFullName(SaleOrder saleOrder) {
+    try {
+      if (!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()))
+        saleOrder.setFullName(
+            saleOrder.getSaleOrderSeq() + "-" + saleOrder.getClientPartner().getName());
+      else saleOrder.setFullName(saleOrder.getClientPartner().getName());
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 }

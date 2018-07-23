@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,12 +17,6 @@
  */
 package com.axelor.studio.utils;
 
-import java.lang.invoke.MethodHandles;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.ActionHandler;
@@ -31,50 +25,52 @@ import com.axelor.meta.schema.actions.Action;
 import com.axelor.rpc.ActionRequest;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import java.lang.invoke.MethodHandles;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ActionHelper {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@SuppressWarnings("unchecked")
-	public Object execute(String name, Object entity, Object parent) {
+  @SuppressWarnings("unchecked")
+  public Object execute(String name, Object entity, Object parent) {
 
-		log.debug("Execute action: {}, object: {}", name, entity);
-		Map context = null;
-		if (entity instanceof Map) {
-			context = (Map) entity;
-		} else {
-			context = Mapper.toMap(entity);
-		}
-		
-		Action action = MetaStore.getAction(name);
+    log.debug("Execute action: {}, object: {}", name, entity);
+    Map context = null;
+    if (entity instanceof Map) {
+      context = (Map) entity;
+    } else {
+      context = Mapper.toMap(entity);
+    }
 
-		ActionHandler handler = createHandler(action, context, Mapper.toMap(parent));
+    Action action = MetaStore.getAction(name);
 
-		Object object = action.evaluate(handler);
-		log.debug("Object id: {}", ((Model) object).getId());
-		return object;
+    ActionHandler handler = createHandler(action, context, Mapper.toMap(parent));
 
-	}
+    Object object = action.evaluate(handler);
+    log.debug("Object id: {}", ((Model) object).getId());
+    return object;
+  }
 
-	private ActionHandler createHandler(Action action,
-			Map<String, Object> context, Map<String, Object> _parent) {
+  private ActionHandler createHandler(
+      Action action, Map<String, Object> context, Map<String, Object> _parent) {
 
-		log.debug("Context : {}, Model: {}", context, action.getModel());
-		
-		log.debug("Id in context: {}", context.get("id"));
-		Preconditions.checkArgument(action != null, "action is null");
+    log.debug("Context : {}, Model: {}", context, action.getModel());
 
-		ActionRequest request = new ActionRequest();
+    log.debug("Id in context: {}", context.get("id"));
+    Preconditions.checkArgument(action != null, "action is null");
 
-		Map<String, Object> data = Maps.newHashMap();
-		context.put("_parent", _parent);
-		data.put("context", context);
-		request.setData(data);
-		request.setModel(action.getModel());
-		request.setAction(action.getName());
+    ActionRequest request = new ActionRequest();
 
-		return new ActionHandler(request);
+    Map<String, Object> data = Maps.newHashMap();
+    context.put("_parent", _parent);
+    data.put("context", context);
+    request.setData(data);
+    request.setModel(action.getModel());
+    request.setAction(action.getName());
 
-	}
+    return new ActionHandler(request);
+  }
 }

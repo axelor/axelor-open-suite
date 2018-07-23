@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,68 +17,62 @@
  */
 package com.axelor.meta.db.repo;
 
-import javax.validation.ValidationException;
-
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.studio.service.ModuleRecorderService;
 import com.google.inject.Inject;
+import javax.validation.ValidationException;
 
 public class StudioMetaModelRepository extends MetaModelRepository {
 
-	@Inject
-	private ModuleRecorderService recorderService;
+  @Inject private ModuleRecorderService recorderService;
 
-	@Override
-	public MetaModel save(MetaModel metaModel) throws ValidationException {
-		
-		if (metaModel.getName().equals("Object")) {
-			throw new ValidationException(
-					I18n.get("Invalid model name 'Object'"));
-		}
-		
-		
-		if (!metaModel.getCustomised()) {
-			boolean addStatus = true;
-			for (MetaField field : metaModel.getMetaFields()) {
-				if (field == null) {
-					continue;
-				}
-				if (field.getName().equals("wkfStatus")) {
-					addStatus = false;
-					break;
-				}
-			}
-			if (addStatus) {
-				MetaField field = new MetaField("wkfStatus", false);
-				field.setTypeName("Integer");
-				field.setLabel("Status");
-				field.setFieldType("integer");
-				field.setCustomised(true);
-				metaModel.addMetaField(field);
-			}
-		}
-		
-		if (metaModel.getId() != null) {
-			metaModel.setCustomised(true);
-			metaModel.setEdited(true);
-		}
-		
-		recorderService.setUpdateServer();
+  @Override
+  public MetaModel save(MetaModel metaModel) throws ValidationException {
 
-		return super.save(metaModel);
+    if (metaModel.getName().equals("Object")) {
+      throw new ValidationException(I18n.get("Invalid model name 'Object'"));
+    }
 
-	}
+    if (!metaModel.getCustomised()) {
+      boolean addStatus = true;
+      for (MetaField field : metaModel.getMetaFields()) {
+        if (field == null) {
+          continue;
+        }
+        if (field.getName().equals("wkfStatus")) {
+          addStatus = false;
+          break;
+        }
+      }
+      if (addStatus) {
+        MetaField field = new MetaField("wkfStatus", false);
+        field.setTypeName("Integer");
+        field.setLabel("Status");
+        field.setFieldType("integer");
+        field.setCustomised(true);
+        metaModel.addMetaField(field);
+      }
+    }
 
-	@Override
-	public void remove(MetaModel model) {
-		
-		if (model.getCustomised()) {
-			recorderService.setUpdateServer();
-		}
-		
-		super.remove(model);
-	}
+    if (metaModel.getId() != null) {
+      metaModel.setCustomised(true);
+      metaModel.setEdited(true);
+    }
 
+    recorderService.setUpdateServer();
+
+    return super.save(metaModel);
+  }
+
+  @Override
+  public void remove(MetaModel model) {
+
+    if (model.getCustomised()) {
+      recorderService.setUpdateServer();
+    }
+
+    super.remove(model);
+  }
 }

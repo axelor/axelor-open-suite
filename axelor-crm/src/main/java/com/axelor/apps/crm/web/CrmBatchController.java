@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.crm.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.crm.db.CrmBatch;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
@@ -28,64 +25,61 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CrmBatchController {
 
-	@Inject
-	private CrmBatchService crmBatchService;
-	
-	@Inject
-	private CrmBatchRepository crmBatchRepo;
+  @Inject private CrmBatchService crmBatchService;
 
-	/**
-	 * Lancer le batch de relance
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionEventReminder(ActionRequest request, ActionResponse response){
+  @Inject private CrmBatchRepository crmBatchRepo;
 
-		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
+  /**
+   * Lancer le batch de relance
+   *
+   * @param request
+   * @param response
+   */
+  public void actionEventReminder(ActionRequest request, ActionResponse response) {
 
-		Batch batch = crmBatchService.eventReminder(crmBatchRepo.find(crmBatch.getId()));
+    CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
 
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+    Batch batch = crmBatchService.eventReminder(crmBatchRepo.find(crmBatch.getId()));
 
-	/**
-	 * Lancer le batch des objectifs
-	 *
-	 * @param request
-	 * @param response
-	 */
-	public void actionTarget(ActionRequest request, ActionResponse response){
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
+  /**
+   * Lancer le batch des objectifs
+   *
+   * @param request
+   * @param response
+   */
+  public void actionTarget(ActionRequest request, ActionResponse response) {
 
-		Batch batch = crmBatchService.target(crmBatchRepo.find(crmBatch.getId()));
+    CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
 
-		if(batch != null)
-			response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+    Batch batch = crmBatchService.target(crmBatchRepo.find(crmBatch.getId()));
 
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-	// WS
+  // WS
 
-	/**
-	 * Lancer le batch à travers un web service.
-	 *
-	 * @param request
-	 * @param response
-	 * @throws AxelorException
-	 */
-	public void run(ActionRequest request, ActionResponse response) throws AxelorException{
+  /**
+   * Lancer le batch à travers un web service.
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		Batch batch = crmBatchService.run((String) request.getContext().get("code"));
-	    Map<String,Object> mapData = new HashMap<String,Object>();
-		mapData.put("anomaly", batch.getAnomaly());
-		response.setData(mapData);
-	}
+    Batch batch = crmBatchService.run((String) request.getContext().get("code"));
+    Map<String, Object> mapData = new HashMap<String, Object>();
+    mapData.put("anomaly", batch.getAnomaly());
+    response.setData(mapData);
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.base.test.templateRule;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.axelor.apps.base.db.TemplateRule;
 import com.axelor.apps.base.db.TemplateRuleLine;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -32,44 +28,43 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.test.GuiceModules;
 import com.axelor.test.GuiceRunner;
 import com.google.inject.Inject;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @RunWith(GuiceRunner.class)
-@GuiceModules({ TestModule.class })
+@GuiceModules({TestModule.class})
 public class TemplateRuleTest {
-	
-	@Inject
-	private TemplateRuleService trs;
-	
-	private TemplateRule tr;
-	private Model bean;
-	
-	@Inject
-	private PartnerRepository partnerRepo;
-	
-	@Inject
-	private MetaModelRepository metaModelRepository;
-	
-	@Before
-	public void before() {
-		tr = new TemplateRule();
-		tr.setMetaModel(metaModelRepository.findByName("Partner"));
-		
-		TemplateRuleLine line = new TemplateRuleLine();
-		line.setSequence(1);
-		line.setTemplate(new Template("Template 1"));
-		tr.addTemplateRuleLineListItem(line);
-		
-		TemplateRuleLine line2 = new TemplateRuleLine();
-		line2.setSequence(2);
-		line2.setTemplate(new Template("Template 2"));
-		tr.addTemplateRuleLineListItem(line2);
-		
-		bean = partnerRepo.find(Long.valueOf("1"));
-	}
-	
-	@Test
-	public void test1() {
-		trs.getTemplate(bean, tr);
-	}
-	
+
+  @Inject private TemplateRuleService trs;
+
+  private TemplateRule tr;
+  private Model bean;
+
+  @Inject private PartnerRepository partnerRepo;
+
+  @Inject private MetaModelRepository metaModelRepository;
+
+  @Before
+  public void before() {
+    tr = new TemplateRule();
+    tr.setMetaModel(metaModelRepository.findByName("Partner"));
+
+    TemplateRuleLine line = new TemplateRuleLine();
+    line.setSequence(1);
+    line.setTemplate(new Template("Template 1"));
+    tr.addTemplateRuleLineListItem(line);
+
+    TemplateRuleLine line2 = new TemplateRuleLine();
+    line2.setSequence(2);
+    line2.setTemplate(new Template("Template 2"));
+    tr.addTemplateRuleLineListItem(line2);
+
+    bean = partnerRepo.find(Long.valueOf("1"));
+  }
+
+  @Test
+  public void test1() {
+    trs.getTemplate(bean, tr);
+  }
 }

@@ -10,6 +10,13 @@ module {
 	module "modules:axelor-base"
 }
 
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}
+
+
 dependencies {
 	compile 'xalan:xalan:2.7.2'
 

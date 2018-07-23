@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,11 +21,10 @@ import com.axelor.apps.account.db.InvoiceBatch;
 
 public class InvoiceBatchAccountRepository extends InvoiceBatchRepository {
 
-    @Override
-    public InvoiceBatch copy(InvoiceBatch entity, boolean deep) {
-        InvoiceBatch copy = super.copy(entity, deep);
-        copy.setBatchList(null);
-        return copy;
-    }
-
+  @Override
+  public InvoiceBatch copy(InvoiceBatch entity, boolean deep) {
+    InvoiceBatch copy = super.copy(entity, deep);
+    copy.setBatchList(null);
+    return copy;
+  }
 }

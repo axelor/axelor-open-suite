@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -40,72 +33,78 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl  {
+public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	GeneralService generalService;
-	
-	@Override
-	public BigDecimal compute(StockMove stockMove){
-		BigDecimal exTaxTotal = BigDecimal.ZERO;
-		if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-			if((stockMove.getSaleOrder() != null && stockMove.getSaleOrder().getInAti()) || (stockMove.getPurchaseOrder() != null && stockMove.getPurchaseOrder().getInAti())){
-				for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-					exTaxTotal = exTaxTotal.add(stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceTaxed()));
-				}
-			}
-			else{
-				for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-					exTaxTotal = exTaxTotal.add(stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
-				}
-			}
-		}
-		return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	@Override
-	public String realize(StockMove stockMove) throws AxelorException  {
-		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
-		String newStockSeq = super.realize(stockMove);
-		General general = generalService.getGeneral();
-		if (stockMove.getSaleOrder() != null){
-			//Update linked saleOrder delivery state depending on BackOrder's existence
-			SaleOrder saleOrder = stockMove.getSaleOrder();
-			if (newStockSeq != null){
-				saleOrder.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
-			}else{
-				saleOrder.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
-				if (general.getTerminateSaleOrderOnDelivery()){
-					Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
-				}
-			}
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-			Beans.get(SaleOrderRepository.class).save(saleOrder);
-		}else if (stockMove.getPurchaseOrder() != null){
-			//Update linked purchaseOrder receipt state depending on BackOrder's existence
-			PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
-			if (newStockSeq != null){
-				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
-			}else{
-				purchaseOrder.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
-				if (general.getTerminatePurchaseOrderOnReceipt()){
-					Beans.get(PurchaseOrderServiceImpl.class).finishPurchaseOrder(purchaseOrder);
-				}
-			}
+  @Inject GeneralService generalService;
 
-			Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
-		}
+  @Override
+  public BigDecimal compute(StockMove stockMove) {
+    BigDecimal exTaxTotal = BigDecimal.ZERO;
+    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
+      if ((stockMove.getSaleOrder() != null && stockMove.getSaleOrder().getInAti())
+          || (stockMove.getPurchaseOrder() != null && stockMove.getPurchaseOrder().getInAti())) {
+        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+          exTaxTotal =
+              exTaxTotal.add(
+                  stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceTaxed()));
+        }
+      } else {
+        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+          exTaxTotal =
+              exTaxTotal.add(
+                  stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
+        }
+      }
+    }
+    return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
+  }
 
-		return newStockSeq;
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void computeProductWeightedAveragePrice(StockMove stockMove){
-		
-	}
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Override
+  public String realize(StockMove stockMove) throws AxelorException {
+    LOG.debug(
+        "Réalisation du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
+    String newStockSeq = super.realize(stockMove);
+    General general = generalService.getGeneral();
+    if (stockMove.getSaleOrder() != null) {
+      // Update linked saleOrder delivery state depending on BackOrder's existence
+      SaleOrder saleOrder = stockMove.getSaleOrder();
+      if (newStockSeq != null) {
+        saleOrder.setDeliveryState(SaleOrderRepository.STATE_PARTIALLY_DELIVERED);
+      } else {
+        saleOrder.setDeliveryState(SaleOrderRepository.STATE_DELIVERED);
+        if (general.getTerminateSaleOrderOnDelivery()) {
+          Beans.get(SaleOrderServiceImpl.class).finishSaleOrder(saleOrder);
+        }
+      }
 
+      Beans.get(SaleOrderRepository.class).save(saleOrder);
+    } else if (stockMove.getPurchaseOrder() != null) {
+      // Update linked purchaseOrder receipt state depending on BackOrder's existence
+      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
+      if (newStockSeq != null) {
+        purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+      } else {
+        purchaseOrder.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
+        if (general.getTerminatePurchaseOrderOnReceipt()) {
+          Beans.get(PurchaseOrderServiceImpl.class).finishPurchaseOrder(purchaseOrder);
+        }
+      }
+
+      Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
+    }
+
+    return newStockSeq;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void computeProductWeightedAveragePrice(StockMove stockMove) {}
 }

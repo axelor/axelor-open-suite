@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,23 +17,20 @@
  */
 package com.axelor.apps.base.db;
 
-/**
- * Interface of Alarm package. Enum all static variable of packages.
- */
+/** Interface of Alarm package. Enum all static variable of packages. */
 public interface IAlarm {
 
-	/**
-	 * Static select for Alarm & Message
-	 */
+  /** Static select for Alarm & Message */
 
-	// TYPE
-	static final String INVOICE = "invoice";
-	static final String PAYMENT = "payment";
-	static final String REJECT = "reject";
-	
-	// TYPE
-	static final int INVOICING_MANAGER = 1;
-	static final int CONTRACT_MANAGER = 2;
-	static final int COMMERCIAL_MANAGER = 3;
-	static final int TECHNICAL_MANAGER = 4;
+  // TYPE
+  static final String INVOICE = "invoice";
+
+  static final String PAYMENT = "payment";
+  static final String REJECT = "reject";
+
+  // TYPE
+  static final int INVOICING_MANAGER = 1;
+  static final int CONTRACT_MANAGER = 2;
+  static final int COMMERCIAL_MANAGER = 3;
+  static final int TECHNICAL_MANAGER = 4;
 }

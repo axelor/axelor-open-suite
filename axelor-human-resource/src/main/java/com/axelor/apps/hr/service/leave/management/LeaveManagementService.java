@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.hr.service.leave.management;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.joda.time.LocalDate;
-
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
@@ -29,63 +24,76 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
+import org.joda.time.LocalDate;
 
 public class LeaveManagementService {
-	
-	@Inject
-	GeneralService generalService;
-	
-	
-	public LeaveLine computeQuantityAvailable (LeaveLine leaveLine){
-		List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
-		leaveLine.setTotalQuantity(BigDecimal.ZERO);
-		if(leaveManagementList != null && !leaveManagementList.isEmpty()){
-			for (LeaveManagement leaveManagement : leaveManagementList) {
-				leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(leaveManagement.getValue()));
-			}
-			leaveLine.setQuantity( leaveLine.getTotalQuantity().subtract( leaveLine.getDaysValidated()  ) );
-		}
-		return leaveLine;
-	}
-	
-	
-	@Transactional
-	public LeaveManagement createLeaveManagement(LeaveLine leaveLine, User user, String comments, LocalDate date, LocalDate fromDate, LocalDate toDate,  BigDecimal value){
-		
-		LeaveManagement leaveManagement = new LeaveManagement();
-		
-		leaveManagement.setLeaveLine(leaveLine);
-		leaveManagement.setUser(user);
-		leaveManagement.setComments(comments);
-		if (date == null){
-			leaveManagement.setDate(generalService.getTodayDate());
-		}else{
-			leaveManagement.setDate(date);
-		}
-		leaveManagement.setFromDate(fromDate);
-		leaveManagement.setToDate(toDate);
-        leaveManagement.setValue(value);
-		
-		return leaveManagement;
-	}
 
-	/**
-	 * Reset leave management list by adding a new leave management line
-	 * with negative quantity.
-	 * 
-	 * @param leaveLine
-	 * @param user
-	 * @param comments
-	 * @param date
-	 * @param fromDate
-	 * @param toDate
-	 */
-	@Transactional(rollbackOn = { AxelorException.class, Exception.class })
-	public void reset(LeaveLine leaveLine, User user, String comments, LocalDate date, LocalDate fromDate, LocalDate toDate) {
-	    LeaveManagement leaveManagement = createLeaveManagement(leaveLine, user, comments, date, fromDate, toDate, leaveLine.getQuantity().negate());
-	    leaveLine.addLeaveManagementListItem(leaveManagement);
-		leaveLine.setQuantity(BigDecimal.ZERO);
-		leaveLine.setTotalQuantity(BigDecimal.ZERO);
-	}
+  @Inject GeneralService generalService;
 
+  public LeaveLine computeQuantityAvailable(LeaveLine leaveLine) {
+    List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
+    leaveLine.setTotalQuantity(BigDecimal.ZERO);
+    if (leaveManagementList != null && !leaveManagementList.isEmpty()) {
+      for (LeaveManagement leaveManagement : leaveManagementList) {
+        leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(leaveManagement.getValue()));
+      }
+      leaveLine.setQuantity(leaveLine.getTotalQuantity().subtract(leaveLine.getDaysValidated()));
+    }
+    return leaveLine;
+  }
+
+  @Transactional
+  public LeaveManagement createLeaveManagement(
+      LeaveLine leaveLine,
+      User user,
+      String comments,
+      LocalDate date,
+      LocalDate fromDate,
+      LocalDate toDate,
+      BigDecimal value) {
+
+    LeaveManagement leaveManagement = new LeaveManagement();
+
+    leaveManagement.setLeaveLine(leaveLine);
+    leaveManagement.setUser(user);
+    leaveManagement.setComments(comments);
+    if (date == null) {
+      leaveManagement.setDate(generalService.getTodayDate());
+    } else {
+      leaveManagement.setDate(date);
+    }
+    leaveManagement.setFromDate(fromDate);
+    leaveManagement.setToDate(toDate);
+    leaveManagement.setValue(value);
+
+    return leaveManagement;
+  }
+
+  /**
+   * Reset leave management list by adding a new leave management line with negative quantity.
+   *
+   * @param leaveLine
+   * @param user
+   * @param comments
+   * @param date
+   * @param fromDate
+   * @param toDate
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void reset(
+      LeaveLine leaveLine,
+      User user,
+      String comments,
+      LocalDate date,
+      LocalDate fromDate,
+      LocalDate toDate) {
+    LeaveManagement leaveManagement =
+        createLeaveManagement(
+            leaveLine, user, comments, date, fromDate, toDate, leaveLine.getQuantity().negate());
+    leaveLine.addLeaveManagementListItem(leaveManagement);
+    leaveLine.setQuantity(BigDecimal.ZERO);
+    leaveLine.setTotalQuantity(BigDecimal.ZERO);
+  }
 }

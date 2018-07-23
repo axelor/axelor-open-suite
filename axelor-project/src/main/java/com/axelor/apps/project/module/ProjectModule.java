@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -21,12 +21,10 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.project.db.repo.ProjectTaskManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 
-public class ProjectModule extends AxelorModule{
+public class ProjectModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(ProjectTaskRepository.class).to(ProjectTaskManagementRepository.class);
-		
-	}
-
+  @Override
+  protected void configure() {
+    bind(ProjectTaskRepository.class).to(ProjectTaskManagementRepository.class);
+  }
 }

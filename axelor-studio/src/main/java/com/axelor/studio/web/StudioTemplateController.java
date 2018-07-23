@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
@@ -28,34 +28,29 @@ import com.google.inject.Inject;
 
 public class StudioTemplateController {
 
-	@Inject
-	private StudioTemplateService studioTemplateService;
+  @Inject private StudioTemplateService studioTemplateService;
 
-	@Inject
-	private StudioTemplateRepository templateRepo;
+  @Inject private StudioTemplateRepository templateRepo;
 
-	public void importTemplate(ActionRequest request, ActionResponse response) {
+  public void importTemplate(ActionRequest request, ActionResponse response) {
 
-		StudioTemplate template = request.getContext().asType(
-				StudioTemplate.class);
-		template = templateRepo.find(template.getId());
+    StudioTemplate template = request.getContext().asType(StudioTemplate.class);
+    template = templateRepo.find(template.getId());
 
-		String msg = studioTemplateService.importTemplate(template);
-		response.setFlash(msg);
-		response.setReload(true);
-	}
+    String msg = studioTemplateService.importTemplate(template);
+    response.setFlash(msg);
+    response.setReload(true);
+  }
 
-	public void exportTemplate(ActionRequest request, ActionResponse response) {
+  public void exportTemplate(ActionRequest request, ActionResponse response) {
 
-		StudioTemplate template = request.getContext().asType(
-				StudioTemplate.class);
+    StudioTemplate template = request.getContext().asType(StudioTemplate.class);
 
-		MetaFile metaFile = studioTemplateService.export(template.getName());
-		if (metaFile == null) {
-			response.setFlash(I18n.get("Error in export"));
-		}
+    MetaFile metaFile = studioTemplateService.export(template.getName());
+    if (metaFile == null) {
+      response.setFlash(I18n.get("Error in export"));
+    }
 
-		response.setValue("metaFile", metaFile);
-	}
-
+    response.setValue("metaFile", metaFile);
+  }
 }
