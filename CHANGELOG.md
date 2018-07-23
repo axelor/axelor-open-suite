@@ -47,6 +47,7 @@
 - Timesheet: Hide chart when imputing on manufacturing order.
 - BUDGET : Display budget dustribution as editable and check order line amount and total of budget in purchase orderline and invoice line.
 - Stock Rules: Fix npe on stock rule alert.
+- PRODUCT : Remove field 'ean13' which was unused.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
