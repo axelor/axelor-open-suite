@@ -64,14 +64,6 @@ public class PurchaseOrderSupplierService {
 
   @Inject protected PurchaseOrderRepository poRepo;
 
-  protected User user;
-
-  @Inject
-  public PurchaseOrderSupplierService() {
-
-    this.user = AuthUtils.getUser();
-  }
-
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) {
 
@@ -184,7 +176,7 @@ public class PurchaseOrderSupplierService {
 
     PurchaseOrder purchaseOrder =
         purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-            user,
+            AuthUtils.getUser(),
             parentPurchaseOrder.getCompany(),
             null,
             supplierPartner.getCurrency(),
