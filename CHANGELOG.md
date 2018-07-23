@@ -13,6 +13,7 @@
 - Stock location tree: add missing french translation.
 - Improved model studio by removing not required properties from different elements.
 - Move lines: set automatically currency rate and amount in manual move lines.
+- Stock location line: add the dotted field 'product.unit'.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
