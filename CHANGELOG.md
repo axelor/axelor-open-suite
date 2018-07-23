@@ -3,6 +3,7 @@
 ## Features
 - User : Add a search filter to see the active users.
 - Add support for multiple demo data config per app. 
+- Configurator creator : Add demo data.
 
 ## Improvements
 - Stock rules : change column name of code and name to product code and product name.
@@ -11,6 +12,8 @@
 - Apps management: improve layout of applications on the view
 - Stock location tree: add missing french translation.
 - Improved model studio by removing not required properties from different elements.
+- Move lines: set automatically currency rate and amount in manual move lines.
+- Stock location line: add the dotted field 'product.unit'.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
@@ -46,6 +49,8 @@
 - BUDGET : Display budget dustribution as editable and check order line amount and total of budget in purchase orderline and invoice line.
 - Stock Rules: Fix npe on stock rule alert.
 - Fix generated pack sale order lines not having their supply method correctly set.
+- PRODUCT : Remove field 'ean13' which was unused.
+- Model studio: Fix lost translation on field drag. 
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
