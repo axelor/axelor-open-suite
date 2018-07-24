@@ -16,6 +16,7 @@
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
 - Harmonization of Sale order line, purchase order line and invoice line form views.
+- Account : prefill employee/supplier/customer account creation form with default values from configuration.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
