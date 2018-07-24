@@ -15,6 +15,7 @@
 - Move lines: set automatically currency rate and amount in manual move lines.
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
+- Timesheet on operation order: Compute operation order total duration so its always up to date.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
