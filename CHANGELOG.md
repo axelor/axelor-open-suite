@@ -52,6 +52,7 @@
 - PRODUCT : Remove field 'ean13' which was unused.
 - Model studio: Fix lost translation on field drag. 
 - Purchase order: Fix hibernate exception when click on 'Generate suppliers purchase orders' button.
+- Error message instead of NPE on operation order plan with a configuration error.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
