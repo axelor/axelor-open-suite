@@ -64,6 +64,7 @@
 - Move lines: set automatically currency rate and amount in manual move lines.
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
+- Harmonization of Sale order line, purchase order line and invoice line form views.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
