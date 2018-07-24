@@ -101,7 +101,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine)
+      StockMoveLine stockMoveLine,
+      UnitConversionService unitConversionService)
       throws AxelorException {
 
     super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
@@ -113,15 +114,26 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     if (saleOrderLine != null) {
       this.discountAmount = saleOrderLine.getDiscountAmount();
       this.price = saleOrderLine.getPrice();
+      if (this.unit != null && !this.unit.equals(saleOrderLine.getUnit())) {
+        this.qty =
+            unitConversionService.convertWithProduct(
+                this.unit, saleOrderLine.getUnit(), qty, product);
+        this.unit = saleOrderLine.getUnit();
+      }
       this.priceDiscounted = saleOrderLine.getPriceDiscounted();
       this.taxLine = saleOrderLine.getTaxLine();
       this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
       this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
     } else if (purchaseOrderLine != null) {
       this.isTitleLine = purchaseOrderLine.getIsTitleLine();
-      this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();
+      if (this.unit != null && !this.unit.equals(purchaseOrderLine.getUnit())) {
+        this.qty =
+            unitConversionService.convertWithProduct(
+                this.unit, purchaseOrderLine.getUnit(), qty, product);
+        this.unit = purchaseOrderLine.getUnit();
+      }
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
@@ -133,11 +145,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           && this.unit != null
           && !this.unit.equals(saleOrPurchaseUnit)) {
         this.qty =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
+            unitConversionService.convertWithProduct(
+                this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
         this.priceDiscounted =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
+            unitConversionService.convertWithProduct(
+                this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
         this.unit = saleOrPurchaseUnit;
       }
     }

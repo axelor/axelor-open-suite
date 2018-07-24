@@ -24,6 +24,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -55,6 +56,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   @Inject private InvoiceRepository invoiceRepo;
 
   @Inject private PurchaseOrderRepository purchaseOrderRepo;
+
+  @Inject protected UnitConversionService unitConversionService;
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -152,7 +155,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             false,
             null,
             purchaseOrderLine,
-            null) {
+            null,
+            unitConversionService) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 

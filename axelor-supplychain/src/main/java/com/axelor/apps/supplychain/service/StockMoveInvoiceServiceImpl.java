@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -61,6 +62,8 @@ import java.util.List;
 import java.util.Map;
 
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
+
+  @Inject protected UnitConversionService unitConversionService;
 
   private SaleOrderInvoiceService saleOrderInvoiceService;
   private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
@@ -749,7 +752,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             false,
             stockMoveLine.getSaleOrderLine(),
             stockMoveLine.getPurchaseOrderLine(),
-            stockMoveLine) {
+            stockMoveLine,
+            unitConversionService) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 

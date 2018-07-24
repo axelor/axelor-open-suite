@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
@@ -66,6 +67,8 @@ import org.slf4j.LoggerFactory;
 public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Inject protected UnitConversionService unitConversionService;
 
   protected AppSupplychainService appSupplychainService;
 
@@ -516,7 +519,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             false,
             saleOrderLine,
             null,
-            null) {
+            null,
+            unitConversionService) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

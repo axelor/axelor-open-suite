@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.ElementsToInvoiceRepository;
@@ -79,6 +80,8 @@ public class InvoicingProjectService {
   @Inject protected PartnerService partnerService;
 
   @Inject protected InvoicingProjectRepository invoicingProjectRepo;
+
+  @Inject protected UnitConversionService unitConversionService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -210,7 +213,8 @@ public class InvoicingProjectService {
             false,
             saleOrderLine,
             null,
-            null) {
+            null,
+            unitConversionService) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -259,7 +263,8 @@ public class InvoicingProjectService {
             false,
             null,
             purchaseOrderLine,
-            null) {
+            null,
+            unitConversionService) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
