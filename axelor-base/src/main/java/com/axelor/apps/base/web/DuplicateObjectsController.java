@@ -133,7 +133,7 @@ public class DuplicateObjectsController {
       }
     }
     if (!flag) {
-      response.setAlert("Please select original object");
+      response.setAlert(I18n.get(IExceptionMessage.GENERAL_11));
     }
     duplicateObj.remove(original);
     if (originalObj != null) {

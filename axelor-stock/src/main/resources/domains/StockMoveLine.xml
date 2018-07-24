@@ -8,11 +8,11 @@
   <entity name="StockMoveLine" lang="java">
   
   	<many-to-one name="stockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
+    <many-to-one name="plannedStockMove" ref="com.axelor.apps.stock.db.StockMove"/>
 
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
 	<decimal name="qty" title="Expected Qty"/>
 	<decimal name="realQty" title="Real Qty"/>
-	<decimal name="previousQty" title="Previous Qty" nullable="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="netMass" title="Net mass"/>
     <decimal name="totalNetMass" title="Total net mass"/>

@@ -41,19 +41,22 @@
         <field name="stockMove.statusSelect" hidden="true"/>
     </grid>
 
-    <grid name="stock-move-line-non-draft-grid" title="Stock move lines"
+    <grid name="stock-move-line-planned-grid" title="Stock move lines"
         model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
         <field name="product"
+            onChange="action-group-stock-stockmoveline-product-onchange"
+            onSelect="action-stock-move-line-attrs-product-domain"
             form-view="product-form"
             grid-view="product-grid"
-            width="250px" readonly="true"/>
+            width="250px"/>
         <field name="productModel" domain="self.isModel = true "
             form-view="product-form" grid-view="product-grid"
             if="__config__.app.getApp('base').getManageProductVariants()"
-            readonly="true"/>
+            readonlyIf="product"/>
         <field name="productName" required="true" width="200px"/>
         <field name="qty" aggregate="sum"
-            readonly="true" width="100px"/>
+            onChange="action-stock-move-line-group-qty-onchange"
+            width="100px" readonly="true"/>
         <field name="realQty" aggregate="sum"
             onChange="action-stock-move-line-group-real-qty-onchange"
             width="100px"/>
@@ -71,7 +74,7 @@
         <field name="trackingNumber"
             form-view="tracking-number-stock-move-line-form"
             grid-view="tracking-number-grid"
-            readonly="true"/>
+            onSelect="action-stock-move-line-attrs-tracking-number-domain"/>
         <field name="conformitySelect"/>
         <field name="stockMove.statusSelect" hidden="true"/>
     </grid>

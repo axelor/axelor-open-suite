@@ -141,10 +141,11 @@
 	</form>
 	
 	<action-group name="action-group-crm-event-onnew">
+        <action name="action-icalendar-event-default-record"/>
 		<action name="action-event-new-record"/>
 		<action name="action-event-record-current-user"/>
 	</action-group>
-	
+
 	<action-group name="action-group-crm-event-onload">
 		<action name="action-partner-method-check-rights" if="calendar != null"/>
 		<action name="action-event-hide-private" if="typeSelect == 2" />
@@ -261,7 +262,7 @@
     
     <action-group name="action-event-new-record">
     	<action name="action-event-default-record"/>
-    	<action name="action-event-record-default-duration" if="typeSelect != 0"/>
+    	<action name="action-event-record-default-duration"/>
     	<action name="action-event-method-compute-from-duration" if="endDateTime == null"/>
     	<action name="action-event-method-compute-from-start-date-time" if="endDateTime != null"/>
     	<action name="action-event-default-record-user" if="_lead == null &amp;&amp; _partner == null"/>
@@ -312,7 +313,6 @@
     	<field name="lead" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.crm.db.Lead' " />
     	<field name="lead" expr="eval: _eventLead" if="_eventLead != null"/>
     	<field name="relatedToSelect" expr="eval: _relatedToSelect"/>
-    	<field name="calendar" expr="eval: _calendar"/>
     	<field name="typeSelect" expr="eval: _typeSelect"/>
     	<field name="relatedToSelectId" expr="eval: _relatedToSelectId"/>
     </action-record>
@@ -324,9 +324,11 @@
     </action-record>
 
     <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
-    	<field name="duration" expr="3600" if="endDateTime == null"/>
+      <field name="duration"
+        expr="eval: com.axelor.apps.tool.date.DurationTool.computeDuration(startDateTime, endDateTime)"
+        if="startDateTime &amp;&amp; endDateTime" />
     </action-record>
-    
+
     <action-record name="action-event-default-record-user" model="com.axelor.apps.crm.db.Event">
     	<field name="user" expr="eval:__user__" if="typeSelect == 1 || typeSelect == 2 || typeSelect == 3"/>
    		<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>

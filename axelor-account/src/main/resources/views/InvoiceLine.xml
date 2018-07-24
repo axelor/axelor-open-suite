@@ -48,10 +48,10 @@
 				<field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid" domain="self.isModel = false"/>
 				<field name="productName" requiredIf="!isTitleLine"/>
 				<field name="qty" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
-				<field name="price" required="true"  onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
+				<field name="price" required="true"  onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
 				<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="priceDiscounted" hidden="true"/>
-				<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" grid-view="tax-line-grid" form-view="tax-line-form"/>
+				<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 				<field name="exTaxTotal" readonly="true"/>
 				<field name="inTaxTotal" readonly="true"/>
@@ -59,8 +59,8 @@
         		<field name="companyExTaxTotal" hidden="true"/>
       			<field name="companyInTaxTotal" hidden="true"/>
 				<panel name="discount" title="Discount" colSpan="12">
-					<field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
-					<field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
+					<field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
+					<field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
 				</panel>
 			</panel>
 			<panel name="description" title="Description">
@@ -76,7 +76,7 @@
 			</panel>
 			<panel name="budgetPanel" title="Budget distribution" if="__config__.app.isApp('budget')">
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
-				<field name="budgetDistributionList" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
+				<panel-related field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount"/>
 			</panel>
 			<panel name="accounting" title="Accounting">
 				<field name="account" colSpan="9"/>
@@ -183,12 +183,14 @@
     	<action name="action-invoice-line-method-get-product-information"/>
     	<action name="action-invoice-line-method-compute"/>
     	<action name="action-invoice-line-method-compute-analytic-distribution"/>
+    	<action name="action-budget-validate-exceed-line-amount"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-line-qty-onchange">
 		<action name="action-invoice-line-method-get-discount"/>
 		<action name="action-invoice-line-method-compute"/>
 		<action name="action-invoice-line-method-compute-analytic-distribution"/>
+		<action name="action-budget-validate-exceed-line-amount"/>
 	</action-group>
 	
     

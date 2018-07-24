@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -60,7 +59,7 @@ public class PaymentVoucherControlService {
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           paymentVoucher.getRef());
     }
 
@@ -69,7 +68,7 @@ public class PaymentVoucherControlService {
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_1),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           paymentVoucher.getRef());
     }
 
@@ -81,7 +80,7 @@ public class PaymentVoucherControlService {
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
 
     if (journal == null || paymentModeAccount == null) {
@@ -89,7 +88,7 @@ public class PaymentVoucherControlService {
           paymentVoucher,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_3),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
 
     if (journal.getEditReceiptOk()) {
@@ -104,7 +103,7 @@ public class PaymentVoucherControlService {
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_4),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           paymentVoucher.getPaidAmount(),
           paymentVoucher.getPayboxAmountPaid());
     }
