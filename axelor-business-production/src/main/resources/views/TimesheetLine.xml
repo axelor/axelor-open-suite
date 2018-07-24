@@ -17,6 +17,8 @@
 
 	<grid name="timesheet-line-timesheet-operation-order-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
 		onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
+		<hilite if="$get('timesheet.statusSelect') == 5" color="danger" />
+		<field name="timesheet.statusSelect"/>
 		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
 		<field name="duration" width="100" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
