@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,8 @@ import org.slf4j.LoggerFactory;
  * com.google.inject.Singleton} because of AbstractBatch in inheritance chain.
  */
 public class BatchRecomputeStockValues extends BatchStrategy {
+  private static final int WINDOW_SIZE = 50;
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private StockLocationLineService locationLineService;
@@ -69,7 +72,7 @@ public class BatchRecomputeStockValues extends BatchStrategy {
     // com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainImpl.updateLocation,
     // planned is current:false, future:true, REALIZED is current:true,future:true).
     @SuppressWarnings("unchecked")
-    final List<Map<String, Object>> stocks =
+    Query q =
         JPA.em()
             .createQuery(
                 "select new map(product as product, location as location, "
@@ -102,37 +105,44 @@ public class BatchRecomputeStockValues extends BatchStrategy {
             .setParameter("canceledStatus", StockMoveRepository.STATUS_CANCELED)
             .setParameter("virtualLocation", StockLocationRepository.TYPE_VIRTUAL)
             .setParameter("today", LocalDate.now())
-            .setParameter("storableType", ProductRepository.PRODUCT_TYPE_STORABLE)
-            .getResultList();
+            .setParameter("storableType", ProductRepository.PRODUCT_TYPE_STORABLE);
+    int offset = 0;
+    List<Map<String, Object>> stocks;
 
-    for (Map<String, Object> row : stocks) {
-      final Product product = (Product) row.get("product");
-      final StockLocation location = (StockLocation) row.get("location");
-      final Double realQuantity = (Double) row.get("realQuantity");
-      final LocalDate lastFutureQuantity = (LocalDate) row.get("lastFutureQuantity");
-      final Double futureQuantity = (Double) row.get("futureQuantity");
-      final Double avgPrice = (Double) row.get("avgPrice");
-      log.info(
-          "Stock for product #{} ({}) at location #{}: {} (avg price: {}), future quantity: {}, last future quantity: {}",
-          product.getId(),
-          product.getCode(),
-          location.getId(),
-          realQuantity,
-          avgPrice,
-          futureQuantity,
-          lastFutureQuantity);
-      StockLocationLine line = locationLineService.getOrCreateStockLocationLine(location, product);
-      line.setCurrentQty(BigDecimal.valueOf(realQuantity).setScale(10, RoundingMode.HALF_EVEN));
-      line.setAvgPrice(BigDecimal.valueOf(avgPrice).setScale(10, RoundingMode.HALF_EVEN));
-      line.setFutureQty(BigDecimal.valueOf(futureQuantity).setScale(10, RoundingMode.HALF_EVEN));
-      line.setLastFutureStockMoveDate(lastFutureQuantity);
-    }
+    do {
+      stocks = q.setFirstResult(offset).setMaxResults(WINDOW_SIZE).getResultList();
+
+      for (Map<String, Object> row : stocks) {
+        final Product product = (Product) row.get("product");
+        final StockLocation location = (StockLocation) row.get("location");
+        final Double realQuantity = (Double) row.get("realQuantity");
+        final LocalDate lastFutureQuantity = (LocalDate) row.get("lastFutureQuantity");
+        final Double futureQuantity = (Double) row.get("futureQuantity");
+        final Double avgPrice = (Double) row.get("avgPrice");
+        log.info(
+            "Stock for product #{} ({}) at location #{} ({}): {} (avg price: {}), future quantity: {}, last future quantity: {}",
+            product.getId(),
+            product.getCode(),
+            location.getId(),
+            location.getName(),
+            realQuantity,
+            avgPrice,
+            futureQuantity,
+            lastFutureQuantity);
+        StockLocationLine line =
+            locationLineService.getOrCreateStockLocationLine(location, product);
+        line.setCurrentQty(BigDecimal.valueOf(realQuantity).setScale(10, RoundingMode.HALF_EVEN));
+        line.setAvgPrice(BigDecimal.valueOf(avgPrice).setScale(10, RoundingMode.HALF_EVEN));
+        line.setFutureQty(BigDecimal.valueOf(futureQuantity).setScale(10, RoundingMode.HALF_EVEN));
+        line.setLastFutureStockMoveDate(lastFutureQuantity);
+      }
+      offset += WINDOW_SIZE;
+    } while (stocks.size() == WINDOW_SIZE);
 
     // Get information from last inventory on each product. A product can be present several times
     // on the same inventory but only the last recorded line is taken into account (to be consistent
     // with inventory processing)
-    @SuppressWarnings("unchecked")
-    final List<Map<String, Object>> inventories =
+    q =
         JPA.em()
             .createQuery(
                 "select new map(product as product, inventory as inventory, inventoryLine as inventoryLine, stockLocation as stockLocation)"
@@ -149,29 +159,37 @@ public class BatchRecomputeStockValues extends BatchStrategy {
                     + "AND innerLine.realQty IS NOT null AND innerInventory.dateT >= inventory.dateT AND innerInventory.id > inventory.id"
                     + ")"
                     + "ORDER BY product.code, inventory.stockLocation.id")
-            .setParameter("today", ZonedDateTime.now())
-            .getResultList();
+            .setParameter("today", ZonedDateTime.now());
 
-    for (Map<String, Object> row : inventories) {
-      final Product product = (Product) row.get("product");
-      final Inventory inventory = (Inventory) row.get("inventory");
-      final InventoryLine inventoryLine = (InventoryLine) row.get("inventoryLine");
-      final StockLocation stockLocation = (StockLocation) row.get("stockLocation");
-      log.info(
-          "Last inventory info for product #{} ({}) on stock location #{} (#{}): date: {}, rack: {}, quantity: {}",
-          product.getId(),
-          product.getCode(),
-          stockLocation.getId(),
-          stockLocation.getName(),
-          inventory.getDateT(),
-          inventoryLine.getRealQty());
+    offset = 0;
+    List<Map<String, Object>> inventories;
 
-      final StockLocationLine line =
-          locationLineService.getOrCreateStockLocationLine(stockLocation, product);
-      line.setLastInventoryDateT(inventory.getDateT());
-      line.setRack(inventoryLine.getRack());
-      line.setLastInventoryRealQty(inventoryLine.getRealQty());
-    }
+    do {
+      inventories = q.setFirstResult(offset).setMaxResults(WINDOW_SIZE).getResultList();
+
+      for (Map<String, Object> row : inventories) {
+        final Product product = (Product) row.get("product");
+        final Inventory inventory = (Inventory) row.get("inventory");
+        final InventoryLine inventoryLine = (InventoryLine) row.get("inventoryLine");
+        final StockLocation stockLocation = (StockLocation) row.get("stockLocation");
+        log.info(
+            "Last inventory info for product #{} ({}) on stock location #{} ({}): date: {}, rack: {}, quantity: {}",
+            product.getId(),
+            product.getCode(),
+            stockLocation.getId(),
+            stockLocation.getName(),
+            inventory.getDateT(),
+            inventoryLine.getRack(),
+            inventoryLine.getRealQty());
+
+        final StockLocationLine line =
+            locationLineService.getOrCreateStockLocationLine(stockLocation, product);
+        line.setLastInventoryDateT(inventory.getDateT());
+        line.setRack(inventoryLine.getRack());
+        line.setLastInventoryRealQty(inventoryLine.getRealQty());
+      }
+      offset += WINDOW_SIZE;
+    } while (inventories.size() == WINDOW_SIZE);
 
     // Cleanup inconsistent records
     JPA.em()
