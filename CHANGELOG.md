@@ -17,6 +17,7 @@
 - Stock move: make lines fully editable and removable on planned status.
 - Harmonization of Sale order line, purchase order line and invoice line form views.
 - Timesheet on operation order: Compute operation order total duration so its always up to date.
+- Improve partner form view.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
