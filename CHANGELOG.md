@@ -16,6 +16,7 @@
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
 - Harmonization of Sale order line, purchase order line and invoice line form views.
+- Account : prefill employee/supplier/customer account creation form with default values from configuration.
 - Timesheet on operation order: Compute operation order total duration so its always up to date.
 - Improve partner form view.
 - Address: rework coordinates updating.
