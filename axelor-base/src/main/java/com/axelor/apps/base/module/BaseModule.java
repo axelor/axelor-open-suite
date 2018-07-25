@@ -60,6 +60,8 @@ import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
+import com.axelor.apps.base.service.MapRestService;
+import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
@@ -147,5 +149,6 @@ public class BaseModule extends AxelorModule {
     bind(PeriodService.class).to(PeriodServiceImpl.class);
     bind(ConvertDemoDataFileService.class).to(ConvertDemoDataFileServiceImpl.class);
     bind(ImportDemoDataService.class).to(ImportDemoDataServiceImpl.class);
+    bind(MapRestService.class).to(MapRestServiceImpl.class);
   }
 }
