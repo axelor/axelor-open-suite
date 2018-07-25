@@ -10,6 +10,7 @@
 - Stock rules: new message template in demo data.
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
+- Sale/purchase/invoice order lines of type "title" are now displayed in bold.
 - Stock location tree: add missing french translation.
 - Improved model studio by removing not required properties from different elements.
 - Move lines: set automatically currency rate and amount in manual move lines.
