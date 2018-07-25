@@ -228,7 +228,8 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
   @Override
   public BankDetails getCompanySalesBankDetails(Company company, Partner partner) {
     AccountingSituation situation = getAccountingSituation(partner, company);
-    if (situation.getCompanyInBankDetails() != null
+    if (situation != null
+        && situation.getCompanyInBankDetails() != null
         && situation.getCompanyInBankDetails().getActive()) {
       return situation.getCompanyInBankDetails();
     }

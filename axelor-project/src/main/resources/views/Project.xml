@@ -211,6 +211,10 @@
 				<field name="leadDelay" hidden="true"/>
 			</panel>
 
+			<panel name="wiki" title="Wiki">
+				<panel-related field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
+			</panel>
+
 			<panel name="configurations" title="Configurations">
 				<field name="productSet" canEdit="false" if-module="axelor-human-resource"  if="__config__.app.isApp('employee')" grid-view="product-activity-grid" form-view="product-activity-form" domain="self.isActivity = true" colSpan="12" widget="TagSelect"/>
 				<field name="projectCategorySet" colSpan="12" widget="TagSelect"/>
@@ -312,20 +316,23 @@
 	<tree name="project-task-tree" title="Tasks">
     	
     	<column name="name" type="string"/>
+			<column name="taskDate" type="date"/>
     	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="integer"/>
 		<column name="openTask" type="button"/>
 
-		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-team-task-view-task">
+		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-team-task-view-task" orderBy="taskDate">
 			<field name="name" as="name"/>
-			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="taskDate" as="taskDate"/>
+			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
-		
-		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
+
+		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task" orderBy="taskDate">
 			<field name="name" as="name"/>
-			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="taskDate" as="taskDate"/>
+			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
@@ -341,14 +348,14 @@
 
 		<node model="com.axelor.apps.project.db.Project" domain="self.parentProject.id = :id" onClick="action-project-view-phase">
 			<field name="name" as="name"/>
-			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress"/>
 			<button name="openTask" title="Open phase" onClick="action-project-view-phase"/>
 		</node>
 		
 		<node model="com.axelor.team.db.TeamTask" parent="project" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
-			<field name="assignedTo.fullName" as="assignedTo"/>
+			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
@@ -460,13 +467,17 @@
 		<view type="calendar" name="resource-booking-calendar" />
 		<context name="_project" expr="eval:__self__"/>
 	</action-view>
-	
-	<action-view name="action-project-add-task" title="Task" model="com.axelor.team.db.TeamTask">
-		<view type="form" name="team-task-form" />
-		<view type="grid" name="team-task-grid" />
+
+	<action-view name="action-project-add-task" model="com.axelor.team.db.TeamTask" title="Task">
+		<view name="team-task-form" type="form"/>
+		<view name="team-task-grid" type="grid"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="popup-save" value="true"/>
+		<view-param name="show-confirm" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
 		<context name="_project" expr="eval:__self__"/>
 	</action-view>
-	
+
 	<action-view name="action-project-open-popup-select-users" title="Select Users" model="com.axelor.apps.base.db.Wizard">
 	<view type="form" name="user-select-wizard-form"/>
 	 <view-param name="show-toolbar" value="false"/>

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-    <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax">
+    <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax" orderBy="code">
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="name"/>
     </grid>
@@ -18,7 +18,7 @@
 				<field name="activeTaxLine" onSelect="action-base-attrs-domain-active-tax-line" canNew="false" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
 			 	<panel-related field="taxLineList" colSpan="12" canNew="true" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
 			</panel>
-	    	<panel-related title="Accounting configuration" field="taxAccountList" if-module="axelor-account" grid-view="tax-account-grid" form-view="tax-account-form" if="__config__.app.isApp('account')" />
+	    	<panel-related title="Accounting configuration" field="accountManagementList" if-module="axelor-account" grid-view="account-management-tax-grid" form-view="account-management-tax-form" if="__config__.app.isApp('account')" />
 	    </panel-tabs>
 	</form>
 	

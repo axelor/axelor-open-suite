@@ -21,12 +21,6 @@
 	
 	<input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv" search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code" />
 	
-	<input file="account_taxAccount.csv" separator=";" type="com.axelor.apps.account.db.TaxAccount">
-		<bind to="company" search="self.importId = :company_id" update="true" />
-       	<bind to="tax" search="self.code = :tax_code" update="true" />
-		<bind to="account" search="self.code = :account_code and self.company.id = :company_id" update="true" />
-	</input>
-	
 	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code" >
 		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>

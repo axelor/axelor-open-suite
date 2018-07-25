@@ -15,7 +15,7 @@
     <!-- UPDATE STATUS -->
     <integer name="fromStatusSelect" title="Invoice initial status" default="1" selection="iaccount.invoice.status.select"/>
     <integer name="toStatusSelect" title="Invoice final status" default="2" selection="iaccount.invoice.status.select"/>
-    <boolean name="onSelectOk" title="Select invoices manually ?" />
+    <boolean name="onSelectOk" title="Select invoices manually" />
     <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Invoices selection" />
     
     <!-- INVOICE GENERATION -->

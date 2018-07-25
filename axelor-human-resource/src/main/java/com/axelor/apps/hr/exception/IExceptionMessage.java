@@ -117,6 +117,8 @@ public interface IExceptionMessage {
       "Employees' leaves failed to be computed due to configuration anomaly : %s" /*)*/;
   static final String BATCH_LEAVE_MANAGEMENT_ENDING_3 = /*$$(*/
       "Employees' leaves failed to be computed due to missing data : %s" /*)*/;
+  static final String BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS = /*$$(*/
+      "Qty must be lower than %d." /*)*/;
   static final String BATCH_SENIORITY_LEAVE_MANAGEMENT_FORMULA = /*$$(*/
       "There is an error in a formula" /*)*/;
   static final String BATCH_PAYROLL_PREPARATION_GENERATION_RECAP = /*$$(*/

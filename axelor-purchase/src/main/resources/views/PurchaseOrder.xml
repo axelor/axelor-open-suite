@@ -115,7 +115,7 @@
 		</panel>
 
 		<panel name="supplierInformation" title="Supplier information"  hideIf="company == null">
-			<field name="supplierPartner" onChange="action-group-purchase-order-partner-onchange" readonlyIf="statusSelect >= 3" onSelect="action-set-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="supplierPartner" onChange="action-group-purchase-order-partner-onchange" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3" onSelect="action-set-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner"
 				domain="self.isContact = true"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
@@ -209,11 +209,7 @@
             </field>
 	   </panel>
 	   <panel name="financialTerms" title="Financial terms" sidebar="true" colSpan="12">
-			<field name="paymentMode" canEdit="false" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6">
-				<viewer depends="name,code"><![CDATA[
-					{{record.name}} [{{record.code}}]
-				]]></viewer>
-			</field>
+			<field name="paymentMode" canEdit="false" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/> 
 			<field name="paymentCondition" canEdit="false" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/>
 	   </panel>
 	  <panel-mail>
@@ -255,7 +251,7 @@
 					</div>
 			  </div>
 			  <div>
-				  <div class="span7">
+				  <div class="span6">
 					  	<h5>
 							<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
 							<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
@@ -267,7 +263,7 @@
 							<span class="label label-success" ng-show="record.receiptState > 0 && record.receiptState == 3" x-translate>Received</span>
 						</h5>
 				  </div>
-				  <div class="span5">
+				  <div class="span6">
 				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
 				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
 				  </div>
@@ -309,7 +305,7 @@
 					</div>
 			  </div>
 			  <div>
-				  <div class="span7">
+				  <div class="span6">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
 					<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
@@ -321,7 +317,7 @@
 						<span class="label label-success" ng-show="record.receiptState > 0 && record.receiptState == 3" x-translate>Received</span>
 					</h5>
 				  </div>
-				  <div class="span5">
+				  <div class="span6">
 				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
 				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
 				  </div>

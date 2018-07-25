@@ -8,7 +8,7 @@
   <entity name="CostSheetGroup" lang="java">
 
 	<string name="code" title="Code"/>
-	<string name="name" title="Name"/>
+	<string name="name" title="Name" required="true"/>
 	<integer name="costTypeSelect" title="Cost type" selection="production.cost.sheet.group.cost.type.select"/>
     <many-to-many name="costSheetGroupSet" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet groups"/>  
     <integer name="rateTypeSelect" title="Rate type" selection="production.cost.sheet.group.rate.type.select"/>

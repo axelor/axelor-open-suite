@@ -34,13 +34,26 @@ public class AccountAccountRepository extends AccountRepository {
       if (account.getReconcileOk()) {
         Set<Account> accountList = account.getCompatibleAccountSet();
 
-        for (Account acc : accountList) {
-          acc.setReconcileOk(true);
-          acc.addCompatibleAccountSetItem(account);
-          JPA.save(acc);
+        if (accountList != null) {
+          for (Account acc : accountList) {
+            acc.setReconcileOk(true);
+            acc.addCompatibleAccountSetItem(account);
+            JPA.save(acc);
+          }
+        }
+      } else {
+
+        if (account.getCompatibleAccountSet() != null) {
+          for (Account acc : account.getCompatibleAccountSet()) {
+            acc.removeCompatibleAccountSetItem(account);
+            if (acc.getCompatibleAccountSet().size() == 0) {
+              acc.setReconcileOk(false);
+            }
+            JPA.save(acc);
+          }
+          account.getCompatibleAccountSet().clear();
         }
       }
-
       return super.save(account);
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());

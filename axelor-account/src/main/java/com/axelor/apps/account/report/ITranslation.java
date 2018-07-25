@@ -78,6 +78,16 @@ public interface ITranslation {
   public static final String INVOICE_SUBSCRIPTION_PERIOD = /*$$(*/
       "Invoice.subscriptionPeriod"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
+      "AccountingReport.editionDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/
+      "AccountingReport.recapByAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_TOTAL_DEBIT_ACCOUNT = /*$$(*/
+      "AccountingReport.totalDebitAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_TOTAL_CREDIT_ACCOUNT = /*$$(*/
+      "AccountingReport.totalCreditAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_CONTROL = /*$$(*/ "AccountingReport.control"; /*)*/
+
   public static final String ACCOUNTING_REPORT_1_TITLE = /*$$(*/
       "AccountingReportType1.title"; /*)*/
   public static final String ACCOUNTING_REPORT_1_JOURNAL = /*$$(*/
@@ -137,6 +147,9 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_2_GENERAL_BALANCE = /*$$(*/
       "AccountingReportType2.generalBalance"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_6_TITLE = /*$$(*/
+      "AccountingReportType6.title"; /*)*/
+
   public static final String ACCOUNTING_REPORT_15_TITLE = /*$$(*/
       "AccountingReportType15.title"; /*)*/
   public static final String ACCOUNTING_REPORT_15_COMPANY = /*$$(*/
@@ -151,6 +164,8 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_15_PRINT_DATE = /*$$(*/
       "AccountingReportType15.printDate"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
+      "AccountingReportType11.daySubTotal"; /*)*/
   public static final String ACCOUNTING_REPORT_2000_TITLE = /*$$(*/
       "AccountingReportType2000.title"; /*)*/
   public static final String ACCOUNTING_REPORT_2000_ANALYTIC_JOURNAL = /*$$(*/

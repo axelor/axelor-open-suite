@@ -61,7 +61,7 @@
       			<panel name="personalInfo" title="Personal Info." colSpan="12">
         			<field name="birthDate" colSpan="4"/>
         			<field name="maritalStatus" colSpan="4"/>
-        			<field name="socialSecurityNumber" colSpan="4"/>
+        			<field name="socialSecurityNumber" colSpan="4" min="12" max="15"/>
       			</panel>
 	        	<panel name="emergencyContact" title="Contact in case of emergency" colSpan="12">
 	        		<field name="emergencyContact" colSpan="4"/>
@@ -70,7 +70,6 @@
       			<panel name="rhInfo" title="HR Info." colSpan="12">
         			<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
         			<field name="managerUser" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-        			<field name="mainEmploymentContract.companyDepartment" colSpan="4" form-view="company-department-form" grid-view="company-department-grid"/>
         			<field name="timesheetReminder" colSpan="4"/>
         			<field name="external" colSpan="4"/>
         			<field name="weeklyPlanning" colSpan="4" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
@@ -90,6 +89,7 @@
                     <field name="payCompany"/>
                     <field name="executiveStatusSelect"/>
                     <field name="employment"/>
+                    <field name="companyDepartment" form-view="company-department-form" grid-view="company-department-grid"/>
                   </editor>
                 </field>
                 <field name="bonusCoef" colSpan="4" />
@@ -144,6 +144,7 @@
 							<field name="kilometricAllowParam" widget="SuggestBox"/>
 							<field name="startDate"/>
 							<field name="endDate"/>
+                            <field name="vehicleRegistrationCertificate" widget="Image"/>
 						</editor>
 					</field>
 				</panel>

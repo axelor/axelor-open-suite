@@ -16,7 +16,7 @@
           onNew="action-configurator-formula-attrs-hide-metafield"
           onLoad="action-configurator-formula-attrs-hide-metafield">
         <panel>
-            <field name="productMetaField" domain="self.metaModel.name = 'Product' AND self.name != 'configurator'"/>
+            <field name="productMetaField" domain="self.metaModel.name = 'Product' AND (self.relationship != 'OneToMany' OR self.relationship IS NULL) AND self.name != 'configurator'"/>
             <field name="saleOrderLineMetaField" domain="self.metaModel.name = 'SaleOrderLine' "/>
             <field name="formula" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
             <field name="showOnConfigurator"/>

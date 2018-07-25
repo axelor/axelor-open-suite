@@ -90,6 +90,7 @@
             <panel name="Currency" title="Currencies">
                 <field name="currency" readonly="true"/>
                 <field name="companyCurrency" readonly="true"/>
+                <field name="currencyCode" hidden="true"/>
             </panel>
 
             <panel name="others" title="Others">
@@ -134,6 +135,7 @@
     <action-record name="default-move-record-currency" model="com.axelor.apps.account.db.Move">
 		<field name="companyCurrency" expr="eval: company?.currency" />
 		<field name="currency" expr="eval: company?.currency" />
+		<field name="currencyCode" expr="eval: company?.currency.code" />
     </action-record>
 
     <action-record name="action-move-record-journal" model="com.axelor.apps.account.db.Move">

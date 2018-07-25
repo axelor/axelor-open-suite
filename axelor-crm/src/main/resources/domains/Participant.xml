@@ -8,7 +8,7 @@
   <entity name="Participant" lang="java">
 
 	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>  
-	<boolean name="isComing" title="Present ?"/>
+	<boolean name="isComing" title="Present"/>
     
   </entity>
 

@@ -57,10 +57,8 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -204,8 +202,7 @@ public class PartnerController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  public Set<Company> getActiveCompany() {
-    Set<Company> companySet = new HashSet<Company>();
+  public Company getActiveCompany() {
     Company company = Beans.get(UserService.class).getUser().getActiveCompany();
     if (company == null) {
       List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
@@ -213,8 +210,7 @@ public class PartnerController {
         company = companyList.get(0);
       }
     }
-    companySet.add(company);
-    return companySet;
+    return company;
   }
 
   public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {

@@ -61,6 +61,13 @@ public interface ReconcileService {
 
   public List<Reconcile> getReconciles(MoveLine moveLine);
 
+  /**
+   * Add a reconcile to an existing or created reconcile group.
+   *
+   * @param reconcile a confirmed reconcile.
+   */
+  void addToReconcileGroup(Reconcile reconcile) throws AxelorException;
+
   public static boolean isReconcilable(MoveLine acc1, MoveLine acc2) {
     return acc1.getAccount().getReconcileOk()
         && acc2.getAccount().getReconcileOk()

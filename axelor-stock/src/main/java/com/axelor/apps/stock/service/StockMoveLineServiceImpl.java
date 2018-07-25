@@ -42,6 +42,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -49,6 +50,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -373,6 +375,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     StockLocationServiceImpl stockLocationServiceImpl = Beans.get(StockLocationServiceImpl.class);
+    stockMoveLineList = MoreObjects.firstNonNull(stockMoveLineList, Collections.emptyList());
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
 

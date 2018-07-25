@@ -36,7 +36,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
@@ -140,7 +139,7 @@ public class AccountClearanceService {
 
     BigDecimal taxRate =
         taxService.getTaxRate(tax, appBaseService.getTodayDateTime().toLocalDate());
-    Account taxAccount = taxAccountService.getAccount(tax, company);
+    Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
     Account profitAccount = accountConfig.getProfitAccount();
     Journal journal = accountConfig.getAccountClearanceJournal();
 
@@ -228,7 +227,9 @@ public class AccountClearanceService {
     move.getMoveLineList().add(creditMoveLine2);
 
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
-    reconcileService.confirmReconcile(reconcile, true);
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true);
+    }
 
     debitMoveLine.setAccountClearance(accountClearance);
     creditMoveLine1.setAccountClearance(accountClearance);
@@ -268,7 +269,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -276,7 +277,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -284,7 +285,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -293,7 +294,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -301,7 +302,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -309,7 +310,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
   }

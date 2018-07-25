@@ -20,11 +20,14 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.TeamTaskServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
     implements TeamTaskBusinessService {
@@ -54,6 +57,24 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
       task.setSalePrice(saleOrderLine.getProduct().getSalePrice());
     }
     task.setQuantity(saleOrderLine.getQty());
+    return task;
+  }
+
+  @Override
+  public TeamTask create(
+      TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty) {
+    TeamTask task = create(template.getName(), project, template.getAssignedTo());
+
+    task.setTaskDate(date.toLocalDate());
+    task.setTaskEndDate(date.plusHours(template.getDuration().longValue()).toLocalDate());
+
+    BigDecimal plannedHrs = template.getTotalPlannedHrs();
+    if (template.getIsUniqueTaskForMultipleQuantity() && qty.compareTo(BigDecimal.ONE) > 0) {
+      plannedHrs = plannedHrs.multiply(qty);
+      task.setName(task.getName() + " x" + qty.intValue());
+    }
+    task.setTotalPlannedHrs(plannedHrs);
+
     return task;
   }
 }

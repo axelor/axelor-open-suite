@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
@@ -108,7 +107,7 @@ public class BankReconciliationService {
           bankReconciliation,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.BANK_STATEMENT_1),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
   }
 
@@ -191,7 +190,7 @@ public class BankReconciliationService {
           bankReconciliationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.BANK_STATEMENT_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           bankReconciliationLine.getReference());
     }
 
@@ -203,7 +202,7 @@ public class BankReconciliationService {
           bankReconciliationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.BANK_STATEMENT_2),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           bankReconciliationLine.getReference());
     }
   }

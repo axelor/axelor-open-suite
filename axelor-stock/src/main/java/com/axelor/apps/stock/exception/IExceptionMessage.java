@@ -84,6 +84,7 @@ public interface IExceptionMessage {
       "All storable products must have net mass and mass unit information for customs." /*)*/;
   static final String STOCK_MOVE_19 = /*$$(*/
       "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
+  static final String STOCK_MOVE_NOT_DELETED = /*$$(*/ "Can't delete a planned stock move" /*)*/;
   static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/
       "No new stock move was generated" /*)*/;
   static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/
@@ -96,6 +97,8 @@ public interface IExceptionMessage {
       "The tracking number configuration quantity is equal to zero, it must be at least one." /*)*/;
   static final String STOCK_MOVE_TOO_MANY_ITERATION = /*$$(*/
       "Too many iterations while trying to generate stock move line with tracking numbers." /*)*/;
+  static final String STOCK_MOVE_CANNOT_GO_BACK_TO_DRAFT = /*$$(*/
+      "Cannot go back to draft status." /*)*/;
 
   /*
    * Stock Move printing
