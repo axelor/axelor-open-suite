@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -40,7 +41,9 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -430,5 +433,50 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         product.getSaleProductMultipleQtyList(),
         product.getAllowToForceSaleQty(),
         response);
+  }
+
+  @Override
+  public List<SaleOrderLine> createPackLines(Product product, SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> subLines = new ArrayList<>();
+
+    for (PackLine packLine : product.getPackLines()) {
+      SaleOrderLine subLine = this.createPackLine(packLine, saleOrder);
+      subLines.add(subLine);
+    }
+
+    return subLines;
+  }
+
+  @Override
+  public SaleOrderLine createPackLine(PackLine packLine, SaleOrder saleOrder)
+      throws AxelorException {
+    SaleOrderLine subLine = new SaleOrderLine();
+    Product subProduct = packLine.getProduct();
+    subLine.setProduct(subProduct);
+    subLine.setProductName(subProduct.getName());
+    subLine.setPrice(subProduct.getSalePrice());
+    subLine.setUnit(this.getSaleUnit(subLine));
+    subLine.setQty(new BigDecimal(packLine.getQuantity()));
+    subLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, subLine));
+    TaxLine taxLine = this.getTaxLine(saleOrder, subLine);
+    subLine.setTaxLine(taxLine);
+
+    this.computeValues(saleOrder, subLine);
+
+    BigDecimal price = this.getUnitPrice(saleOrder, subLine, taxLine);
+
+    Map<String, Object> discounts = this.getDiscount(saleOrder, subLine, price);
+
+    if (discounts != null) {
+      subLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+      subLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+      if (discounts.get("price") != null) {
+        price = (BigDecimal) discounts.get("price");
+      }
+    }
+    subLine.setPrice(price);
+
+    return subLine;
   }
 }
