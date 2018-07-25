@@ -9,7 +9,7 @@
 		<datetime name="today" title="Today date" tz="true"/>
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
 		<many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language" title="Default Partner language"/>
-		<boolean name="emailAccountByUser" title="Manage mail account by user ?" default="false"/>
+		<boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
 		
 		<!-- Interfaces QAS et SVI -->
 		<string name="qasWsdlUrl" title="URL to QAS WSDL"/>
@@ -24,7 +24,7 @@
 
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
 		
-		<boolean name="hasQasValidation" title="Use QAS Validation ?"/>
+		<boolean name="hasQasValidation" title="Use QAS Validation"/>
 		
 		<integer name="productInAtiSelect" title="Products ATI/WT" selection="base.in.ati.select" default="1"/>
 		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="10" default="2"/>
@@ -43,7 +43,7 @@
 		<boolean name="activateSendingEmail" title="Activate sending email" default="true"/>
 
 		<boolean name="activateBarCodeGeneration" title="Activate bar code generation for products" default="false"/>
-		<boolean name="editProductBarcodeType" title="Edit product barcode type?" default="false"/>
+		<boolean name="editProductBarcodeType" title="Edit product barcode type" default="false"/>
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 		<boolean name="generateProductSequence" title="Generate sequence for products" default="false"/>
 		
@@ -58,8 +58,11 @@
 		<boolean name="document" title="Documents" default="true" />
 		
 		<boolean name="enableTradingNamesManagement" default="false"/>
-		
-		
+
+		<boolean name="enableCalendars" title="Calendar" default="true"/>
+
+        <many-to-one name="passwordChangedTemplate" ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
+
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

@@ -23,10 +23,10 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -99,30 +99,33 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount,
       boolean canBeZeroBalanceOk) {
 
-    log.debug(
-        "Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
-        debitMoveLine.getMove().getCompany(),
-        debitMoveLine.getName(),
-        creditMoveLine.getName(),
-        amount,
-        canBeZeroBalanceOk);
+    if (ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)) {
+      log.debug(
+          "Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
+          debitMoveLine.getMove().getCompany(),
+          debitMoveLine.getName(),
+          creditMoveLine.getName(),
+          amount,
+          canBeZeroBalanceOk);
 
-    Reconcile reconcile =
-        new Reconcile(
-            debitMoveLine.getMove().getCompany(),
-            amount.setScale(2, RoundingMode.HALF_EVEN),
-            debitMoveLine,
-            creditMoveLine,
-            ReconcileRepository.STATUS_DRAFT,
-            canBeZeroBalanceOk);
+      Reconcile reconcile =
+          new Reconcile(
+              debitMoveLine.getMove().getCompany(),
+              amount.setScale(2, RoundingMode.HALF_EVEN),
+              debitMoveLine,
+              creditMoveLine,
+              ReconcileRepository.STATUS_DRAFT,
+              canBeZeroBalanceOk);
 
-    if (!moveToolService.isDebitMoveLine(debitMoveLine)) {
+      if (!moveToolService.isDebitMoveLine(debitMoveLine)) {
 
-      reconcile.setDebitMoveLine(creditMoveLine);
-      reconcile.setCreditMoveLine(debitMoveLine);
+        reconcile.setDebitMoveLine(creditMoveLine);
+        reconcile.setCreditMoveLine(debitMoveLine);
+      }
+
+      return reconcileRepository.save(reconcile);
     }
-
-    return reconcileRepository.save(reconcile);
+    return null;
   }
 
   /**
@@ -165,8 +168,18 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (updateInvoicePayments) {
       this.updateInvoicePayments(reconcile);
     }
+    this.addToReconcileGroup(reconcile);
 
     return reconcileRepository.save(reconcile);
+  }
+
+  @Override
+  public void addToReconcileGroup(Reconcile reconcile) throws AxelorException {
+    ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+
+    ReconcileGroup reconcileGroup = reconcileGroupService.findOrCreateGroup(reconcile);
+
+    reconcileGroupService.addAndValidate(reconcileGroup, reconcile);
   }
 
   public void reconcilePreconditions(Reconcile reconcile) throws AxelorException {
@@ -178,7 +191,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.RECONCILE_1),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
 
     // Check if move lines companies are the same as the reconcile company
@@ -190,7 +203,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       throw new AxelorException(
           String.format(
               I18n.get(IExceptionMessage.RECONCILE_7),
-              AppAccountServiceImpl.EXCEPTION,
+              I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
               debitMoveLineCompany,
               creditMoveLineCompany,
               reconcileCompany),
@@ -212,7 +225,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.RECONCILE_2),
-            AppAccountServiceImpl.EXCEPTION);
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
       }
     }
 
@@ -221,7 +234,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.RECONCILE_4),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           reconcile.getReconcileSeq(),
           debitMoveLine.getName(),
           debitMoveLine.getAccount().getLabel(),
@@ -240,7 +253,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.RECONCILE_5) + " " + I18n.get(IExceptionMessage.RECONCILE_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           reconcile.getReconcileSeq(),
           debitMoveLine.getName(),
           debitMoveLine.getAccount().getLabel(),
@@ -338,10 +351,10 @@ public class ReconcileServiceImpl implements ReconcileService {
           debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
       Reconcile reconcile =
           this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
-
-      this.confirmReconcile(reconcile, updateInvoicePayments);
-
-      return reconcile;
+      if (reconcile != null) {
+        this.confirmReconcile(reconcile, updateInvoicePayments);
+        return reconcile;
+      }
     }
 
     return null;
@@ -374,6 +387,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
+
+    // Update reconcile group
+    Beans.get(ReconcileGroupService.class).remove(reconcile);
   }
 
   public void updateInvoicePaymentsCanceled(Reconcile reconcile) throws AxelorException {
@@ -423,8 +439,10 @@ public class ReconcileServiceImpl implements ReconcileService {
         // Création de la réconciliation
         Reconcile newReconcile =
             this.createReconcile(debitMoveLine, creditAdjustMoveLine, debitAmountRemaining, false);
-        this.confirmReconcile(newReconcile, true);
-        reconcileRepository.save(newReconcile);
+        if (newReconcile != null) {
+          this.confirmReconcile(newReconcile, true);
+          reconcileRepository.save(newReconcile);
+        }
       }
     }
 
@@ -462,8 +480,10 @@ public class ReconcileServiceImpl implements ReconcileService {
           Reconcile newReconcile =
               this.createReconcile(
                   debitAdjustmentMoveLine, creditMoveLine, creditAmountRemaining, false);
-          this.confirmReconcile(newReconcile, true);
-          reconcileRepository.save(newReconcile);
+          if (newReconcile != null) {
+            this.confirmReconcile(newReconcile, true);
+            reconcileRepository.save(newReconcile);
+          }
         }
       }
     }

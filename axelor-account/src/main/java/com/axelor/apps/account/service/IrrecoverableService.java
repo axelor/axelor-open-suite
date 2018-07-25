@@ -44,7 +44,6 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -509,7 +508,7 @@ public class IrrecoverableService {
           irrecoverable,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.IRRECOVERABLE_2),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
     moveService.getMoveValidateService().validateMove(move);
     irrecoverable.getMoveSet().add(move);
@@ -530,7 +529,7 @@ public class IrrecoverableService {
           irrecoverable,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.IRRECOVERABLE_2),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
     moveService.getMoveValidateService().validateMove(move);
     irrecoverable.getMoveSet().add(move);
@@ -860,13 +859,15 @@ public class IrrecoverableService {
           moveLineService.createMoveLine(
               move,
               payerPartner,
-              taxAccountService.getAccount(invoiceLineTax.getTaxLine().getTax(), company),
+              taxAccountService.getAccount(
+                  invoiceLineTax.getTaxLine().getTax(), company, false, false),
               amount,
               true,
               appAccountService.getTodayDate(),
               seq,
               irrecoverableName,
               invoice.getInvoiceId());
+
       move.getMoveLineList().add(debitMoveLine);
       seq++;
       debitAmount = debitAmount.subtract(amount);
@@ -895,7 +896,7 @@ public class IrrecoverableService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           invoice.getInvoiceId());
     }
     customerMoveLine.setIrrecoverableStatusSelect(
@@ -917,7 +918,9 @@ public class IrrecoverableService {
 
     Reconcile reconcile =
         reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount, false);
-    reconcileService.confirmReconcile(reconcile, true);
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true);
+    }
 
     return move;
   }
@@ -967,7 +970,9 @@ public class IrrecoverableService {
     move.getMoveLineList().add(creditMoveLine);
 
     Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
-    reconcileService.confirmReconcile(reconcile, true);
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true);
+    }
 
     Tax tax = accountConfig.getIrrecoverableStandardRateTax();
 
@@ -993,7 +998,7 @@ public class IrrecoverableService {
     move.getMoveLineList().add(creditMoveLine1);
 
     // Debit MoveLine 445 (Tax account)
-    Account taxAccount = taxAccountService.getAccount(tax, company);
+    Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
     BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
     MoveLine creditMoveLine2 =
         moveLineService.createMoveLine(
@@ -1055,7 +1060,7 @@ public class IrrecoverableService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.IRRECOVERABLE_4),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -1090,7 +1095,7 @@ public class IrrecoverableService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-            AppAccountServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             invoice.getInvoiceId());
       }
 
@@ -1118,7 +1123,7 @@ public class IrrecoverableService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           invoice.getInvoiceId());
     }
 

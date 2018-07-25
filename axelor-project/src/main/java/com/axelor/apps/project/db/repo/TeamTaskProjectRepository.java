@@ -22,6 +22,8 @@ import com.axelor.team.db.repo.TeamTaskRepository;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,12 @@ public class TeamTaskProjectRepository extends TeamTaskRepository {
 
   @Override
   public TeamTask save(TeamTask teamTask) {
-    teamTask.setFullName("#" + teamTask.getId() + " " + teamTask.getName());
+    List<String> composedNames = new ArrayList<>();
+    if (teamTask.getId() != null) {
+      composedNames.add("#" + teamTask.getId());
+    }
+    composedNames.add(teamTask.getName());
+    teamTask.setFullName(String.join(" ", composedNames));
     return super.save(teamTask);
   }
 

@@ -8,7 +8,7 @@
                      ref="com.axelor.meta.db.MetaField"/>
         <many-to-one name="saleOrderLineMetaField" title="Sale order line field"
                      ref="com.axelor.meta.db.MetaField"/>
-        <string name="formula" title="Formula"/>
+        <string name="formula" title="Formula" large="true"/>
         <boolean name="showOnConfigurator" title="Show on configurator"/>
         <many-to-one name="creator" ref="com.axelor.apps.sale.db.ConfiguratorCreator"/>
         <integer name="updateFromSelect" title="Update from" default="0" selection="configurator.update.sale.order.line"/>

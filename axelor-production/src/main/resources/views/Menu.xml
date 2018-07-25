@@ -90,7 +90,7 @@
 		<view type="calendar" name="operation-order-real-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
-		<domain>self.statusSelect = 4 OR self.statusSelect = 5</domain>
+		<domain>self.statusSelect = 6</domain>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
@@ -134,6 +134,15 @@
 		model="com.axelor.apps.production.db.Machine" >
 		<view type="grid" name="machine-grid" />
 		<view type="form" name="machine-form" />
+	</action-view>
+	
+	<menuitem name="manufacturing-conf-machine-type" parent="manufacturing-conf"
+		title="Machine Types" action="manufacturing.conf.machine.type" />
+
+	<action-view name="manufacturing.conf.machine.type" title="Machine Types"
+		model="com.axelor.apps.production.db.MachineType" >
+		<view type="grid" name="machine-type-grid" />
+		<view type="form" name="machine-type-form" />
 	</action-view>
 	
 	<menuitem name="manufacturing-conf-cost-sheet-group" parent="manufacturing-conf"

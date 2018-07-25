@@ -6,10 +6,14 @@
     <module name="stock" package="com.axelor.apps.stock.db"/>
 
     <entity name="PartnerStockSettings" cachable="true">
-        <boolean name="stockMoveAutomaticMail"
+        <boolean name="realStockMoveAutomaticMail"
                  title="Send email on stock move realization" default="false"/>
-        <many-to-one name="stockMoveMessageTemplate" title="Message template"
+        <boolean name="plannedStockMoveAutomaticMail"
+                 title="Send email when planning stock move" default="false"/>
+        <many-to-one name="realStockMoveMessageTemplate" title="Message template"
                      ref="com.axelor.apps.message.db.Template"/>
+        <many-to-one name="plannedStockMoveMessageTemplate" title="Message template"
+          ref="com.axelor.apps.message.db.Template"/>
         <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"
                      required="true"/>
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company"

@@ -42,6 +42,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.stringtemplate.v4.AttributeRenderer;
 import org.stringtemplate.v4.DateRenderer;
 import org.stringtemplate.v4.Interpreter;
@@ -169,7 +170,11 @@ public class TemplateMaker {
     _map.put("__datetime__", LocalDateTime.now());
 
     for (String key : _map.keySet()) {
-      st.add(key, _map.get(key));
+      Object value = _map.get(key);
+      if (value instanceof String) {
+        value = StringEscapeUtils.escapeXml11(value.toString());
+      }
+      st.add(key, value);
     }
 
     return _make(st);

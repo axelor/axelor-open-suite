@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.StockMove;
@@ -36,6 +37,8 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -268,6 +271,12 @@ public class OperationOrderWorkflowService {
     operationOrderRepo.save(operationOrder);
   }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
+    finish(operationOrder);
+    Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
+  }
+
   /**
    * Cancels the given {@link OperationOrder} and its linked stock moves And sets its stopping time
    *
@@ -324,13 +333,30 @@ public class OperationOrderWorkflowService {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
-      Machine machine = operationOrder.getWorkCenter().getMachine();
+      WorkCenter machineWorkCenter = operationOrder.getMachineWorkCenter();
+      Machine machine = null;
+      if (machineWorkCenter != null) {
+        machine = machineWorkCenter.getMachine();
+      } else if (operationOrder.getWorkCenter() != null) {
+        machine = operationOrder.getWorkCenter().getMachine();
+      }
       if (machine != null) {
         machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
       }
     }
 
     operationOrderDurationRepo.save(duration);
+  }
+
+  /**
+   * Compute the duration of operation order, then fill {@link OperationOrder#realDuration} with the
+   * computed value.
+   *
+   * @param operationOrder
+   */
+  public void updateRealDuration(OperationOrder operationOrder) {
+    long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
+    operationOrder.setRealDuration(durationLong);
   }
 
   /**
@@ -409,13 +435,13 @@ public class OperationOrderWorkflowService {
       operationOrder.setPlannedDuration(duration);
     }
 
-    duration = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
-    operationOrder.setRealDuration(duration);
+    updateRealDuration(operationOrder);
 
     return operationOrder;
   }
 
-  public LocalDateTime computePlannedEndDateT(OperationOrder operationOrder) {
+  public LocalDateTime computePlannedEndDateT(OperationOrder operationOrder)
+      throws AxelorException {
 
     if (operationOrder.getWorkCenter() != null) {
       return operationOrder
@@ -429,7 +455,8 @@ public class OperationOrderWorkflowService {
     return operationOrder.getPlannedStartDateT();
   }
 
-  public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty) {
+  public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
+      throws AxelorException {
 
     long machineDuration = this.computeMachineDuration(operationOrder, qty);
 
@@ -442,7 +469,8 @@ public class OperationOrderWorkflowService {
     }
   }
 
-  public long computeMachineDuration(OperationOrder operationOrder, BigDecimal qty) {
+  public long computeMachineDuration(OperationOrder operationOrder, BigDecimal qty)
+      throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
@@ -453,6 +481,13 @@ public class OperationOrderWorkflowService {
     if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE
         || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
       Machine machine = workCenter.getMachine();
+      if (machine == null) {
+        throw new AxelorException(
+            workCenter,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE),
+            workCenter.getName());
+      }
       duration += machine.getStartingDuration();
 
       BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());

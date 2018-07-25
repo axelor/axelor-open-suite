@@ -15,15 +15,15 @@
   	<many-to-one name="metaField" title="Field" ref="com.axelor.meta.db.MetaField"/>
   	<many-to-one name="metaJsonField" title="Json Field" ref="com.axelor.meta.db.MetaJsonField"/>
   	<many-to-one name="wkfTransition" ref="com.axelor.studio.db.WkfTransition" />
-  	<string name="operator" title="Operator" selection="studio.filter.operator" />
+  	<string name="operator" title="Operator" selection="studio.filter.operator" required="true" />
   	<many-to-one name="actionBuilder" ref="com.axelor.studio.db.ActionBuilder" />
   	<string name="targetField" title="Target field"/>
   	<string name="targetType" title="Target type"/>
   	<string name="value" title="Value" />
   	<string name="defaultValue" title="Default Value" />
-  	<boolean name="isParameter" title="Is parameter ?" />
-  	<boolean name="isJson" title="Is json ?" />
-  	<boolean name="isTargetJson" title="Target json ?" />
+  	<boolean name="isParameter" title="Is parameter" />
+  	<boolean name="isJson" title="Is json" />
+  	<boolean name="isTargetJson" title="Target json" />
   	<integer name="logicOp" title="Logic operator" selection="studio.filter.logic.operator" default="0"/>
   </entity>
     

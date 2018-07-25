@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.mapper.Mapper;
@@ -45,6 +46,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class StockMoveController {
@@ -115,7 +117,8 @@ public class StockMoveController {
     List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
 
     try {
-      String fileLink = stockMoveService.printStockMove(stockMove, lstSelectedMove, false);
+      String fileLink =
+          stockMoveService.printStockMove(stockMove, lstSelectedMove, IReport.STOCK_MOVE);
       response.setView(ActionView.define(I18n.get("Stock move")).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -134,8 +137,27 @@ public class StockMoveController {
     List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
 
     try {
-      String fileLink = stockMoveService.printStockMove(stockMove, lstSelectedMove, true);
+      String fileLink =
+          stockMoveService.printStockMove(stockMove, lstSelectedMove, IReport.PICKING_STOCK_MOVE);
       response.setView(ActionView.define(I18n.get("Stock move")).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from stock move form view. Print conformity certificate for the given stock move.
+   *
+   * @param request
+   * @param response
+   */
+  public void printConformityCertificate(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      String fileLink =
+          stockMoveService.printStockMove(stockMove, null, IReport.CONFORMITY_CERTIFICATE);
+      response.setView(
+          ActionView.define(I18n.get("Certificate of conformity")).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -220,16 +242,20 @@ public class StockMoveController {
     StockMove stockMove = request.getContext().asType(StockMove.class);
 
     try {
-      StockMove reversion =
+      Optional<StockMove> reversion =
           stockMoveService.generateReversion(stockMoveRepo.find(stockMove.getId()));
-      response.setView(
-          ActionView.define(I18n.get("Stock move"))
-              .model(StockMove.class.getName())
-              .add("grid", "stock-move-grid")
-              .add("form", "stock-move-form")
-              .param("forceEdit", "true")
-              .context("_showRecord", String.valueOf(reversion.getId()))
-              .map());
+      if (reversion.isPresent()) {
+        response.setView(
+            ActionView.define(I18n.get("Stock move"))
+                .model(StockMove.class.getName())
+                .add("grid", "stock-move-grid")
+                .add("form", "stock-move-form")
+                .param("forceEdit", "true")
+                .context("_showRecord", String.valueOf(reversion.get().getId()))
+                .map());
+      } else {
+        response.setFlash(I18n.get("No reversion generated"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

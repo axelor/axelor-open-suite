@@ -7,5 +7,9 @@
         <panel-related field="freightCarrierCustomerAccountNumberList" form-view="freight-carrier-customer-account-number-form"
             grid-view="freight-carrier-customer-account-number-grid" colSpan="12" editable="true" />
     </form>
+    
+    <action-attrs id="action-stock-partner-attrs-set-domain" name="action-partner-attrs-set-domain">
+		<attribute name="domain" for="partner" expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true OR self.isCarrier = true) AND self.isEmployee = false &quot;"/>
+	</action-attrs>
 
 </object-views>

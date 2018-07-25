@@ -24,7 +24,18 @@
 
     <form name="calendar-event-form" title="Event" model="com.axelor.apps.base.db.ICalendarEvent" onNew="action-icalendar-event-default-record">
         <panel>
-            <field name="subject" colSpan="12"/>
+            <field name="subject" showTitle="false" colSpan="12">
+            	<viewer depends="subject">
+                    <![CDATA[
+                        <h3>
+                            <span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.subject}}</span>
+                        </h3>
+                    ]]>
+                </viewer>
+                <editor>
+                    <field name="subject" showTitle="true" colSpan="12"/>
+                </editor>
+            </field>
             <field name="startDateTime" colSpan="5"/>
             <field name="endDateTime" colSpan="5"/>
             <field name="allDay" colSpan="2"/>
@@ -79,7 +90,12 @@
     </action-method>
 
     <action-record name="action-icalendar-event-default-record" model="com.axelor.apps.base.db.ICalendarEvent">
-        <field name="calendar" expr="eval: __repo__(ICalendar).findByUser(__user__)" />
+      <field name="calendar"
+        expr="eval: _calendar ?: __user__.iCalendar ?: __repo__(ICalendar).findByUser(__user__)" />
+      <field name="startDateTime"
+        expr="eval: __config__.app.getTodayDateTime().truncatedTo(java.time.temporal.ChronoUnit.HOURS).plusHours(1)" if="!startDateTime"/>
+      <field name="endDateTime"
+        expr="eval: __config__.app.getTodayDateTime().truncatedTo(java.time.temporal.ChronoUnit.HOURS).plusHours(2)" if="!endDateTime"/>
     </action-record>
 
 </object-views>

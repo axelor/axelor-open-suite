@@ -34,6 +34,7 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -77,13 +78,14 @@ public class ProductionOrderController {
         product = billOfMaterial.getProduct();
       }
 
-      ZonedDateTime startDate;
+      ZonedDateTime startDateT;
       if (context.containsKey("_startDate") && context.get("_startDate") != null) {
-        startDate =
+        startDateT =
             ZonedDateTime.parse(
-                (CharSequence) context.get("_startDate"), DateTimeFormatter.ISO_DATE_TIME);
+                (CharSequence) context.get("_startDate"),
+                DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
       } else {
-        startDate = appBaseService.getTodayDateTime();
+        startDateT = appBaseService.getTodayDateTime();
       }
 
       ProductionOrder productionOrder =
@@ -91,7 +93,7 @@ public class ProductionOrderController {
 
       if (billOfMaterial.getProdProcess() != null) {
         productionOrderService.addManufOrder(
-            productionOrder, product, billOfMaterial, qty, startDate.toLocalDateTime());
+            productionOrder, product, billOfMaterial, qty, startDateT.toLocalDateTime());
       } else {
         response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_GENERATION));
       }

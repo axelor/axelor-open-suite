@@ -135,7 +135,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
 
     this.validToDate(timesheet);
@@ -188,8 +188,8 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validate(Timesheet timesheet) throws AxelorException {
+  @Transactional
+  public void validate(Timesheet timesheet) {
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
@@ -223,8 +223,8 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void refuse(Timesheet timesheet) throws AxelorException {
+  @Transactional
+  public void refuse(Timesheet timesheet) {
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
     timesheet.setRefusedBy(AuthUtils.getUser());
@@ -249,7 +249,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -261,6 +261,12 @@ public class TimesheetServiceImpl implements TimesheetService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void cancel(Timesheet timesheet) {
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
+  }
+
+  @Override
+  @Transactional
+  public void draft(Timesheet timesheet) {
+    timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
   }
 
   @Override

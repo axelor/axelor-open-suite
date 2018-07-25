@@ -35,7 +35,7 @@
 			<field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
 		</panel>
 		<panel sidebar="true" name="actions" title="Actions">
-    		<button name="reconcile" title="Reconcile" showIf="statusSelect == 1 || statusSelect == 3 " onClick="save,action-reconcile-method-reconcile"/>
+    		<button name="reconcile" title="Btn.Reconcile" showIf="statusSelect == 1 || statusSelect == 3 " onClick="save,action-reconcile-method-reconcile"/>
 			<button name="unreconcile" title="Unreconcile" showIf="statusSelect == 2"   onClick="save,action-reconcile-method-unreconcile"/>
 		</panel>
 		<panel sidebar="true" name="info" title="Info">

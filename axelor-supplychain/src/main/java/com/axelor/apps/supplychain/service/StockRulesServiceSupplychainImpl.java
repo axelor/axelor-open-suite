@@ -107,15 +107,18 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
                     "self.metaModel.fullName = ?1 AND self.isSystem != true",
                     StockRules.class.getName())
                 .fetchOne();
-        try {
-          Message message = templateMessageService.generateMessage(stockRules, template);
-          messageRepo.save(message);
-        } catch (ClassNotFoundException
-            | InstantiationException
-            | IllegalAccessException
-            | IOException e) {
-          throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
+        if (template != null) {
+          try {
+            Message message = templateMessageService.generateMessage(stockRules, template);
+            messageRepo.save(message);
+          } catch (ClassNotFoundException
+              | InstantiationException
+              | IllegalAccessException
+              | IOException e) {
+            throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
+          }
         }
+
       } else if (stockRules.getOrderAlertSelect()
           == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
 

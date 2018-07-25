@@ -20,6 +20,7 @@
 			<field name="showSaleInvoiceLineRelatedToProject" widget="boolean-switch"/>
 			<field name="enableToInvoiceTimesheet" widget="boolean-switch" />
 			<field name="enableToInvoiceExpense" widget="boolean-switch" />
+			<field name="enableTaskTemplatesByProduct" widget="boolean-switch"/>
 		</panel>
 	</form>
 	

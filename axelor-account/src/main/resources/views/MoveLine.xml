@@ -20,6 +20,7 @@
         <field name="credit" aggregate="sum" width="100"/>
         <field name="amountRemaining" aggregate="sum" width="100"/>
         <field name="move.statusSelect" width="90"/>
+        <field name="reconcileGroup"/>
     </grid>
     
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines" editable="true" onNew="action-account-move-line-onnew-group">
@@ -27,8 +28,8 @@
 		<field name="date" width="100"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200"/>
-        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90"/>
-        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90"/>
+        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0"/>
+        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
         <field name="origin"/>
         <field name="description"/>
@@ -71,129 +72,165 @@
 		</panel>
     </form>
     
-    <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
-    onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
-    onNew="action-account-move-line-onnew-group" width="large" canNew="false">
-    	
-    	<panel name="movePanel" title="Move">
-	        <field name="move" form-view="move-form" grid-view="move-grid"/>
-    		<field name="move.statusSelect">
-    			<hilite if="move.statusSelect == 1" color="info"/>
-    			<hilite if="move.statusSelect == 4" color="danger"/>
-    		</field>
-    		<field name="move.company"/>
-    		<field name="move.journal"/>
-   			<field name="move.period" canView="false"/>
-    	</panel>
-    	<panel name="informationsPanel" title="Informations" readonly="true" >
-   			<field name="name"/>
-	        <field name="date"/>
-	        <field name="dueDate"/>
-        	<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner"/>
-	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
-	        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-	        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
-	        <field name="amountPaid"/>
-	        <field name="amountRemaining"/>
-	        <field name="description"/>
-	        <field name="origin"/>
-			<field name="taxAmount" showIf="taxAmount != 0"/>
-	   	</panel>
-	   	<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect &gt; 1">
-	        <field name="passageReason" showIf="$number(debit) &gt; 0.00"/>
-	        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
-	        <field name="interbankCodeLine" showIf="interbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
-   		</panel>
-    	
-    	<panel-tabs>
-	        <panel-related field="debitReconcileList" canRemove="false" canNew="false" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
-	        <panel-related field="creditReconcileList"  canRemove="false" canNew="false" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
-	    	
-	    	<panel name="irrecoverable" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect &gt; 1">
-	        	<field name="irrecoverableStatusSelect" /> 
-        		<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
-        		<button name="passInIrrecoverable" title="Shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
-        		<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
-	        </panel>
-	    	
-	    	<panel name="currency" title="Currency">
-	    		<field name="currency" title="Currency and exchange rate">
-		    		<viewer>
+	<form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
+	onLoad="action-move-line-attrs-collapse-irrecoverable-group"
+	onNew="action-account-move-line-onnew-group"
+	canNew="false" canDelete="false">
+		<panel readonly="true">
+			<field name="name" colSpan="8" showTitle="false">
+				<viewer depends="name">
 					<![CDATA[
-						<span>{{ record.currencyRate }} </span> x <span>{{ record.currencyAmount }}</span> <span>{{ record.move.currencyCode }} </span>	
+						<h3>
+							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>Move line</span> {{record.name}}</span>
+						</h3>
 					]]>
+				</viewer>
+			</field>
+			<field name="reconcileGroup.code" colSpan="4" showTitle="false">
+				<viewer depends="reconcileGroup.code">
+					<![CDATA[
+						<h3>
+							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial; text-align:right; display:block; width:100%;">{{record.reconcileGroup.code}}</span>
+						</h3>
+					]]>
+				</viewer>
+			</field>
+			<panel colSpan="12">
+				<field name="date"/>
+				<field name="dueDate" showIf="dueDate"/>
+			</panel>
+			<field name="partner" onSelect="action-move-line-attrs-domain-partner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="account" onSelect="action-move-line-attrs-domain-account" form-view="account-form" grid-view="account-grid"/>
+			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+			<field name="amountRemaining" colSpan="3"/>
+			<field name="amountPaid" colSpan="3"/>
+			<field name="origin" colSpan="12"/>
+			<field name="description" colSpan="12"/>
+			<field name="taxAmount" showIf="taxAmount != 0"/>
+		</panel>
+		<panel-tabs>
+			<panel-related showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(debit) > 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(credit) > 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel name="irrecoverable" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1">
+				<field name="passageReason" showIf="$number(debit) > 0.00"/>
+				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
+				<field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+				<field name="irrecoverableStatusSelect"/>
+				<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
+				<button name="passInIrrecoverable" title="Shift into irrecoverable" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+				<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+			</panel>
+			<panel name="currency" title="Currency">
+				<field name="currency" title="Currency and exchange rate">
+					<viewer>
+						<![CDATA[
+							<span>{{ record.currencyRate }} </span> x <span>{{ record.currencyAmount }}</span> <span>{{ record.move.currencyCode }} </span>
+						]]>
 					</viewer>
-					<editor layout="table" x-show-titles="false" colSpan="12">
+					<editor colSpan="12" layout="table" x-show-titles="false">
 						<field name="currencyRate" readonly="true"/>
 						<field name="currencyAmount" readonly="true"/>
 						<field name="move.currencyCode" readonly="true"/>
 					</editor>
 				</field>
-	    	</panel>
-
-		    <panel name="others" title="Others" readonly="true">
-				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
-					   colSpan="6" grid-view="tax-line-grid" form-view="tax-line-form"/>
+			</panel>
+			<panel name="others" title="Others" readonly="true">
+				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
 				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
-		        <field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect &gt; 1"/>
-		        <field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect &gt; 1"/>
-		    </panel>
-		    <panel-include view="incl-analytic-distribution-move-line-form" />
-        </panel-tabs>
-    </form>
+				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"/>
+				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"/>
+			</panel>
+			<panel-include view="incl-analytic-distribution-move-line-form"/>
+		</panel-tabs>
+		<panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
+			<field name="move" readonly="true" form-view="move-form" grid-view="move-grid" colSpan="6"/>
+			<field name="$viewerTags" showTitle="false" colSpan="6">
+				<viewer depends="move.statusSelect">
+					<![CDATA[
+						<h4>
+							<span class="label label-info" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 1" x-translate>New</span>
+							<span class="label label-warning" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 2" x-translate>Daybook</span>
+							<span class="label label-success" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 3" x-translate>Validated</span>
+							<span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 4" x-translate>Canceled</span>
+						</h4>
+					]]>
+				</viewer>
+			</field>
+			<field name="move.company" colSpan="6"/>
+			<field name="move.journal" colSpan="6"/>
+			<field name="move.period" canView="false" colSpan="6"/>
+		</panel>
+	</form>
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
-		<panel name="main" >
-			<field name="name" css="bold"/>
-			<field name="date" colOffset="3" colSpan="3" onChange="action-move-line-record-update-due-date"/>
-			<panel name="informations" title="Informations" colSpan="12">
-        		<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner"/>
-				<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
-				<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0" css="label-bold bold" colSpan="3"/>
-				<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0" css="label-bold bold" colSpan="3"/>
-				<field name="amountRemaining" colSpan="3"/>
-				<field name="amountPaid" colSpan="3"/>
-				<field name="origin" colSpan="6" />
-				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
-					   colSpan="6" grid-view="tax-line-grid" form-view="tax-line-form"/>
-				<field name="taxAmount" showIf="taxAmount != 0"/>
-				<field name="description" colSpan="12" />
-                <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-			</panel>
-			<panel name="rejectReason" title="Reject reason" colSpan="12" showIf="interbankCodeLine">
-				<field name="interbankCodeLine" showTitle="false" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
-			</panel>
-			<field name="move.statusSelect" hidden="true"/>
-		</panel>
-			
-		<panel-tabs>	
-			<panel-related field="debitReconcileList" canRemove="false" canNew="false" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(debit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
-	        <panel-related field="creditReconcileList"  canRemove="false" canNew="false" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(credit) &gt; 0.00" form-view="reconcile-form" grid-view="move-line-reconcile-grid"/>
-	    	
-			<panel name="debtRecovery" title="Debt Recovery" >
-				<field name="dueDate" colSpan="3"/>
-			</panel>
-			
-			<panel name="currency" title="Currency">
-	    		<field name="currency" title="Currency and exchange rate">
-		    		<viewer>
+				<panel readonly="true">
+			<field name="name" colSpan="8" showTitle="false">
+				<viewer depends="name">
 					<![CDATA[
-						<span>{{ record.currencyRate }} </span> x <span>{{ record.currencyAmount }}</span> <span>{{ record.move.currencyCode }} </span>	
+						<h3>
+							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>Move line</span> {{record.name}}</span>
+						</h3>
 					]]>
+				</viewer>
+			</field>
+			<field name="reconcileGroup.code" colSpan="4" showTitle="false">
+				<viewer depends="reconcileGroup.code">
+					<![CDATA[
+						<h3>
+							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial; text-align:right; display:block; width:100%;">{{record.reconcileGroup.code}}</span>
+						</h3>
+					]]>
+				</viewer>
+			</field>
+			<panel colSpan="12">
+				<field name="date"/>
+				<field name="dueDate" showIf="dueDate"/>
+			</panel>
+			<field name="partner" onSelect="action-move-line-attrs-domain-partner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="account" onSelect="action-move-line-attrs-domain-account" form-view="account-form" grid-view="account-grid"/>
+			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+			<field name="amountRemaining" colSpan="3"/>
+			<field name="amountPaid" colSpan="3"/>
+			<field name="origin" colSpan="12"/>
+			<field name="description" colSpan="12"/>
+			<field name="taxAmount" showIf="taxAmount != 0"/>
+		</panel>
+		<panel-tabs>
+			<panel-related showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(debit) > 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(credit) > 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel name="irrecoverable" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1">
+				<field name="passageReason" showIf="$number(debit) > 0.00"/>
+				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
+				<field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+				<field name="irrecoverableStatusSelect"/>
+				<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
+				<button name="passInIrrecoverable" title="Shift into irrecoverable" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+				<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+			</panel>
+			<panel name="currency" title="Currency">
+				<field name="currency" title="Currency and exchange rate">
+					<viewer>
+						<![CDATA[
+							<span>{{ record.currencyRate }} </span> x <span>{{ record.currencyAmount }}</span> <span>{{ record.move.currencyCode }} </span>
+						]]>
 					</viewer>
-					<editor layout="table" x-show-titles="false" colSpan="12">
+					<editor colSpan="12" layout="table" x-show-titles="false">
 						<field name="currencyRate" readonly="true"/>
 						<field name="currencyAmount" readonly="true"/>
 						<field name="move.currencyCode" readonly="true"/>
 					</editor>
 				</field>
-	    	</panel>
-			<panel name="others" title="Others" showIf="id &amp;&amp; move.statusSelect &gt; 1">
-				<field name="exportedDirectDebitOk" colSpan="12"/>
-				<field name="move" hidden="true"/>
 			</panel>
-			<panel-include view="incl-analytic-distribution-move-line-form" />
+			<panel name="others" title="Others" readonly="true">
+				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
+				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
+				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"/>
+				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"/>
+			</panel>
+			<panel-include view="incl-analytic-distribution-move-line-form"/>
 		</panel-tabs>
 	</form>
     
@@ -210,12 +247,15 @@
 	    <action name="action-move-line-record-get-move-informations"/>
 	    <action name="action-move-line-record-get-first-move-line-informations"/>
 	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
+	    <action name="action-move-line-record-set-currencyRate"/>
+	    <action name="action-move-line-record-set-currencyAmount"/>
     </action-group>
 	
 	<action-group name="action-group-account-moveline-debitcredit-onchange">
 		<action name="action-move-line-debit-credit-validate"/>
 		<action name="action-move-line-debit-credit-clean"/>
 		<action name="action-move-line-method-compute-analytic-distribution"/>
+		<action name="action-move-line-record-set-currencyAmount"/>
 	</action-group>
     
      <action-group name="action-account-move-moveline-onload-group">
@@ -270,13 +310,24 @@
 		<field name="exportedDirectDebitOk" expr="eval: _parent?.moveLineList.get(0).exportedDirectDebitOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
 		<field name="partner" expr="eval: _parent?.moveLineList.get(0).partner" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
 	</action-record>
-	
+
+	<action-record name="action-move-line-record-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
+		<field name="currencyRate" expr="1" if="_parent?.currency == _parent?.companyCurrency"/>
+		<field name="currencyRate" expr="call:com.axelor.apps.base.service.CurrencyService:getCurrencyConversionRate(__parent__.companyCurrency, __parent__.currency)" if="_parent?.currency != _parent?.companyCurrency"/>
+	</action-record>
+
+	<action-record name="action-move-line-record-set-currencyAmount" model="com.axelor.apps.account.db.MoveLine">
+		<field name="currencyAmount" expr="eval: debit" if="debit != 0"/>
+		<field name="currencyAmount" expr="eval: credit" if="credit != 0"/>
+		<field name="currencyAmount" expr="eval: 0" if="debit == 0 &amp;&amp; credit == 0"/>
+	</action-record>
+
 	<action-attrs name="action-move-line-attrs-hidden-reconcileLists">
     	<attribute name="hidden" for="reconcileLists" expr="eval: _parent?.statusSelect == 1" if="eval: _parent?.statusSelect != null"/>
 	</action-attrs>
 	
 	<action-validate name="action-move-line-debit-credit-validate">
-		<alert message="An accounting moveline must have higher a credit value or a debit value." if="debit &gt; 0 &amp;&amp; credit &gt; 0"/>
+		<alert message="An accounting moveline must have either a credit value or a debit value." if="debit &gt; 0 &amp;&amp; credit &gt; 0"/>
 		<alert message="Debit and credit value cannot be negative." if="(debit != null &amp;&amp; debit &lt; 0)||(credit != null &amp;&amp; credit &lt; 0)"/>
 	</action-validate> 
 

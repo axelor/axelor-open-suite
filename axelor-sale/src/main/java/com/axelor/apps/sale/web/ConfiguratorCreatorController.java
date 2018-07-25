@@ -62,18 +62,6 @@ public class ConfiguratorCreatorController {
   }
 
   /**
-   * Called from the configurator creator form on attributes changes
-   *
-   * @param request
-   * @param response
-   */
-  public void updateAttributes(ActionRequest request, ActionResponse response) {
-    ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-    creator = configuratorCreatorRepo.find(creator.getId());
-    response.setSignal("refresh-app", true);
-  }
-
-  /**
    * Called from the configurator creator form on formula changes
    *
    * @param request
