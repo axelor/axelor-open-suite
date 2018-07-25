@@ -27,6 +27,7 @@
 - Selection added for priority of manufacturing order. 
  
 ## Improvements
+- Move project resource menu entry to project configuration menu.
 - Refactor TargetList and Campaign views to follow guidelines.
 - Add Partner balance as a new Accounting report.
 - Rework opportunity view
