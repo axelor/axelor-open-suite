@@ -303,26 +303,31 @@
                     </structure>
                     <structure>
                         <property name="position">28</property>
+                        <property name="name">in_ati</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
                         <property name="name">header</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">29</property>
+                        <property name="position">30</property>
                         <property name="name">footer</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">30</property>
+                        <property name="position">31</property>
                         <property name="name">logoPosition</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">31</property>
+                        <property name="position">32</property>
                         <property name="name">buyer_full_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">32</property>
+                        <property name="position">33</property>
                         <property name="name">buyer_signature_path</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -495,45 +500,70 @@
                 </structure>
                 <structure>
                     <property name="position">28</property>
+                    <property name="name">in_ati</property>
+                    <property name="nativeName">in_ati</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">29</property>
                     <property name="name">header</property>
                     <property name="nativeName">header</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">29</property>
+                    <property name="position">30</property>
                     <property name="name">footer</property>
                     <property name="nativeName">footer</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">30</property>
+                    <property name="position">31</property>
                     <property name="name">logoPosition</property>
                     <property name="nativeName">logoPosition</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">31</property>
+                    <property name="position">32</property>
                     <property name="name">buyer_full_name</property>
                     <property name="nativeName">buyer_full_name</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">32</property>
+                    <property name="position">33</property>
                     <property name="name">buyer_signature_path</property>
                     <property name="nativeName">buyer_signature_path</property>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select PurchaseOrder.purchase_order_seq as seq, PurchaseOrder.id as purchase_id, coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path, PurchaseOrder.delivery_date, PurchaseOrder.status_select,
-Partner.title_select, Partner.name, Partner.first_name, Partner.partner_type_select,
+            <xml-property name="queryText"><![CDATA[select PurchaseOrder.purchase_order_seq as seq,
+PurchaseOrder.id as purchase_id,
+coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
+PurchaseOrder.delivery_date,
+PurchaseOrder.status_select,
+Partner.title_select,
+Partner.name,
+Partner.first_name,
+Partner.partner_type_select,
 Address.addressl2, Address.addressl3, Address.addressl4, Address.addressl5, Address.addressl6,
-Country.name as "countryName", PaymentMode.name as "PaymentMode", PaymentCond.name as "PaymentCond",
-PurchaseOrder.ex_tax_total, PurchaseOrder.in_tax_total, PurchaseOrder.tax_total, Currency.code as "CurrencyCode",
-DefBankDetail.iban, Bank.code as "bic", Company.name as "CompanyName", PurchaseOrder.notes,
-PurchaseOrder.price_display, PurchaseOrder.price_request,
-PrintingSettings.pdf_header as "header", PrintingSettings.pdf_footer as "footer",
+Country.name as "countryName",
+PaymentMode.name as "PaymentMode",
+PaymentCond.name as "PaymentCond",
+PurchaseOrder.ex_tax_total,
+PurchaseOrder.in_tax_total,
+PurchaseOrder.tax_total,
+Currency.code as "CurrencyCode",
+DefBankDetail.iban,
+Bank.code as "bic",
+Company.name as "CompanyName",
+PurchaseOrder.notes,
+PurchaseOrder.price_display,
+PurchaseOrder.price_request,
+PurchaseOrder.in_ati,
+PrintingSettings.pdf_header as "header",
+PrintingSettings.pdf_footer as "footer",
 PrintingSettings.logo_position_select as "logoPosition",
-BuyerUser.full_name as "buyer_full_name", SignatureFile.file_path as "buyer_signature_path"
+BuyerUser.full_name as "buyer_full_name",
+SignatureFile.file_path as "buyer_signature_path"
 from purchase_purchase_order as PurchaseOrder
 left outer join base_company as Company on (PurchaseOrder.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -742,10 +772,22 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
                     <text-property name="heading">UnitPrice</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">totalDiscountAmount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">totalDiscountAmount</text-property>
+                    <text-property name="heading">totalDiscountAmount</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">ex_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ex_tax_total</text-property>
                     <text-property name="heading">ex_tax_total</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">in_ati</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">in_ati</text-property>
+                    <text-property name="heading">in_ati</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">isTitleLine</property>
@@ -816,16 +858,26 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">ex_tax_total</property>
+                        <property name="name">totalDiscountAmount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
+                        <property name="name">ex_tax_total</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">in_ati</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
                         <property name="name">isTitleLine</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">13</property>
                         <property name="name">TaxValue</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -891,29 +943,55 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
+                    <property name="name">totalDiscountAmount</property>
+                    <property name="nativeName">totalDiscountAmount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
+                    <property name="name">in_ati</property>
+                    <property name="nativeName">in_ati</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
                     <property name="name">isTitleLine</property>
                     <property name="nativeName">isTitleLine</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">13</property>
                     <property name="name">TaxValue</property>
                     <property name="nativeName">TaxValue</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Product.code, PurchaseOrder.id as purchase_id, PurchaseOrderLine.id as purchase_line_id, PurchaseOrderLine.product_name, PurchaseOrderLine.description, PurchaseOrderLine.qty,
-Unit.name as "UnitCode", PurchaseOrderLine.price as "UnitPrice", PurchaseOrderLine.ex_tax_total, PurchaseOrderLine.is_title_line as "isTitleLine",
-TaxLine.value as "TaxValue"
+            <xml-property name="queryText"><![CDATA[select 
+	Product.code, 
+	PurchaseOrder.id as purchase_id, 
+	PurchaseOrderLine.id as purchase_line_id, 
+	PurchaseOrderLine.product_name, 
+	PurchaseOrderLine.description, 
+	PurchaseOrderLine.qty,
+	Unit.name as "UnitCode", 
+	PurchaseOrderLine.price as "UnitPrice", 
+	(PurchaseOrderLine.price_discounted - PurchaseOrderLine.price) * PurchaseOrderLine.qty as "totalDiscountAmount",
+	PurchaseOrderLine.ex_tax_total,
+	PurchaseOrderLine.in_tax_total,
+	PurchaseOrder.in_ati,
+	PurchaseOrderLine.is_title_line as "isTitleLine",
+	TaxLine.value as "TaxValue"
 from purchase_purchase_order_line as PurchaseOrderLine
 inner join purchase_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
 left outer join base_product as Product on (PurchaseOrderLine.product = Product.id)
@@ -1539,6 +1617,13 @@ from base_app_base]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">in_ati</property>
+                    <text-property name="displayName">in_ati</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="3810"/>
             <detail>
@@ -1575,13 +1660,13 @@ from base_app_base]]></xml-property>
                                         <text-property name="content"><![CDATA[<TABLE >
 	<TR>
 		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width:'100%' /></td>"
+			"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%' /></td>"
 		} else if(row["logoPosition"] == 1) {
-		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width:'100%' /></TD><TD/><TD>"+row["header"]+"</TD>"
+			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%' /></TD><TD/><TD>"+row["header"]+"</TD>"		
 		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width:'100%' /></TD><TD>"+row["header"]+"</TD>"
+			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%' /></TD><TD>"+row["header"]+"</TD>"
 		}else if(row["logoPosition"] == null) {
-			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width:'100%' />"
+			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%' />"
 		}else {
 		"<TD/><TD/><TD>"+row["header"]+"</TD>"
 		}
@@ -2169,7 +2254,7 @@ row["first_name"]
                                 </cell>
                             </row>
                         </grid>
-                        <table id="3427">
+                        <table name="PurchaseLineTable" id="3427">
                             <property name="marginLeft">2pt</property>
                             <property name="width">7.5in</property>
                             <property name="dataSet">PurchaseLineDs</property>
@@ -2246,6 +2331,93 @@ row["first_name"]
                                     <expression name="expression" type="javascript">dataSetRow["isTitleLine"]</expression>
                                     <property name="dataType">integer</property>
                                 </structure>
+                                <structure>
+                                    <property name="name">totalDiscountAmount</property>
+                                    <text-property name="displayName">totalDiscountAmount</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
+                                    <property name="dataType">decimal</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">inAti</property>
+                                    <text-property name="displayName">inAti</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
+                                    <property name="dataType">boolean</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">in_tax_total</property>
+                                    <text-property name="displayName">in_tax_total</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
+                                    <property name="dataType">decimal</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">tot_all_sub</property>
+                                    <text-property name="displayName">tot_all_sub</text-property>
+                                    <property name="dataType">float</property>
+                                    <property name="aggregateFunction">SUM</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                            <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">sumDiscountLine</property>
+                                    <text-property name="displayName">sumDiscountLine</text-property>
+                                    <property name="dataType">float</property>
+                                    <property name="aggregateFunction">SUM</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                            <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">ex_tax_total_before_discount</property>
+                                    <text-property name="displayName">ex_tax_total_before_discount</text-property>
+                                    <property name="dataType">float</property>
+                                    <property name="aggregateFunction">SUM</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                            <expression name="value" type="javascript">dataSetRow["ex_tax_total"] - dataSetRow["totalDiscountAmount"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">sumNegativeExTaxTotal</property>
+                                    <text-property name="displayName">sumNegativeExTaxTotal</text-property>
+                                    <property name="dataType">float</property>
+                                    <property name="aggregateFunction">SUM</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                            <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"] &lt; 0</expression>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">total_discount</property>
+                                    <text-property name="displayName">total_discount</text-property>
+                                    <expression name="expression" type="javascript">row["sumDiscountLine"] + row["sumNegativeExTaxTotal"]</expression>
+                                    <property name="dataType">decimal</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">in_ati</property>
+                                    <text-property name="displayName">in_ati</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
                             </list-property>
                             <structure name="toc"/>
                             <column id="3847">
@@ -2262,13 +2434,38 @@ row["first_name"]
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row._outer["price_display"] != true &amp;&amp; row._outer["status_select"] &lt; 3</expression>
+                                        <expression name="valueExpr" type="javascript">row._outer["price_display"] != true</expression>
                                     </structure>
                                 </list-property>
-                                <property name="width">0.9270833333333334in</property>
+                                <property name="width">0.7in</property>
+                            </column>
+                            <column id="4420">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["tot_all_sub"] == 0</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="width">0.6in</property>
                             </column>
                             <column id="3450">
-                                <property name="width">0.9791666666666666in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["inAti"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="width">1in</property>
+                            </column>
+                            <column id="4425">
+                                <property name="repeat">1</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row["inAti"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="width">1in</property>
                             </column>
                             <header>
                                 <row id="3428">
@@ -2740,6 +2937,90 @@ row["first_name"]
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
+                                    <cell id="4417">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftColor">black</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">black</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <text id="4156">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">center</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'PurchaseOrder.discountAmount'</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">key</property>
+                                                    <text-property name="displayName">key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
                                     <cell id="3433">
                                         <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
@@ -2872,6 +3153,138 @@ row["first_name"]
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
+                                    <cell id="4426">
+                                        <property name="colSpan">1</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftColor">black</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">black</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <text id="4427">
+                                            <property name="backgroundAttachment">scroll</property>
+                                            <property name="backgroundPositionX">0%</property>
+                                            <property name="backgroundPositionY">0%</property>
+                                            <property name="backgroundRepeat">repeat</property>
+                                            <property name="fontFamily">sans-serif</property>
+                                            <property name="fontSize">8pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="fontStyle">normal</property>
+                                            <property name="fontVariant">normal</property>
+                                            <property name="color">black</property>
+                                            <property name="textLineThrough">none</property>
+                                            <property name="textOverline">none</property>
+                                            <property name="textUnderline">none</property>
+                                            <property name="borderBottomColor">black</property>
+                                            <property name="borderBottomStyle">none</property>
+                                            <property name="borderBottomWidth">medium</property>
+                                            <property name="borderLeftColor">black</property>
+                                            <property name="borderLeftStyle">none</property>
+                                            <property name="borderLeftWidth">medium</property>
+                                            <property name="borderRightColor">black</property>
+                                            <property name="borderRightStyle">none</property>
+                                            <property name="borderRightWidth">medium</property>
+                                            <property name="borderTopColor">black</property>
+                                            <property name="borderTopStyle">none</property>
+                                            <property name="borderTopWidth">medium</property>
+                                            <property name="marginTop">0pt</property>
+                                            <property name="marginLeft">0pt</property>
+                                            <property name="marginBottom">0pt</property>
+                                            <property name="marginRight">0pt</property>
+                                            <property name="paddingTop">1pt</property>
+                                            <property name="paddingLeft">1pt</property>
+                                            <property name="paddingBottom">1pt</property>
+                                            <property name="paddingRight">1pt</property>
+                                            <property name="textAlign">center</property>
+                                            <property name="textIndent">0em</property>
+                                            <property name="letterSpacing">normal</property>
+                                            <property name="lineHeight">normal</property>
+                                            <property name="orphans">2</property>
+                                            <property name="textTransform">none</property>
+                                            <property name="whiteSpace">normal</property>
+                                            <property name="widows">2</property>
+                                            <property name="wordSpacing">normal</property>
+                                            <property name="display">block</property>
+                                            <property name="pageBreakAfter">auto</property>
+                                            <property name="pageBreakBefore">auto</property>
+                                            <property name="pageBreakInside">auto</property>
+                                            <property name="showIfBlank">false</property>
+                                            <property name="canShrink">false</property>
+                                            <property name="overflow">hidden</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'PurchaseOrder.priceInclTax'</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">key</property>
+                                                    <text-property name="displayName">key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
                                 </row>
                             </header>
                             <detail>
@@ -2951,6 +3364,7 @@ row["first_name"]
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
                                         <text id="3886">
+                                            <property name="fontSize">8pt</property>
                                             <property name="marginLeft">2pt</property>
                                             <property name="display">inline</property>
                                             <property name="dataSet">TranslateDS</property>
@@ -3189,6 +3603,72 @@ row["first_name"]
 ]]></text-property>
                                         </text>
                                     </cell>
+                                    <cell id="4418">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderBottomWidth">medium</property>
+                                        <property name="borderLeftColor">#000000</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">#000000</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">3pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">3pt</property>
+                                        <property name="paddingRight">5pt</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="verticalAlign">middle</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <text id="4155">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["totalDiscountAmount"] >= -0.1</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["totalDiscountAmount"]</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
                                     <cell id="3439">
                                         <property name="backgroundAttachment">scroll</property>
                                         <property name="backgroundImageType">url</property>
@@ -3258,7 +3738,236 @@ row["first_name"]
                                         </text>
                                         <text id="3667">
                                             <property name="fontSize">8pt</property>
-                                            <property name="fontWeight">bold</property>
+                                            <property name="fontWeight">normal</property>
+                                            <property name="textAlign">left</property>
+                                            <property name="display">inline</property>
+                                            <property name="dataSet">PurchaseOrderDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["isTitleLine"] == 1</expression>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">purchase_id</property>
+                                                    <text-property name="displayName">purchase_id</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["purchase_id"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">logo_path</property>
+                                                    <text-property name="displayName">logo_path</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">delivery_date</property>
+                                                    <text-property name="displayName">delivery_date</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["delivery_date"]</expression>
+                                                    <property name="dataType">date</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">status_select</property>
+                                                    <text-property name="displayName">status_select</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
+                                                    <property name="dataType">integer</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">title_select</property>
+                                                    <text-property name="displayName">title_select</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">name</property>
+                                                    <text-property name="displayName">name</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">first_name</property>
+                                                    <text-property name="displayName">first_name</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["first_name"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">partner_type_select</property>
+                                                    <text-property name="displayName">partner_type_select</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["partner_type_select"]</expression>
+                                                    <property name="dataType">integer</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">addressl2</property>
+                                                    <text-property name="displayName">addressl2</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["addressl2"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">addressl3</property>
+                                                    <text-property name="displayName">addressl3</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["addressl3"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">addressl4</property>
+                                                    <text-property name="displayName">addressl4</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["addressl4"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">addressl5</property>
+                                                    <text-property name="displayName">addressl5</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["addressl5"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">addressl6</property>
+                                                    <text-property name="displayName">addressl6</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["addressl6"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">countryName</property>
+                                                    <text-property name="displayName">countryName</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["countryName"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">PaymentMode</property>
+                                                    <text-property name="displayName">PaymentMode</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["PaymentMode"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">PaymentCond</property>
+                                                    <text-property name="displayName">PaymentCond</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["PaymentCond"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">ex_tax_total</property>
+                                                    <text-property name="displayName">ex_tax_total</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["ex_tax_total"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">in_tax_total</property>
+                                                    <text-property name="displayName">in_tax_total</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">tax_total</property>
+                                                    <text-property name="displayName">tax_total</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["tax_total"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">CurrencyCode</property>
+                                                    <text-property name="displayName">CurrencyCode</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">iban</property>
+                                                    <text-property name="displayName">iban</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["iban"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">bic</property>
+                                                    <text-property name="displayName">bic</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["bic"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">CompanyName</property>
+                                                    <text-property name="displayName">CompanyName</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["CompanyName"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">notes</property>
+                                                    <text-property name="displayName">notes</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["notes"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="4428">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderBottomWidth">medium</property>
+                                        <property name="borderLeftColor">#000000</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">#000000</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">3pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">3pt</property>
+                                        <property name="paddingRight">5pt</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="verticalAlign">middle</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <text id="4429">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="display">inline</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["isTitleLine"] == 1</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>&amp;nbsp;]]></text-property>
+                                        </text>
+                                        <text id="4430">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="display">inline</property>
                                             <property name="dataSet">PurchaseOrderDS</property>
@@ -3638,7 +4347,113 @@ row["first_name"]
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
                                     </cell>
+                                    <cell id="4419">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">#000000</property>
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftColor">#000000</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">#000000</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                    </cell>
                                     <cell id="3445">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">#000000</property>
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftColor">#000000</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">#000000</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                    </cell>
+                                    <cell id="4431">
                                         <property name="backgroundAttachment">scroll</property>
                                         <property name="backgroundImageType">url</property>
                                         <property name="backgroundPositionX">0%</property>
@@ -4127,19 +4942,172 @@ row["first_name"]
                                     <grid id="3512">
                                         <property name="height">1.0054166666666666cm</property>
                                         <property name="width">8.493125000000001cm</property>
+                                        <property name="dataBindingRef">PurchaseLineTable</property>
                                         <column id="3513"/>
                                         <column id="3514"/>
-                                        <row id="3516">
-                                            <property name="height">0.3175cm</property>
-                                            <cell id="3517">
+                                        <row id="4435">
+                                            <cell id="4436">
+                                                <property name="fontSize">9pt</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
+                                                <text id="4438">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">normal</property>
+                                                    <property name="textAlign">left</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["sumDiscountLine"] == 0 || row._outer["in_ati"]</expression>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'PurchaseOrder.totalExclTaxWithoutDiscount'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">key</property>
+                                                            <text-property name="displayName">key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                            <cell id="4437">
+                                                <property name="fontSize">9pt</property>
+                                                <property name="borderLeftStyle">solid</property>
+                                                <property name="borderLeftWidth">thin</property>
+                                                <property name="borderRightStyle">solid</property>
+                                                <property name="borderRightWidth">thin</property>
+                                                <property name="borderTopStyle">solid</property>
+                                                <property name="borderTopWidth">thin</property>
+                                                <property name="paddingRight">5pt</property>
+                                                <property name="textAlign">right</property>
+                                                <text id="4442">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">normal</property>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="display">inline</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"]</expression>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total_before_discount"]</VALUE-OF>&amp;nbsp;]]></text-property>
+                                                </text>
+                                                <text id="4441">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">normal</property>
+                                                    <property name="display">inline</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"]</expression>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row._outer["CurrencyCode"]</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                        </row>
+                                        <row id="4432">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <cell id="4433">
+                                                <property name="fontSize">9pt</property>
+                                                <property name="borderLeftStyle">solid</property>
+                                                <property name="borderLeftWidth">thin</property>
+                                                <property name="borderRightStyle">solid</property>
+                                                <property name="borderRightWidth">thin</property>
+                                                <text id="4175">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">normal</property>
+                                                    <property name="textAlign">left</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'PurchaseOrder.totalDiscount'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">key</property>
+                                                            <text-property name="displayName">key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                            <cell id="4434">
+                                                <property name="fontSize">9pt</property>
+                                                <property name="borderLeftStyle">solid</property>
+                                                <property name="borderLeftWidth">thin</property>
+                                                <property name="borderRightStyle">solid</property>
+                                                <property name="borderRightWidth">thin</property>
+                                                <property name="paddingRight">5pt</property>
+                                                <property name="textAlign">right</property>
+                                                <text id="4467">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">normal</property>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="display">inline</property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["total_discount"]</VALUE-OF>&amp;nbsp;]]></text-property>
+                                                </text>
+                                                <text id="4468">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">normal</property>
+                                                    <property name="display">inline</property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row._outer["CurrencyCode"]</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                        </row>
+                                        <row id="3516">
+                                            <cell id="3517">
+                                                <property name="fontSize">9pt</property>
+                                                <property name="borderLeftStyle">solid</property>
+                                                <property name="borderLeftWidth">thin</property>
+                                                <property name="borderRightStyle">solid</property>
+                                                <property name="borderRightWidth">thin</property>
                                                 <text id="3530">
-                                                    <property name="fontSize">11pt</property>
+                                                    <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
                                                     <property name="dataSet">TranslateDS</property>
@@ -4170,32 +5138,30 @@ row["first_name"]
                                                 </text>
                                             </cell>
                                             <cell id="3518">
+                                                <property name="fontSize">9pt</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
-                                                <property name="borderTopStyle">solid</property>
-                                                <property name="borderTopWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
                                                 <text id="3531">
-                                                    <property name="fontSize">11pt</property>
+                                                    <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="display">inline</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total"]</VALUE-OF>&amp;nbsp;]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["ex_tax_total"]</VALUE-OF>&amp;nbsp;]]></text-property>
                                                 </text>
                                                 <text id="3532">
-                                                    <property name="fontSize">11pt</property>
+                                                    <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="display">inline</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row._outer["CurrencyCode"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
                                         <row id="3520">
-                                            <property name="height">0.3439583333333333cm</property>
                                             <cell id="3521">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
@@ -4205,7 +5171,7 @@ row["first_name"]
                                                 <property name="backgroundSizeHeight">auto</property>
                                                 <property name="backgroundSizeWidth">auto</property>
                                                 <property name="fontFamily">sans-serif</property>
-                                                <property name="fontSize">10pt</property>
+                                                <property name="fontSize">9pt</property>
                                                 <property name="fontWeight">normal</property>
                                                 <property name="fontStyle">normal</property>
                                                 <property name="fontVariant">normal</property>
@@ -4246,7 +5212,7 @@ row["first_name"]
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
                                                 <text id="3529">
-                                                    <property name="fontSize">11pt</property>
+                                                    <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
                                                     <property name="dataSet">TranslateDS</property>
@@ -4277,6 +5243,7 @@ row["first_name"]
                                                 </text>
                                             </cell>
                                             <cell id="3522">
+                                                <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>
                                                 <property name="borderLeftStyle">solid</property>
@@ -4286,24 +5253,24 @@ row["first_name"]
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
                                                 <text id="3535">
-                                                    <property name="fontSize">11pt</property>
+                                                    <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="display">inline</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["tax_total"]</VALUE-OF>&amp;nbsp;]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["tax_total"]</VALUE-OF>&amp;nbsp;]]></text-property>
                                                 </text>
                                                 <text id="3856">
-                                                    <property name="fontSize">11pt</property>
+                                                    <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="display">inline</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row._outer["CurrencyCode"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
                                         <row id="3524">
                                             <property name="verticalAlign">middle</property>
-                                            <property name="height">1cm</property>
+                                            <property name="height">0.25in</property>
                                             <cell id="3525">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
@@ -4313,7 +5280,112 @@ row["first_name"]
                                                 <property name="backgroundSizeHeight">auto</property>
                                                 <property name="backgroundSizeWidth">auto</property>
                                                 <property name="fontFamily">sans-serif</property>
-                                                <property name="fontSize">10pt</property>
+                                                <property name="fontSize">9pt</property>
+                                                <property name="fontWeight">normal</property>
+                                                <property name="fontStyle">normal</property>
+                                                <property name="fontVariant">normal</property>
+                                                <property name="color">black</property>
+                                                <property name="textLineThrough">none</property>
+                                                <property name="textOverline">none</property>
+                                                <property name="textUnderline">none</property>
+                                                <property name="borderLeftColor">black</property>
+                                                <property name="borderLeftStyle">solid</property>
+                                                <property name="borderLeftWidth">thin</property>
+                                                <property name="borderRightColor">black</property>
+                                                <property name="borderRightStyle">solid</property>
+                                                <property name="borderRightWidth">thin</property>
+                                                <property name="marginTop">0pt</property>
+                                                <property name="marginLeft">0pt</property>
+                                                <property name="marginBottom">0pt</property>
+                                                <property name="marginRight">0pt</property>
+                                                <property name="paddingTop">1pt</property>
+                                                <property name="paddingLeft">1pt</property>
+                                                <property name="paddingBottom">1pt</property>
+                                                <property name="paddingRight">1pt</property>
+                                                <property name="textIndent">0em</property>
+                                                <property name="letterSpacing">normal</property>
+                                                <property name="lineHeight">normal</property>
+                                                <property name="orphans">2</property>
+                                                <property name="textTransform">none</property>
+                                                <property name="whiteSpace">normal</property>
+                                                <property name="widows">2</property>
+                                                <property name="wordSpacing">normal</property>
+                                                <property name="display">block</property>
+                                                <property name="pageBreakAfter">auto</property>
+                                                <property name="pageBreakBefore">auto</property>
+                                                <property name="pageBreakInside">auto</property>
+                                                <property name="showIfBlank">false</property>
+                                                <property name="canShrink">false</property>
+                                                <property name="overflow">hidden</property>
+                                                <text id="3528">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="textAlign">left</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'PurchaseOrder.totalInclTax'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">key</property>
+                                                            <text-property name="displayName">key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                            <cell id="3526">
+                                                <property name="fontSize">9pt</property>
+                                                <property name="borderLeftStyle">solid</property>
+                                                <property name="borderLeftWidth">thin</property>
+                                                <property name="borderRightStyle">solid</property>
+                                                <property name="borderRightWidth">thin</property>
+                                                <property name="borderTopStyle">solid</property>
+                                                <property name="borderTopWidth">thin</property>
+                                                <property name="paddingRight">5pt</property>
+                                                <property name="textAlign">right</property>
+                                                <text id="3536">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="display">inline</property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["in_tax_total"]</VALUE-OF>&amp;nbsp;]]></text-property>
+                                                </text>
+                                                <text id="3857">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="display">inline</property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row._outer["CurrencyCode"]</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                        </row>
+                                        <row id="4443">
+                                            <property name="verticalAlign">middle</property>
+                                            <cell id="4444">
+                                                <property name="backgroundAttachment">scroll</property>
+                                                <property name="backgroundImageType">url</property>
+                                                <property name="backgroundPositionX">0%</property>
+                                                <property name="backgroundPositionY">0%</property>
+                                                <property name="backgroundRepeat">repeat</property>
+                                                <property name="backgroundSizeHeight">auto</property>
+                                                <property name="backgroundSizeWidth">auto</property>
+                                                <property name="fontFamily">sans-serif</property>
+                                                <property name="fontSize">9pt</property>
                                                 <property name="fontWeight">normal</property>
                                                 <property name="fontStyle">normal</property>
                                                 <property name="fontVariant">normal</property>
@@ -4353,16 +5425,22 @@ row["first_name"]
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <text id="3528">
-                                                    <property name="fontSize">11pt</property>
-                                                    <property name="fontWeight">bold</property>
+                                                <text id="4466">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
                                                     <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["sumDiscountLine"] == 0 || !row._outer["in_ati"]</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'PurchaseOrder.totalInclTax'</value>
+                                                                <value type="javascript">'PurchaseOrder.afterDiscount'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -4384,30 +5462,42 @@ row["first_name"]
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="3526">
+                                            <cell id="4445">
+                                                <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
-                                                <property name="borderTopStyle">solid</property>
-                                                <property name="borderTopWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="3536">
-                                                    <property name="fontSize">11pt</property>
-                                                    <property name="fontWeight">bold</property>
+                                                <text id="4469">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">normal</property>
+                                                    <property name="textAlign">right</property>
                                                     <property name="display">inline</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"]</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>&amp;nbsp;]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["total_discount"]</VALUE-OF>&amp;nbsp;]]></text-property>
                                                 </text>
-                                                <text id="3857">
-                                                    <property name="fontSize">11pt</property>
-                                                    <property name="fontWeight">bold</property>
+                                                <text id="4470">
+                                                    <property name="fontSize">9pt</property>
+                                                    <property name="fontWeight">normal</property>
                                                     <property name="display">inline</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"]</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row._outer["CurrencyCode"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -4705,5 +5795,12 @@ row["first_name"]
                 </row>
             </footer>
         </table>
+        <text id="4440">
+            <property name="fontSize">11pt</property>
+            <property name="fontWeight">normal</property>
+            <property name="display">inline</property>
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
+        </text>
     </body>
 </report>
