@@ -1,5 +1,5 @@
 # Changelog
-## [Unreleased 5.0.4]
+## [5.0.4] - 2018-07-26
 ## Features
 - User : Add a search filter to see the active users.
 - Add support for multiple demo data config per app. 
@@ -67,6 +67,7 @@
 - Configurator: fix using M2O in formula.
 - Tracking number search: Fix stock location binding.
 
+
 ## [5.0.3] - 2018-07-06
 ## Improvements
 - Add a panel with Shipping comments in the PackagingList Report.
@@ -121,6 +122,7 @@
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
 
+
 ## [5.0.2] - 2018-06-22
 ## Improvements
 - Added the possibility to have production processes not limited to a single product and thus applicable to all bills of materials.
@@ -141,6 +143,7 @@
 - Web service mobile: change the "create timesheet line" method to update it also, and have duration/hours updated
 - Product : displaying quantities in stock with big numbers (until millions)
 - Manufacturing order: fix NPE when adding manually an operation order, caused by missing work center
+
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
@@ -777,7 +780,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...dev
+[5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...v5.0.2
 [5.0.1]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0...v5.0.1
