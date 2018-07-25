@@ -18,6 +18,7 @@
 - Harmonization of Sale order line, purchase order line and invoice line form views.
 - Timesheet on operation order: Compute operation order total duration so its always up to date.
 - Improve partner form view.
+- Address: rework coordinates updating.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
