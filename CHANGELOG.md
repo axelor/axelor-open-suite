@@ -51,6 +51,7 @@
 - Generating a project from a sale order: "project alone" renamed to "business project", generating a project with a "phase by line" or "task by line" generation type now automatically generates the elements.
 - Employee: Fix always dirty form view.
 - Fix translation : base, hr, project, business-project, accounting, bank-payment and studio.
+- Added missing translations to the french version when generating a project from a sale order.
 - Fixed bugs and updated printings of ATI sales/purchases/invoices. Also fixed generating a stock move from a sale/purchase order (would consider ati unit prices as if they were excluding taxes).
 - Timesheet: Hide chart when imputing on manufacturing order.
 - BUDGET : Display budget dustribution as editable and check order line amount and total of budget in purchase orderline and invoice line.
