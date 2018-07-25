@@ -542,6 +542,7 @@
 "Send a Bank Order",,,
 "Send a bank order",,,
 "Send authentication X002 and Encryption E002 certificates (HIA)",,,
+"Send bank order",,,
 "Send certificate of signature A005 (INI)",,,
 "Send file download request (FDL)",,,
 "Send file upload request (FUL)",,,

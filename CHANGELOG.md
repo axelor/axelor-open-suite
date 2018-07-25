@@ -56,6 +56,7 @@
 - Model studio: Fix lost translation on field drag. 
 - Purchase order: Fix hibernate exception when click on 'Generate suppliers purchase orders' button.
 - Error message instead of NPE on operation order plan with a configuration error.
+- Fix total amount reseting on save in bank orders.
 - Configurator: fix using M2O in formula.
 - Tracking number search: Fix stock location binding.
 
