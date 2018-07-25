@@ -15,6 +15,9 @@
 - Move lines: set automatically currency rate and amount in manual move lines.
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
+- Harmonization of Sale order line, purchase order line and invoice line form views.
+- Timesheet on operation order: Compute operation order total duration so its always up to date.
+- Improve partner form view.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
@@ -54,6 +57,8 @@
 - Purchase order: Fix hibernate exception when click on 'Generate suppliers purchase orders' button.
 - Error message instead of NPE on operation order plan with a configuration error.
 - Fix total amount reseting on save in bank orders.
+- Configurator: fix using M2O in formula.
+- Tracking number search: Fix stock location binding.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements

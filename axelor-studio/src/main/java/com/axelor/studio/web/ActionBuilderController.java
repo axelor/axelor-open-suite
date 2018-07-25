@@ -41,14 +41,18 @@ public class ActionBuilderController {
     ActionBuilder builder = request.getContext().asType(ActionBuilder.class);
     String model = builder.getModel();
 
+    boolean isJson = false;
+    if (builder.getIsJson() != null) {
+      isJson = builder.getIsJson();
+    }
     if (builder.getTypeSelect() == 3 && model != null) {
-      if (!builder.getIsJson()) {
+      if (!isJson) {
         model = model.substring(model.lastIndexOf(".") + 1);
         model = inflector.dasherize(model);
       }
       List<ActionBuilderView> views = new ArrayList<ActionBuilderView>();
-      addActionBuilderView(views, model, "grid", builder.getIsJson(), 0);
-      addActionBuilderView(views, model, "form", builder.getIsJson(), 1);
+      addActionBuilderView(views, model, "grid", isJson, 0);
+      addActionBuilderView(views, model, "form", isJson, 1);
       response.setValue("actionBuilderViews", views);
     }
   }
