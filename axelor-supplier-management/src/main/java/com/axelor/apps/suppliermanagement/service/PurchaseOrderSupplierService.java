@@ -37,7 +37,6 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -63,14 +62,6 @@ public class PurchaseOrderSupplierService {
   @Inject private PurchaseOrderLineService purchaseOrderLineService;
 
   @Inject protected PurchaseOrderRepository poRepo;
-
-  protected User user;
-
-  @Inject
-  public PurchaseOrderSupplierService() {
-
-    this.user = AuthUtils.getUser();
-  }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) {
@@ -184,7 +175,7 @@ public class PurchaseOrderSupplierService {
 
     PurchaseOrder purchaseOrder =
         purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
-            user,
+            AuthUtils.getUser(),
             parentPurchaseOrder.getCompany(),
             null,
             supplierPartner.getCurrency(),

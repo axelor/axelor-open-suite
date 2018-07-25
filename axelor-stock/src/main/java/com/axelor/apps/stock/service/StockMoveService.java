@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface StockMoveService {
 
@@ -122,19 +123,26 @@ public interface StockMoveService {
 
   public void validate(StockMove stockMove) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void goBackToDraft(StockMove stockMove) throws AxelorException;
+
   public void plan(StockMove stockMove) throws AxelorException;
 
   public String realize(StockMove stockMove) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException;
 
   public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList);
 
-  public StockMove copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
+  public Optional<StockMove> copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
 
-  public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split)
+  public Optional<StockMove> copyAndSplitStockMove(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines) throws AxelorException;
+
+  public Optional<StockMove> copyAndSplitStockMoveReverse(StockMove stockMove, boolean split)
+      throws AxelorException;
+
+  public Optional<StockMove> copyAndSplitStockMoveReverse(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, boolean split)
       throws AxelorException;
 
   void cancel(StockMove stockMove) throws AxelorException;
@@ -152,7 +160,7 @@ public interface StockMoveService {
   public void copyQtyToRealQty(StockMove stockMove);
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public StockMove generateReversion(StockMove stockMove) throws AxelorException;
+  public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException;
 
   public StockMove splitInto2(
       StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
