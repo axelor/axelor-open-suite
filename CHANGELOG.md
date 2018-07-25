@@ -10,6 +10,7 @@
 - Add ISPM15 feature on Picking stock move report.
 - New menu entry for calendars and a new sharing system.
 - Product description can be copy to Invoice/Order/Purchase line.
+- Add Wiki tab in project view form and disable project edit from Wiki view.
 - Automatic mail on stock move planning.
 - New printing: certificate of conformity on stock move.
 - Purchases : possibility to set purchases as fixed assets.
