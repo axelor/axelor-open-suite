@@ -54,6 +54,7 @@
 - Model studio: Fix lost translation on field drag. 
 - Purchase order: Fix hibernate exception when click on 'Generate suppliers purchase orders' button.
 - Error message instead of NPE on operation order plan with a configuration error.
+- Configurator: fix using M2O in formula.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
