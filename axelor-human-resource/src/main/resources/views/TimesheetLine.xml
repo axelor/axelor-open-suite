@@ -105,7 +105,8 @@
 	</form>
 
 	<form name="timesheet-line-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" canNew="false"
-	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project">
+	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project"
+	onSave="action-timesheet-line-method-update-operation-order">
 		<panel>
 			<field name="timesheet.company"/>
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>

@@ -357,8 +357,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     BigDecimal totalPack = BigDecimal.ZERO;
 
-    for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
-      totalPack = totalPack.add(subLine.getInTaxTotal());
+    if (saleOrderLine.getSubLineList() != null) {
+      for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
+        totalPack = totalPack.add(subLine.getInTaxTotal());
+      }
     }
 
     return totalPack;

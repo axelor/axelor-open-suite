@@ -72,8 +72,14 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Timesheet timesheet) throws AxelorException;
+
+  /**
+   * Set the timesheet to draft status.
+   *
+   * @param timesheet a timesheet
+   */
+  void draft(Timesheet timesheet);
 
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,

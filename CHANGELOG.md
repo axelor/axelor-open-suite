@@ -65,6 +65,7 @@
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
 - Harmonization of Sale order line, purchase order line and invoice line form views.
+- Timesheet on operation order: Compute operation order total duration so its always up to date.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
@@ -103,6 +104,7 @@
 - Model studio: Fix lost translation on field drag. 
 - Purchase order: Fix hibernate exception when click on 'Generate suppliers purchase orders' button.
 - Error message instead of NPE on operation order plan with a configuration error.
+- Configurator: fix using M2O in formula.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
