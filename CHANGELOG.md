@@ -1,4 +1,10 @@
 # Changelog
+## [Unreleased 5.0.5]
+## Improvements
+
+## Bug Fixes
+
+
 ## [5.0.4] - 2018-07-26
 ## Features
 - User : Add a search filter to see the active users.
@@ -780,6 +786,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[Unreleased 5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...dev
 [5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...v5.0.2
