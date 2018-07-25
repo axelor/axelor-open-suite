@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -151,6 +152,8 @@ public class AppServiceImpl implements AppService {
         log.debug("No config file found for the app: {}", appCode);
         return;
       }
+
+      Arrays.sort(configs);
 
       for (File config : configs) {
         runImport(config, dataDir);

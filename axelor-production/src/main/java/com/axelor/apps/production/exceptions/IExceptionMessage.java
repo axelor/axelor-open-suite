@@ -105,4 +105,7 @@ public interface IExceptionMessage {
   /** Production Order Controller */
   static final String MANUF_ORDER_NO_GENERATION = /*$$(*/
       "Cannot add a manufacturing order without a production process. Please check that your chosen bill of material has a valid production process." /*)*/;
+
+  /** Operation Order Workflow Service */
+  String WORKCENTER_NO_MACHINE = /*$$(*/ "Please fill the machine in the workcenter %s." /*)*/;
 }

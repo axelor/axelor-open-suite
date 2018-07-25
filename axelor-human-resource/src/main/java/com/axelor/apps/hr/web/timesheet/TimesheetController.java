@@ -324,6 +324,26 @@ public class TimesheetController {
   }
 
   /**
+   * Called from timesheet form view, on clicking "return to draft" button. <br>
+   * Call {@link TimesheetService#draft(Timesheet)}
+   *
+   * @param request
+   * @param response
+   */
+  public void draft(ActionRequest request, ActionResponse response) {
+    try {
+      Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+      TimesheetService timesheetService = timesheetServiceProvider.get();
+
+      timesheetService.draft(timesheet);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
    * Action called when confirming a timesheet. Changing status + Sending mail to Manager
    *
    * @param request

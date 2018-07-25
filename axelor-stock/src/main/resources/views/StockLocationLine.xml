@@ -8,6 +8,7 @@
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
     </grid>
@@ -17,6 +18,7 @@
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
+	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
             <field name="avgPrice" x-scale="2"/>
             <field name="rack"/>
@@ -32,6 +34,7 @@
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
     </grid>
@@ -42,6 +45,7 @@
             <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
             <field name="currentQty" colSpan="4"/>
             <field name="futureQty" colSpan="4"/>
+            <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" x-scale="2" colSpan="4"/>
             <field name="rack"/>
         </panel>
@@ -51,6 +55,7 @@
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
         <field name="rack"/>
@@ -62,6 +67,7 @@
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
+	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" x-scale="2"/>
 	        <field name="lastFutureStockMoveDate"/>
             <field name="rack"/>
@@ -76,6 +82,7 @@
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
         <field name="rack"/>
@@ -86,6 +93,7 @@
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" domain="self.product = :product"/>
         <field name="rack"/>
     </grid>
@@ -95,6 +103,7 @@
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
+	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" x-scale="2"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 	        <field name="trackingNumber" domain="self.product = :product"/>
