@@ -33,6 +33,7 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
@@ -47,6 +48,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -54,6 +56,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -72,6 +75,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ProductVariantService productVariantService;
   protected AppProductionService appProductionService;
   protected ManufOrderRepository manufOrderRepo;
+  protected ProdProductRepository prodProductRepo;
 
   @Inject
   public ManufOrderServiceImpl(
@@ -80,13 +84,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ManufOrderWorkflowService manufOrderWorkflowService,
       ProductVariantService productVariantService,
       AppProductionService appProductionService,
-      ManufOrderRepository manufOrderRepo) {
+      ManufOrderRepository manufOrderRepo,
+      ProdProductRepository prodProductRepo) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
     this.manufOrderWorkflowService = manufOrderWorkflowService;
     this.productVariantService = productVariantService;
     this.appProductionService = appProductionService;
     this.manufOrderRepo = manufOrderRepo;
+    this.prodProductRepo = prodProductRepo;
   }
 
   @Override
@@ -126,7 +132,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     if (billOfMaterial.getBillOfMaterialSet() != null) {
 
-      for (BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterial billOfMaterialLine :
+          getSortedBillsOfMaterials(billOfMaterial.getBillOfMaterialSet())) {
 
         if (!billOfMaterialLine.getHasNoManageStock()) {
 
@@ -140,11 +147,24 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                   .multiply(manufOrderQty)
                   .setScale(2, RoundingMode.HALF_EVEN);
 
-          manufOrder.addToConsumeProdProductListItem(
-              new ProdProduct(product, qty, billOfMaterialLine.getUnit()));
+          ProdProduct prodProduct = new ProdProduct(product, qty, billOfMaterialLine.getUnit());
+          manufOrder.addToConsumeProdProductListItem(prodProduct);
+          prodProductRepo.persist(prodProduct); // id by order of creation
         }
       }
     }
+  }
+
+  private List<BillOfMaterial> getSortedBillsOfMaterials(
+      Collection<BillOfMaterial> billsOfMaterials) {
+
+    billsOfMaterials = MoreObjects.firstNonNull(billsOfMaterials, Collections.emptyList());
+    return billsOfMaterials
+        .stream()
+        .sorted(
+            Comparator.comparing(BillOfMaterial::getPriority)
+                .thenComparing(Comparator.comparing(BillOfMaterial::getId)))
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -336,14 +356,16 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return billOfMaterial;
   }
 
+  /** Returns the quantity produced by a manufacturing order. */
   @Override
   public BigDecimal getProducedQuantity(ManufOrder manufOrder) {
-    for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
-      if (stockMoveLine.getProduct().equals(manufOrder.getProduct())) {
-        return stockMoveLine.getRealQty();
-      }
-    }
-    return BigDecimal.ZERO;
+    return manufOrder
+        .getProducedStockMoveLineList()
+        .stream()
+        .filter(stockMoveLine -> manufOrder.getProduct().equals(stockMoveLine.getProduct()))
+        .map(StockMoveLine::getRealQty)
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
   }
 
   @Override
@@ -472,7 +494,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
               .filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
               .collect(Collectors.toList());
       if (stockMoveLineProductList.isEmpty()) {
-        continue;
+        StockMoveLine stockMoveLine = new StockMoveLine();
+        stockMoveLineProductList.add(stockMoveLine);
       }
       BigDecimal diffQty = computeDiffQty(prodProduct, stockMoveLineProductList, product);
       if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
@@ -510,7 +533,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     this.updateDiffProdProductList(manufOrder);
     List<StockMoveLine> consumedStockMoveLineList = manufOrder.getConsumedStockMoveLineList();
@@ -552,24 +575,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       return;
     }
 
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-    stockMoveService.cancel(stockMove);
+    // add missing lines in stock move
+    stockMoveLineList
+        .stream()
+        .filter(stockMoveLine -> stockMoveLine.getStockMove() == null)
+        .forEach(stockMove::addStockMoveLineListItem);
 
-    try {
-      // add missing lines in stock move
-      stockMoveLineList
-          .stream()
-          .filter(stockMoveLine -> stockMoveLine.getStockMove() == null)
-          .forEach(stockMove::addStockMoveLineListItem);
-
-      // remove lines in stock move removed in manuf order
-      if (stockMove.getStockMoveLineList() != null) {
-        stockMove
-            .getStockMoveLineList()
-            .removeIf(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine));
-      }
-    } finally {
-      stockMoveService.plan(stockMove);
+    // remove lines in stock move removed in manuf order
+    if (stockMove.getStockMoveLineList() != null) {
+      stockMove
+          .getStockMoveLineList()
+          .removeIf(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine));
     }
   }
 

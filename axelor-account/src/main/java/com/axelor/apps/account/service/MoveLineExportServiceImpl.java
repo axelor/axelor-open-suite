@@ -39,7 +39,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -226,7 +225,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_1),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -242,7 +241,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_2),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -258,7 +257,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_3),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -274,7 +273,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_4),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 

@@ -18,7 +18,6 @@
 package com.axelor.apps.base.service.imports;
 
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaFile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,7 +25,7 @@ import java.text.ParseException;
 
 public interface ImportDemoDataService {
 
-  public MetaFile importDemoDataExcel(File excelFile)
+  public boolean importDemoDataExcel(File excelFile, File logFile)
       throws FileNotFoundException, IOException, AxelorException, ParseException,
           ClassNotFoundException;
 }

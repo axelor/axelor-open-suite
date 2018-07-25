@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentScheduleService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -496,7 +495,7 @@ public class CfonbExportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           "%s :\n " + I18n.get(IExceptionMessage.CFONB_EXPORT_1) + " %s",
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           reimbursement.getRef());
     }
 
@@ -559,7 +558,7 @@ public class CfonbExportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-            AppAccountServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             partner.getName());
       }
     } else {
@@ -614,7 +613,7 @@ public class CfonbExportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           partner.getName());
     }
 
@@ -794,7 +793,7 @@ public class CfonbExportService {
           e.getCause(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_EXPORT_2),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           e);
     }
   }
@@ -901,7 +900,7 @@ public class CfonbExportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_EXPORT_3),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }
@@ -909,7 +908,7 @@ public class CfonbExportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_EXPORT_4),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }
@@ -917,7 +916,7 @@ public class CfonbExportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_EXPORT_5),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }
@@ -926,7 +925,7 @@ public class CfonbExportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_EXPORT_6),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }

@@ -190,7 +190,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Override
   public void updateTotalAmounts(BankOrder bankOrder) throws AxelorException {
-    bankOrder.setArithmeticTotal(this.computeBankOrderTotalAmount(bankOrder));
+    if (bankOrder.getOrderTypeSelect().equals(BankOrderRepository.ORDER_TYPE_SEND_BANK_ORDER)) {
+      bankOrder.setArithmeticTotal(bankOrder.getBankOrderTotalAmount());
+    } else {
+      bankOrder.setArithmeticTotal(this.computeBankOrderTotalAmount(bankOrder));
+    }
 
     if (!bankOrder.getIsMultiCurrency()) {
       bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());

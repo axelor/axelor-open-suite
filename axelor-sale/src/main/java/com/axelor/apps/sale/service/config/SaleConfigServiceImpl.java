@@ -18,7 +18,6 @@
 package com.axelor.apps.sale.service.config;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -36,7 +35,7 @@ public class SaleConfigServiceImpl implements SaleConfigService {
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.SALE_CONFIG_1),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 

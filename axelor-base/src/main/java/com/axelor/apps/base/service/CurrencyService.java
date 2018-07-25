@@ -57,6 +57,11 @@ public class CurrencyService {
     this.today = today;
   }
 
+  public BigDecimal getCurrencyConversionRate(Currency startCurrency, Currency endCurrency)
+      throws AxelorException {
+    return this.getCurrencyConversionRate(startCurrency, endCurrency, this.today);
+  }
+
   public BigDecimal getCurrencyConversionRate(
       Currency startCurrency, Currency endCurrency, LocalDate date) throws AxelorException {
 

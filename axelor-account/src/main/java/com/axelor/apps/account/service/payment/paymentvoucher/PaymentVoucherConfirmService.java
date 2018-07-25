@@ -33,7 +33,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -128,7 +127,7 @@ public class PaymentVoucherConfirmService {
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PAYBOX_3),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
 
     if (paymentVoucher.getPayboxPaidOk()) {

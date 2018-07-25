@@ -146,10 +146,10 @@
 				</panel>
 			</panel>
 
-			<panel name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 5" itemSpan="12">
+			<panel name="activities" title="Activities" itemSpan="12">
 				<button name="showAllEvents" title="Show all events" css="btn-custom text-left" icon="fa-tasks" readonlyIf="id == null" onClick="action-lead-view-events"/>
-				<panel-related colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid"/>
-				<panel-related colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid"/>
+				<panel-related colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
+				<panel-related colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 				<panel-dashlet action="action-lead-view-emails"/>
 				<panel-dashlet if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns"/>
 			</panel>
@@ -234,13 +234,7 @@
 		<action name="action-lead-default-record-new"/>
 	</action-group>
 	
-	<action-group name="action-group-crm-lead-iscopyaddress-onchange">
-		<action name="action-lead-record-other-address"/>
-		<action name="action-lead-attrs-readonly-other-address"/>
-	</action-group>
-
 	<action-group name="action-group-crm-lead-onload">
-		<action name="action-lead-attrs-readonly-other-address"/>
         <action name="action-lead-method-set-social-network-url"/>
         <action name="action-crm-lead-method-check-name"/>
 	</action-group>
@@ -283,14 +277,6 @@
 	  	<context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
 
-    <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
-    	<field name="otherAddress" expr="eval: primaryAddress" if="isCopyAddress"/>
-    	<field name="otherCity" expr="eval: primaryCity" if="isCopyAddress"/>
-    	<field name="otherState" expr="eval: primaryState" if="isCopyAddress"/>
-    	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="isCopyAddress"/>
-    	<field name="otherCountry" expr="eval: primaryCountry" if="isCopyAddress"/>
-    </action-record>
-   	
    	<action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-lead-wizard-form"/>
 		<context name="_lead" expr="eval: __self__"/>
@@ -307,7 +293,7 @@
     <action-view name="action-lead-view-schedule-event" title="Schedule Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
     	<view type="grid" name="event-grid"/>
-    	<context name="_lead" expr="eval: __self__"/>
+    	<context name="_lead" expr="eval: __this__"/>
     </action-view>
     
     <action-view name="action-lead-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
