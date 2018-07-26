@@ -8,7 +8,7 @@
   <entity name="IrrecoverableReportLine" lang="java">
   
   	<many-to-one name="irrecoverableInvoiceLine" ref="com.axelor.apps.account.db.IrrecoverableInvoiceLine" title="Invoice" index="idx_acc_irreco_report_line_irreco_inv_line"/>
-  	<many-to-one name="irrecoverablePaymentScheduleLineLine" ref="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" title="Rejected Schedule line" index="idx_acc_irreco_report_line_irreco_paym_schedule_line_line"/>
+  	<many-to-one name="irrecoverablePaymentScheduleLineLine" ref="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" title="Rejected schedule line" index="idx_acc_irreco_report_line_irreco_paym_schedule_line_line"/>
   	<integer name="reportLineSeq" title="Reference"/>
   	<string name="label" title="Label" readonly="true"/>
   	<decimal name="value" title="Value" readonly="true"/>

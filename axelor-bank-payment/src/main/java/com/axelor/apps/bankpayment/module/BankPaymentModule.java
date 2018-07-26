@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
@@ -35,6 +36,8 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankServiceImpl;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerServiceImpl;
+import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
+import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
@@ -90,5 +93,9 @@ public class BankPaymentModule extends AxelorModule {
     bind(AccountingBatchService.class).to(AccountingBatchBankPaymentService.class);
 
     bind(BatchBankPaymentService.class).to(BatchBankPaymentServiceImpl.class);
+
+    bind(PaymentScheduleLineServiceImpl.class).to(PaymentScheduleLineBankPaymentServiceImpl.class);
+    bind(PaymentScheduleLineBankPaymentService.class)
+        .to(PaymentScheduleLineBankPaymentServiceImpl.class);
   }
 }

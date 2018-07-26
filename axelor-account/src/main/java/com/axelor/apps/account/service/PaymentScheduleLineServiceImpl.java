@@ -112,12 +112,14 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
       LocalDate scheduleDate) {
 
     PaymentScheduleLine paymentScheduleLine = new PaymentScheduleLine();
-
-    paymentScheduleLine.setPaymentSchedule(paymentSchedule);
     paymentScheduleLine.setScheduleLineSeq(scheduleLineSeq);
     paymentScheduleLine.setScheduleDate(scheduleDate);
     paymentScheduleLine.setInTaxAmount(inTaxAmount);
     paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_DRAFT);
+
+    if (paymentSchedule != null) {
+      paymentSchedule.addPaymentScheduleLineListItem(paymentScheduleLine);
+    }
 
     log.debug(
         "Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}",

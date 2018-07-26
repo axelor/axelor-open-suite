@@ -13,7 +13,7 @@
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" />
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" required="true"/>
-    <one-to-many name="paymentScheduleLineList" ref="PaymentScheduleLine" mappedBy="paymentSchedule" title="Schedule lines" readonly="false"/>
+    <one-to-many name="paymentScheduleLineList" ref="PaymentScheduleLine" mappedBy="paymentSchedule" title="Schedule lines" readonly="false" orderBy="scheduleLineSeq"/>
     <integer name="statusSelect" title="Status" default="1" selection="iaccount.payment.schedule.status.select" readonly="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>

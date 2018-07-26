@@ -49,7 +49,7 @@
 		<panel-related title="Payment schedule lines" field="paymentScheduleLineList" editable="true" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
 			readonlyIf="statusSelect != 1" />
 
-		<panel name="actions" title="Actions" sidebar="true">
+		<panel name="actions" sidebar="true">
 			<button name="validate" title="Validate" onClick="action-group-account-payment-schedule-validate-click" hideIf="!paymentScheduleLineList || paymentScheduleLineList.length == 0 || statusSelect != 1" colSpan="12" />
 			<button name="cancel" title="Cancel" onClick="save,action-payment-schedule-method-cancel,save" hideIf="statusSelect == 4" colSpan="12" />
 			<button name="createPaymentScheduleLines" title="Create schedule lines" onClick="action-group-account-payment-schedule-create-click" showIf="statusSelect == 1" colSpan="12" />
