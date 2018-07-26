@@ -24,7 +24,8 @@
 - Add Timer to Ticket.
 - Stock location line : add two buttons to see 'Planned' and 'Realized' stock move details for the current product and location.
 - Machine type added for the machine.
-- Selection added for priority of manufacturing order. 
+- Selection added for priority of manufacturing order.
+- Payment schedule line: management of direct debit rejection.
  
 ## Improvements
 - Move project resource menu entry to project configuration menu.

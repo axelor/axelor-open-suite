@@ -35,7 +35,9 @@
 	    	else return " - ";
 	    ]]>
     </string>
-    
+
+    <finder-method name="findByIdList" using="java.util.List&lt;Long&gt;:idList" filter="self.id IN (:idList)" all="true"/>
+
    	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT
@@ -45,7 +47,7 @@
 		public static final int STATUS_CLOSED = 4;
 	
 	]]></extra-code>   
-    
+
   </entity>
   
 </domain-models>

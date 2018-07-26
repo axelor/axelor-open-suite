@@ -74,11 +74,11 @@
     </action-view>
 
     <menuitem name="account-root-payment-schedule-payment-schedule-line"
-        parent="account-root-payment-schedule" title="Payment schedule line"
+        parent="account-root-payment-schedule" title="Payment schedule lines:all"
         action="account.root.payment.schedule.payment.schedule.line" />
 
     <action-view name="account.root.payment.schedule.payment.schedule.line"
-        title="Payment schedule line" model="com.axelor.apps.account.db.PaymentScheduleLine">
+        title="Payment schedule lines:all" model="com.axelor.apps.account.db.PaymentScheduleLine">
         <view type="grid" name="payment-schedule-line-grid"/>
         <view type="form" name="payment-schedule-line-form"/>
         <view-param name="search-filters" value="payment-schedule-line-filters"/>
