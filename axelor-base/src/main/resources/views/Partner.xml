@@ -103,6 +103,7 @@
 		<menubar>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 				<item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message" />
+				<item title="Print template" action="save,action-print-template-method-open-print" readonlyIf="id == null" if-module="axelor-base"/>
 			</menu>
 		</menubar>
 	</form>
