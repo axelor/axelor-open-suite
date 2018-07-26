@@ -1,6 +1,7 @@
 # Changelog
 ## [Unreleased 5.0.5]
 ## Improvements
+- Fleet app: added FR demo data
 
 ## Bug Fixes
 
