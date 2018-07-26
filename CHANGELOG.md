@@ -1,6 +1,7 @@
 # Changelog
 ## [Unreleased 5.0.5]
 ## Improvements
+- HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
 - Advanced export : code refactor and optimize the performance.
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
