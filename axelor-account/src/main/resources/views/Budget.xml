@@ -76,9 +76,9 @@
     </action-method>
     
     <action-validate name="action-budget-validate-exceed-line-amount">
-		<alert if="__config__.app.getApp('budget').getManageMultiBudget() &amp;&amp;
-				  budgetDistributionList.size() != 0 &amp;&amp;
-				  inTaxTotal &gt; budgetDistributionList?.sum{it.amount}"
+		<alert if="__config__.app.getApp('budget')?.manageMultiBudget
+                  &amp;&amp; budgetDistributionList
+                  &amp;&amp; inTaxTotal &gt; budgetDistributionList?.sum{it.amount}"
 			  message="Total amount is exceeded than budget."/>
 	</action-validate>
 
