@@ -1,6 +1,7 @@
 # Changelog
 ## [Unreleased 5.0.5]
 ## Improvements
+- HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
 
 ## Bug Fixes
