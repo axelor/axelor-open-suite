@@ -22,6 +22,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.db.ConfiguratorProductFormula;
+import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.tool.StringTool;
@@ -34,9 +36,7 @@ import com.axelor.db.annotations.Widget;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -94,20 +94,24 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
   @Transactional
   public void updateIndicators(ConfiguratorCreator creator) {
-    List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
     List<MetaJsonField> indicators = creator.getIndicators();
 
     // add missing formulas
-    if (formulas != null) {
-      for (ConfiguratorFormula formula : formulas) {
-        addIfMissing(formula, creator);
-      }
+    List<? extends ConfiguratorFormula> formulas;
+
+    if (creator.getGenerateProduct()) {
+      formulas = creator.getConfiguratorProductFormulaList();
+    } else {
+      formulas = creator.getConfiguratorSOLineFormulaList();
+    }
+    for (ConfiguratorFormula formula : formulas) {
+      addIfMissing(formula, creator);
     }
 
     // remove formulas
     List<MetaJsonField> fieldsToRemove = new ArrayList<>();
     for (MetaJsonField indicator : indicators) {
-      if (isNotInFormulas(indicator, creator)) {
+      if (isNotInFormulas(indicator, creator, formulas)) {
         fieldsToRemove.add(indicator);
       }
     }
@@ -115,7 +119,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       creator.removeIndicator(indicatorToRemove);
     }
 
-    updateIndicatorsAttrs(creator);
+    updateIndicatorsAttrs(creator, formulas);
 
     configuratorCreatorRepo.save(creator);
   }
@@ -215,19 +219,14 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * @param creator
    */
   protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
-    MetaField formulaMetaField = configuratorFormulaService.getMetaField(formula);
+    MetaField formulaMetaField = formula.getMetaField();
     List<MetaJsonField> fields = creator.getIndicators();
     for (MetaJsonField field : fields) {
       if (field.getName().equals(formulaMetaField.getName() + "_" + creator.getId())) {
         return;
       }
     }
-    String metaModelName;
-    if (creator.getGenerateProduct()) {
-      metaModelName = "Product";
-    } else {
-      metaModelName = "SaleOrderLine";
-    }
+    String metaModelName = formulaMetaField.getMetaModel().getName();
     MetaJsonField newField = new MetaJsonField();
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
@@ -258,10 +257,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * @return false if field is represented in the creator formula list true if field is missing in
    *     the creator formula list
    */
-  protected boolean isNotInFormulas(MetaJsonField field, ConfiguratorCreator creator) {
-    List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
+  protected boolean isNotInFormulas(
+      MetaJsonField field,
+      ConfiguratorCreator creator,
+      List<? extends ConfiguratorFormula> formulas) {
     for (ConfiguratorFormula formula : formulas) {
-      MetaField formulaMetaField = configuratorFormulaService.getMetaField(formula);
+      MetaField formulaMetaField = formula.getMetaField();
       if ((formulaMetaField.getName() + "_" + creator.getId()).equals(field.getName())) {
         return false;
       }
@@ -341,8 +342,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    *
    * @param creator
    */
-  protected void updateIndicatorsAttrs(ConfiguratorCreator creator) {
-    List<ConfiguratorFormula> formulas = creator.getConfiguratorFormulaList();
+  protected void updateIndicatorsAttrs(
+      ConfiguratorCreator creator, List<? extends ConfiguratorFormula> formulas) {
     List<MetaJsonField> indicators = creator.getIndicators();
     for (MetaJsonField indicator : indicators) {
       for (ConfiguratorFormula formula : formulas) {
@@ -365,7 +366,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     String fieldName = indicator.getName();
     fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 
-    MetaField metaField = configuratorFormulaService.getMetaField(formula);
+    MetaField metaField = formula.getMetaField();
 
     if (!metaField.getName().equals(fieldName)) {
       return;
@@ -416,13 +417,13 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     if (creator.getGenerateProduct()) {
       for (Field field : Product.class.getDeclaredFields()) {
         if (field.getAnnotation(NotNull.class) != null) {
-          creator.addConfiguratorFormulaListItem(createFormula("Product", field.getName()));
+          creator.addConfiguratorProductFormulaListItem(createProductFormula(field.getName()));
         }
       }
     } else {
       for (Field field : SaleOrderLine.class.getDeclaredFields()) {
         if (field.getAnnotation(NotNull.class) != null) {
-          creator.addConfiguratorFormulaListItem(createFormula("SaleOrderLine", field.getName()));
+          creator.addConfiguratorSOLineFormulaListItem(createSOLineFormula(field.getName()));
         }
       }
     }
@@ -430,39 +431,49 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   /**
-   * Create a configuratorFormula with an empty formula for the given MetaField.
+   * Create a configurator product formula with an empty formula for the given MetaField.
    *
-   * @param metaFieldType
-   * @param name
-   * @return
-   * @throws AxelorException
+   * @param name the name of the meta field.
+   * @return the created configurator formula.
    */
-  private ConfiguratorFormula createFormula(String metaFieldType, String name)
-      throws AxelorException {
-    ConfiguratorFormula configuratorFormula = new ConfiguratorFormula();
+  protected ConfiguratorProductFormula createProductFormula(String name) {
+    ConfiguratorProductFormula configuratorProductFormula = new ConfiguratorProductFormula();
+    completeFormula(configuratorProductFormula, name, "Product");
+    return configuratorProductFormula;
+  }
+
+  /**
+   * Create a configurator product formula with an empty formula for the given MetaField.
+   *
+   * @param name the meta field name.
+   * @return the created configurator formula.
+   */
+  protected ConfiguratorSOLineFormula createSOLineFormula(String name) {
+    ConfiguratorSOLineFormula configuratorSOLineFormula = new ConfiguratorSOLineFormula();
+    completeFormula(configuratorSOLineFormula, name, "SaleOrderLine");
+    return configuratorSOLineFormula;
+  }
+
+  /**
+   * Complete the given configurator formula with correct metafields.
+   *
+   * @param configuratorFormula a configurator formula.
+   * @param name the meta field name.
+   * @param metaFieldType the name of the model owning the meta field.
+   */
+  protected void completeFormula(
+      ConfiguratorFormula configuratorFormula, String name, String metaFieldType) {
+
     configuratorFormula.setShowOnConfigurator(true);
     configuratorFormula.setFormula("");
 
-    Long productModelId =
+    Long modelId =
         JPA.all(MetaModel.class).filter("self.name = ?", metaFieldType).fetchOne().getId();
     MetaField metaField =
         JPA.all(MetaField.class)
-            .filter("self.name = ? AND self.metaModel.id = ?", name, productModelId)
+            .filter("self.name = ? AND self.metaModel.id = ?", name, modelId)
             .fetchOne();
-    if (metaFieldType.equals("Product")) {
-      configuratorFormula.setProductMetaField(metaField);
-    } else if (metaFieldType.equals("SaleOrderLine")) {
-      configuratorFormula.setSaleOrderLineMetaField(metaField);
-    } else {
-      throw new AxelorException(
-          ConfiguratorFormula.class,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage
-                  .CONFIGURATOR_CREATOR_UNVALID_METAFIELD));
-    }
-
-    return configuratorFormula;
+    configuratorFormula.setMetaField(metaField);
   }
 
   @Override

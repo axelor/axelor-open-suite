@@ -14,7 +14,7 @@
 
 
     <form name="configurator-creator-form" title="ConfiguratorCreator" model="com.axelor.apps.sale.db.ConfiguratorCreator">
-        <panel showIf="!isActive &amp;&amp; attributes.length &gt; 0 &amp;&amp; configuratorFormulaList.length &gt; 0">
+        <panel showIf="!isActive &amp;&amp; attributes.length &gt; 0 &amp;&amp; (configuratorProductFormulaList.length + configuratorSOLineFormulaList.length) &gt; 0">
 			<!--it does not matter which field is used here, as long as it is not a boolean-->
             <field name="name" readonly="true" showTitle="false">
 				<viewer><![CDATA[
@@ -35,14 +35,20 @@
     	</panel>
 
 		<panel sidebar="true" title="Actions" hideIf="id == null">
-			<button name="activate" title="Activate" readonlyIf="isActive || !(attributes.length &gt; 0) || !(configuratorFormulaList.length &gt; 0)" onClick="action-configurator-creator-group-activate"/>
+			<button name="activate" title="Activate" onClick="action-configurator-creator-group-activate"
+				readonlyIf="isActive || !(attributes.length &gt; 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0)"/>
 			<button name="test" title="Test this creator" showIf="generateProduct" readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
-			<field name="generateProduct" widget="boolean-switch" onChange="action-configurator-creator-attrs-hide-metafield"/>
+			<field name="generateProduct" widget="boolean-switch"/>
 			<field name="isActive" hidden="true"/>
 		</panel>
 
-		<panel-related field="configuratorFormulaList" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
-			form-view="configurator-formula-form" grid-view="configurator-formula-grid"/>
+    <panel-related field="configuratorProductFormulaList" hideIf="id == null || !generateProduct"
+      onChange="action-configurator-creator-record-desactivate,save"
+      form-view="configurator-product-formula-form" grid-view="configurator-product-formula-grid"/>
+
+    <panel-related field="configuratorSOLineFormulaList" hideIf="id == null || generateProduct"
+      onChange="action-configurator-creator-record-desactivate,save"
+      form-view="configurator-soline-formula-form" grid-view="configurator-soline-formula-grid"/>
 
 		<panel title="Authorizations" hideIf="id == null">
 			<field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
@@ -158,14 +164,5 @@
         <view type="grid" name="configurator-grid"/>
         <context name="_configuratorCreator" expr="eval: __self__"/>
     </action-view>
-    
-    <action-attrs name="action-configurator-creator-attrs-hide-metafield">
-<!--     	These two lines are not working, it seems we can't set the domain in a O2M field -->
-<!--       	<attribute name="domain" for="configuratorFormulaList" expr="eval: &quot; !self.productMetaField.empty &quot;" if="generateProduct"/> -->
-<!--        	<attribute name="domain" for="configuratorFormulaList" expr="eval: &quot; !self.saleOrderLineMetaField.empty &quot;" if="!generateProduct"/> -->
-        <attribute for="configuratorFormulaList.productMetaField" name="hidden" expr="!generateProduct"/>
-        <attribute for="configuratorFormulaList.saleOrderLineMetaField" name="hidden" expr="generateProduct"/>
-        <attribute for="configuratorFormulaList.updateFromSelect" name="hidden" expr="generateProduct"/>
-    </action-attrs>
 
 </object-views>

@@ -6,6 +6,7 @@
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
 - Configure BoM form: show sub bom list.
 - Configurator: improve UI for indicators.
+- Split formula list into formulas for product and formulas for sale order line in configurator creator.
 
 ## Bug Fixes
 - Fix on prod process report.
