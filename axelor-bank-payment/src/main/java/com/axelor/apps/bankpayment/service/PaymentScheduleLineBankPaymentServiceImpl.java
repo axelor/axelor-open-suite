@@ -49,22 +49,22 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLineServiceImpl
     implements PaymentScheduleLineBankPaymentService {
 
-  protected static final int RESULT_LIMIT = 100;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected InterbankCodeLineRepository interbankCodeLineRepo;
   protected ReconcileRepository reconcileRepo;
@@ -105,7 +105,8 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void reject(PaymentScheduleLine paymentScheduleLine, boolean represent)
+  public void reject(
+      PaymentScheduleLine paymentScheduleLine, InterbankCodeLine rejectionReason, boolean represent)
       throws AxelorException {
     Preconditions.checkNotNull(
         paymentScheduleLine, I18n.get("Payment schedule line cannot be null."));
@@ -120,7 +121,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
           I18n.get("Only validated payment schedule lines can be rejected."));
     }
 
-    createRejectionMove(paymentScheduleLine);
+    Move rejectionMove = createRejectionMove(paymentScheduleLine);
 
     if (paymentSchedule.getTypeSelect() == PaymentScheduleRepository.TYPE_TERMS) {
       cancelInvoicePayments(paymentScheduleLine);
@@ -129,6 +130,35 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     if (represent) {
       representPaymentScheduleLine(paymentScheduleLine);
     }
+
+    if (rejectionReason == null) {
+      rejectionReason = getDefaultRejectionReason();
+    }
+
+    MoveLine rejectionMoveLine =
+        moveService.findMoveLineByAccount(
+            rejectionMove, paymentScheduleLine.getAdvanceMoveLine().getAccount());
+
+    paymentScheduleLine.setInterbankCodeLine(rejectionReason);
+    paymentScheduleLine.setRejectMoveLine(rejectionMoveLine);
+    paymentScheduleLine.setRejectDate(rejectionMove.getDate());
+    paymentScheduleLine.setAmountRejected(paymentScheduleLine.getRejectMoveLine().getDebit());
+    paymentScheduleLine.setRejectedOk(true);
+    paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_CLOSED);
+  }
+
+  @Override
+  public void reject(
+      String paymentScheduleLineName, InterbankCodeLine rejectionReason, boolean represent)
+      throws AxelorException {
+    PaymentScheduleLine paymentScheduleLine =
+        paymentScheduleLineRepo.findByName(paymentScheduleLineName);
+    reject(paymentScheduleLine, rejectionReason, represent);
+  }
+
+  @Override
+  public InterbankCodeLine getDefaultRejectionReason() {
+    return interbankCodeLineRepo.findByCode("A3");
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
@@ -141,13 +171,6 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     Move rejectionMove = moveService.generateReverse(advanceOrPaymentMove);
     rejectionMove.setRejectOk(true);
     moveValidateService.validateMove(rejectionMove);
-
-    InterbankCodeLine rejectCause = interbankCodeLineRepo.findByCode("A3");
-    paymentScheduleLine.setInterbankCodeLine(rejectCause);
-    paymentScheduleLine.setRejectMoveLine(moveLineService.getDebitCustomerMoveLine(rejectionMove));
-    paymentScheduleLine.setRejectDate(rejectionMove.getDate());
-    paymentScheduleLine.setAmountRejected(paymentScheduleLine.getRejectMoveLine().getDebit());
-    paymentScheduleLine.setRejectedOk(true);
 
     List<MoveLine> moveLineList = new ArrayList<>();
     moveLineList.addAll(advanceOrPaymentMove.getMoveLineList());
@@ -185,7 +208,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
       PaymentScheduleLine paymentScheduleLine) {
     PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
     BigDecimal inTaxAmount = paymentScheduleLine.getInTaxAmount();
-    int scheduleLineSeq = paymentScheduleLine.getScheduleLineSeq();
+    int scheduleLineSeq = paymentScheduleService.getNextScheduleLineSeq(paymentSchedule);
     LocalDate scheduleDate = paymentScheduleLine.getScheduleDate();
     PaymentScheduleLine representedPaymentScheduleLine =
         createPaymentScheduleLine(paymentSchedule, inTaxAmount, scheduleLineSeq, scheduleDate);
@@ -193,31 +216,6 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     representedPaymentScheduleLine.setStatusSelect(
         PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
     return representedPaymentScheduleLine;
-  }
-
-  @Override
-  public void reject(PaymentScheduleLine paymentScheduleLine) throws AxelorException {
-    reject(paymentScheduleLine, true);
-  }
-
-  @Override
-  public Collection<Exception> reject(
-      List<PaymentScheduleLine> paymentScheduleLines, boolean represent) {
-    paymentScheduleLines = MoreObjects.firstNonNull(paymentScheduleLines, Collections.emptyList());
-    List<Exception> exceptions = new ArrayList<>();
-
-    for (int i = 0; i < paymentScheduleLines.size(); ++i) {
-      PaymentScheduleLine paymentScheduleLine = paymentScheduleLines.get(i);
-
-      try {
-        reject(paymentScheduleLine, represent);
-      } catch (Exception e) {
-        exceptions.add(e);
-        refindPaymentScheduleLines(paymentScheduleLines, i + 1);
-      }
-    }
-
-    return exceptions;
   }
 
   protected void refindPaymentScheduleLines(
@@ -246,39 +244,40 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
   }
 
   @Override
-  public Collection<Exception> reject(List<PaymentScheduleLine> paymentScheduleLines) {
-    return reject(paymentScheduleLines, true);
-  }
-
-  @Override
-  public void reject(long id, boolean represent) throws AxelorException {
+  public void reject(long id, InterbankCodeLine rejectionReason, boolean represent)
+      throws AxelorException {
     PaymentScheduleLine paymentScheduleLine = paymentScheduleLineRepo.find(id);
-    reject(paymentScheduleLine, represent);
+    reject(paymentScheduleLine, rejectionReason, represent);
   }
 
   @Override
-  public void reject(long id) throws AxelorException {
-    reject(id, true);
+  public int rejectFromIdMap(Map<Long, InterbankCodeLine> idMap, boolean represent) {
+    return rejectFromMap(idMap, represent, paymentScheduleLineRepo::find);
   }
 
   @Override
-  public int rejectFromIdList(List<Long> idList, boolean represent) {
-    idList = MoreObjects.firstNonNull(idList, Collections.emptyList());
+  public int rejectFromNameMap(Map<String, InterbankCodeLine> nameMap, boolean represent) {
+    return rejectFromMap(nameMap, represent, paymentScheduleLineRepo::findByName);
+  }
+
+  protected <T> int rejectFromMap(
+      Map<T, InterbankCodeLine> map, boolean represent, Function<T, PaymentScheduleLine> findFunc) {
+
     int errorCount = 0;
 
-    for (List<Long> subIdList : Lists.partition(idList, RESULT_LIMIT)) {
-      List<PaymentScheduleLine> paymentScheduleLines =
-          paymentScheduleLineRepo.findByIdList(subIdList).fetch();
-      Collection<Exception> exceptions = reject(paymentScheduleLines);
-      exceptions.forEach(TraceBackService::trace);
-      errorCount += exceptions.size();
+    for (Entry<T, InterbankCodeLine> entry : map.entrySet()) {
+      T key = entry.getKey();
+      InterbankCodeLine rejectionReason = entry.getValue();
+      PaymentScheduleLine paymentScheduleLine = findFunc.apply(key);
+
+      try {
+        reject(paymentScheduleLine, rejectionReason, represent);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        ++errorCount;
+      }
     }
 
     return errorCount;
-  }
-
-  @Override
-  public int rejectFromIdList(List<Long> idList) {
-    return rejectFromIdList(idList, true);
   }
 }

@@ -16,6 +16,11 @@
 		<field name="statusSelect" />
 		<field name="debitNumber" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
 		<field name="fromReject" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  if-module="axelor-bank-payment" />
+        <field name="paymentSchedule.statusSelect" hidden="true"/>
+        <button name="rejectBtn" title="Reject" icon="fa-times"
+          onClick="action-payment-schedule-line-show-reject-wizard"
+          readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
+          if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
 	</grid>
 
 	<form name="payment-schedule-line-form" title="Schedule line"
@@ -48,6 +53,11 @@
 		<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"/>
 		<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 		<field name="statusSelect" />
+        <field name="paymentSchedule.statusSelect" hidden="true"/>
+        <button name="rejectBtn" title="Reject" icon="fa-times"
+          onClick="action-payment-schedule-line-show-reject-wizard"
+          readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
+          if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
 	</grid>
 
 	<form name="payment-schedule-line-payment-schedule-form" title="Schedule line"

@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -42,6 +43,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -588,5 +590,19 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
         TraceBackRepository.CATEGORY_MISSING_FIELD,
         I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
         partner.getName());
+  }
+
+  @Override
+  public int getNextScheduleLineSeq(PaymentSchedule paymentSchedule) {
+    List<PaymentScheduleLine> paymentScheduleLines =
+        MoreObjects.firstNonNull(
+            paymentSchedule.getPaymentScheduleLineList(), Collections.emptyList());
+    int currentMaxSequenceNumber =
+        paymentScheduleLines
+            .stream()
+            .mapToInt(PaymentScheduleLine::getScheduleLineSeq)
+            .max()
+            .orElse(0);
+    return currentMaxSequenceNumber + 1;
   }
 }
