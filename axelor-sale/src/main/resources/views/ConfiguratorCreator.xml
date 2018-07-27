@@ -109,7 +109,7 @@
     <form name="import-configurator-creator-form" title="Import Configurator Creator" model="com.axelor.apps.sale.db.ConfiguratorCreator" >
 		<panel>
 			<field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link" title="Data file"/>
-			<button name="importCreators" title="Import Configurator Creators" onClick="action-configurator-creator-method-import-configurator-creators" showIf="dataFile != null" colSpan="4" />
+			<button name="importCreators" title="Import Configurator Creators" onClick="action-configurator-creator-method-import-configurator-creators" showIf="dataFile != null" colSpan="6" />
 			<field name="importLog" type="text" colSpan="12" readonly="true" title="Import log"/>
 		</panel>	
 	</form>
