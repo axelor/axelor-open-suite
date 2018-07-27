@@ -2,6 +2,7 @@
 ## [Unreleased 5.0.5]
 ## Improvements
 - Marketing app: added FR demo data
+- Advanced export : code refactor and optimize the performance.
 
 ## Bug Fixes
 
