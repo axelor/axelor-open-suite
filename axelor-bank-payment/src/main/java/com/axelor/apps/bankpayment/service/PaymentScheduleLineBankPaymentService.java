@@ -17,78 +17,68 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.exception.AxelorException;
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 public interface PaymentScheduleLineBankPaymentService extends PaymentScheduleLineService {
   /**
    * Reject a payment schedule line.
    *
    * @param paymentScheduleLine
+   * @param rejectionReason
    * @param represent
    * @throws AxelorException
    */
-  void reject(PaymentScheduleLine paymentScheduleLine, boolean represent) throws AxelorException;
+  void reject(
+      PaymentScheduleLine paymentScheduleLine, InterbankCodeLine rejectionReason, boolean represent)
+      throws AxelorException;
 
   /**
-   * Reject and represent a payment schedule line.
+   * Reject a payment schedule line.
    *
-   * @param paymentScheduleLine
+   * @param name
+   * @param rejectionReason
+   * @param represent
    * @throws AxelorException
    */
-  void reject(PaymentScheduleLine paymentScheduleLine) throws AxelorException;
+  void reject(String name, InterbankCodeLine rejectionReason, boolean represent)
+      throws AxelorException;
 
   /**
-   * Reject payment schedule lines.
-   *
-   * @param paymentScheduleLines
-   * @param represent
-   * @return
-   */
-  Collection<Exception> reject(List<PaymentScheduleLine> paymentScheduleLines, boolean represent);
-
-  /**
-   * Reject and represent payment schedule lines.
-   *
-   * @param paymentScheduleLines
-   * @return
-   */
-  Collection<Exception> reject(List<PaymentScheduleLine> paymentScheduleLines);
-
-  /**
-   * Reject payment schedule lines from ID.
+   * Reject payment schedule line from ID.
    *
    * @param id
+   * @param rejectionReason
    * @param represent
    * @throws AxelorException
    */
-  void reject(long id, boolean represent) throws AxelorException;
+  void reject(long id, InterbankCodeLine rejectionReason, boolean represent) throws AxelorException;
 
   /**
-   * Reject and represent payment schedule lines from ID.
+   * Reject payment schedule line from a map of IDs.
    *
-   * @param id
-   * @throws AxelorException
-   */
-  void reject(long id) throws AxelorException;
-
-  /**
-   * Reject payment schedule lines from list of IDs.
-   *
-   * @param idList
+   * @param idMap
    * @param represent
    * @return
    */
-  int rejectFromIdList(List<Long> idList, boolean represent);
+  int rejectFromIdMap(Map<Long, InterbankCodeLine> idMap, boolean represent);
 
   /**
-   * Reject and represent payment schedule lines from list of IDs.
+   * Reject payment schedule line from a map of names.
    *
-   * @param idList
+   * @param nameMap
+   * @param represent
    * @return
    */
-  int rejectFromIdList(List<Long> idList);
+  int rejectFromNameMap(Map<String, InterbankCodeLine> nameMap, boolean represent);
+
+  /**
+   * Get default rejection reason.
+   *
+   * @return
+   */
+  InterbankCodeLine getDefaultRejectionReason();
 }

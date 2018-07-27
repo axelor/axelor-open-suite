@@ -107,7 +107,7 @@
 
 	<selection name='payer.quality.config.line.incident.type.select'>
 		<option value='0'>Debt recovery</option>
-		<option value='1'>Reject</option>
+		<option value='1'>Rejection</option>
 	</selection>
 	
 	<selection name="account.management.type.select">
