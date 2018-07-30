@@ -28,7 +28,9 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
+import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
+import com.axelor.db.annotations.Widget;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
@@ -55,6 +57,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
@@ -238,9 +241,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     String typeName;
     if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
       typeName = metaField.getRelationship();
+      completeDefaultGridAndForm(metaField, newField);
     } else {
       typeName = metaField.getTypeName();
     }
+    completeSelection(metaField, newField);
     newField.setType(typeToJsonType(typeName));
     newField.setName(formulaMetaField.getName() + "_" + creator.getId());
     newField.setTitle(formulaMetaField.getLabel());
@@ -262,6 +267,51 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       }
     }
     return true;
+  }
+
+  /**
+   * Fill {@link MetaJsonField#gridView} and {@link MetaJsonField#formView} in the given meta json
+   * field. The default views name are using the axelor naming convention, here product
+   *
+   * @param metaField a meta field which is a relational field.
+   * @param newField a meta json field which is a relational field.
+   */
+  protected void completeDefaultGridAndForm(MetaField metaField, MetaJsonField newField) {
+    String name = metaField.getTypeName();
+    if (Strings.isNullOrEmpty(name)) {
+      return;
+    }
+    final Inflector inflector = Inflector.getInstance();
+    String prefix = inflector.dasherize(name);
+    newField.setGridView(prefix + "-grid");
+    newField.setFormView(prefix + "-form");
+  }
+
+  /**
+   * Fill {@link MetaJsonField#selection} searching in java class code.
+   *
+   * @param metaField a meta field.
+   * @param newField a meta json field.
+   */
+  protected void completeSelection(MetaField metaField, MetaJsonField newField) {
+    try {
+      Field correspondingField =
+          Class.forName(
+                  metaField.getMetaModel().getPackageName()
+                      + "."
+                      + metaField.getMetaModel().getName())
+              .getDeclaredField(metaField.getName());
+      Widget widget = correspondingField.getAnnotation(Widget.class);
+      if (widget == null) {
+        return;
+      }
+      String selection = widget.selection();
+      if (!Strings.isNullOrEmpty(selection)) {
+        newField.setSelection(selection);
+      }
+    } catch (ClassNotFoundException | NoSuchFieldException e) {
+      TraceBackService.trace(e);
+    }
   }
 
   /**
