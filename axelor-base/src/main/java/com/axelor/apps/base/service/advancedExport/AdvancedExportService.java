@@ -30,7 +30,7 @@ import java.util.Map;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 public interface AdvancedExportService {
-  
+
   public static final String LANGUAGE_FR = "fr";
 
   public static final String PDF_EXTENSION = ".pdf";

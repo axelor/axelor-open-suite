@@ -114,6 +114,26 @@
 					attribute += "${att.widgetAttrs}"
 				}
 				attribute += """</widgetAttrs>
+				<contextField>"""
+				if (att.contextField != null) {
+					attribute += "${att.contextField}"
+				}
+				attribute += """</contextField>
+				<contextFieldTarget>"""
+				if (att.contextFieldTarget != null) {
+					attribute += "${att.contextFieldTarget}"
+				}
+				attribute += """</contextFieldTarget>
+				<contextFieldTargetName>"""
+				if (att.contextFieldTargetName != null) {
+					attribute += "${att.contextFieldTargetName}"
+				}
+				attribute += """</contextFieldTargetName>
+				<contextFieldValue>"""
+				if (att.contextFieldValue != null) {
+					attribute += "${att.contextFieldValue}"
+				}
+				attribute += """</contextFieldValue>
 			</attribute>
 		"""
 		})
