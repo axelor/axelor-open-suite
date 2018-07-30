@@ -6,6 +6,7 @@
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
 
 ## Bug Fixes
+- Fix on prod process report.
 
 
 ## [5.0.4] - 2018-07-26
