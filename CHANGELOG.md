@@ -3,6 +3,7 @@
 ## Improvements
 - Marketing app: added FR demo data
 - Advanced export : code refactor and optimize the performance.
+- BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
 
 ## Bug Fixes
 
