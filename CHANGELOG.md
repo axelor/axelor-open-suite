@@ -26,6 +26,9 @@
 - Machine type added for the machine.
 - Selection added for priority of manufacturing order.
 - Payment schedule line: management of direct debit rejection.
+- Selection added for priority of manufacturing order.
+- Add currency in Accounting reports and filter all results with it.
+
  
 ## Improvements
 - Move project resource menu entry to project configuration menu.

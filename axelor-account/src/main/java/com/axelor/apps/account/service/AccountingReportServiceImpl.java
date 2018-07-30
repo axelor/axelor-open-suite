@@ -120,6 +120,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.move.company = ?%d", accountingReport.getCompany());
     }
 
+    if (accountingReport.getCurrency() != null) {
+      this.addParams("self.move.companyCurrency = ?%d", accountingReport.getCurrency());
+    }
+
     if (accountingReport.getDateFrom() != null) {
       this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
     }
