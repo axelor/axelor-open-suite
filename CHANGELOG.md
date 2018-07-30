@@ -7,6 +7,7 @@
 
 ## Bug Fixes
 - Fix on prod process report.
+- Fix json field creator's issue of model change not reflected on fields. 
 
 
 ## [5.0.4] - 2018-07-26
