@@ -94,7 +94,7 @@
                         <field name="configuratorProdProcess" colSpan="12"
                                canNew="true" showIf="defProdProcessAsConfigurator"/>
                     </panel>
-                    <field name="configuratorBomList" showTitle="false" colSpan="12"/>
+                    <field name="configuratorBomList" showTitle="false" form-view="configurator-bom-form" grid-view="configurator-bom-grid" colSpan="12"/>
                 </editor>
             </field>
         </panel>
