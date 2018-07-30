@@ -289,11 +289,11 @@
 	</action-view>
 
 	<menuitem name="stock-root-conf-customs-code-nomenclature"
-		parent="stock-root-conf" title="Customs code nomenclature"
+		parent="stock-root-conf" title="Customs code nomenclature:all"
 		action="stock.root.conf.customs.code.nomenclature" />
 
 	<action-view name="stock.root.conf.customs.code.nomenclature"
-		title="Customs code nomenclature" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
+		title="Customs code nomenclature:all" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
 		<view type="tree" name="customs-code-nomenclature-tree"/>
 		<view type="form" name="customs-code-nomenclature-form" />
 	</action-view>
