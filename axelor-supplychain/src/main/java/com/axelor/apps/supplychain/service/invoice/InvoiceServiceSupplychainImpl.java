@@ -24,9 +24,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
-import com.axelor.apps.account.service.invoice.factory.CancelFactory;
-import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
-import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
@@ -47,19 +44,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
   @Inject
   public InvoiceServiceSupplychainImpl(
-      ValidateFactory validateFactory,
-      VentilateFactory ventilateFactory,
-      CancelFactory cancelFactory,
       AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService) {
-    super(
-        validateFactory,
-        ventilateFactory,
-        cancelFactory,
-        alarmEngineService,
-        invoiceRepo,
-        appAccountService);
+    super(alarmEngineService, invoiceRepo, appAccountService);
   }
 
   @Override

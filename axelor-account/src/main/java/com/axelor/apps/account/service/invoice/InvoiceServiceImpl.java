@@ -30,12 +30,13 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.factory.CancelFactory;
-import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
-import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.invoice.workflow.cancel.CancelWorkflowStepService;
+import com.axelor.apps.account.service.invoice.workflow.validate.ValidateWorkflowStepService;
+import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateAdvancePaymentWorkflowStepService;
+import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateWorkflowStepService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -79,25 +80,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected ValidateFactory validateFactory;
-  protected VentilateFactory ventilateFactory;
-  protected CancelFactory cancelFactory;
   protected AlarmEngineService<Invoice> alarmEngineService;
   protected InvoiceRepository invoiceRepo;
   protected AppAccountService appAccountService;
 
   @Inject
   public InvoiceServiceImpl(
-      ValidateFactory validateFactory,
-      VentilateFactory ventilateFactory,
-      CancelFactory cancelFactory,
       AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService) {
 
-    this.validateFactory = validateFactory;
-    this.ventilateFactory = ventilateFactory;
-    this.cancelFactory = cancelFactory;
     this.alarmEngineService = alarmEngineService;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -187,7 +179,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     compute(invoice);
 
-    validateFactory.getValidator(invoice).process();
+    Beans.get(ValidateWorkflowStepService.class).process(invoice);
     if (appAccountService.isApp("budget")
         && !appAccountService.getAppBudget().getManageMultiBudget()) {
       this.generateBudgetDistribution(invoice);
@@ -234,7 +226,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
 
-    ventilateFactory.getVentilator(invoice).process();
+    getStepService(invoice).process(invoice);
 
     invoiceRepo.save(invoice);
 
@@ -255,7 +247,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     log.debug("Annulation de la facture {}", invoice.getInvoiceId());
 
-    cancelFactory.getCanceller(invoice).process();
+    Beans.get(CancelWorkflowStepService.class).process(invoice);
 
     invoiceRepo.save(invoice);
   }
@@ -651,6 +643,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             });
 
     return Pair.of(doneCounter.intValue(), errorCount);
+  }
+
+  private VentilateWorkflowStepService getStepService(Invoice invoice) {
+    return (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+        ? Beans.get(VentilateAdvancePaymentWorkflowStepService.class)
+        : Beans.get(VentilateWorkflowStepService.class);
   }
 
   private static class IntCounter extends Number {
