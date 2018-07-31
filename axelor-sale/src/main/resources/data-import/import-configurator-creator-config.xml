@@ -119,6 +119,10 @@
          <bind node="onChange" to="onChange"/>
          <bind node="onClick" to="onClick"/>
          <bind node="widgetAttrs" to="widgetAttrs"/>
+         <bind node="contextField" to="contextField"/>
+         <bind node="contextFieldTarget" to="contextFieldTarget"/>
+         <bind node="contextFieldTargetName" to="contextFieldTargetName"/>
+         <bind node="contextFieldValue" to="contextFieldValue"/>
        </bind>
 
        <bind node="configuratorFormulaList/configuratorFormula" to="configuratorFormulaList">

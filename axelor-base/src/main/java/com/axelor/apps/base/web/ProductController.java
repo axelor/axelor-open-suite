@@ -78,7 +78,7 @@ public class ProductController {
   }
 
   @SuppressWarnings("unchecked")
-  public void printProductCatelog(ActionRequest request, ActionResponse response)
+  public void printProductCatalog(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     User user = Beans.get(UserService.class).getUser();

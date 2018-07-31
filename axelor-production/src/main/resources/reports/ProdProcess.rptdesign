@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2156,6 +2156,12 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                                         <image id="5000">
                                                             <property name="height">91px</property>
                                                             <property name="width">166px</property>
+                                                            <list-property name="visibility">
+                                                                <structure>
+                                                                    <property name="format">all</property>
+                                                                    <expression name="valueExpr" type="javascript">row["image"] == null</expression>
+                                                                </structure>
+                                                            </list-property>
                                                             <property name="source">file</property>
                                                             <property name="proportionalScale">true</property>
                                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["image"]</expression>

@@ -51,7 +51,21 @@
 - Bill of material: remove duplicate toolbar button of 'Generate new version'.
 - Event: Fix fill the "Guest" using email address when fill the partner or contact or lead.
 
-## [Unreleased 5.0.4]
+## [Unreleased 5.0.5]
+## Improvements
+- Marketing app: added FR demo data
+- Advanced export : code refactor and optimize the performance.
+- BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
+- Configure BoM form: show sub bom list.
+- Configurator: improve UI for indicators.
+
+## Bug Fixes
+- Fix on prod process report.
+- Fix json field creator's issue of model change not reflected on fields. 
+- Configurator export: add contextField to metaJsonField.
+
+
+## [5.0.4] - 2018-07-26
 ## Features
 - User : Add a search filter to see the active users.
 - Add support for multiple demo data config per app. 
@@ -62,13 +76,17 @@
 - Stock rules: new message template in demo data.
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
+- Sale/purchase/invoice order lines of type "title" are now displayed in bold.
 - Stock location tree: add missing french translation.
 - Improved model studio by removing not required properties from different elements.
 - Move lines: set automatically currency rate and amount in manual move lines.
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
 - Harmonization of Sale order line, purchase order line and invoice line form views.
+- Account : prefill employee/supplier/customer account creation form with default values from configuration.
 - Timesheet on operation order: Compute operation order total duration so its always up to date.
+- Improve partner form view.
+- Address: rework coordinates updating.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
@@ -97,17 +115,24 @@
 - Event: Fix create an event directly by clicking on the calendar.
 - Partner price list : Put field "Label" mandatory.
 - Demo data import : Fix issues in import demo data from excel demo file with specified configuration in excel file.
+- Fix automatic project generation when confirming sale orders not knowing what type of generation to choose.
 - Generating a project from a sale order: "project alone" renamed to "business project", generating a project with a "phase by line" or "task by line" generation type now automatically generates the elements.
 - Employee: Fix always dirty form view.
 - Fix translation : base, hr, project, business-project, accounting, bank-payment and studio.
+- Added missing translations to the french version when generating a project from a sale order.
+- Fixed bugs and updated printings of ATI sales/purchases/invoices. Also fixed generating a stock move from a sale/purchase order (would consider ati unit prices as if they were excluding taxes).
 - Timesheet: Hide chart when imputing on manufacturing order.
 - BUDGET : Display budget dustribution as editable and check order line amount and total of budget in purchase orderline and invoice line.
 - Stock Rules: Fix npe on stock rule alert.
+- Fix generated pack sale order lines not having their supply method correctly set.
 - PRODUCT : Remove field 'ean13' which was unused.
 - Model studio: Fix lost translation on field drag. 
 - Purchase order: Fix hibernate exception when click on 'Generate suppliers purchase orders' button.
 - Error message instead of NPE on operation order plan with a configuration error.
+- Fix total amount reseting on save in bank orders.
 - Configurator: fix using M2O in formula.
+- Tracking number search: Fix stock location binding.
+
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
@@ -184,6 +209,7 @@
 - Web service mobile: change the "create timesheet line" method to update it also, and have duration/hours updated
 - Product : displaying quantities in stock with big numbers (until millions)
 - Manufacturing order: fix NPE when adding manually an operation order, caused by missing work center
+
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
@@ -821,7 +847,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 
 
 [Unreleased 5.1]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...dev
+[Unreleased 5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...dev
+[5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...v5.0.2
 [5.0.1]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0...v5.0.1

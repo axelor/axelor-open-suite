@@ -4,12 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
    
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
+       	<hilite color="default" strong="true" if="isTitleLine == true"/>
         <field name="productName"/>
         <field name="qty" aggregate="sum"/>
         <field name="price" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
+	    <field name="isTitleLine" hidden="true"/>
     </grid>
 
 	<grid name="invoice-line-project-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
@@ -250,7 +252,7 @@
 
 		<!-- Hide ATI -->
 		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent?.inAti"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval:_parent?.inAti"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent?.inAti"/>
 
 		<!-- Show Price Discounted -->
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price"/>

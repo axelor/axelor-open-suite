@@ -22,9 +22,9 @@
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
 			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
-			<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
-			<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
+			<field name="customerAccount" form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
+			<field name="supplierAccount" form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
+			<field name="employeeAccount" form-view="employee-account-form" grid-view="account-grid" canNew="true" />
 		</panel>
 		<panel name="customerBalance" title="Customer balance" itemSpan="4">
 			<field name="balanceCustAccount"/>

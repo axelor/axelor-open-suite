@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -210,5 +211,13 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     } else {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
     }
+  }
+
+  @Override
+  public SaleOrderLine createPackLine(PackLine packLine, SaleOrder saleOrder)
+      throws AxelorException {
+    SaleOrderLine subLine = super.createPackLine(packLine, saleOrder);
+    subLine.setSaleSupplySelect(subLine.getProduct().getSaleSupplySelect());
+    return subLine;
   }
 }

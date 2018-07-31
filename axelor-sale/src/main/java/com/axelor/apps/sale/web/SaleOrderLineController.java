@@ -17,11 +17,9 @@
  */
 package com.axelor.apps.sale.web;
 
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
-import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -36,7 +34,6 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -235,36 +232,7 @@ public class SaleOrderLineController {
 
       if (product.getIsPack()) {
         SaleOrder saleOrder = saleOrderLineService.getSaleOrder(request.getContext());
-        List<SaleOrderLine> subLines = new ArrayList<>();
-
-        for (PackLine packLine : product.getPackLines()) {
-          SaleOrderLine subLine = new SaleOrderLine();
-          Product subProduct = packLine.getProduct();
-
-          subLine.setProduct(subProduct);
-          saleOrderLineService.computeProductInformation(subLine, saleOrder);
-          subLine.setQty(new BigDecimal(packLine.getQuantity()));
-
-          TaxLine taxLine = saleOrderLineService.getTaxLine(saleOrder, subLine);
-          subLine.setTaxLine(taxLine);
-          saleOrderLineService.computeValues(saleOrder, subLine);
-
-          BigDecimal price = saleOrderLineService.getUnitPrice(saleOrder, subLine, taxLine);
-
-          Map<String, Object> discounts =
-              saleOrderLineService.getDiscount(saleOrder, subLine, price);
-
-          if (discounts != null) {
-            subLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
-            subLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
-            if (discounts.get("price") != null) {
-              price = (BigDecimal) discounts.get("price");
-            }
-          }
-          subLine.setPrice(price);
-
-          subLines.add(subLine);
-        }
+        List<SaleOrderLine> subLines = saleOrderLineService.createPackLines(product, saleOrder);
 
         if (!subLines.isEmpty()) {
           response.setValue("subLineList", subLines);
