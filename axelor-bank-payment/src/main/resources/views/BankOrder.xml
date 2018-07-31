@@ -41,7 +41,7 @@
         <field name="statusSelect"/>
     </grid>
 
-    <grid name="bank-order-awaiting-signature-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-awaiting-signature-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canNew="false" canDelete="false">
     	<toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
@@ -227,6 +227,10 @@
 		</panel-mail>
 	</form>
 	
+	<form title="Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder" name="bank-order-awaiting-signature-form" canNew="false">
+		<panel-include view="bank-order-form"/>
+	</form>
+
 	<form name="bank-order-send-form" title="Send a bank order" model="com.axelor.apps.bankpayment.db.BankOrder"
 	onNew="action-bank-order-group-onnew">
 		<toolbar>

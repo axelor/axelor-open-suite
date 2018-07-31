@@ -113,7 +113,7 @@
 	<action-view name="account.bank.order.awaiting.for.signature"
 		title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder" >
 		<view type="grid" name="bank-order-awaiting-signature-grid"/>
-		<view type="form" name="bank-order-form"/>
+		<view type="form" name="bank-order-awaiting-signature-form"/>
 	    <domain>self.statusSelect = 2</domain>
 	</action-view>
 	
