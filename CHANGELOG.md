@@ -12,6 +12,7 @@
 - Fix on prod process report.
 - Fix json field creator's issue of model change not reflected on fields. 
 - Configurator export: add contextField to metaJsonField.
+- Configurator creator: fill default attributes for both product and sale order line.
 
 
 ## [5.0.4] - 2018-07-26

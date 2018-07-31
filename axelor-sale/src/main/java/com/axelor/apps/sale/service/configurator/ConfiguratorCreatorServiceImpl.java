@@ -62,14 +62,10 @@ import javax.validation.constraints.NotNull;
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
   private ConfiguratorCreatorRepository configuratorCreatorRepo;
-  private ConfiguratorFormulaService configuratorFormulaService;
 
   @Inject
-  public ConfiguratorCreatorServiceImpl(
-      ConfiguratorCreatorRepository configuratorCreatorRepo,
-      ConfiguratorFormulaService configuratorFormulaService) {
+  public ConfiguratorCreatorServiceImpl(ConfiguratorCreatorRepository configuratorCreatorRepo) {
     this.configuratorCreatorRepo = configuratorCreatorRepo;
-    this.configuratorFormulaService = configuratorFormulaService;
   }
 
   @Override
@@ -411,19 +407,16 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException {
-    if (creator.getGenerateProduct()) {
-      for (Field field : Product.class.getDeclaredFields()) {
-        if (field.getAnnotation(NotNull.class) != null) {
-          creator.addConfiguratorProductFormulaListItem(createProductFormula(field.getName()));
-        }
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void addRequiredFormulas(ConfiguratorCreator creator) {
+    for (Field field : Product.class.getDeclaredFields()) {
+      if (field.getAnnotation(NotNull.class) != null) {
+        creator.addConfiguratorProductFormulaListItem(createProductFormula(field.getName()));
       }
-    } else {
-      for (Field field : SaleOrderLine.class.getDeclaredFields()) {
-        if (field.getAnnotation(NotNull.class) != null) {
-          creator.addConfiguratorSOLineFormulaListItem(createSOLineFormula(field.getName()));
-        }
+    }
+    for (Field field : SaleOrderLine.class.getDeclaredFields()) {
+      if (field.getAnnotation(NotNull.class) != null) {
+        creator.addConfiguratorSOLineFormulaListItem(createSOLineFormula(field.getName()));
       }
     }
     configuratorCreatorRepo.save(creator);
