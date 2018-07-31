@@ -3,6 +3,7 @@
 ## [Unreleased 4.2.5]
 ### Improvements
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Bank orders can now be deleted when their status is "draft" or "canceled".
 
 ### Bug Fixes
 - Fix NPE in BankOrder generation on missing bank name.
