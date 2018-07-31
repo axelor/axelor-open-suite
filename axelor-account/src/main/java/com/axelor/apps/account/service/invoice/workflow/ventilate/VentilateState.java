@@ -28,7 +28,7 @@ import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
+import com.axelor.apps.account.service.invoice.workflow.InvoiceWorkflowStep;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -41,15 +41,16 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RequestScoped
-public class VentilateState extends WorkflowInvoice {
+public class VentilateState extends InvoiceWorkflowStep {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

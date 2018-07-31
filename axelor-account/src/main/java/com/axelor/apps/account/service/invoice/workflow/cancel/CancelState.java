@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
+import com.axelor.apps.account.service.invoice.workflow.InvoiceWorkflowStep;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -29,7 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class CancelState extends WorkflowInvoice {
+public class CancelState extends InvoiceWorkflowStep {
 
   private WorkflowCancelService workflowService;
 

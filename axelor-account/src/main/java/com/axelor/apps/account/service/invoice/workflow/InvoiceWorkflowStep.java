@@ -20,7 +20,10 @@ package com.axelor.apps.account.service.invoice.workflow;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.exception.AxelorException;
 
-public abstract class WorkflowInvoice {
+/**
+ * Represents a step in the invoice processing workflow.
+ */
+public abstract class InvoiceWorkflowStep {
 
   protected Invoice invoice;
 

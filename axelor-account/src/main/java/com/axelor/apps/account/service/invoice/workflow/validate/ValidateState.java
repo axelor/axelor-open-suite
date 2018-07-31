@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
+import com.axelor.apps.account.service.invoice.workflow.InvoiceWorkflowStep;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -32,7 +32,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class ValidateState extends WorkflowInvoice {
+public class ValidateState extends InvoiceWorkflowStep {
 
   protected UserService userService;
   protected BlockingService blockingService;
