@@ -13,6 +13,7 @@
 - Fix json field creator's issue of model change not reflected on fields. 
 - Configurator export: add contextField to metaJsonField.
 - Configurator creator: fill default attributes for both product and sale order line.
+- Computation of value of a given stock location is now the same in the form and in the printing.
 
 
 ## [5.0.4] - 2018-07-26
