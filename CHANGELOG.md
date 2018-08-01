@@ -26,7 +26,9 @@
 - Machine type added for the machine.
 - Selection added for priority of manufacturing order.
 - Payment schedule line: management of direct debit rejection.
- 
+- New stock location configuration for quality control.
+- Create multiple supplier stock move when purchasing products requiring a quality check and normal products.
+
 ## Improvements
 - Move project resource menu entry to project configuration menu.
 - Refactor TargetList and Campaign views to follow guidelines.

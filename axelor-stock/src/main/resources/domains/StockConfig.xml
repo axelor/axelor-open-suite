@@ -11,6 +11,7 @@
 
     <many-to-one name="receiptDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
     <many-to-one name="pickupDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Pickup default stock location"/>
+    <many-to-one name="qualityControlDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Quality control default stock location"/>
 
    	<many-to-one name="customerVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"/>
     <many-to-one name="supplierVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
