@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
@@ -229,23 +230,22 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       throws AxelorException {
     // update a field if its formula has updateFromSelect to update
     // from configurator
-    List<ConfiguratorFormula> formulas =
-        configurator.getConfiguratorCreator().getConfiguratorFormulaList();
+    List<ConfiguratorSOLineFormula> formulas =
+        configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList();
     if (formulas != null) {
       Mapper mapper = Mapper.of(SaleOrderLine.class);
-      for (ConfiguratorFormula formula : formulas) {
+      for (ConfiguratorSOLineFormula formula : formulas) {
         // exclude the product field
         if (formula.getUpdateFromSelect() == ConfiguratorRepository.UPDATE_FROM_CONFIGURATOR) {
           // we add "_1" because computeIndicatorValue expect an indicator name.
           Object valueToUpdate =
               computeIndicatorValue(
-                  configurator, formula.getSaleOrderLineMetaField().getName() + "_1", attributes);
+                  configurator, formula.getMetaField().getName() + "_1", attributes);
           // if many to one, go search value in database.
-          if ("ManyToOne".equals(formula.getSaleOrderLineMetaField().getRelationship())) {
-            fixRelationalField(
-                saleOrderLine, (Model) valueToUpdate, formula.getSaleOrderLineMetaField());
+          if ("ManyToOne".equals(formula.getMetaField().getRelationship())) {
+            fixRelationalField(saleOrderLine, (Model) valueToUpdate, formula.getMetaField());
           } else {
-            mapper.set(saleOrderLine, formula.getSaleOrderLineMetaField().getName(), valueToUpdate);
+            mapper.set(saleOrderLine, formula.getMetaField().getName(), valueToUpdate);
           }
         }
       }
@@ -264,11 +264,17 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected Object computeIndicatorValue(
       Configurator configurator, String indicatorName, JsonContext jsonAttributes) {
     ConfiguratorCreator creator = configurator.getConfiguratorCreator();
+    List<? extends ConfiguratorFormula> formulas;
+    if (creator.getGenerateProduct()) {
+      formulas = creator.getConfiguratorProductFormulaList();
+    } else {
+      formulas = creator.getConfiguratorSOLineFormulaList();
+    }
     String groovyFormula = null;
-    for (ConfiguratorFormula formula : creator.getConfiguratorFormulaList()) {
+    for (ConfiguratorFormula formula : formulas) {
       String fieldName = indicatorName;
-      fieldName = fieldName.substring(0, fieldName.indexOf("_"));
-      MetaField metaField = Beans.get(ConfiguratorFormulaService.class).getMetaField(formula);
+      fieldName = fieldName.substring(0, fieldName.indexOf('_'));
+      MetaField metaField = formula.getMetaField();
       if (metaField.getName().equals(fieldName)) {
         groovyFormula = formula.getFormula();
         break;

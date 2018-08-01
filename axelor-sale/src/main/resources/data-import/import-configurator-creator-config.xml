@@ -125,17 +125,26 @@
          <bind node="contextFieldValue" to="contextFieldValue"/>
        </bind>
 
-       <bind node="configuratorFormulaList/configuratorFormula" to="configuratorFormulaList">
-         <bind node="productMetaField" to="productMetaField" search="self.id = :productMetaField" if="productMetaField">
-           <bind node="text()" to="id" alias="productMetaField"/>
-         </bind>
-         <bind node="saleOrderLineMetaField" to="saleOrderLineMetaField" search="self.id = :saleOrderLineMetaField" if="saleOrderLineMetaField">
-           <bind node="text()" to="id" alias="saleOrderLineMetaField" />
+       <bind node="configuratorProductFormulaList/configuratorProductFormula" to="configuratorProductFormulaList">
+         <bind node="metaField" to="metaField" search="self.id = :metaField" if="metaField">
+           <bind node="text()" to="id" alias="metaField"/>
          </bind>
          <bind node="formula" to="formula"/>
          <bind node="showOnConfigurator" to="showOnConfigurator"/>
-         <bind node="configuratorCreatorImportId" to="creator" search="self.importId = :configCreatorImportId" create="false">
+         <bind node="configuratorCreatorImportId" to="productCreator" search="self.importId = :configCreatorImportId" create="false">
          	<bind node="text()" to="importId" alias="configCreatorImportId"/>
+         </bind>
+       </bind>
+
+       <bind node="configuratorSOLineFormulaList/configuratorSOLineFormula" to="configuratorSOLineFormulaList">
+         <bind node="metaField" to="metaField" search="self.id = :metaField" if="metaField">
+           <bind node="text()" to="id" alias="metaField"/>
+         </bind>
+         <bind node="formula" to="formula"/>
+         <bind node="showOnConfigurator" to="showOnConfigurator"/>
+         <bind node="updateFromSelect" to="updateFromSelect"/>
+         <bind node="configuratorCreatorImportId" to="soLineCreator" search="self.importId = :configCreatorImportId" create="false">
+           <bind node="text()" to="importId" alias="configCreatorImportId"/>
          </bind>
        </bind>
        
