@@ -7,6 +7,7 @@
 - Configure BoM form: show sub bom list.
 - Configurator: improve UI for indicators.
 - Split formula list into formulas for product and formulas for sale order line in configurator creator.
+- Add a column name to configurators, equal to the creator's name.
 
 ## Bug Fixes
 - Fix on prod process report.
