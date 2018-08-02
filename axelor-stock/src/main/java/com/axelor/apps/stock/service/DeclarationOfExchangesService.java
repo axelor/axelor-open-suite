@@ -15,15 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.report;
+package com.axelor.apps.stock.service;
 
-public interface IReport {
+import com.axelor.apps.stock.db.DeclarationOfExchanges;
+import com.axelor.exception.AxelorException;
+import java.nio.file.Path;
+import org.apache.commons.lang3.tuple.Pair;
 
-  public static final String STOCK_MOVE = "StockMove.rptdesign";
-  public static final String PICKING_STOCK_MOVE = "PickingStockMove.rptdesign";
-  public static final String CONFORMITY_CERTIFICATE = "ConformityCertificate.rptdesign";
-  public static final String INVENTORY = "Inventory.rptdesign";
-  public static final String STOCK_LOCATION = "StockLocation.rptdesign";
-  public static final String DECLARATION_OF_EXCHANGES_OF_GOODS =
-      "DeclarationOfExchangesOfGoods.rptdesign";
+public interface DeclarationOfExchangesService {
+  /**
+   * Export declaration of exchanges.
+   *
+   * @param declarationOfExchanges
+   * @return
+   * @throws AxelorException
+   */
+  Pair<Path, String> export(DeclarationOfExchanges declarationOfExchanges) throws AxelorException;
 }

@@ -432,6 +432,16 @@
 		<view type="form" name="canton-form"/>
 	</action-view>
 
+    <menuitem name="admin-root-organisation-economic-area"
+      parent="admin-root-organisation-territory" title="Economic areas"
+      action="admin.root.organisation.economic.area" />
+  
+    <action-view name="admin.root.organisation.economic.area"
+      title="Economic areas" model="com.axelor.apps.base.db.EconomicArea">
+      <view type="grid" name="economic-area-grid"/>
+      <view type="form" name="economic-area-form"/>
+    </action-view>
+
 	<menuitem name="admin-root-user" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Users/Companies" order="25" />
 

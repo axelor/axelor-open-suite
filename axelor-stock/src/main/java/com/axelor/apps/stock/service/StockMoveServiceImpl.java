@@ -52,6 +52,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -1298,5 +1299,52 @@ public class StockMoveServiceImpl implements StockMoveService {
           I18n.get(IExceptionMessage.CANCEL_REASON_BAD_TYPE));
     }
     stockMove.setCancelReason(cancelReason);
+  }
+
+  @Override
+  public Address getPartnerAddress(StockMove stockMove) throws AxelorException {
+    Address address;
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      address = getToAddress(stockMove);
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      address = getFromAddress(stockMove);
+    } else {
+      throw new AxelorException(
+          stockMove, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("Bad stock move type"));
+    }
+
+    if (address.getAddressL7Country() == null) {
+      throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
+    }
+
+    return address;
+  }
+
+  @Override
+  public Address getCompanyAddress(StockMove stockMove) throws AxelorException {
+    Address address;
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      address = getFromAddress(stockMove);
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      address = getToAddress(stockMove);
+    } else {
+      throw new AxelorException(
+          stockMove, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("Bad stock move type"));
+    }
+
+    if (address.getAddressL7Country() == null) {
+      throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
+    }
+
+    if (address.getCity() == null
+        || address.getCity().getDepartment() == null
+        || StringUtils.isBlank(address.getCity().getDepartment().getCode())) {
+      throw new AxelorException(
+          address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing department");
+    }
+
+    return address;
   }
 }
