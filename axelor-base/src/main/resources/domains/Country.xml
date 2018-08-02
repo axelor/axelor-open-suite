@@ -13,8 +13,9 @@
     <string name="name" required="true" title="Country name" />
     <string name="cog" title="COG"/>
     <string name="phonePrefix" title="Calling code"/>
-    
-    
+
+    <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"/>
+
   </entity>
 
 </domain-models>

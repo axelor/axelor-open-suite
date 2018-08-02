@@ -15,15 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.report;
+package com.axelor.apps.stock.declaration_of_exchanges;
 
-public interface IReport {
-
-  public static final String STOCK_MOVE = "StockMove.rptdesign";
-  public static final String PICKING_STOCK_MOVE = "PickingStockMove.rptdesign";
-  public static final String CONFORMITY_CERTIFICATE = "ConformityCertificate.rptdesign";
-  public static final String INVENTORY = "Inventory.rptdesign";
-  public static final String STOCK_LOCATION = "StockLocation.rptdesign";
-  public static final String DECLARATION_OF_EXCHANGES_OF_GOODS =
-      "DeclarationOfExchangesOfGoods.rptdesign";
+public interface DeclarationOfExchangesColumnHeader {
+  String getTitle();
 }
