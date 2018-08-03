@@ -28,6 +28,7 @@
 - Payment schedule line: management of direct debit rejection.
 - Selection added for priority of manufacturing order.
 - Add currency in Accounting reports and filter all results with it.
+- New field `launchQty` on production process.
 
  
 ## Improvements
