@@ -56,6 +56,7 @@
 
 ## [Unreleased 5.0.5]
 ## Improvements
+- HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
 - Advanced export : code refactor and optimize the performance.
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
@@ -70,7 +71,10 @@
 - Configurator export: add contextField to metaJsonField.
 - Configurator creator: fill default attributes for both product and sale order line.
 - Computation of value of a given stock location is now the same in the form and in the printing.
-
+- BPM: Provide translations for some fields.
+- Fix chart builder operator display issue.
+- Portal: Fix ticket view on client portal.
+- Fix wrong quantity on manuf order when generating prod product lines where bill of material quantity is different from 1.
 
 ## [5.0.4] - 2018-07-26
 ## Features
