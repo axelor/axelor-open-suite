@@ -130,6 +130,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
 
+    BigDecimal bomQty = billOfMaterial.getQty();
+
     if (billOfMaterial.getBillOfMaterialSet() != null) {
 
       for (BillOfMaterial billOfMaterialLine :
@@ -142,17 +144,32 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                   manufOrder.getProduct(), billOfMaterialLine.getProduct());
 
           BigDecimal qty =
-              billOfMaterialLine
-                  .getQty()
-                  .multiply(manufOrderQty)
-                  .setScale(2, RoundingMode.HALF_EVEN);
-
+              computeToConsumeProdProductLineQuantity(
+                  bomQty, manufOrderQty, billOfMaterialLine.getQty());
           ProdProduct prodProduct = new ProdProduct(product, qty, billOfMaterialLine.getUnit());
           manufOrder.addToConsumeProdProductListItem(prodProduct);
           prodProductRepo.persist(prodProduct); // id by order of creation
         }
       }
     }
+  }
+
+  @Override
+  public BigDecimal computeToConsumeProdProductLineQuantity(
+      BigDecimal bomQty, BigDecimal manufOrderQty, BigDecimal lineQty) {
+
+    BigDecimal qty = BigDecimal.ZERO;
+
+    if (bomQty.signum() != 0) {
+      qty =
+          manufOrderQty
+              .multiply(lineQty)
+              .divide(
+                  bomQty,
+                  Beans.get(AppProductionService.class).getNbDecimalDigitForBomQty(),
+                  RoundingMode.HALF_EVEN);
+    }
+    return qty;
   }
 
   private List<BillOfMaterial> getSortedBillsOfMaterials(

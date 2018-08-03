@@ -17,8 +17,9 @@
 - Configurator creator: fill default attributes for both product and sale order line.
 - Computation of value of a given stock location is now the same in the form and in the printing.
 - BPM: Provide translations for some fields.
-- Fix chart builder operator display issue. 
+- Fix chart builder operator display issue.
 - Portal: Fix ticket view on client portal.
+- Fix wrong quantity on manuf order when generating prod product lines where bill of material quantity is different from 1.
 
 ## [5.0.4] - 2018-07-26
 ## Features
