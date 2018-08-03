@@ -27,5 +27,12 @@
 		<option value="1">Replace</option>
 		<option value="2">Delete</option>
 	</selection>
+	
+	<selection name="data.backup.status.select">
+		<option value="0">Draft</option>
+		<option value="1">Backup Created</option>
+		<option value="2">Backup Restored</option>
+		<option value="3">Backup Restore Error</option>
+	</selection>
 
 </object-views>
