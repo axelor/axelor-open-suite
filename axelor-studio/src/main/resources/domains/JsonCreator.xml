@@ -6,8 +6,8 @@
   <module name="studio" package="com.axelor.studio.db" />
   
   <entity name="JsonCreator" cachable="true">
-  	 <many-to-one name="metaModel" title="Object" ref="com.axelor.meta.db.MetaModel" />
-  	 <many-to-one name="metaField" title="Json field" ref="com.axelor.meta.db.MetaField" />
+  	 <many-to-one name="metaModel" title="Object" ref="com.axelor.meta.db.MetaModel" required="true" />
+  	 <many-to-one name="metaField" title="Json field" ref="com.axelor.meta.db.MetaField" required="true"/>
   	 <one-to-many name="metaJsonFields" ref="com.axelor.meta.db.MetaJsonField" mappedBy="jsonCreator"/>
   </entity>
   

@@ -21,8 +21,11 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -34,6 +37,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -46,6 +51,8 @@ public class AddressServiceImpl implements AddressService {
   @Inject private com.axelor.apps.tool.address.AddressTool ads;
 
   @Inject private PartnerRepository partnerRepo;
+
+  @Inject protected MapService mapService;
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -160,37 +167,52 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   @Transactional
-  public Address checkLatLong(Address address) throws AxelorException, JSONException {
-    return checkLatLong(address, false);
+  public Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
+      throws AxelorException, JSONException {
+    Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
+    Optional<Pair<BigDecimal, BigDecimal>> latLong = getLatLong(address);
+
+    if (latLong.isPresent()) {
+      return latLong;
+    }
+
+    return updateLatLong(address);
   }
 
   @Override
   @Transactional
-  public Address checkLatLong(Address address, boolean forceUpdate)
+  public Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
       throws AxelorException, JSONException {
+    Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
 
-    address = addressRepo.find(address.getId());
-    BigDecimal latit = address.getLatit();
-    BigDecimal longit = address.getLongit();
-
-    if ((BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0)
-        || forceUpdate) {
-      Map<String, Object> result = Beans.get(MapService.class).getMap(address.getFullName());
-      if (result != null) {
-        address.setLatit((BigDecimal) result.get("latitude"));
-        address.setLongit((BigDecimal) result.get("longitude"));
-        address = addressRepo.save(address);
-      }
+    if (mapService.isConfigured() && StringUtils.notBlank(address.getFullName())) {
+      Map<String, Object> result = mapService.getMap(address.getFullName());
+      BigDecimal latitude = (BigDecimal) result.get("latitude");
+      BigDecimal longitude = (BigDecimal) result.get("longitude");
+      setLatLong(address, Pair.of(latitude, longitude));
     }
 
-    return address;
+    return getLatLong(address);
   }
 
-  // TODO: remove this misspelled method.
   @Override
-  public Address checkLatLang(Address address, boolean forceUpdate)
-      throws AxelorException, JSONException {
-    return checkLatLong(address, forceUpdate);
+  @Transactional
+  public void resetLatLong(Address address) {
+    Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
+    setLatLong(address, Pair.of(null, null));
+  }
+
+  protected void setLatLong(Address address, Pair<BigDecimal, BigDecimal> latLong) {
+    address.setLatit(latLong.getLeft());
+    address.setLongit(latLong.getRight());
+  }
+
+  protected Optional<Pair<BigDecimal, BigDecimal>> getLatLong(Address address) {
+    if (address.getLatit() != null && address.getLongit() != null) {
+      return Optional.of(Pair.of(address.getLatit(), address.getLongit()));
+    }
+
+    return Optional.empty();
   }
 
   @Override

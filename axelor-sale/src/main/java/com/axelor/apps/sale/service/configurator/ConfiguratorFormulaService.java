@@ -20,16 +20,8 @@ package com.axelor.apps.sale.service.configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaField;
 
 public interface ConfiguratorFormulaService {
-
-  /** Return the filled MetaField */
-  MetaField getMetaField(ConfiguratorFormula configuratorFormula);
-
-  /** Return the filled MetaField */
-  MetaField getMetaField(
-      ConfiguratorFormula configuratorFormula, ConfiguratorCreator configuratorCreator);
 
   /**
    * Check if the written formula is valid.
