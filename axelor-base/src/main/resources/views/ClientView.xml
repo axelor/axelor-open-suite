@@ -8,6 +8,7 @@
 	    <break/>
 		<button name="mySaleOrder"   title="My sale orders" onClick="wizard-client-form-open-my-sale-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 	    <button name="myInvoices"   title="My invoices" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg" if-module="axelor-account" if="__config__.app.isApp('account')"/>
+	    <button name="myTickets"   title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg" if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"/>
 	</form>
 	
 	<action-view name="wizard-client-form-open-my-sale-order" title="My sale orders"
@@ -29,6 +30,15 @@
 	<action-view name="wizard-client-view" title="My space" model="com.axelor.apps.base.db.Wizard">
  		<view type="form" name="wizard-client-form"/>
  	</action-view>
- 	
+
+	<action-view name="wizard-client-form-open-my-tickets" title="My tickets"
+		model="com.axelor.apps.helpdesk.db.Ticket" icon="img/16px/crmSmall_16px.png">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>self.customer = :_myPartner or self.createdBy =:_user</domain>
+		<context name="_myPartner" expr="eval:__user__.partner"/>
+		<context name="_user" expr="eval:__user__"/>
+	</action-view>
+
 </object-views>
 

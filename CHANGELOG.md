@@ -18,7 +18,7 @@
 - Computation of value of a given stock location is now the same in the form and in the printing.
 - BPM: Provide translations for some fields.
 - Fix chart builder operator display issue. 
-
+- Portal: Fix ticket view on client portal.
 
 ## [5.0.4] - 2018-07-26
 ## Features
