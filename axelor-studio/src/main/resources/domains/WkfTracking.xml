@@ -15,8 +15,8 @@
       <long name="recordId" required="true" title="Record Id"/>
       <string name="recordName" title="Record name"/>
       <one-to-many name="wkfTrackingLines" title="Tracking lines" ref="WkfTrackingLine" mappedBy="wkfTracking"/>
-      <one-to-many name="totalLines" title="Nb of time passes per status" ref="WkfTrackingTotal" mappedBy="wkfTracking" />
-      <one-to-many name="totalTimeLines" title="Total time per status" ref="WkfTrackingTime" mappedBy="wkfTracking" />
+      <one-to-many name="totalLines" title="Nb of passes per status" ref="WkfTrackingTotal" mappedBy="wkfTracking" />
+      <one-to-many name="totalTimeLines" title="Time spent (hours/days)" ref="WkfTrackingTime" mappedBy="wkfTracking" />
   </entity>
     
  </domain-models>
