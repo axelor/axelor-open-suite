@@ -21,48 +21,43 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-public class CancelState extends WorkflowInvoice {
+@Singleton
+public class CancelWorkflowStepService {
 
   private WorkflowCancelService workflowService;
 
   @Inject
-  CancelState(WorkflowCancelService workflowService) {
+  CancelWorkflowStepService(WorkflowCancelService workflowService) {
     this.workflowService = workflowService;
   }
 
-  @Override
-  public void init(Invoice invoice) {
-    this.invoice = invoice;
-  }
-
-  @Override
-  public void process() throws AxelorException {
+  public void process(Invoice invoice) throws AxelorException {
 
     workflowService.beforeCancel(invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
-      cancelMove();
+      cancelMove(invoice);
     }
 
-    setStatus();
+    setStatus(invoice);
     workflowService.afterCancel(invoice);
   }
 
-  protected void setStatus() {
+  protected void setStatus(Invoice invoice) {
 
     invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
   }
 
-  protected void cancelMove() throws AxelorException {
+  protected void cancelMove(Invoice invoice) throws AxelorException {
 
     if (invoice.getOldMove() != null) {
       throw new AxelorException(

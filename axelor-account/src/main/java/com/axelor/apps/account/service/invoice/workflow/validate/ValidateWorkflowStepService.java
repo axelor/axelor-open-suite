@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -31,8 +30,10 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-public class ValidateState extends WorkflowInvoice {
+@Singleton
+public class ValidateWorkflowStepService {
 
   protected UserService userService;
   protected BlockingService blockingService;
@@ -40,24 +41,18 @@ public class ValidateState extends WorkflowInvoice {
   protected AppBaseService appBaseService;
 
   @Inject
-  public ValidateState(
+  public ValidateWorkflowStepService(
       UserService userService,
       BlockingService blockingService,
       WorkflowValidationService workflowValidationService,
       AppBaseService appBaseService) {
-    super();
     this.userService = userService;
     this.blockingService = blockingService;
     this.workflowValidationService = workflowValidationService;
     this.appBaseService = appBaseService;
   }
 
-  public void init(Invoice invoice) {
-    this.invoice = invoice;
-  }
-
-  @Override
-  public void process() throws AxelorException {
+  public void process(Invoice invoice) throws AxelorException {
 
     if ((InvoiceToolService.isOutPayment(invoice)
             && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -26,13 +27,13 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.google.inject.servlet.RequestScoped;
+import com.google.inject.Singleton;
 
-@RequestScoped
-public class VentilateAdvancePaymentState extends VentilateState {
+@Singleton
+public class VentilateAdvancePaymentWorkflowStepService extends VentilateWorkflowStepService {
 
   @Inject
-  public VentilateAdvancePaymentState(
+  public VentilateAdvancePaymentWorkflowStepService(
       SequenceService sequenceService,
       MoveService moveService,
       AccountConfigService accountConfigService,
@@ -51,15 +52,15 @@ public class VentilateAdvancePaymentState extends VentilateState {
   }
 
   @Override
-  public void process() throws AxelorException {
+  public void process(Invoice invoice) throws AxelorException {
 
     Preconditions.checkNotNull(invoice.getPartner());
 
-    setDate();
-    setJournal();
-    setPartnerAccount();
-    setInvoiceId();
-    updatePaymentSchedule();
+    setDate(invoice);
+    setJournal(invoice);
+    setPartnerAccount(invoice);
+    setInvoiceId(invoice);
+    updatePaymentSchedule(invoice);
     // we don't create the move
     // and the invoice stays validated
 
