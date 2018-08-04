@@ -21,6 +21,7 @@
 - Portal: Fix ticket view on client portal.
 - Fix wrong quantity on manuf order when generating prod product lines where bill of material quantity is different from 1.
 - Fix new bug when checking type on configurator.
+- BPM: Provide translation for Workflow dashboard.
 
 ## [5.0.4] - 2018-07-26
 ## Features
