@@ -44,6 +44,7 @@
 - StockMove : checkExpirationDate At StockMove Realization done only if toStockLocation not virtual stock location except for inStockMove on ManufOrder.
 - PRODUCT : Changed title of two fields(purchaseProductMultipleQtyList,saleProductMultipleQtyList) in advanced search and added fr translation for it.
 - Production : Generate Unique Barcode on Duplicate Manufacture order.
+- Invoice : journal & partner account are now set on validation rather than on ventilation.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
