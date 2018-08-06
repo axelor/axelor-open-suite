@@ -23,6 +23,7 @@
 - Fix new bug when checking type on configurator.
 - BPM: Provide translation for Workflow dashboard.
 - Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
+- Invoice: reload the view after regenerating the printing.
 
 ## [5.0.4] - 2018-07-26
 ## Features
