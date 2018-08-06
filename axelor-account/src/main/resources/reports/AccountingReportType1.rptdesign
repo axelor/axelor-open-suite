@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1839,6 +1839,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                 <property name="pattern">###,##0.00</property>
                                             </structure>
                                             <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["sum_balance"]==0</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="resultSetColumn">sum_balance</property>
                                         </data>
                                     </cell>
@@ -1907,6 +1913,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                             <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["balance"]==0</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="resultSetColumn">balance</property>
                                     </data>
                                 </cell>
