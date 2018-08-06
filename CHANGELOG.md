@@ -23,6 +23,7 @@
 - Fix new bug when checking type on configurator.
 - BPM: Provide translation for Workflow dashboard.
 - Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
+- Budget form: add missing tranlation.
 
 ## [5.0.4] - 2018-07-26
 ## Features
