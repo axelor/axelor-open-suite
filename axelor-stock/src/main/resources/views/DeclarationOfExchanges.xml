@@ -13,8 +13,10 @@
     <field name="period"
       domain="self.year = :fiscalYear OR :fiscalYear IS NULL AND self.year.company = :company AND self.year.typeSelect = :YEAR_TYPE_FISCAL"
       onChange="action-declaration-of-exchanges-period-onchange" canEdit="false"/>
-    <field name="productTypeSelect"/>
-    <field name="stockMoveTypeSelect" selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING]"/>
+    <field name="productTypeSelect" onChange="action-declaration-of-exchanges-product-type-select-onchange"/>
+    <field name="stockMoveTypeSelect"
+      selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING * (productTypeSelect != 'service')]"
+      readonlyIf="productTypeSelect == 'service'"/>
     <field name="formatSelect" selection-in="['pdf', 'csv']"/>
     <field name="createdOn"/>
   </grid>
@@ -38,8 +40,10 @@
           domain="self.year = :fiscalYear OR :fiscalYear IS NULL AND self.year.company = :company AND self.year.typeSelect = :YEAR_TYPE_FISCAL"
           onChange="action-declaration-of-exchanges-period-onchange" canEdit="false"/>
       </panel>
-      <field name="productTypeSelect"/>
-      <field name="stockMoveTypeSelect" selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING]"/>
+      <field name="productTypeSelect" onChange="action-declaration-of-exchanges-product-type-select-onchange"/>
+      <field name="stockMoveTypeSelect"
+        selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING * (productTypeSelect != 'service')]"
+        readonlyIf="productTypeSelect == 'service'"/>
       <field name="formatSelect" selection-in="['pdf', 'csv']"/>
       <field name="createdOn" showIf="createdOn"/>
     </panel>
@@ -58,6 +62,11 @@
 
   <action-record name="action-declaration-of-exchanges-period-onchange" model="com.axelor.apps.stock.db.DeclarationOfExchanges">
     <field name="fiscalYear" expr="eval: period.year" if="!fiscalYear"/>
+  </action-record>
+
+  <action-record name="action-declaration-of-exchanges-product-type-select-onchange"
+    model="com.axelor.apps.stock.db.DeclarationOfExchanges">
+    <field name="stockMoveTypeSelect" expr="eval: STOCK_MOVE_TYPE_OUTGOING" if="productTypeSelect == 'service'"/>
   </action-record>
 
   <action-attrs name="action-declaration-of-exchanges-company-onselect">

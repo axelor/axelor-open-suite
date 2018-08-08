@@ -26,4 +26,5 @@ public interface IReport {
   public static final String STOCK_LOCATION = "StockLocation.rptdesign";
   public static final String DECLARATION_OF_EXCHANGES_OF_GOODS =
       "DeclarationOfExchangesOfGoods.rptdesign";
+  public static final String DECLARATION_OF_SERVICES = "DeclarationOfServices.rptdesign";
 }

@@ -20,7 +20,6 @@ package com.axelor.apps.stock.declaration_of_exchanges;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.DeclarationOfExchanges;
@@ -95,7 +94,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
             .findForDeclarationOfExchanges(
                 period.getFromDate(),
                 period.getToDate(),
-                ProductRepository.PRODUCT_TYPE_STORABLE,
+                declarationOfExchanges.getProductTypeSelect(),
                 declarationOfExchanges.getStockMoveTypeSelect(),
                 declarationOfExchanges.getCountry())
             .fetch();
@@ -142,7 +141,8 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       BigDecimal fiscalValue =
           stockMoveLine
               .getUnitPriceUntaxed()
-              .multiply(stockMoveLine.getRealQty().setScale(0, RoundingMode.HALF_UP));
+              .multiply(stockMoveLine.getRealQty())
+              .setScale(0, RoundingMode.HALF_UP);
 
       Regime regime = stockMoveLine.getRegime();
 
@@ -261,8 +261,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
   @Override
   protected String exportToPDF() throws AxelorException {
-    return ReportFactory.createReport(
-            IReport.DECLARATION_OF_EXCHANGES_OF_GOODS, getTitle())
+    return ReportFactory.createReport(IReport.DECLARATION_OF_EXCHANGES_OF_GOODS, getTitle())
         .addParam("DeclarationOfExchangesId", declarationOfExchanges.getId())
         .addParam("UserId", AuthUtils.getUser().getId())
         .addParam("Locale", ReportSettings.getPrintingLocale())
