@@ -658,6 +658,8 @@ Also, improve the sale order line grid and form views.
 
 ## [Unreleased 4.2.5]
 ### Improvements
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Improve bank order printing layout.
 
 ### Bug Fixes
 - Fix NPE in BankOrder generation on missing bank name.

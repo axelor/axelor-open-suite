@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1236,13 +1236,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                 <property name="width">0.7in</property>
             </column>
             <column id="3344">
-                <property name="width">0.5in</property>
-            </column>
-            <column id="3345">
-                <property name="width">0.2in</property>
-            </column>
-            <column id="3346">
-                <property name="width">0.2in</property>
+                <property name="width">7cm</property>
             </column>
             <column id="3347">
                 <property name="width">0.5in</property>
@@ -1256,14 +1250,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                 </cell>
-                <cell id="3352">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <property name="textAlign">right</property>
-                </cell>
-                <cell id="4034">
-                    <property name="textAlign">right</property>
-                </cell>
                 <cell id="4035">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
@@ -1273,7 +1259,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
             <row id="3836">
                 <property name="height">0.5in</property>
                 <cell id="3837">
-                    <property name="colSpan">6</property>
+                    <property name="colSpan">4</property>
                     <property name="rowSpan">1</property>
                     <text id="3426">
                         <property name="fontSize">14pt</property>
@@ -1347,7 +1333,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                     </text>
                 </cell>
                 <cell id="4040">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">medium</property>
@@ -1359,10 +1345,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["bank_order_date"]</VALUE-OF>]]></text-property>
                     </text>
-                </cell>
-                <cell id="4042">
-                    <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">medium</property>
                 </cell>
                 <cell id="4043">
                     <property name="borderTopStyle">solid</property>
@@ -1475,7 +1457,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                     </text>
                 </cell>
                 <cell id="3928">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">medium</property>
@@ -1513,12 +1495,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
 	row._outer["payment_mode_name"]
 }</VALUE-OF>]]></text-property>
                     </text>
-                </cell>
-                <cell id="3381">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">medium</property>
                 </cell>
                 <cell id="4021">
                     <property name="borderBottomStyle">solid</property>
@@ -1594,8 +1570,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                 <property name="height">0.1in</property>
                 <cell id="4051"/>
                 <cell id="4052"/>
-                <cell id="4053"/>
-                <cell id="4054"/>
                 <cell id="4055"/>
                 <cell id="4056"/>
             </row>
@@ -1633,7 +1607,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                     </text>
                 </cell>
                 <cell id="4066">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <text id="4087">
                         <property name="marginTop">1pt</property>
@@ -1643,7 +1617,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["companyname"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4068"/>
                 <cell id="4069">
                     <text id="4251">
                         <property name="marginLeft">2pt</property>
@@ -1719,7 +1692,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                     </text>
                 </cell>
                 <cell id="4059">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <property name="textAlign">left</property>
                     <text id="4092">
@@ -1730,7 +1703,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["bank_details"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4061"/>
                 <cell id="4062">
                     <text id="4082">
                         <property name="marginLeft">2pt</property>
@@ -1806,7 +1778,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                     </text>
                 </cell>
                 <cell id="4073">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <text id="4091">
                         <property name="marginTop">1pt</property>
@@ -1816,7 +1788,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["sender_reference"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4075"/>
                 <cell id="4076">
                     <text id="4086">
                         <property name="marginLeft">2pt</property>
@@ -1892,7 +1863,7 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                     </text>
                 </cell>
                 <cell id="4209">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <text id="4215">
                         <property name="marginTop">1pt</property>
@@ -1902,7 +1873,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["generated_meta_file_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4211"/>
                 <cell id="4212"/>
                 <cell id="4213"/>
             </row>
@@ -1910,8 +1880,6 @@ ORDER BY bankOrderLine.sequence]]></xml-property>
                 <property name="height">0.2in</property>
                 <cell id="4179"/>
                 <cell id="4180"/>
-                <cell id="4181"/>
-                <cell id="4182"/>
                 <cell id="4183"/>
                 <cell id="4184"/>
             </row>
