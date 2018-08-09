@@ -30,8 +30,8 @@
 - Add currency in Accounting reports and filter all results with it.
 - New field `launchQty` on production process.
 - Fill `qty` from `launchQty` in manuf order on filling prod process.
+- Declaration of exchanges of services and declaration of services
 
- 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
 - Refactor TargetList and Campaign views to follow guidelines.
