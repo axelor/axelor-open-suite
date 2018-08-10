@@ -21,7 +21,7 @@
 				<field name="dependsOnSet" colSpan="12" widget="TagSelect" canNew="false" canEdit="false" />
 				<field name="sequence" />
 			</panel>
-			<field name="description" colSpan="12"/>
+			<field name="description" widget="html" colSpan="12"/>
 		</panel>
 	</form>
 	
