@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
+		name="data-create-backup-grid">
+		<field name="statusSelect" />
+		<field name="backupMetaFile" widget="binary-link" />
+		<field name="backupDate" />
+	</grid>
+
+	<form model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
+		name="data-create-backup-form" width="large"
+		onNew="data.create.backup.load.today.date">
+		<panel>
+			<field name="statusSelect" readonly="true" widget="NavSelect"
+				selection-in="[0,1]" />
+			<field name="fetchLimit" widget="Integer" min="1" colSpan="3" required="true"/>
+			<field name="backupDate" colSpan="3" />
+			<field name="backupMetaFile" readonly="true" widget="binary-link" />
+			<button name="create" title="Create"
+				showIf="backupMetaFile == null &amp;&amp; statusSelect != 1"
+				onClick="save,action.data.backup.call.createbackup,save" />
+		</panel>
+	</form>
+
+	<grid model="com.axelor.apps.base.db.DataBackup" title="Restore Backup"
+		name="data-restore-backup-grid">
+		<field name="statusSelect" />
+		<field name="backupMetaFile" widget="binary-link" />
+		<field name="restoreDate" />
+	</grid>
+
+	<form model="com.axelor.apps.base.db.DataBackup" title="Restore Backup"
+		name="data-restore-backup-form" width="large"
+		onNew="data.restore.backup.load.today.date">
+		<panel>
+			<field name="statusSelect" selection-in="[0,2,3]" readonly="true"
+				widget="NavSelect" />
+			
+			<field name="backupMetaFile" required="true"
+				domain="self.fileName LIKE '%.zip'" colSpan="3"/>
+			<field name="restoreDate" colSpan="3"/>
+			<field name="logMetaFile" readonly="true" widget="binary-link" />
+			<button name="restore" title="Restore"
+				showIf="backupMetaFile != null &amp;&amp; statusSelect != 2"
+				onClick="save,action.data.backup.call.restorebackup,save" />
+		</panel>
+	</form>
+	
+	<action-record name="data.create.backup.load.today.date"
+		model="com.axelor.apps.base.db.DataBackup">
+		<field name="backupDate" expr="eval: __datetime__" />
+		<field name="fetchLimit" expr="100" />
+	</action-record>
+
+	<action-record name="data.restore.backup.load.today.date"
+		model="com.axelor.apps.base.db.DataBackup">
+		<field name="restoreDate" expr="eval: __datetime__" />
+	</action-record>
+
+	<action-method name="action.data.backup.call.createbackup">
+		<call class="com.axelor.apps.base.web.DataBackupController"
+			method="CreateBackUp" />
+	</action-method>
+
+	<action-method name="action.data.backup.call.restorebackup">
+		<call class="com.axelor.apps.base.web.DataBackupController"
+			method="RestoreBackUp" />
+	</action-method>
+
+</object-views>
