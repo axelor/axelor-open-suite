@@ -20,35 +20,16 @@ package com.axelor.apps.sale.service.configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.db.EntityHelper;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaField;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
-
-  @Override
-  public MetaField getMetaField(ConfiguratorFormula configuratorFormula) {
-    ConfiguratorCreator configuratorCreator = configuratorFormula.getCreator();
-    return getMetaField(configuratorFormula, configuratorCreator);
-  }
-
-  @Override
-  public MetaField getMetaField(
-      ConfiguratorFormula configuratorFormula, ConfiguratorCreator configuratorCreator) {
-    if (configuratorCreator == null) {
-      return null;
-    }
-
-    if (configuratorCreator.getGenerateProduct()) {
-      return configuratorFormula.getProductMetaField();
-    } else {
-      return configuratorFormula.getSaleOrderLineMetaField();
-    }
-  }
 
   @Override
   public void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator)
@@ -56,7 +37,7 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
     ScriptBindings defaultValueBindings =
         Beans.get(ConfiguratorCreatorService.class).getTestingValues(creator);
     Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
-    String wantedTypeName = getMetaField(formula, creator).getTypeName();
+    String wantedTypeName = formula.getMetaField().getTypeName();
     if (result == null) {
       throw new AxelorException(
           formula,
@@ -64,7 +45,7 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
           I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
     } else {
       if (!Beans.get(ConfiguratorService.class)
-          .areCompatible(wantedTypeName, result.getClass().getSimpleName())) {
+          .areCompatible(wantedTypeName, getCalculatedClassName(result))) {
         throw new AxelorException(
             formula,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -72,6 +53,15 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
             result.getClass().getSimpleName(),
             wantedTypeName);
       }
+    }
+  }
+
+  @Override
+  public String getCalculatedClassName(Object calculatedValue) {
+    if (calculatedValue instanceof Model) {
+      return EntityHelper.getEntityClass(calculatedValue).getSimpleName();
+    } else {
+      return calculatedValue.getClass().getSimpleName();
     }
   }
 }
