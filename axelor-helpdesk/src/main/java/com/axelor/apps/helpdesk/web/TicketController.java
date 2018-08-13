@@ -18,9 +18,11 @@
 package com.axelor.apps.helpdesk.web;
 
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.exceptions.IExceptionMessage;
 import com.axelor.apps.helpdesk.service.TicketServiceImpl;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -43,9 +45,13 @@ public class TicketController {
 
     Long id = (Long) request.getContext().get("id");
     List<?> ids = (List<?>) request.getContext().get("_ids");
-    ticketService.assignToMeTicket(id, ids);
 
-    response.setReload(true);
+    if (id == null && ids == null) {
+      response.setAlert(I18n.get(IExceptionMessage.SELECT_TICKETS));
+    } else {
+      ticketService.assignToMeTicket(id, ids);
+      response.setReload(true);
+    }
   }
 
   /**

@@ -31,11 +31,11 @@
 	</action-record>
 	
 	<action-record name="action-advanced-export-record-set-last-export-limit" model="com.axelor.apps.base.db.AdvancedExport">
-		<field name="maxExportLimit" expr="eval: id == null ? 1000 : __repo__(AdvancedExport).find(id).getMaxExportLimit()" if="maxExportLimit &lt; queryFetchSize || maxExportLimit &lt;= 0"/>
+		<field name="maxExportLimit" expr="eval: id == null ? 1000 : __self__.getMaxExportLimit()" if="maxExportLimit &lt; queryFetchSize || maxExportLimit &lt;= 0"/>
 	</action-record>
 	
 	<action-record name="action-advanced-export-record-set-last-fetch-size" model="com.axelor.apps.base.db.AdvancedExport">
-		<field name="queryFetchSize" expr="eval: id == null ? 100 : __repo__(AdvancedExport).find(id).getQueryFetchSize()" if="queryFetchSize &gt; maxExportLimit || queryFetchSize &lt;= 0"/>
+		<field name="queryFetchSize" expr="eval: id == null ? 100 : __self__.getQueryFetchSize()" if="queryFetchSize &gt; maxExportLimit || queryFetchSize &lt;= 0"/>
 	</action-record>
   	
   	<action-method name="action-method-get-model-all-fields">
