@@ -2,6 +2,7 @@
 ## [Unreleased 5.0.5]
 ## Improvements
 - Marketing app: added FR demo data
+- Reworked ati sale orders/purchase orders/invoices.
 
 ## Bug Fixes
 

@@ -55,6 +55,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       Product product,
       String productName,
       BigDecimal price,
+      BigDecimal inTaxPrice,
       BigDecimal priceDiscounted,
       String description,
       BigDecimal qty,
@@ -74,6 +75,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         product,
         productName,
         price,
+        inTaxPrice,
         priceDiscounted,
         description,
         qty,
@@ -113,15 +115,16 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     if (saleOrderLine != null) {
       this.discountAmount = saleOrderLine.getDiscountAmount();
       this.price = saleOrderLine.getPrice();
+      this.inTaxPrice = saleOrderLine.getInTaxPrice();
       this.priceDiscounted = saleOrderLine.getPriceDiscounted();
       this.taxLine = saleOrderLine.getTaxLine();
       this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
       this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
     } else if (purchaseOrderLine != null) {
       this.isTitleLine = purchaseOrderLine.getIsTitleLine();
-      this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();
+      this.inTaxPrice = purchaseOrderLine.getInTaxPrice();
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
@@ -167,13 +170,25 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
     } else if (stockMoveLine != null) {
 
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+
       this.price =
-          Beans.get(InvoiceLineService.class)
-              .getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+          invoiceLineService.getExTaxUnitPrice(
+              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+      this.inTaxPrice =
+          invoiceLineService.getInTaxUnitPrice(
+              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+
       this.price =
-          Beans.get(UnitConversionService.class)
-              .convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
+          unitConversionService.convertWithProduct(
+              stockMoveLine.getUnit(), this.unit, this.price, product);
+      this.inTaxPrice =
+          unitConversionService.convertWithProduct(
+              stockMoveLine.getUnit(), this.unit, this.inTaxPrice, product);
+
       invoiceLine.setPrice(price);
+      invoiceLine.setInTaxPrice(inTaxPrice);
     }
 
     return invoiceLine;

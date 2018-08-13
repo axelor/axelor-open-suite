@@ -20,6 +20,7 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -263,6 +264,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       }
     }
 
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+
     for (ContractLine line : contract.getCurrentVersion().getContractLineList()) {
 
       if (line.getIsConsumptionLine()) {
@@ -276,6 +279,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       invoiceLine.setInTaxTotal(line.getInTaxTotal());
       invoiceLine.setDescription(line.getDescription());
       invoiceLine.setPrice(line.getPrice());
+      invoiceLine.setInTaxPrice(
+          invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice()));
       invoiceLine.setProductName(line.getProductName());
       invoiceLine.setQty(line.getQty());
       invoiceLine.setUnit(line.getUnit());
@@ -295,6 +300,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         invoiceLine.setInTaxTotal(line.getInTaxTotal());
         invoiceLine.setDescription(line.getDescription());
         invoiceLine.setPrice(line.getPrice());
+        invoiceLine.setInTaxPrice(
+            invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice()));
         invoiceLine.setProductName(line.getProductName());
         invoiceLine.setQty(line.getQty());
         invoiceLine.setUnit(line.getUnit());
@@ -324,6 +331,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       invoiceLine.setInTaxTotal(line.getInTaxTotal());
       invoiceLine.setDescription(line.getDescription());
       invoiceLine.setPrice(line.getPrice());
+      invoiceLine.setInTaxPrice(
+          invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice()));
       invoiceLine.setProductName(line.getProductName());
       invoiceLine.setQty(line.getQty());
       invoiceLine.setUnit(line.getUnit());
