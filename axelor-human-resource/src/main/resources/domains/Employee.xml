@@ -53,9 +53,13 @@
 	       ]]>
 	       
       </string>
+      <integer name="timesheetImputationSelect" title="Timesheet imputed on" selection="hr.employee.timesheet.imputation.select" default="1"/>
       
       <extra-code>
    		<![CDATA[
+            // For business.production.employee.timesheet.imputation.select
+            public static final int TIMESHEET_PROJECT = 1;
+
    			public static final String TIME_PREFERENCE_DAYS = "days";
    			public static final String TIME_PREFERENCE_HOURS = "hours";
    			public static final String TIME_PREFERENCE_MINUTES = "minutes";

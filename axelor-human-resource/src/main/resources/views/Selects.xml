@@ -163,6 +163,10 @@
 		<option value="2">End of month</option>
 	</selection>
 
+	<selection name="business.production.employee.timesheet.imputation.select">
+		<option value="1">Timesheet imputed on project</option>
+	</selection>
+
 	<selection name="meta.schedule.batch.service.select" id="hr.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.hr.service.batch.HrBatchService">com.axelor.apps.hr.service.batch.HrBatchService</option>
 	</selection>

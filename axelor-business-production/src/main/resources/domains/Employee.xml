@@ -6,11 +6,8 @@
     <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
     <entity name="Employee" cachable="true">
-        <integer name="timesheetImputationSelect" title="Timesheet imputed on" selection="business.production.employee.timesheet.imputation.select" default="1"/>
-
         <extra-code>
             <![CDATA[
-                public static final int TIMESHEET_PROJECT = 1;
                 public static final int TIMESHEET_MANUF_ORDER = 2;
             ]]>
         </extra-code>

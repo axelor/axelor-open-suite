@@ -8,4 +8,9 @@
       method="updateOperationOrders"/>
   </action-method>
 
+	<action-view name="action-timesheet-view-total-hours-per-day-timesheet-imputed-on-manufacturing-order" title="">
+  		<view name="chart.total.hours.per.day.timesheet.imputed.on.manufacturing.order" type="chart"/>
+    	<context name="timesheet_id" expr="eval: __self__.id"/>
+	</action-view>
+
 </object-views>

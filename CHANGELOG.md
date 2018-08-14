@@ -55,6 +55,7 @@
 - Project: Fix multiple bugs and improve views.
 - Bill of material: remove duplicate toolbar button of 'Generate new version'.
 - Event: Fix fill the "Guest" using email address when fill the partner or contact or lead.
+- Fix the Total hours per day chart on the timesheet form view which stopped working due to the addition of timesheet imputed on manufacturing orders.
 
 ## [Unreleased 5.0.5]
 ## Improvements
