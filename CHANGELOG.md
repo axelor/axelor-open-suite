@@ -9,6 +9,7 @@
 - Configurator: improve UI for indicators.
 - Split formula list into formulas for product and formulas for sale order line in configurator creator.
 - Add a column name to configurators, equal to the creator's name.
+- Filter inactive BankDetails in the Direct Debit batch.
 
 ## Bug Fixes
 - Fix on prod process report.
