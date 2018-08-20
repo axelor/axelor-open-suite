@@ -17,6 +17,13 @@
  */
 package com.axelor.studio.service.wkf;
 
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.Inflector;
 import com.axelor.meta.MetaStore;
@@ -30,19 +37,16 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.actions.ActionGroup;
 import com.axelor.meta.schema.actions.ActionGroup.ActionItem;
+import com.axelor.studio.db.ActionBuilder;
+import com.axelor.studio.db.AppBuilder;
+import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.service.StudioMetaService;
+import com.axelor.studio.service.builder.ActionBuilderService;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Service class handle workflow processing. It updated related models/views according to update in
@@ -73,10 +77,14 @@ public class WkfService {
 
   @Inject private MetaSelectRepository metaSelectRepo;
 
-  @Inject private StudioMetaService metaService;
+  @Inject
+  private StudioMetaService metaService;
+
+  @Inject
+  private ActionBuilderService actionBuilderService;
 
   /**
-   * Method to process workflow. It call node and transition service for nodes and transitions
+   * Method to process workflow. It calls node and transition service for nodes and transitions
    * linked with workflow.
    *
    * @param wkf Worklfow to process.
@@ -110,7 +118,7 @@ public class WkfService {
     if (workflow.getIsJson()) {
       wkfId = inflector.dasherize(model) + "-wkf";
     } else {
-      model = model.substring(model.lastIndexOf(".") + 1);
+      model = model.substring(model.lastIndexOf('.') + 1);
       wkfId = inflector.dasherize(model) + inflector.dasherize(workflow.getJsonField()) + "-wkf";
     }
   }
@@ -227,7 +235,7 @@ public class WkfService {
 
     ActionGroup actionGroup = new ActionGroup();
     actionGroup.setName(name);
-    List<ActionItem> actionItems = new ArrayList<ActionGroup.ActionItem>();
+    List<ActionItem> actionItems = new ArrayList<>();
 
     for (String[] action : actions) {
       ActionItem actionItem = new ActionItem();
@@ -358,7 +366,7 @@ public class WkfService {
 
   private List<MetaJsonField> getFields(Wkf wkf) {
 
-    List<MetaJsonField> fields = new ArrayList<MetaJsonField>();
+    List<MetaJsonField> fields;
 
     if (wkf.getIsJson()) {
       fields =
@@ -389,7 +397,7 @@ public class WkfService {
 
     skipList.add("trackFlow");
 
-    ArrayList<String> actions = new ArrayList<String>();
+    ArrayList<String> actions = new ArrayList<>();
 
     List<MetaJsonField> fields = null;
     if (workflow.getIsJson()) {
@@ -447,7 +455,7 @@ public class WkfService {
 
   public void clearNodes(Collection<WkfNode> nodes) {
 
-    List<String> actions = new ArrayList<String>();
+    List<String> actions = new ArrayList<>();
 
     for (WkfNode node : nodes) {
       if (workflow == null) {
@@ -476,4 +484,50 @@ public class WkfService {
       }
     }
   }
+
+  /**
+   * Creates a "Reporting" menu with two entries: "Process tracking" and "Workflow dashboard". The
+   * new menu will be located under the parent menu specified in workflow.
+   * 
+   * @param wkf
+   */
+  public void createReportingMenu(Wkf wkf) {
+    AppBuilder appBuilder = wkf.getAppBuilder();
+
+    MenuBuilder reportingMenu = new MenuBuilder("Reporting");
+    reportingMenu.setAppBuilder(appBuilder);
+    reportingMenu.setParentMenu(wkf.getParentMenu());
+    reportingMenu.setShowAction(false);
+    
+    
+    
+    MenuBuilder processTrackingMenu = new MenuBuilder("Process tracking");
+    processTrackingMenu.setAppBuilder(appBuilder);
+    processTrackingMenu.setParentMenu(wkf.getParentMenu()); //TODO: set parent menu to reportingMenu
+    processTrackingMenu.setShowAction(true);
+    ActionBuilder processTrackingMenuActionBuilder =
+        actionBuilderService.setActionBuilderViews(new ActionBuilder(),
+            "com.axelor.studio.db.WkfTracking", "wkf-tracking-form", "wkf-tracking-grid", null);
+    // TODO: add context
+    processTrackingMenu.setActionBuilder(processTrackingMenuActionBuilder);
+
+    MenuBuilder workflowDashboardMenu = new MenuBuilder("Workflow dashboard");
+    workflowDashboardMenu.setAppBuilder(appBuilder);
+    workflowDashboardMenu.setParentMenu(wkf.getParentMenu()); //TODO: set parent menu to reportingMenu
+    workflowDashboardMenu.setShowAction(true);
+    ActionBuilder workflowDashboardActionBuilder = new ActionBuilder();
+    actionBuilderService.setActionBuilderViews(workflowDashboardActionBuilder, null, null, null,
+        "dasbhoard-wkf");
+    workflowDashboardActionBuilder =
+        actionBuilderService.setActionBuilderLines(workflowDashboardActionBuilder, "_wkfId", ctxLineValue(wkf));
+    workflowDashboardMenu.setActionBuilder(workflowDashboardActionBuilder);
+  }
+
+  private String ctxLineValue(Wkf wkf) {
+    wkf.getModel();
+    
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

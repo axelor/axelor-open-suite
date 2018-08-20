@@ -17,7 +17,10 @@
  */
 package com.axelor.studio.web;
 
+import java.util.List;
+import java.util.Map;
 import com.axelor.common.Inflector;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
@@ -37,8 +40,6 @@ import com.axelor.studio.service.wkf.WkfDesignerService;
 import com.axelor.studio.service.wkf.WkfService;
 import com.axelor.studio.translation.ITranslation;
 import com.google.inject.Inject;
-import java.util.List;
-import java.util.Map;
 
 public class WkfController {
 
@@ -48,67 +49,79 @@ public class WkfController {
 
   @Inject private WkfService wkfService;
 
-  public void processXml(ActionRequest request, ActionResponse response) throws Exception {
-
-    Wkf workflow = request.getContext().asType(Wkf.class);
-    workflow = wkfRepo.find(workflow.getId());
-    wkfDesignerService.processXml(workflow);
+  public void processXml(ActionRequest request, ActionResponse response) {
+    try {
+      Wkf workflow = request.getContext().asType(Wkf.class);
+      workflow = wkfRepo.find(workflow.getId());
+      wkfDesignerService.processXml(workflow);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  public void processWkf(ActionRequest request, ActionResponse response) throws Exception {
-
-    Wkf workflow = request.getContext().asType(Wkf.class);
-    workflow = wkfRepo.find(workflow.getId());
-    wkfService.process(workflow);
-    response.setReload(true);
+  public void processWkf(ActionRequest request, ActionResponse response) {
+    try {
+      Wkf workflow = request.getContext().asType(Wkf.class);
+      workflow = wkfRepo.find(workflow.getId());
+      wkfService.process(workflow);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  public void onNodeEdit(ActionRequest request, ActionResponse response) throws Exception {
-    WkfNodeRepository repo = Beans.get(WkfNodeRepository.class);
-    WkfNode node = request.getContext().asType(WkfNode.class);
-    if (node.getWkf().getId() != null) {
-      WkfNode found =
-          repo.all()
-              .filter("self.wkf.id = ? and self.xmlId = ?", node.getWkf().getId(), node.getXmlId())
-              .fetchOne();
+  public void onNodeEdit(ActionRequest request, ActionResponse response) {
+    try {
+      WkfNodeRepository repo = Beans.get(WkfNodeRepository.class);
+      WkfNode node = request.getContext().asType(WkfNode.class);
+      if (node.getWkf().getId() != null) {
+        WkfNode found = repo.all()
+            .filter("self.wkf.id = ? and self.xmlId = ?", node.getWkf().getId(), node.getXmlId())
+            .fetchOne();
+        if (found != null) {
+          Map<String, Object> view = ActionView.define(I18n.get(ITranslation.WKF_EDIT_NODE))
+              .add("form", "wkf-node-form").model(WkfNode.class.getName())
+              .context("_showRecord", found.getId()).param("popup", "true")
+              .param("show-toolbar", "false").param("forceEdit", "true").map();
+          response.setView(view);
+        } else {
+          response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+        }
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onTransitionEdit(ActionRequest request, ActionResponse response) {
+    try {
+      WkfTransitionRepository repo = Beans.get(WkfTransitionRepository.class);
+      WkfTransition transition = request.getContext().asType(WkfTransition.class);
+      WkfTransition found = repo.all().filter("self.xmlId = ?", transition.getXmlId()).fetchOne();
       if (found != null) {
-        Map<String, Object> view =
-            ActionView.define(I18n.get(ITranslation.WKF_EDIT_NODE))
-                .add("form", "wkf-node-form")
-                .model(WkfNode.class.getName())
-                .context("_showRecord", found.getId())
-                .param("popup", "true")
-                .param("show-toolbar", "false")
-                .param("forceEdit", "true")
-                .map();
+
+        Map<String, Object> view = ActionView.define(I18n.get(ITranslation.WKF_EDIT_TRANSITION))
+            .add("form", "wkf-transition-form").model(WkfTransition.class.getName())
+            .context("_showRecord", found.getId()).param("popup", "true")
+            .param("show-toolbar", "false").param("forceEdit", "true").map();
+
         response.setView(view);
       } else {
         response.setFlash(I18n.get(IExceptionMessage.WKF_1));
       }
-    } else {
-      response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
-  public void onTransitionEdit(ActionRequest request, ActionResponse response) throws Exception {
-    WkfTransitionRepository repo = Beans.get(WkfTransitionRepository.class);
-    WkfTransition transition = request.getContext().asType(WkfTransition.class);
-    WkfTransition found = repo.all().filter("self.xmlId = ?", transition.getXmlId()).fetchOne();
-    if (found != null) {
-
-      Map<String, Object> view =
-          ActionView.define(I18n.get(ITranslation.WKF_EDIT_TRANSITION))
-              .add("form", "wkf-transition-form")
-              .model(WkfTransition.class.getName())
-              .context("_showRecord", found.getId())
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("forceEdit", "true")
-              .map();
-
-      response.setView(view);
-    } else {
-      response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+  public void createReportingMenu(ActionRequest request, ActionResponse response) {
+    try {
+      Wkf wkf = request.getContext().asType(Wkf.class);
+      wkfService.createReportingMenu(wkf);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

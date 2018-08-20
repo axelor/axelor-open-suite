@@ -17,6 +17,9 @@
  */
 package com.axelor.studio.service.builder;
 
+import java.util.Comparator;
+import java.util.List;
+import org.apache.commons.lang.StringEscapeUtils;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.studio.db.ActionBuilder;
@@ -24,9 +27,6 @@ import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.inject.Inject;
-import java.util.Comparator;
-import java.util.List;
-import org.apache.commons.lang.StringEscapeUtils;
 
 public class ActionViewBuilderService {
 
@@ -137,4 +137,5 @@ public class ActionViewBuilderService {
 
     return model;
   }
+
 }
