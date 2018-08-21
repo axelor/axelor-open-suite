@@ -80,7 +80,7 @@
 		        	<field name="productCategory" canEdit="false" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
 		      	</panel>
       			<panel colSpan="12">
-			        <field name="inAti" colSpan="6"/>
+			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
 			        <field name="isPack" if="__config__.app.getApp('sale')?.getProductPackMgt()" hideIf="isShippingCostsProduct"/>
 			        <field name="expense" hidden="true"/>
       			</panel>
@@ -351,6 +351,7 @@
 		<action name="action-product-attrs-scale-and-precision-stock"/>
         <action name="action-product-attrs-title-unit"/>
 		<action name="action-product-attrs-in-ati"/>
+		<action name="action-product-attrs-change-title-based-on-inAti"/>
         <action name="action-product-set-stock"/>
         <action name="action-product-set-total-variants"/>
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
@@ -376,6 +377,13 @@
     	<attribute name="hidden" for="inAti" expr=" eval: __config__.app.getApp('base').getProductInAtiSelect() == 1 || __config__.app.getApp('base').getProductInAtiSelect() == 2"/>
 		<attribute if=" __config__.app.getApp('base').getProductInAtiSelect() == 1 || __config__.app.getApp('base').getProductInAtiSelect() == 2"
 				   name="value" for="inAti" expr="eval: __config__.app.getApp('base').getProductInAtiSelect() == 2" />
+    </action-attrs>
+    
+    <action-attrs name="action-product-attrs-change-title-based-on-inAti">
+    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!inAti"/>
     </action-attrs>
 
     <action-attrs name="action-product-attrs-scale-and-precision">
@@ -444,7 +452,7 @@
 	</action-validate> 
 	
 	<action-method name="action-print-product-catalog" >
-		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatelog"/>
+		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatalog"/>
 	</action-method>
 	
 	<action-method name="action-product-method-show-product-sheet" >

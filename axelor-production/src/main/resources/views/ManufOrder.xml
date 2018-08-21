@@ -99,7 +99,7 @@
 			<field name="company" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
-			<field name="prodProcess" onChange="action-manuf-order-attrs-isConsProOnOperation, action-manuf-order-record-isConsProOnOperation" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
+			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1"/>
@@ -242,12 +242,23 @@
     <action-record name="action-manuf-order-set-draft-seq" model="com.axelor.apps.production.db.ManufOrder">
         <field name="manufOrderSeq" expr="eval:'*'+id" if="manufOrderSeq == null"/>
     </action-record>
-    
+
+	<action-record name="action-manuf-order-record-update-qty-from-prod-process" model="com.axelor.apps.production.db.ManufOrder">
+		<field name="qty" expr="eval: prodProcess.launchQty" if="prodProcess?.launchQty > 0"/>
+	</action-record>
+
     <action-record name="action-manuf-order-on-change-bill-of-material" model="com.axelor.apps.production.db.ManufOrder">
         <field name="product" expr="eval:billOfMaterial.product" if="billOfMaterial != null"/>
-        <field name="qty" expr="eval:billOfMaterial.qty" if="billOfMaterial != null"/>
+        <field name="qty" if="billOfMaterial != null"
+					expr="eval: (billOfMaterial.prodProcess?.launchQty &amp;&amp; billOfMaterial.prodProcess.launchQty > 0) ? billOfMaterial.prodProcess.launchQty : billOfMaterial.qty"/>
         <field name="prodProcess" expr="eval:billOfMaterial.prodProcess" if="billOfMaterial != null"/>
     </action-record>
+
+	<action-group name="action-manuf-order-group-prod-process-onchange">
+    <action name="action-manuf-order-attrs-isConsProOnOperation"/>
+		<action name="action-manuf-order-record-isConsProOnOperation"/>
+		<action name="action-manuf-order-record-update-qty-from-prod-process"/>
+	</action-group>
 
 	<action-group name="action-manuf-order-group-finish">
 		<action name="action-businessproduction-manuf-order-method-check-timesheet" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>

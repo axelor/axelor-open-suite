@@ -7,9 +7,11 @@
 		<hilite color="danger" if="deliveryState == 1"/>
 		<hilite color="warning" if="deliveryState == 2"/>
 		<hilite color="success" if="deliveryState == 3"/>
+		<hilite color="default" strong="true" if="typeSelect == 1"/>
 		<field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')" />
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
+		<field name="typeSelect" hidden="true"/>
         <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price" x-scale="2"/>

@@ -49,6 +49,7 @@ public interface IExceptionMessage {
   static final String CURRENCY_6 = /*$$(*/ "Currency conversion webservice not working" /*)*/;
   static final String CURRENCY_7 = /*$$(*/
       "No currency conversion rate found for the date %s to %s. Please change the conversion date" /*)*/;
+
   static final String COMPANY_CURRENCY = /*$$(*/
       "%s : Please, configure a currency for the company %s" /*)*/;
 
@@ -175,6 +176,7 @@ public interface IExceptionMessage {
       "Feature currently not available with Open Street Maps." /*)*/;
   public static final String ADDRESS_7 = /*$$(*/
       "Current user's active company address is not set" /*)*/;
+  public static final String ADDRESS_CANNOT_BE_NULL = "Address cannot be null.";
 
   /** Bank details controller */
   public static final String BANK_DETAILS_1 = /*$$(*/
@@ -242,7 +244,8 @@ public interface IExceptionMessage {
   static final String ADVANCED_EXPORT_2 = /*$$(*/ "There is no records to export." /*)*/;
   static final String ADVANCED_EXPORT_3 = /*$$(*/
       "Warning : Exported maximum export limit records." /*)*/;
-  static final String ADVANCED_EXPORT_FILE_TYPE_UNKNOWN = /*$$(*/ "The file type is unknown." /*)*/;
+  static final String ADVANCED_EXPORT_4 = /*$$(*/
+      "Please select export object or export format." /*)*/;
 
   /** Barcode Generator Service */
   public static final String BARCODE_GENERATOR_1 = /*$$(*/

@@ -177,7 +177,7 @@
             <field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)" form-view="currency-form" grid-view="currency-grid"/>
             <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
             <field name="interco"/>
-            <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
+            <field name="inAti" onChange="action-invoice-attrs-in-ati" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
         </panel>
 
         <panel title="Invoicing informations" hideIf="company == null">

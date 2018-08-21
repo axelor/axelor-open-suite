@@ -246,7 +246,7 @@
 	      <field name="contactPartner" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="versionNumber" colSpan="3"/>
 	      <panel colSpan="3">
-	        <field name="inAti" hidden="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-attrs-in-ati" widget="boolean-switch"/>
+	        <field name="inAti" hidden="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2" onChange="action-sale-order-attrs-in-ati" widget="boolean-switch"/>
 	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="interco" widget="boolean-switch"/>
 	    	</panel>
 	    </panel>
@@ -798,9 +798,9 @@
 		</action-group>
 
 	<action-group name="action-sale-group-confirmed">
+    	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
 		<action name="action-sale-order-validate-check-on-confirm"/>
     	<action name="action-sale-order-method-confirm"/>
-    	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     </action-group>
 
     <action-group name="action-sale-order-line-change-group">

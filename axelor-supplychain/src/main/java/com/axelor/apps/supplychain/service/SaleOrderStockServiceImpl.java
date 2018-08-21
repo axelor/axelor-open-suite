@@ -280,7 +280,18 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (this.isStockMoveProduct(saleOrderLine)) {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
-      BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
+      BigDecimal priceDiscounted;
+      if (!saleOrderLine.getSaleOrder().getInAti()) {
+        priceDiscounted = saleOrderLine.getPriceDiscounted();
+      } else {
+        priceDiscounted =
+            saleOrderLine
+                .getPriceDiscounted()
+                .divide(
+                    saleOrderLine.getTaxLine().getValue().add(BigDecimal.ONE),
+                    2,
+                    BigDecimal.ROUND_HALF_UP);
+      }
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convertWithProduct(

@@ -34,8 +34,8 @@ public interface ConfiguratorCreatorService {
   void updateAttributes(ConfiguratorCreator creator);
 
   /**
-   * Add the {@link ConfiguratorFormula#productMetaField} that need to be shown in configurator in
-   * the {@link ConfiguratorCreator#indicators} many-to-one.
+   * Add the {@link ConfiguratorFormula#metaField} that need to be shown in configurator in the
+   * {@link ConfiguratorCreator#indicators} many-to-one.
    *
    * @param creator
    */
@@ -68,9 +68,8 @@ public interface ConfiguratorCreatorService {
    * Add required fields of Product to the formula list
    *
    * @param creator
-   * @throws AxelorException
    */
-  void addRequiredFormulas(ConfiguratorCreator creator) throws AxelorException;
+  void addRequiredFormulas(ConfiguratorCreator creator);
 
   /**
    * Activates the creator and saves it.

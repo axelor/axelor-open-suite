@@ -29,11 +29,16 @@ public interface ITranslation {
   public static final String INVOICE_QTY_UNIT = /*$$(*/ "Invoice.qtyUnit"; /*)*/
   public static final String INVOICE_UNIT_PRICE = /*$$(*/ "Invoice.unitPrice"; /*)*/
   public static final String INVOICE_PRICE_EXCL_TAX = /*$$(*/ "Invoice.priceExclTax"; /*)*/
+  public static final String INVOICE_PRICE_INCL_TAX = /*$$(*/ "Invoice.priceInclTax"; /*)*/
   public static final String INVOICE_BASE = /*$$(*/ "Invoice.base"; /*)*/
   public static final String INVOICE_TAX_AMOUNT = /*$$(*/ "Invoice.taxAmount"; /*)*/
   public static final String INVOICE_TOTAL_EXCL_TAX = /*$$(*/ "Invoice.totalExclTax"; /*)*/
+  public static final String INVOICE_TOTAL_EXCL_TAX_WITHOUT_DISCOUNT = /*$$(*/
+      "Invoice.totalExclTaxWithoutDiscount"; /*)*/
   public static final String INVOICE_TOTAL_TAX = /*$$(*/ "Invoice.totalTax"; /*)*/
   public static final String INVOICE_TOTAL_INCL_TAX = /*$$(*/ "Invoice.totalInclTax"; /*)*/
+  public static final String INVOICE_TOTAL_DISCOUNT = /*$$(*/ "Invoice.totalDiscount"; /*)*/
+  public static final String INVOICE_AFTER_DISCOUNT = /*$$(*/ "Invoice.afterDiscount"; /*)*/
   public static final String INVOICE_NOTE = /*$$(*/ "Invoice.note"; /*)*/
   public static final String INVOICE_CHEQUE = /*$$(*/ "Invoice.cheque"; /*)*/
   public static final String INVOICE_BANK_DETAILS = /*$$(*/ "Invoice.bankDetails"; /*)*/

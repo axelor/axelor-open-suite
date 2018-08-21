@@ -1,44 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="configurator-formula-grid" title="Calculated fields on configurator"
-          model="com.axelor.apps.sale.db.ConfiguratorFormula">
-        <field name="productMetaField" showIf="productMetafield"/>
-        <field name="saleOrderLineMetaField" showIf="saleOrderLineMetaField" hidden="true"/>
-        <field name="formula"/>
-        <field name="showOnConfigurator"/>
-    </grid>
-
-    <form name="configurator-formula-form" title="Calculated fields on configurator"
-          model="com.axelor.apps.sale.db.ConfiguratorFormula"
-          onNew="action-configurator-formula-attrs-hide-metafield"
-          onLoad="action-configurator-formula-attrs-hide-metafield">
-        <panel>
-            <field name="productMetaField" domain="self.metaModel.name = 'Product' AND (self.relationship != 'OneToMany' OR self.relationship IS NULL) AND self.name != 'configurator'"/>
-            <field name="saleOrderLineMetaField" domain="self.metaModel.name = 'SaleOrderLine' "/>
-            <field name="formula" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
-            <field name="showOnConfigurator"/>
-            <field name="updateFromSelect"/>
-        </panel>
-        <panel>
-            <button name="checkScripts" title="Check the script"
-                    onClick="save,action-configurator-formula-method-check-script"/>
-        </panel>
-    </form>
-
-    <action-attrs name="action-configurator-formula-attrs-hide-metafield">
-        <attribute for="productMetaField" name="hidden" expr="eval: !__parent__.generateProduct"/>
-        <attribute for="productMetaField" name="required" expr="eval: __parent__.generateProduct"/>
-        <attribute for="saleOrderLineMetaField" name="hidden" expr="eval: __parent__.generateProduct"/>
-        <attribute for="saleOrderLineMetaField" name="required" expr="eval: !__parent__.generateProduct"/>
-        <attribute for="updateFromSelect" name="hidden" expr="eval: __parent__.generateProduct"/>
-    </action-attrs>
-
-    <action-method name="action-configurator-formula-method-check-script">
-        <call class="com.axelor.apps.sale.web.ConfiguratorFormulaController"
-              method="checkGroovyFormula"/>
-    </action-method>
+  <action-method name="action-configurator-formula-method-check-script">
+    <call class="com.axelor.apps.sale.web.ConfiguratorFormulaController"
+      method="checkGroovyFormula"/>
+  </action-method>
 
 </object-views>
