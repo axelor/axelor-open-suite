@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.base.web;
 
+import java.util.Map;
+import javax.validation.ValidationException;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -25,7 +27,6 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -35,8 +36,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.util.Map;
-import javax.validation.ValidationException;
 
 @Singleton
 public class UserController {
@@ -44,17 +43,20 @@ public class UserController {
       ImmutableMap.of("code", IExceptionMessage.USER_CODE_ALREADY_EXISTS);
 
   @Transactional
-  public void setUserPartner(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Context context = request.getContext();
+  public void setUserPartner(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
 
-    if (context.get("user_id") != null) {
-      UserRepository userRepo = Beans.get(UserRepository.class);
-      Partner partner =
-          Beans.get(PartnerRepository.class).find(context.asType(Partner.class).getId());
-      User user = userRepo.find(((Integer) context.get("user_id")).longValue());
-      user.setPartner(partner);
-      userRepo.save(user);
+      if (context.get("user_id") != null) {
+        UserRepository userRepo = Beans.get(UserRepository.class);
+        Partner partner =
+            Beans.get(PartnerRepository.class).find(context.asType(Partner.class).getId());
+        User user = userRepo.find(((Integer) context.get("user_id")).longValue());
+        user.setPartner(partner);
+        userRepo.save(user);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 
