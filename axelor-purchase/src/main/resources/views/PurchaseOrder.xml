@@ -137,6 +137,10 @@
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" if="__config__.app.isApp('stock')" />
 				<panel-dashlet colSpan="12" action="action-purchase-order-view-stock-moves" height="178" showIf="statusSelect >= 3"/>
 		    </panel>
+		    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
+				<field name="project" domain="self.clientPartner = :supplierPartner" form-view="project-form" grid-view="project-grid" colSpan="6"/>
+				<button name="updateLines" title="Update lines with selected project" onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6" readonlyIf="!project"/>
+			</panel>
 			<panel name="POManagement" title="PO Management" if-module="axelor-supplier-management" colSpan="12" if="__config__.app.getApp('purchase').getSupplierRequestMgt()" >
 				<panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" />
 			</panel>

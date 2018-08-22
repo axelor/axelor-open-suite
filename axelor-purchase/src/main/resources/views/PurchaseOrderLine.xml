@@ -202,6 +202,7 @@
 		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-record-new"/>
+		<action name="action-purchase-order-line-record-project"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
 		<action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
 		<action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
@@ -275,13 +276,14 @@
 	
 	<!-- ACTION RECORD -->
 	
-	
-	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="desiredDelivDate" expr="eval: _parent?.deliveryDate"/>
     </action-record>
     
+    <action-record name="action-purchase-order-line-record-project" model="com.axelor.apps.purchase.db.PurchaseOrderLine" if-module="axelor-business-project">
+		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
+	</action-record>
     
    	<!-- ACTION METHOD -->
    	
