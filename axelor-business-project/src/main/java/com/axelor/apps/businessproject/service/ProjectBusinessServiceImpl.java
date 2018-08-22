@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -46,9 +45,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Inject protected ProjectRepository projectRepo;
 
   @Inject
-  public ProjectBusinessServiceImpl(
-      ProjectPlanningRepository projectPlanningRepo, ProjectRepository projectRepository) {
-    super(projectPlanningRepo, projectRepository);
+  public ProjectBusinessServiceImpl(ProjectRepository projectRepository) {
+    super(projectRepository);
   }
 
   @Override
