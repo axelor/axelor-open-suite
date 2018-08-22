@@ -2,31 +2,99 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<form name="include-project-planning-hr-form" title="Project Planning" model="com.axelor.apps.project.db.ProjectPlanning">
-		<panel  colSpan="12">
-			<panel-related field="projectPlanningTime" colSpan="12" />
-			<field name="totalPlannedHrs" />
-		</panel>
-	</form>
-	
-	<grid name="project-planning-time-grid" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime" editable="true">
-		<field name="date" />
-		<field name="hours" />
-	</grid>
-	
-	<form name="project-planning-time-form" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<grid name="project-planning-time-grid" title="Project Planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+				<field name="date"/>
+                <field name="user"/>
+                <field name="project"/>
+                <field name="task"/>
+                <field name="timepercent" widget="SelectProgress"/>
+                <field name="plannedHours" />
+    </grid>
+    
+    <grid name="project-planning-db-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanningTime">
+                <field name="project"/>
+                <field name="task"/>
+                <field name="realHrs"/>
+    </grid>
+    
+    <form name="project-planning-time-form" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-record-default">
 		<panel>
 			<field name="date" />
-			<field name="hours" />
+			<field name="user"/>		
+			<field name="project"/>
+			<field name="task"/>
+			<field name="timepercent" widget="SelectProgress"/>
+			<field name="realHrs"/>
+			<field name="plannedHours" />
+			<field name="product" Select="action-project-planning-time-attrs-domain-product" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
+			<field name="generateTurnover"/>
+            <field name="description" colSpan="12" widget="html"/>
+		</panel>
+		<panel name="comment" title="Comment">
+			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
 		</panel>
 	</form>
 	
-	<action-method name="action-project-method-update-project-planned-time">
-		<call class="com.axelor.apps.hr.service.project.ProjectPlanningService" method="updateProjectPlannedHrs(project)"/>
+	<form name="project-planning-time-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Project planning time" onNew="action-project-planning-time-task-record-default">
+		<panel>
+			<field name="fromDate" required="true" type="datetime" title="From" />
+			<field name="toDate" required="true" type="datetime" title="To" />
+			<field name="task" type="many-to-one" title="Task" x-target="com.axelor.team.db.TeamTask" x-target-name="name"/>
+			<field name="user" title="User" type="many-to-one" x-target="com.axelor.auth.db.User" x-target-name="name" required="true" onSelect="action-project-planning-attrs-project-domain"/>
+			<field name="product" title="Activity" type="many-to-one" x-target="com.axelor.apps.base.db.Product" x-target-name="name" />
+			<field name="timepercent" title="Time%" widget="SelectProgress" type="integer" selection="project.task.progress.select"/>
+			<button name="addLines" title="Add lines" onClick="save,action-project-planning-time-method-add-lines" colSpan="3"/>
+		</panel>
+	</form>
+
+	<form name="project-planning-user-select-wizard-form" title="Select users"  model="com.axelor.apps.base.db.Wizard">
+		<panel>
+			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false" onSelect="action-project-planning-attrs-project-domain"/>
+			<button name="showPlanning" title="Project Planning" onClick="action-project-planning-time-method-show-planning" colSpan="3" />
+		</panel>
+	</form>	
+	
+	<action-view name="action-project-planning-time-open" title="Project planning time" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="project-planning-time-wizard-form"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="popup" value="reload"/>
+		<context name="_contextModel" expr="eval: _model"/>
+		<context name="_contextObject" expr="eval: __this__"/>
+	</action-view>
+	
+	<action-attrs name="action-project-planning-time-attrs-domain-product">
+		<attribute name="domain" expr="eval:project == null || __repo__(Project).find(project.id).productSet?.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet)&quot;" for="product"/>
+	</action-attrs>
+	
+	<action-attrs name="action-planning-time-attr-update-planned-hours">
+		<attribute name="value" for="totalPlannedHrs" expr="eval: projectPlanningTimeList.collect{it->it.plannedHours}.sum()" />
+	</action-attrs>
+	
+	<action-attrs name="action-project-planning-attrs-project-domain">
+	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.excludePlanning = false and self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
+	</action-attrs>
+	
+	<action-record name="action-project-planning-time-task-record-default" model="com.axelor.apps.base.db.Wizard">
+		<field name="timepercent" expr="eval: 100"/>
+		<field name="task" expr="eval: (_contextModel == 'com.axelor.team.db.TeamTask') ? _contextObject : null"/>
+	</action-record>
+	
+	<action-record name="action-project-planning-time-record-default" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="task" expr="eval: _parent?._model == 'com.axelor.team.db.TeamTask' ? _parent : null"/>
+		<field name="project" expr="eval: _parent?._model == 'com.axelor.apps.project.db.Project' ? _parent : __repo__(Project).find(_parent?.project?.id)"/>
+	</action-record>
+
+	<action-method name="action-project-planning-time-method-show-planning">
+		<call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController" method="showPlanning"/>
 	</action-method>
 	
-	<action-method name="action-project-method-update-task-planned-time">
-		<call class="com.axelor.apps.hr.service.project.ProjectPlanningService" method="updateTaskPlannedHrs(task)" />
+	<action-method name="action-project-planning-time-method-add-lines">
+		<call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController" method="addLines"/>
+	</action-method>
+	
+	<action-method name="action-project-method-create-planning">
+		<call class="com.axelor.apps.hr.web.project.ProjectController" method="createPlanning"/>
 	</action-method>
 	
 </object-views>

@@ -30,16 +30,16 @@
     <context name="closed_status" expr="#{['closed', 'canceled']}"/>
 	</action-view>
 	
-	<action-view name="action-project-db-my-today-planning" title="My today planning" model="com.axelor.apps.project.db.ProjectPlanning">
+	<action-view name="action-project-db-my-today-planning" title="My today planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-db-grid" />
-		<view type="form" name="project-planning-form" />
-		<domain>self.fromDate &lt;= :__datetime__ AND self.toDate &gt;= :__datetime__ AND self.user = :__user__</domain>
+		<view type="form" name="project-planning-time-form" />
+		<domain>self.date = :__datetime__ AND self.user = :__user__</domain>
 	</action-view>
 	
-	<action-view name="action-project-db-my-upcomming-planning" title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanning">
+	<action-view name="action-project-db-my-upcomming-planning" title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-db-grid" />
-		<view type="form" name="project-planning-form" />
-		<domain>self.fromDate &gt; :__datetime__ AND self.user = :__user__</domain>
+		<view type="form" name="project-planning-time-form" />
+		<domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
 	</action-view>
 	
 	

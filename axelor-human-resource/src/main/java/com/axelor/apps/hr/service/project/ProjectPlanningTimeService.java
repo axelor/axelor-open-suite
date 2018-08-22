@@ -15,21 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
-import java.math.BigDecimal;
+import java.util.Map;
 
-public interface ProjectPlanningService {
-
-  public ProjectPlanning updatePlanningTime(ProjectPlanning planning) throws AxelorException;
+public interface ProjectPlanningTimeService {
 
   public void updateTaskPlannedHrs(TeamTask teamTask);
 
   public void updateProjectPlannedHrs(Project project);
 
-  public BigDecimal getTotalPlannedHrs(ProjectPlanning planning);
+  public void addLines(Map<String, Object> dataMap) throws AxelorException;
 }

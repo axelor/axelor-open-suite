@@ -36,12 +36,12 @@
   	typeSelect="0" 
   	appBuilder="PRD"
   	model="com.axelor.apps.project.db.Project"
-  	targetModel="com.axelor.apps.project.db.ProjectPlanning">
+  	targetModel="com.axelor.apps.project.db.ProjectPlanningTime">
   	<lines>
-	  	<line metaField="project" metaModel="ProjectPlanning"  value="$" />
-	  	<line metaField="user" metaModel="ProjectPlanning" valueField="assignedTo" valueModel="Project" value="$.assignedTo" />
-	  	<line metaField="fromDate" metaModel="ProjectPlanning"  valueField="fromDate"  valueModel="Project" value="$.fromDate" />
-	  	<line metaField="toDate" metaModel="ProjectPlanning"  valueField="toDate"  valueModel="Project" value="$.toDate" />
+	  	<line metaField="project" metaModel="ProjectPlanningTime"  value="$" />
+	  	<line metaField="user" metaModel="ProjectPlanningTime" valueField="assignedTo" valueModel="Project" value="$.assignedTo" />
+	  	<line metaField="fromDate" metaModel="ProjectPlanningTime"  valueField="fromDate"  valueModel="Project" value="$.fromDate" />
+	  	<line metaField="toDate" metaModel="ProjectPlanningTime"  valueField="toDate"  valueModel="Project" value="$.toDate" />
   	</lines>
   </action-builder>
   

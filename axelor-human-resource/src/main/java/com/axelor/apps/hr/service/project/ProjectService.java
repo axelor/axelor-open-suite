@@ -15,32 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.hr.service.project;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
-import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
+import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.team.db.TeamTask;
+import java.util.List;
 
 public interface ProjectService {
-  Project generateProject(
-      Project parentProject,
-      String fullName,
-      User assignedTo,
-      Company company,
-      Partner clientPartner);
 
-  Partner getClientPartnerFromProject(Project project) throws AxelorException;
+  List<ProjectPlanningTime> createPlanning(Project project);
 
-  BigDecimal computeDurationFromChildren(Long projectId);
-
-  /**
-   * Generate a project from a partner.
-   *
-   * @param partner
-   * @return
-   */
-  Project generateProject(Partner partner);
+  ProjectPlanningTime createPlanning(Project project, TeamTask task);
 }
