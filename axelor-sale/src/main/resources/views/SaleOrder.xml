@@ -293,6 +293,7 @@
 	      <field name="project" colSpan="12" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid"/>
 	      <field name="$genProjTypePerOrderLine" title="Type of project's elements generated" showIf="project == null" x-enum-type="com.axelor.apps.project.db.GenProjTypePerOrderLine"/>
 	      <field name="project.genProjTypePerOrderLine" title="Type of project's elements generated" showIf="project != null"/>
+	      <button name="updateLines" title="Update lines with selected project" onClick="save,action-business-project-sale-order-method-update-lines,save" readonlyIf="!project"/>
 	      <button if="!__config__.app.getApp('business-project').getAutomaticProject()" name="generateProject" title="Generate Project/Business" hidden="true" showIf="project == null" onClick="save,action-sale-order-method-generate-project"/>
 	      <button if="__config__.app.getApp('business-project').getProjectSaleOrderLines()" name="generateTypePerOrderLine" title="Generate Elements" hidden="true" showIf="project != null" onClick="save,action-sale-order-method-generate-type-per-order-line,action-sale-order-attrs-hide-generate-type-per-order-line"/>
 	    </panel>
