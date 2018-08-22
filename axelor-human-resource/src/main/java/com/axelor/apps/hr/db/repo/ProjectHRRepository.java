@@ -30,14 +30,18 @@ public class ProjectHRRepository extends ProjectManagementRepository {
 	
 	@Override
 	public Project save(Project project) {
+		super.save(project);
 		project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
 		
-		for (ProjectPlanningTime planningTime : project.getProjectPlanningTimeList()) {
-			TeamTask task = planningTime.getTask();
-			if (task != null) {
-				task.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(task));
+		if (project.getProjectPlanningTimeList() != null) {
+			for (ProjectPlanningTime planningTime : project.getProjectPlanningTimeList()) {
+				TeamTask task = planningTime.getTask();
+				if (task != null) {
+					task.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(task));
+				}
 			}
 		}
-		return super.save(project);
+		
+		return project;
 	}
 }

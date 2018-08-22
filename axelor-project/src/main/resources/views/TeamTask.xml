@@ -72,7 +72,7 @@
         			]]></viewer>
 					</field>
 				</panel>
-				<button name="addMultipleLines" title="Add multiple lines" onClick="action-project-planning-time-open" colSpan="3"/>
+				<button name="addMultipleLines" title="Add multiple lines" onClick="action-project-planning-time-open" colSpan="3"  hideIf="$popup()"/>
 			</panel>
 			<panel name="treeView" title="Tree view" colSpan="12">
 				<panel-dashlet title="Task Tree" colSpan="12" action="action-view-show-task-tree"/>

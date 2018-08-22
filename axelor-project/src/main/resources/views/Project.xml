@@ -205,7 +205,7 @@
         			]]></viewer>
 					</field>
 				</panel>
-				<button name="addMultipleLines" title="Add multiple lines" onClick="save,action-project-planning-time-open" colSpan="3"/>
+				<button name="addMultipleLines" title="Add multiple lines" onClick="save,action-project-planning-time-open" colSpan="3" hideIf="$popup()"/>
 			</panel>
 			
 			<panel if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource" name="logTimes" title="Log Times">
