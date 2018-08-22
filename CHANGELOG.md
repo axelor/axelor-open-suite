@@ -31,6 +31,7 @@
 - New field `launchQty` on production process.
 - Fill `qty` from `launchQty` in manuf order on filling prod process.
 - Declaration of exchanges of services and declaration of services
+- PROJECT : Change project planning to project planning time with some extra fields.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

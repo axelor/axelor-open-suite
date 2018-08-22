@@ -15,14 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.web;
+package com.axelor.apps.hr.web.project;
 
+import com.axelor.apps.hr.service.project.ProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ProjectController {
@@ -32,6 +39,25 @@ public class ProjectController {
     long diffInDays = ChronoUnit.DAYS.between(project.getFromDate(), project.getToDate());
     BigDecimal duration = new BigDecimal(diffInDays);
     response.setValue("duration", duration);
+  }
+
+  public void createPlanning(ActionRequest request, ActionResponse response) {
+
+    Project project = request.getContext().asType(Project.class);
+
+    List<ProjectPlanningTime> projectPlannings =
+        Beans.get(ProjectService.class).createPlanning(project);
+
+    response.setView(
+        ActionView.define(I18n.get("Project Planning time"))
+            .model(ProjectPlanningTime.class.getName())
+            .add("grid", "project-planning-time-grid")
+            .add("form", "project-planning-time-form")
+            .domain("self.id in :_planningIds")
+            .context(
+                "_planningIds",
+                projectPlannings.stream().map(it -> it.getId()).collect(Collectors.toList()))
+            .map());
   }
 
   public void importMembers(ActionRequest request, ActionResponse response) {

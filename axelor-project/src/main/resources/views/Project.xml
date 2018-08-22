@@ -4,6 +4,9 @@
 
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
+	<toolbar>
+		<button name="project-planning" title="Project planning" onClick="project.planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
+	</toolbar>
 	<menubar>
 		<menu title="Tools" icon="fa-wrench" showTitle="true">
 				<item title="Gantt with user" action="action-project-open-popup-select-users"/>
@@ -43,7 +46,7 @@
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 				<item title="Gantt" action="action-project-open-gantt" showIf="isProject"/>
 				<item title="Book resource" action="save,action-project-book-resource" showIf="isProject"/>
-				<item title="Planning the project" action="save,action-project-method-create-planning" showIf="!excludePlanning &amp;&amp; isProject"/>
+				<item title="Planning the project" action="save,action-project-method-create-planning" showIf="!excludePlanning &amp;&amp; isProject" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 				<item title="Generate quotation" action="action-project-method-generate-quotation" showIf="isBusinessProject" if="__config__.app.isApp('business-project')"/>
 			</menu>
 		</menubar>
@@ -130,14 +133,6 @@
 				<field name="leadDelay" title="Lead/Delay" readonly="true" showIf="isProject" onChange="action-project-method-set-stored-lead-delay,action-method-project-compute-progress"/>
 				<field name="timeSpent" title="Time Spent" readonly="true"/>
 			</panel>
-			<panel if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="humanResource" title=" " colSpan="12">
-				<field name="imputable" widget="boolean-switch" colSpan="4"/>
-				<field name="totalPlannedHrs" readonly="true" colSpan="2">
-				<viewer><![CDATA[
-                    <span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
-        		]]></viewer>
-				</field>
-			</panel>
 		</panel>
 
 		<panel title="Members">
@@ -200,7 +195,20 @@
 			<panel title="Additional elements to be invoiced" name="additionalElementsToBeInvoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="isBusinessProject">
 				<panel-related colSpan="12" field="elementsToInvoiceList" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form"/>
 			</panel>
-
+			
+			<panel title="Planning" name="planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
+				<field name="projectPlanningTimeList" grid-view="project-planning-time-grid" form-view="project-planning-time-form" colSpan="12" onChange="action-planning-time-attr-update-planned-hours"/>
+				<panel if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="humanResource" title=" " colSpan="12">
+					<field name="imputable" widget="boolean-switch" colSpan="4"/>
+					<field name="totalPlannedHrs" readonly="true" colSpan="2">
+					<viewer><![CDATA[
+                    	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
+        			]]></viewer>
+					</field>
+				</panel>
+				<button name="addMultipleLines" title="Add multiple lines" onClick="action-project-planning-time-open" colSpan="3"/>
+			</panel>
+			
 			<panel if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource" name="logTimes" title="Log Times">
 				<panel-related colSpan="12" field="timesheetLineList" form-view="timesheet-line-project-form" grid-view="timesheet-line-project-grid"/>
 			</panel>
@@ -378,7 +386,7 @@
 	<action-record name="action-project-record-inv-type-select" model="com.axelor.apps.project.db.Project">
 		<field name="projInvTypeSelect" expr="eval: project?.projInvTypeSelect"/>
 	</action-record>
-
+	
 	<action-attrs name="action-project-attrs-hide-invoicing-panel">
 		<attribute name="hidden" for="invoicingPanel" expr="eval: projInvTypeSelect != 3"/>
 	</action-attrs>
@@ -622,10 +630,6 @@
 		<call class="com.axelor.apps.project.web.ProjectController" method="setDuration"/>
 	</action-method>
 
-	<action-method name="action-project-method-create-planning">
-		<call class="com.axelor.apps.project.web.ProjectController" method="createPlanning"/>
-	</action-method>
-
 	<action-method name="action-project-method-import-members">
 		<call class="com.axelor.apps.project.web.ProjectController" method="importMembers"/>
 	</action-method>
@@ -708,5 +712,11 @@
         <view type="form" name="production-order-form"/>
         <domain>self.project.id = :_id</domain>
     </action-view>
+    
+    <action-view name="project.planning" title="Project planning" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="project-planning-user-select-wizard-form"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+	</action-view>
 
 </object-views>
