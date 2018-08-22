@@ -28,6 +28,7 @@
 - Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
 - DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
 - BPM: keep model read only if custom field is created from custom field creator.
+- Password : Fix regex.
 
 ## [5.0.4] - 2018-07-26
 ## Features
