@@ -2,6 +2,7 @@
 ## [Unreleased 5.0.5]	
 ##Features
 - Add Data Backup and Restore
+- Add unitary tests for password
 
 ## Improvements
 - HR menu: added `order` for top menuitems
