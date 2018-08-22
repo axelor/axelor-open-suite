@@ -34,7 +34,6 @@ public class ProjectController {
     response.setValue("duration", duration);
   }
 
-
   public void importMembers(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
     if (project.getTeam() != null) {

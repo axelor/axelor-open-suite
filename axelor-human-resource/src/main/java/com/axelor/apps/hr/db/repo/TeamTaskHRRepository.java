@@ -24,29 +24,28 @@ import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 
 public class TeamTaskHRRepository extends TeamTaskProjectRepository {
-	
-	@Inject private ProjectPlanningTimeService projectPlanningTimeService;
-	
-	@Override
-	public TeamTask save(TeamTask teamTask) {
-		
-		super.save(teamTask);
-		
-		teamTask.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(teamTask));
-		
-		Project project = teamTask.getProject();
-		project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
-		
-		return teamTask;
-	}
-	
-	@Override
-	public void remove(TeamTask teamTask) {
-		
-		Project project = teamTask.getProject();
-		super.remove(teamTask);
-		
-		project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
-		
-	}
+
+  @Inject private ProjectPlanningTimeService projectPlanningTimeService;
+
+  @Override
+  public TeamTask save(TeamTask teamTask) {
+
+    super.save(teamTask);
+
+    teamTask.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(teamTask));
+
+    Project project = teamTask.getProject();
+    project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
+
+    return teamTask;
+  }
+
+  @Override
+  public void remove(TeamTask teamTask) {
+
+    Project project = teamTask.getProject();
+    super.remove(teamTask);
+
+    project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
+  }
 }

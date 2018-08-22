@@ -63,21 +63,21 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   @Override
   public BigDecimal getTaskPlannedHrs(TeamTask task) {
-	
-	BigDecimal totalPlanned = BigDecimal.ZERO;
+
+    BigDecimal totalPlanned = BigDecimal.ZERO;
     if (task != null) {
       List<ProjectPlanningTime> plannings =
           planningTimeRepo.all().filter("self.task = ?1", task).fetch();
       totalPlanned =
           plannings.stream().map(p -> p.getPlannedHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-    
+
     return totalPlanned;
   }
 
   @Override
   public BigDecimal getProjectPlannedHrs(Project project) {
-	
+
     BigDecimal totalPlanned = BigDecimal.ZERO;
     if (project != null) {
       List<ProjectPlanningTime> plannings =
@@ -85,7 +85,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       totalPlanned =
           plannings.stream().map(p -> p.getPlannedHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-    
+
     return totalPlanned;
   }
 
@@ -93,81 +93,78 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Transactional
   public void addMultipleProjectPlanningTime(Map<String, Object> datas) throws AxelorException {
 
-    if (datas.get("project") == null 
-    		|| datas.get("user") == null
-    		|| datas.get("fromDate") == null
-    		|| datas.get("toDate") == null) {
-    	return;
+    if (datas.get("project") == null
+        || datas.get("user") == null
+        || datas.get("fromDate") == null
+        || datas.get("toDate") == null) {
+      return;
     }
-    
+
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-    
+
     LocalDateTime fromDate = LocalDateTime.parse(datas.get("fromDate").toString(), formatter);
     LocalDateTime toDate = LocalDateTime.parse(datas.get("toDate").toString(), formatter);
     BigDecimal totalPlannedHours = BigDecimal.ZERO;
 
     TeamTask teamTask = null;
-   
-    
-    
-    Map<String, Object> objMap = (Map)datas.get("project");
+
+    Map<String, Object> objMap = (Map) datas.get("project");
     Project project = projectRepo.find(Long.parseLong(objMap.get("id").toString()));
     Integer timePercent = Integer.parseInt(datas.get("timepercent").toString());
-   
-    objMap = (Map)datas.get("user");
+
+    objMap = (Map) datas.get("user");
     User user = userRepo.find(Long.parseLong(objMap.get("id").toString()));
-    
+
     if (user.getEmployee() == null) {
-    	return;
+      return;
     }
-    
+
     if (datas.get("task") != null) {
-      objMap = (Map)datas.get("task");
+      objMap = (Map) datas.get("task");
       teamTask = teamTaskRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
-    
+
     Product activity = null;
     if (datas.get("product") != null) {
-      objMap = (Map)datas.get("product");
+      objMap = (Map) datas.get("product");
       activity = productRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
-   
-   Employee employee = user.getEmployee();
-   BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 
-  while (fromDate.isBefore(toDate)) {
+    Employee employee = user.getEmployee();
+    BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 
-    LocalDate date = fromDate.toLocalDate();
+    while (fromDate.isBefore(toDate)) {
 
-    log.debug("Create Planning for the date: {}", date);
+      LocalDate date = fromDate.toLocalDate();
 
-    double dayHrs = 0;
-    if (employee.getWeeklyPlanning() != null) {
-      dayHrs = weeklyPlanningService.workingDayValue(employee.getWeeklyPlanning(), date);
-    }
+      log.debug("Create Planning for the date: {}", date);
 
-    if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {
-
-      ProjectPlanningTime planningTime = new ProjectPlanningTime();
-      planningTime.setTask(teamTask);
-      planningTime.setProduct(activity);
-      planningTime.setTimepercent(timePercent);
-      planningTime.setUser(user);
-      planningTime.setDate(date);
-      planningTime.setProject(project);
-
-      BigDecimal totalHours = BigDecimal.ZERO;
-      if (timePercent > 0) {
-        totalHours =
-            dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
+      double dayHrs = 0;
+      if (employee.getWeeklyPlanning() != null) {
+        dayHrs = weeklyPlanningService.workingDayValue(employee.getWeeklyPlanning(), date);
       }
-      totalPlannedHours = totalPlannedHours.add(totalHours);
-      planningTime.setPlannedHours(totalHours);
-      planningTimeRepo.save(planningTime);
+
+      if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {
+
+        ProjectPlanningTime planningTime = new ProjectPlanningTime();
+        planningTime.setTask(teamTask);
+        planningTime.setProduct(activity);
+        planningTime.setTimepercent(timePercent);
+        planningTime.setUser(user);
+        planningTime.setDate(date);
+        planningTime.setProject(project);
+
+        BigDecimal totalHours = BigDecimal.ZERO;
+        if (timePercent > 0) {
+          totalHours =
+              dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
+        }
+        totalPlannedHours = totalPlannedHours.add(totalHours);
+        planningTime.setPlannedHours(totalHours);
+        planningTimeRepo.save(planningTime);
+      }
+
+      fromDate = fromDate.plusDays(1);
     }
-
-    fromDate = fromDate.plusDays(1);
-  }
-
   }
 }

@@ -21,7 +21,6 @@ package com.axelor.apps.hr.service.project;
 import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
-
 import java.math.BigDecimal;
 import java.util.Map;
 

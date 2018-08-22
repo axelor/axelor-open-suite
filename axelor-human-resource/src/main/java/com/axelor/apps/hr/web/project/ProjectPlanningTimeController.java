@@ -28,11 +28,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @Singleton
@@ -68,7 +64,8 @@ public class ProjectPlanningTimeController {
     response.setCanClose(true);
   }
 
-  public void addMultipleProjectPlanningTime(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void addMultipleProjectPlanningTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Context context = request.getContext();
 
