@@ -1,4 +1,9 @@
 # Changelog
+## [Unreleased 5.0.5]	
+## Bug fixes
+- Password : Fix regex.
+
+
 ## [5.0.4] - 2018-07-26
 ## Features
 - User : Add a search filter to see the active users.
