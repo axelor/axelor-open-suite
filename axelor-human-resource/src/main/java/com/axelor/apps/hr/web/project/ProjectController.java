@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.web;
+package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.rpc.ActionRequest;
@@ -33,6 +33,7 @@ public class ProjectController {
     BigDecimal duration = new BigDecimal(diffInDays);
     response.setValue("duration", duration);
   }
+
 
   public void importMembers(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
