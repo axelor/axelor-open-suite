@@ -33,6 +33,7 @@
 - Declaration of exchanges of services and declaration of services
 - Project : project assignment on Sale order, Purchase order and Invoices.
 - PROJECT : Change project planning to project planning time with some extra fields.
+- PROJECT : Change business project reporting.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
