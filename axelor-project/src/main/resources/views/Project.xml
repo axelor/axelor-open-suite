@@ -4,6 +4,9 @@
 
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
+	<toolbar>
+		<button name="project-planning" title="Project planning" onClick="project.planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
+	</toolbar>
 	<menubar>
 		<menu title="Tools" icon="fa-wrench" showTitle="true">
 				<item title="Gantt with user" action="action-project-open-popup-select-users"/>
@@ -46,8 +49,6 @@
 				<item title="Gantt" showIf="isProject" action="action-project-open-gantt" />
 				<item title="Book resource" showIf="isProject"
 					action="save,action-project-book-resource" />
-				<item title="Planning the project" showIf="!excludePlanning &amp;&amp; isProject"
-					action="save,action-project-method-create-planning" />
 				<item if="__config__.app.isApp('business-project')" title="Generate quotation"
 					showIf="isBusinessProject" action="action-project-method-generate-quotation" />
 			</menu>
@@ -176,6 +177,18 @@
 				<panel-related colSpan="12" field="elementsToInvoiceList"
 					form-view="elements-to-invoice-form" grid-view="elements-to-invoice-grid" />
 			</panel>
+			<panel title="Planning" name="planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
+				<field name="projectPlanningTimeList" grid-view="project-planning-time-grid" form-view="project-planning-time-form" colSpan="12" onChange="action-planning-time-attr-update-planned-hours"/>
+				<panel if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="humanResource" title=" " colSpan="12">
+					<field name="imputable" widget="boolean-switch" colSpan="4"/>
+					<field name="totalPlannedHrs" readonly="true" colSpan="2">
+					<viewer><![CDATA[
+                    	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
+        			]]></viewer>
+					</field>
+				</panel>
+				<button name="addMultipleLines" title="Add multiple lines" onClick="save,action-project-planning-time-open" colSpan="3" hideIf="$popup()"/>
+			</panel>
 			<panel
 				if="eval: __config__.app.isApp('business-project') &amp;&amp; (__config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject() || __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject() || __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject() &amp;&amp; __config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())"
 				title="Related elements" showIf="isBusinessProject">
@@ -280,6 +293,10 @@
 				<panel-related colSpan="12" field="timesheetLineList"
 					form-view="timesheet-line-project-form" grid-view="timesheet-line-project-grid" />
 			</panel>
+			<panel name="wiki" title="Wiki">
+				<panel-related field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
+			</panel>
+
 			<panel name="configurations" title="Configurations">
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
@@ -430,19 +447,22 @@
 	<tree name="project-task-tree" title="Tasks">
     	
     	<column name="name" type="string"/>
+			<column name="taskDate" type="date"/>
     	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="integer"/>
 		<column name="openTask" type="button"/>
 
-		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-team-task-view-task">
+		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-team-task-view-task" orderBy="taskDate">
 			<field name="name" as="name"/>
+			<field name="taskDate" as="taskDate"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
-		
-		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task">
+
+		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task" orderBy="taskDate">
 			<field name="name" as="name"/>
+			<field name="taskDate" as="taskDate"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
@@ -489,7 +509,7 @@
 	<action-record name="action-project-record-inv-type-select" model="com.axelor.apps.project.db.Project">
 		<field name="projInvTypeSelect" expr="eval: project?.projInvTypeSelect"/>
 	</action-record>
-
+	
 	<action-attrs name="action-project-attrs-hide-invoicing-panel">
 		<attribute name="hidden" for="invoicingPanel" expr="eval: projInvTypeSelect != 3"/>
 	</action-attrs>
@@ -733,10 +753,6 @@
 		<call class="com.axelor.apps.project.web.ProjectController" method="setDuration"/>
 	</action-method>
 
-	<action-method name="action-project-method-create-planning">
-		<call class="com.axelor.apps.project.web.ProjectController" method="createPlanning"/>
-	</action-method>
-
 	<action-method name="action-project-method-import-members">
 		<call class="com.axelor.apps.project.web.ProjectController" method="importMembers"/>
 	</action-method>
@@ -819,5 +835,11 @@
         <view type="form" name="production-order-form"/>
         <domain>self.project.id = :_id</domain>
     </action-view>
+    
+    <action-view name="project.planning" title="Project planning" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="project-planning-user-select-wizard-form"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+	</action-view>
 
 </object-views>

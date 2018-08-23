@@ -26,7 +26,8 @@ import java.util.Map;
 class ImporterXML extends Importer {
 
   @Override
-  protected ImportHistory process(String bind, String data, Map<String, Object> importContext) {
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
+      throws IOException {
 
     XMLImporter importer = new XMLImporter(bind, data);
 

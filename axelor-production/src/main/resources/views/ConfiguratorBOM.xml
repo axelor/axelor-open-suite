@@ -2,13 +2,8 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    <form name="configurator-bom-form" title="Configurator BOM"
-          model="com.axelor.apps.production.db.ConfiguratorBOM">
-        <panel-include view="configurator-bom-line-form"/>
-        <panel-dashlet action="action-configurator-bom-view-tree"/>
-    </form>
 
-    <form name="configurator-bom-line-form" title="Configurator BOM"
+    <form name="configurator-bom-form" title="Configurator BOM"
     		onNew="action-configurator-bom-method-set-parent"
     		model="com.axelor.apps.production.db.ConfiguratorBOM">
         <panel>
@@ -53,10 +48,11 @@
                        showTitle="false" x-code-syntax="groovy" showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
                 <field name="configuratorProdProcess" colSpan="12" showIf="defProdProcessAsConfigurator"/>
             </panel>
-            <field name="product.productSubTypeSelect" hidden="true"/>
-            <field name="configuratorBomList" colSpan="12" showIf="[1, 2].indexOf(product.productSubTypeSelect) >= 0"/>
         </panel>
-
+      <panel-tabs>
+        <panel-related field="configuratorBomList" form-view="configurator-bom-form" grid-view="configurator-bom-grid" colSpan="12"/>
+        <panel-dashlet title="Configurator BOM tree view" action="action-configurator-bom-view-tree"/>
+      </panel-tabs>
     </form>
 
     <grid name="configurator-bom-grid" title="Configurator BOM" model="com.axelor.apps.production.db.ConfiguratorBOM">
@@ -65,7 +61,7 @@
 
      <action-view name="action-configurator-bom-view" title="Configurator BOM"
                   model="com.axelor.apps.production.db.ConfiguratorBOM">
-         <view type="form" name="configurator-bom-line-form"/>
+         <view type="form" name="configurator-bom-form"/>
          <view-param name="popup" value="true"/>
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
@@ -85,9 +81,9 @@
     
     <action-attrs name="action-configurator-bom-attrs-product-domain">
         <attribute name="domain" for="product"
-                   expr="eval: &quot; self.productTypeSelect == 'storable' &quot;"/>
+                   expr="eval: &quot; self.productTypeSelect = 'storable' &quot;"/>
     	<attribute name="domain" for="product" if="parentConfiguratorBOM == null"
-                   expr="eval: &quot; self.productTypeSelect == 'storable' &amp;&amp; self.productSubTypeSelect != 3 &quot;" />
+                   expr="eval: &quot; self.productTypeSelect = 'storable' &amp;&amp; self.productSubTypeSelect != 3 &quot;" />
     </action-attrs>
 
     <tree name="configurator-bom-tree" title="Configurators BOMs tree">

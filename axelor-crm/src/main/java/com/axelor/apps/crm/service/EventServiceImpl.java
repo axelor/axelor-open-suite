@@ -20,13 +20,18 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
@@ -64,6 +69,12 @@ public class EventServiceImpl implements EventService {
   private PartnerService partnerService;
 
   private EventRepository eventRepo;
+
+  @Inject private EmailAddressRepository emailAddressRepo;
+
+  @Inject private PartnerRepository partnerRepo;
+
+  @Inject private LeadRepository leadRepo;
 
   private static final int ITERATION_LIMIT = 1000;
 
@@ -616,5 +627,32 @@ public class EventServiceImpl implements EventService {
       default:
         break;
     }
+  }
+
+  @Override
+  public EmailAddress getEmailAddress(Event event) {
+    EmailAddress emailAddress = null;
+    if (event.getPartner() != null
+        && event.getPartner().getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+
+      Partner partner = partnerRepo.find(event.getPartner().getId());
+      if (partner.getEmailAddress() != null)
+        emailAddress = emailAddressRepo.find(partner.getEmailAddress().getId());
+
+    } else if (event.getContactPartner() != null) {
+
+      Partner contactPartner = partnerRepo.find(event.getContactPartner().getId());
+      if (contactPartner.getEmailAddress() != null)
+        emailAddress = emailAddressRepo.find(contactPartner.getEmailAddress().getId());
+
+    } else if (event.getPartner() == null
+        && event.getContactPartner() == null
+        && event.getLead() != null) {
+
+      Lead lead = leadRepo.find(event.getLead().getId());
+      if (lead.getEmailAddress() != null)
+        emailAddress = emailAddressRepo.find(lead.getEmailAddress().getId());
+    }
+    return emailAddress;
   }
 }

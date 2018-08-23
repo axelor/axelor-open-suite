@@ -24,25 +24,10 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaField;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
-
-  @Override
-  public MetaField getMetaField(ConfiguratorFormula configuratorFormula) {
-    ConfiguratorCreator configuratorCreator = configuratorFormula.getCreator();
-    if (configuratorCreator == null) {
-      return null;
-    }
-
-    if (configuratorCreator.getGenerateProduct()) {
-      return configuratorFormula.getProductMetaField();
-    } else {
-      return configuratorFormula.getSaleOrderLineMetaField();
-    }
-  }
 
   @Override
   public void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator)
@@ -50,11 +35,22 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
     ScriptBindings defaultValueBindings =
         Beans.get(ConfiguratorCreatorService.class).getTestingValues(creator);
     Object result = new GroovyScriptHelper(defaultValueBindings).eval(formula.getFormula());
+    String wantedTypeName = formula.getMetaField().getTypeName();
     if (result == null) {
       throw new AxelorException(
+          formula,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR),
-          formula);
+          I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
+    } else {
+      if (!Beans.get(ConfiguratorService.class)
+          .areCompatible(wantedTypeName, result.getClass().getSimpleName())) {
+        throw new AxelorException(
+            formula,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR),
+            result.getClass().getSimpleName(),
+            wantedTypeName);
+      }
     }
   }
 }

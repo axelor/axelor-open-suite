@@ -1,2 +1,2 @@
 "name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Manufacturing";"production";18;"Manufacturing configuration";"app-production.png";"axelor-production";"supplychain";21
+"Manufacturing";"production";18;"Manufacturing configuration";"app-production.png";"axelor-production";"supplychain";15

@@ -33,6 +33,8 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -458,5 +460,20 @@ public class MoveService {
       newMove.addMoveLineListItem(newMoveLine);
     }
     return moveRepository.save(newMove);
+  }
+
+  public MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException {
+    return move.getMoveLineList()
+        .stream()
+        .filter(moveLine -> moveLine.getAccount().equals(account))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new AxelorException(
+                    move,
+                    TraceBackRepository.CATEGORY_NO_VALUE,
+                    I18n.get("%s account not found in move %s"),
+                    account.getName(),
+                    move.getReference()));
   }
 }

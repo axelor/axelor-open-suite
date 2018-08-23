@@ -119,9 +119,9 @@
 
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect != 3 || printedPDF == null"/>
-                <item title="Show stored copy" action="action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
-                <item title="Print updated copy" action="save,action-invoice-validate-regenerate-invoice,action-invoice-method-regenerate-and-show-invoice" readonlyIf="partner == null" showIf="statusSelect == 3 &amp;&amp; printedPDF != null"/>
+                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="printedPDF == null || (statusSelect != 3 &amp;&amp; !(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2))"/>
+                <item title="Show stored copy" action="action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="(statusSelect == 3 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2)) &amp;&amp; printedPDF != null"/>
+                <item title="Print updated copy" action="save,action-invoice-validate-regenerate-invoice,action-invoice-method-regenerate-and-show-invoice" readonlyIf="partner == null" showIf="(statusSelect == 3 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2)) &amp;&amp; printedPDF != null"/>
                 <item title="Print annex" action="action-invoice-business-project-method-print-annex" showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)" if-module="axelor-business-project"/>
             </menu>
 
@@ -175,9 +175,8 @@
             <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
             <field name="companyBankDetails" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)" form-view="currency-form" grid-view="currency-grid"/>
-            <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
             <field name="interco"/>
-            <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
+            <field name="inAti" onChange="action-invoice-attrs-in-ati" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
         </panel>
 
         <panel title="Invoicing informations" hideIf="company == null">
@@ -207,6 +206,10 @@
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
 				<panel-related field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
+			</panel>
+			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
+				<field name="project" domain="self.clientPartner = :partner" form-view="project-form" grid-view="project-grid" colSpan="6"/>
+				<button name="updateLines" title="Update lines with selected project" onClick="save,action-invoice-business-project-method-update-lines,save" colSpan="6" readonlyIf="!project"/>
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
 				<panel name="accountingDetails" title="Accounting details"  colSpan="12">

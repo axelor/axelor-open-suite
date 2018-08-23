@@ -30,9 +30,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -387,6 +384,7 @@ left outer join public.account_account_config as AccountConfig on (AccountConfig
 left outer join public.account_payment_mode as PaymentMode on (Move.payment_mode = PaymentMode.id)
 
 where 
+(AccountingReport.currency = Move.company_currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND 
@@ -459,6 +457,12 @@ ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">currency</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency</text-property>
+                    <text-property name="heading">currency</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -517,6 +521,11 @@ ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
                     <structure>
                         <property name="position">9</property>
                         <property name="name">logo_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -586,14 +595,23 @@ ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, Journal.code as journal_code, Journal.name as journal_name, AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date,
-AccountingReport.publication_date_time as report_date_edition, Period.name as period_name, MetaFile.file_path as logo_path  
+AccountingReport.publication_date_time as report_date_edition, Period.name as period_name, MetaFile.file_path as logo_path,
+Currency.code as currency
 from public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join public.account_journal as Journal on (AccountingReport.journal = Journal.id)
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)]]></xml-property>
+left outer join public.base_period as Period on (AccountingReport.period = Period.id)
+left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
@@ -922,6 +940,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expression" type="javascript">dataSetRow["period_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">currency</property>
+                    <text-property name="displayName">currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="2602">
                 <property name="width">1.1cm</property>
@@ -929,11 +953,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <column id="491">
                 <property name="width">5cm</property>
             </column>
-            <column id="493">
-                <property name="width">2cm</property>
+            <column id="4606">
+                <property name="width">3cm</property>
             </column>
-            <column id="494">
-                <property name="width">2cm</property>
+            <column id="493">
+                <property name="width">4cm</property>
             </column>
             <column id="495">
                 <property name="width">2cm</property>
@@ -1041,6 +1065,42 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text-property name="content"><![CDATA[<VALUE-OF>row["company_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
+                <cell id="4604">
+                    <text id="4611">
+                        <property name="fontSize">10pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Currency'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
                 <cell id="499">
                     <text id="4194">
                         <property name="fontSize">10pt</property>
@@ -1074,14 +1134,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                    </text>
-                </cell>
-                <cell id="500">
-                    <text id="3078">
-                        <property name="textAlign">left</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy">row._outer["report_date"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="501">
@@ -1238,8 +1291,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                 </cell>
+                <cell id="4605"/>
                 <cell id="2620"/>
-                <cell id="2621"/>
                 <cell id="2622"/>
                 <cell id="2623"/>
                 <cell id="4234"/>

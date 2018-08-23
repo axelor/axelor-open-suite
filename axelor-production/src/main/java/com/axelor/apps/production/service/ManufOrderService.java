@@ -32,7 +32,7 @@ import java.util.List;
 
 public interface ManufOrderService {
 
-  public static int DEFAULT_PRIORITY = 10;
+  public static int DEFAULT_PRIORITY = 2;
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
 
@@ -47,6 +47,19 @@ public interface ManufOrderService {
       throws AxelorException;
 
   public void createToConsumeProdProductList(ManufOrder manufOrder);
+
+  /**
+   * Compute the quantity on generated prod product line. If the quantity of the bill of material is
+   * equal to the quantity of manuf order then the prod product line will have the same quantity as
+   * configured line.
+   *
+   * @param bomQty quantity of the bill of material.
+   * @param manufOrderQty quantity configured of the manuf order.
+   * @param lineQty quantity of the line.
+   * @return the quantity for the prod product line.
+   */
+  BigDecimal computeToConsumeProdProductLineQuantity(
+      BigDecimal bomQty, BigDecimal manufOrderQty, BigDecimal lineQty);
 
   public void createToProduceProdProductList(ManufOrder manufOrder);
 
@@ -143,8 +156,9 @@ public interface ManufOrderService {
    * On changing {@link ManufOrder#producedStockMoveLineList}, we also update the stock move.
    *
    * @param manufOrder
+   * @throws AxelorException
    */
-  void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder);
+  void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Compute {@link ManufOrder#diffConsumeProdProductList}, then add and remove lines to the stock
@@ -152,6 +166,8 @@ public interface ManufOrderService {
    *
    * @param stockMoveLineList
    * @param stockMove
+   * @throws AxelorException
    */
-  void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove);
+  void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove)
+      throws AxelorException;
 }

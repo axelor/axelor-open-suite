@@ -40,8 +40,11 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_NO_LINES = /*$$(*/ "No Line can be used for tasks" /*)*/;
   static final String SALE_ORDER_NO_TYPE_GEN_PROJECT = /*$$(*/
       "No type of generation project has been selected" /*)*/;
-  static final String SALE_ORDER_PROJECT_ALONE = /*$$*/
+  static final String SALE_ORDER_BUSINESS_PROJECT = /*$$(*/
       "The project is configured to be alone" /*)*/;
   static final String INVOICING_PROJECT_GENERATION = /*$$(*/ "Invoicing project generated" /*)*/;
   static final String JOB_COSTING_APP = /*$$(*/ "Job costing" /*)*/;
+  String FACTORY_NO_FOUND = /*$$(*/ "Factory not found this type of generator" /*)*/;
+  String FACTORY_FILL_WITH_PROJECT_ALONE = /*$$(*/
+      "You can't fill a project with the strategy Project Alone." /*)*/;
 }

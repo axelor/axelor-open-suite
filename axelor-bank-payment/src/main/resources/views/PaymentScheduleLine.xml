@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <grid name="payment-schedule-line-reject-grid" title="Payment schedule line rejection"
+    model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id"
+    canNew="false" canEdit="false" canDelete="false">
+    <toolbar>
+      <button name="rejectSelectedBtn" title="Reject selected lines" icon="fa-times"
+        onClick="action-payment-schedule-line-show-reject-wizard"/>
+    </toolbar>
+    <field name="paymentSchedule" form-view="payment-schedule-form"
+      grid-view="payment-schedule-grid"/>
+    <field name="scheduleLineSeq"/>
+    <field name="inTaxAmount" aggregate="sum"/>
+    <field name="inTaxAmountPaid" aggregate="sum"/>
+    <field name="scheduleDate"/>
+    <field name="debitBlockingOk"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+    <field name="debitNumber"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+    <field name="fromReject"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+    <field name="statusSelect" hidden="true"/>
+    <field name="paymentSchedule.statusSelect" hidden="true"/>
+    <button name="rejectBtn" title="Reject" icon="fa-times"
+      onClick="action-payment-schedule-line-show-reject-wizard"
+      readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+  </grid>
+
+  <grid name="payment-schedule-line-reject-wizard-grid" title="Payment schedule lines"
+    model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id">
+    <field name="paymentSchedule" form-view="payment-schedule-form"
+      grid-view="payment-schedule-grid"/>
+    <field name="scheduleLineSeq"/>
+    <field name="inTaxAmount" aggregate="sum"/>
+    <field name="scheduleDate"/>
+    <field name="debitBlockingOk"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+    <field name="debitNumber"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+  </grid>
+
+  <form name="payment-schedule-line-reject-wizard-form" model="com.axelor.apps.base.db.Wizard"
+    title="Payment schedule lines to reject" onNew="payment-schedule-line-reject-wizard-new"
+    width="large">
+    <panel-dashlet action="action-payment-schedule-line-selected-view"
+      showTitle="false" readonly="true"/>
+    <panel>
+      <field name="$interbankCodeLine" x-type="many-to-one"
+        x-target="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"
+        colSpan="12" canEdit="false" canNew="false" domain="self.interbankCode.typeSelect = 2"/>
+      <field name="$represent" widget="boolean" title="Represent" colSpan="3" colOffset="6"/>
+      <button name="rejectBtn" title="Reject"
+        onClick="action-payment-schedule-line-reject,close" colSpan="3"/>
+    </panel>
+  </form>
+
+  <action-view name="action-payment-schedule-line-selected-view"
+    title="Payment schedule lines to reject" model="com.axelor.apps.account.db.PaymentScheduleLine">
+    <view type="grid" name="payment-schedule-line-reject-wizard-grid"/>
+    <view type="form" name="payment-schedule-line-form"/>
+    <domain>self.id IN (:idList)</domain>
+  </action-view>
+
+  <action-record name="payment-schedule-line-reject-wizard-new"
+    model="com.axelor.apps.base.db.Wizard">
+    <field name="$represent" expr="eval: true"/>
+    <field name="$interbankCodeLine"
+      expr="call:com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService:getDefaultRejectionReason()"/>
+  </action-record>
+
+  <action-method name="action-payment-schedule-line-show-reject-wizard">
+    <call class="com.axelor.apps.bankpayment.web.PaymentScheduleLineController"
+      method="showRejectWizard"/>
+  </action-method>
+
+  <action-method name="action-payment-schedule-line-reject">
+    <call class="com.axelor.apps.bankpayment.web.PaymentScheduleLineController" method="reject"/>
+  </action-method>
+
+</object-views>

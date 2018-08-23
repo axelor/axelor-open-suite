@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="hr-root" order="-104" title="HR" icon="fa-sitemap"  if="__config__.app.isApp('employee')"
 	     icon-background="#84429f"/>
 
-	<menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employees Management" icon="fa-address-card-o" icon-background="#84429f"/>
+	<menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employees Management" icon="fa-address-card-o" icon-background="#84429f" order="0"/>
 
 	<menuitem name="employee-all" parent="hr-root-emp-mgt"
     	title="List of employees"
@@ -24,10 +25,10 @@
 		<view type="grid" name="employment-contract-grid"/>
 		<view type="form" name="employment-contract-form"/>
 	</action-view>
-	
+
 	<menuitem name="all-payroll-preparation" parent="hr-root-emp-mgt" title="Payroll Preparations" action="payroll.preparation.all"
 			  if="__config__.app.getApp('employee').getPayrollPreparation()"/>
-	
+
 	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
     	<view type="grid" name="payroll-preparation-grid"/>
 	    <view type="form" name="payroll-preparation-form"/>
@@ -123,9 +124,9 @@
 
 	<menuitem name="plannings-all" parent="hr-root-emp-mgt-conf" title="Plannings" />
 
-	<menuitem name="event-planning-all" parent="plannings-all" title="Event planning" action="hr.public.holiday.planning.all"/>
+	<menuitem name="event-planning-all" parent="plannings-all" title="Public holidays planning" action="hr.public.holiday.planning.all"/>
 
-	<action-view name="hr.public.holiday.planning.all" title="Public Holiday Plannings" model="com.axelor.apps.base.db.EventsPlanning">
+	<action-view name="hr.public.holiday.planning.all" title="Public holidays planning" model="com.axelor.apps.base.db.EventsPlanning">
     	<view type="grid" name="events-planning-grid"/>
 	    <view type="form" name="events-planning-form"/>
 	</action-view>
@@ -138,17 +139,16 @@
 	</action-view>
 
 	<!-- Leave App -->
-	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')" icon="fa-plane" icon-background="#84429f"
-    	title="Leave Requests"/>
-	
+	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')" icon="fa-plane" icon-background="#84429f" title="Leave Requests" order="5"/>
+
 	<menuitem name="edit-leave-request" parent="leave-request-root" title="Complete my leave request" action="edit.leave.request"/>
-	
+
 	<action-method name="edit.leave.request">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="editLeave"/>
 	</action-method>
-	
+
 	<menuitem name="all-leave-request" parent="leave-request-root" title="All my Leave Requests" action="leave.all"/>
-	
+
 	<action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
 		title="My Leave Requests">
 		<view name="leave-request-grid" type="grid" />
@@ -157,19 +157,19 @@
 		<context name="user_id" expr="eval:__user__" />
 		<context name="to_justify_leave_reason" expr="eval: false"/>
 	</action-view>
-	
+
 	<menuitem name="validate-leave-request"  parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate"/>
-	
+
 	<action-method name="leave.validate">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>
 	</action-method>
-	
+
 	<menuitem name="historic-leave-request"  parent="leave-request-root" title="Historic team leave requests" action="leave.historic"/>
-	
+
 	<action-method name="leave.historic">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
 	</action-method>
-	
+
 	<menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
 		title="Leaves calendar" action="leave.request.root.leave.calendar" />
 
@@ -180,9 +180,9 @@
 		<view type="form" name="calendar-event-form"/>
 		<domain>self.typeSelect = 4</domain>
 	</action-view>
-	
+
 	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave to justify" action="leave.request.to.justify"/>
-	
+
 	<action-view name="leave.request.to.justify" title="Leave to justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<view name="leave-request-form" type="form" />
 		<view name="leave-request-validate-grid" type="grid" />
@@ -199,11 +199,10 @@
     	<view type="grid" name="leave-reason-grid"/>
 	    <view type="form" name="leave-reason-form"/>
 	</action-view>
-	
+
 
 	<!-- Expense app -->
-	<menuitem name="expense-root" parent="hr-root" if="__config__.app.isApp('expense')" icon="fa-credit-card" icon-background="#84429f"
-    	title="Expenses"/>
+	<menuitem name="expense-root" parent="hr-root" if="__config__.app.isApp('expense')" icon="fa-credit-card" icon-background="#84429f" title="Expenses" order="10"/>
 
 	<menuitem name="edit-expense" parent="expense-root" title="Complete my expense" action="edit.expense"/>
 
@@ -256,7 +255,7 @@
 	<menuitem name="expense-root-conf"  parent="expense-root" title="Configuration" icon="fa-cog"/>
 
 	<menuitem name="conf-expense-type" parent="expense-root-conf" title="Expense Type" action="conf.expense.type"/>
-	
+
 	<action-view name="conf.expense.type" title="Expense types" model="com.axelor.apps.base.db.Product">
     	<view type="grid" name="product-expense-grid"/>
 	    <view type="form" name="product-expense-form"/>
@@ -267,7 +266,7 @@
 		<context name="_isModel" expr="false"/>
 		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
-	
+
 	<menuitem name="kilometric-allow-param-all" parent="expense-root-conf"
     	title="Kilometric Allowance Params"
     	action="kilometric.allow.param.all"/>
@@ -276,10 +275,9 @@
     	<view type="grid" name="kilometric-allow-param-grid"/>
 	    <view type="form" name="kilometric-allow-param-form"/>
 	</action-view>
-	
+
 	<!-- Timesheet app -->
-	<menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')"
-    	title="Timesheets" icon="fa-clock-o" icon-background="#84429f"/>
+	<menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')" title="Timesheets" icon="fa-clock-o" icon-background="#84429f" order="15"/>
 
 	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet"/>
 
@@ -296,7 +294,7 @@
 		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
 	</action-view>
-	
+
 	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" />
 
 	<action-method name="timesheet.validate">
@@ -317,8 +315,7 @@
 	</action-method>
 
 	<!-- Extra hours app -->
-	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')"
-    	title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f"/>
+	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')" title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f" order="20"/>
 
 	<menuitem name="edit-extra-hours" parent="extra-hours-root" title="Request extra hours" action="edit.extra.hours"/>
 
@@ -335,7 +332,7 @@
 		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
 	</action-view>
-	
+
 	<menuitem name="validate-extra-hours"  parent="extra-hours-root" title="Extra hours to validate" action="extra.hours.validate"/>
 
 	<action-method name="extra.hours.validate">
@@ -359,7 +356,7 @@
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="storable"/>
 	</action-view>
-	
+
 	<menuitem name="admin-root-batch-hr" parent="admin-root-batch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 		title="HR batches" action="admin.root.batch.hr" />
 
@@ -370,17 +367,17 @@
 	</action-view>
 
 	<menuitem name="hr-report-root" parent="hr-root" title="Dashboards" order="300" icon="fa-bar-chart"/>
-    	
+
     <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root" title="Human Resources Manager"
     	action="hr.manager.dashboard.view"/>
-    	
+
 	<action-view name="hr.manager.dashboard.view" title="Human Resource Manager">
 		<view type="dashboard" name="hr.manager.dashboard.sample" />
-	</action-view>	
-    	
+	</action-view>
+
     <menuitem name="menu-hr-user-dashboard" parent="hr-report-root" title="Human Resources User"
     	action="hr.user.dashboard.view"/>
-    	
+
 	<action-view name="hr.user.dashboard.view" title="Human Resources User">
 		<view type="dashboard" name="hr.user.dashboard.sample" />
 	</action-view>

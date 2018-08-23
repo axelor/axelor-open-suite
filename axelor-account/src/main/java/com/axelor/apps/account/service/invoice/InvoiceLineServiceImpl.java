@@ -163,7 +163,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
-
   @Override
   public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice)
       throws AxelorException {

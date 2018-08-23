@@ -14,7 +14,7 @@
 			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			<field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
 	        <field name="createdOn"/>
-	        <field name="log" colSpan="12" showTitle="false" />
+	        <field name="logMetaFile" widget="binary-link" />
 		</panel>
 	</form>
 

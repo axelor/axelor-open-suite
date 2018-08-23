@@ -28,8 +28,10 @@ import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.HrBatchHRRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
-import com.axelor.apps.hr.db.repo.ProjectPlanningHRRepository;
+import com.axelor.apps.hr.db.repo.ProjectHRRepository;
+import com.axelor.apps.hr.db.repo.ProjectPlanningTimeHRRepository;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
+import com.axelor.apps.hr.db.repo.TeamTaskHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -55,8 +57,8 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtServiceImpl;
-import com.axelor.apps.hr.service.project.ProjectPlanningService;
-import com.axelor.apps.hr.service.project.ProjectPlanningServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
@@ -65,7 +67,9 @@ import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.hr.service.user.UserHrServiceImpl;
-import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
+import com.axelor.apps.project.db.repo.ProjectManagementRepository;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.db.repo.TeamTaskProjectRepository;
 
 public class HumanResourceModule extends AxelorModule {
 
@@ -89,12 +93,14 @@ public class HumanResourceModule extends AxelorModule {
     bind(AppHumanResourceService.class).to(AppHumanResourceServiceImpl.class);
     bind(LunchVoucherAdvanceService.class).to(LunchVoucherAdvanceServiceImpl.class);
     bind(UserHrService.class).to(UserHrServiceImpl.class);
-    bind(ProjectPlanningRepository.class).to(ProjectPlanningHRRepository.class);
-    bind(ProjectPlanningService.class).to(ProjectPlanningServiceImpl.class);
     bind(ExpenseRepository.class).to(ExpenseHRRepository.class);
     bind(EmployeeRepository.class).to(EmployeeHRRepository.class);
     bind(BatchCreditTransferExpensePayment.class).to(BatchCreditTransferExpensePaymentHR.class);
     bind(BankOrderServiceImpl.class).to(BankOrderServiceHRImpl.class);
     bind(HrBatchRepository.class).to(HrBatchHRRepository.class);
+    bind(ProjectPlanningTimeRepository.class).to(ProjectPlanningTimeHRRepository.class);
+    bind(ProjectPlanningTimeService.class).to(ProjectPlanningTimeServiceImpl.class);
+    bind(ProjectManagementRepository.class).to(ProjectHRRepository.class);
+    bind(TeamTaskProjectRepository.class).to(TeamTaskHRRepository.class);
   }
 }

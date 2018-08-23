@@ -53,8 +53,7 @@ public class ConvertLeadWizardService {
    * @return
    * @throws AxelorException
    */
-  public Partner createPartner(
-      Map<String, Object> context, Address primaryAddress, Address otherAddress)
+  public Partner createPartner(Map<String, Object> context, Address primaryAddress)
       throws AxelorException {
 
     Mapper mapper = Mapper.of(Partner.class);
@@ -70,7 +69,7 @@ public class ConvertLeadWizardService {
 
     partnerService.setPartnerFullName(partner);
 
-    this.setAddress(partner, primaryAddress, otherAddress);
+    this.setAddress(partner, primaryAddress);
 
     return partner;
   }
@@ -84,19 +83,15 @@ public class ConvertLeadWizardService {
     }
   }
 
-  public void setAddress(Partner partner, Address primaryAddress, Address otherAddress) {
+  public void setAddress(Partner partner, Address primaryAddress) {
 
     if (primaryAddress != null) {
       primaryAddress.setFullName(addressService.computeFullName(primaryAddress));
       if (partner.getIsContact()) {
         partner.setContactAddress(primaryAddress);
       } else {
-        partnerService.addPartnerAddress(partner, primaryAddress, true, true, otherAddress == null);
+        partnerService.addPartnerAddress(partner, primaryAddress, true, true, true);
       }
-    }
-    if (otherAddress != null && !partner.getIsContact()) {
-      otherAddress.setFullName(addressService.computeFullName(otherAddress));
-      partnerService.addPartnerAddress(partner, otherAddress, true, false, true);
     }
   }
 
@@ -113,35 +108,6 @@ public class ConvertLeadWizardService {
     ;
     Country addressL7Country = null;
     Map<String, Object> countryContext = (Map<String, Object>) context.get("primaryCountry");
-    if (countryContext != null) {
-      addressL7Country = countryRepo.find(((Integer) countryContext.get("id")).longValue());
-    }
-
-    Address address =
-        addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
-
-    if (address == null) {
-      address =
-          addressService.createAddress(
-              null, null, addressL4, addressL5, addressL6, addressL7Country);
-    }
-
-    return address;
-  }
-
-  @SuppressWarnings("unchecked")
-  public Address createOtherAddress(Map<String, Object> context) {
-
-    String addressL4 = (String) context.get("otherAddress");
-    if (addressL4 == null) {
-      return null;
-    }
-    String addressL5 = (String) context.get("otherState");
-    String addressL6 =
-        (String) context.get("otherPostalCode") + " " + (String) context.get("otherCity");
-
-    Country addressL7Country = null;
-    Map<String, Object> countryContext = (Map<String, Object>) context.get("otherCountry");
     if (countryContext != null) {
       addressL7Country = countryRepo.find(((Integer) countryContext.get("id")).longValue());
     }

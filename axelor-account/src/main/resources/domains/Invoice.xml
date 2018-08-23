@@ -73,11 +73,11 @@
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
     <many-to-one name="directDebitManagement" ref="com.axelor.apps.account.db.DirectDebitManagement" title="Direct debit list"/>
-    <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject move line"/>
+    <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Rejection move line"/>
    	<boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
     <decimal name="amountRejected" title="Rejected amount"/> 
-    <date name="rejectDate" title="Reject Date"/>
-    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
+    <date name="rejectDate" title="Rejection date"/>
+    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
     <decimal name="directDebitAmount" title="Debited amount" readonly="true"/> 
     <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move" title="Payment Move"/>
     

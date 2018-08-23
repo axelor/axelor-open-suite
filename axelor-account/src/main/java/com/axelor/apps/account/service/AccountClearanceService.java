@@ -36,7 +36,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
@@ -270,7 +269,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -278,7 +277,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -286,7 +285,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -295,7 +294,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -303,7 +302,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -311,7 +310,7 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
   }

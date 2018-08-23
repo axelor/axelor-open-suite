@@ -59,6 +59,8 @@
 		
 		<boolean name="enableTradingNamesManagement" default="false"/>
 
+		<boolean name="enableCalendars" title="Calendar" default="true"/>
+
         <many-to-one name="passwordChangedTemplate" ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
 
 		<extra-code>

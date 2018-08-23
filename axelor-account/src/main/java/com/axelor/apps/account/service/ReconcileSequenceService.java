@@ -20,7 +20,6 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.auth.AuthUtils;
@@ -55,7 +54,7 @@ public class ReconcileSequenceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.RECONCILE_6),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           AuthUtils.getUser().getActiveCompany().getName());
     }
     return seq;

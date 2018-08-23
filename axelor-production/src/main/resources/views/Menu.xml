@@ -136,6 +136,15 @@
 		<view type="form" name="machine-form" />
 	</action-view>
 	
+	<menuitem name="manufacturing-conf-machine-type" parent="manufacturing-conf"
+		title="Machine Types" action="manufacturing.conf.machine.type" />
+
+	<action-view name="manufacturing.conf.machine.type" title="Machine Types"
+		model="com.axelor.apps.production.db.MachineType" >
+		<view type="grid" name="machine-type-grid" />
+		<view type="form" name="machine-type-form" />
+	</action-view>
+	
 	<menuitem name="manufacturing-conf-cost-sheet-group" parent="manufacturing-conf"
 		title="Cost sheet groups" action="manufacturing.conf.cost.sheet.group" />
 

@@ -30,7 +30,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -119,6 +118,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (accountingReport.getCompany() != null) {
       this.addParams("self.move.company = ?%d", accountingReport.getCompany());
+    }
+
+    if (accountingReport.getCurrency() != null) {
+      this.addParams("self.move.companyCurrency = ?%d", accountingReport.getCurrency());
     }
 
     if (accountingReport.getDateFrom() != null) {
@@ -240,7 +243,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1),
-            AppBaseServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             accountingReport.getCompany().getName());
       }
       return seq;
@@ -252,7 +255,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.ACCOUNTING_REPORT_2),
-            AppBaseServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             accountingReport.getCompany().getName());
       }
       return seq;
@@ -264,7 +267,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT),
-            AppBaseServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             accountingReport.getCompany().getName());
       }
       return seq;

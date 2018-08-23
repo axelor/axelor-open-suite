@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
@@ -42,6 +39,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.util.Map;
 
 @Singleton
 public class InvoiceLineController {

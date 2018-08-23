@@ -4,16 +4,16 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <selection name='base.advanced.export.wizard.export.format.select'>
-		<option value="0">PDF</option>
-		<option value="1">Excel</option>
-		<option value="2">CSV</option>
+		<option value="PDF">PDF</option>
+		<option value="EXCEL">Excel</option>
+		<option value="CSV">CSV</option>
 	</selection>
     
     <form name="advanced-export-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Advanced export" onNew="action-advanced-export-wizard-record-on-new">
     	<panel name="main" >
 	      	<field name="_xAdvancedExport" title="Advanced export" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.AdvancedExport"
 				   form-view="advanced-export-form" grid-view="advanced-export-grid" onSelect="action-advanced-export-wizard-attr-change-domain-from-model" />
-	      	<field name="exportFormatSelect" type="integer" title="Export format" requiredIf="_xAdvancedExport != null" selection="base.advanced.export.wizard.export.format.select"/>
+	      	<field name="exportFormatSelect" type="string" title="Export format" requiredIf="_xAdvancedExport != null" selection="base.advanced.export.wizard.export.format.select"/>
 			<spacer/>
 	      	<button name="generateExport" title="Export" onClick="action-advanced-export-wizard-method-generate-file,close"/>
 	      	<button name="personalisedExport" title="Personalised export" onClick="action-advanced-export-view-open-form,close"/>
@@ -30,7 +30,7 @@
 	
 	<action-record name="action-advanced-export-wizard-record-on-new" model="com.axelor.apps.base.db.AdvancedExport">
 		<field name="_xAdvancedExport" expr="eval: __repo__(AdvancedExport).all().filter('self.metaModel.id = ?', _metaModel.id).count() == 1 ? __repo__(AdvancedExport).all().filter('self.metaModel.id = ?', _metaModel.id).fetchOne() : null" if="_metaModel"/>
-		<field name="exportFormatSelect" expr="eval: 2" />
+		<field name="exportFormatSelect" expr="CSV" />
 	</action-record>
 	
 	<action-attrs name="action-advanced-export-wizard-attr-change-domain-from-model">

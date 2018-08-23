@@ -18,12 +18,16 @@
 
   <menuitem name="app-builder-models-views-custom-models" title="Custom models" parent="app-builder-models-views" action="custom.models.all" order="10"/>
   
-  <menuitem name="app-builder-models-views-custom-fields" title="Custom fields" parent="app-builder-models-views" action="app.builder.models.views.custom.fields" order="15"/>
+  <menuitem name="app-builder-models-views-custom-fields" title="Custom fields" parent="app-builder-models-views" action="custom.fields.all" order="11"/>
   
-  <action-view name="app.builder.models.views.custom.fields" title="Custom fields" model="com.axelor.studio.db.JsonCreator">
+  <menuitem name="app-builder-models-views-custom-field-creators" title="Custom field creators" parent="app-builder-models-views" action="app.builder.models.views.custom.field.creators" order="15"/>
+  
+  <action-view name="app.builder.models.views.custom.field.creators" title="Custom field creators" model="com.axelor.studio.db.JsonCreator">
     <view type="grid" name="json-creator-grid"/>
     <view type="form" name="json-creator-form"/>
   </action-view>
+  
+  
  
  
   <!-- Workflow menus -->

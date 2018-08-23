@@ -1,4 +1,5 @@
 "name";"roles"
+"hr-root";"Timesheet Manager|Timesheet User|Timesheet Read"
 "timesheet-root";"Timesheet Manager|Timesheet User|Timesheet Read"
 "edit-timesheet";"Timesheet Manager|Timesheet User|Timesheet Read"
 "all-timesheet";"Timesheet Manager|Timesheet User|Timesheet Read"

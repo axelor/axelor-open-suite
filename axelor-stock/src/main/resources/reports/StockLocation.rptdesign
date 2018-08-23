@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -493,201 +493,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="StockLocationLineDS" id="4450">
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">location_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">location_id</text-property>
-                    <text-property name="heading">location_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">location_line_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">location_line_id</text-property>
-                    <text-property name="heading">location_line_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">location_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">location_name</text-property>
-                    <text-property name="heading">location_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_name</text-property>
-                    <text-property name="heading">product_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_code</text-property>
-                    <text-property name="heading">product_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">current_qty</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">current_qty</text-property>
-                    <text-property name="heading">current_qty</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">unit_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">unit_code</text-property>
-                    <text-property name="heading">unit_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">sale_price</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">sale_price</text-property>
-                    <text-property name="heading">sale_price</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">currency_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">currency_code</text-property>
-                    <text-property name="heading">currency_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">cost_price</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">cost_price</text-property>
-                    <text-property name="heading">cost_price</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="filter"/>
             <list-property name="parameters"/>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">location_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">location_line_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">location_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">product_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">product_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">current_qty</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">unit_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">sale_price</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">currency_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">cost_price</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"])]]></method>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">location_id</property>
-                    <property name="nativeName">location_id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">location_line_id</property>
-                    <property name="nativeName">location_line_id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">location_name</property>
-                    <property name="nativeName">location_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">product_name</property>
-                    <property name="nativeName">product_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">product_code</property>
-                    <property name="nativeName">product_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">current_qty</property>
-                    <property name="nativeName">current_qty</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">unit_code</property>
-                    <property name="nativeName">unit_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">sale_price</property>
-                    <property name="nativeName">sale_price</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">currency_code</property>
-                    <property name="nativeName">currency_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
-                    <property name="name">cost_price</property>
-                    <property name="nativeName">cost_price</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">3</property>
-                </structure>
-            </list-property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[SELECT 	Location.id as location_id, StockLocationLine.id as location_line_id, Location.name as location_name, Product.name AS product_name,
 		Product.code AS product_code, StockLocationLine.current_qty, Unit.name as unit_code, Product.sale_price,
-		Currency.code AS currency_code, Product.cost_price
+		Currency.code AS currency_code, Product.cost_price, StockLocationLine.avg_price, Product.cost_type_select
 FROM 
 	stock_stock_location as Location 
 LEFT OUTER JOIN 
@@ -1149,9 +964,23 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">dataSetRow["cost_price"] * dataSetRow["current_qty"]</expression>
+                            <expression name="value" type="javascript">dataSetRow["current_qty"] * (dataSetRow["cost_type_select"] == 3 ? dataSetRow["avg_price"] : dataSetRow["cost_price"])</expression>
                         </structure>
                     </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">avg_price</property>
+                    <text-property name="displayName">avg_price</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["avg_price"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">false</property>
+                </structure>
+                <structure>
+                    <property name="name">cost_type_select</property>
+                    <text-property name="displayName">cost_type_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cost_type_select"]</expression>
+                    <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
@@ -1159,7 +988,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                 <property name="width">1.6041666666666667in</property>
             </column>
             <column id="4454">
-                <property name="width">0.8020833333333334in</property>
+                <property name="width">1.115in</property>
             </column>
             <column id="4455">
                 <property name="width">1.4479166666666667in</property>
@@ -1168,10 +997,10 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                 <property name="width">1.78125in</property>
             </column>
             <column id="4457">
-                <property name="width">0.8020833333333334in</property>
+                <property name="width">1.1145833333333333in</property>
             </column>
             <column id="4458">
-                <property name="width">1.2708333333333333in</property>
+                <property name="width">0.9583333333333334in</property>
             </column>
             <row id="4459">
                 <property name="height">0.635cm</property>

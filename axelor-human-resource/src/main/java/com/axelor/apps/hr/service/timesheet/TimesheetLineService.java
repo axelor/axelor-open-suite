@@ -24,7 +24,9 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface TimesheetLineService {
 
@@ -84,4 +86,13 @@ public interface TimesheetLineService {
       Timesheet timesheet,
       BigDecimal hours,
       String comments);
+
+  /**
+   * Compute the total duration of timesheet lines. Add each duration only if the timesheet is
+   * validated or confirmed.
+   *
+   * @param timesheetLineList a list of timesheet lines.
+   * @return a {@link java.time.Duration}.
+   */
+  Duration computeTotalDuration(List<TimesheetLine> timesheetLineList);
 }

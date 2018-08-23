@@ -8,6 +8,7 @@
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
     </grid>
@@ -17,6 +18,7 @@
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
+	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
             <field name="avgPrice" x-scale="2"/>
             <field name="rack"/>
@@ -25,6 +27,10 @@
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
+		<panel>
+        	<button name="plannedStockMoveLineBtn" title="Planned stock move lines" onClick="action-stock-location-line-view-planned-stock-move-lines"/>
+        	<button name="realizedStockMoveLineBtn" title="Realized stock move lines" onClick="action-stock-location-line-view-realized-stock-move-lines"/>
+        </panel>
     </form>
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
@@ -32,6 +38,7 @@
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
     </grid>
@@ -42,6 +49,7 @@
             <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
             <field name="currentQty" colSpan="4"/>
             <field name="futureQty" colSpan="4"/>
+            <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" x-scale="2" colSpan="4"/>
             <field name="rack"/>
         </panel>
@@ -51,6 +59,7 @@
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
         <field name="rack"/>
@@ -62,6 +71,7 @@
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
+	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" x-scale="2"/>
 	        <field name="lastFutureStockMoveDate"/>
             <field name="rack"/>
@@ -76,6 +86,7 @@
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
         <field name="rack"/>
@@ -86,6 +97,7 @@
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
+        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" domain="self.product = :product"/>
         <field name="rack"/>
     </grid>
@@ -95,6 +107,7 @@
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
+	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" x-scale="2"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 	        <field name="trackingNumber" domain="self.product = :product"/>
@@ -105,5 +118,21 @@
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
     </form>
+    
+    <action-view name="action-stock-location-line-view-planned-stock-move-lines" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    	<view type="grid" name="stock-move-line-all-grid-planned"/>
+    	<view type="form" name="stock-move-line-all-form"/>
+    	<domain>self.stockMove.statusSelect = 2 AND self.product.id = :productId AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId)</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+    	<context name="locationId" expr="eval: stockLocation?.id"/>
+    </action-view>
+    
+	<action-view name="action-stock-location-line-view-realized-stock-move-lines" title="Realized stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    	<view type="grid" name="stock-move-line-all-grid"/>
+    	<view type="form" name="stock-move-line-all-form"/>
+    	<domain>self.stockMove.statusSelect = 3 AND self.product.id = :productId AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId)</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+    	<context name="locationId" expr="eval: stockLocation?.id "/>
+    </action-view>
     
 </object-views>

@@ -14,8 +14,8 @@
     
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>
-    
-    <integer name="statusSelect" title="Status" selection="stock.move.status.select" required="true" readonly="true"/>
+
+    <integer name="statusSelect" title="Status" selection="stock.move.status.select" required="true" readonly="true" default="1"/>
     <integer name="typeSelect" title="Type Status" required="true" selection="stock.move.type.select"/>
     
     <many-to-one name="fromAddress" ref="com.axelor.apps.base.db.Address" title="From address"/>
@@ -26,9 +26,10 @@
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    
+
     <one-to-many name="stockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="stockMove" orderBy="sequence" title="Stock move content"/>
-    
+    <one-to-many name="plannedStockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="plannedStockMove" orderBy="sequence"/>
+
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
     <boolean name="isWithBackorder" title="Manage BackOrder" default="true"/>
     
@@ -68,9 +69,11 @@
     <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed"/>
     <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" title="Electronic signature"/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory user"/>
+    
+    <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
-    
+
     <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
@@ -90,6 +93,18 @@
 		public static final int CONFORMITY_NON_COMPLIANT = 3;
 	
 	]]></extra-code>
-    
+
   </entity>
+
+  <enum name="ModeOfTransport" numeric="true">
+    <item name="TRANSPORT_BY_SEA" value="1"/>
+    <item name="TRANSPORT_BY_RAIL" value="2"/>
+    <item name="TRANSPORT_BY_ROAD" value="3"/>
+    <item name="TRANSPORT_BY_AIR" value="4"/>
+    <item name="CONSIGNMENTS_BY_POST" value="5"/>
+    <item name="FIXED_TRANSPORT_INSTALLATIONS" value="7"/>
+    <item name="TRANSPORT_BY_INLAND_WATERWAY" value="8"/>
+    <item name="OWN_PROPULSION" value="9"/>
+  </enum>
+
 </domain-models>

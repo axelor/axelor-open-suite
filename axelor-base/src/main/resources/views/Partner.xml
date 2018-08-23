@@ -90,13 +90,13 @@
 	<form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload" width="large">
-		<panel-include view="partner-form" from="axelor-base"/>
+		<panel-include view="partner-form" />
 	</form>
 
 	<form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload" width="large">
-		<panel-include view="partner-form" from="axelor-base"/>
+		<panel-include view="partner-form" />
 	</form>
 
 	<form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-base-partner-form">
@@ -122,21 +122,21 @@
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
 		<panel name="main" >
-			<panel colSpan="3">
+			<panel colSpan="2">
 				<field name="picture" showTitle="false" widget="Image" colSpan="12">
 					<viewer>
 						<![CDATA[
 					    <div>
-			    			<img width="50%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect != 2" src="img/company-default.jpg" />
-          					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 1" src="img/partner-m-default.png" />
-          					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 2" src="img/partner-w-default.png" />
-        					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect == 2 && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
+			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect != 2" src="img/company-default.jpg" />
+          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 1" src="img/partner-m-default.png" />
+          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 2" src="img/partner-w-default.png" />
+        					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
      					</div>
 					]]>
 					</viewer>
 				</field>
-				<panel colSpan="8" showIf="fullName != null">
+				<panel colSpan="12" showIf="fullName != null">
 					<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
@@ -144,22 +144,24 @@
 					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
 			</panel>
-			<panel colSpan="9">
+			<panel colSpan="10">
 				<panel colSpan="12">
-					<field name="fullName" colSpan="6" showTitle="false" css="label-bold bold large">
+					<field name="fullName" colSpan="7" showTitle="false" css="label-bold bold large">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
-							<field name="partnerTypeSelect" showTitle="false" showIf="partnerTypeSelect == 1" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="12" placeholder="Partner Type"/>
+						  <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="12" placeholder="Partner Type"/>
+			              <panel showIf="partnerTypeSelect == 1" colSpan="12">
 							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="12"/>
-              <panel showIf="partnerTypeSelect == 2" colSpan="12">
-                <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
-                <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
-                <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
-              </panel>
+						  </panel>
+			              <panel showIf="partnerTypeSelect == 2" colSpan="12">
+			                <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
+			                <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+			                <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+			              </panel>
 						</editor>
 					</field>
-          <field name="partnerSeq" showTitle="false" colSpan="3" css="label-bold bold large"/>
-					<button if="__config__.app.isApp('account')" name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" hideIf="!$readonly()"/>
+          			<field name="partnerSeq" showTitle="false" colSpan="2" css="label-bold bold large"/>
+					<button if="__config__.app.isApp('account')" name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
 					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
 				<field name="isProspect"  colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly()" onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
@@ -724,6 +726,10 @@
 	
 	<action-attrs name="action-partner-attrs-set-default">
 	  <attribute name="value:add" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()" for="companySet"/>
+	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-set-domain">
+		<attribute name="domain" for="partner" expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true) AND self.isEmployee = false &quot;"/>
 	</action-attrs>
 
     <action-record name="action-partner-record-set-balance"

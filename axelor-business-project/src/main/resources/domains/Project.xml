@@ -49,7 +49,7 @@
 		
 		
 		<boolean name="isBusinessProject" title="Business project" />
-		
+
 	 	<extra-code><![CDATA[
 		
 		   	// TYPE SELECT
@@ -61,8 +61,15 @@
    			public static final int TASK_PER_LINE_PHASE = 2;
    			public static final int TASK_PER_LINE_TASK = 3;
 		]]></extra-code>
-		
-		
+
+
 	</entity>
-  
+
+	<enum name="ProjectGeneratorType">
+		<item name="PROJECT_ALONE" title="Project alone"/>
+		<item name="PHASE_BY_LINE" title="Phase by line"/>
+		<item name="TASK_BY_LINE" title="Task by line"/>
+		<item name="TASK_TEMPLATE" title="Tasks by product"/>
+	</enum>
+
 </domain-models>
