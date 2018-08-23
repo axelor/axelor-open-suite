@@ -60,11 +60,11 @@ public class ProjectPlanningTimeController {
     String url = "project/planning";
 
     if (!userIds.isEmpty()) {
-        url += "?userIds=" + userIds;
+      url += "?userIds=" + userIds;
     }
-    
+
     builder.add("html", url);
-    
+
     response.setView(builder.map());
     response.setCanClose(true);
   }
