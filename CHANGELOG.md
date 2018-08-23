@@ -4,6 +4,7 @@
 - Marketing app: added FR demo data
 
 ## Bug Fixes
+- Fix : error when computing the duration of a leave request without a company.
 
 
 ## [5.0.4] - 2018-07-26
