@@ -1,11 +1,37 @@
 # Changelog
-## [Unreleased 5.0.5]
+## [Unreleased 5.0.5]	
+##Features
+- Add Data Backup and Restore
+- Add unitary tests for password
+
 ## Improvements
+- HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
+- Advanced export : code refactor and optimize the performance.
+- BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
+- Configure BoM form: show sub bom list.
+- Configurator: improve UI for indicators.
+- Split formula list into formulas for product and formulas for sale order line in configurator creator.
+- Add a column name to configurators, equal to the creator's name.
+- UserController: Improve exception handling.
 
 ## Bug Fixes
+- Fix on prod process report.
+- Fix json field creator's issue of model change not reflected on fields. 
+- Configurator export: add contextField to metaJsonField.
+- Configurator creator: fill default attributes for both product and sale order line.
+- Computation of value of a given stock location is now the same in the form and in the printing.
+- BPM: Provide translations for some fields.
+- Fix chart builder operator display issue.
+- Portal: Fix ticket view on client portal.
+- Fix wrong quantity on manuf order when generating prod product lines where bill of material quantity is different from 1.
+- Fix new bug when checking type on configurator.
+- BPM: Provide translation for Workflow dashboard.
+- Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
+- DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
+- BPM: keep model read only if custom field is created from custom field creator.
+- Password : Fix regex.
 - Fix : error when computing the duration of a leave request without a company.
-
 
 ## [5.0.4] - 2018-07-26
 ## Features

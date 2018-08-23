@@ -22,8 +22,9 @@
                 </viewer>
             </field>
             <field name="configuratorCreator"
-                   onSelect="action-configurator-method-creator-domain" onChange="save,action-configurator-update-indicators"/>
-            <field name="attributes" colSpan="12"/>
+                   onSelect="action-configurator-method-creator-domain" onChange="action-configurator-group-creator-onchange"/>
+          <field name="configuratorCreatorName"/>
+          <field name="attributes" colSpan="12"/>
         </panel>
         <panel readonly="true">
             <field name="indicators" colSpan="12"/>
@@ -38,14 +39,15 @@
     <form name="generate-configurator-form" model="com.axelor.apps.sale.db.Configurator" title="Generate configurator">
         <panel name="main">
             <field name="configuratorCreator" form-view="configurator-creator-form" grid-view="configurator-creator-grid"
-                   onSelect="action-configurator-method-creator-domain"/>
+                   onSelect="action-configurator-method-creator-domain" onChange="action-configurator-record-fill-creator-name"/>
             <button name="generate" title="Generate"
             		onClick="action-configurator-group-create-configurator"/>
+          <field name="configuratorCreatorName"/>
         </panel>
         <panel name="configurator" hidden="true" colSpan="12">
        		<field name="configuratorCreator" readonly="true" showTitle="false" css="bold large" canView="false"/>
        		<button name="validate" title="Validate and generate the line" colSpan="4" colOffset="2"
-            		onClick="save,action-configurator-method-generate"/>   
+            onClick="save,action-configurator-method-generate"/>
        	</panel>
        	<panel name="attributes" hidden="true">
             <field name="attributes" colSpan="12"/>
@@ -54,12 +56,18 @@
             <field name="indicators" colSpan="12" readonly="true"/>
         </panel>
     </form>
-    
+
     <action-group name="action-configurator-group-create-configurator">
     	<action name="action-configurator-attrs-create-configurator"/>
     	<action name="save"/>
     	<action name="action-configurator-update-indicators"/>
     </action-group>
+
+  <action-group name="action-configurator-group-creator-onchange">
+    <action name="save"/>
+    <action name="action-configurator-update-indicators"/>
+    <action name="action-configurator-record-fill-creator-name"/>
+  </action-group>
 
     <action-method name="action-configurator-update-indicators">
         <call class="com.axelor.apps.sale.web.ConfiguratorController" method="updateIndicators"/>
@@ -78,7 +86,12 @@
 
     <action-record name="action-configurator-record-on-new" model="com.axelor.apps.sale.db.Configurator">
         <field name="configuratorCreator" expr="eval: _configuratorCreator"/>
+      <field name="configuratorCreatorName" expr="eval: _configuratorCreator?.name"/>
     </action-record>
+
+  <action-record name="action-configurator-record-fill-creator-name" model="com.axelor.apps.sale.db.Configurator">
+    <field name="configuratorCreatorName" expr="eval: configuratorCreator.name"/>
+  </action-record>
 
     <action-attrs name="action-configurator-attrs-on-new">
         <attribute for="configuratorCreator" name="readonly" expr="eval: _configuratorCreator != null"/>
@@ -91,7 +104,7 @@
     <action-method name="action-configurator-method-generate">
         <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateForSaleOrder"/>
     </action-method>
-    
+
     <action-attrs name="action-configurator-attrs-create-configurator">
     	<attribute name="hidden" for="configurator" expr="false"/>
     	<attribute name="hidden" for="attributes" expr="false"/>

@@ -48,11 +48,9 @@ public interface IExceptionMessage {
       "The company is required and must be the same for all sale orders" /*)*/;
 
   /** Configurator creator */
-  String CONFIGURATOR_CREATOR_UNVALID_METAFIELD = /*$$(*/
-      "The metafield type provided is not valid. You must choose a Product or a SaleOrderLine." /*)*/;
-
   String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/
       "This script has errors, please see server logs for more details." /*)*/;
+
   String CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR = /*$$(*/
       "This script returned value is of type %s, it should return a value of type %s instead." /*)*/;
   String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The syntax of the script is correct." /*)*/;
