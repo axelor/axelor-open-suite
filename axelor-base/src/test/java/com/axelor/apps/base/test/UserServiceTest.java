@@ -44,33 +44,39 @@ public class UserServiceTest {
     Assert.assertTrue(userService.matchPasswordPattern("123Axelor"));
     Assert.assertTrue(userService.matchPasswordPattern("axelor123A"));
   }
-  
+
   @Test
   public void testMatchPasswordPatternUpperLowerSpecial() {
-    Assert.assertTrue(userService.matchPasswordPattern("Axelor12"));
-    Assert.assertTrue(userService.matchPasswordPattern("123Axelor"));
-    Assert.assertTrue(userService.matchPasswordPattern("axelor123A"));
+    Assert.assertTrue(userService.matchPasswordPattern("Axelor=["));
+    Assert.assertTrue(userService.matchPasswordPattern("]-Axelor"));
+    Assert.assertTrue(userService.matchPasswordPattern("axelor\"A"));
   }
-  
+
   @Test
   public void testMatchPasswordPatternLowerSpecialDigit() {
     Assert.assertTrue(userService.matchPasswordPattern(";axelor12"));
     Assert.assertTrue(userService.matchPasswordPattern("axelor12?"));
     Assert.assertTrue(userService.matchPasswordPattern("axelor123A"));
   }
-  
+
   @Test
   public void testMatchPasswordPatternUpperSpecialDigit() {
     Assert.assertTrue(userService.matchPasswordPattern("AXELOR12!"));
     Assert.assertTrue(userService.matchPasswordPattern("123!AXELOR"));
     Assert.assertTrue(userService.matchPasswordPattern(";XELOR123"));
   }
+  
+  @Test
+  public void testMatchPasswordPatternUpperLowerSpecialDigit() {
+    Assert.assertTrue(userService.matchPasswordPattern("Axelor!12"));
+    Assert.assertTrue(userService.matchPasswordPattern("123Axe+lor"));
+    Assert.assertTrue(userService.matchPasswordPattern("ax[elor123A"));
+  }
 
   @Test
   public void testNotMatchPasswordPattern() {
-    Assert.assertFalse(userService.matchPasswordPattern("Xlr1!"));
+    Assert.assertFalse(userService.matchPasswordPattern("Xlr1!2*"));
     Assert.assertFalse(userService.matchPasswordPattern("AxelorAxelor"));
     Assert.assertFalse(userService.matchPasswordPattern("axelor123456"));
   }
-
 }
