@@ -59,7 +59,12 @@ public class ProjectPlanningTimeController {
             .model(ProjectPlanningTime.class.getName());
     String url = "project/planning";
 
+    if (!userIds.isEmpty()) {
+        url += "?userIds=" + userIds;
+    }
+    
     builder.add("html", url);
+    
     response.setView(builder.map());
     response.setCanClose(true);
   }
