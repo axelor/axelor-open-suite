@@ -428,6 +428,7 @@
     	<field name="buyerUser" expr="eval:__user__"/>
     	<field name="orderDate" expr="eval: __date__"/>
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
+		<field name="project" expr="eval:_project" />
     </action-record>
 
     <action-record name="action-purchase-order-record-company-configuration" model="com.axelor.apps.purchase.db.PurchaseOrder">

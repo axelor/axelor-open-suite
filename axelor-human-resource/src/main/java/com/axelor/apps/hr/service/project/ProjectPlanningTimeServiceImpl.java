@@ -76,6 +76,20 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   }
 
   @Override
+  public BigDecimal getTaskRealHrs(TeamTask task) {
+
+    BigDecimal totalRealHrs = BigDecimal.ZERO;
+    if (task != null) {
+      List<ProjectPlanningTime> plannings =
+          planningTimeRepo.all().filter("self.task = ?1", task).fetch();
+      totalRealHrs =
+          plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    return totalRealHrs;
+  }
+
+  @Override
   public BigDecimal getProjectPlannedHrs(Project project) {
 
     BigDecimal totalPlanned = BigDecimal.ZERO;
@@ -87,6 +101,20 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
 
     return totalPlanned;
+  }
+
+  @Override
+  public BigDecimal getProjectRealHrs(Project project) {
+
+    BigDecimal totalRealHrs = BigDecimal.ZERO;
+    if (project != null) {
+      List<ProjectPlanningTime> plannings =
+          planningTimeRepo.all().filter("self.project = ?1", project).fetch();
+      totalRealHrs =
+          plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    return totalRealHrs;
   }
 
   @Override
@@ -104,13 +132,16 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
     LocalDateTime fromDate = LocalDateTime.parse(datas.get("fromDate").toString(), formatter);
     LocalDateTime toDate = LocalDateTime.parse(datas.get("toDate").toString(), formatter);
-    BigDecimal totalPlannedHours = BigDecimal.ZERO;
 
     TeamTask teamTask = null;
 
     Map<String, Object> objMap = (Map) datas.get("project");
     Project project = projectRepo.find(Long.parseLong(objMap.get("id").toString()));
-    Integer timePercent = Integer.parseInt(datas.get("timepercent").toString());
+    Integer timePercent = 0;
+
+    if (datas.get("timepercent") != null) {
+      timePercent = Integer.parseInt(datas.get("timepercent").toString());
+    }
 
     objMap = (Map) datas.get("user");
     User user = userRepo.find(Long.parseLong(objMap.get("id").toString()));
@@ -153,13 +184,13 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         planningTime.setUser(user);
         planningTime.setDate(date);
         planningTime.setProject(project);
+        planningTime.setGenerateTurnover((Boolean) datas.get("generateTurnover"));
 
         BigDecimal totalHours = BigDecimal.ZERO;
         if (timePercent > 0) {
           totalHours =
               dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
         }
-        totalPlannedHours = totalPlannedHours.add(totalHours);
         planningTime.setPlannedHours(totalHours);
         planningTimeRepo.save(planningTime);
       }

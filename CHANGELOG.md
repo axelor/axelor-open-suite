@@ -34,6 +34,7 @@
 - Project : project assignment on Sale order, Purchase order and Invoices.
 - PROJECT : Change project planning to project planning time with some extra fields.
 - PROJECT : Change business project reporting.
+- Project view enhancements
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

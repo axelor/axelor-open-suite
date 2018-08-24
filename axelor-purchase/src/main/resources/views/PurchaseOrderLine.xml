@@ -65,12 +65,9 @@
         <field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" readonly="true"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid" readonly="true"/>
         <field name="productName" readonly="true"/>
-        <field name="qty" aggregate="sum" readonly="true"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
-        <field name="price" readonly="true"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>
         <field name="toInvoice"/>
-        <field name="invoiced"/>
+        <field name="amountInvoiced"/>
         <field name="purchaseOrder.statusSelect" hidden="true"/>
     </grid>
 

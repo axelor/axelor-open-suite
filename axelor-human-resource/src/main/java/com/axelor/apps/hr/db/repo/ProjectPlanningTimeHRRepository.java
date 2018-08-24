@@ -35,13 +35,15 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
   public ProjectPlanningTime save(ProjectPlanningTime projectPlanningTime) {
 
     super.save(projectPlanningTime);
-    projectPlanningTime.setPlannedHours(projectPlanningTime.getPlannedHours());
+
     Project project = projectPlanningTime.getProject();
     project.setTotalPlannedHrs(planningTimeService.getProjectPlannedHrs(project));
+    project.setTotalRealHrs(planningTimeService.getProjectRealHrs(project));
 
     TeamTask task = projectPlanningTime.getTask();
     if (task != null) {
       task.setTotalPlannedHrs(planningTimeService.getTaskPlannedHrs(task));
+      task.setTotalRealHrs(planningTimeService.getTaskRealHrs(task));
     }
 
     return projectPlanningTime;

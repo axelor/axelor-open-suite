@@ -48,14 +48,11 @@
         <field name="saleOrder.saleOrderSeq" title="Reference"/>
         <field name="saleOrder.creationDate"/>
         <field name="productName" readonly="true"/>
-        <field name="qty" aggregate="sum" readonly="true"/>
         <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
-        <field name="price" x-scale="2" readonly="true"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>
         <field name="saleOrder.currency"/>
         <field name="toInvoice"/>
-        <field name="invoiced"/>
+        <field name="amountInvoiced" />
         <field name="saleOrder.statusSelect" hidden="true"/>
     </grid>
 

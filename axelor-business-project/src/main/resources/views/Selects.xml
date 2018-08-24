@@ -5,7 +5,7 @@
 	
 	<selection name="project.invoicing.type.select">
 		<option value="1">None</option>
-		<option value="2">Time-based</option>
+		<option value="2">Realised based</option>
 		<option value="3">Flat Rate</option>
 	</selection>
 	

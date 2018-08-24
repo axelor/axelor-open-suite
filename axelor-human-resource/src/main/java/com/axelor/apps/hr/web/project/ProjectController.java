@@ -21,18 +21,9 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
 
 @Singleton
 public class ProjectController {
-
-  public void setDuration(ActionRequest request, ActionResponse response) {
-    Project project = request.getContext().asType(Project.class);
-    long diffInDays = ChronoUnit.DAYS.between(project.getFromDate(), project.getToDate());
-    BigDecimal duration = new BigDecimal(diffInDays);
-    response.setValue("duration", duration);
-  }
 
   public void importMembers(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);

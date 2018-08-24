@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -31,6 +31,5 @@ public interface ProjectBusinessService extends ProjectService {
   Project generateProject(SaleOrder saleOrder);
 
   Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent);
-
-  void manageInvoiceLine(InvoiceLine invoiceLine, Project project);
+  
 }

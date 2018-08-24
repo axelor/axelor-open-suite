@@ -210,5 +210,17 @@
 	<action-method name="action-timesheet-line-method-set-duration" model="com.axelor.apps.hr.db.TimesheetLine">
         <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="setDuration"/>
 	</action-method>
+	
+	<action-view name="action-dashlet-project-validated-timeshet-lines" model="com.axelor.apps.hr.db.TimesheetLine" title="Validated Timesheet lines">
+		<view type="grid" name="timesheet-line-project-grid"/>
+		<view type="form" name="timesheet-line-timesheet-project-form"/>
+		<domain>self.timesheet.statusSelect = 3 and self.project.id = :id</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-waiting-timeshet-lines" model="com.axelor.apps.hr.db.TimesheetLine" title="Waiting Timesheet lines">
+		<view type="grid" name="timesheet-line-project-grid"/>
+		<view type="form" name="timesheet-line-timesheet-project-form"/>
+		<domain>self.timesheet.statusSelect &lt; 3 and self.project.id = :id</domain>
+	</action-view>
 
 </object-views>

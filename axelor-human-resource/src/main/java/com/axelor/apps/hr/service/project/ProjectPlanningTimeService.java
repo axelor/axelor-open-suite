@@ -28,7 +28,11 @@ public interface ProjectPlanningTimeService {
 
   public BigDecimal getTaskPlannedHrs(TeamTask teamTask);
 
+  public BigDecimal getTaskRealHrs(TeamTask teamTask);
+
   public BigDecimal getProjectPlannedHrs(Project project);
+
+  public BigDecimal getProjectRealHrs(Project project);
 
   public void addMultipleProjectPlanningTime(Map<String, Object> dataMap) throws AxelorException;
 }

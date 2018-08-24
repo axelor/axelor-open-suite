@@ -17,9 +17,8 @@
       <string name="description" title="Description" large="true" />
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
 	  <boolean name="generateTurnover" title="Generate turnover"/>
-	  <decimal name="realHrs" title="Real hours"/>
-	  <string name="comments" title="Comments"/>
-		          
+	  <decimal name="realHours" title="Real hours"/>
+
   </entity>
   
 </domain-models>
