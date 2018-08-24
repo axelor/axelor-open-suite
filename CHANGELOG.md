@@ -53,6 +53,7 @@
 - Rework project view
 - Set project on invoice and invoice line when generating it from sale order and stock move.
 - Set project on purchase order and purchase order lines when generating it from a sale order.
+- Improve account management views.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
