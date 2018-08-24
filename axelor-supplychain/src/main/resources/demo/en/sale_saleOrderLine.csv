@@ -12,8 +12,8 @@
 11;5;3;121;"Laser Printer";10;1;429;"514.8";"4290";"true";"true";1
 12;5;4;303;"Laser Cartridge";12;1;"84.5";"101.4";"1014";"true";"true";1
 13;5;5;304;"Paper ream 500 Sheets A4 Standard 80 g";20;1;"6.99";"8.39";"139.8";"true";"true";1
-15;7;1;111;"High Performance Server";3;1;2500;3000;"7500";"true";"true";1
-16;7;2;110;"Classic server";3;1;1500;1800;"4500";"true";"true";1
-17;7;3;400;"Project Study";1;1;8000;9600;"8000";"true";"true";3
+15;7;1;111;"High Performance Server";3;1;2500;2500;"7500";"true";"true";1
+16;7;2;110;"Classic server";3;1;1500;1500;"4500";"true";"true";1
+17;7;3;400;"Project Study";1;1;8000;8000;"8000";"true";"true";3
 25;10;1;120;"InkJet Printer";1;1;329;"394.8";"329";"true";"true";1
 26;10;2;302;"Ink Cartridge";4;1;"32.9";"32.9";"131.6";"true";"true";1
