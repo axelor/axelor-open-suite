@@ -10,12 +10,11 @@
   </grid>
     
   <form name="wkf-form" title="Process studio" model="com.axelor.studio.db.Wkf" width="large" 
-  	onSave="action-wkf-validate-bpmn-xml,save,action-wfk-method-process-xml,action-wfk-method-process-wkf"
-  	onNew="action-wkf-set-default">
+  	onSave="action-wkf-group-on-save" onNew="action-wkf-set-default">
      <panel>
         <field name="name"/>
         <field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
-        <field name="parentMenu" onChange="action-wkf-method-set-reporting-menu" />
+        <field name="parentMenu" />
         <field name="isJson" colSpan="1" onChange="action-wkf-reset-model"/>
         <panel colSpan="6">
 	        <field name="model" colSpan="12" showIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name"/>
@@ -24,12 +23,24 @@
 	    <field name="jsonField" colSpan="5" requiredIf="model != null &amp;&amp; !isJson" readonlyIf="model == null &amp;&amp; !isJson" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaField" x-target-name="name" x-domain="self.metaModel.fullName = :model and self.json = true"/>
         <field name="statusField" onSelect="action-wkf-attrs-set-status-field-domain" onChange="action-wkf-method-set-default-nodes" colSpan="4" />
       	<field name="displayTypeSelect" colSpan="4" />
-      	<button name="openDashboard" title="Dashboard" onClick="action.workflow.dashboard.view" colSpan="4" />
+      	<button name="openDashboard" title="Dashboard" onClick="open.wkf.dashboard" colSpan="4" />
       	<field name="bpmnXml" showTitle="false" colSpan="12" widget="BpmnEditor" />
         <field name="description" widget="html" colSpan="12" />
       	<field name="$bpmnDefault" hidden="true" type="string" />
       </panel>
   </form>
+  
+  <form model="com.axelor.studio.db.Wkf" title="Workflow dashboards" name="wkf-form-dashboard">
+    <panel-dashlet action="open.wkf.dashboard" />
+</form>
+
+  <action-group name="action-wkf-group-on-save">
+      <action name="action-wkf-validate-bpmn-xml" />
+      <action name="action-wkf-method-set-reporting-menu" />
+      <action name="save" />
+      <action name="action-wfk-method-process-xml" />
+      <action name="action-wfk-method-process-wkf" />
+  </action-group>
   
   <action-record name="action-wkf-set-default" model="com.axelor.studio.db.Wkf">
   	<field name="name" expr="eval:_jsonModel + ' workflow'" if="_jsonModel != null"/>
@@ -61,8 +72,13 @@
   	<attribute name="value" for="model" expr="eval:null"/>
   </action-attrs>
   
+  <action-view name="open.wkf.dashboard" title="Workflow dashboard">
+    <view type="dashboard" name="dasbhoard-wkf" />
+    <context name="_wkfId" expr="eval:id" />
+  </action-view>
+  
   <action-method name="action-wkf-method-set-reporting-menu">
-    <call class="com.axelor.studio.web.WkfController" method="createReportingMenu"/>
+    <call class="com.axelor.studio.web.WkfController" method="setReportingMenu"/>
   </action-method>
   	
 </object-views>

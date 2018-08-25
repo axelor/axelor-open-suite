@@ -43,13 +43,6 @@
         <view type="form" name="wkf-tracking-form" />
     </action-view>
 
-    <menuitem name="app-builder-workflow-dashboard" title="Workflow dashboards" parent="app-builder-reporting" action="action.workflow.dashboard.view" order="33" />
-
-    <action-view name="action.workflow.dashboard.view" title="Workflow dashboard">
-        <view type="dashboard" name="dasbhoard-wkf" />
-        <context name="_wkfId" expr="eval:id" />
-    </action-view>
-
     <!-- Configuration menu -->
 
     <menuitem name="app-builder-config" title="Configuration" parent="app-builder-root" order="40" />

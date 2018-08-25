@@ -22,7 +22,6 @@ import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaMenu;
-import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.meta.schema.actions.Action;
@@ -31,17 +30,17 @@ import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Optional;
 import javax.xml.bind.JAXBException;
 
 public class MenuBuilderService {
 
   @Inject private ActionBuilderService actionBuilderService;
-
-  @Inject private MetaMenuRepository metaMenuRepo;
 
   @Inject private StudioMetaService metaService;
 
@@ -61,11 +60,11 @@ public class MenuBuilderService {
 
     MetaStore.clear();
 
-    return metaMenuRepo.save(menu);
+    return menu;
   }
 
   @SuppressWarnings("unchecked")
-  public ActionBuilder createActionBuilder(MetaAction metaAction) {
+  public Optional<ActionBuilder> createActionBuilder(MetaAction metaAction) {
 
     try {
       ObjectViews objectViews = XMLViews.fromXML(metaAction.getXml());
@@ -74,12 +73,12 @@ public class MenuBuilderService {
         ActionView action = (ActionView) actions.get(0);
         if (action.getModel() != null
             && action.getModel().contentEquals(MetaJsonRecord.class.getName())) {
-          return null;
+          return Optional.empty();
         }
         ActionBuilder actionBuilder = new ActionBuilder(action.getName());
         actionBuilder.setTitle(action.getTitle());
         actionBuilder.setModel(action.getModel());
-        actionBuilder.setTypeSelect(3);
+        actionBuilder.setTypeSelect(ActionBuilderRepository.TYPE_SELECT_VIEW);
         String domain = action.getDomain();
         actionBuilder.setDomainCondition(domain);
         for (ActionView.View view : action.getViews()) {
@@ -111,12 +110,12 @@ public class MenuBuilderService {
           }
         }
 
-        return actionBuilder;
+        return Optional.of(actionBuilder);
       }
     } catch (JAXBException e) {
       TraceBackService.trace(e);
     }
 
-    return null;
+    return Optional.empty();
   }
 }

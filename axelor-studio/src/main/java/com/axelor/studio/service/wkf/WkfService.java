@@ -3,27 +3,18 @@
  *
  * Copyright (C) 2018 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License, version 3, as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.studio.service.wkf;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.Inflector;
 import com.axelor.meta.MetaStore;
@@ -37,16 +28,19 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.actions.ActionGroup;
 import com.axelor.meta.schema.actions.ActionGroup.ActionItem;
-import com.axelor.studio.db.ActionBuilder;
-import com.axelor.studio.db.AppBuilder;
-import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.service.StudioMetaService;
-import com.axelor.studio.service.builder.ActionBuilderService;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service class handle workflow processing. It updated related models/views according to update in
@@ -68,20 +62,11 @@ public class WkfService {
   @Inject protected RoleRepository roleRepo;
 
   @Inject private WkfNodeService nodeService;
-
   @Inject private WkfTransitionService transitionService;
-
+  @Inject private StudioMetaService metaService;
   @Inject private MetaJsonFieldRepository jsonFieldRepo;
-
   @Inject private MetaJsonModelRepository jsonModelRepo;
-
   @Inject private MetaSelectRepository metaSelectRepo;
-
-  @Inject
-  private StudioMetaService metaService;
-
-  @Inject
-  private ActionBuilderService actionBuilderService;
 
   /**
    * Method to process workflow. It calls node and transition service for nodes and transitions
@@ -484,50 +469,4 @@ public class WkfService {
       }
     }
   }
-
-  /**
-   * Creates a "Reporting" menu with two entries: "Process tracking" and "Workflow dashboard". The
-   * new menu will be located under the parent menu specified in workflow.
-   * 
-   * @param wkf
-   */
-  public void createReportingMenu(Wkf wkf) {
-    AppBuilder appBuilder = wkf.getAppBuilder();
-
-    MenuBuilder reportingMenu = new MenuBuilder("Reporting");
-    reportingMenu.setAppBuilder(appBuilder);
-    reportingMenu.setParentMenu(wkf.getParentMenu());
-    reportingMenu.setShowAction(false);
-    
-    
-    
-    MenuBuilder processTrackingMenu = new MenuBuilder("Process tracking");
-    processTrackingMenu.setAppBuilder(appBuilder);
-    processTrackingMenu.setParentMenu(wkf.getParentMenu()); //TODO: set parent menu to reportingMenu
-    processTrackingMenu.setShowAction(true);
-    ActionBuilder processTrackingMenuActionBuilder =
-        actionBuilderService.setActionBuilderViews(new ActionBuilder(),
-            "com.axelor.studio.db.WkfTracking", "wkf-tracking-form", "wkf-tracking-grid", null);
-    // TODO: add context
-    processTrackingMenu.setActionBuilder(processTrackingMenuActionBuilder);
-
-    MenuBuilder workflowDashboardMenu = new MenuBuilder("Workflow dashboard");
-    workflowDashboardMenu.setAppBuilder(appBuilder);
-    workflowDashboardMenu.setParentMenu(wkf.getParentMenu()); //TODO: set parent menu to reportingMenu
-    workflowDashboardMenu.setShowAction(true);
-    ActionBuilder workflowDashboardActionBuilder = new ActionBuilder();
-    actionBuilderService.setActionBuilderViews(workflowDashboardActionBuilder, null, null, null,
-        "dasbhoard-wkf");
-    workflowDashboardActionBuilder =
-        actionBuilderService.setActionBuilderLines(workflowDashboardActionBuilder, "_wkfId", ctxLineValue(wkf));
-    workflowDashboardMenu.setActionBuilder(workflowDashboardActionBuilder);
-  }
-
-  private String ctxLineValue(Wkf wkf) {
-    wkf.getModel();
-    
-    // TODO Auto-generated method stub
-    return null;
-  }
-
 }
