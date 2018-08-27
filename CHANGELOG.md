@@ -32,6 +32,7 @@
 - Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
 - DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
 - BPM: keep model read only if custom field is created from custom field creator.
+- Event synchronization: fix some new events being archived.
 - Password : Fix regex.
 - Fix : error when computing the duration of a leave request without a company.
 - Invoice : filter account depending on Invoice Company and Type & Account Type
