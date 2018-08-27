@@ -33,6 +33,7 @@
 - DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
 - BPM: keep model read only if custom field is created from custom field creator.
 - Password : Fix regex.
+- Fix : error when computing the duration of a leave request without a company.
 - Invoice : filter account depending on Invoice Company and Type & Account Type
 
 ## [5.0.4] - 2018-07-26
