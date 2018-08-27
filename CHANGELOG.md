@@ -61,6 +61,7 @@
 - Bill of material: remove duplicate toolbar button of 'Generate new version'.
 - Event: Fix fill the "Guest" using email address when fill the partner or contact or lead.
 - Studio: Fix email action.
+- Project : Fix supplier invoices and invoices lines link to the any project.
 
 ## [Unreleased 5.0.5]
 ## Improvements

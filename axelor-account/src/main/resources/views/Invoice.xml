@@ -208,7 +208,7 @@
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
-				<field name="project" domain="self.clientPartner = :partner" form-view="project-form" grid-view="project-grid" colSpan="6"/>
+				<field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" colSpan="6"/>
 				<button name="updateLines" title="Update lines with selected project" onClick="save,action-invoice-business-project-method-update-lines,save" colSpan="6" readonlyIf="!project"/>
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
@@ -686,6 +686,7 @@
 
     <action-attrs name="action-invoice-attrs-domain-project">
     	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     </action-attrs>
 
 	<!-- ACTION RECORD -->
