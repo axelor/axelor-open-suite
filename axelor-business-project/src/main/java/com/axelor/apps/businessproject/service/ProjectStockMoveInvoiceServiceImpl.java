@@ -33,32 +33,38 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceImpl {
-	
-	@Inject
-	public ProjectStockMoveInvoiceServiceImpl(SaleOrderInvoiceService saleOrderInvoiceService,
-			PurchaseOrderInvoiceService purchaseOrderInvoiceService, StockMoveLineService stockMoveLineService,
-			InvoiceRepository invoiceRepository, StockMoveRepository stockMoveRepo) {
-		super(saleOrderInvoiceService, purchaseOrderInvoiceService, stockMoveLineService, invoiceRepository, stockMoveRepo);
-	}
-	
-	
-	@Override
-    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
-	      throws AxelorException {
-		
-		Invoice invoice = super.createInvoiceFromSaleOrder(stockMove, saleOrder);
-		
-		//invoice.setProject(saleOrder.getProject());
-		
-		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-			SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
-			if (saleOrderLine != null) {
-				invoiceLine.setProject(saleOrderLine.getProject());
-			}
-		}
-	
-		return invoice;
-	}
 
+  @Inject
+  public ProjectStockMoveInvoiceServiceImpl(
+      SaleOrderInvoiceService saleOrderInvoiceService,
+      PurchaseOrderInvoiceService purchaseOrderInvoiceService,
+      StockMoveLineService stockMoveLineService,
+      InvoiceRepository invoiceRepository,
+      StockMoveRepository stockMoveRepo) {
+    super(
+        saleOrderInvoiceService,
+        purchaseOrderInvoiceService,
+        stockMoveLineService,
+        invoiceRepository,
+        stockMoveRepo);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
+      throws AxelorException {
+
+    Invoice invoice = super.createInvoiceFromSaleOrder(stockMove, saleOrder);
+
+    // invoice.setProject(saleOrder.getProject());
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
+      if (saleOrderLine != null) {
+        invoiceLine.setProject(saleOrderLine.getProject());
+      }
+    }
+
+    return invoice;
+  }
 }

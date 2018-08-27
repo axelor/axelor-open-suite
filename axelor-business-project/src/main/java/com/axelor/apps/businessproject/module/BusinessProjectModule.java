@@ -27,8 +27,10 @@ import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectPurchaseServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
+import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessServiceImpl;
@@ -43,7 +45,9 @@ import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.TeamTaskServiceImpl;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 
@@ -66,5 +70,8 @@ public class BusinessProjectModule extends AxelorModule {
     bind(SaleOrderSupplychainRepository.class).to(SaleOrderProjectRepository.class);
     bind(ProductTaskTemplateService.class).to(ProductTaskTemplateServiceImpl.class);
     bind(StockMoveInvoiceServiceImpl.class).to(ProjectStockMoveInvoiceServiceImpl.class);
+    bind(SaleOrderPurchaseServiceImpl.class).to(ProjectPurchaseServiceImpl.class);
+    bind(PurchaseOrderLineServiceSupplychainImpl.class)
+        .to(PurchaseOrderLineServiceProjectImpl.class);
   }
 }

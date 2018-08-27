@@ -49,7 +49,7 @@ public class ProjectController {
   @Inject private ProjectBusinessService projectBusinessService;
 
   @Inject private InvoicingProjectService invoicingProjectService;
-  
+
   @Inject private ProjectRepository projectRepo;
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
@@ -66,18 +66,18 @@ public class ProjectController {
       TraceBackService.trace(response, e);
     }
   }
-  
+
   public void generatePurchaseQuotation(ActionRequest request, ActionResponse response) {
-	  Project project = request.getContext().asType(Project.class);
-	  if (project.getId() != null) {
-	      response.setView(
-	          ActionView.define("Purchase Order")
-	              .model(PurchaseOrder.class.getName())
-	              .add("form", "purchase-order-form")
-	              .add("grid", "purchase-order-quotation-grid")
-	              .context("_project", projectRepo.find(project.getId()))
-	              .map());
-	  }
+    Project project = request.getContext().asType(Project.class);
+    if (project.getId() != null) {
+      response.setView(
+          ActionView.define("Purchase Order")
+              .model(PurchaseOrder.class.getName())
+              .add("form", "purchase-order-form")
+              .add("grid", "purchase-order-quotation-grid")
+              .context("_project", projectRepo.find(project.getId()))
+              .map());
+    }
   }
 
   public void printProject(ActionRequest request, ActionResponse response) throws AxelorException {

@@ -147,14 +147,14 @@
 			</panel>
 			<panel title="Planning" name="planning"
 				 if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
-				<field name="totalRealHrs" readonly="true">
-					<viewer><![CDATA[
-	                   	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
-	       			]]></viewer>
-				</field>
 				<field name="totalPlannedHrs" readonly="true">
 					<viewer><![CDATA[
 	                   	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
+	       			]]></viewer>
+				</field>
+				<field name="totalRealHrs" readonly="true">
+					<viewer><![CDATA[
+	                   	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
 	       			]]></viewer>
 				</field>
 				<field name="projectPlanningTimeList" grid-view="project-planning-time-grid" form-view="project-planning-time-form" colSpan="12" onChange="action-planning-time-attr-update-planned-hours"/>

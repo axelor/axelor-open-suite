@@ -23,8 +23,6 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -54,7 +52,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     order.setClientPartner(project.getClientPartner());
     return Beans.get(SaleOrderRepository.class).save(order);
   }
-  
+
   /**
    * Generate project form SaleOrder and set bi-directional.
    *

@@ -17,17 +17,24 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.service.ProjectService;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 
-public interface ProjectBusinessService extends ProjectService {
+public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServiceSupplychainImpl {
 
-  SaleOrder generateQuotation(Project project) throws AxelorException;
+  @Override
+  public PurchaseOrderLine createPurchaseOrderLine(
+      PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException {
 
-  Project generateProject(SaleOrder saleOrder);
+    PurchaseOrderLine line = super.createPurchaseOrderLine(purchaseOrder, saleOrderLine);
 
-  Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent);
+    if (line != null && saleOrderLine != null) {
+      line.setProject(saleOrderLine.getProject());
+    }
+
+    return line;
+  }
 }
