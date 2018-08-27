@@ -35,6 +35,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -255,5 +256,39 @@ public class InvoiceLineController {
     }
 
     return invoice;
+  }
+
+  public void filterAccount(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    Invoice invoice = null;
+    Context parent = context.getParent();
+    if (parent != null) {
+      try {
+        invoice = parent.asType(Invoice.class);
+      }catch(Exception e){ 
+        invoice = invoiceLine.getInvoice();
+      }
+    } else {
+      invoice = invoiceLine.getInvoice();
+    }
+
+    if (invoice != null && invoice.getCompany()!=null) {
+      String domain = null;
+      if (invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 2) {
+        domain =
+            "self.company.id = "
+                + invoice.getCompany().getId()
+                + "AND self.accountType.technicalTypeSelect IN ('debt' , 'immobilisation' , 'charge')";
+      } else if (invoice.getOperationTypeSelect() == 3 || invoice.getOperationTypeSelect() == 4) {
+        domain =
+            "self.company.id = "
+                + invoice.getCompany().getId()
+                + " AND self.accountType.technicalTypeSelect = 'income'";
+      }
+
+      response.setAttr("account", "domain", domain);
+    }
   }
 }

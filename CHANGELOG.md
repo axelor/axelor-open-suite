@@ -2,6 +2,7 @@
 ## [Unreleased 5.0.5]	
 ##Features
 - Add Data Backup and Restore
+- Add unitary tests for password
 
 ## Improvements
 - HR menu: added `order` for top menuitems
@@ -12,6 +13,9 @@
 - Configurator: improve UI for indicators.
 - Split formula list into formulas for product and formulas for sale order line in configurator creator.
 - Add a column name to configurators, equal to the creator's name.
+- UserController: Improve exception handling.
+- Update translations.
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -29,6 +33,9 @@
 - DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
 - BPM: keep model read only if custom field is created from custom field creator.
 - Event synchronization: fix some new events being archived.
+- Password : Fix regex.
+- Fix : error when computing the duration of a leave request without a company.
+- Invoice : filter account depending on Invoice Company and Type & Account Type
 
 ## [5.0.4] - 2018-07-26
 ## Features
