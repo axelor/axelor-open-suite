@@ -14,6 +14,8 @@
 - Split formula list into formulas for product and formulas for sale order line in configurator creator.
 - Add a column name to configurators, equal to the creator's name.
 - UserController: Improve exception handling.
+- Update translations.
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -32,6 +34,7 @@
 - BPM: keep model read only if custom field is created from custom field creator.
 - Password : Fix regex.
 - Fix : error when computing the duration of a leave request without a company.
+- Invoice : filter account depending on Invoice Company and Type & Account Type
 
 ## [5.0.4] - 2018-07-26
 ## Features
