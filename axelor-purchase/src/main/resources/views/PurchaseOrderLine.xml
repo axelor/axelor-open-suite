@@ -137,7 +137,7 @@
 				<panel-dashlet action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Business Project" if-module="axelor-business-project">
-				<field name="project" title="Business Project" requiredIf="toInvoice" form-view="project-form" grid-view="project-grid" canEdit="false"/>
+				<field name="project" domain="self.isBusinessProject = true" title="Business Project" requiredIf="toInvoice" form-view="project-form" grid-view="project-grid" canEdit="false"/>
                 <field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" colSpan="3" if-module="axelor-business-project"/>
                 <field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" colSpan="3" showTitle="false">
                 <viewer><![CDATA[
