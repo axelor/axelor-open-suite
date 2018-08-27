@@ -277,7 +277,8 @@
 	</action-view>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-project">
-		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.clientPartner?.id} &quot;"/>
+		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${saleOrder.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
     
     <action-group name="action-group-sale-saleorderline-onnew">
