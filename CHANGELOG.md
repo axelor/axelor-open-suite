@@ -51,6 +51,7 @@
 - Rework Ticket UI.
 - Tax configuration: display only necessary fields for tax account management.
 - Rework project view
+- Set project on invoice and invoice line when generating it from sale order and stock move. 
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
