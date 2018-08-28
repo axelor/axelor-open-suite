@@ -3,6 +3,7 @@
 ##Features
 - Add Data Backup and Restore
 - Add unitary tests for password
+- Module for mobile app added
 
 ## Improvements
 - HR menu: added `order` for top menuitems
