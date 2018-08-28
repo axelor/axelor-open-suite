@@ -41,6 +41,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.concurrent.ThreadSafe;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -66,12 +68,17 @@ public class SequenceService {
 
   private AppBaseService appBaseService;
 
-  @Inject private SequenceRepository sequenceRepo;
+  private SequenceRepository sequenceRepo;
+
+  private static Lock lock = new ReentrantLock(true);
 
   @Inject
   public SequenceService(
-      SequenceVersionRepository sequenceVersionRepository, AppBaseService appBaseService) {
+      SequenceRepository sequenceRepo,
+      SequenceVersionRepository sequenceVersionRepository,
+      AppBaseService appBaseService) {
 
+    this.sequenceRepo = sequenceRepo;
     this.sequenceVersionRepository = sequenceVersionRepository;
     this.appBaseService = appBaseService;
   }
@@ -188,30 +195,33 @@ public class SequenceService {
    */
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
+    lock.lock();
 
-    SequenceVersion sequenceVersion = getVersion(sequence, refDate);
+    try {
+      SequenceVersion sequenceVersion = getVersion(sequence, refDate);
+      String seqPrefix = StringUtils.defaultString(sequence.getPrefixe(), "");
+      String seqSuffix = StringUtils.defaultString(sequence.getSuffixe(), "");
+      String padLeft =
+          StringUtils.leftPad(
+              sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        padLeft =
-            StringUtils.leftPad(
-                sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
+      String nextSeq =
+          (seqPrefix + padLeft + seqSuffix)
+              .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
+              .replaceAll(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
+              .replaceAll(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
+              .replaceAll(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
+              .replaceAll(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
+              .replaceAll(
+                  PATTERN_WEEK, Integer.toString(refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
 
-    String nextSeq =
-        (seqPrefixe + padLeft + seqSuffixe)
-            .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
-            .replaceAll(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
-            .replaceAll(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
-            .replaceAll(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
-            .replaceAll(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
-            .replaceAll(
-                PATTERN_WEEK, Integer.toString(refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
+      log.debug("nextSeq : : : : {}", nextSeq);
 
-    log.debug("nextSeq : : : : {}", nextSeq);
-
-    sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
-    sequenceVersionRepository.save(sequenceVersion);
-    return nextSeq;
+      sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
+      return nextSeq;
+    } finally {
+      lock.unlock();
+    }
   }
 
   protected SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {
@@ -232,6 +242,7 @@ public class SequenceService {
     SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
     if (sequenceVersion == null) {
       sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L);
+      sequenceVersion = sequenceVersionRepository.save(sequenceVersion);
     }
 
     return sequenceVersion;
@@ -248,6 +259,7 @@ public class SequenceService {
               refDate.withDayOfMonth(1),
               refDate.withDayOfMonth(refDate.lengthOfMonth()),
               1L);
+      sequenceVersion = sequenceVersionRepository.save(sequenceVersion);
     }
 
     return sequenceVersion;
@@ -264,6 +276,7 @@ public class SequenceService {
               refDate.withDayOfMonth(1),
               refDate.withDayOfMonth(refDate.lengthOfMonth()),
               1L);
+      sequenceVersion = sequenceVersionRepository.save(sequenceVersion);
     }
 
     return sequenceVersion;

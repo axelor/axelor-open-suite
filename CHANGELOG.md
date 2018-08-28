@@ -19,6 +19,7 @@
 - Duration : add translation to compute fullName.
 - Partner : Fix add partner seq on card view.
 - Purchase Order Line : Fix NPE when clear the 'Tax' field.
+- Sequence: concurrent computing of sequence numbers.
 
 ## [5.0.5] - 2018-09-19
 ## Features
@@ -78,9 +79,9 @@
 - Fix the companyBankDetails field filling when SaleOrder is created from the Customer view.
 - Fix groovy error due to a null list in action-budget-validate-exceed-line-amount.
 - Event synchronization: fix some new events being archived.
-- Password : Fix regex.
-- Fix : error when computing the duration of a leave request without a company.
-- Invoice : filter account depending on Invoice Company and Type & Account Type
+- User: fix regex for user password.
+- Leave request: fix error when computing the duration of a leave request without a company.
+- Invoice: filter account depending on Invoice Company and Type & Account Type.
 - Fix stock move split by unit. 
 - Tracking number configuration: Fix 'Tracking number order' selection and it's static variables.
 - Tracking number configuration: display 'name' field on grid.
