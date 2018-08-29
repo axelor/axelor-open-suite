@@ -380,7 +380,7 @@
 	</action-record>
 	
 	<action-record name="action-stock-move-record-ispm-field" model="com.axelor.apps.stock.db.StockMove">
-		<field name="isIspmRequired" expr="eval: println(toAddress?.addressL7Country); partner?.isIspmRequired || toAddress?.addressL7Country?.isIspmRequired"/>
+		<field name="isIspmRequired" expr="eval: partner?.isIspmRequired || toAddress?.addressL7Country?.isIspmRequired"/>
 	</action-record>
 
 	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.stock.db.StockMove">
