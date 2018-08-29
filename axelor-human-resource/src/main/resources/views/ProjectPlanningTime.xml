@@ -25,8 +25,8 @@
 			<field name="user" onSelect="action-project-planning-attrs-project-domain" canEdit="false"/>		
 			<field name="project" readonly="true"/>
 			<field name="task" domain="self.project = :project" canEdit="false" />
-			<field name="realHours"/>
 			<field name="plannedHours" />
+			<field name="realHours"/>
 			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="generateTurnover"/>
             <field name="description" colSpan="12" widget="html"/>
