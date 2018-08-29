@@ -251,7 +251,9 @@ public class WkfTrackingService {
     WkfTrackingTotal trackingTotal =
         trackingTotalRepo
             .all()
-            .filter("self.wkfTracking = ?1 and self.status = ?2", wkfTracking, status)
+            .filter("self.wkfTracking = :wkfTracking and self.status = :status")
+            .bind("wkfTracking", wkfTracking)
+            .bind("status", status)
             .fetchOne();
 
     if (trackingTotal == null) {

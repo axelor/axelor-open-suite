@@ -34,6 +34,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 public class ExportService {
 
+  private ExportService() {
+    throw new IllegalStateException("Should not be instantiated.");
+  }
+
   public static String getImage(MetaFile metaFile) {
 
     if (metaFile != null) {

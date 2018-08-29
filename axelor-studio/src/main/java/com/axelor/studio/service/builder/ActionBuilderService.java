@@ -17,12 +17,6 @@
  */
 package com.axelor.studio.service.builder;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.axelor.common.ObjectUtils;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
@@ -31,6 +25,12 @@ import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ActionBuilderService {
 
@@ -52,8 +52,11 @@ public class ActionBuilderService {
     Integer typeSelect = builder.getTypeSelect();
     log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
 
-    if (Arrays.asList(ActionBuilderRepository.TYPE_SELECT_CREATE, ActionBuilderRepository.TYPE_SELECT_UPDATE)
-        .contains(builder.getTypeSelect()) && ObjectUtils.isEmpty(builder.getLines())) {
+    if (Arrays.asList(
+                ActionBuilderRepository.TYPE_SELECT_CREATE,
+                ActionBuilderRepository.TYPE_SELECT_UPDATE)
+            .contains(builder.getTypeSelect())
+        && ObjectUtils.isEmpty(builder.getLines())) {
       return null;
     }
 
