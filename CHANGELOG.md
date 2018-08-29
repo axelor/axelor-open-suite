@@ -64,6 +64,7 @@
 - Event: Fix fill the "Guest" using email address when fill the partner or contact or lead.
 - Studio: Fix email action.
 - Project : Fix supplier orders and it's lines & invoices and it's lines link to the any project.
+- Fix invoiced amount W.T update on sale and purchase order.
 
 ## [Unreleased 5.0.5]
 ## Improvements
