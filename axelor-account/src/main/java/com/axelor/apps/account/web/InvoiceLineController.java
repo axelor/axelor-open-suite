@@ -36,7 +36,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
 import java.math.BigDecimal;
 import java.util.Map;
 
