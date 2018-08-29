@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -258,36 +259,22 @@ public class InvoiceLineController {
     return invoice;
   }
 
-  public void filterAccount(ActionRequest request, ActionResponse response) {
+  public void filterAccount(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
-
-    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-    Invoice invoice = null;
-    Context parent = context.getParent();
-    if (parent != null) {
-      try {
-        invoice = parent.asType(Invoice.class);
-      }catch(Exception e){ 
-        invoice = invoiceLine.getInvoice();
-      }
-    } else {
-      invoice = invoiceLine.getInvoice();
-    }
-
-    if (invoice != null && invoice.getCompany()!=null) {
+    Invoice invoice = this.getInvoice(context);
+    if (invoice != null && invoice.getCompany() != null) {
       String domain = null;
-      if (invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 2) {
+      if (InvoiceToolService.isPurchase(invoice)) {
         domain =
             "self.company.id = "
                 + invoice.getCompany().getId()
                 + "AND self.accountType.technicalTypeSelect IN ('debt' , 'immobilisation' , 'charge')";
-      } else if (invoice.getOperationTypeSelect() == 3 || invoice.getOperationTypeSelect() == 4) {
+      } else {
         domain =
             "self.company.id = "
                 + invoice.getCompany().getId()
                 + " AND self.accountType.technicalTypeSelect = 'income'";
       }
-
       response.setAttr("account", "domain", domain);
     }
   }
