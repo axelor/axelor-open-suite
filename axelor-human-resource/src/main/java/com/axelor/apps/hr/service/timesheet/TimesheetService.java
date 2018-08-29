@@ -37,7 +37,6 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 public interface TimesheetService {
-  public void getTimeFromTask(Timesheet timesheet) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException;
@@ -145,4 +144,8 @@ public interface TimesheetService {
    * @return the updated timesheet
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
+
+  @Transactional
+  public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
+      throws AxelorException;
 }

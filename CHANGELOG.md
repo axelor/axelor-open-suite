@@ -35,7 +35,7 @@
 - PROJECT : Change project planning to project planning time with some extra fields.
 - PROJECT : Change business project reporting.
 - Project view enhancements
-- PROJECT : Update Financial report print review.
+- TIMELINE : Generate lines from Project Planning 
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -65,6 +65,7 @@
 - Event: Fix fill the "Guest" using email address when fill the partner or contact or lead.
 - Studio: Fix email action.
 - Project : Fix supplier orders and it's lines & invoices and it's lines link to the any project.
+- Fix invoiced amount W.T update on sale and purchase order.
 
 ## [Unreleased 5.0.5]
 ## Improvements
