@@ -44,6 +44,7 @@ public interface ITranslation {
   public static final String PROJECT_PURCHASE = /*$$(*/ "Project.purchase"; /*)*/
   public static final String PROJECT_EXPENSE = /*$$(*/ "Project.expense"; /*)*/
   public static final String PROJECT_EMPLOYEE = /*$$(*/ "Project.employee"; /*)*/
+  public static final String PROJECT_PLANNING = /*$$(*/ "Project.planning"; /*)*/
   public static final String PROJECT_TIMESHEET = /*$$(*/ "Project.timesheet"; /*)*/
   public static final String PROJECT_TOTAL_HOURS = /*$$(*/ "Project.totalHours"; /*)*/
   public static final String PROJECT_HOURLY_RATE = /*$$(*/ "Project.hourlyRate"; /*)*/
