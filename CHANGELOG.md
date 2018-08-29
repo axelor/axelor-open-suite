@@ -41,6 +41,7 @@
 - Fix : error when computing the duration of a leave request without a company.
 - Invoice : filter account depending on Invoice Company and Type & Account Type
 - Fix stock move split by unit. 
+- Tracking number configuration: display 'name' field on grid.
 
 ## [5.0.4] - 2018-07-26
 ## Features
