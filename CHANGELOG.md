@@ -35,6 +35,7 @@
 - PROJECT : Change project planning to project planning time with some extra fields.
 - PROJECT : Change business project reporting.
 - Project view enhancements
+- PROJECT : Update Financial report print review.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
