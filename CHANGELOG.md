@@ -42,6 +42,7 @@
 - Invoice : filter account depending on Invoice Company and Type & Account Type
 - Fix stock move split by unit. 
 - Tracking number configuration: Fix 'Tracking number order' selection and it's static variables.
+- Tracking number configuration: display 'name' field on grid.
 
 ## [5.0.4] - 2018-07-26
 ## Features
