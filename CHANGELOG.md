@@ -37,7 +37,8 @@
 - PROJECT : Change project planning to project planning time with some extra fields.
 - PROJECT : Change business project reporting.
 - Project view enhancements
-- TIMELINE : Generate lines from Project Planning 
+- TIMELINE : Generate lines from Project Planning
+- Account Moves: ability to set currency, currency rate and currency amount for manual moves.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
