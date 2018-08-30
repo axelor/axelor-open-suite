@@ -38,6 +38,7 @@
 - Invoice: reload the view after regenerating the printing.
 - DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
 - BPM: keep model read only if custom field is created from custom field creator.
+- Fix % based discounts which didn't worked with decimal values on Sale, Purchase and Invoice.
 - Fix the companyBankDetails field filling when SaleOrder is created from the Customer view.
 - Fix groovy error due to a null list in action-budget-validate-exceed-line-amount.
 - Event synchronization: fix some new events being archived.
