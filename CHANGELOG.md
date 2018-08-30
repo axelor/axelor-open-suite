@@ -31,6 +31,7 @@
 - DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
 - BPM: keep model read only if custom field is created from custom field creator.
 - Password : Fix regex.
+- Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
 
 ## [5.0.4] - 2018-07-26
 ## Features
