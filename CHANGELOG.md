@@ -6,6 +6,7 @@
 - Module for mobile app added
 
 ## Improvements
+- Fleet app: added FR demo data
 - HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
 - Advanced export : code refactor and optimize the performance.
