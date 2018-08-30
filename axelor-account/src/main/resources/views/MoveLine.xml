@@ -218,8 +218,8 @@
 						]]>
 					</viewer>
 					<editor colSpan="12" layout="table" x-show-titles="false">
-						<field name="currencyRate" readonly="true"/>
-						<field name="currencyAmount" readonly="true"/>
+						<field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"/>
+						<field name="currencyAmount" onChange="action-move-line-record-set-amount"/>
 						<field name="move.currencyCode" readonly="true"/>
 					</editor>
 				</field>
@@ -281,7 +281,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-readonly">
-		<attribute name="readonly" for="informations" expr="eval: move.statusSelect != 1"/>
+		<attribute name="readonly" for="informations" expr="eval: move?.statusSelect != 1"/>
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-domain-account">
@@ -313,13 +313,18 @@
 
 	<action-record name="action-move-line-record-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
 		<field name="currencyRate" expr="1" if="_parent?.currency == _parent?.companyCurrency"/>
-		<field name="currencyRate" expr="call:com.axelor.apps.base.service.CurrencyService:getCurrencyConversionRate(__parent__.companyCurrency, __parent__.currency)" if="_parent?.currency != _parent?.companyCurrency"/>
+		<field name="currencyRate" expr="call:com.axelor.apps.base.service.CurrencyService:getCurrencyConversionRate(__parent__.currency, __parent__.companyCurrency)" if="_parent?.currency != _parent?.companyCurrency"/>
 	</action-record>
 
 	<action-record name="action-move-line-record-set-currencyAmount" model="com.axelor.apps.account.db.MoveLine">
 		<field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
 		<field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0"/>
 		<field name="currencyAmount" expr="eval: 0" if="debit == 0 &amp;&amp; credit == 0"/>
+	</action-record>
+
+	<action-record name="action-move-line-record-set-amount" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="eval: currencyRate * currencyAmount" if="debit != 0"/>
+		<field name="credit" expr="eval: currencyRate * currencyAmount" if="credit != 0"/>
 	</action-record>
 
 	<action-attrs name="action-move-line-attrs-hidden-reconcileLists">
