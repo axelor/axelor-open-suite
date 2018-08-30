@@ -40,7 +40,9 @@
 - TIMELINE : Generate lines from Project Planning 
 - Pack Price Select and Qty update from packLine to subLine.
 - Implement PackLine and SubLine for InvoiceLine and StockMoveLine.
- 
+- TIMELINE : Generate lines from Project Planning
+- Account Moves: ability to set currency, currency rate and currency amount for manual moves.
+
 ## Improvements
 - Move project resource menu entry to project configuration menu.
 - Refactor TargetList and Campaign views to follow guidelines.
