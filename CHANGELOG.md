@@ -14,6 +14,7 @@
 - Configurator: improve UI for indicators.
 - Split formula list into formulas for product and formulas for sale order line in configurator creator.
 - Add a column name to configurators, equal to the creator's name.
+- General legder report: hide the balance when it is equal to 0.
 - UserController: Improve exception handling.
 - Update translations.
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
