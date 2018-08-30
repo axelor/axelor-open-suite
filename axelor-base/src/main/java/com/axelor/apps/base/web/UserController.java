@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.base.web;
 
-import java.util.Map;
-import javax.validation.ValidationException;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -36,6 +34,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.util.Map;
+import javax.validation.ValidationException;
 
 @Singleton
 public class UserController {
