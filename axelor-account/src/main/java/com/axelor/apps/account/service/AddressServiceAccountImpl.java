@@ -17,24 +17,18 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.base.service.AddressServiceImpl;
-import com.google.inject.Inject;
+import com.axelor.db.JPA;
 
 public class AddressServiceAccountImpl extends AddressServiceImpl {
+  static {
+    registerCheckUsedFunc(AddressServiceAccountImpl::checkAddressUsedAccount);
+  }
 
-  @Inject private InvoiceRepository invoiceRepo;
-
-  @Override
-  public boolean checkAddressUsed(Long addressId) {
-
-    super.checkAddressUsed(addressId);
-
-    if (addressId != null) {
-
-      if (invoiceRepo.all().filter("self.address.id = ?1", addressId).fetchOne() != null)
-        return true;
-    }
-    return false;
+  private static boolean checkAddressUsedAccount(Long addressId) {
+    return JPA.all(Invoice.class).filter("self.address.id = ?1", addressId).fetchOne() != null
+        || JPA.all(Umr.class).filter("self.debtorAddress.id = ?1", addressId).fetchOne() != null;
   }
 }

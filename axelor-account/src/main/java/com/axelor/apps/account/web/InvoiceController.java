@@ -313,6 +313,7 @@ public class InvoiceController {
     Invoice invoice = invoiceRepo.find(context.asType(Invoice.class).getId());
 
     try {
+      response.setReload(true);
       response.setView(
           ActionView.define(I18n.get("Invoice"))
               .add("html", invoicePrintService.printInvoice(invoice, true))
