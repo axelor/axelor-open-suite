@@ -47,8 +47,6 @@
         <field name="expenseProduct" canView="false" readonly="true"/>
         <field name="expenseDate" readonly="true"/>
         <field name="totalAmount" aggregate="sum" readonly="true"/>
-        <field name="totalTax" aggregate="sum" readonly="true"/>
-        <field name="comments" readonly="true"/>
         <field name="toInvoice"/>
         <field name="invoiced"/>
         <field name="expense" hidden="true"/>

@@ -55,9 +55,9 @@
 				<item name="printTimesheet" title="Print" action="save,action-print-timesheet"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench">
-				<item title="Get time from projects" showIf="statusSelect == 1"
-					  action="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 				<item title="Generate Lines Automatically" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false"/>
+				<item title="Generate Lines From Expected Planning" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-expected-planning" />
+				<item title="Generate Lines From Realise Planning" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-realise-planning" />
 			</menu>
 		</menubar>
 		<panel>
@@ -101,7 +101,7 @@
 		</panel>
 		<panel name="lines">
 			<panel-dashlet name="timesheetLineEditor" colSpan="12" action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
-			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true"/>
+			<panel-related field="timesheetLineList"   colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true"/>
 			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-manuf-order-grid" editable="true" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2" x-can-copy="true" if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
 			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true" />
 			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-manuf-order-grid" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2" x-can-copy="true" if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
@@ -219,6 +219,14 @@
         <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="updateTimeLoggingPreference"/>
 	</action-method>
 
+	<action-method name="action-timesheet-method-generate-lines-from-realise-planning">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="generateLinesFromRealisePlanning"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-generate-lines-from-expected-planning">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="generateLinesFromExpectedPlanning"/>
+	</action-method>
+
 	<action-record name="action-timesheet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>
 		<field name="timeLoggingPreferenceSelect" expr="eval: __user__?.employee?.timeLoggingPreferenceSelect"/>
@@ -238,10 +246,6 @@
 		<field name="toDate" expr="eval:fromDate.with(java.time.DayOfWeek.FRIDAY)" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 1"/>
 		<field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 2"/>
 	</action-record>
-
-	<action-validate name="action-timesheet-validate-tasks">
-		<error message="No log time found or all log times already added" if="__repo__(TimesheetLine).all().filter('self.user = ?1 AND self.timesheet = null',__user__).fetchOne() == null"/>
-	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-timesheet-selected">
 		<error message="You have to choose at least one timesheet" if="timesheetSelect == null"/>

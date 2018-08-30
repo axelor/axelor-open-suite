@@ -28,7 +28,6 @@ import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -60,7 +59,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -163,8 +161,6 @@ public class InvoicingProjectService {
     invoiceLineList.addAll(
         elementsToInvoiceService.createInvoiceLines(
             invoice, elementsToInvoiceList, folder.getElementsToInvoiceSetPrioritySelect()));
-    invoiceLineList.addAll(
-        this.createInvoiceLines(invoice, projectList, folder.getProjectSetPrioritySelect()));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());
 
@@ -260,67 +256,6 @@ public class InvoicingProjectService {
             null,
             purchaseOrderLine,
             null) {
-          @Override
-          public List<InvoiceLine> creates() throws AxelorException {
-
-            InvoiceLine invoiceLine = this.createInvoiceLine();
-
-            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-            invoiceLines.add(invoiceLine);
-
-            return invoiceLines;
-          }
-        };
-
-    return invoiceLineGenerator.creates();
-  }
-
-  public List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<Project> projectList, int priority) throws AxelorException {
-
-    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-    int count = 0;
-    for (Project project : projectList) {
-
-      invoiceLineList.addAll(this.createInvoiceLine(invoice, project, priority * 100 + count));
-      count++;
-      project.setInvoiced(true);
-      invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
-    }
-
-    return invoiceLineList;
-  }
-
-  public List<InvoiceLine> createInvoiceLine(Invoice invoice, Project project, int priority)
-      throws AxelorException {
-
-    Product product = project.getProduct();
-
-    if (product == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PRODUCT),
-          project.getFullName());
-    }
-
-    InvoiceLineGenerator invoiceLineGenerator =
-        new InvoiceLineGenerator(
-            invoice,
-            product,
-            project.getName(),
-            project.getPrice(),
-            project.getPrice(),
-            null,
-            project.getQty(),
-            project.getUnit(),
-            null,
-            priority,
-            BigDecimal.ZERO,
-            PriceListLineRepository.AMOUNT_TYPE_NONE,
-            project.getPrice().multiply(project.getQty()),
-            null,
-            false) {
-
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 

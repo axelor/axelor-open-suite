@@ -165,4 +165,12 @@ public interface IExceptionMessage {
   String CANCEL_REASON_MISSING = /*$$(*/ "A cancel reason must be selected" /*)*/;
   String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
+
+  /*
+   * Declaration of exchanges
+   */
+  String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING = /*$$(*/
+      "No economic area is configured for %s." /*)*/;
+  String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_UNSUPPORTED = /*$$(*/
+      "Declaration of exchanges for %s is not supported." /*)*/;
 }

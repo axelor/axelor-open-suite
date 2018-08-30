@@ -10,6 +10,7 @@
   		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
   		<field name="costPrice" x-scale="2"/>
   		<field name="salePrice" x-scale="2"/>
+  		<field name="toInvoice" />
         <field name="invoiced"/>
 	</grid>
 

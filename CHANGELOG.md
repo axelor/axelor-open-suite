@@ -28,6 +28,16 @@
 - Payment schedule line: management of direct debit rejection.
 - New stock location configuration for quality control.
 - Create multiple supplier stock move when purchasing products requiring a quality check and normal products.
+- Selection added for priority of manufacturing order.
+- Add currency in Accounting reports and filter all results with it.
+- New field `launchQty` on production process.
+- Fill `qty` from `launchQty` in manuf order on filling prod process.
+- Declaration of exchanges of services and declaration of services
+- Project : project assignment on Sale order, Purchase order and Invoices.
+- PROJECT : Change project planning to project planning time with some extra fields.
+- PROJECT : Change business project reporting.
+- Project view enhancements
+- TIMELINE : Generate lines from Project Planning 
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -43,6 +53,9 @@
 - Production processes: display status in grid view.
 - Rework Ticket UI.
 - Tax configuration: display only necessary fields for tax account management.
+- Rework project view
+- Set project on invoice and invoice line when generating it from sale order and stock move.
+- Set project on purchase order and purchase order lines when generating it from a sale order.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -52,20 +65,31 @@
 - Project: Fix multiple bugs and improve views.
 - Bill of material: remove duplicate toolbar button of 'Generate new version'.
 - Event: Fix fill the "Guest" using email address when fill the partner or contact or lead.
+- Studio: Fix email action.
+- Project : Fix supplier orders and it's lines & invoices and it's lines link to the any project.
+- Fix invoiced amount W.T update on sale and purchase order.
 
 ## [Unreleased 5.0.5]
 ## Improvements
+- HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
 - Advanced export : code refactor and optimize the performance.
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
 - Configure BoM form: show sub bom list.
 - Configurator: improve UI for indicators.
+- Split formula list into formulas for product and formulas for sale order line in configurator creator.
+- Add a column name to configurators, equal to the creator's name.
 
 ## Bug Fixes
 - Fix on prod process report.
 - Fix json field creator's issue of model change not reflected on fields. 
 - Configurator export: add contextField to metaJsonField.
-
+- Configurator creator: fill default attributes for both product and sale order line.
+- Computation of value of a given stock location is now the same in the form and in the printing.
+- BPM: Provide translations for some fields.
+- Fix chart builder operator display issue.
+- Portal: Fix ticket view on client portal.
+- Fix wrong quantity on manuf order when generating prod product lines where bill of material quantity is different from 1.
 
 ## [5.0.4] - 2018-07-26
 ## Features

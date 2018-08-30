@@ -48,14 +48,11 @@
         <field name="saleOrder.saleOrderSeq" title="Reference"/>
         <field name="saleOrder.creationDate"/>
         <field name="productName" readonly="true"/>
-        <field name="qty" aggregate="sum" readonly="true"/>
         <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
-        <field name="price" x-scale="2" readonly="true"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>
         <field name="saleOrder.currency"/>
         <field name="toInvoice"/>
-        <field name="invoiced"/>
+        <field name="amountInvoiced" />
         <field name="saleOrder.statusSelect" hidden="true"/>
     </grid>
 
@@ -280,7 +277,8 @@
 	</action-view>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-project">
-		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.clientPartner?.id} &quot;"/>
+		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${saleOrder.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
     
     <action-group name="action-group-sale-saleorderline-onnew">
@@ -289,6 +287,7 @@
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-record-new"/>
+    	<action name="action-sale-order-line-record-project"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-attrs-set-company-currency" />
     	<action name="action-sale-order-attrs-hide-ati"/>
@@ -372,6 +371,10 @@
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
     </action-record>
+    
+    <action-record name="action-sale-order-line-record-project" model="com.axelor.apps.sale.db.SaleOrderLine" if-module="axelor-business-project">
+		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
+	</action-record>
     
 <!--     TODO : should be splited per module -->
     <action-record name="action-sale-order-line-get-production-information" model="com.axelor.apps.sale.db.SaleOrderLine">

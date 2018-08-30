@@ -25,5 +25,7 @@
     <many-to-one name="originalProdProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Original production process" />
    	
    	<boolean name="isEnabledForAllProducts" title="Enable the process for other products"/>
+
+		<decimal name="launchQty" title="Launch quantity"/>
   </entity>
 </domain-models>

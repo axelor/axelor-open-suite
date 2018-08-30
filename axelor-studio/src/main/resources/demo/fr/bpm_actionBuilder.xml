@@ -31,20 +31,6 @@
   	</lines>	
   </action-builder>
   
-  <action-builder name="action-create-project-planning"
-	isJson="false" 
-  	typeSelect="0"
-  	appBuilder="PRD" 
-  	model="com.axelor.apps.project.db.Project"
-  	targetModel="com.axelor.apps.project.db.ProjectPlanning">
-  	<lines>
-	  	<line metaField="project" metaModel="ProjectPlanning"  value="$" />
-	  	<line metaField="user" metaModel="ProjectPlanning" valueField="assignedTo" valueModel="Project" value="$.assignedTo" />
-	  	<line metaField="fromDate" metaModel="ProjectPlanning"  valueField="fromDate"  valueModel="Project" value="$.fromDate" />
-	  	<line metaField="toDate" metaModel="ProjectPlanning"  valueField="toDate"  valueModel="Project" value="$.toDate" />
-  	</lines>
-  </action-builder>
-  
   <action-builder name="action-timesheet-line-invert-to-invoice"
 	isJson="false" 
   	typeSelect="1" 

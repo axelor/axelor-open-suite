@@ -34,6 +34,8 @@ public class ActionBuilderService {
 
   @Inject private ActionScriptBuilderService actionScriptBuilderService;
 
+  @Inject private ActionEmailBuilderService actionEmailBuilderService;
+
   @Transactional
   public MetaAction build(ActionBuilder builder) {
 
@@ -43,10 +45,19 @@ public class ActionBuilderService {
     }
 
     MetaAction metaAction = null;
-    if (builder.getTypeSelect() == 3) {
-      metaAction = actionViewBuilderService.build(builder);
-    } else {
-      metaAction = actionScriptBuilderService.build(builder);
+
+    switch (builder.getTypeSelect()) {
+      case 2:
+        metaAction = actionScriptBuilderService.build(builder);
+        break;
+      case 3:
+        metaAction = actionViewBuilderService.build(builder);
+        break;
+      case 4:
+        metaAction = actionEmailBuilderService.build(builder);
+        break;
+      default:
+        break;
     }
 
     if (builder.getMetaModule() != null) {

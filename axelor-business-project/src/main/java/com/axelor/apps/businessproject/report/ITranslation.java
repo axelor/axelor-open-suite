@@ -24,11 +24,16 @@ public interface ITranslation {
   public static final String PROJECT_INITIAL = /*$$(*/ "Project.initial"; /*)*/
   public static final String PROJECT_SO = /*$$(*/ "Project.salesOrders"; /*)*/
   public static final String PROJECT_SO_NO = /*$$(*/ "Project.salesOrderNumber"; /*)*/
+  public static final String PROJECT_PO_NO = /*$$(*/ "Project.purchaseOrderNumber"; /*)*/
   public static final String PROJECT_DATE = /*$$(*/ "Project.date"; /*)*/
   public static final String PROJECT_SALES = /*$$(*/ "Project.sales"; /*)*/
   public static final String PROJECT_COSTS = /*$$(*/ "Project.costs"; /*)*/
   public static final String PROJECT_Margin = /*$$(*/ "Project.margin"; /*)*/
+  public static final String PROJECT_EXPECTED_MARGIN = /*$$(*/ "Project.expectedMargin"; /*)*/
+  public static final String PROJECT_EXPECTED_REVENUE = /*$$(*/ "Project.expectedRevenue"; /*)*/
+  public static final String PROJECT_EXPECTED_COSTS = /*$$(*/ "Project.expectedCosts"; /*)*/
   public static final String PROJECT_TOTAL_SALES = /*$$(*/ "Project.totalSales"; /*)*/
+  public static final String PROJECT_TOTAL_TURNOVER = /*$$(*/ "Project.totalTurnover"; /*)*/
   public static final String PROJECT_TOTAL_COSTS = /*$$(*/ "Project.totalCosts"; /*)*/
   public static final String PROJECT_TOTAL_MARGIN = /*$$(*/ "Project.totalMargin"; /*)*/
   public static final String PROJECT_INVOICED = /*$$(*/ "Project.invoiced"; /*)*/
@@ -39,12 +44,16 @@ public interface ITranslation {
   public static final String PROJECT_PURCHASE = /*$$(*/ "Project.purchase"; /*)*/
   public static final String PROJECT_EXPENSE = /*$$(*/ "Project.expense"; /*)*/
   public static final String PROJECT_EMPLOYEE = /*$$(*/ "Project.employee"; /*)*/
+  public static final String PROJECT_PLANNING = /*$$(*/ "Project.planning"; /*)*/
   public static final String PROJECT_TIMESHEET = /*$$(*/ "Project.timesheet"; /*)*/
   public static final String PROJECT_TOTAL_HOURS = /*$$(*/ "Project.totalHours"; /*)*/
   public static final String PROJECT_HOURLY_RATE = /*$$(*/ "Project.hourlyRate"; /*)*/
-  public static final String PROJECT_ANALYTICAL = /*$$(*/ "ProjectT.analyticalLines"; /*)*/
+  public static final String PROJECT_ANALYTICAL = /*$$(*/ "Project.analyticalLines"; /*)*/
+  public static final String PROJECT_ANALYTICAL_AXIS = /*$$(*/ "Project.analyticalAxis"; /*)*/
+  public static final String PROJECT_ANALYTICAL_ACCOUNT = /*$$(*/ "Project.analyticalAccount"; /*)*/
   public static final String PROJECT_TYPE = /*$$(*/ "Project.type"; /*)*/
   public static final String PROJECT_TOTAL = /*$$(*/ "Project.total"; /*)*/
+  public static final String PROJECT_RESULT = /*$$(*/ "Project.result"; /*)*/
 
   public static final String INVOICE_PURCHASE_INVOICE_NO_ANNEX = /*$$(*/
       "Invoice.purchaseInvoiceNoAnnex"; /*)*/

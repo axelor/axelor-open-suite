@@ -11,7 +11,7 @@
 	  ]]>
       <many-to-one name="wkfTracking" ref="WkfTracking" required="true"/>
       <string name="status" title="Status" required="true"/>
-      <integer name="totalCount" title="Nb of times"/>
+      <integer name="totalCount" title="Nb of passes"/>
   </entity>
     
  </domain-models>

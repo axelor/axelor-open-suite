@@ -21,6 +21,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -38,7 +39,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,10 +65,6 @@ public class ReportSettings {
   protected File output;
 
   private boolean FLAG_ATTACH = false;
-  private static final String[] OUTPUT_NAME_SEARCH_LIST =
-      new String[] {"*", "\"", "/", "\\", "?", "%", ":", "|", "<", ">"};
-  private static final String[] OUTPUT_NAME_REPLACEMENT_LIST =
-      new String[] {"#", "'", "_", "_", "_", "_", "_", "_", "_", "_"};
 
   public ReportSettings(String rptdesign, String outputName) {
 
@@ -144,9 +140,7 @@ public class ReportSettings {
             .replace("${date}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
             .replace("${time}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
 
-    this.outputName =
-        StringUtils.replaceEach(
-            this.outputName, OUTPUT_NAME_SEARCH_LIST, OUTPUT_NAME_REPLACEMENT_LIST);
+    this.outputName = StringTool.getFilename(this.outputName);
   }
 
   protected void computeFileName() {
@@ -252,5 +246,14 @@ public class ReportSettings {
     } else {
       return Beans.get(UserService.class).getLanguage();
     }
+  }
+
+  /**
+   * Get the language select current connected user.
+   *
+   * @return
+   */
+  public static String getPrintingLocale() {
+    return getPrintingLocale(null);
   }
 }

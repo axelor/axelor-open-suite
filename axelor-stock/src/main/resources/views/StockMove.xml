@@ -204,6 +204,8 @@
 							<field name="signatoryUser"/>
 							<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
 							<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
+
+              <field name="modeOfTransport" />
             </panel>
 
             <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms"/>

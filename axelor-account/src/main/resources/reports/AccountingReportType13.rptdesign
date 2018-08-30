@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -30,9 +30,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -60,6 +57,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -276,6 +276,7 @@ left outer join public.account_accounting_report_partner_set as PartnerSet on (P
 left outer join public.account_account_config as AccountConfig on (Company.id = AccountConfig.company)
 
 where 
+(AccountingReport.currency = Move.company_currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val and 
@@ -321,6 +322,12 @@ Move.company = AccountingReport.company AND
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDateEdition</text-property>
                     <text-property name="heading">ReportDateEdition</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency</text-property>
+                    <text-property name="heading">currency</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -368,6 +375,11 @@ Move.company = AccountingReport.company AND
                         <property name="name">ReportDateEdition</property>
                         <property name="dataType">date-time</property>
                     </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -414,12 +426,21 @@ Move.company = AccountingReport.company AND
                     <property name="dataType">date-time</property>
                     <property name="nativeDataType">93</property>
                 </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, Period.name as period_name, AccountingReport.date_from, AccountingReport.date_val as "ReportDate",
-AccountingReport.date_to, AccountingReport.publication_date_time as "ReportDateEdition" 
+AccountingReport.date_to, AccountingReport.publication_date_time as "ReportDateEdition",
+Currency.code as currency
 from public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)  
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)]]></xml-property>
+left outer join public.base_period as Period on (AccountingReport.period = Period.id)
+left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -641,6 +662,18 @@ left outer join public.base_period as Period on (AccountingReport.period = Perio
                     <expression name="expression" type="javascript">dataSetRow["ReportDate"]</expression>
                     <property name="dataType">date</property>
                 </structure>
+                <structure>
+                    <property name="name">ReportDateEdition</property>
+                    <text-property name="displayName">ReportDateEdition</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ReportDateEdition"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="name">currency</property>
+                    <text-property name="displayName">currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="491">
                 <property name="width">0.8854166666666666in</property>
@@ -709,8 +742,19 @@ left outer join public.base_period as Period on (AccountingReport.period = Perio
             </row>
             <row id="3063">
                 <cell id="3064"/>
-                <cell id="3065"/>
-                <cell id="3066"/>
+                <cell id="3065">
+                    <label id="3129">
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">right</property>
+                        <text-property name="text">DEVISE  :</text-property>
+                    </label>
+                </cell>
+                <cell id="3066">
+                    <text id="3130">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
                 <cell id="3067"/>
                 <cell id="3068">
                     <text id="3056">

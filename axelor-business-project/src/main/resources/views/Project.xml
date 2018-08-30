@@ -14,6 +14,10 @@
     <action-method name="action-project-method-generate-quotation">
         <call class="com.axelor.apps.businessproject.web.ProjectController" method="generateQuotation"/>
     </action-method>
+    
+    <action-method name="action-project-method-generate-purchase-quotation">
+        <call class="com.axelor.apps.businessproject.web.ProjectController" method="generatePurchaseQuotation"/>
+    </action-method>
 
 	<action-method name="action-project-method-print-project">
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="printProject"/>
@@ -27,23 +31,75 @@
 		<attribute name="value" for="typeSelect" expr="eval:'project'" />
 		<attribute name="value" for="fromDate" expr="eval: __datetime__"/>
 		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
-		<attribute name="value" for="product" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()"/>
 		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
 		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
-		<attribute name="value" for="price" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.salePrice" />
-		<attribute name="value" for="unit" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.unit" />
-		<attribute name="value" for="exTaxTotal" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.salePrice" />
 	</action-attrs>
 	
 	<action-record id="business-project-action-project-default" name="action-project-default" model="com.axelor.apps.project.db.Project">
 		<field name="typeSelect" expr="eval:'task'" />
 		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="product" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()" if="projInvTypeSelect != 3 &amp;&amp; project?.projInvTypeSelect != 3"/>
 		<field name="fromDate" expr="eval: __date__"/>
 		<field name="assignedTo" expr="eval: __user__"/>
-		<field name="price" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.salePrice" />
-		<field name="unit" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.unit" />
-		<field name="exTaxTotal" expr="eval: __config__.app.getApp('business-project').getProductInvoicingProject()?.salePrice" />
 	</action-record>
+	
+	<action-view name="action-dashlet-project-sale-quotation" title="Quotation" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sale-order-quotation-grid"/>
+		<view type="form" name="sale-order-form"/>
+		<domain>self.saleOrderLineList.project.id = :id and self.statusSelect &lt; 3</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-sale-order" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sale-order-grid"/>
+		<view type="form" name="sale-order-form"/>
+		<domain>self.saleOrderLineList.project.id = :id and self.statusSelect in (3,4)</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-customer-deliveries" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-out-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.stockMoveLineList.saleOrderLine.project.id = :id</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-purchase-quotation" title="Quotation" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<view type="grid" name="purchase-order-quotation-grid"/>
+		<view type="form" name="purchase-order-form"/>
+		<domain>self.purchaseOrderLineList.project.id = :id and self.statusSelect &lt; 3</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-purchase-order" title="Purchase order" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<view type="grid" name="purchase-order-grid"/>
+		<view type="form" name="purchase-order-form"/>
+		<domain>self.purchaseOrderLineList.project.id = :id and self.statusSelect in (3,4)</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-supplier-arrivals" title="Supplier arrivals" model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-in-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.stockMoveLineList.purchaseOrderLine.project.id = :id</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-expense-waiting" title="Waiting expenses" model="com.axelor.apps.hr.db.Expense">
+		<view type="grid" name="expense-grid"/>
+		<view type="form" name="expense-form"/>
+		<domain>(self.kilometricExpenseLineList.project.id = :id or self.generalExpenseLineList.project.id = :id) and self.statusSelect &lt; 3</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-expense-validated" title="Validated expenses" model="com.axelor.apps.hr.db.Expense">
+		<view type="grid" name="expense-grid"/>
+		<view type="form" name="expense-form"/>
+		<domain>(self.kilometricExpenseLineList.project.id = :id or self.generalExpenseLineList.project.id = :id) and self.statusSelect in (3,4)</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-customer-invoices" title="Customer invoices" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-customer-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.invoiceLineList.project.id = :id and self.operationTypeSelect = 3</domain>
+	</action-view>
+	
+	<action-view name="action-dashlet-project-supplier-invoices" title="Supplier invoices"  model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-supplier-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.invoiceLineList.project.id = :id and self.operationTypeSelect = 1</domain>
+	</action-view>
 	
 </object-views>

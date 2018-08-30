@@ -43,6 +43,7 @@
 	        <field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.company = :company"/>
 	        <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable'"/>
 	        <field name="producedProductStockLocation" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.company = :company"/>
+          <field name="launchQty"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
 	        <field name="isEnabledForAllProducts"/>
@@ -84,7 +85,7 @@
      <action-method name="action-production-process-generate-new-version">
      	<call class="com.axelor.apps.production.web.ProdProcessController" method="generateNewVersion"/>
      </action-method>
-	
+
 	<action-record name="action-prod-process-record-set-second-location" model="com.axelor.apps.production.db.ProdProcess">
 		<field name="producedProductStockLocation" expr="eval: stockLocation" if="producedProductStockLocation == null"/>
 	</action-record>
@@ -96,4 +97,5 @@
     <action-record name="action-prod-process-record-count-number-of-phases" model="com.axelor.apps.production.db.ProdProcess">
         <field name="$numberOfComponents" expr="eval: prodProcessLineList.size()"/>
     </action-record>
+
 </object-views>
