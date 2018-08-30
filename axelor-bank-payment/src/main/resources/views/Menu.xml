@@ -19,6 +19,7 @@
 		<view type="form" name="bank-order-form"/>
 		<domain>self.orderTypeSelect = 2</domain>
 		<context name="_orderTypeSelect" expr="2"/>
+		<context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 2"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-international-direct-debit"
@@ -31,6 +32,7 @@
 		<view type="form" name="bank-order-form"/>
 		<domain>self.orderTypeSelect = 4</domain>
 		<context name="_orderTypeSelect" expr="4"/>
+		<context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 4"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-credit-transfer" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment').manageCreditTransferPayment"
@@ -46,6 +48,7 @@
 		<view type="form" name="bank-order-form"/>
 		<domain>self.orderTypeSelect = 1</domain>
 		<context name="_orderTypeSelect" expr="1"/>
+		<context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 1"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-international-credit-transfer"
@@ -58,6 +61,7 @@
 		<view type="form" name="bank-order-form"/>
 		<domain>self.orderTypeSelect = 3</domain>
 		<context name="_orderTypeSelect" expr="3"/>
+		<context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 3"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-bank-to-bank-transfer"
@@ -75,6 +79,7 @@
 	    <domain>self.orderTypeSelect = 5 AND self.partnerTypeSelect = 4</domain>
    		<context name="_orderTypeSelect" expr="5"/>
 	    <context name="_partnerTypeSelect" expr="4"/>
+		<context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 5 AND self.bankOrder.partnerTypeSelect = 4"/>
 	</action-view>	
 	
 	<menuitem name="account-root-bank-order-international-bank-to-bank-transfer"
@@ -88,6 +93,7 @@
 	     <domain>self.orderTypeSelect = 6 AND self.partnerTypeSelect = 4</domain>
    		<context name="_orderTypeSelect" expr="6"/>
 	    <context name="_partnerTypeSelect" expr="4"/>
+		<context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 6 AND self.bankOrder.partnerTypeSelect = 4"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-send-a-bank-order"
@@ -100,6 +106,7 @@
 		<view type="form" name="bank-order-send-form"/>
 		<domain>self.orderTypeSelect = 7</domain>
 		<context name="_orderTypeSelect" expr="7"/>
+		<context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 7"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
@@ -115,6 +122,7 @@
 		<view type="grid" name="bank-order-awaiting-signature-grid"/>
 		<view type="form" name="bank-order-awaiting-signature-form"/>
 	    <domain>self.statusSelect = 2</domain>
+	    <context name="_linesDomain" expr="self.bankOrder.statusSelect = 2"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-statement" parent="account-root"

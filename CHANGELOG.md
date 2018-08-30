@@ -659,6 +659,7 @@ Also, improve the sale order line grid and form views.
 ## [Unreleased 4.2.5]
 ### Improvements
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Add a new button on bank order grids to display the bank order lines.
 - Bank orders can now be deleted when their status is "draft" or "canceled".
 - Improve bank order printing layout.
 

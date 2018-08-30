@@ -6,6 +6,7 @@
     <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
         <toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    		<button name="bankOrderLines" title="See Bank Order Lines" onClick="action-bank-order-method-display-bank-order-lines-bank-to-bank" />
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
@@ -25,6 +26,7 @@
     <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
     	<toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    		<button name="bankOrderLines" title="See Bank Order Lines" onClick="action-bank-order-method-display-bank-order-lines" />
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
@@ -566,4 +568,12 @@
         <call class="com.axelor.apps.bankpayment.web.BankOrderLineController" method="computeCompanyCurrencyAmount"/>
     </action-method>
     
+	<action-method name="action-bank-order-method-display-bank-order-lines">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="displayBankOrderLines"/>
+	</action-method>
+
+	<action-method name="action-bank-order-method-display-bank-order-lines-bank-to-bank">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="displayBankOrderLinesBankToBank"/>
+	</action-method>
+
 </object-views>

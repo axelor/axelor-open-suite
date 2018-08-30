@@ -56,6 +56,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -788,5 +790,17 @@ public class BankOrderServiceImpl implements BankOrderService {
         bankOrderLine.setReceiverBankDetails(null);
       }
     }
+  }
+
+  @Override
+  public ActionViewBuilder buildBankOrderLineView(
+      String gridViewName, String formViewName, String viewDomain) {
+    ActionViewBuilder actionViewBuilder =
+        ActionView.define(I18n.get("Bank Order Lines"))
+            .model(BankOrderLine.class.getName())
+            .add("grid", gridViewName)
+            .add("form", formViewName)
+            .domain(viewDomain);
+    return actionViewBuilder;
   }
 }

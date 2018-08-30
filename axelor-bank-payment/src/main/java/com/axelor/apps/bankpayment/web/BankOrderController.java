@@ -230,4 +230,32 @@ public class BankOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void displayBankOrderLines(ActionRequest actionRequest, ActionResponse response) {
+    try {
+      String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
+      System.out.println(linesDomain);
+      response.setView(
+          bankOrderService
+              .buildBankOrderLineView("bank-order-line-grid", "bank-order-line-form", linesDomain)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void displayBankOrderLinesBankToBank(
+      ActionRequest actionRequest, ActionResponse response) {
+    try {
+      String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
+      System.out.println(linesDomain);
+      response.setView(
+          bankOrderService
+              .buildBankOrderLineView(
+                  "bank-order-line-grid-bank-to-bank", "bank-order-line-form", linesDomain)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

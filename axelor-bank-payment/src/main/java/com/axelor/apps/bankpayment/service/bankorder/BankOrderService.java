@@ -22,6 +22,7 @@ import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -84,4 +85,7 @@ public interface BankOrderService {
   public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrder bankOrder);
 
   public void resetReceivers(BankOrder bankOrder);
+
+  public ActionViewBuilder buildBankOrderLineView(
+      String gridViewName, String formViewName, String viewDomain);
 }
