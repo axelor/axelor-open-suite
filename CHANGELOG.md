@@ -32,6 +32,7 @@
 - Fix new bug when checking type on configurator.
 - BPM: Provide translation for Workflow dashboard.
 - Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
+- Budget form: add missing tranlation.
 - Invoice: reload the view after regenerating the printing.
 - DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
 - BPM: keep model read only if custom field is created from custom field creator.
