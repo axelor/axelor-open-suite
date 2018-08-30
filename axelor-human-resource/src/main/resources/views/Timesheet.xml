@@ -203,7 +203,7 @@
 	</action-validate>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-project-task">
-		<attribute name="domain" for="$projectTask" expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id} &quot;"/>
+		<attribute name="domain" for="$projectTask" expr="eval: &quot; ${user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${user?.id} &quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">

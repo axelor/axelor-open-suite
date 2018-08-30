@@ -4,10 +4,14 @@
 ### Improvements
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 - Hide Ebics user full name in grid view.
+- Add a new button on bank order grids to display the bank order lines.
+- Bank orders can now be deleted when their status is "draft" or "canceled".
+- Improve bank order printing layout.
 
 ### Bug Fixes
 - Fix NPE in BankOrder generation on missing bank name.
-
+- Timesheets : use the timesheet user to filter the projects/tasks instead of the connected user.
+- Cannot create a new bank order from the menu entry "awaiting signature".
 
 ## [4.2.4] - 2018-07-12
 ### Improvements
