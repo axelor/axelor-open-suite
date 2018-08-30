@@ -3,10 +3,12 @@
 ## [Unreleased 4.2.5]
 ### Improvements
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Improve bank order printing layout.
 
 ### Bug Fixes
 - Fix NPE in BankOrder generation on missing bank name.
 - Timesheets : use the timesheet user to filter the projects/tasks instead of the connected user.
+- Cannot create a new bank order from the menu entry "awaiting signature".
 
 ## [4.2.4] - 2018-07-12
 ### Improvements
