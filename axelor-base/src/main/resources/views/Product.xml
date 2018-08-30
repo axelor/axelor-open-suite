@@ -256,7 +256,10 @@
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
   			</panel>
-  			<panel-related field="packLines" showIf="isPack" if="__config__.app.getApp('sale')?.getProductPackMgt()" />
+  			<panel title="Pack Lines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()">
+  				<field name="packPriceSelect"/>
+  				<panel-related field="packLines" colSpan="12"/>
+  			</panel>
   		</panel-tabs>
   		<panel>
   			<field name="attrs" colSpan="12" />

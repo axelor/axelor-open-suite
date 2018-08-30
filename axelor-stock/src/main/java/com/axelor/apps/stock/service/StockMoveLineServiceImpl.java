@@ -382,6 +382,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       Product product = stockMoveLine.getProduct();
 
       if (product != null
+          && stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_PACK
           && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
         Unit productUnit = stockMoveLine.getProduct().getUnit();
         Unit stockMoveLineUnit = stockMoveLine.getUnit();

@@ -22,14 +22,12 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 public interface SaleOrderLineService {
@@ -40,7 +38,8 @@ public interface SaleOrderLineService {
    * @param saleOrderLine
    * @param saleOrder
    */
-  void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  void computeProductInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException;
 
   /**
@@ -52,7 +51,10 @@ public interface SaleOrderLineService {
    * @throws AxelorException
    */
   void computeProductInformation(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean taxLineIsOptional)
+      SaleOrderLine saleOrderLine,
+      SaleOrder saleOrder,
+      boolean taxLineIsOptional,
+      Integer packPriceSelect)
       throws AxelorException;
 
   SaleOrderLine resetProductInformation(SaleOrderLine line);
@@ -119,22 +121,16 @@ public interface SaleOrderLineService {
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
 
   /**
-   * Generates a list of sub sale order lines from a pack product.
+   * Fill price based on packPriceSelect only for packLine or subline. Works normal for standard
+   * line.
    *
-   * @param product a product of type 'pack'
-   * @param saleOrder the sale order containing a sale order line with the pack product
-   * @return a list of sub sale order lines
+   * @param saleOrderLine
+   * @param saleOrder
+   * @param packPriceSelect
+   * @throws AxelorException
    */
-  public List<SaleOrderLine> createPackLines(Product product, SaleOrder saleOrder)
+  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException;
 
-  /**
-   * Generates a sale order line from a pack line.
-   *
-   * @param packLine a subline of a product of type 'pack'
-   * @param saleOrder the sale order containing a sale order line with the pack product
-   * @return a sale order line
-   */
-  public SaleOrderLine createPackLine(PackLine packLine, SaleOrder saleOrder)
-      throws AxelorException;
+  public boolean checkTaxRequired(SaleOrderLine saleOrderLine, Integer packPriceSelect);
 }

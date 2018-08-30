@@ -38,7 +38,9 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
@@ -162,5 +164,43 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     }
 
     return daysWorks.subtract(daysLeave);
+  }
+
+  public Map<String, String> getSocialNetworkUrl(String name, String firstName) {
+
+    Map<String, String> urlMap = new HashMap<String, String>();
+    name =
+        firstName != null && name != null
+            ? firstName + "+" + name
+            : name == null ? firstName : name;
+    name = name == null ? "" : name;
+    urlMap.put(
+        "google",
+        "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
+            + name
+            + "' target='_blank' />");
+    urlMap.put(
+        "facebook",
+        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
+            + name
+            + "&init=public"
+            + "' target='_blank'/>");
+    urlMap.put(
+        "twitter",
+        "<a class='fa fa-twitter' href='https://twitter.com/search?q="
+            + name
+            + "' target='_blank' />");
+    urlMap.put(
+        "linkedin",
+        "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+            + name.replace("+", "/")
+            + "' target='_blank' />");
+    urlMap.put(
+        "youtube",
+        "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
+            + name
+            + "' target='_blank' />");
+
+    return urlMap;
   }
 }

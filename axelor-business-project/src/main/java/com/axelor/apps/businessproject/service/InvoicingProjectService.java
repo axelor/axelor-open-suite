@@ -39,6 +39,7 @@ import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
@@ -206,7 +207,9 @@ public class InvoicingProjectService {
             false,
             saleOrderLine,
             null,
-            null) {
+            null,
+            false,
+            0) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -255,7 +258,9 @@ public class InvoicingProjectService {
             false,
             null,
             purchaseOrderLine,
-            null) {
+            null,
+            false,
+            0) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
@@ -321,9 +326,12 @@ public class InvoicingProjectService {
                 Beans.get(SaleOrderLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.saleOrder.creationDate < ?2",
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.saleOrder.creationDate < ?2"
+                            + " AND (self.saleOrder.statusSelect = ?3 OR self.saleOrder.statusSelect = ?4)",
                         project,
-                        invoicingProject.getDeadlineDate())
+                        invoicingProject.getDeadlineDate(),
+                        SaleOrderRepository.STATUS_ORDER_CONFIRMED,
+                        SaleOrderRepository.STATUS_ORDER_COMPLETED)
                     .fetch());
 
         invoicingProject
@@ -332,7 +340,8 @@ public class InvoicingProjectService {
                 Beans.get(PurchaseOrderLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.purchaseOrder.orderDate < ?2",
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.purchaseOrder.orderDate < ?2"
+                            + " AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)",
                         project,
                         invoicingProject.getDeadlineDate())
                     .fetch());
@@ -343,7 +352,8 @@ public class InvoicingProjectService {
                 Beans.get(TimesheetLineRepository.class)
                     .all()
                     .filter(
-                        "self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?2",
+                        "self.timesheet.statusSelect = ?1 AND self.project = ?2 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?3",
+                        TimesheetRepository.STATUS_VALIDATED,
                         project,
                         invoicingProject.getDeadlineDate())
                     .fetch());
@@ -354,9 +364,12 @@ public class InvoicingProjectService {
                 Beans.get(ExpenseLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.expenseDate < ?2",
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.expenseDate < ?2"
+                            + " AND (self.expense.statusSelect = ?3 OR self.expense.statusSelect = ?4",
                         project,
-                        invoicingProject.getDeadlineDate())
+                        invoicingProject.getDeadlineDate(),
+                        ExpenseRepository.STATUS_VALIDATED,
+                        ExpenseRepository.STATUS_REIMBURSED)
                     .fetch());
 
         invoicingProject
@@ -376,8 +389,11 @@ public class InvoicingProjectService {
                 Beans.get(SaleOrderLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
-                        project)
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false"
+                            + " AND (self.saleOrder.statusSelect = ?2 OR self.saleOrder.statusSelect = ?3)",
+                        project,
+                        SaleOrderRepository.STATUS_ORDER_CONFIRMED,
+                        SaleOrderRepository.STATUS_ORDER_COMPLETED)
                     .fetch());
 
         invoicingProject
@@ -386,7 +402,8 @@ public class InvoicingProjectService {
                 Beans.get(PurchaseOrderLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false"
+                            + " AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)",
                         project)
                     .fetch());
 
@@ -396,7 +413,8 @@ public class InvoicingProjectService {
                 Beans.get(TimesheetLineRepository.class)
                     .all()
                     .filter(
-                        "self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
+                        "self.timesheet.statusSelect = ?1 AND self.project = ?2 AND self.toInvoice = true AND self.invoiced = false",
+                        TimesheetRepository.STATUS_VALIDATED,
                         project)
                     .fetch());
 
@@ -406,8 +424,11 @@ public class InvoicingProjectService {
                 Beans.get(ExpenseLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
-                        project)
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false"
+                            + " AND (self.expense.statusSelect = ?2 OR self.expense.statusSelect = ?3)",
+                        project,
+                        ExpenseRepository.STATUS_VALIDATED,
+                        ExpenseRepository.STATUS_REIMBURSED)
                     .fetch());
 
         invoicingProject

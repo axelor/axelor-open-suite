@@ -626,7 +626,9 @@ public class TimesheetServiceImpl implements TimesheetService {
             discountTypeSelect,
             price.multiply(qtyConverted),
             null,
-            false) {
+            false,
+            false,
+            0) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

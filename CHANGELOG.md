@@ -38,7 +38,9 @@
 - PROJECT : Change business project reporting.
 - Project view enhancements
 - TIMELINE : Generate lines from Project Planning 
-
+- Pack Price Select and Qty update from packLine to subLine.
+- Implement PackLine and SubLine for InvoiceLine and StockMoveLine.
+ 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
 - Refactor TargetList and Campaign views to follow guidelines.
@@ -68,6 +70,8 @@
 - Studio: Fix email action.
 - Project : Fix supplier orders and it's lines & invoices and it's lines link to the any project.
 - Fix invoiced amount W.T update on sale and purchase order.
+- Fix social network icons for employee
+- Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
 
 ## [Unreleased 5.0.5]
 ## Improvements

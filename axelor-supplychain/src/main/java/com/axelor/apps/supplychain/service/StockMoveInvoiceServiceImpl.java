@@ -39,8 +39,10 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -51,6 +53,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -119,6 +122,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMove.setInvoice(invoice);
       stockMoveRepo.save(stockMove);
     }
+
     return invoice;
   }
 
@@ -224,6 +228,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMove.setInvoice(invoice);
       stockMoveRepo.save(stockMove);
     }
+
     return invoice;
   }
 
@@ -689,10 +694,20 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       Invoice invoice, List<StockMoveLine> stockMoveLineList) throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
+    
+    Map<StockMoveLine, InvoiceLine> packLineMap = Maps.newHashMap();
+    boolean setPack = Beans.get(AppSaleService.class).getAppSale().getProductPackMgt();
     for (StockMoveLine stockMoveLine : getConsolidatedStockMoveLineList(stockMoveLineList)) {
       List<InvoiceLine> invoiceLineListCreated = this.createInvoiceLine(invoice, stockMoveLine);
-      if (invoiceLineListCreated != null) invoiceLineList.addAll(invoiceLineListCreated);
+      if (invoiceLineListCreated != null) {
+    	  invoiceLineList.addAll(invoiceLineListCreated);
+    	  if (setPack
+          		&& !invoiceLineListCreated.isEmpty()
+          		&& (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK
+          		|| stockMoveLine.getIsSubLine())) {
+  	        	packLineMap.put(stockMoveLine, invoiceLineListCreated.get(0));
+          }
+      }
       // Depending on stockMove type
       if (stockMoveLine.getSaleOrderLine() != null) {
         stockMoveLine.getSaleOrderLine().setInvoiced(true);
@@ -700,6 +715,27 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         stockMoveLine.getPurchaseOrderLine().setInvoiced(true);
       }
     }
+    
+    if (setPack) {
+	    for (StockMoveLine stockMoveLine : packLineMap.keySet()) {
+	    	if (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK) {
+	    		InvoiceLine invoiceLine = packLineMap.get(stockMoveLine);
+	    		if (invoiceLine == null) {
+	    			continue;
+	    		}
+	    		BigDecimal totalPack = BigDecimal.ZERO;
+	    		for (StockMoveLine subLine : stockMoveLine.getSubLineList()) {
+	    			InvoiceLine subInvoiceLine = packLineMap.get(subLine);
+	    			if (subInvoiceLine != null) {
+	    				totalPack = totalPack.add(subInvoiceLine.getExTaxTotal());
+	    				subInvoiceLine.setParentLine(invoiceLine);
+	    			}
+	    		}
+	    		invoiceLine.setTotalPack(totalPack);
+	    	}
+	    }
+    }
+
 
     return invoiceLineList;
   }
@@ -749,7 +785,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             false,
             stockMoveLine.getSaleOrderLine(),
             stockMoveLine.getPurchaseOrderLine(),
-            stockMoveLine) {
+            stockMoveLine,
+            stockMoveLine.getIsSubLine(),
+            stockMoveLine.getPackPriceSelect()) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 

@@ -22,6 +22,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 public interface EmployeeService extends UserService {
 
@@ -34,4 +35,6 @@ public interface EmployeeService extends UserService {
 
   public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
+
+  public Map<String, String> getSocialNetworkUrl(String name, String firstName);
 }

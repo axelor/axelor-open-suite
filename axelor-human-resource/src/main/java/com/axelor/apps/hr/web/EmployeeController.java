@@ -18,8 +18,11 @@
 package com.axelor.apps.hr.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.report.IReport;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -29,12 +32,16 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Map;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 @Singleton
 public class EmployeeController {
+
+  @Inject private EmployeeService employeeService;
 
   public void showAnnualReport(ActionRequest request, ActionResponse response)
       throws JSONException, NumberFormatException, AxelorException {
@@ -60,5 +67,31 @@ public class EmployeeController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
 
     response.setCanClose(true);
+  }
+
+  public void setEmployeeSocialNetworkUrl(ActionRequest request, ActionResponse response) {
+
+    Employee employee = request.getContext().asType(Employee.class);
+    Map<String, String> urlMap =
+        employeeService.getSocialNetworkUrl(
+            employee.getContactPartner().getName(), employee.getContactPartner().getFirstName());
+    response.setAttr("contactPartner.google", "title", urlMap.get("google"));
+    response.setAttr("contactPartner.facebook", "title", urlMap.get("facebook"));
+    response.setAttr("contactPartner.twitter", "title", urlMap.get("twitter"));
+    response.setAttr("contactPartner.linkedin", "title", urlMap.get("linkedin"));
+    response.setAttr("contactPartner.youtube", "title", urlMap.get("youtube"));
+  }
+
+  public void setContactSocialNetworkUrl(ActionRequest request, ActionResponse response) {
+
+    Partner partnerContact = request.getContext().asType(Partner.class);
+    Map<String, String> urlMap =
+        employeeService.getSocialNetworkUrl(
+            partnerContact.getName(), partnerContact.getFirstName());
+    response.setAttr("google", "title", urlMap.get("google"));
+    response.setAttr("facebook", "title", urlMap.get("facebook"));
+    response.setAttr("twitter", "title", urlMap.get("twitter"));
+    response.setAttr("linkedin", "title", urlMap.get("linkedin"));
+    response.setAttr("youtube", "title", urlMap.get("youtube"));
   }
 }

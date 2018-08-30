@@ -69,4 +69,7 @@ public interface InvoiceLineService {
 
   Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException;
+
+  public Map<String, Object> fillPriceAndAccount(
+      Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException;
 }
