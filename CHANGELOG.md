@@ -44,6 +44,7 @@
 - Fix stock move split by unit. 
 - Tracking number configuration: Fix 'Tracking number order' selection and it's static variables.
 - Tracking number configuration: display 'name' field on grid.
+- Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
 
 ## [5.0.4] - 2018-07-26
 ## Features
