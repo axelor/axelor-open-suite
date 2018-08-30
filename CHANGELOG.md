@@ -113,6 +113,7 @@
 - PRODUCT : Remove field 'ean13' which was unused.
 - Model studio: Fix lost translation on field drag. 
 - Purchase order: Fix hibernate exception when click on 'Generate suppliers purchase orders' button.
+- Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
 - Error message instead of NPE on operation order plan with a configuration error.
 - Fix total amount reseting on save in bank orders.
 - Configurator: fix using M2O in formula.
