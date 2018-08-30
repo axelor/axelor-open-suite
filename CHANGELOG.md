@@ -26,6 +26,8 @@
 - Machine type added for the machine.
 - Selection added for priority of manufacturing order.
 - Payment schedule line: management of direct debit rejection.
+- New stock location configuration for quality control.
+- Create multiple supplier stock move when purchasing products requiring a quality check and normal products.
 - Selection added for priority of manufacturing order.
 - Add currency in Accounting reports and filter all results with it.
 - New field `launchQty` on production process.
