@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
         <toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
@@ -22,7 +22,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
     	<toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
@@ -41,7 +41,7 @@
         <field name="statusSelect"/>
     </grid>
 
-    <grid name="bank-order-awaiting-signature-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canNew="false" canDelete="false">
+    <grid name="bank-order-awaiting-signature-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canNew="false">
     	<toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
@@ -61,7 +61,7 @@
         <field name="statusSelect"/>
     </grid>
 
-    <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
     	<toolbar>
     		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
@@ -79,7 +79,7 @@
         <field name="statusSelect"/>
     </grid>
     
-	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false"
+	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder"
 		  onNew="action-bank-order-group-onnew"
 		  onLoad="action-bank-order-group-on-load">
 		<toolbar>
