@@ -19,10 +19,13 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.repo.AddressRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
@@ -35,9 +38,12 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,15 +52,17 @@ import wslite.json.JSONException;
 @Singleton
 public class AddressServiceImpl implements AddressService {
 
-  @Inject private AddressRepository addressRepo;
-
-  @Inject private com.axelor.apps.tool.address.AddressTool ads;
-
-  @Inject private PartnerRepository partnerRepo;
-
+  @Inject protected AddressRepository addressRepo;
+  @Inject protected com.axelor.apps.tool.address.AddressTool ads;
   @Inject protected MapService mapService;
 
+  protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
+
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  static {
+    registerCheckUsedFunc(AddressServiceImpl::checkAddressUsedBase);
+  }
 
   @Override
   public boolean check(String wsdlUrl) {
@@ -77,7 +85,7 @@ public class AddressServiceImpl implements AddressService {
 
     CSVWriter csv =
         new CSVWriter(new java.io.FileWriter(path), "|".charAt(0), CSVWriter.NO_QUOTE_CHARACTER);
-    List<String> header = new ArrayList<String>();
+    List<String> header = new ArrayList<>();
     header.add("Id");
     header.add("AddressL1");
     header.add("AddressL2");
@@ -154,15 +162,20 @@ public class AddressServiceImpl implements AddressService {
   @Override
   public boolean checkAddressUsed(Long addressId) {
     LOG.debug("Address Id to be checked = {}", addressId);
-    if (addressId != null) {
-      if (partnerRepo
-              .all()
-              .filter(
-                  "self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1", addressId)
-              .fetchOne()
-          != null) return true;
-    }
-    return false;
+    return checkUsedFuncs.stream().anyMatch(checkUsedFunc -> checkUsedFunc.apply(addressId));
+  }
+
+  protected static void registerCheckUsedFunc(Function<Long, Boolean> checkUsedFunc) {
+    checkUsedFuncs.add(checkUsedFunc);
+  }
+
+  private static boolean checkAddressUsedBase(Long addressId) {
+    return JPA.all(PartnerAddress.class).filter("self.address.id = ?1", addressId).fetchOne()
+            != null
+        || JPA.all(Partner.class).filter("self.contactAddress.id = ?1", addressId).fetchOne()
+            != null
+        || JPA.all(PickListEntry.class).filter("self.address.id = ?1", addressId).fetchOne()
+            != null;
   }
 
   @Override
