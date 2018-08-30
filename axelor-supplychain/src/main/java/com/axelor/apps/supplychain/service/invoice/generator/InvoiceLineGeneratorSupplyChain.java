@@ -49,6 +49,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected PurchaseOrderLine purchaseOrderLine;
   protected StockMoveLine stockMoveLine;
 
+  protected UnitConversionService unitConversionService;
+
   @Inject
   public InvoiceLineGeneratorSupplyChain(
       Invoice invoice,
@@ -88,6 +90,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
+    this.unitConversionService = Beans.get(UnitConversionService.class);
   }
 
   protected InvoiceLineGeneratorSupplyChain(
@@ -101,8 +104,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine,
-      UnitConversionService unitConversionService)
+      StockMoveLine stockMoveLine)
       throws AxelorException {
 
     super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
@@ -110,6 +112,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
+    this.unitConversionService = Beans.get(UnitConversionService.class);
 
     if (saleOrderLine != null) {
       this.discountAmount = saleOrderLine.getDiscountAmount();
@@ -183,8 +186,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           Beans.get(InvoiceLineService.class)
               .getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
       this.price =
-          Beans.get(UnitConversionService.class)
-              .convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
+          unitConversionService.convertWithProduct(
+              stockMoveLine.getUnit(), this.unit, this.price, product);
       invoiceLine.setPrice(price);
     }
 

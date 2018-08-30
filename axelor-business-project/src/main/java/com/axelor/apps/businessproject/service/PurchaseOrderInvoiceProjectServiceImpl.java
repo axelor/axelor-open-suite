@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -46,8 +45,6 @@ import java.util.Map;
 public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoiceServiceImpl {
 
   @Inject private PriceListService priceListService;
-
-  @Inject protected UnitConversionService unitConversionService;
 
   @Inject private PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl;
 
@@ -192,8 +189,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               false,
               null,
               purchaseOrderLine,
-              null,
-              unitConversionService) {
+              null) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 
