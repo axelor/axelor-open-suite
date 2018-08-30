@@ -82,7 +82,7 @@
                     ]]>
                 </viewer>
 			</field>
-			<field name="justification"/>
+			<field name="justificationMetaFile" widget="binary-link"/>
 			<field name="comments" colSpan="12"/>
 			<field name="expense" hidden="true"/>
     		<field name="expense.companyCbSelect" hidden="true" />

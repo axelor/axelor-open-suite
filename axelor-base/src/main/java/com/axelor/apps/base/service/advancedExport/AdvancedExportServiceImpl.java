@@ -26,38 +26,29 @@ import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
-import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.itextpdf.text.DocumentException;
-import com.mysql.jdbc.StringUtils;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AdvancedExportServiceImpl implements AdvancedExportService {
 
-  private final Logger log = LoggerFactory.getLogger(AdvancedExportServiceImpl.class);
+  private static final Logger log = LoggerFactory.getLogger(AdvancedExportServiceImpl.class);
 
   @Inject private MetaFieldRepository metaFieldRepo;
 
@@ -65,59 +56,16 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   @Inject private MetaSelectRepository metaSelectRepo;
 
-  @Inject private MetaFiles metaFiles;
+  @Inject private AdvancedExportGeneratorFactory exportGeneratorFactory;
 
   private LinkedHashSet<String> joinFieldSet = new LinkedHashSet<>(),
-      selectionJoinFieldSet = new LinkedHashSet<>(),
-      selectionRelationalJoinFieldSet = new LinkedHashSet<>();
+      selectionJoinFieldSet = new LinkedHashSet<>();
 
   private List<Object> params = null;
 
-  private String language = "", selectNormalField = "", selectSelectionField = "", aliasName = "";
-
-  private boolean isSelectionField = false;
-
-  private int firstLevel = 0, secondLevel = 0, thirdLevel = 0, nbrField = 0, msi = 0, mt = 0;
-
-  /**
-   * This method create the target field using <b>Dot(.)</b> if field is relational.
-   *
-   * <p>e.g. Company.currency.code
-   */
-  @Override
-  public String getTargetField(Context context, MetaField metaField, MetaModel parentMetaModel) {
-    String targetField = context.get("targetField").toString();
-    String[] splitField = targetField.split("\\.");
-    MetaField metaField2 = checkLastMetaField(splitField, 0, parentMetaModel, metaField);
-
-    if (metaField2.getRelationship() != null) {
-      targetField += "." + metaField.getName();
-      return targetField;
-    } else {
-      return targetField.replace(splitField[splitField.length - 1], metaField.getName());
-    }
-  }
-
-  private MetaField checkLastMetaField(
-      String[] splitField, int index, MetaModel parentMetaModel, MetaField metaField) {
-
-    MetaModel metaModel = parentMetaModel;
-    MetaField metaField3 = metaField;
-    if (index <= splitField.length - 1) {
-      metaField3 =
-          metaFieldRepo
-              .all()
-              .filter("self.name = ?1 and self.metaModel = ?2", splitField[index], parentMetaModel)
-              .fetchOne();
-      if (!splitField[0].equals(splitField[splitField.length - 1])) {
-        if (metaField3.getRelationship() != null) {
-          metaModel = metaModelRepo.findByName(metaField3.getTypeName());
-        }
-      }
-      metaField3 = checkLastMetaField(splitField, index + 1, metaModel, metaField3);
-    }
-    return metaField3;
-  }
+  private String exportFileName, language, selectField, aliasName;
+  private boolean isReachMaxExportLimit, isNormalField, isSelectionField = false;
+  private int msi, mt;
 
   /**
    * This method split and join the all fields/columns which are selected by user and create the
@@ -126,70 +74,48 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    * @param advancedExport
    * @param criteria
    * @return
-   * @throws ClassNotFoundException
-   * @throws DocumentException
-   * @throws IOException
    * @throws AxelorException
+   * @throws ClassNotFoundException
    */
-  private Query getAdvancedExportQuery(AdvancedExport advancedExport, String criteria)
-      throws ClassNotFoundException, DocumentException, IOException, AxelorException {
+  @Override
+  public Query getAdvancedExportQuery(AdvancedExport advancedExport, List<Long> recordIds)
+      throws AxelorException {
 
     StringBuilder selectFieldBuilder = new StringBuilder(),
-        selectJoinFieldBuilder = new StringBuilder(),
-        selectionFieldBuilder = new StringBuilder(),
         orderByFieldBuilder = new StringBuilder();
 
     joinFieldSet.clear();
     selectionJoinFieldSet.clear();
-    selectionRelationalJoinFieldSet.clear();
-    firstLevel = 0;
-    nbrField = 0;
+    isNormalField = true;
+    selectField = "";
+    msi = 0;
+    mt = 0;
     int col = 0;
     language = AuthUtils.getUser().getLanguage();
 
-    MetaModel metaModel = advancedExport.getMetaModel();
-    List<AdvancedExportLine> advancedExportLineList =
-        sortAdvancedExportLineList(advancedExport.getAdvancedExportLineList());
+    try {
+      for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
+        String[] splitField = advancedExportLine.getTargetField().split("\\.");
+        String alias = "Col_" + col + ",";
 
-    for (AdvancedExportLine advancedExportLine : advancedExportLineList) {
-      String[] splitField = advancedExportLine.getTargetField().split("\\.");
+        createQueryParts(splitField, 0, advancedExport.getMetaModel());
 
-      createQueryParts(splitField, 0, metaModel);
+        selectFieldBuilder.append(aliasName + selectField + " AS " + alias);
 
-      if (!joinFieldSet.isEmpty()
-          && (!selectNormalField.equals("") || selectNormalField.indexOf(0) == '.')) {
-        selectJoinFieldBuilder.append(
-            aliasName + selectNormalField + " AS " + ("Col_" + (col)) + ",");
+        if (advancedExportLine.getOrderBy()) {
+          orderByFieldBuilder.append(alias);
+        }
+        selectField = "";
+        aliasName = "";
+        col++;
       }
-      if (!selectSelectionField.equals("")
-          && (!selectionJoinFieldSet.isEmpty() || !selectionRelationalJoinFieldSet.isEmpty())) {
-        selectionFieldBuilder.append(selectSelectionField + " AS " + ("Col_" + (col)) + ",");
-
-      } else if (firstLevel == 0
-          && selectSelectionField.equals("")
-          && !selectNormalField.equals("")) {
-        selectFieldBuilder.append(
-            "self." + advancedExportLine.getTargetField() + " AS " + ("Col_" + (col)) + ",");
-      }
-      if (advancedExportLine.getOrderBy()) {
-        orderByFieldBuilder.append("Col_" + col + ",");
-      }
-      selectNormalField = "";
-      selectSelectionField = "";
-      aliasName = "";
-      secondLevel = 0;
-      thirdLevel = 0;
-      nbrField++;
-      col++;
+    } catch (ClassNotFoundException e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
     return createQuery(
         createQueryBuilder(
-            metaModel,
-            selectFieldBuilder,
-            selectJoinFieldBuilder,
-            selectionFieldBuilder,
-            criteria,
-            orderByFieldBuilder));
+            advancedExport.getMetaModel(), selectFieldBuilder, recordIds, orderByFieldBuilder));
   }
 
   /**
@@ -212,7 +138,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       MetaModel subMetaModel =
           metaModelRepo.all().filter("self.name = ?1", relationalField.getTypeName()).fetchOne();
 
-      if (relationalField.getRelationship() != null) {
+      if (!Strings.isNullOrEmpty(relationalField.getRelationship())) {
         checkRelationalField(splitField, parentIndex);
       } else {
         checkSelectionField(splitField, parentIndex, metaModel);
@@ -225,10 +151,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   private void checkRelationalField(String[] splitField, int parentIndex) {
     String tempAliasName = "";
-    firstLevel++;
-    if (secondLevel != 0 || thirdLevel != 0) {
-      selectNormalField = "";
-    }
+    isNormalField = false;
     if (parentIndex != 0) {
       tempAliasName = isKeyword(splitField, 0);
       aliasName = tempAliasName;
@@ -243,13 +166,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       }
     } else {
       tempAliasName = isKeyword(splitField, parentIndex);
-      if (nbrField > 0
-          && !joinFieldSet.isEmpty()
-          && !joinFieldSet.contains("self." + splitField[parentIndex] + " " + tempAliasName)) {
-        joinFieldSet.add("LEFT JOIN self." + splitField[parentIndex] + " " + tempAliasName);
-      } else {
-        joinFieldSet.add("self." + splitField[parentIndex] + " " + tempAliasName);
-      }
+      joinFieldSet.add("LEFT JOIN self." + splitField[parentIndex] + " " + tempAliasName);
       aliasName = tempAliasName;
     }
   }
@@ -271,33 +188,35 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
     if (metaSelect != null) {
       isSelectionField = true;
+      String alias = "self";
       msi++;
       mt++;
-      if (firstLevel > 0 && index != 0) {
-        checkRelationalSelectionField(fieldName, index, metaSelect);
-      } else {
-        checkJoinSelectionField(fieldName, index, metaSelect);
+      if (!isNormalField && index != 0) {
+        alias = aliasName;
       }
+      addSelectionField(fieldName[index], alias, metaSelect.getId());
     }
   }
 
-  private void checkRelationalSelectionField(String[] fieldName, int index, MetaSelect metaSelect) {
+  private void addSelectionField(String fieldName, String alias, Long metaSelectId) {
+    String selectionJoin =
+        "LEFT JOIN "
+            + "MetaSelectItem "
+            + ("msi_" + (msi))
+            + " ON CAST("
+            + alias
+            + "."
+            + fieldName
+            + " AS text) = "
+            + ("msi_" + (msi))
+            + ".value AND "
+            + ("msi_" + (msi))
+            + ".select = "
+            + metaSelectId;
+
     if (language.equals(LANGUAGE_FR)) {
-      selectionRelationalJoinFieldSet.add(
-          "LEFT JOIN "
-              + "MetaSelectItem "
-              + ("msi_" + (msi))
-              + " ON CAST("
-              + aliasName
-              + "."
-              + fieldName[index]
-              + " AS text) = "
-              + ("msi_" + (msi))
-              + ".value AND "
-              + ("msi_" + (msi))
-              + ".select = "
-              + metaSelect.getId()
-              + " LEFT JOIN "
+      selectionJoin +=
+          " LEFT JOIN "
               + "MetaTranslation "
               + ("mt_" + (mt))
               + " ON "
@@ -308,89 +227,31 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
               + ("mt_" + (mt))
               + ".language = \'"
               + language
-              + "\'");
-    } else {
-      selectionRelationalJoinFieldSet.add(
-          "LEFT JOIN "
-              + "MetaSelectItem "
-              + ("msi_" + (msi))
-              + " ON CAST("
-              + aliasName
-              + "."
-              + fieldName[index]
-              + " AS text) = "
-              + ("msi_" + (msi))
-              + ".value AND "
-              + ("msi_" + (msi))
-              + ".select = "
-              + metaSelect.getId());
+              + "\'";
     }
+    selectionJoinFieldSet.add(selectionJoin);
   }
 
-  private void checkJoinSelectionField(String[] fieldName, int index, MetaSelect metaSelect) {
-    if (language.equals(LANGUAGE_FR)) {
-      selectionJoinFieldSet.add(
-          "LEFT JOIN "
-              + "MetaSelectItem "
-              + ("msi_" + (msi))
-              + " ON CAST("
-              + "self."
-              + fieldName[index]
-              + " AS text) = "
-              + ("msi_" + (msi))
-              + ".value AND "
-              + ("msi_" + (msi))
-              + ".select = "
-              + metaSelect.getId()
-              + " LEFT JOIN "
-              + "MetaTranslation "
-              + ("mt_" + (mt))
-              + " ON "
-              + ("msi_" + (msi))
-              + ".title = "
-              + ("mt_" + (mt))
-              + ".key AND "
-              + ("mt_" + (mt))
-              + ".language = \'"
-              + language
-              + "\'");
-
-    } else {
-      selectionJoinFieldSet.add(
-          "LEFT JOIN "
-              + "MetaSelectItem "
-              + ("msi_" + (msi))
-              + " ON CAST("
-              + "self."
-              + fieldName[index]
-              + " AS text) = "
-              + ("msi_" + (msi))
-              + ".value AND "
-              + ("msi_" + (msi))
-              + ".select = "
-              + metaSelect.getId());
-    }
-  }
-
-  private void checkNormalField(String[] splitField, int parentIndex)
-      throws ClassNotFoundException {
+  private void checkNormalField(String[] splitField, int parentIndex) {
 
     if (isSelectionField) {
       if (parentIndex == 0) {
-        selectSelectionField = "";
+        selectField = "";
       }
       if (language.equals(LANGUAGE_FR)) {
-        selectSelectionField += ("mt_" + (mt)) + ".message";
+        aliasName = ("mt_" + (mt));
+        selectField += ".message";
       } else {
-        selectSelectionField += ("msi_" + (msi)) + ".title";
+        aliasName = ("msi_" + (msi));
+        selectField += ".title";
       }
       isSelectionField = false;
     } else {
       if (parentIndex == 0) {
-        selectNormalField = "";
-        selectNormalField += "self";
+        selectField = "";
+        aliasName = "self";
       }
-      selectNormalField += "." + splitField[parentIndex];
+      selectField += "." + splitField[parentIndex];
     }
   }
 
@@ -408,50 +269,28 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   private StringBuilder createQueryBuilder(
       MetaModel metaModel,
       StringBuilder selectFieldBuilder,
-      StringBuilder selectJoinFieldBuilder,
-      StringBuilder selectionFieldBuilder,
-      String criteria,
+      List<Long> recordIds,
       StringBuilder orderByFieldBuilder) {
 
-    String joinField = "",
-        selectionJoinField = "",
-        selectionRelationalJoinField = "",
-        orderByCol = "";
-    StringBuilder queryBuilder = new StringBuilder();
+    String joinField = "", selectionJoinField = "", orderByCol = "";
 
     joinField = String.join(" ", joinFieldSet);
     selectionJoinField = String.join(" ", selectionJoinFieldSet);
-    selectionRelationalJoinField = String.join(" ", selectionRelationalJoinFieldSet);
 
     params = null;
-    criteria = getCriteria(metaModel, criteria);
+    String criteria = getCriteria(metaModel, recordIds);
 
     if (!orderByFieldBuilder.toString().equals(""))
       orderByCol =
           " ORDER BY " + orderByFieldBuilder.substring(0, orderByFieldBuilder.length() - 1);
 
-    queryBuilder.append("SELECT NEW Map(");
-    queryBuilder.append(
-        (!selectFieldBuilder.toString().equals(""))
-            ? selectFieldBuilder.substring(0, selectFieldBuilder.length() - 1) + ","
-            : "");
-    queryBuilder.append(
-        (!selectJoinFieldBuilder.toString().equals(""))
-            ? selectJoinFieldBuilder.substring(0, selectJoinFieldBuilder.length() - 1) + ","
-            : "");
-    queryBuilder.append(
-        (!selectionFieldBuilder.toString().equals(""))
-            ? selectionFieldBuilder.substring(0, selectionFieldBuilder.length() - 1)
-            : "");
-    if (queryBuilder.toString().endsWith(","))
-      queryBuilder = new StringBuilder(queryBuilder.substring(0, queryBuilder.length() - 1));
+    StringBuilder queryBuilder = new StringBuilder();
+    queryBuilder.append("SELECT NEW List(");
+    queryBuilder.append(selectFieldBuilder.substring(0, selectFieldBuilder.length() - 1));
     queryBuilder.append(") FROM " + metaModel.getName() + " self ");
-    queryBuilder.append((!Strings.isNullOrEmpty(joinField)) ? "LEFT JOIN " : "");
     queryBuilder.append((!Strings.isNullOrEmpty(joinField)) ? joinField + " " : "");
     queryBuilder.append(
         (!Strings.isNullOrEmpty(selectionJoinField)) ? selectionJoinField + " " : "");
-    queryBuilder.append(
-        (!Strings.isNullOrEmpty(selectionRelationalJoinField)) ? selectionRelationalJoinField : "");
     queryBuilder.append((!Strings.isNullOrEmpty(criteria)) ? criteria : "");
     queryBuilder.append((!Strings.isNullOrEmpty(orderByCol)) ? orderByCol : "");
 
@@ -465,20 +304,20 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    * @param criteria
    * @return
    */
-  private String getCriteria(MetaModel metaModel, String criteria) {
-    if (!StringUtils.isNullOrEmpty(criteria)) {
-      String criteriaIds = criteria.substring(1, criteria.length() - 1);
-      log.trace("criteria : {}", criteriaIds);
-      criteria = " WHERE self.id IN (" + criteriaIds + ")";
-      return criteria;
+  private String getCriteria(MetaModel metaModel, List<Long> recordIds) {
+    String criteria = null;
+    if (recordIds != null) {
+      criteria = recordIds.toString().substring(1, recordIds.toString().length() - 1);
+      log.trace("criteria : {}", recordIds.toString());
+      criteria = " WHERE self.id IN (" + criteria + ")";
     }
     Filter filter = getJpaSecurityFilter(metaModel);
     if (filter != null) {
       String permissionFilter = filter.getQuery();
-      if (StringUtils.isNullOrEmpty(criteria)) {
+      if (recordIds == null) {
         criteria = " WHERE " + permissionFilter;
       } else {
-        criteria = criteria + " AND (" + permissionFilter + ")";
+        criteria += " AND (" + permissionFilter + ")";
       }
       params = filter.getParams();
     }
@@ -502,7 +341,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   private Query createQuery(StringBuilder queryBuilder) {
     log.trace("query : {}", queryBuilder.toString());
-    Query query = JPA.em().createQuery(queryBuilder.toString(), Map.class);
+    Query query = JPA.em().createQuery(queryBuilder.toString(), List.class);
     if (params != null) {
       for (int i = 0; i < params.size(); i++) {
         query.setParameter(i, params.get(i));
@@ -514,130 +353,54 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   private List<AdvancedExportLine> sortAdvancedExportLineList(
       List<AdvancedExportLine> advancedExportLineList) {
 
-    Collections.sort(
-        advancedExportLineList, (line1, line2) -> line1.getSequence() - line2.getSequence());
+    advancedExportLineList.sort(
+        new Comparator<AdvancedExportLine>() {
+
+          @Override
+          public int compare(AdvancedExportLine line1, AdvancedExportLine line2) {
+            if (line1.getSequence() == line2.getSequence()) {
+              if (line1.getId() > line2.getId()) {
+                return 1;
+              } else {
+                return -1;
+              }
+            }
+            return line1.getSequence() - line2.getSequence();
+          }
+        });
     return advancedExportLineList;
   }
 
   /**
-   * Initialize the object of <i>AdvancedExportGenerator</i> based on file type.
+   * Initialize the object of <i>AdvancedExportGenerator</i> based on file type and generate the
+   * export file.
    *
    * @throws AxelorException
-   * @throws IOException
-   * @throws DocumentException
-   * @throws ClassNotFoundException
    */
   @Override
-  public Map<Boolean, MetaFile> getAdvancedExport(
-      AdvancedExport advancedExport, String criteria, String fileType)
-      throws ClassNotFoundException, DocumentException, IOException, AxelorException {
+  public File export(AdvancedExport advancedExport, List<Long> recordIds, String fileType)
+      throws AxelorException {
 
-    String extension = "";
-    AdvancedExportGenerator exportGenerator = null;
+    AdvancedExportGenerator exportGenerator =
+        exportGeneratorFactory.getAdvancedExportGenerator(advancedExport, fileType);
 
-    switch (fileType) {
-      case PDF:
-        extension = PDF_EXTENSION;
-        exportGenerator = new PdfExportGenerator();
-        break;
-      case EXCEL:
-        extension = EXCEL_EXTENSION;
-        exportGenerator = new ExcelExportGenerator();
-        break;
-      case CSV:
-        extension = CSV_EXTENSION;
-        exportGenerator = new CsvExportGenerator();
-        break;
-      default:
-        break;
-    }
-    return createAdvancedExportFile(exportGenerator, advancedExport, criteria, extension, fileType);
+    sortAdvancedExportLineList(advancedExport.getAdvancedExportLineList());
+
+    Query query = getAdvancedExportQuery(advancedExport, recordIds);
+
+    File file = exportGenerator.generateFile(query);
+    isReachMaxExportLimit = exportGenerator.getIsReachMaxExportLimit();
+    exportFileName = exportGenerator.getExportFileName();
+    return file;
   }
 
-  /**
-   * Create the export file based on <i>AdvancedExportGenerator</i>.
-   *
-   * @param exportGenerator
-   * @param advancedExport
-   * @param criteria
-   * @param extension
-   * @param fileType
-   * @return
-   * @throws DocumentException
-   * @throws IOException
-   * @throws ClassNotFoundException
-   * @throws AxelorException
-   */
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  private Map<Boolean, MetaFile> createAdvancedExportFile(
-      AdvancedExportGenerator exportGenerator,
-      AdvancedExport advancedExport,
-      String criteria,
-      String extension,
-      String fileType)
-      throws ClassNotFoundException, DocumentException, IOException, AxelorException {
-
-    Map<Boolean, MetaFile> exportMap = new HashMap<Boolean, MetaFile>();
-    List<Map> dataList = new ArrayList<>();
-    boolean isReachMaxExportLimit = false;
-    int startPosition = 0;
-    int reachLimit = 0;
-    int maxExportLimit = advancedExport.getMaxExportLimit();
-    int queryFetchLimit = advancedExport.getQueryFetchSize();
-    MetaModel metaModel = advancedExport.getMetaModel();
-    List<AdvancedExportLine> advancedExportLineList =
-        sortAdvancedExportLineList(advancedExport.getAdvancedExportLineList());
-
-    Query query = getAdvancedExportQuery(advancedExport, criteria);
-    query.setMaxResults(queryFetchLimit);
-
-    String fileName = metaModel.getName() + extension;
-    File tempFile = File.createTempFile(metaModel.getName(), extension);
-
-    // Initialize the object depends on fileType. e.g. Pdf - Document, Excel - WorkBook, etc.
-    exportGenerator.initialize(advancedExportLineList, metaModel, tempFile);
-
-    log.debug("Export file : {}", fileName);
-    // generate the header of export file.
-    exportGenerator.generateHeader();
-
-    while (startPosition < maxExportLimit) {
-      if ((maxExportLimit - startPosition) < queryFetchLimit) {
-        query.setMaxResults((maxExportLimit - startPosition));
-      }
-      query.setFirstResult(startPosition);
-      dataList = query.getResultList();
-      if (dataList.isEmpty()) break;
-
-      // generate the body of export file.
-      exportGenerator.generateBody(dataList);
-
-      startPosition = startPosition + queryFetchLimit;
-      reachLimit += dataList.size();
-    }
-    if (maxExportLimit == reachLimit) {
-      isReachMaxExportLimit = true;
-    }
-    // close the object.
-    exportGenerator.close();
-
-    FileInputStream inStream = new FileInputStream(tempFile);
-    MetaFile exportFile = metaFiles.upload(inStream, fileName);
-    inStream.close();
-    tempFile.delete();
-
-    exportMap.put(isReachMaxExportLimit, exportFile);
-    return exportMap;
+  @Override
+  public boolean getIsReachMaxExportLimit() {
+    return isReachMaxExportLimit;
   }
 
-  /**
-   * Explicitly convert decimal value with it's scale.
-   *
-   * @param value
-   * @return
-   */
-  public static String convertDecimalValue(Object value) {
-    BigDecimal decimalVal = (BigDecimal) value;
-    return String.format("%." + decimalVal.scale() + "f", decimalVal);
+  @Override
+  public String getExportFileName() {
+    return exportFileName;
   }
 }
