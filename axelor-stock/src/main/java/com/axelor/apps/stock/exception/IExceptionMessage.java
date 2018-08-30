@@ -47,7 +47,7 @@ public interface IExceptionMessage {
 
   /** Stock Location Line Service Impl */
   static final String LOCATION_LINE_1 = /*$$(*/
-      "Product's stocks %s (%s) are not in sufficient quantity to realize the delivery" /*)*/;
+      "Insufficient stock quantity for the product %s (%s)" /*)*/;
 
   static final String LOCATION_LINE_2 = /*$$(*/
       "Product's stocks %s (%s), tracking number {} are not in sufficient quantity to realize the delivery" /*)*/;
