@@ -108,7 +108,7 @@
 				<field name="packPriceSelect" showIf="typeSelect == 2" onChange="action-group-sale-order-line-pack-price-select-onchange" />
    			   	<field name="oldQty"/>
 				<panel colSpan="12">
-					<field name="qty" colSpan="3" hideIf="typeSelect == 2" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="typeSelect == 2"  validIf="$qtyValid != false"/>
+					<field name="qty" colSpan="3"  onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="isSubLine"  validIf="$qtyValid != false"/>
 					<field name="unit" colSpan="3" hideIf="typeSelect == 2" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 					<field name="price" colSpan="3" hideIf="typeSelect == 2" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"/>
 					<panel name="discount" colSpan="12" hideIf="typeSelect != 0">
