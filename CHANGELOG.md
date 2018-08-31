@@ -51,6 +51,7 @@
 - Tracking number configuration: display 'name' field on grid.
 - Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
 - Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
+- Removed editable from some reference fields in stock form views. 
 
 ## [5.0.4] - 2018-07-26
 ## Features
