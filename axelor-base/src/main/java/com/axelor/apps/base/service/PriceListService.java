@@ -143,7 +143,10 @@ public class PriceListService {
     } else if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
       return unitPrice
           .multiply(new BigDecimal(100).subtract(discountAmount))
-          .divide(new BigDecimal(100), appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+          .divide(
+              new BigDecimal(100),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              RoundingMode.HALF_UP);
     }
 
     return unitPrice;
