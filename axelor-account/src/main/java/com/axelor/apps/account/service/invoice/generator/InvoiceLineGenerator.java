@@ -147,7 +147,17 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       boolean isSubLine,
       Integer packPriceSelect) {
 
-    this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, isSubLine, packPriceSelect);
+    this(
+        invoice,
+        product,
+        productName,
+        description,
+        qty,
+        unit,
+        sequence,
+        isTaxInvoice,
+        isSubLine,
+        packPriceSelect);
 
     this.price = price;
     this.priceDiscounted = priceDiscounted;

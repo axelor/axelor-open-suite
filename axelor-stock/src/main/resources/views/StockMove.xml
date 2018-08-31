@@ -126,14 +126,14 @@
         </panel>
 
         <panel name="stockMoveInformation" title="Stock move information">
-            <field name="partner" domain="self.isContact = false" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form" hideIf="typeSelect == 1"/>
+            <field name="partner" canEdit="false" domain="self.isContact = false" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form" hideIf="typeSelect == 1"/>
             <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-update-info-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
             <field name="name" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
             <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-printing-settings-default-value" canEdit="false" if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
             <spacer if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
 
-            <field name="fromStockLocation" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
-            <field name="toStockLocation" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <field name="fromStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <field name="toStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
 
             <field name="fromStockLocation.address" showIf="typeSelect == 1"/>
             <field name="toStockLocation.address" showIf="typeSelect == 1"/>
@@ -175,8 +175,8 @@
               <panel-related field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" readonlyIf="statusSelect == 3" grid-view="stock-move-line-planned-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect == 2"/>
             </panel>
             <panel title="Freight Carrier" readonlyIf="statusSelect == 3 || statusSelect == 4" >
-                <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
-				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
+                <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
+				<field name="freightCarrierMode" canEdit="false" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
                 <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
             	<field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false" />
             	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
@@ -414,7 +414,7 @@
 	</action-record>
 	
 	<action-record name="action-stock-move-record-ispm-field" model="com.axelor.apps.stock.db.StockMove">
-		<field name="isIspmRequired" expr="eval: println(toAddress?.addressL7Country); partner?.isIspmRequired || toAddress?.addressL7Country?.isIspmRequired"/>
+		<field name="isIspmRequired" expr="eval: partner?.isIspmRequired || toAddress?.addressL7Country?.isIspmRequired"/>
 	</action-record>
 
 	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.stock.db.StockMove">

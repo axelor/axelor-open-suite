@@ -306,4 +306,24 @@ public class InvoiceLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void filterAccount(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    Invoice invoice = this.getInvoice(context);
+    if (invoice != null && invoice.getCompany() != null) {
+      String domain = null;
+      if (InvoiceToolService.isPurchase(invoice)) {
+        domain =
+            "self.company.id = "
+                + invoice.getCompany().getId()
+                + "AND self.accountType.technicalTypeSelect IN ('debt' , 'immobilisation' , 'charge')";
+      } else {
+        domain =
+            "self.company.id = "
+                + invoice.getCompany().getId()
+                + " AND self.accountType.technicalTypeSelect = 'income'";
+      }
+      response.setAttr("account", "domain", domain);
+    }
+  }
 }
