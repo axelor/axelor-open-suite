@@ -1,12 +1,81 @@
 # Changelog
-## [Unreleased 5.0.4]
+## [Unreleased 5.0.5]	
+##Features
+- Add Data Backup and Restore
+- Add unitary tests for password
+- Module for mobile app added
+
+## Improvements
+- Fleet app: added FR demo data
+- HR menu: added `order` for top menuitems
+- Marketing app: added FR demo data
+- Advanced export : code refactor and optimize the performance.
+- BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
+- Configure BoM form: show sub bom list.
+- Configurator: improve UI for indicators.
+- Split formula list into formulas for product and formulas for sale order line in configurator creator.
+- Add a column name to configurators, equal to the creator's name.
+- General legder report: hide the balance when it is equal to 0.
+- UserController: Improve exception handling.
+- Update translations.
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Add supplier invoice number in supplier invoices grid.
+- Add column description in move line grid views.
+
+## Bug Fixes
+- Fix on prod process report.
+- Fix json field creator's issue of model change not reflected on fields. 
+- Configurator export: add contextField to metaJsonField.
+- Configurator creator: fill default attributes for both product and sale order line.
+- Computation of value of a given stock location is now the same in the form and in the printing.
+- BPM: Provide translations for some fields.
+- Fix chart builder operator display issue.
+- Portal: Fix ticket view on client portal.
+- Fix wrong quantity on manuf order when generating prod product lines where bill of material quantity is different from 1.
+- Fix new bug when checking type on configurator.
+- BPM: Provide translation for Workflow dashboard.
+- Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
+- Budget form: add missing tranlation.
+- Invoice: reload the view after regenerating the printing.
+- DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
+- BPM: keep model read only if custom field is created from custom field creator.
+- Fix % based discounts which didn't worked with decimal values on Sale, Purchase and Invoice.
+- Fix the companyBankDetails field filling when SaleOrder is created from the Customer view.
+- Fix groovy error due to a null list in action-budget-validate-exceed-line-amount.
+- Event synchronization: fix some new events being archived.
+- Password : Fix regex.
+- Fix : error when computing the duration of a leave request without a company.
+- Invoice : filter account depending on Invoice Company and Type & Account Type
+- Fix stock move split by unit. 
+- Tracking number configuration: Fix 'Tracking number order' selection and it's static variables.
+- Tracking number configuration: display 'name' field on grid.
+- Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
+- Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
+- Removed editable from some reference fields in stock form views. 
+- Now displays purchase orders in the Activity panel of a partner form for suppliers and carriers.
+
+## [5.0.4] - 2018-07-26
 ## Features
 - User : Add a search filter to see the active users.
+- Add support for multiple demo data config per app. 
+- Configurator creator : Add demo data.
 
 ## Improvements
 - Stock rules : change column name of code and name to product code and product name.
+- Stock rules: new message template in demo data.
 - Account : Create a new entry in menu configuration for Analytic journal types
 - Apps management: improve layout of applications on the view
+- Sale/purchase/invoice order lines of type "title" are now displayed in bold.
+- Stock location tree: add missing french translation.
+- Improved model studio by removing not required properties from different elements.
+- Move lines: set automatically currency rate and amount in manual move lines.
+- Stock location line: add the dotted field 'product.unit'.
+- Stock move: make lines fully editable and removable on planned status.
+- Harmonization of Sale order line, purchase order line and invoice line form views.
+- Account : prefill employee/supplier/customer account creation form with default values from configuration.
+- Timesheet on operation order: Compute operation order total duration so its always up to date.
+- Improve partner form view.
+- Address: rework coordinates updating.
 
 ## Bug Fixes
 - Leads : Fix demo data according with 'isRecycled' new field.
@@ -23,7 +92,35 @@
 - Demo data: in base, "base_shipmentMode.csv" was deleted because present in stock, and correction of french demo data of "stock_shipmentMode" 
 - Demo data, remove unused "base_scheduler.csv"
 - Bill of material generation from configurator: fixed an exception on using a many-to-one from context in script.
-- Show purchase order form in partner purchase order (panel Activities)
+- Production : Change menu title in french version from 'Ordres de Production' to 'Ordres de production'. 
+- CANCEL REASON : put field "Name" manadatory.
+- Studio: Fix datetime comparison for chart parameter.
+- Cost price in manufacturing order: fix quantity in produced cost sheet line.
+- Fix product last production price computation from manufacturing order.
+- Configurator creator : Fix changes in import and export.
+- Cost sheet group : Put field 'name' mandatory.
+- Fix HR root menu access for all HR related apps. 
+- Event : Fix domain on partner.
+- Event: Fix create an event directly by clicking on the calendar.
+- Partner price list : Put field "Label" mandatory.
+- Demo data import : Fix issues in import demo data from excel demo file with specified configuration in excel file.
+- Fix automatic project generation when confirming sale orders not knowing what type of generation to choose.
+- Generating a project from a sale order: "project alone" renamed to "business project", generating a project with a "phase by line" or "task by line" generation type now automatically generates the elements.
+- Employee: Fix always dirty form view.
+- Fix translation : base, hr, project, business-project, accounting, bank-payment and studio.
+- Added missing translations to the french version when generating a project from a sale order.
+- Fixed bugs and updated printings of ATI sales/purchases/invoices. Also fixed generating a stock move from a sale/purchase order (would consider ati unit prices as if they were excluding taxes).
+- Timesheet: Hide chart when imputing on manufacturing order.
+- BUDGET : Display budget dustribution as editable and check order line amount and total of budget in purchase orderline and invoice line.
+- Stock Rules: Fix npe on stock rule alert.
+- Fix generated pack sale order lines not having their supply method correctly set.
+- PRODUCT : Remove field 'ean13' which was unused.
+- Model studio: Fix lost translation on field drag. 
+- Purchase order: Fix hibernate exception when click on 'Generate suppliers purchase orders' button.
+- Error message instead of NPE on operation order plan with a configuration error.
+- Fix total amount reseting on save in bank orders.
+- Configurator: fix using M2O in formula.
+- Tracking number search: Fix stock location binding.
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
@@ -100,6 +197,7 @@
 - Web service mobile: change the "create timesheet line" method to update it also, and have duration/hours updated
 - Product : displaying quantities in stock with big numbers (until millions)
 - Manufacturing order: fix NPE when adding manually an operation order, caused by missing work center
+
 
 ## [5.0.1] - 2018-06-18
 ## Improvements
@@ -736,7 +834,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...dev
+[Unreleased 5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...dev
+[5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...v5.0.2
 [5.0.1]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0...v5.0.1

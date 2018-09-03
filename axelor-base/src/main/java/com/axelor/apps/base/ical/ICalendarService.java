@@ -702,6 +702,7 @@ public class ICalendarService {
         Calendar cal = newCalendar();
         cal.getComponents().add(source);
         collection.addCalendar(cal);
+        allRemoteUids.add(item.getUid());
       }
       // else it has been modified
       else {

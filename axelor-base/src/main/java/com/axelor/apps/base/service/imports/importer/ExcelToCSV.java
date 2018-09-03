@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -64,17 +68,23 @@ public class ExcelToCSV {
     return newSheets;
   }
 
-  public void writeTOCSV(File sheetFile, Sheet sheet) throws IOException, ParseException {
+  public void writeTOCSV(File sheetFile, Sheet sheet, int startRow, int startColumn)
+      throws IOException, ParseException, AxelorException {
     String separator = ";";
     FileWriter writer = new FileWriter(sheetFile);
     int cnt = 0;
 
-    for (int row = 3; row <= sheet.getLastRowNum(); row++) {
+    for (int row = startRow; row <= sheet.getLastRowNum(); row++) {
 
-      if (row == 3) {
+      if (row == startRow) {
         Row headerRow = sheet.getRow(row);
-        for (int cell = 1; cell < headerRow.getLastCellNum(); cell++) {
+        for (int cell = startColumn; cell < headerRow.getLastCellNum(); cell++) {
           Cell headerCell = headerRow.getCell(cell);
+          if (headerCell == null || headerCell.getCellType() != Cell.CELL_TYPE_STRING) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(IExceptionMessage.INVALID_HEADER));
+          }
           writer.append(headerCell.getStringCellValue() + separator);
           cnt++;
         }
@@ -83,7 +93,7 @@ public class ExcelToCSV {
       } else {
 
         Row dataRow = sheet.getRow(row);
-        for (int cell = 1; cell <= cnt; cell++) {
+        for (int cell = startColumn; cell <= cnt; cell++) {
           try {
 
             Cell dataCell = dataRow.getCell(cell);

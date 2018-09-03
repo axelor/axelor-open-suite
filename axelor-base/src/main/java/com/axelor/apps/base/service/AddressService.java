@@ -21,7 +21,10 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.exception.AxelorException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import wslite.json.JSONException;
 
 public interface AddressService {
@@ -52,14 +55,33 @@ public interface AddressService {
 
   public boolean checkAddressUsed(Long addressId);
 
-  public Address checkLatLong(Address address) throws AxelorException, JSONException;
-
-  public Address checkLatLong(Address address, boolean forceUpdate)
+  /**
+   * Get or update latitude and longitude.
+   *
+   * @param address
+   * @return
+   * @throws JSONException
+   * @throws AxelorException
+   */
+  Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
       throws AxelorException, JSONException;
 
-  @Deprecated
-  public Address checkLatLang(Address address, boolean forceUpdate)
+  /**
+   * Update latitude and longitude.
+   *
+   * @param address
+   * @throws AxelorException
+   * @throws JSONException
+   */
+  Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
       throws AxelorException, JSONException;
+
+  /**
+   * Reset latitude and longitude.
+   *
+   * @param address
+   */
+  void resetLatLong(Address address);
 
   public String computeFullName(Address address);
 

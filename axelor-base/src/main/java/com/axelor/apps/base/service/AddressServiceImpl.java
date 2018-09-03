@@ -19,10 +19,16 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.repo.AddressRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -32,8 +38,13 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -41,13 +52,17 @@ import wslite.json.JSONException;
 @Singleton
 public class AddressServiceImpl implements AddressService {
 
-  @Inject private AddressRepository addressRepo;
+  @Inject protected AddressRepository addressRepo;
+  @Inject protected com.axelor.apps.tool.address.AddressTool ads;
+  @Inject protected MapService mapService;
 
-  @Inject private com.axelor.apps.tool.address.AddressTool ads;
-
-  @Inject private PartnerRepository partnerRepo;
+  protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  static {
+    registerCheckUsedFunc(AddressServiceImpl::checkAddressUsedBase);
+  }
 
   @Override
   public boolean check(String wsdlUrl) {
@@ -70,7 +85,7 @@ public class AddressServiceImpl implements AddressService {
 
     CSVWriter csv =
         new CSVWriter(new java.io.FileWriter(path), "|".charAt(0), CSVWriter.NO_QUOTE_CHARACTER);
-    List<String> header = new ArrayList<String>();
+    List<String> header = new ArrayList<>();
     header.add("Id");
     header.add("AddressL1");
     header.add("AddressL2");
@@ -147,50 +162,70 @@ public class AddressServiceImpl implements AddressService {
   @Override
   public boolean checkAddressUsed(Long addressId) {
     LOG.debug("Address Id to be checked = {}", addressId);
-    if (addressId != null) {
-      if (partnerRepo
-              .all()
-              .filter(
-                  "self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1", addressId)
-              .fetchOne()
-          != null) return true;
-    }
-    return false;
+    return checkUsedFuncs.stream().anyMatch(checkUsedFunc -> checkUsedFunc.apply(addressId));
+  }
+
+  protected static void registerCheckUsedFunc(Function<Long, Boolean> checkUsedFunc) {
+    checkUsedFuncs.add(checkUsedFunc);
+  }
+
+  private static boolean checkAddressUsedBase(Long addressId) {
+    return JPA.all(PartnerAddress.class).filter("self.address.id = ?1", addressId).fetchOne()
+            != null
+        || JPA.all(Partner.class).filter("self.contactAddress.id = ?1", addressId).fetchOne()
+            != null
+        || JPA.all(PickListEntry.class).filter("self.address.id = ?1", addressId).fetchOne()
+            != null;
   }
 
   @Override
   @Transactional
-  public Address checkLatLong(Address address) throws AxelorException, JSONException {
-    return checkLatLong(address, false);
+  public Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
+      throws AxelorException, JSONException {
+    Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
+    Optional<Pair<BigDecimal, BigDecimal>> latLong = getLatLong(address);
+
+    if (latLong.isPresent()) {
+      return latLong;
+    }
+
+    return updateLatLong(address);
   }
 
   @Override
   @Transactional
-  public Address checkLatLong(Address address, boolean forceUpdate)
+  public Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
       throws AxelorException, JSONException {
+    Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
 
-    address = addressRepo.find(address.getId());
-    BigDecimal latit = address.getLatit();
-    BigDecimal longit = address.getLongit();
-
-    if ((BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0)
-        || forceUpdate) {
-      Map<String, Object> result = Beans.get(MapService.class).getMap(address.getFullName());
-      if (result != null) {
-        address.setLatit((BigDecimal) result.get("latitude"));
-        address.setLongit((BigDecimal) result.get("longitude"));
-        address = addressRepo.save(address);
-      }
+    if (mapService.isConfigured() && StringUtils.notBlank(address.getFullName())) {
+      Map<String, Object> result = mapService.getMap(address.getFullName());
+      BigDecimal latitude = (BigDecimal) result.get("latitude");
+      BigDecimal longitude = (BigDecimal) result.get("longitude");
+      setLatLong(address, Pair.of(latitude, longitude));
     }
 
-    return address;
+    return getLatLong(address);
   }
 
-  // TODO: remove this misspelled method.
   @Override
-  public Address checkLatLang(Address address, boolean forceUpdate)
-      throws AxelorException, JSONException {
-    return checkLatLong(address, forceUpdate);
+  @Transactional
+  public void resetLatLong(Address address) {
+    Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
+    setLatLong(address, Pair.of(null, null));
+  }
+
+  protected void setLatLong(Address address, Pair<BigDecimal, BigDecimal> latLong) {
+    address.setLatit(latLong.getLeft());
+    address.setLongit(latLong.getRight());
+  }
+
+  protected Optional<Pair<BigDecimal, BigDecimal>> getLatLong(Address address) {
+    if (address.getLatit() != null && address.getLongit() != null) {
+      return Optional.of(Pair.of(address.getLatit(), address.getLongit()));
+    }
+
+    return Optional.empty();
   }
 
   @Override

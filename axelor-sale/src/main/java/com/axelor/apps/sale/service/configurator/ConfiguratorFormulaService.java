@@ -20,17 +20,8 @@ package com.axelor.apps.sale.service.configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaField;
 
 public interface ConfiguratorFormulaService {
-
-  /**
-   * Get the filled MetaField
-   *
-   * @param configuratorFormula
-   * @return
-   */
-  MetaField getMetaField(ConfiguratorFormula configuratorFormula);
 
   /**
    * Check if the written formula is valid.
@@ -40,4 +31,13 @@ public interface ConfiguratorFormulaService {
    */
   void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator)
       throws AxelorException;
+
+  /**
+   * Get the name of the given object. Use EntityHelper to get the right class name for proxy
+   * classes.
+   *
+   * @param calculatedValue a result from groovy script.
+   * @return the name of the class.
+   */
+  String getCalculatedClassName(Object calculatedValue);
 }

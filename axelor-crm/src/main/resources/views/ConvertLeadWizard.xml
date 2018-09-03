@@ -68,12 +68,7 @@
 			    <field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
 			    <field name="$primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 			    <label title="Delivery Address" colSpan="12"/>
-		        <field name="$otherAddress" placeholder="Address" showTitle="false" type="string"/>
-		        <field name="$otherCity"  placeholder="City" showTitle="false" type="string"/>
-		        <field name="$otherState" placeholder="State" showTitle="false" type="string"/>
-		        <field name="$otherPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
-		        <field name="$otherCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
-   				<field name="$partner.partnerTypeSelect" hidden="true" />
+			    <field name="$partner.partnerTypeSelect" hidden="true" />
    			</panel>
 		</panel>
 		<panel name="createContact" title="Contact" showIf="$leadToContactSelect == 1 &amp;&amp; ($leadToPartnerSelect == 1 &amp;&amp; $partner.partnerTypeSelect == 1 || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2)">

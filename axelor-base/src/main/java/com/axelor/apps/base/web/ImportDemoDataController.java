@@ -30,6 +30,7 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
@@ -38,7 +39,7 @@ import java.util.Map;
 @Singleton
 public class ImportDemoDataController {
 
-  @Inject ImportDemoDataService importDemoDataSercvice;
+  @Inject ImportDemoDataService importDemoDataService;
 
   @Inject MetaFileRepository metaFileRepo;
 
@@ -54,10 +55,18 @@ public class ImportDemoDataController {
     File excelFile = MetaFiles.getPath(metaFile).toFile();
 
     if (Files.getFileExtension(excelFile.getName()).equals("xlsx")) {
-      MetaFile logMetaFile = importDemoDataSercvice.importDemoDataExcel(excelFile);
-      response.setFlash("Import completed successfully.Please check the log for more details");
+      File tmpFile = File.createTempFile("Import", ".log");
+
+      if (importDemoDataService.importDemoDataExcel(excelFile, tmpFile)) {
+        response.setFlash(I18n.get(IExceptionMessage.IMPORT_COMPLETED_MESSAGE));
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.INVALID_DATA_FORMAT_ERROR));
+      }
+
       response.setAttr("$logFile", "hidden", false);
-      response.setValue("$logFile", logMetaFile);
+      FileInputStream inStream = new FileInputStream(tmpFile);
+      response.setValue("$logFile", metaFiles.upload(inStream, "Import.log"));
+
     } else {
       response.setError(I18n.get(IExceptionMessage.VALIDATE_FILE_TYPE));
     }

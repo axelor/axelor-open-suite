@@ -38,7 +38,7 @@
 		<select model="com.axelor.apps.stock.db.StockLocation" title="Stock location">
 			<field name="detailsStockLocationLineList[].trackingNumber" as="trackingNumber"/>
 			<field name="detailsStockLocationLineList[].product.name" as="product"/>
-			<field name="detailsStockLocationLineList[].stockLocation.name" as="stockLocation"/>
+			<field name="detailsStockLocationLineList[].detailsStockLocation.name" as="stockLocation"/>
 			<field name="detailsStockLocationLineList[].currentQty" as="currentQty"/>
 			<field name="detailsStockLocationLineList[].futureQty" as="futureQty"/>
 			<where>

@@ -55,6 +55,7 @@
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
+        <field name="supplierInvoiceNb"/>
         <field name="externalReference"/>
 		<field name="operationTypeSelect"/>
 		<field name="operationSubTypeSelect"/>
@@ -177,7 +178,7 @@
             <field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
             <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
             <field name="interco"/>
-            <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
+            <field name="inAti" onChange="action-invoice-attrs-in-ati" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
         </panel>
 
         <panel title="Invoicing informations" hideIf="company == null">

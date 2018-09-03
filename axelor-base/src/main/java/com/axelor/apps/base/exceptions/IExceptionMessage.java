@@ -24,6 +24,8 @@ package com.axelor.apps.base.exceptions;
  */
 public interface IExceptionMessage {
 
+  public static final String EXCEPTION = /*$$(*/ "Warning !" /*)*/;
+
   static final String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
 
   static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/
@@ -173,6 +175,7 @@ public interface IExceptionMessage {
       "Feature currently not available with Open Street Maps." /*)*/;
   public static final String ADDRESS_7 = /*$$(*/
       "Current user's active company address is not set" /*)*/;
+  public static final String ADDRESS_CANNOT_BE_NULL = "Address cannot be null.";
 
   /** Bank details controller */
   public static final String BANK_DETAILS_1 = /*$$(*/
@@ -197,6 +200,8 @@ public interface IExceptionMessage {
   public static final String GENERAL_9 = /*$$(*/
       "Invalid duplicate finder field '%s'. Field type ManyToMany or OneToMany is not supported for duplicate check" /*)*/;
   public static final String GENERAL_10 = /*$$(*/ "No duplicate finder field configured." /*)*/;
+  public static final String GENERAL_11 = /*$$(*/ "Please select original object." /*)*/;
+
   /** Messsage controller */
   public static final String MESSAGE_1 = /*$$(*/
       "Error in print. Please check report configuration and print setting." /*)*/;
@@ -238,7 +243,8 @@ public interface IExceptionMessage {
   static final String ADVANCED_EXPORT_2 = /*$$(*/ "There is no records to export." /*)*/;
   static final String ADVANCED_EXPORT_3 = /*$$(*/
       "Warning : Exported maximum export limit records." /*)*/;
-  static final String ADVANCED_EXPORT_FILE_TYPE_UNKNOWN = /*$$(*/ "The file type is unknown." /*)*/;
+  static final String ADVANCED_EXPORT_4 = /*$$(*/
+      "Please select export object or export format." /*)*/;
 
   /** Barcode Generator Service */
   public static final String BARCODE_GENERATOR_1 = /*$$(*/
@@ -292,6 +298,21 @@ public interface IExceptionMessage {
       "Improper format of excel file." /*)*/;
   public static final String VALIDATE_FILE_TYPE = /*$$(*/ "Please import only excel file." /*)*/;
 
-  /** Import demo data */
-  public static final String FILE_NAME_NOT_EXISTS = /*$$(*/ "Please provide valid %s name" /*)*/;
+  /** write to CSV from excel sheet */
+  public static final String INVALID_HEADER = /*$$(*/ "Header is not valid." /*)*/;
+
+  /** Import demo data from excel */
+  public static final String MODULE = /*$$*/ "Module" /*)*/;
+
+  public static final String MODULE_NOT_EXIST = /*$$*/ "%s module is not exist." /*)*/;
+  public static final String DATA_FILE = /*$$*/ "Data file" /*)*/;
+  public static final String CONFIGURATION_FILE = /*$$*/ "Configuration file" /*)*/;
+  public static final String CONFIGURATION_FILE_NOT_EXIST = /*$$*/
+      "%s configuration file is not exist." /*)*/;
+  public static final String ROW_NOT_EMPTY = /*$$*/ "%s row must not be Empty." /*)*/;
+  public static final String CELL_NOT_VALID = /*$$*/ "%s  cell is not valid." /*)*/;
+  public static final String IMPORT_COMPLETED_MESSAGE = /*$$*/
+      "Import completed successfully.Please check the log for more details" /*)*/;
+  public static final String INVALID_DATA_FORMAT_ERROR = /*$$*/
+      "Invalid data format. Please check log for more details." /*)*/;
 }
