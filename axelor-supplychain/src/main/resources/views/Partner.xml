@@ -16,7 +16,7 @@
 	</form>
 
     <form name="incl-purchases-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-       <panel-dashlet colSpan="12" action="action-partner-view-purchases-orders" title="Purchase orders" showIf="id != null &amp;&amp; isSupplier"/>
+       <panel-dashlet colSpan="12" action="action-partner-view-purchases-orders" title="Purchase orders" showIf="id != null &amp;&amp; (isSupplier || isCarrier)"/>
     </form>
 
 	<form name="incl-customer-credit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >	
