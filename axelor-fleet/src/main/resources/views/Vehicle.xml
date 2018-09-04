@@ -97,6 +97,7 @@
 		<field name="plateNo" />
 		<field name="driverContact" />
 		<field name="vehicleState" />
+		<field name="company"/>
 		<template><![CDATA[
 		    <div class="span12"><strong>{{name}}</strong></div>
 			<div>
@@ -105,7 +106,8 @@
 			  </div>
 			  <div class="span8">
 			    <span>{{plateNo}}<br/>
-			    {{driverContact.name}}<br/>
+			    {{company.name}}<br/>
+			    {{driverContact.fullName}}<br/>
 			    {{vehicleState.name}}</span>
 			  </div>
 			</div>
