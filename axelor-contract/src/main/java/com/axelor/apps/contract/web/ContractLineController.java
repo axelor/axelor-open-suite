@@ -27,15 +27,15 @@ import com.google.inject.Singleton;
 @Singleton
 public class ContractLineController {
 
-	public void computeTotal(ActionRequest request, ActionResponse response) {
-		ContractLine contractLine = request.getContext().asType(ContractLine.class);
-		ContractLineService contractLineService = Beans.get(ContractLineService.class);
+  public void computeTotal(ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+    ContractLineService contractLineService = Beans.get(ContractLineService.class);
 
-		try {
-			contractLine = contractLineService.computeTotal(contractLine);
-			response.setValues(contractLine);
-		} catch (Exception e) {
-		    response.setValues(contractLineService.reset(contractLine));
-		}
-	}
+    try {
+      contractLine = contractLineService.computeTotal(contractLine);
+      response.setValues(contractLine);
+    } catch (Exception e) {
+      response.setValues(contractLineService.reset(contractLine));
+    }
+  }
 }

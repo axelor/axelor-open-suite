@@ -27,22 +27,20 @@ import com.google.inject.Inject;
 
 public class ConsumptionLineServiceImpl implements ConsumptionLineService {
 
-    protected AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
 
-    @Inject
-    public ConsumptionLineServiceImpl(AppBaseService appBaseService) {
-        this.appBaseService = appBaseService;
-    }
+  @Inject
+  public ConsumptionLineServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
-    @Override
-    public ConsumptionLine fill(ConsumptionLine line, Product product) {
-        Preconditions.checkNotNull(product,
-                I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
-        line.setLineDate(appBaseService.getTodayDate());
-        line.setProduct(product);
-        line.setReference(product.getName());
-        line.setUnit(product.getUnit());
-        return line;
-    }
-
+  @Override
+  public ConsumptionLine fill(ConsumptionLine line, Product product) {
+    Preconditions.checkNotNull(product, I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
+    line.setLineDate(appBaseService.getTodayDate());
+    line.setProduct(product);
+    line.setReference(product.getName());
+    line.setUnit(product.getUnit());
+    return line;
+  }
 }

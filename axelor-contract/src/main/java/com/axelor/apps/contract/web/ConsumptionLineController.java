@@ -26,16 +26,13 @@ import com.axelor.rpc.ActionResponse;
 
 public class ConsumptionLineController {
 
-    public void changeProduct(ActionRequest request, ActionResponse response) {
-        ConsumptionLine line = request.getContext()
-                .asType(ConsumptionLine.class);
-        try {
-            Beans.get(ConsumptionLineService.class)
-                    .fill(line, line.getProduct());
-            response.setValues(line);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+  public void changeProduct(ActionRequest request, ActionResponse response) {
+    ConsumptionLine line = request.getContext().asType(ConsumptionLine.class);
+    try {
+      Beans.get(ConsumptionLineService.class).fill(line, line.getProduct());
+      response.setValues(line);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
+  }
 }

@@ -29,12 +29,11 @@ import com.axelor.apps.contract.service.ContractVersionServiceImpl;
 
 public class ContractModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-		bind(ContractService.class).to(ContractServiceImpl.class);
-		bind(ContractVersionService.class).to(ContractVersionServiceImpl.class);
-		bind(ContractLineService.class).to(ContractLineServiceImpl.class);
-		bind(ConsumptionLineService.class).to(ConsumptionLineServiceImpl.class);
-	}
-
+  @Override
+  protected void configure() {
+    bind(ContractService.class).to(ContractServiceImpl.class);
+    bind(ContractVersionService.class).to(ContractVersionServiceImpl.class);
+    bind(ContractLineService.class).to(ContractLineServiceImpl.class);
+    bind(ConsumptionLineService.class).to(ConsumptionLineServiceImpl.class);
+  }
 }

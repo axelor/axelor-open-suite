@@ -18,11 +18,16 @@
 package com.axelor.apps.contract.exception;
 
 public interface IExceptionMessage {
-	String CONTRACT_MISSING_TERMINATE_DATE = /*$$(*/ "Please enter a terminated date for this version." /*)*/;
-	String CONTRACT_MISSING_ENGAGEMENT_DATE = /*$$(*/ "Please enter a engagement date." /*)*/;
-	String CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED = /*$$(*/ "Engagement duration is not fulfilled." /*)*/;
-	String CONTRACT_PRIOR_DURATION_NOT_RESPECTED = /*$$(*/ "Prior notice duration is not respected." /*)*/;
-	String CONTRACT_UNVALIDE_TERMINATE_DATE = /*$$(*/ "You cannot terminate a contract before version activation date." /*)*/;
-	String CONTRACT_CANT_REMOVE_INVOICED_LINE = /*$$(*/ "You cannot remove a line which has been already invoiced." /*)*/;
-	String CONTRACT_EMPTY_PRODUCT = /*$$(*/ "The product can't be empty." /*)*/;
+  String CONTRACT_MISSING_TERMINATE_DATE = /*$$(*/
+      "Please enter a terminated date for this version." /*)*/;
+  String CONTRACT_MISSING_ENGAGEMENT_DATE = /*$$(*/ "Please enter a engagement date." /*)*/;
+  String CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED = /*$$(*/
+      "Engagement duration is not fulfilled." /*)*/;
+  String CONTRACT_PRIOR_DURATION_NOT_RESPECTED = /*$$(*/
+      "Prior notice duration is not respected." /*)*/;
+  String CONTRACT_UNVALIDE_TERMINATE_DATE = /*$$(*/
+      "You cannot terminate a contract before version activation date." /*)*/;
+  String CONTRACT_CANT_REMOVE_INVOICED_LINE = /*$$(*/
+      "You cannot remove a line which has been already invoiced." /*)*/;
+  String CONTRACT_EMPTY_PRODUCT = /*$$(*/ "The product can't be empty." /*)*/;
 }

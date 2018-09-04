@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.contract.web;
 
-import java.time.LocalDate;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
@@ -37,95 +35,104 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.time.LocalDate;
 
 @Singleton
 public class ContractVersionController {
 
-	public void newDraft(ActionRequest request, ActionResponse response) {
-		Long contractId = Long.valueOf(request.getContext().get("_xContractId").toString());
-		Contract contract = Beans.get(ContractRepository.class).find(contractId);
-		ContractVersion newVersion = Beans.get(ContractVersionService.class).newDraft(contract);
-		response.setValues(Mapper.toMap(newVersion));
-	}
+  public void newDraft(ActionRequest request, ActionResponse response) {
+    Long contractId = Long.valueOf(request.getContext().get("_xContractId").toString());
+    Contract contract = Beans.get(ContractRepository.class).find(contractId);
+    ContractVersion newVersion = Beans.get(ContractVersionService.class).newDraft(contract);
+    response.setValues(Mapper.toMap(newVersion));
+  }
 
-	public void save(ActionRequest request, ActionResponse response) {
-		final ContractVersion version = JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
-		if (version.getContractNext() != null) {
-			return;
-		}
+  public void save(ActionRequest request, ActionResponse response) {
+    final ContractVersion version =
+        JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
+    if (version.getContractNext() != null) {
+      return;
+    }
 
-		Object xContractId = request.getContext().get("_xContractId");
-		Long contractId;
+    Object xContractId = request.getContext().get("_xContractId");
+    Long contractId;
 
-		if (xContractId != null) {
-			contractId = Long.valueOf(xContractId.toString());
-		} else if (version.getContract() != null) {
-			contractId = version.getContract().getId();
-		} else {
-			contractId = null;
-		}
+    if (xContractId != null) {
+      contractId = Long.valueOf(xContractId.toString());
+    } else if (version.getContract() != null) {
+      contractId = version.getContract().getId();
+    } else {
+      contractId = null;
+    }
 
-		if (contractId == null) {
-			return;
-		}
+    if (contractId == null) {
+      return;
+    }
 
-		// TODO: move in service
-		JPA.runInTransaction(() -> {
-			Contract contract = JPA.find(Contract.class, contractId);
-			contract.setNextVersion(version);
-			Beans.get(ContractRepository.class).save(contract);
-		});
+    // TODO: move in service
+    JPA.runInTransaction(
+        () -> {
+          Contract contract = JPA.find(Contract.class, contractId);
+          contract.setNextVersion(version);
+          Beans.get(ContractRepository.class).save(contract);
+        });
 
-		response.setReload(true);
-	}
+    response.setReload(true);
+  }
 
-	public void active(ActionRequest request, ActionResponse response) {
-		try {
-			Long id = request.getContext().asType(ContractVersion.class).getId();
-			ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
-			Beans.get(ContractService.class).activeNextVersion(contractVersion.getContractNext(), getTodayDate());
-			response.setView(ActionView
-					.define("Contract")
-					.model(Contract.class.getName())
-					.add("form", "contract-form")
-					.add("grid", "contract-grid")
-					.context("_showRecord", contractVersion.getContract().getId()).map());
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+  public void active(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(ContractVersion.class).getId();
+      ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
+      Beans.get(ContractService.class)
+          .activeNextVersion(contractVersion.getContractNext(), getTodayDate());
+      response.setView(
+          ActionView.define("Contract")
+              .model(Contract.class.getName())
+              .add("form", "contract-form")
+              .add("grid", "contract-grid")
+              .context("_showRecord", contractVersion.getContract().getId())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	public void waiting(ActionRequest request, ActionResponse response) {
-		try  {
-			Long id = request.getContext().asType(ContractVersion.class).getId();
-			ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
-			Beans.get(ContractService.class).waitingNextVersion(contractVersion.getContractNext(), getTodayDate());
-			response.setReload(true);
-		} catch(Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+  public void waiting(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(ContractVersion.class).getId();
+      ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
+      Beans.get(ContractService.class)
+          .waitingNextVersion(contractVersion.getContractNext(), getTodayDate());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	public void changeProduct(ActionRequest request, ActionResponse response) {
-		ContractLineService contractLineService = Beans.get(ContractLineService.class);
-		ContractLine contractLine = new ContractLine();
+  public void changeProduct(ActionRequest request, ActionResponse response) {
+    ContractLineService contractLineService = Beans.get(ContractLineService.class);
+    ContractLine contractLine = new ContractLine();
 
-		try  {
-			contractLine = request.getContext().asType(ContractLine.class);
+    try {
+      contractLine = request.getContext().asType(ContractLine.class);
 
-			ContractVersion contractVersion = request.getContext().getParent().asType(ContractVersion.class);
-			Contract contract = contractVersion.getContractNext() == null ? contractVersion.getContract() : contractVersion.getContractNext() ;
-			Product product = contractLine.getProduct();
+      ContractVersion contractVersion =
+          request.getContext().getParent().asType(ContractVersion.class);
+      Contract contract =
+          contractVersion.getContractNext() == null
+              ? contractVersion.getContract()
+              : contractVersion.getContractNext();
+      Product product = contractLine.getProduct();
 
-			contractLine = contractLineService.fillAndCompute(contractLine, contract, product);
-			response.setValues(contractLine);
-		}
-		catch (Exception e)  {
-			response.setValues(contractLineService.reset(contractLine));
-		}
-	}
+      contractLine = contractLineService.fillAndCompute(contractLine, contract, product);
+      response.setValues(contractLine);
+    } catch (Exception e) {
+      response.setValues(contractLineService.reset(contractLine));
+    }
+  }
 
-	private LocalDate getTodayDate() {
-		return Beans.get(AppBaseService.class).getTodayDate();
-	}
+  private LocalDate getTodayDate() {
+    return Beans.get(AppBaseService.class).getTodayDate();
+  }
 }

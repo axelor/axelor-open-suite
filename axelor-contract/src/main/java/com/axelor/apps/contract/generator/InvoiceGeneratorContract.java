@@ -27,51 +27,57 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 
 public class InvoiceGeneratorContract extends InvoiceGenerator {
-	
-	protected Contract contract;
-	private AppBaseService appBaseService;
 
-	public InvoiceGeneratorContract(Contract contract) throws AxelorException {
-		super(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE, contract.getCompany(),
-				contract.getPartner(), null, null,
-				contract.getContractId(), null, null);
-		this.contract = contract;
-		this.currency = contract.getCurrency();
-		this.paymentCondition = contract.getCurrentVersion().getPaymentCondition();
-		this.paymentMode = contract.getCurrentVersion().getPaymentMode();
-		this.appBaseService = Beans.get(AppBaseService.class);
-	}
+  protected Contract contract;
+  private AppBaseService appBaseService;
 
+  public InvoiceGeneratorContract(Contract contract) throws AxelorException {
+    super(
+        InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+        contract.getCompany(),
+        contract.getPartner(),
+        null,
+        null,
+        contract.getContractId(),
+        null,
+        null);
+    this.contract = contract;
+    this.currency = contract.getCurrency();
+    this.paymentCondition = contract.getCurrentVersion().getPaymentCondition();
+    this.paymentMode = contract.getCurrentVersion().getPaymentMode();
+    this.appBaseService = Beans.get(AppBaseService.class);
+  }
 
-	@Override
-	protected Invoice createInvoiceHeader() throws AxelorException  {
-	    Invoice invoice = super.createInvoiceHeader();
+  @Override
+  protected Invoice createInvoiceHeader() throws AxelorException {
+    Invoice invoice = super.createInvoiceHeader();
 
-		ContractVersion version = contract.getCurrentVersion();
-		if (contract.getIsInvoicingManagement() && version.getIsPeriodicInvoicing()) {
-			invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_PERIODIC_INVOICE);
-			invoice.setSubscriptionFromDate(contract.getInvoicePeriodStartDate());
-			invoice.setSubscriptionToDate(contract.getInvoicePeriodEndDate());
-		}
-		else if (contract.getEndDate() == null || contract.getEndDate().isAfter(appBaseService.getTodayDate())) {
-			invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_INVOICE);
-		} else {
-			invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
-		}
-
-		invoice.setContract(contract);
-		if (contract.getInvoicingDate() != null) {
-			invoice.setInvoiceDate(contract.getInvoicingDate());
-		} else {
-			invoice.setInvoiceDate(appBaseService.getTodayDate());
-		}
-
-		return invoice;
+    ContractVersion version = contract.getCurrentVersion();
+    if (contract.getIsInvoicingManagement() && version.getIsPeriodicInvoicing()) {
+      invoice.setOperationSubTypeSelect(
+          InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_PERIODIC_INVOICE);
+      invoice.setSubscriptionFromDate(contract.getInvoicePeriodStartDate());
+      invoice.setSubscriptionToDate(contract.getInvoicePeriodEndDate());
+    } else if (contract.getEndDate() == null
+        || contract.getEndDate().isAfter(appBaseService.getTodayDate())) {
+      invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_INVOICE);
+    } else {
+      invoice.setOperationSubTypeSelect(
+          InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
     }
 
-	@Override
-	public Invoice generate() throws AxelorException {
-		return createInvoiceHeader();
-	}
+    invoice.setContract(contract);
+    if (contract.getInvoicingDate() != null) {
+      invoice.setInvoiceDate(contract.getInvoicingDate());
+    } else {
+      invoice.setInvoiceDate(appBaseService.getTodayDate());
+    }
 
+    return invoice;
+  }
+
+  @Override
+  public Invoice generate() throws AxelorException {
+    return createInvoiceHeader();
+  }
 }

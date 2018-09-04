@@ -6,7 +6,13 @@ apply {
 	version = absVersion
 }
 
-axelor { 
+spotless {
+	java {
+		googleJavaFormat()
+	}
+}
+
+axelor {
 	title "Axelor Contract"
 	description "Axelor Contract Module"
 }
