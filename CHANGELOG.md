@@ -4,6 +4,7 @@
 - Add Data Backup and Restore
 - Add unitary tests for password
 - Module for mobile app added
+- Vehicle Fuel Log : add columns vehicle name, plate no, purchasePartner in grid view
 
 ## Improvements
 - Fleet app: added FR demo data
