@@ -8,7 +8,7 @@
   <entity name="Ticket">
       
 		<string name="ticketSeq" title="Ticket Number" readonly="true" />
-		<string name="subject" title="Subject" required="true"/>
+		<string name="subject" title="Subject" required="true" namecolumn="true" />
 		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 		<many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
 		<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Customer contact"/>
