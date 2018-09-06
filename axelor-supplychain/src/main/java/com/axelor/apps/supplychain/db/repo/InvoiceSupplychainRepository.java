@@ -17,14 +17,13 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
 
