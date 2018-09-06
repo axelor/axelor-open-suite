@@ -4568,7 +4568,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Project.manualElement'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -7760,7 +7760,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Project.manualElement'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -8949,6 +8949,42 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                 <cell id="5506">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
+                    <text id="5953">
+                        <property name="fontSize">100%</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Project.turnoverAndCostPerMonth'</value>
+                                </simple-property-list>
+                            </structure>
+                            <structure>
+                                <property name="paramName">param_2</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">params["Locale"].value</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<H2><VALUE-OF>row["translation"]</VALUE-OF></H2>]]></text-property>
+                    </text>
                     <extended-item extensionName="Chart" id="4950">
                         <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:data="http://www.birt.eclipse.org/ChartModelData" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
   <Version>2.6.1</Version>
@@ -8983,7 +9019,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
         </Color>
         <Visible>false</Visible>
       </Outline>
-      <Visible>true</Visible>
+      <Visible>false</Visible>
       <Label>
         <Caption>
           <Value>Turnover and Costs per month</Value>
@@ -15356,7 +15392,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Project.manualElement'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -17676,7 +17712,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Project.manualElement'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -18043,6 +18079,42 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
                 <cell id="5512">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
+                    <text id="5947">
+                        <property name="fontSize">100%</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Project.turnoverAndCostPerMonth'</value>
+                                </simple-property-list>
+                            </structure>
+                            <structure>
+                                <property name="paramName">param_2</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">params["Locale"].value</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<H2><VALUE-OF>row["translation"]</VALUE-OF></H2>]]></text-property>
+                    </text>
                     <extended-item extensionName="Chart" id="5524">
                         <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:data="http://www.birt.eclipse.org/ChartModelData" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
   <Version>2.6.1</Version>
@@ -18078,7 +18150,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
         </Color>
         <Visible>false</Visible>
       </Outline>
-      <Visible>true</Visible>
+      <Visible>false</Visible>
       <Label>
         <Caption>
           <Value>Turnover and Costs per month</Value>
