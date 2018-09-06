@@ -157,15 +157,15 @@ public interface ContractService {
     if (versions == null) {
       versions = new ArrayList<>();
     }
-    if (contract.getCurrentVersion() != null) {
-      versions.add(contract.getCurrentVersion());
+    if (contract.getCurrentContractVersion() != null) {
+      versions.add(contract.getCurrentContractVersion());
     }
     return versions;
   }
 
   default boolean isFullProrated(Contract contract) {
-    return contract.getCurrentVersion() != null
-        && (contract.getCurrentVersion().getIsTimeProratedInvoice()
-            && contract.getCurrentVersion().getIsVersionProratedInvoice());
+    return contract.getCurrentContractVersion() != null
+        && (contract.getCurrentContractVersion().getIsTimeProratedInvoice()
+            && contract.getCurrentContractVersion().getIsVersionProratedInvoice());
   }
 }

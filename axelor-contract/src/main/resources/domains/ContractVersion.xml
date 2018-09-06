@@ -17,7 +17,7 @@
 		<boolean name="isProratedInvoice" title="Prorated Invoice" default="false"/>
 		<boolean name="isProratedFirstInvoice" title="Prorated Starting periods" default="false"/>
 		<boolean name="isProratedLastInvoice" title="Prorated finished periods" default="false"/>
-		<boolean name="isTimeProratedInvoice" title="Protrate temporally" />
+		<boolean name="isTimeProratedInvoice" title="Prorated temporally" />
 		<boolean name="isVersionProratedInvoice" title="Prorate from versions" />
 		<boolean name="isTacitRenewal" title="Tacit renewal"/>
 		<boolean name="isAutoEnableVersionOnRenew" title="Auto enable version on renew"/>
@@ -31,18 +31,18 @@
 		<date name="supposedEndDate" title="Supposed end date" copy="false"/>
 		<date name="endDate" title="End date" copy="false"/>
 
-		<many-to-one name="activatedBy" ref="com.axelor.auth.db.User" title="Activated By" copy="false"/>
+		<many-to-one name="activatedByUser" ref="com.axelor.auth.db.User" title="Activated By" copy="false"/>
 		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
 		<many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
-		<many-to-one name="invoicingFrequency" ref="com.axelor.apps.base.db.Duration" title="Invoicing Frequency"/>
+		<many-to-one name="invoicingDuration" ref="com.axelor.apps.base.db.Duration" title="Invoicing Frequency"/>
 		<many-to-one name="contractHistory" ref="com.axelor.apps.contract.db.Contract" title="Contract" copy="false"/>
 		<many-to-one name="renewalDuration" title="Renewal duration" ref="com.axelor.apps.base.db.Duration" />
 		<many-to-one name="engagementDuration" title="Engagement duration" ref="com.axelor.apps.base.db.Duration" />
 		<many-to-one name="priorNoticeDuration" title="Prior notice duration" ref="com.axelor.apps.base.db.Duration" />
-		<many-to-one name="attachment" ref="com.axelor.meta.db.MetaFile"/>
+		<many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile"/>
 
-		<one-to-one name="contract" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="currentVersion" copy="false"/>
-		<one-to-one name="contractNext" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="nextVersion" copy="false"/>
+		<one-to-one name="contract" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="currentContractVersion" copy="false"/>
+		<one-to-one name="nextContract" ref="com.axelor.apps.contract.db.Contract" title="Contract" mappedBy="nextVersion" copy="false"/>
 
         <one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content" mappedBy="contractVersion"/>
 

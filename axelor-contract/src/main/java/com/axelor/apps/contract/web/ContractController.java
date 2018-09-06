@@ -155,7 +155,7 @@ public class ContractController {
   public void saveNextVersion(ActionRequest request, ActionResponse response) {
     final ContractVersion version =
         JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
-    if (version.getContractNext() != null) {
+    if (version.getNextContract() != null) {
       return;
     }
 

@@ -31,7 +31,7 @@ public class ContractRepository extends AbstractContractRepository {
   public Contract save(Contract contract) {
     try {
       if (contract.getContractId() == null) {
-        contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetType()));
+        contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetTypeSelect()));
       }
       return super.save(contract);
     } catch (Exception e) {

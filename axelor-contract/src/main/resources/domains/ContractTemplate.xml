@@ -35,7 +35,7 @@
 		<many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="true"/>
 		<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
 		<many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
-		<many-to-one name="invoicingFrequency" ref="com.axelor.apps.base.db.Duration" title="Invoicing Frequency"/>
+		<many-to-one name="invoicingDuration" ref="com.axelor.apps.base.db.Duration" title="Invoicing Frequency"/>
 		<many-to-one name="renewalDuration" title="Renewal duration" ref="com.axelor.apps.base.db.Duration" />
 		<many-to-one name="engagementDuration" title="Engagement duration" ref="com.axelor.apps.base.db.Duration" />
 		<many-to-one name="priorNoticeDuration" title="Prior notice duration" ref="com.axelor.apps.base.db.Duration" />

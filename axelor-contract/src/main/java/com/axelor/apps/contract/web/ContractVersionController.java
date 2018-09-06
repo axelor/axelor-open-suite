@@ -50,7 +50,7 @@ public class ContractVersionController {
   public void save(ActionRequest request, ActionResponse response) {
     final ContractVersion version =
         JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
-    if (version.getContractNext() != null) {
+    if (version.getNextContract() != null) {
       return;
     }
 
@@ -85,7 +85,7 @@ public class ContractVersionController {
       Long id = request.getContext().asType(ContractVersion.class).getId();
       ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
       Beans.get(ContractService.class)
-          .activeNextVersion(contractVersion.getContractNext(), getTodayDate());
+          .activeNextVersion(contractVersion.getNextContract(), getTodayDate());
       response.setView(
           ActionView.define("Contract")
               .model(Contract.class.getName())
@@ -103,7 +103,7 @@ public class ContractVersionController {
       Long id = request.getContext().asType(ContractVersion.class).getId();
       ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
       Beans.get(ContractService.class)
-          .waitingNextVersion(contractVersion.getContractNext(), getTodayDate());
+          .waitingNextVersion(contractVersion.getNextContract(), getTodayDate());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -120,9 +120,9 @@ public class ContractVersionController {
       ContractVersion contractVersion =
           request.getContext().getParent().asType(ContractVersion.class);
       Contract contract =
-          contractVersion.getContractNext() == null
+          contractVersion.getNextContract() == null
               ? contractVersion.getContract()
-              : contractVersion.getContractNext();
+              : contractVersion.getNextContract();
       Product product = contractLine.getProduct();
 
       contractLine = contractLineService.fillAndCompute(contractLine, contract, product);

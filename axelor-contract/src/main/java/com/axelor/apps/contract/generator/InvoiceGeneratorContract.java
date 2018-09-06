@@ -40,11 +40,12 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
         null,
         contract.getContractId(),
         null,
+        null,
         null);
     this.contract = contract;
     this.currency = contract.getCurrency();
-    this.paymentCondition = contract.getCurrentVersion().getPaymentCondition();
-    this.paymentMode = contract.getCurrentVersion().getPaymentMode();
+    this.paymentCondition = contract.getCurrentContractVersion().getPaymentCondition();
+    this.paymentMode = contract.getCurrentContractVersion().getPaymentMode();
     this.appBaseService = Beans.get(AppBaseService.class);
   }
 
@@ -52,7 +53,7 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
   protected Invoice createInvoiceHeader() throws AxelorException {
     Invoice invoice = super.createInvoiceHeader();
 
-    ContractVersion version = contract.getCurrentVersion();
+    ContractVersion version = contract.getCurrentContractVersion();
     if (contract.getIsInvoicingManagement() && version.getIsPeriodicInvoicing()) {
       invoice.setOperationSubTypeSelect(
           InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_PERIODIC_INVOICE);

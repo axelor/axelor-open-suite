@@ -6,7 +6,7 @@
 
 	<entity name="Contract" repository="abstract">
 
-		<integer name="targetType" title="Type" selection="contract.target.type.select" default="1" required="true"/>
+		<integer name="targetTypeSelect" title="Type" selection="contract.target.type.select" default="1" required="true"/>
 		<integer name="periodNumber" title="Number of finished periods" default="0"/>
 		<integer name="statusSelect" title="Status" selection="contract.status.select" default="1" required="true"/>
 		<integer name="renewalNumber" title="Number of renewal"/>
@@ -35,15 +35,15 @@
 
 		<many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="true"/>
 		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" />
-		<many-to-one name="terminatedBy" ref="com.axelor.auth.db.User" title="Terminated By"/>
+		<many-to-one name="terminatedByUser" ref="com.axelor.auth.db.User" title="Terminated By"/>
 		<many-to-one name="currentInvoicePeriod" ref="com.axelor.apps.contract.db.InvoicePeriod" title="Current invoice period"/>
 		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
 
-		<one-to-one name="currentVersion" ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"/>
+		<one-to-one name="currentContractVersion" ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"/>
 		<one-to-one name="nextVersion" ref="com.axelor.apps.contract.db.ContractVersion" title="Next version"/>
 
 		<one-to-many name="additionalBenefitContractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
-		<one-to-many name="invoicePeriodHistory" ref="com.axelor.apps.contract.db.InvoicePeriod" title="Invoice period history"/>
+		<one-to-many name="historyInvoicePeriodList" ref="com.axelor.apps.contract.db.InvoicePeriod" title="Invoice period history"/>
 		<one-to-many name="versionHistory" ref="com.axelor.apps.contract.db.ContractVersion" mappedBy="contractHistory" orderBy="-createdOn"/>
 		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
 

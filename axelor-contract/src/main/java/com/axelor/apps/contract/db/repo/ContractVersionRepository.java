@@ -28,13 +28,13 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
 
   public ContractVersion copy(Contract contract) {
     ContractVersion newVersion = new ContractVersion();
-    ContractVersion currentVersion = contract.getCurrentVersion();
+    ContractVersion currentVersion = contract.getCurrentContractVersion();
 
     newVersion.setStatusSelect(ContractVersionRepository.DRAFT_VERSION);
-    newVersion.setContractNext(contract);
+    newVersion.setNextContract(contract);
     newVersion.setPaymentMode(currentVersion.getPaymentMode());
     newVersion.setPaymentCondition(currentVersion.getPaymentCondition());
-    newVersion.setInvoicingFrequency(currentVersion.getInvoicingFrequency());
+    newVersion.setInvoicingDuration(currentVersion.getInvoicingDuration());
     newVersion.setInvoicingMoment(currentVersion.getInvoicingMoment());
     newVersion.setIsPeriodicInvoicing(currentVersion.getIsPeriodicInvoicing());
     newVersion.setAutomaticInvoicing(currentVersion.getAutomaticInvoicing());

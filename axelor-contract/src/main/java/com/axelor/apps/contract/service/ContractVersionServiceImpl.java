@@ -60,7 +60,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void ongoing(ContractVersion version, LocalDate date) throws AxelorException {
     version.setActivationDate(date);
-    version.setActivatedBy(AuthUtils.getUser());
+    version.setActivatedByUser(AuthUtils.getUser());
     version.setStatusSelect(ONGOING_VERSION);
 
     if (version.getVersion() >= 0
@@ -74,7 +74,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
     if (version.getContract().getIsInvoicingManagement()
         && version.getIsPeriodicInvoicing()
         && (version.getContract().getFirstPeriodEndDate() == null
-            || version.getInvoicingFrequency() == null)) {
+            || version.getInvoicingDuration() == null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get("Please fill the first period end date and the invoice frequency."));
