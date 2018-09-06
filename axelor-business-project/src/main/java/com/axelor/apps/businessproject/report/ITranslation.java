@@ -55,6 +55,10 @@ public interface ITranslation {
   public static final String PROJECT_TOTAL = /*$$(*/ "Project.total"; /*)*/
   public static final String PROJECT_RESULT = /*$$(*/ "Project.result"; /*)*/
 
+  public static final String PROJECT_MANUAL_ELEMENT = /*$$(*/ "Project.manualElement"; /*)*/
+  public static final String PROJECT_MANUAL_ELEMENT_TITLE = /*$$(*/
+      "Project.manualElementTitle"; /*)*/
+
   public static final String INVOICE_PURCHASE_INVOICE_NO_ANNEX = /*$$(*/
       "Invoice.purchaseInvoiceNoAnnex"; /*)*/
   public static final String INVOICE_PURCHASE_REFUND_NO_ANNEX = /*$$(*/

@@ -38,5 +38,10 @@
 		<option value="2">Project Phase</option>
 		<option value="3">Free</option>
 	</selection>
+	
+	<selection name="business.project.manual.element.type.select">
+		<option value="1">Remaining</option>
+		<option value="2">Realised</option>
+	</selection>
 
 </object-views>

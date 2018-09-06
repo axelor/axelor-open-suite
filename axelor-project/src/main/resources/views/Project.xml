@@ -232,8 +232,7 @@
 						showIf="$toInvoiceCounter > 0" css="btn-custom" icon="fa-file-text-o"
 						onClick="save,action-project-view-show-invoicing-projects"/>
 				<field name="invoicingComment" colSpan="12" />
-				<panel-related colSpan="12" field="elementsToInvoiceList"
-					form-view="elements-to-invoice-form" grid-view="elements-to-invoice-grid" />
+				<panel-related colSpan="12" field="manualElementList" form-view="manual-element-form" grid-view="manual-element-grid"/>
 				<panel-dashlet action="action-dashlet-project-customer-invoices" colSpan="12" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" />
 				<panel-dashlet action="action-dashlet-project-supplier-invoices" colSpan="12" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"/>
 				<panel-related
