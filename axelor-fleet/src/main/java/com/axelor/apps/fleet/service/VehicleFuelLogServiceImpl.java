@@ -17,16 +17,15 @@
  */
 package com.axelor.apps.fleet.service;
 
+import com.axelor.apps.fleet.db.VehicleFuelLog;
 import java.math.BigDecimal;
 
-import com.axelor.apps.fleet.db.VehicleFuelLog;
-
 public class VehicleFuelLogServiceImpl implements VehicleFuelLogService {
-	
-	@Override
-	public BigDecimal calculateTotalPrice(VehicleFuelLog vehicleFuelLog) {
-		BigDecimal litre = vehicleFuelLog.getLiter();
-		BigDecimal price = vehicleFuelLog.getPericePerLiter();
-		return litre.multiply(price);
-	}	
+
+  @Override
+  public BigDecimal calculateTotalPrice(VehicleFuelLog vehicleFuelLog) {
+    BigDecimal litre = vehicleFuelLog.getLiter();
+    BigDecimal price = vehicleFuelLog.getPericePerLiter();
+    return litre.multiply(price);
+  }
 }

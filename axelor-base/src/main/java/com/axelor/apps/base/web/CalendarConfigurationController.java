@@ -30,31 +30,33 @@ import com.google.inject.Singleton;
 @Singleton
 public class CalendarConfigurationController {
 
-    @Inject
-    private CalendarConfigurationService calendarConfigurationService;
+  @Inject private CalendarConfigurationService calendarConfigurationService;
 
-    public void createAction(ActionRequest request, ActionResponse response) {
-        try {
-            CalendarConfiguration calendarConfiguration = request.getContext().asType(CalendarConfiguration.class);
-            calendarConfiguration = Beans.get(CalendarConfigurationRepository.class)
-                    .find(calendarConfiguration.getId());
+  public void createAction(ActionRequest request, ActionResponse response) {
+    try {
+      CalendarConfiguration calendarConfiguration =
+          request.getContext().asType(CalendarConfiguration.class);
+      calendarConfiguration =
+          Beans.get(CalendarConfigurationRepository.class).find(calendarConfiguration.getId());
 
-            calendarConfigurationService.createEntryMenu(calendarConfiguration);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+      calendarConfigurationService.createEntryMenu(calendarConfiguration);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 
-    public void deleteAction(ActionRequest request, ActionResponse response) {
-        try {
-            CalendarConfiguration calendarConfiguration = request.getContext().asType(CalendarConfiguration.class);
-            calendarConfiguration = Beans.get(CalendarConfigurationRepository.class)
-                    .find(calendarConfiguration.getId());
+  public void deleteAction(ActionRequest request, ActionResponse response) {
+    try {
+      CalendarConfiguration calendarConfiguration =
+          request.getContext().asType(CalendarConfiguration.class);
+      calendarConfiguration =
+          Beans.get(CalendarConfigurationRepository.class).find(calendarConfiguration.getId());
 
-            calendarConfigurationService.deleteEntryMenu(calendarConfiguration);
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+      calendarConfigurationService.deleteEntryMenu(calendarConfiguration);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
+  }
 }

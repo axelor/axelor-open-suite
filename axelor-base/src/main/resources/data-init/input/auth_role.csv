@@ -1,2 +1,0 @@
-name;description;permissions
-role.admin;Access to all objects for all modules;perm.base.all|perm.meta.all|perm.dms.all|perm.mail.all|perm.auth.all

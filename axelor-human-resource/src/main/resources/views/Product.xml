@@ -90,27 +90,31 @@
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="main">
-            <field name="productTypeSelect" hidden="true"/>
-
-	    	<panel colSpan="4">
-	        	<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
-	        	<field name="versionSelect" colSpan="12"/>
-	        </panel>
-            <panel colSpan="8">
-                <field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="3"/>
-				<field name="name" showTitle="false" css="label-bold bold" placeholder="Name" colSpan="9"/>
-				<panel title="Product typology" colSpan="6" colWidths="30%,70%">
-					<field name="inAti"/>
-					<field name="isAnalyticCapture" if-module="axelor-account"  if="__config__.app.isApp('account')" />
-					<field name="deductLunchVoucher" hideIf="!expense" colSpan="12"/>
-					<field name="expense" hidden="true"/>
-				</panel>
-				<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
-					<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-					<field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
-				</panel>
-			</panel>
-	    </panel>
+        <field name="productTypeSelect" hidden="true"/>
+          <panel colSpan="12">
+            <panel colSpan="2">
+              <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+            </panel>
+            <panel colSpan="10">
+              <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
+                <editor x-show-titles="false">
+                  <field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
+                  <field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name"/>
+                </editor>
+              </field>
+              <panel title="Product typology" colSpan="6" colWidths="30%,70%">
+                <field name="inAti"/>
+                <field name="isAnalyticCapture" if-module="axelor-account"  if="__config__.app.isApp('account')" />
+                <field name="deductLunchVoucher" hideIf="!expense" colSpan="12"/>
+                <field name="expense" hidden="true"/>
+              </panel>
+              <panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
+                <field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
+                <field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
+              </panel>
+            </panel>
+          </panel>
+        </panel>
 	    <panel-tabs title="Product specific attributes">
 			<panel name="sale" title="Sale" showTitle="false">
 				<panel colSpan="6" title="Sales">

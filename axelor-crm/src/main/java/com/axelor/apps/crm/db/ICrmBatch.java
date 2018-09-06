@@ -19,20 +19,16 @@ package com.axelor.apps.crm.db;
 
 /**
  * Interface of Event object. Enum all static variable of object.
- * 
+ *
  * @author dubaux
- * 
  */
 @Deprecated
 public interface ICrmBatch {
 
+  /** Static select in CrmBatch */
 
-	/**
-	 * Static select in CrmBatch
-	 */
+  // ACTION TYPE
+  static final int BATCH_EVENT_REMINDER = 21;
 
-	// ACTION TYPE
-	static final int BATCH_EVENT_REMINDER = 21;
-	static final int BATCH_TARGET = 22;
-	
+  static final int BATCH_TARGET = 22;
 }

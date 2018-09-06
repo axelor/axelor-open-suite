@@ -24,55 +24,56 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class CancelState extends WorkflowInvoice {
 
-	private WorkflowCancelService workflowService;
+  private WorkflowCancelService workflowService;
 
-	@Inject
-	CancelState(WorkflowCancelService workflowService) {
-		this.workflowService = workflowService;
-	}
+  @Inject
+  CancelState(WorkflowCancelService workflowService) {
+    this.workflowService = workflowService;
+  }
 
-	@Override
-	public void init(Invoice invoice){
-		this.invoice = invoice;
-	}
+  @Override
+  public void init(Invoice invoice) {
+    this.invoice = invoice;
+  }
 
-	@Override
-	public void process() throws AxelorException {
+  @Override
+  public void process() throws AxelorException {
 
-		workflowService.beforeCancel(invoice);
+    workflowService.beforeCancel(invoice);
 
-		if(invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice())  {
-			cancelMove();
-		}
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+        && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
+      cancelMove();
+    }
 
-		setStatus();
-		workflowService.afterCancel(invoice);
-	}
+    setStatus();
+    workflowService.afterCancel(invoice);
+  }
 
-	protected void setStatus(){
+  protected void setStatus() {
 
-		invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
+    invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
+  }
 
-	}
+  protected void cancelMove() throws AxelorException {
 
-	protected void cancelMove() throws AxelorException{
+    if (invoice.getOldMove() != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVOICE_CANCEL_1));
+    }
 
-		if (invoice.getOldMove() != null) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.INVOICE_CANCEL_1));
-		}
-		
-		Move move = invoice.getMove();
-		
-		invoice.setMove(null);
-		
-		Beans.get(MoveCancelService.class).cancel(move);
-	}
+    Move move = invoice.getMove();
 
+    invoice.setMove(null);
+
+    Beans.get(MoveCancelService.class).cancel(move);
+  }
 }

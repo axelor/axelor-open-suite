@@ -17,86 +17,141 @@
  */
 package com.axelor.apps.base.service.user;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
+import javax.mail.MessagingException;
 
-/**
- * UserService is a class that implement all methods for user informations
- * 
- */
+/** UserService is a class that implement all methods for user informations */
 public interface UserService {
 
-	/**
-	 * Method that return the current connected user
-	 * 
-	 * @return user
-	 * 		the current connected user
-	 */
-	public User getUser();
-	
-	/**
-	 * Method that return the id of the current connected user
-	 * 
-	 * @return user
-	 * 		the id of current connected user
-	 */
-	public Long getUserId();
-	
-	/**
-	 * Method that return the active company of the current connected user
-	 * 
-	 * @return Company
-	 * 		the active company
-	 */
-	public Company getUserActiveCompany();
+  /**
+   * Method that return the current connected user
+   *
+   * @return user the current connected user
+   */
+  public User getUser();
 
-	/**
-	 * Method that return the active company id of the current connected user
-	 * 
-	 * @return Company
-	 * 		the active company id
-	 */
-	public Long getUserActiveCompanyId(); 
-	
-	/**
-	 * Method that return the active team of the current connected user
-	 * 
-	 * @return Team
-	 * 		the active team
-	 */
-	public MetaFile getUserActiveCompanyLogo();
-	
-	/**
-	 * Method that return the active team of the current connected user
-	 * 
-	 * @return Team
-	 * 		the active team
-	 */
-	public Team getUserActiveTeam();
-	
-	/**
-	 * Method that return the active team of the current connected user
-	 * 
-	 * @return Team
-	 * 		the active team id
-	 */
-	public Long getUserActiveTeamId();
-	
-	/**
-	 * Method that return the partner of the current connected user
-	 * 
-	 * @return Partner
-	 * 		the user partner
-	 */
-	public Partner getUserPartner();
+  /**
+   * Method that return the id of the current connected user
+   *
+   * @return user the id of current connected user
+   */
+  public Long getUserId();
 
-	@Transactional
-	public void createPartner(User user);
-	
-	public String getLanguage();
+  /**
+   * Method that return the active company of the current connected user
+   *
+   * @return Company the active company
+   */
+  public Company getUserActiveCompany();
 
+  /**
+   * Method that return the active company id of the current connected user
+   *
+   * @return Company the active company id
+   */
+  public Long getUserActiveCompanyId();
+
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team
+   */
+  public MetaFile getUserActiveCompanyLogo();
+
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team
+   */
+  public Team getUserActiveTeam();
+
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team id
+   */
+  public Long getUserActiveTeamId();
+
+  /**
+   * Method that return the partner of the current connected user
+   *
+   * @return Partner the user partner
+   */
+  public Partner getUserPartner();
+
+  @Transactional
+  public void createPartner(User user);
+
+  public String getLanguage();
+
+  /**
+   * Get user's active company address.
+   *
+   * @return
+   */
+  Optional<Address> getUserActiveCompanyAddress();
+
+  /**
+   * Change user password.
+   *
+   * @param user
+   * @param values
+   * @return
+   * @throws ClassNotFoundException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @throws MessagingException
+   * @throws IOException
+   * @throws AxelorException
+   */
+  User changeUserPassword(User user, Map<String, Object> values)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException;
+
+  /**
+   * Processs changed user password.
+   *
+   * @param user
+   * @throws ClassNotFoundException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @throws MessagingException
+   * @throws IOException
+   * @throws AxelorException
+   */
+  void processChangedPassword(User user)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException;
+
+  /**
+   * Match password with configured pattern.
+   *
+   * @param password
+   * @return
+   */
+  boolean matchPasswordPattern(CharSequence password);
+
+  /**
+   * Generate a random password.
+   *
+   * @return
+   */
+  CharSequence generateRandomPassword();
+
+  /**
+   * Get password pattern description.
+   *
+   * @return
+   */
+  String getPasswordPatternDescription();
 }

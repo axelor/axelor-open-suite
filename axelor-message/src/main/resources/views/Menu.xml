@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<menuitem name="mail-conf"  title="Message"   />
+	<menuitem name="mail-conf"  title="Message"  />
 	
 	<menuitem name="mail-conf-template"	parent="mail-conf" title="Template" action="admin.root.templating.template" order="5" />
 		
@@ -35,7 +35,7 @@
 		model="com.axelor.apps.message.db.EmailAddress" >
 		<view type="grid" />
 		<view type="form" />
-		<context name="searchFields" expr="address"/>
+		<context name="_duplicateFinderFields" expr="address"/>
 	</action-view>
 	
 	<menuitem name="mail-message" parent="mail-conf" title="All messages" action="mail.root.messages"  order="25"/>

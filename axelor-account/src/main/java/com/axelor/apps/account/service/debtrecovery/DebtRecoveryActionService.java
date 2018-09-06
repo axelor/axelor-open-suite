@@ -33,231 +33,265 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DebtRecoveryActionService {
 
-	private final Logger log = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	protected UserService userService;
-	protected DebtRecoveryRepository debtRecoveryRepo;
-	protected DebtRecoveryHistoryRepository debtRecoveryHistoryRepository;
-	protected TemplateMessageAccountService templateMessageAccountService;
-	protected AppAccountService appAccountService;
+  protected UserService userService;
+  protected DebtRecoveryRepository debtRecoveryRepo;
+  protected DebtRecoveryHistoryRepository debtRecoveryHistoryRepository;
+  protected TemplateMessageAccountService templateMessageAccountService;
+  protected AppAccountService appAccountService;
 
-	@Inject
-	public DebtRecoveryActionService(UserService userService, DebtRecoveryRepository debtRecoveryRepo, DebtRecoveryHistoryRepository debtRecoveryHistoryRepository, 
-			TemplateMessageAccountService templateMessageAccountService, AppAccountService appAccountService) {
+  @Inject
+  public DebtRecoveryActionService(
+      UserService userService,
+      DebtRecoveryRepository debtRecoveryRepo,
+      DebtRecoveryHistoryRepository debtRecoveryHistoryRepository,
+      TemplateMessageAccountService templateMessageAccountService,
+      AppAccountService appAccountService) {
 
-		this.userService = userService;
-		this.debtRecoveryRepo = debtRecoveryRepo;
-		this.debtRecoveryHistoryRepository = debtRecoveryHistoryRepository;
-		this.templateMessageAccountService = templateMessageAccountService;
-		this.appAccountService = appAccountService;
-	}
+    this.userService = userService;
+    this.debtRecoveryRepo = debtRecoveryRepo;
+    this.debtRecoveryHistoryRepository = debtRecoveryHistoryRepository;
+    this.templateMessageAccountService = templateMessageAccountService;
+    this.appAccountService = appAccountService;
+  }
 
+  /**
+   * Procédure permettant de lancer l'ensemble des actions relative au niveau de relance d'un tiers
+   *
+   * @param debtRecovery Une relance
+   * @throws AxelorException
+   * @throws IllegalAccessException
+   * @throws InstantiationException
+   * @throws ClassNotFoundException
+   * @throws IOException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void runAction(DebtRecovery debtRecovery)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, IOException {
 
+    if (debtRecovery.getDebtRecoveryMethod() == null) {
+      throw new AxelorException(
+          debtRecovery,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          "%s :\n"
+              + I18n.get("Partner")
+              + " %s: "
+              + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1),
+          AppAccountServiceImpl.EXCEPTION,
+          debtRecovery.getAccountingSituation().getPartner().getName());
+    }
+    if (debtRecovery.getDebtRecoveryMethodLine() == null) {
+      throw new AxelorException(
+          debtRecovery,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          "%s :\n"
+              + I18n.get("Partner")
+              + " %s: "
+              + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2),
+          AppAccountServiceImpl.EXCEPTION,
+          debtRecovery.getAccountingSituation().getPartner().getName());
+    } else {
 
-	/**
-	 * Procédure permettant de lancer l'ensemble des actions relative au niveau de relance d'un tiers
-	 * @param debtRecovery
-	 * 			Une relance
-	 * @throws AxelorException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws ClassNotFoundException
-	 * @throws IOException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void runAction(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
+      // On enregistre la date de la relance
+      debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate());
 
-		if (debtRecovery.getDebtRecoveryMethod() == null) {
-			throw new AxelorException(debtRecovery, IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
-		}
-		if (debtRecovery.getDebtRecoveryMethodLine() == null) {
-			throw new AxelorException(debtRecovery, IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
-		}
+      this.saveDebtRecovery(debtRecovery);
+    }
+  }
 
-		else  {
+  /**
+   * Fonction permettant de créer un courrier à destination des tiers pour un contrat standard
+   *
+   * @param debtRecovery
+   * @return
+   * @throws AxelorException
+   * @throws ClassNotFoundException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @throws IOException
+   */
+  public Set<Message> runStandardMessage(DebtRecovery debtRecovery)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, IOException {
+    Set<Message> messages = new HashSet<>();
 
-			//On enregistre la date de la relance
-			debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate());
+    DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
+    Partner partner = debtRecovery.getAccountingSituation().getPartner();
 
-			this.saveDebtRecovery(debtRecovery);
+    Set<Template> templateSet = debtRecoveryMethodLine.getMessageTemplateSet();
 
-		}
+    if (templateSet == null || templateSet.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3),
+          AppAccountServiceImpl.EXCEPTION,
+          partner.getName(),
+          debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
+          debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
+    }
 
-	}
+    DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
+    for (Template template : templateSet) {
+      messages.add(templateMessageAccountService.generateMessage(debtRecoveryHistory, template));
+    }
 
+    return messages;
+  }
 
-	/**
-	 * Fonction permettant de créer un courrier à destination des tiers pour un contrat standard
-	 * 
-	 * @param debtRecovery
-	 * @return
-	 * @throws AxelorException
-	 * @throws ClassNotFoundException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws IOException
-	 */
-	public Set<Message> runStandardMessage(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
-	    Set<Message> messages = new HashSet<>();
+  public DebtRecoveryHistory getDebtRecoveryHistory(DebtRecovery detDebtRecovery) {
+    if (detDebtRecovery.getDebtRecoveryHistoryList() == null
+        || detDebtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
+      return null;
+    }
+    return Collections.max(
+        detDebtRecovery.getDebtRecoveryHistoryList(),
+        Comparator.comparing(DebtRecoveryHistory::getDebtRecoveryDate));
+  }
 
-		DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
-		Partner partner =  debtRecovery.getAccountingSituation().getPartner();
+  /**
+   * Procédure permettant de lancer manuellement l'ensemble des actions relative au niveau de
+   * relance d'un tiers
+   *
+   * @param debtRecovery Une relance
+   * @throws AxelorException
+   * @throws IllegalAccessException
+   * @throws InstantiationException
+   * @throws ClassNotFoundException
+   * @throws IOException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void runManualAction(DebtRecovery debtRecovery)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, IOException {
 
-		Set<Template> templateSet = debtRecoveryMethodLine.getMessageTemplateSet();
+    log.debug("Begin runManualAction service ...");
+    if (debtRecovery.getDebtRecoveryMethod() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          "%s :\n"
+              + I18n.get("Partner")
+              + " %s: "
+              + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1),
+          AppAccountServiceImpl.EXCEPTION,
+          debtRecovery.getAccountingSituation().getPartner().getName());
+    }
 
-		if (templateSet == null || templateSet.isEmpty()) {
-			throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3), AppAccountServiceImpl.EXCEPTION, partner.getName(), debtRecoveryMethodLine.getDebtRecoveryMethod().getName(), debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
-		}
+    if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          "%s :\n"
+              + I18n.get("Partner")
+              + " %s: "
+              + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2),
+          AppAccountServiceImpl.EXCEPTION,
+          debtRecovery.getAccountingSituation().getPartner().getName());
+    } else {
 
-		DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
+      // On enregistre la date de la relance
+      debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate());
+      this.debtRecoveryLevelValidate(debtRecovery);
 
-		for (Template template : templateSet) {
-			messages.add(templateMessageAccountService.generateMessage(debtRecoveryHistory, template));
-		}
+      this.saveDebtRecovery(debtRecovery);
+    }
+    log.debug("End runManualAction service");
+  }
 
-		return messages;
-	}
+  /**
+   * Generate a message from a debtRecovery, save, and send it.
+   *
+   * @param debtRecovery
+   * @throws AxelorException
+   * @throws ClassNotFoundException
+   * @throws IOException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void runMessage(DebtRecovery debtRecovery)
+      throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
+          IllegalAccessException {
+    Set<Message> messageSet = this.runStandardMessage(debtRecovery);
+    for (Message message : messageSet) {
+      Beans.get(MessageRepository.class).save(message);
+      Beans.get(MessageService.class).sendMessage(message);
+    }
+  }
 
+  /**
+   * Procédure permettant de déplacer une ligne de relance vers une ligne de relance en attente
+   *
+   * @param debtRecovery Une relance
+   * @param debtRecoveryMethodLine La ligne de relance que l'on souhaite déplacer
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void moveDebtRecoveryMethodLine(
+      DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine)
+      throws AxelorException {
 
-	public DebtRecoveryHistory getDebtRecoveryHistory(DebtRecovery detDebtRecovery)  {
-		if (detDebtRecovery.getDebtRecoveryHistoryList() == null || detDebtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
-			return null;
-		}
-	    return Collections.max(detDebtRecovery.getDebtRecoveryHistoryList(),
-				Comparator.comparing(DebtRecoveryHistory::getDebtRecoveryDate));
-	}
+    debtRecovery.setWaitDebtRecoveryMethodLine(debtRecoveryMethodLine);
 
+    debtRecoveryRepo.save(debtRecovery);
+  }
 
+  /**
+   * Fonction permettant de valider la ligne de relance en attente en la déplaçant vers la ligne de
+   * relance courante d'un tiers
+   *
+   * @param debtRecovery Une relance
+   * @return La relance
+   * @throws AxelorException
+   */
+  public DebtRecovery debtRecoveryLevelValidate(DebtRecovery debtRecovery) throws AxelorException {
+    log.debug("Begin debtRecoveryLevelValidate service ...");
 
-	/**
-	 * Procédure permettant de lancer manuellement l'ensemble des actions relative au niveau de relance d'un tiers
-	 * @param debtRecovery
-	 * 			Une relance
-	 * @throws AxelorException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws ClassNotFoundException
-	 * @throws IOException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void runManualAction(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException  {
+    debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
+    debtRecovery.setWaitDebtRecoveryMethodLine(null);
 
-		log.debug("Begin runManualAction service ...");
-		if (debtRecovery.getDebtRecoveryMethod() == null) {
-			throw new AxelorException(IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
-		}
+    log.debug("End debtRecoveryLevelValidate service");
+    return debtRecovery;
+  }
 
-		if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
-			throw new AxelorException(IException.MISSING_FIELD, "%s :\n"+I18n.get("Partner")+" %s: "+I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2), AppAccountServiceImpl.EXCEPTION, debtRecovery.getAccountingSituation().getPartner().getName());
-		}
-		else  {
+  /**
+   * Procédure permettant d'enregistrer les éléments de la relance dans l'historique des relances
+   *
+   * @param debtRecovery Une relance
+   */
+  @Transactional
+  public void saveDebtRecovery(DebtRecovery debtRecovery) {
 
-			//On enregistre la date de la relance
-			debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate());
-			this.debtRecoveryLevelValidate(debtRecovery);
+    DebtRecoveryHistory debtRecoveryHistory = new DebtRecoveryHistory();
+    debtRecoveryHistory.setDebtRecovery(debtRecovery);
+    debtRecoveryHistory.setBalanceDue(debtRecovery.getBalanceDue());
+    debtRecoveryHistory.setBalanceDueDebtRecovery(debtRecovery.getBalanceDueDebtRecovery());
+    debtRecoveryHistory.setDebtRecoveryDate(debtRecovery.getDebtRecoveryDate());
+    debtRecoveryHistory.setDebtRecoveryMethodLine(debtRecovery.getDebtRecoveryMethodLine());
+    debtRecoveryHistory.setSetToIrrecoverableOK(debtRecovery.getSetToIrrecoverableOk());
+    debtRecoveryHistory.setUnknownAddressOK(debtRecovery.getUnknownAddressOk());
+    debtRecoveryHistory.setReferenceDate(debtRecovery.getReferenceDate());
+    debtRecoveryHistory.setDebtRecoveryMethod(debtRecovery.getDebtRecoveryMethod());
 
-			this.saveDebtRecovery(debtRecovery);
-
-		}
-		log.debug("End runManualAction service");
-	}
-
-	/**
-	 * Generate a message from a debtRecovery, save, and send it.
-	 * @param debtRecovery
-	 * @throws AxelorException
-	 * @throws ClassNotFoundException
-	 * @throws IOException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void runMessage(DebtRecovery debtRecovery) throws AxelorException, ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
-		Set<Message> messageSet = this.runStandardMessage(debtRecovery);
-		for (Message message : messageSet) {
-			Beans.get(MessageRepository.class).save(message);
-			Beans.get(MessageService.class).sendMessage(message);
-		}
-	}
-
-	/**
-	 * Procédure permettant de déplacer une ligne de relance vers une ligne de relance en attente
-	 * @param debtRecovery
-	 * 			Une relance
-	 * @param debtRecoveryMethodLine
-	 * 			La ligne de relance que l'on souhaite déplacer
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void moveDebtRecoveryMethodLine(DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine) throws AxelorException  {
-
-		debtRecovery.setWaitDebtRecoveryMethodLine(debtRecoveryMethodLine);
-
-		debtRecoveryRepo.save(debtRecovery);
-
-	}
-
-
-
-	/**
-	 * Fonction permettant de valider la ligne de relance en attente en la déplaçant vers la ligne de relance courante d'un tiers
-	 * @param debtRecovery
-	 * 			Une relance
-	 * @return
-	 * 			La relance
-	 * @throws AxelorException
-	 */
-	public DebtRecovery debtRecoveryLevelValidate(DebtRecovery debtRecovery) throws AxelorException  {
-		log.debug("Begin debtRecoveryLevelValidate service ...");
-
-		debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
-		debtRecovery.setWaitDebtRecoveryMethodLine(null);
-
-		log.debug("End debtRecoveryLevelValidate service");
-		return debtRecovery;
-	}
-
-	/**
-	 * Procédure permettant d'enregistrer les éléments de la relance dans l'historique des relances
-	 * @param debtRecovery
-	 * 			Une relance
-	 */
-	@Transactional
-	public void saveDebtRecovery(DebtRecovery debtRecovery)  {
-
-		DebtRecoveryHistory debtRecoveryHistory = new DebtRecoveryHistory();
-		debtRecoveryHistory.setDebtRecovery(debtRecovery);
-		debtRecoveryHistory.setBalanceDue(debtRecovery.getBalanceDue());
-		debtRecoveryHistory.setBalanceDueDebtRecovery(debtRecovery.getBalanceDueDebtRecovery());
-		debtRecoveryHistory.setDebtRecoveryDate(debtRecovery.getDebtRecoveryDate());
-		debtRecoveryHistory.setDebtRecoveryMethodLine(debtRecovery.getDebtRecoveryMethodLine());
-		debtRecoveryHistory.setSetToIrrecoverableOK(debtRecovery.getSetToIrrecoverableOk());
-		debtRecoveryHistory.setUnknownAddressOK(debtRecovery.getUnknownAddressOk());
-		debtRecoveryHistory.setReferenceDate(debtRecovery.getReferenceDate());
-		debtRecoveryHistory.setDebtRecoveryMethod(debtRecovery.getDebtRecoveryMethod());
-
-		debtRecoveryHistory.setUserDebtRecovery(userService.getUser());
-		debtRecovery.addDebtRecoveryHistoryListItem(debtRecoveryHistory);
-		debtRecoveryHistoryRepository.save(debtRecoveryHistory);
-
-	}
-
+    debtRecoveryHistory.setUserDebtRecovery(userService.getUser());
+    debtRecovery.addDebtRecoveryHistoryListItem(debtRecoveryHistory);
+    debtRecoveryHistoryRepository.save(debtRecoveryHistory);
+  }
 }

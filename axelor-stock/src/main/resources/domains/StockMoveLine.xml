@@ -12,9 +12,10 @@
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
 	<decimal name="qty" title="Expected Qty"/>
 	<decimal name="realQty" title="Real Qty"/>
+	<decimal name="previousQty" title="Previous Qty" nullable="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-    <decimal name="netWeight" title="Net weight"/>
-    <decimal name="totalNetWeight" title="Total net weight"/>
+    <decimal name="netMass" title="Net mass"/>
+    <decimal name="totalNetMass" title="Total net mass"/>
     
     <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr."/>
     
@@ -34,7 +35,8 @@
     <decimal name="unitPriceTaxed" precision="20" scale="10" title="Unit price"/>
     
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
-    
+    <integer name="sequence" title="Seq."/>
+
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
 

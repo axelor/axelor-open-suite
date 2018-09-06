@@ -22,15 +22,15 @@ import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.studio.db.AppBuilder;
 
 public class MetaJsonFieldRepo extends MetaJsonFieldRepository {
-	
-	@Override
-	public MetaJsonField save(MetaJsonField metajsonField) {
-		
-		AppBuilder appBuilder = metajsonField.getAppBuilder();
-		if (appBuilder != null) {
-			metajsonField.setIncludeIf("__config__.app.isApp('" + appBuilder.getCode() + "')");
-		}
-		
-		return metajsonField;
-	}
+
+  @Override
+  public MetaJsonField save(MetaJsonField metajsonField) {
+
+    AppBuilder appBuilder = metajsonField.getAppBuilder();
+    if (appBuilder != null) {
+      metajsonField.setIncludeIf("__config__.app.isApp('" + appBuilder.getCode() + "')");
+    }
+
+    return super.save(metajsonField);
+  }
 }

@@ -25,68 +25,83 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.inject.Beans;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
-public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectService{
-	
-	
-	@Override
-	public void setLines(InvoicingProject invoicingProject,Project project, int counter){
-		
-		if(counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT)  {  return;  }
-		counter++;
-		
-		this.fillLines(invoicingProject, project);
-		List<Project> projectChildrenList = Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
+public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectService {
 
-		for (Project projectChild : projectChildrenList) {
-			this.setLines(invoicingProject, projectChild, counter);
-		}
-		return;
-	}
-	
-	@Override
-	public void fillLines(InvoicingProject invoicingProject,Project project){
-		super.fillLines(invoicingProject, project);
-		if(project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE || project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED)  { 
-			if (invoicingProject.getManufOrderSet() == null) {
-				invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
-			}
-			
-			if (invoicingProject.getDeadlineDate() != null){
-				LocalDateTime deadlineDateToDateTime = invoicingProject.getDeadlineDate().atStartOfDay();
-				invoicingProject.getManufOrderSet().addAll(Beans.get(ManufOrderRepository.class)
-						.all().filter("self.productionOrder.project = ?1 AND (self.realStartDateT < ?2)", project, deadlineDateToDateTime).fetch());
-			}
-			else {
-				invoicingProject.getManufOrderSet().addAll(Beans.get(ManufOrderRepository.class)
-						.all().filter("self.productionOrder.project = ?1", project).fetch());
-			}
-			
-		}
-	}
-	
-	@Override
-	public void clearLines(InvoicingProject invoicingProject){
-		
-		super.clearLines(invoicingProject);
-		invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
-	}
-	
-	@Override
-	public int countToInvoice(Project project) {
+  @Override
+  public void setLines(InvoicingProject invoicingProject, Project project, int counter) {
 
-		int toInvoiceCount = super.countToInvoice(project);
-		
-		int productionOrderCount = (int) Beans.get(ManufOrderRepository.class).all()
-				.filter("self.productionOrder.project = ?1", project).count();
-		toInvoiceCount += productionOrderCount;
-		
-		return toInvoiceCount;
+    if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
+      return;
+    }
+    counter++;
 
-	}
+    this.fillLines(invoicingProject, project);
+    List<Project> projectChildrenList =
+        Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
+    for (Project projectChild : projectChildrenList) {
+      this.setLines(invoicingProject, projectChild, counter);
+    }
+    return;
+  }
+
+  @Override
+  public void fillLines(InvoicingProject invoicingProject, Project project) {
+    super.fillLines(invoicingProject, project);
+    if (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE
+        || project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED) {
+      if (invoicingProject.getManufOrderSet() == null) {
+        invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
+      }
+
+      if (invoicingProject.getDeadlineDate() != null) {
+        LocalDateTime deadlineDateToDateTime = invoicingProject.getDeadlineDate().atStartOfDay();
+        invoicingProject
+            .getManufOrderSet()
+            .addAll(
+                Beans.get(ManufOrderRepository.class)
+                    .all()
+                    .filter(
+                        "self.productionOrder.project = ?1 AND (self.realStartDateT < ?2)",
+                        project,
+                        deadlineDateToDateTime)
+                    .fetch());
+      } else {
+        invoicingProject
+            .getManufOrderSet()
+            .addAll(
+                Beans.get(ManufOrderRepository.class)
+                    .all()
+                    .filter("self.productionOrder.project = ?1", project)
+                    .fetch());
+      }
+    }
+  }
+
+  @Override
+  public void clearLines(InvoicingProject invoicingProject) {
+
+    super.clearLines(invoicingProject);
+    invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
+  }
+
+  @Override
+  public int countToInvoice(Project project) {
+
+    int toInvoiceCount = super.countToInvoice(project);
+
+    int productionOrderCount =
+        (int)
+            Beans.get(ManufOrderRepository.class)
+                .all()
+                .filter("self.productionOrder.project = ?1", project)
+                .count();
+    toInvoiceCount += productionOrderCount;
+
+    return toInvoiceCount;
+  }
 }

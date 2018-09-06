@@ -21,13 +21,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
 public class ContractRepository extends AbstractContractRepository {
-
   @Override
   public Contract save(Contract contract) {
     try {
@@ -49,10 +48,9 @@ public class ContractRepository extends AbstractContractRepository {
       if (seq == null) {
         throw new AxelorException(
             String.format(
-                I18n.get(
-                    "The company" + "%s doesn't have any configured sequence for" + "contracts"),
+                I18n.get("The company %s doesn't have any configured sequence for contracts"),
                 company.getName()),
-            IException.CONFIGURATION_ERROR);
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
       }
       return seq;
     } catch (Exception e) {

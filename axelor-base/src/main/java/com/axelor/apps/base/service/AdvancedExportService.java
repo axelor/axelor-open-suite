@@ -17,35 +17,50 @@
  */
 package com.axelor.apps.base.service;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
 import com.itextpdf.text.DocumentException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 public interface AdvancedExportService {
 
-	public String getTargetField(Context context, MetaField metaField, String targetField, MetaModel parentMetaModel);
+  public String getTargetField(
+      Context context, MetaField metaField, String targetField, MetaModel parentMetaModel);
 
-	@SuppressWarnings("rawtypes")
-	public List<Map> showAdvancedExportData(List<Map<String, Object>> advancedExportLines, MetaModel metaModel, String criteria) throws ClassNotFoundException;
+  public Map<Boolean, MetaFile> advancedExportPDF(
+      List<Map<String, Object>> advancedExportLines,
+      MetaModel metaModel,
+      String criteria,
+      Integer maxExportLimit,
+      Integer queryFetchLimit)
+      throws DocumentException, IOException, ClassNotFoundException, AxelorException;
 
-	@SuppressWarnings("rawtypes")
-	public MetaFile advancedExportPDF(MetaFile exportFile, List<Map<String, Object>> advancedExportLines,
-			List<Map> allFieldDataList, MetaModel metaModel) throws DocumentException, IOException;
+  public Map<Boolean, MetaFile> advancedExportExcel(
+      List<Map<String, Object>> advancedExportLines,
+      MetaModel metaModel,
+      String criteria,
+      Integer maxExportLimit,
+      Integer queryFetchLimit)
+      throws IOException, ClassNotFoundException, DocumentException, AxelorException,
+          InvalidFormatException;
 
-	@SuppressWarnings("rawtypes")
-	public MetaFile advancedExportExcel(MetaFile exportFile, MetaModel metaModel, List<Map> allFieldDataList,
-			List<Map<String, Object>> advancedExportLines) throws IOException;
-	
-	@SuppressWarnings("rawtypes")
-	public MetaFile advancedExportCSV(MetaFile exportFile, MetaModel metaModel, List<Map> allFieldDataList,
-			List<Map<String, Object>> advancedExportLines) throws IOException;
-	
-	public Filter getJpaSecurityFilter(MetaModel metaModel);
+  public Map<Boolean, MetaFile> advancedExportCSV(
+      List<Map<String, Object>> advancedExportLines,
+      MetaModel metaModel,
+      String criteria,
+      Integer maxExportLimit,
+      Integer queryFetchLimit)
+      throws IOException, ClassNotFoundException, DocumentException, AxelorException;
+
+  public Filter getJpaSecurityFilter(MetaModel metaModel);
+
+  public String createCriteria(ActionRequest request, int limit);
 }

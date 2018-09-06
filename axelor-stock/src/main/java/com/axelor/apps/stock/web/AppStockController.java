@@ -25,14 +25,13 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AppStockController {
-	
-	@Inject
-	private AppStockService appStockService;
-	
-	public void generateStockConfigurations(ActionRequest request, ActionResponse response) {
-		
-		appStockService.generateStockConfigurations();
-		
-		response.setReload(true);
-	}
+
+  @Inject private AppStockService appStockService;
+
+  public void generateStockConfigurations(ActionRequest request, ActionResponse response) {
+
+    appStockService.generateStockConfigurations();
+
+    response.setReload(true);
+  }
 }

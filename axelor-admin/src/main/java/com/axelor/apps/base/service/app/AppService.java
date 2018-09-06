@@ -17,25 +17,29 @@
  */
 package com.axelor.apps.base.service.app;
 
+import com.axelor.apps.base.db.App;
+import com.axelor.exception.AxelorException;
 import java.io.IOException;
 import java.util.Collection;
 
-import com.axelor.apps.base.db.App;
-import com.axelor.exception.AxelorException;
-
 public interface AppService {
-	
-	public App importDataDemo(App app) throws AxelorException;
-	
-	public App getApp(String type);
-	
-	public boolean isApp(String type);
-	
-	public App installApp(App app, String language) throws AxelorException;
-	
-	public App unInstallApp(App app) throws AxelorException;
-	
-	public void refreshApp() throws IOException, ClassNotFoundException;
-	
-	public void bulkInstall(Collection<App> apps, Boolean importDeomo, String language) throws AxelorException;
+
+  public App importDataDemo(App app) throws AxelorException;
+
+  public App getApp(String type);
+
+  public boolean isApp(String type);
+
+  public App installApp(App app, String language) throws AxelorException;
+
+  public App unInstallApp(App app) throws AxelorException;
+
+  public void refreshApp() throws IOException, ClassNotFoundException;
+
+  public void bulkInstall(Collection<App> apps, Boolean importDeomo, String language)
+      throws AxelorException;
+
+  public App importRoles(App app) throws AxelorException;
+
+  public void importRoles() throws AxelorException;
 }

@@ -25,15 +25,15 @@ import com.axelor.rpc.JsonContext;
 
 public interface ConfiguratorBomService {
 
-    /**
-     * Generate a bill of material from a configurator BOM
-     * and a JsonContext holding the custom values
-     * @param configuratorBOM
-     * @param attributes
-     * @param level
-     * @param generatedProduct
-     */
-    BillOfMaterial generateBillOfMaterial(ConfiguratorBOM configuratorBOM,
-                                          JsonContext attributes, int level, Product generatedProduct)
-            throws AxelorException;
+  /**
+   * Generate a bill of material from a configurator BOM and a JsonContext holding the custom values
+   *
+   * @param configuratorBOM
+   * @param attributes
+   * @param level
+   * @param generatedProduct
+   */
+  BillOfMaterial generateBillOfMaterial(
+      ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
+      throws AxelorException;
 }

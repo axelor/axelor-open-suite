@@ -21,30 +21,36 @@ import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.ImportService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.FileUtils;
 
 @Singleton
 public class ImportConfigurationController {
 
-	@Inject
-	private ImportService importService;
+  @Inject private ImportService importService;
 
-	public void run(ActionRequest request,ActionResponse response){
+  public void run(ActionRequest request, ActionResponse response) {
 
-		ImportConfiguration importConfiguration = request.getContext().asType( ImportConfiguration.class );
-		
-		try{
-			
-			ImportHistory importHistory = importService.run(importConfiguration);
-			response.setAttr("importHistoryList", "value:add", importHistory);
-			response.setNotify( importHistory.getLog().replaceAll("(\r\n|\n\r|\r|\n)", "<br />") );
-			
-			
-		} catch( Exception e ){ TraceBackService.trace( response, e ); }
+    ImportConfiguration importConfiguration =
+        request.getContext().asType(ImportConfiguration.class);
 
-	}
+    try {
 
+      ImportHistory importHistory = importService.run(importConfiguration);
+      response.setAttr("importHistoryList", "value:add", importHistory);
+      File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
+      response.setNotify(
+          FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
+              .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

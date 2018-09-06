@@ -29,7 +29,7 @@
 			<field name="date" readonlyIf="statusSelect == 2"/>
 			<field name="typeSelect" readonlyIf="company == null" onChange="action-group-account-accounting-report-typeselect-onchange" selection="accounting.report.type.select" />
 			<field name="exportTypeSelect"/>
-			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-accounting-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-group-account-accounting-report-company-onchange" form-view="company-form" grid-view="company-grid"/>
 		</panel>
 		
 		<panel sidebar="true" name="info" title="Info">
@@ -41,19 +41,18 @@
 
 		<panel-tabs>
 			<panel name="filter" title="Filter">
-				<field name="year" hideIf="typeSelect != 12  &amp;&amp; typeSelect != 15" onSelect="action-accounting-report-attrs-year-domain" requiredIf="typeSelect == 12 || typeSelect == 15" grid-view="year-account-grid" form-view="year-account-form" />
+				<field name="year" hideIf="typeSelect != 12  &amp;&amp; typeSelect != 15" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="typeSelect == 12 || typeSelect == 15" grid-view="year-account-grid" form-view="year-account-form" />
 				<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false" />
 				<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12 || typeSelect == 15" />
 				<field name="dateTo" requiredIf="typeSelect == 12 || typeSelect == 15" />
 				<field name="journal" hideIf="!typeSelect || [0,1,2,3,4,5,10,12,13,14,15].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!typeSelect || [1,2,3,4,5,10,12,13,14,15].indexOf(typeSelect) != -1"/>
-				<field name="accountSet" hideIf="typeSelect == 2000" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false"/>
-				<field name="partnerSet" hideIf="typeSelect == 2000" colSpan="12" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" widget="TagSelect" canNew="false"/>
+				<field name="accountSet" hideIf="typeSelect == 2000" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" domain="self.company = :company AND (:typeSelect &lt;&gt; 6 OR self.useForPartnerBalance = true)"/>
+				<field name="partnerSet" hideIf="typeSelect == 2000" colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect" canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
 				<field name="analyticJournal" showIf="typeSelect == 2000" domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 			</panel>
 			<panel name="printingInformations" title="Printing informations">
 				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13,15].indexOf(typeSelect) != -1"	onChange="action-accounting-report-record-global" />
-				<field name="globalByPost" hideIf="!typeSelect || [0,3,4,11,12,13,14,15].indexOf(typeSelect) != -1"	onChange="action-accounting-report-record-global-by-post" />
 				<field name="globalByDate" hideIf="!typeSelect || [3,4,5,10,11,12,13,14,15].indexOf(typeSelect) != -1" onChange="action-accounting-report-record-global-by-date" />
 				<field name="globalByPartner" hideIf="typeSelect != 3" onChange="action-accounting-report-record-global-by-partner" />
 				<field name="detailed" hideIf="typeSelect != 4" onChange="action-accounting-report-record-detailed" />
@@ -93,9 +92,9 @@
 			<field name="ref" readonly="true"/>
 			<field name="date" title="Export Date fixed to" readonlyIf="statusSelect == 2"/>
 			<field name="typeSelect" onChange="action-group-account-accounting-report-typeselect-onchange" selection="accounting.report.type.select.export"/>
-			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-accounting-report-method-get-account" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-group-account-accounting-report-company-onchange" form-view="company-form" grid-view="company-grid"/>
 			<field name="year" hideIf="!$contains([1000, 1010], typeSelect)" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="$contains([1000, 1010], typeSelect)" grid-view="year-account-grid" form-view="year-account-form" />
-			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false"/>
+			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" requiredIf="!$contains([1000, 1010], typeSelect)" form-view="period-form" grid-view="period-grid" canView="false"/>
 			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="dateTo" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="journal" form-view="journal-form" grid-view="journal-grid" hideIf="$contains([1000, 1010], typeSelect)"/>
@@ -105,8 +104,8 @@
 			<field name="statusSelect"/>
 			<button name="search" title="Search" showIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="save,action-accounting-report-method-search-move-line,save"/>
 			<button name="export" title="Export" showIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="action-group-account-accounting-report-export-click"/>
-			<button name="showMoveExported" title="Exported moves" hideIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="save,action-accounting-report-method-show-move-exported"/>
-			<button name="replayExport" title="Run export again" hideIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="save,action-accounting-report-method-replay-export"/>
+			<button name="showMoveExported" title="Exported moves" hideIf="statusSelect != 2 || $contains([1000, 1010], typeSelect)" onClick="save,action-accounting-report-method-show-move-exported"/>
+			<button name="replayExport" title="Run export again" hideIf="statusSelect != 2 || $contains([1000, 1010], typeSelect)" onClick="save,action-accounting-report-method-replay-export"/>
 		</panel>
 		
 		<panel sidebar="true" name="balance" title="Balance">
@@ -137,29 +136,26 @@
     	<action name="action-accounting-report-record-year"/>
     	<action name="action-accounting-report-record-date-from-and-date-to"/>
     </action-group>
-    
+
+	<action-group name="action-group-account-accounting-report-company-onchange">
+	    <action name="action-accounting-report-method-get-account"/>
+	    <action name="action-accounting-report-record-reset"/>
+	</action-group>
+
 <!--     ACTION ATTRS -->
 	    
 	<action-attrs name="action-accounting-report-attrs-period-domain">
-		<attribute name="domain" for="period" expr="eval: &quot;self.year.id = ${year?.id}&quot;" if="eval: year != null"/>
-		<attribute name="domain" for="period" expr="" if="eval: year == null"/>
+		<attribute if="eval: year != null" name="domain" expr="eval: &quot;self.year.id = ${year?.id}&quot;" for="period"/>
+		<attribute name="domain" for="period" expr="eval: &quot; self.year.company = :company AND self.year.typeSelect = 1 &quot;" if="eval: year == null "/>
 	</action-attrs>
 	
 	<action-attrs name="action-accounting-report-attrs-year-domain">
-		<attribute name="domain" for="year" expr="eval: &quot;self.company.id = ${company?.id}&quot;" if="eval: company != null"/>
+		<attribute name="domain" for="year" expr="eval: &quot;self.company.id = ${company?.id} AND self.typeSelect = 1 &quot;"/>
 	</action-attrs>
 	
 <!-- 	ACTION RECORD -->
 
 	<action-record name="action-accounting-report-record-global" model="com.axelor.apps.account.db.AccountingReport">
-		<field name="globalByPost" expr="eval: false"/>
-		<field name="globalByDate" expr="eval: false"/>
-		<field name="globalByPartner" expr="eval: false"/>
-		<field name="detailed" expr="eval: false"/>
-	</action-record>
-	
-	<action-record name="action-accounting-report-record-global-by-post" model="com.axelor.apps.account.db.AccountingReport">
-		<field name="global" expr="eval: false"/>
 		<field name="globalByDate" expr="eval: false"/>
 		<field name="globalByPartner" expr="eval: false"/>
 		<field name="detailed" expr="eval: false"/>
@@ -167,21 +163,18 @@
 	
 	<action-record name="action-accounting-report-record-global-by-date" model="com.axelor.apps.account.db.AccountingReport">
 		<field name="global" expr="eval: false"/>
-		<field name="globalByPost" expr="eval: false"/>
 		<field name="globalByPartner" expr="eval: false"/>
 		<field name="detailed" expr="eval: false"/>
 	</action-record>
 	
 	<action-record name="action-accounting-report-record-global-by-partner" model="com.axelor.apps.account.db.AccountingReport">
 		<field name="global" expr="eval: false"/>
-		<field name="globalByPost" expr="eval: false"/>
 		<field name="globalByDate" expr="eval: false"/>
 		<field name="detailed" expr="eval: false"/>
 	</action-record>
 	
 	<action-record name="action-accounting-report-record-detailed" model="com.axelor.apps.account.db.AccountingReport">
 		<field name="global" expr="eval: false"/>
-		<field name="globalByPost" expr="eval: false"/>
 		<field name="globalByDate" expr="eval: false"/>
 		<field name="globalByPartner" expr="eval: false"/>
 	</action-record>
@@ -206,7 +199,6 @@
 		<field name="paymentMode" expr="eval: null"/>
 		<field name="partnerSet" expr="eval: null"/>
 		<field name="global" expr="eval: null"/>
-		<field name="globalByPost" expr="eval: null"/>
 		<field name="globalByDate" expr="eval: null"/>
 		<field name="globalByPartner" expr="eval: null"/>
 		<field name="detailed" expr="eval: null"/>
@@ -218,7 +210,6 @@
 		<field name="global" expr="eval: true" if="typeSelect in [1,2,5,11]"/>
 		<field name="globalByPartner" expr="eval: true" if="typeSelect in [3]"/>
 		<field name="detailed" expr="eval: true" if="typeSelect in [4]"/>
-		<field name="globalByPost" expr="eval: true" if="typeSelect in [10]"/>
 		<field name="exportTypeSelect" expr="eval: 'pdf'"/>
 	</action-record>
 	
@@ -231,7 +222,7 @@
 	<action-record name="action-move-Live-report-record-set-date-to" model="com.axelor.apps.account.db.AccountingReport">
 		<field name="dateTo" expr="eval: dateFrom" if="dateFrom &amp;&amp; !dateTo"/>
 	</action-record>
-	
+
 <!-- 	ACTION METHOD -->
 	
 	<action-method name="action-accounting-report-method-get-account">

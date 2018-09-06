@@ -24,7 +24,18 @@
 
     <form name="calendar-event-form" title="Event" model="com.axelor.apps.base.db.ICalendarEvent" onNew="action-icalendar-event-default-record">
         <panel>
-            <field name="subject" colSpan="12"/>
+            <field name="subject" showTitle="false" colSpan="12">
+            	<viewer depends="subject">
+                    <![CDATA[
+                        <h3>
+                            <span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.subject}}</span>
+                        </h3>
+                    ]]>
+                </viewer>
+                <editor>
+                    <field name="subject" showTitle="true" colSpan="12"/>
+                </editor>
+            </field>
             <field name="startDateTime" colSpan="5"/>
             <field name="endDateTime" colSpan="5"/>
             <field name="allDay" colSpan="2"/>
@@ -33,7 +44,7 @@
         </panel>
         <panel-tabs>
 	        <panel title="Description">
-	            <field name="Description" colSpan="12" widget="html" showTitle="false"/>
+	            <field name="description" colSpan="12" widget="html" showTitle="false"/>
 	        </panel>
 	        <panel title="Organization">
 	            <field name="location"/>
@@ -68,8 +79,8 @@
     </calendar>
 	
     <action-view name="action-icalendar-view-ievent-dashlet" title="Events" model="com.axelor.apps.base.db.ICalendarEvent">
-        <view type="grid" name="calendar-event-grid"/>
-        <view type="form" name="calendar-event-calendar-grid"/>
+        <view type="grid" name="calendar-event-calendar-grid"/>
+        <view type="form" name="calendar-event-form"/>
         <domain>self.calendar.id = :calendarId</domain>
         <context name="calendarId" expr="eval:id"/>
     </action-view>

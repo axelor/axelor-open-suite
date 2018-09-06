@@ -24,7 +24,7 @@ import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
@@ -74,7 +74,7 @@ public final class ModelTool {
 
         throw new AxelorException(
             modelClass,
-            IException.NO_VALUE,
+            TraceBackRepository.CATEGORY_NO_VALUE,
             I18n.get("Cannot find record #%s"),
             String.valueOf(id));
       } catch (Exception e) {

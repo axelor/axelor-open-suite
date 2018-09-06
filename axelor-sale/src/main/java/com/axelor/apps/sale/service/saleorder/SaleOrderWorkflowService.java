@@ -26,21 +26,19 @@ import com.google.inject.persist.Transactional;
 
 public interface SaleOrderWorkflowService {
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Partner validateCustomer(SaleOrder saleOrder);
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Partner validateCustomer(SaleOrder saleOrder);
 
+  public String getSequence(Company company) throws AxelorException;
 
-	public String getSequence(Company company) throws AxelorException;
+  public void cancelSaleOrder(
+      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
 
+  public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException;
 
-	public void cancelSaleOrder(SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
+  public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-	public void finalizeSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
 
-	public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
-
-	public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
-
-	public String getFileName(SaleOrder saleOrder);
-
+  public String getFileName(SaleOrder saleOrder);
 }

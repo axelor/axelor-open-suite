@@ -18,7 +18,6 @@
 package com.axelor.apps.base.translation;
 
 public interface ITranslation {
-	
-	public static final String BASE_APP_NAME = /*$$(*/ "value:Base"; /*)*/
 
+  public static final String BASE_APP_NAME = /*$$(*/ "value:Base"; /*)*/
 }

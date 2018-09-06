@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -16,18 +16,6 @@
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">210</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">210</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">210</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -147,56 +135,48 @@
                     <property name="columnName">analytic_journal_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">analytic_journal_id</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">analytic_journal_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_journal_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_journal_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">analytic_journal_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_axis_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">analytic_axis_id</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">analytic_axis_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_axis_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_axis_code</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">analytic_axis_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_axis_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_axis_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">analytic_axis_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_account_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">analytic_account_id</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">analytic_account_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_account_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_account_code</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">analytic_account_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_account_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_account_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">analytic_account_name</text-property>
                 </structure>
                 <structure>
@@ -209,7 +189,6 @@
                     <property name="columnName">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">amount</text-property>
                 </structure>
             </list-property>
@@ -368,8 +347,7 @@ left outer join public.account_analytic_move_line as AnalyticMoveLine on (Accoun
 left outer join public.account_analytic_account as AnalyticAccount on (AnalyticMoveLine.analytic_account  = AnalyticAccount.id )
 left outer join public.account_analytic_axis as AnalyticAxis on (AnalyticMoveLine.analytic_axis = AnalyticAxis.id ) 
 left outer join public.account_analytic_journal as AnalyticJournal on (AnalyticMoveLine.analytic_journal = AnalyticJournal.id ) 
-left outer join public.account_account as Account on (AnalyticMoveLine.account  = Account.id )
-left outer join public.account_account_type as AccountType on (Account.account_type  = AccountType.id )
+left outer join public.account_account_type as AccountType on (AnalyticMoveLine.account_type  = AccountType.id )
 
 
 left outer join public.base_company as Company on (AccountingReport.company = Company.id) 
@@ -378,12 +356,12 @@ where
 (AccountingReport.date_from IS NULL OR AnalyticMoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR AnalyticMoveLine.date_val <= AccountingReport.date_to) AND
 AnalyticMoveLine.date_val <= AccountingReport.date_val AND 
-Company.id = AccountingReport.company 
+AnalyticJournal.company = AccountingReport.company 
 AND (AccountingReport.analytic_journal IS NULL OR AccountingReport.analytic_journal  = AnalyticJournal.id)  
 AND AnalyticMoveLine.type_select = 3
 
 group by AnalyticJournal.id, AnalyticAxis.id, AnalyticAccount.id, AccountType.id 
-order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountType.id  ]]></xml-property>
+order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountType.id]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>

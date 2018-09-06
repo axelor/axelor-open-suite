@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.hr.web.lunch.voucher;
 
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.user.UserService;
@@ -41,103 +35,119 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Singleton
 public class LunchVoucherMgtController {
-	
-	@Inject private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
-	
-	public void calculate(ActionRequest request, ActionResponse response) {
-		
-		try {
-			LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
-			lunchVoucherMgtProvider.get().calculate(lunchVoucherMgt);
-			
-			response.setReload(true);
-		}  catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-	}
-	
-	public void validate(ActionRequest request, ActionResponse response) {
-			LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
-		try {
-			lunchVoucherMgtProvider.get().validate(lunchVoucherMgt);
 
-			response.setReload(true);
+  @Inject private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
 
-		}  catch(Exception e)  {
-			TraceBackService.trace(response, e);
-			return;
-		}
+  public void calculate(ActionRequest request, ActionResponse response) {
 
-		try {
-			Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
-			Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
-		} catch (Exception e) {
-			response.setFlash(e.getMessage());
-		}
-	}
-	
-	public void updateTotal(ActionRequest request, ActionResponse response) {
-		LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
-		LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-		lunchVoucherMgtService.calculateTotal(lunchVoucherMgt);
-		
-		response.setValue("totalLunchVouchers", lunchVoucherMgt.getTotalLunchVouchers());
-		response.setValue("requestedLunchVouchers", lunchVoucherMgt.getRequestedLunchVouchers());
-		response.setValue("givenLunchVouchers", lunchVoucherMgt.getGivenLunchVouchers());
-	}
-	
-	public void export(ActionRequest request, ActionResponse response) throws IOException {
-		LunchVoucherMgt lunchVoucherMgt = Beans.get(LunchVoucherMgtRepository.class).find(request.getContext().asType(LunchVoucherMgt.class).getId());
-		
-		try {
-			lunchVoucherMgtProvider.get().export(lunchVoucherMgt);
-			response.setReload(true);
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-		
-	}
-	
-	public void print(ActionRequest request, ActionResponse response) throws IOException {
-		LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-		
-		String name =  lunchVoucherMgt.getCompany().getName() + " - " + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
-		
-		try {
-			String fileLink = ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
-					.addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
-					.addParam("Locale", Beans.get(UserService.class).getLanguage())
-					.addFormat(ReportSettings.FORMAT_PDF)
-					.generate()
-					.getFileLink();
-			
-			response.setView(ActionView
-					.define(name)
-					.add("html", fileLink).map());
-			
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
-	public void updateStock(ActionRequest request, ActionResponse response) {
-		try {
-			LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
-			LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-			if (lunchVoucherMgt.getId() == null) {
-				return;
-			}
-			List<LunchVoucherMgtLine> oldLunchVoucherLines =
-					Beans.get(LunchVoucherMgtLineRepository.class).all()
-							.filter("self.lunchVoucherMgt.id = ?", lunchVoucherMgt.getId())
-							.fetch();
-			int stockQuantityStatus = lunchVoucherMgtService.updateStock(lunchVoucherMgt.getLunchVoucherMgtLineList(),
-					oldLunchVoucherLines, lunchVoucherMgt.getCompany());
-			response.setValue("stockQuantityStatus", stockQuantityStatus);
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+    try {
+      LunchVoucherMgt lunchVoucherMgt =
+          Beans.get(LunchVoucherMgtRepository.class)
+              .find(request.getContext().asType(LunchVoucherMgt.class).getId());
+      lunchVoucherMgtProvider.get().calculate(lunchVoucherMgt);
+
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validate(ActionRequest request, ActionResponse response) {
+    LunchVoucherMgt lunchVoucherMgt =
+        Beans.get(LunchVoucherMgtRepository.class)
+            .find(request.getContext().asType(LunchVoucherMgt.class).getId());
+    try {
+      lunchVoucherMgtProvider.get().validate(lunchVoucherMgt);
+
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      return;
+    }
+
+    try {
+      Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
+      Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
+
+  public void updateTotal(ActionRequest request, ActionResponse response) {
+    LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
+    LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+    lunchVoucherMgtService.calculateTotal(lunchVoucherMgt);
+
+    response.setValue("totalLunchVouchers", lunchVoucherMgt.getTotalLunchVouchers());
+    response.setValue("requestedLunchVouchers", lunchVoucherMgt.getRequestedLunchVouchers());
+    response.setValue("givenLunchVouchers", lunchVoucherMgt.getGivenLunchVouchers());
+  }
+
+  public void export(ActionRequest request, ActionResponse response) throws IOException {
+    LunchVoucherMgt lunchVoucherMgt =
+        Beans.get(LunchVoucherMgtRepository.class)
+            .find(request.getContext().asType(LunchVoucherMgt.class).getId());
+
+    try {
+      lunchVoucherMgtProvider.get().export(lunchVoucherMgt);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void print(ActionRequest request, ActionResponse response) throws IOException {
+    LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+
+    String name =
+        lunchVoucherMgt.getCompany().getName()
+            + " - "
+            + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+
+    try {
+      String fileLink =
+          ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
+              .addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
+              .addParam("Locale", Beans.get(UserService.class).getLanguage())
+              .addFormat(ReportSettings.FORMAT_PDF)
+              .generate()
+              .getFileLink();
+
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateStock(ActionRequest request, ActionResponse response) {
+    try {
+      LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
+      LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+      if (lunchVoucherMgt.getId() == null) {
+        return;
+      }
+      List<LunchVoucherMgtLine> oldLunchVoucherLines =
+          Beans.get(LunchVoucherMgtLineRepository.class)
+              .all()
+              .filter("self.lunchVoucherMgt.id = ?", lunchVoucherMgt.getId())
+              .fetch();
+      int stockQuantityStatus =
+          lunchVoucherMgtService.updateStock(
+              lunchVoucherMgt.getLunchVoucherMgtLineList(),
+              oldLunchVoucherLines,
+              lunchVoucherMgt.getCompany());
+      response.setValue("stockQuantityStatus", stockQuantityStatus);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

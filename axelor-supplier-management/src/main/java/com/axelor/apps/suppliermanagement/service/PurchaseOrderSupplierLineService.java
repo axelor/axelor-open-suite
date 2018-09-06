@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.suppliermanagement.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
@@ -30,46 +28,49 @@ import com.axelor.apps.suppliermanagement.db.IPurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public class PurchaseOrderSupplierLineService {
-	
-	@Inject
-	PurchaseOrderSupplierLineRepository poSupplierLineRepo;
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine) throws AxelorException {
-		
-		PurchaseOrderLine purchaseOrderLine = purchaseOrderSupplierLine.getPurchaseOrderLine();
 
-		purchaseOrderLine.setEstimatedDelivDate(purchaseOrderSupplierLine.getEstimatedDelivDate());
+  @Inject PurchaseOrderSupplierLineRepository poSupplierLineRepo;
 
-		Partner supplierPartner = purchaseOrderSupplierLine.getSupplierPartner();
-		Company company = purchaseOrderLine.getPurchaseOrder().getCompany();
-		if (Beans.get(BlockingService.class).getBlocking(supplierPartner, company, BlockingRepository.PURCHASE_BLOCKING) != null) {
-		    throw new AxelorException(IException.FUNCTIONNAL, I18n.get(IExceptionMessage.SUPPLIER_BLOCKED), supplierPartner);
-		}
-		purchaseOrderLine.setSupplierPartner(supplierPartner);
-		
-		purchaseOrderLine.setPrice(purchaseOrderSupplierLine.getPrice());
-		purchaseOrderLine.setExTaxTotal(PurchaseOrderLineServiceImpl.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLine.getPrice()));
-		
-		purchaseOrderSupplierLine.setStateSelect(IPurchaseOrderSupplierLine.ACCEPTED);
-		
-		poSupplierLineRepo.save(purchaseOrderSupplierLine);
-		
-	}
-	
-	
-	public PurchaseOrderSupplierLine create(Partner supplierPartner, BigDecimal price)  {
-		
-		return new PurchaseOrderSupplierLine(price, IPurchaseOrderSupplierLine.REQUESTED, supplierPartner);
-	}
-	
-	
-	
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine) throws AxelorException {
+
+    PurchaseOrderLine purchaseOrderLine = purchaseOrderSupplierLine.getPurchaseOrderLine();
+
+    purchaseOrderLine.setEstimatedDelivDate(purchaseOrderSupplierLine.getEstimatedDelivDate());
+
+    Partner supplierPartner = purchaseOrderSupplierLine.getSupplierPartner();
+    Company company = purchaseOrderLine.getPurchaseOrder().getCompany();
+    if (Beans.get(BlockingService.class)
+            .getBlocking(supplierPartner, company, BlockingRepository.PURCHASE_BLOCKING)
+        != null) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.SUPPLIER_BLOCKED),
+          supplierPartner);
+    }
+    purchaseOrderLine.setSupplierPartner(supplierPartner);
+
+    purchaseOrderLine.setPrice(purchaseOrderSupplierLine.getPrice());
+    purchaseOrderLine.setExTaxTotal(
+        PurchaseOrderLineServiceImpl.computeAmount(
+            purchaseOrderLine.getQty(), purchaseOrderLine.getPrice()));
+
+    purchaseOrderSupplierLine.setStateSelect(IPurchaseOrderSupplierLine.ACCEPTED);
+
+    poSupplierLineRepo.save(purchaseOrderSupplierLine);
+  }
+
+  public PurchaseOrderSupplierLine create(Partner supplierPartner, BigDecimal price) {
+
+    return new PurchaseOrderSupplierLine(
+        price, IPurchaseOrderSupplierLine.REQUESTED, supplierPartner);
+  }
 }

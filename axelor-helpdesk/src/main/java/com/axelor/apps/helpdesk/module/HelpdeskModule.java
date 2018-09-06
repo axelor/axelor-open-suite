@@ -18,18 +18,23 @@
 package com.axelor.apps.helpdesk.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.helpdesk.db.repo.TicketManagementRepository;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
+import com.axelor.apps.helpdesk.service.MailServiceHelpDeskImpl;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TicketServiceImpl;
+import com.axelor.apps.helpdesk.service.TimerTicketService;
+import com.axelor.apps.helpdesk.service.TimerTicketServiceImpl;
 
 public class HelpdeskModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
+  @Override
+  protected void configure() {
 
-		bind(TicketRepository.class).to(TicketManagementRepository.class);
-		bind(TicketService.class).to(TicketServiceImpl.class);
-	}
-
+    bind(TicketRepository.class).to(TicketManagementRepository.class);
+    bind(TicketService.class).to(TicketServiceImpl.class);
+    bind(MailServiceBaseImpl.class).to(MailServiceHelpDeskImpl.class);
+    bind(TimerTicketService.class).to(TimerTicketServiceImpl.class);
+  }
 }

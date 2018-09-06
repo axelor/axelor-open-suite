@@ -20,38 +20,61 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.TeamTaskServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl implements TeamTaskBusinessService {
+public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
+    implements TeamTaskBusinessService {
 
-    private PriceListLineRepository priceListLineRepository;
+  private PriceListLineRepository priceListLineRepository;
 
-    @Inject
-    public TeamTaskBusinessServiceImpl(PriceListLineRepository priceListLineRepository) {
-        this.priceListLineRepository = priceListLineRepository;
+  @Inject
+  public TeamTaskBusinessServiceImpl(PriceListLineRepository priceListLineRepository) {
+    this.priceListLineRepository = priceListLineRepository;
+  }
+
+  @Override
+  public TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo) {
+    TeamTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
+    task.setProduct(saleOrderLine.getProduct());
+    task.setUnit(saleOrderLine.getUnit());
+    task.setCurrency(project.getClientPartner().getCurrency());
+    if (project.getPriceList() != null) {
+      PriceListLine line =
+          priceListLineRepository.findByPriceListAndProduct(
+              project.getPriceList(), saleOrderLine.getProduct());
+      if (line != null) {
+        task.setSalePrice(line.getAmount());
+      }
     }
-
-    @Override
-    public TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo) {
-        TeamTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
-        task.setProduct(saleOrderLine.getProduct());
-        task.setUnit(saleOrderLine.getUnit());
-        task.setCurrency(project.getClientPartner().getCurrency());
-        if (project.getPriceList() != null) {
-            PriceListLine line = priceListLineRepository.findByPriceListAndProduct(project.getPriceList(), saleOrderLine.getProduct());
-            if (line != null) {
-                task.setSalePrice(line.getAmount());
-            }
-        }
-        if (task.getSalePrice() == null) {
-            task.setSalePrice(saleOrderLine.getProduct().getSalePrice());
-        }
-        task.setQuantity(saleOrderLine.getQty());
-        return task;
+    if (task.getSalePrice() == null) {
+      task.setSalePrice(saleOrderLine.getProduct().getSalePrice());
     }
+    task.setQuantity(saleOrderLine.getQty());
+    return task;
+  }
 
+  @Override
+  public TeamTask create(
+      TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty) {
+    TeamTask task = create(template.getName(), project, template.getAssignedTo());
+
+    task.setTaskDate(date.toLocalDate());
+    task.setTaskEndDate(date.plusHours(template.getDuration().longValue()).toLocalDate());
+
+    BigDecimal plannedHrs = template.getTotalPlannedHrs();
+    if (template.getIsUniqueTaskForMultipleQuantity() && qty.compareTo(BigDecimal.ONE) > 0) {
+      plannedHrs = plannedHrs.multiply(qty);
+      task.setName(task.getName() + " x" + qty.intValue());
+    }
+    task.setTotalPlannedHrs(plannedHrs);
+
+    return task;
+  }
 }

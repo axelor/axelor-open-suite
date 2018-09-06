@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
@@ -35,242 +28,212 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
 
-/**
- * InvoiceService est une classe implémentant l'ensemble des services de
- * facturations.
- * 
- */
+/** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public interface InvoiceService {
-	
-	public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
-	
-	/**
-	 * Lever l'ensemble des alarmes d'une facture.
-	 * 
-	 * @param invoice
-	 * 			Une facture.
-	 * 
-	 * @throws Exception 
-	 */
-	public void raisingAlarms(Invoice invoice, String alarmEngineCode);
 
-	
-	
-	/**
-	 * Fonction permettant de calculer l'intégralité d'une facture :
-	 * <ul>
-	 * 	<li>Détermine les taxes;</li>
-	 * 	<li>Détermine la TVA;</li>
-	 * 	<li>Détermine les totaux.</li>
-	 * </ul>
-	 * (Transaction)
-	 * 
-	 * @param invoice
-	 * 		Une facture.
-	 * 
-	 * @throws AxelorException
-	 */
-    public Invoice compute(final Invoice invoice) throws AxelorException;	
-	
-	/**
-	 * Validate an invoice.
-	 * 
-	 * @param invoice
-	 * @param compute
-	 * @throws AxelorException
-	 */
-    public void validate(Invoice invoice) throws AxelorException;
+  public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
 
-	/**
-	 * Ventilation comptable d'une facture.
-	 * (Transaction)
-	 * 
-	 * @param invoice
-	 * 		Une facture.
-	 * 
-	 * @throws AxelorException
-	 */
-    public void ventilate(Invoice invoice) throws AxelorException;
+  /**
+   * Lever l'ensemble des alarmes d'une facture.
+   *
+   * @param invoice Une facture.
+   * @throws Exception
+   */
+  public void raisingAlarms(Invoice invoice, String alarmEngineCode);
 
-    /**
-     * Validate and ventilate an invoice.
-     * 
-     * @param invoice
-     * @throws AxelorException
-     */
-    void validateAndVentilate(Invoice invoice) throws AxelorException;
+  /**
+   * Fonction permettant de calculer l'intégralité d'une facture :
+   *
+   * <ul>
+   *   <li>Détermine les taxes;
+   *   <li>Détermine la TVA;
+   *   <li>Détermine les totaux.
+   * </ul>
+   *
+   * (Transaction)
+   *
+   * @param invoice Une facture.
+   * @throws AxelorException
+   */
+  public Invoice compute(final Invoice invoice) throws AxelorException;
 
-    /**
-	 * Annuler une facture.
-	 * (Transaction)
-	 * 
-	 * @param invoice
-	 * 		Une facture.
-	 * 
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(Invoice invoice) throws AxelorException;
-	
+  /**
+   * Validate an invoice.
+   *
+   * @param invoice
+   * @param compute
+   * @throws AxelorException
+   */
+  public void validate(Invoice invoice) throws AxelorException;
 
-	
-	/**
-	 * Procédure permettant d'impacter la case à cocher "Passage à l'huissier" sur l'écriture de facture.
-	 * (Transaction)
-	 * 
-	 * @param invoice
-	 * 		Une facture
-	 */
-	@Transactional
-	public void usherProcess(Invoice invoice);
-	
-	/**
-	 * Créer un avoir.
-	 * <p>
-	 * Un avoir est une facture "inversée". Tout le montant sont opposés à la facture originale.
-	 * </p>
-	 * 
-	 * @param invoice
-	 * 
-	 * @return
-	 * @throws AxelorException 
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice createRefund(Invoice invoice) throws AxelorException;
-	
-	
-	public void setDraftSequence(Invoice invoice) throws AxelorException;
-	
-	
-	public void generateBudgetDistribution(Invoice invoice);
-	
-	/**
-	 * Print an invoice
-	 * 
-	 * @param invoice the invoice to print
-	 * @param toAttach whatever to attache the invoice to the object
-	 * 
-	 * @return ReportSettings
-	 * 
-	 * @throws AxelorException
-	 */
-	public ReportSettings printInvoice(Invoice invoice, boolean toAttach) throws AxelorException;
-	
-	/**
-	 * Print a list of invoices in the same output
-	 * 
-	 * @param ids the list of invoices ids
-	 * 
-	 * @return ReportSettings
-	 * 
-	 * @throws AxelorException
-	 */
-	public ReportSettings printInvoices(List<Long> ids) throws AxelorException;
+  /**
+   * Ventilation comptable d'une facture. (Transaction)
+   *
+   * @param invoice Une facture.
+   * @throws AxelorException
+   */
+  public void ventilate(Invoice invoice) throws AxelorException;
 
-	public Invoice mergeInvoice(List<Invoice> invoiceList, Company company, Currency currency,
-			Partner partner, Partner contactPartner, PriceList priceList,
-			PaymentMode paymentMode, PaymentCondition paymentCondition) throws AxelorException  ;
+  /**
+   * Validate and ventilate an invoice.
+   *
+   * @param invoice
+   * @throws AxelorException
+   */
+  void validateAndVentilate(Invoice invoice) throws AxelorException;
 
-	public List<InvoiceLine> getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList);
+  /**
+   * Annuler une facture. (Transaction)
+   *
+   * @param invoice Une facture.
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void cancel(Invoice invoice) throws AxelorException;
 
-	public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoiceMerged);
+  /**
+   * Procédure permettant d'impacter la case à cocher "Passage à l'huissier" sur l'écriture de
+   * facture. (Transaction)
+   *
+   * @param invoice Une facture
+   */
+  @Transactional
+  public void usherProcess(Invoice invoice);
 
-	public void deleteOldInvoices(List<Invoice> invoiceList);
-	
-	public Invoice getInvoice(MoveLine moveLine);
+  /**
+   * Créer un avoir.
+   *
+   * <p>Un avoir est une facture "inversée". Tout le montant sont opposés à la facture originale.
+   *
+   * @param invoice
+   * @return
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Invoice createRefund(Invoice invoice) throws AxelorException;
 
+  public void setDraftSequence(Invoice invoice) throws AxelorException;
 
-	/**
-	 * Create the domain for the field {@link Invoice#advancePaymentInvoiceSet}
-	 * @param invoice
-	 * @return
-	 * @throws AxelorException
-	 */
-	String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException;
+  public void generateBudgetDistribution(Invoice invoice);
 
-	/**
-	 * Return the set for the field {@link Invoice#advancePaymentInvoiceSet}
-	 * @param invoice
-	 * @return
-	 * @throws AxelorException
-	 */
-	Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException;
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException;
 
-	/**
-	 * Return the move lines from the advance payments on sale orders
-	 * @param invoice
-	 * @return
-	 */
-	List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException;
+  public List<InvoiceLine> getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList);
 
-	/**
-	 * Return the move lines from the advance payments from previous invoices
-	 * @param invoice
-	 * @return
-	 */
-	List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice);
+  public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoiceMerged);
 
-	/**
-	 * Return the move line from the advance payment from related sale order
-	 * lines.
-	 * @param invoice
-	 * @return
-	 */
-	List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
-	/**
-	 * Filter a set of advance payment invoice. If the amount of
-	 * the payment is greater than the total of the invoice, we filter it.
-     * If there is no remaining amount in the move lines of the advance
-	 * payment invoice, we filter it too.
-	 * @param invoice
-	 * @param advancePaymentInvoices
-	 * @throws AxelorException
-	 */
-	void filterAdvancePaymentInvoice(Invoice invoice,
-									 Set<Invoice> advancePaymentInvoices) throws AxelorException;
+  public void deleteOldInvoices(List<Invoice> invoiceList);
 
-	/**
-     * Get the bank details from the invoice's payment schedule, the invoice itself, or the partner's default.
-     * 
-	 * @param invoice
-	 * @return
-	 * @throws AxelorException
-	 */
-	BankDetails getBankDetails(Invoice invoice) throws AxelorException;
+  public Invoice getInvoice(MoveLine moveLine);
 
-	/**
-	 * @param invoice
-	 * @return {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_SALE}
-	 *        OR {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_PURCHASE}
-	 */
-	int getPurchaseTypeOrSaleType(Invoice invoice);
+  /**
+   * Create the domain for the field {@link Invoice#advancePaymentInvoiceSet}
+   *
+   * @param invoice
+   * @return
+   * @throws AxelorException
+   */
+  String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException;
 
-    /**
-     * Mass validate the given collection of invoice IDs.
-     * 
-     * @param invoiceIds
-     * @return pair of done/anomaly counts
-     */
-    Pair<Integer, Integer> massValidate(Collection<? extends Number> invoiceIds);
+  /**
+   * Return the set for the field {@link Invoice#advancePaymentInvoiceSet}
+   *
+   * @param invoice
+   * @return
+   * @throws AxelorException
+   */
+  Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException;
 
-    /**
-     * Mass validate and ventilate the given collection of invoice IDs.
-     * 
-     * @param invoiceIds
-     * @return pair of done/anomaly counts
-     */
-    Pair<Integer, Integer> massValidateAndVentilate(Collection<? extends Number> invoiceIds);
+  /**
+   * Return the move lines from the advance payments on sale orders
+   *
+   * @param invoice
+   * @return
+   */
+  List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException;
 
-    /**
-     * Mass ventilate the given collection of invoice IDs.
-     * 
-     * @param invoiceIds
-     * @return pair of done/anomaly counts
-     */
-    Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
+  /**
+   * Return the move lines from the advance payments from previous invoices
+   *
+   * @param invoice
+   * @return
+   */
+  List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice);
 
+  /**
+   * Return the move line from the advance payment from related sale order lines.
+   *
+   * @param invoice
+   * @return
+   */
+  List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
+  /**
+   * Filter a set of advance payment invoice. If the amount of the payment is greater than the total
+   * of the invoice, we filter it. If there is no remaining amount in the move lines of the advance
+   * payment invoice, we filter it too.
+   *
+   * @param invoice
+   * @param advancePaymentInvoices
+   * @throws AxelorException
+   */
+  void filterAdvancePaymentInvoice(Invoice invoice, Set<Invoice> advancePaymentInvoices)
+      throws AxelorException;
+
+  /**
+   * Get the bank details from the invoice's payment schedule, the invoice itself, or the partner's
+   * default.
+   *
+   * @param invoice
+   * @return
+   * @throws AxelorException
+   */
+  BankDetails getBankDetails(Invoice invoice) throws AxelorException;
+
+  /**
+   * @param invoice
+   * @return {@link com.axelor.apps.base.db.repo.PriceListRepository#TYPE_SALE} OR {@link
+   *     com.axelor.apps.base.db.repo.PriceListRepository#TYPE_PURCHASE}
+   */
+  int getPurchaseTypeOrSaleType(Invoice invoice);
+
+  /**
+   * Mass validate the given collection of invoice IDs.
+   *
+   * @param invoiceIds
+   * @return pair of done/anomaly counts
+   */
+  Pair<Integer, Integer> massValidate(Collection<? extends Number> invoiceIds);
+
+  /**
+   * Mass validate and ventilate the given collection of invoice IDs.
+   *
+   * @param invoiceIds
+   * @return pair of done/anomaly counts
+   */
+  Pair<Integer, Integer> massValidateAndVentilate(Collection<? extends Number> invoiceIds);
+
+  /**
+   * Mass ventilate the given collection of invoice IDs.
+   *
+   * @param invoiceIds
+   * @return pair of done/anomaly counts
+   */
+  Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
 }

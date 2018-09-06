@@ -7,12 +7,12 @@ apply {
 }
 
 spotless {
-	java {
+	java {  
 		googleJavaFormat()
-	}
+	} 
 }
 
-axelor {
+axelor { 
 	title "Axelor Contract"
 	description "Axelor Contract Module"
 }

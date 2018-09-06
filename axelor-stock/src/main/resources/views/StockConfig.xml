@@ -27,18 +27,31 @@
 		  </panel>
 	  </panel>
 	  <panel name="customsInformation" title="Customs">
-	  	<field name="customsWeightUnit" domain="self.unitTypeSelect = 1"/>
+	  	<field name="customsMassUnit" domain="self.unitTypeSelect = 1"/>
 	  </panel>
       <panel title="Logistical forms">
         <field name="realizeStockMovesUponParcelPalletCollection" />
       </panel>
       <panel-related field="freightCarrierCustomerAccountNumberList" form-view="freight-carrier-customer-account-number-form"
           grid-view="freight-carrier-customer-account-number-grid" editable="true" />
- 		<panel>
-            <field name="stockMoveAutomaticMail"/>
-			<field name="stockMoveMessageTemplate" requiredIf="stockMoveAutomaticMail"
-				   showIf="stockMoveAutomaticMail"
-				   form-view="template-form" grid-view="template-grid"/>
+		<panel>
+			<field name="plannedStockMoveAutomaticMail"/>
+			<field name="plannedStockMoveMessageTemplate"
+				requiredIf="plannedStockMoveAutomaticMail"
+				showIf="plannedStockMoveAutomaticMail"
+				form-view="template-form" grid-view="template-grid"/>
+		</panel>
+		<panel>
+			<field name="realStockMoveAutomaticMail"/>
+			<field name="realStockMoveMessageTemplate"
+				requiredIf="realStockMoveAutomaticMail"
+				showIf="realStockMoveAutomaticMail"
+				form-view="template-form" grid-view="template-grid"/>
+		</panel>
+		<panel title="Conformity certificate">
+			<field name="conformityCertificateTitle"/>
+			<field name="conformityCertificateDescription" widget="html"/>
+			<field name="signatoryUser"/>
 		</panel>
 	</form>
 	

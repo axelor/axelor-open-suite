@@ -17,31 +17,35 @@
  */
 package com.axelor.apps.message.service;
 
-import java.io.IOException;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.exception.AxelorException;
+import com.axelor.mail.MailAccount;
+import java.io.IOException;
+import javax.mail.MessagingException;
 
 public interface MailAccountService {
 
-	public boolean checkDefaultMailAccount(EmailAccount mailAccount);
-	
-	public EmailAccount getDefaultMailAccount(int serverType);
-	
-	public void checkMailAccountConfiguration(EmailAccount mailAccount) throws AxelorException, Exception;
-	
-	public String getSecurity(EmailAccount mailAccount);
-	
-	public String getProtocol(EmailAccount mailAccount);
-	
-	public String getSignature(EmailAccount mailAccount);
-	
-	public String getEncryptPassword(String password);
+  public void checkDefaultMailAccount(EmailAccount mailAccount) throws AxelorException;
 
-	public String getDecryptPassword(String password);
+  public EmailAccount getDefaultSender();
 
-	public int fetchEmails(EmailAccount mailAccount, boolean unseenOnly) throws MessagingException, IOException;
-	
+  public EmailAccount getDefaultReader();
+
+  public void checkMailAccountConfiguration(EmailAccount mailAccount)
+      throws AxelorException, Exception;
+
+  public String getSecurity(EmailAccount mailAccount);
+
+  public String getProtocol(EmailAccount mailAccount);
+
+  public String getSignature(EmailAccount mailAccount);
+
+  public String getEncryptPassword(String password);
+
+  public String getDecryptPassword(String password);
+
+  public int fetchEmails(EmailAccount mailAccount, boolean unseenOnly)
+      throws MessagingException, IOException;
+
+  public MailAccount getMailAccount(EmailAccount mailAccount);
 }

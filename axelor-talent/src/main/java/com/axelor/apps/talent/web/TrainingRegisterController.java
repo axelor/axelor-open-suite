@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.talent.web;
 
-import com.google.inject.Inject;
-
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.talent.db.Training;
 import com.axelor.apps.talent.db.TrainingRegister;
@@ -28,80 +26,76 @@ import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TrainingRegisterController {
-	
-	@Inject
-	private TrainingRegisterRepository trainingRegisterRepo;
-	
-	@Inject
-	private TrainingRegisterService trainingRegisterService;
-	
-	public void plan(ActionRequest request, ActionResponse response) {
-		
-		TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
-		trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
-		
-		Event event = trainingRegisterService.plan(trainingRegister);
-		
-		response.setReload(true);
-		
-		response.setView(ActionView.define("Meeting")
-				.model(Event.class.getCanonicalName())
-				.add("form","event-form")
-				.add("grid","event-grid")
-				.context("_showRecord", event.getId())
-				.context("_user", trainingRegister.getEmployee().getUser())
-				.map());
-		
-	}
-	
-	public void complete(ActionRequest request, ActionResponse response) {
-		
-		TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
-		trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
-		
-		trainingRegisterService.complete(trainingRegister);
-		
-		response.setReload(true);
-		
-	}
-	
-	public void cancel(ActionRequest request, ActionResponse response) {
-		
-		TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
-		trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
-		
-		trainingRegisterService.cancel(trainingRegister);
-		
-		response.setReload(true);
-		
-	}
-	
-	public void updateOldRating(ActionRequest request, ActionResponse response) {
-		
-		TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
-		
-		Training trainingSaved = null;
-		TrainingSession trainingSessionSaved = null;
-		if (trainingRegister.getId() != null) {
-			TrainingRegister trainingRegisterSaved = trainingRegisterRepo.find(trainingRegister.getId());
-			trainingSessionSaved = trainingRegisterSaved.getTrainingSession();
-			trainingSaved = trainingRegisterSaved.getTraining();
-		}
-		
-		if (trainingSaved != null && trainingSaved.getId() !=  trainingRegister.getTraining().getId()) {
-			trainingRegisterService.updateTrainingRating(trainingSaved, trainingRegister.getId());
-		}
-		
-		if (trainingSessionSaved != null) { 
-			if (trainingRegister.getTrainingSession() == null 
-				|| trainingRegister.getTrainingSession().getId() != trainingSessionSaved.getId()) {
-				trainingRegisterService.updateSessionRating(trainingSessionSaved, trainingRegister.getId());
-			}
-		}
-		
-	}
+
+  @Inject private TrainingRegisterRepository trainingRegisterRepo;
+
+  @Inject private TrainingRegisterService trainingRegisterService;
+
+  public void plan(ActionRequest request, ActionResponse response) {
+
+    TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
+    trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
+
+    Event event = trainingRegisterService.plan(trainingRegister);
+
+    response.setReload(true);
+
+    response.setView(
+        ActionView.define("Meeting")
+            .model(Event.class.getCanonicalName())
+            .add("form", "event-form")
+            .add("grid", "event-grid")
+            .context("_showRecord", event.getId())
+            .context("_user", trainingRegister.getEmployee().getUser())
+            .map());
+  }
+
+  public void complete(ActionRequest request, ActionResponse response) {
+
+    TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
+    trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
+
+    trainingRegisterService.complete(trainingRegister);
+
+    response.setReload(true);
+  }
+
+  public void cancel(ActionRequest request, ActionResponse response) {
+
+    TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
+    trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
+
+    trainingRegisterService.cancel(trainingRegister);
+
+    response.setReload(true);
+  }
+
+  public void updateOldRating(ActionRequest request, ActionResponse response) {
+
+    TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
+
+    Training trainingSaved = null;
+    TrainingSession trainingSessionSaved = null;
+    if (trainingRegister.getId() != null) {
+      TrainingRegister trainingRegisterSaved = trainingRegisterRepo.find(trainingRegister.getId());
+      trainingSessionSaved = trainingRegisterSaved.getTrainingSession();
+      trainingSaved = trainingRegisterSaved.getTraining();
+    }
+
+    if (trainingSaved != null && trainingSaved.getId() != trainingRegister.getTraining().getId()) {
+      trainingRegisterService.updateTrainingRating(trainingSaved, trainingRegister.getId());
+    }
+
+    if (trainingSessionSaved != null) {
+      if (trainingRegister.getTrainingSession() == null
+          || trainingRegister.getTrainingSession().getId() != trainingSessionSaved.getId()) {
+        trainingRegisterService.updateSessionRating(trainingSessionSaved, trainingRegister.getId());
+      }
+    }
+  }
 }

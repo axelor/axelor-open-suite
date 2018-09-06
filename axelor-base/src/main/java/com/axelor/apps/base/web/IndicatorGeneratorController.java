@@ -31,21 +31,20 @@ import com.google.inject.Singleton;
 @Singleton
 public class IndicatorGeneratorController {
 
-	@Inject
-	private IndicatorGeneratorService indicatorGeneratorService;
-	
-	@Inject
-	private IndicatorGeneratorRepository indicatorGeneratorRepo;
-	
-	public void run(ActionRequest request, ActionResponse response){
-		
-		IndicatorGenerator indicatorGenerator = request.getContext().asType(IndicatorGenerator.class);
-		
-		try {
-			indicatorGeneratorService.run(indicatorGeneratorRepo.find(indicatorGenerator.getId()));
-			response.setReload(true);
-			response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
+  @Inject private IndicatorGeneratorService indicatorGeneratorService;
+
+  @Inject private IndicatorGeneratorRepository indicatorGeneratorRepo;
+
+  public void run(ActionRequest request, ActionResponse response) {
+
+    IndicatorGenerator indicatorGenerator = request.getContext().asType(IndicatorGenerator.class);
+
+    try {
+      indicatorGeneratorService.run(indicatorGeneratorRepo.find(indicatorGenerator.getId()));
+      response.setReload(true);
+      response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

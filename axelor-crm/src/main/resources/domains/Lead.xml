@@ -42,6 +42,7 @@
 	<date name="contactDate" title="Contact date" />
 	
 	<integer name="statusSelect" title="Status" selection="crm.lead.status.select" default="1" required="true" massUpdate="true"/>
+	<boolean name="isRecycled" title="Recycled"/>
 	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
   	<string name="statusDescription" title="Status description" large="true"/>
     <decimal name="estimatedBudget" title="Estimated budget"/>
@@ -61,23 +62,7 @@
   	<one-to-many name="opportunitiesList" ref="com.axelor.apps.crm.db.Opportunity" title="Opportunities" mappedBy="lead"/>
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
     
-    <string name="fullName" title="Contact name" namecolumn="true">
-	    <![CDATA[
-	    String fullName = "";
-	    if(name != null && firstName != null) fullName = firstName + " " + name;
-	    else if(name != null) fullName = name;
-	    else if(firstName != null) fullName = firstName;
-	    return fullName;
-	    ]]>
-    </string>
-    
-    <string name="companyName" title="Company name" namecolumn="true">
-	    <![CDATA[
-	    String companyName =  enterpriseName;
-	    if(companyName != null && fullName != null) companyName = companyName + ", " + fullName;
-	    return companyName;
-	    ]]>
-    </string>
+    <string name="fullName" title="Contact name" namecolumn="true" />
 
     <extra-code>
     <![CDATA[
@@ -86,7 +71,6 @@
     	public static final int LEAD_STATUS_IN_PROCESS = 3;
     	public static final int LEAD_STATUS_CONVERTED = 4;
     	public static final int LEAD_STATUS_LOST = 5;
-    	public static final int LEAD_STATUS_RECYCLED = 6;
     	
     	public static final int CONVERT_LEAD_CREATE_PARTNER = 1;
     	public static final int CONVERT_LEAD_SELECT_PARTNER = 2;

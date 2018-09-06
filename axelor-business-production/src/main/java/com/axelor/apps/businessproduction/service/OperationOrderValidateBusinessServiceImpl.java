@@ -20,19 +20,19 @@ package com.axelor.apps.businessproduction.service;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.production.db.OperationOrder;
-
 import java.util.Objects;
 
-public class OperationOrderValidateBusinessServiceImpl implements OperationOrderValidateBusinessService {
+public class OperationOrderValidateBusinessServiceImpl
+    implements OperationOrderValidateBusinessService {
 
-   @Override
-   public long checkTimesheet(OperationOrder operationOrder) {
-       return operationOrder.getTimesheetLineList()
-               .stream()
-               .map(TimesheetLine::getTimesheet)
-               .filter(Objects::nonNull)
-               .filter(timesheet -> timesheet.getStatusSelect() == TimesheetRepository.STATUS_CONFIRMED)
-               .count();
-
-   }
+  @Override
+  public long checkTimesheet(OperationOrder operationOrder) {
+    return operationOrder
+        .getTimesheetLineList()
+        .stream()
+        .map(TimesheetLine::getTimesheet)
+        .filter(Objects::nonNull)
+        .filter(timesheet -> timesheet.getStatusSelect() == TimesheetRepository.STATUS_CONFIRMED)
+        .count();
+  }
 }

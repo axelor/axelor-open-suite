@@ -23,7 +23,7 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -76,8 +76,8 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
         && (version.getContract().getFirstPeriodEndDate() == null
             || version.getInvoicingFrequency() == null)) {
       throw new AxelorException(
-          I18n.get("Please fill the first period end date and the invoice frequency."),
-          IException.CONFIGURATION_ERROR);
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get("Please fill the first period end date and the invoice frequency."));
     }
 
     save(version);

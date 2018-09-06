@@ -18,11 +18,16 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public interface TeamTaskBusinessService extends TeamTaskService {
-    TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo);
+  TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo);
+
+  TeamTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty);
 }

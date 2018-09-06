@@ -27,31 +27,27 @@ import com.google.inject.Inject;
 
 public class MoveSequenceService {
 
-	private SequenceService sequenceService;
+  private SequenceService sequenceService;
 
-	@Inject
-	public MoveSequenceService(SequenceService sequenceService) {
+  @Inject
+  public MoveSequenceService(SequenceService sequenceService) {
 
-		this.sequenceService = sequenceService;
-		
-	}
+    this.sequenceService = sequenceService;
+  }
 
-	public void setDraftSequence(Move move) throws AxelorException {
-			
-		if (move.getId() != null && Strings.isNullOrEmpty(move.getReference())
-			&& move.getStatusSelect() == MoveRepository.STATUS_NEW)  {
-			move.setReference(sequenceService.getDraftSequenceNumber(move));
-		}		
-		
-	}		
-	
-	
-	public void setSequence(Move move)  {
-		
-		Journal journal = move.getJournal();
-		
-		move.setReference( sequenceService.getSequenceNumber(journal.getSequence()) );
+  public void setDraftSequence(Move move) throws AxelorException {
 
-	}
-		
+    if (move.getId() != null
+        && Strings.isNullOrEmpty(move.getReference())
+        && move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+      move.setReference(sequenceService.getDraftSequenceNumber(move));
+    }
+  }
+
+  public void setSequence(Move move) {
+
+    Journal journal = move.getJournal();
+
+    move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
+  }
 }

@@ -16,7 +16,10 @@
     <decimal name="companyInTaxTotal" scale="2" precision="20" title="Amount A.T.I. in Acc. currency" hidden="true"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <boolean name="reverseCharged"/>
-  
+    <decimal name="subTotalExcludingFixedAssets"/>
+    <decimal name="subTotalOfFixedAssets"/>
+    <decimal name="companySubTotalExcludingFixedAssets"/>
+    <decimal name="companySubTotalOfFixedAssets"/>
   </entity>
 
 </domain-models>

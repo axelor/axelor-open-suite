@@ -19,14 +19,14 @@ package com.axelor.apps.stock.exception;
 
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 
 public class LogisticalFormWarning extends AxelorException {
 
-	private static final long serialVersionUID = 7036277936135855411L;
+  private static final long serialVersionUID = 7036277936135855411L;
 
-	public LogisticalFormWarning(LogisticalForm logisticalForm, String message, Object... messageArgs) {
-		super(logisticalForm, IException.CONFIGURATION_ERROR, message, messageArgs);
-	}
-
+  public LogisticalFormWarning(
+      LogisticalForm logisticalForm, String message, Object... messageArgs) {
+    super(logisticalForm, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message, messageArgs);
+  }
 }

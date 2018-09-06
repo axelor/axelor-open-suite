@@ -14,7 +14,7 @@
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" update="true" search="self.importId = :importId"/>
 	
 	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory">
-		<bind to="inventorySeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.INVENTORY)" />
+		<bind to="inventorySeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.INVENTORY)" />
 	    <bind to="statusSelect" eval="3" />
 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
 	</input>
@@ -43,11 +43,17 @@
 	</input>
 
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId">
+		<bind to="partnerSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.PARTNER)" />
 		<bind to="isCarrier" eval="true"/>
-		<bind to="language" search="self.code = :languageCode"></bind>
+		<bind to="language" search="self.code = :languageCode"/>
 	</input>
   
     <input file="stock_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId"/>
 
     <input file="stock_freightCarrierMode.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrierMode" search="self.importId = :importId"/>
+    
+    <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" >
+		<bind to="language" search="self.code = :languageCode"/>
+	</input>
+	
 </csv-inputs>

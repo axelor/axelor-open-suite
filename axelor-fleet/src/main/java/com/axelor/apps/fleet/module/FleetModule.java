@@ -25,9 +25,9 @@ import com.axelor.apps.fleet.service.VehicleServiceImpl;
 
 public class FleetModule extends AxelorModule {
 
-	@Override
-	protected void configure() {
-        bind(VehicleService.class).to(VehicleServiceImpl.class);
-        bind(VehicleFuelLogService.class).to(VehicleFuelLogServiceImpl.class);
-	}
+  @Override
+  protected void configure() {
+    bind(VehicleService.class).to(VehicleServiceImpl.class);
+    bind(VehicleFuelLogService.class).to(VehicleFuelLogServiceImpl.class);
+  }
 }

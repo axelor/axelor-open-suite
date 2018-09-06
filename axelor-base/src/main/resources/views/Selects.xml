@@ -6,8 +6,7 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="grade.0.up.to.10.select">
-		<option value="0">0</option>
+	<selection name="grade.1.up.to.10.select">
 		<option value="1">1</option>
 		<option value="2">2</option>
 		<option value="3">3</option>
@@ -53,11 +52,12 @@
 	<selection name='product.procurement.method.select'>
 		<option value='buy'>Buy</option>
 		<option value='produce'>Produce</option>
+		<option value='buyAndProduce'>Buy and produce</option>
 	</selection>
 
 	<selection name="product.sale.supply.select">
 		<option value="0">None</option>
-		<option value="1">FromStock</option>
+		<option value="1">From stock</option>
 		<option value="2">Purchase</option>
 		<option value="3">Produce</option>
 	</selection>
@@ -121,6 +121,7 @@
 
 	<selection name='ibase.batch.action.select'>
 		<option value='1'>Target</option>
+		<option value='2'>Calendar synchronization</option>
 	</selection>
 
 	<selection name="base.keyword.type.select">
@@ -216,7 +217,7 @@
 	<selection name="base.bank.bank.details.type.select">
 		<option value="0">Other</option>
 		<option value="1">IBAN</option>
-		<option value="2">National id</option>
+		<option value="2">BBAN</option>
 	</selection>
 
 	<!-- TODO: move this selection to account module and create a copy here
@@ -328,7 +329,7 @@
 	</selection>
 	
 	<selection name="unit.unit.type.select">
-		<option value="1">Weight unit</option>
+		<option value="1">Mass unit</option>
 		<option value="2">Length unit</option>
 		<option value="3">Time unit</option>
 	</selection>
@@ -375,6 +376,10 @@
 		<option value="4">Leave</option>
 	</selection>
 
+	<selection name="icalendar.synchronization.select">
+		<option value="ICalEvent">ICal events only</option>
+	</selection>
+
 	<selection name="base.birt.template.parameter.type.select">
 		<option value="string">String</option>
 		<option value="float">Float</option>
@@ -396,6 +401,7 @@
 		<option value="com.axelor.mail.service.MailFetchJob">com.axelor.mail.service.MailFetchJob</option>
 		<option value="com.axelor.apps.base.job.MailJob">com.axelor.apps.base.job.MailJob</option>
 		<option value="com.axelor.apps.base.job.BatchJob">com.axelor.apps.base.job.BatchJob</option>
+		<option value="com.axelor.apps.base.job.CurrencyConversionJob">com.axelor.apps.base.job.CurrencyConversionJob</option>
 	</selection>
 
 	<selection name="meta.schedule.batch.service.select" id="base.meta.schedule.batch.service.select">
@@ -425,5 +431,14 @@
 		<option value="QR_CODE">QR_CODE</option>
 		<option value="UPC_A">UPC_A</option>
     </selection>
+   
+    <selection name="base.sharing.setting.rights.select">
+        <option value="1">Read only</option>
+        <option value="2">Modification</option>
+    </selection>
     
+    <selection id="base.object.data.config.model.select" name="object.data.config.model.select">
+		    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+	  </selection>
+
 </object-views>

@@ -8,6 +8,7 @@
 		<boolean name="managePurchaseOrderVersion" title="Manage purchase order versions" default="false"/>
 		<boolean name="managePurchasesUnits" title="Manage purchases unit on products"/>
         <boolean name="manageMultiplePurchaseQuantity" title="Manage multiple purchase quantity"/>
+		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
 	</entity>
 
 </domain-models>

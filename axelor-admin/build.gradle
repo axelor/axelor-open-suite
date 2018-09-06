@@ -6,6 +6,12 @@ apply {
 	version = absVersion
 }
 
+spotless { 
+	java {  
+		googleJavaFormat()
+	} 
+}
+
 axelor {
 	title "Axelor Admin"
 	description "Axelor Admin Module"
@@ -13,6 +19,7 @@ axelor {
 
 dependencies {
 	compile project(":modules:axelor-exception")
+	compile project(":modules:axelor-tool")
 }
 
 def updateJsp(jspFile, check, lines) {

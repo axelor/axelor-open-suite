@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
+import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
+import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
+import com.axelor.apps.bankpayment.ebics.client.OrderType;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,9 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
-
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlObject;
@@ -42,17 +45,11 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
-import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.apps.bankpayment.ebics.client.OrderType;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-
-
 public abstract class DefaultEbicsRootElement implements EbicsRootElement {
 
   /**
    * Constructs a new default <code>EbicsRootElement</code>
+   *
    * @param session the current ebics session
    */
   public DefaultEbicsRootElement(EbicsSession session) {
@@ -60,15 +57,14 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
     suggestedPrefixes = new HashMap<String, String>();
   }
 
-  /**
-   *  Constructs a new default <code>EbicsRootElement</code>
-   */
+  /** Constructs a new default <code>EbicsRootElement</code> */
   public DefaultEbicsRootElement() {
     this(null);
   }
 
   /**
    * Saves the Suggested Prefixes when the XML is printed
+   *
    * @param uri the namespace URI
    * @param prefix the namespace URI prefix
    */
@@ -78,16 +74,17 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
 
   /**
    * Prints a pretty XML document using jdom framework.
+   *
    * @param input the XML input
    * @return the pretty XML document.
- * @throws JDOMException 
+   * @throws JDOMException
    * @throws EbicsException pretty print fails
    */
   public byte[] prettyPrint() throws AxelorException {
-    Document                  	document;
-    XMLOutputter              	xmlOutputter;
-    SAXBuilder                	sxb;
-    ByteArrayOutputStream	output;
+    Document document;
+    XMLOutputter xmlOutputter;
+    SAXBuilder sxb;
+    ByteArrayOutputStream output;
 
     sxb = new SAXBuilder();
     output = new ByteArrayOutputStream();
@@ -97,7 +94,8 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
       document = sxb.build(new InputStreamReader(new ByteArrayInputStream(toByteArray()), "UTF-8"));
       xmlOutputter.output(document, output);
     } catch (IOException | JDOMException e) {
-    	throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
 
     return output.toByteArray();
@@ -105,41 +103,41 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
 
   /**
    * Inserts a schema location to the current ebics root element.
+   *
    * @param namespaceURI the name space URI
    * @param localPart the local part
    * @param prefix the prefix
    * @param value the value
    */
-  public void insertSchemaLocation(String namespaceURI,
-                                   String localPart,
-                                   String prefix,
-                                   String value)
-  {
-    XmlCursor 			cursor;
+  public void insertSchemaLocation(
+      String namespaceURI, String localPart, String prefix, String value) {
+    XmlCursor cursor;
 
     cursor = document.newCursor();
     while (cursor.hasNextToken()) {
       if (cursor.isStart()) {
-	cursor.toNextToken();
-	cursor.insertAttributeWithValue(new QName(namespaceURI, localPart, prefix), value);
-	break;
+        cursor.toNextToken();
+        cursor.insertAttributeWithValue(new QName(namespaceURI, localPart, prefix), value);
+        break;
       } else {
-	cursor.toNextToken();
+        cursor.toNextToken();
       }
     }
   }
 
   /**
    * Generates a random file name with a prefix.
+   *
    * @param type the order type.
    * @return the generated file name.
    */
   public static String generateName(OrderType type) {
     return type.getOrderType() + new BigInteger(130, new SecureRandom()).toString(32);
   }
-  
+
   /**
    * Generates a random file name with a prefix.
+   *
    * @param type the prefix to use.
    * @return the generated file name.
    */
@@ -154,7 +152,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
 
   @Override
   public byte[] toByteArray() {
-    XmlOptions		options;
+    XmlOptions options;
 
     options = new XmlOptions();
     options.setSavePrettyPrint();
@@ -164,56 +162,57 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
 
   @Override
   public void addNamespaceDecl(String prefix, String uri) {
-    XmlCursor 			cursor;
+    XmlCursor cursor;
 
     cursor = document.newCursor();
     while (cursor.hasNextToken()) {
       if (cursor.isStart()) {
-	cursor.toNextToken();
-	cursor.insertNamespace(prefix, uri);
-	break;
+        cursor.toNextToken();
+        cursor.insertNamespace(prefix, uri);
+        break;
       } else {
-	cursor.toNextToken();
+        cursor.toNextToken();
       }
     }
   }
 
   @Override
   public void validate() throws AxelorException {
-    ArrayList<XmlError>		validationMessages;
-    boolean     		isValid;
+    ArrayList<XmlError> validationMessages;
+    boolean isValid;
 
     validationMessages = new ArrayList<XmlError>();
     isValid = document.validate(new XmlOptions().setErrorListener(validationMessages));
 
     if (!isValid) {
-      String			message;
-      Iterator<XmlError>    	iter;
+      String message;
+      Iterator<XmlError> iter;
 
       iter = validationMessages.iterator();
       message = "";
       while (iter.hasNext()) {
-	if (!message.equals("")) {
-	  message += ";";
-	}
-	message += iter.next().getMessage();
+        if (!message.equals("")) {
+          message += ";";
+        }
+        message += iter.next().getMessage();
       }
 
-      throw new AxelorException(IException.CONFIGURATION_ERROR, message);
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message);
     }
   }
 
   @Override
   public void save(OutputStream out) throws AxelorException, JDOMException {
     try {
-      byte[]		element;
+      byte[] element;
 
       element = prettyPrint();
       out.write(element);
       out.flush();
       out.close();
     } catch (IOException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -226,7 +225,7 @@ public abstract class DefaultEbicsRootElement implements EbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  protected XmlObject			document;
-  protected EbicsSession 		session;
-  private static Map<String, String> 	suggestedPrefixes;
+  protected XmlObject document;
+  protected EbicsSession session;
+  private static Map<String, String> suggestedPrefixes;
 }

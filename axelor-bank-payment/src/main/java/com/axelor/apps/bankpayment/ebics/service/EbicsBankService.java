@@ -21,6 +21,5 @@ import com.axelor.apps.bankpayment.db.EbicsBank;
 
 public interface EbicsBankService {
 
-	public void computeFullName(EbicsBank ebicsBank);
-
+  public void computeFullName(EbicsBank ebicsBank);
 }

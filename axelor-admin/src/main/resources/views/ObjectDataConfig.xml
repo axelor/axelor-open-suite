@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+   
+	<grid name="object-data-config-grid" title="Object data config" model="com.axelor.apps.base.db.ObjectDataConfig">
+		<field name="modelSelect"/>
+	</grid> 
+    
+	<form name="object-data-config-form" title="Object data config" model="com.axelor.apps.base.db.ObjectDataConfig"
+		width="large">
+		<panel>
+			<field name="modelSelect"/>
+			<button name="export" title="Export" onClick="save,action-open-object-data-export-wizard" colSpan="3"/>
+			<panel-related field="dataConfigLineList" colSpan="12" />
+		</panel>
+	</form>
+   
+	<action-view name="action-open-object-data-export-wizard" title="Export" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="object-data-export-wizard-form" />
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="popup-save" value="false"/>
+		<context name="_modelSelect" expr="eval:modelSelect"/>
+		<context name="_objectDataConfigId" expr="eval:id" />
+	</action-view>
+  
+</object-views>

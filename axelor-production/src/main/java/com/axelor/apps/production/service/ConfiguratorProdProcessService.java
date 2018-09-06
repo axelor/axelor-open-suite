@@ -24,13 +24,14 @@ import com.axelor.rpc.JsonContext;
 
 public interface ConfiguratorProdProcessService {
 
-    /**
-     * Generate a prod process from a configurator prod process
-     * and a JsonContext holding the custom values
-     * @param confProdProcess
-     * @param attributes
-     * @return
-     */
-    ProdProcess generateProdProcessService(ConfiguratorProdProcess confProdProcess,
-                                           JsonContext attributes) throws AxelorException;
+  /**
+   * Generate a prod process from a configurator prod process and a JsonContext holding the custom
+   * values
+   *
+   * @param confProdProcess
+   * @param attributes
+   * @return
+   */
+  ProdProcess generateProdProcessService(
+      ConfiguratorProdProcess confProdProcess, JsonContext attributes) throws AxelorException;
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <grid name="timer-history-grid" title="Timer history" model="com.axelor.apps.base.db.TimerHistory"
+    orderBy="startDate">
+    <field name="startDate" width="140"/>
+    <field name="endDate" width="140"/>
+  </grid>
+
+  <form name="timer-history-form" title="Timer history"
+    model="com.axelor.apps.base.db.TimerHistory">
+    <panel>
+      <field name="startDate"/>
+      <field name="endDate"/>
+    </panel>
+  </form>
+
+</object-views>

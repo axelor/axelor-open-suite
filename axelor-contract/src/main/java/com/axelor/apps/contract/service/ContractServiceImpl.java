@@ -25,11 +25,12 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -47,7 +48,7 @@ import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.HashMultimap;
@@ -198,7 +199,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     if (!lineInvoiced.isEmpty()) {
       throw new AxelorException(
-          IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
     }
   }
 
@@ -217,7 +219,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     if (!lineInvoiced.isEmpty()) {
       throw new AxelorException(
-          IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
     }
   }
 
@@ -273,19 +276,22 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   public void checkCanTerminateContract(Contract contract) throws AxelorException {
     if (contract.getTerminatedDate() == null) {
       throw new AxelorException(
-          IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_TERMINATE_DATE));
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.CONTRACT_MISSING_TERMINATE_DATE));
     }
     ContractVersion version = contract.getCurrentVersion();
 
     if (contract.getTerminatedDate().isBefore(version.getActivationDate())) {
       throw new AxelorException(
-          IException.FUNCTIONNAL, I18n.get(IExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
     }
 
     if (version.getIsWithEngagement()) {
       if (contract.getEngagementStartDate() == null) {
         throw new AxelorException(
-            IException.MISSING_FIELD, I18n.get(IExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
       }
       if (contract
           .getTerminatedDate()
@@ -293,7 +299,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
               durationService.computeDuration(
                   version.getEngagementDuration(), contract.getEngagementStartDate()))) {
         throw new AxelorException(
-            IException.FUNCTIONNAL,
+            TraceBackRepository.TYPE_FUNCTIONNAL,
             I18n.get(IExceptionMessage.CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED));
       }
     }
@@ -306,7 +312,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                     version.getPriorNoticeDuration(),
                     Beans.get(AppBaseService.class).getTodayDate()))) {
       throw new AxelorException(
-          IException.FUNCTIONNAL,
+          TraceBackRepository.TYPE_FUNCTIONNAL,
           I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
     }
   }
@@ -504,7 +510,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     Account currentAccount = invoiceLine.getAccount();
     Account replacedAccount = fiscalPositionService.getAccount(fiscalPosition, currentAccount);
 
-    boolean isPurchase = Beans.get(InvoiceLineService.class).isPurchase(invoice);
+    boolean isPurchase =
+        Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice)
+            == PriceListRepository.TYPE_PURCHASE;
 
     TaxLine taxLine =
         Beans.get(AccountManagementService.class)

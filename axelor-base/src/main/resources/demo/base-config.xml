@@ -52,8 +52,6 @@
 		<bind to="language" search="self.code = :languageCode"/>
 	</input>
     
-    <input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.importId = :importId"/>
-    
 	<input file="base_team.csv" separator=";" type="com.axelor.team.db.Team" search="self.importId = :importId">
 		<bind column="members" to="members" search="self.code in :members" eval="members.split('\\|') as List" />
 	</input>
@@ -92,7 +90,7 @@
 	
 	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" call="com.axelor.csv.script.ImportPartner:importPartner">
-		<bind to="partnerSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.IAdministration.PARTNER)" />
+		<bind to="partnerSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.PARTNER)" />
 		<bind to="emailAddress" search="self.address = :email">
 			<bind to="address" column="email" />
 		</bind>
@@ -112,7 +110,9 @@
 	<!-- A BESOIN DE PARTNER -->
 	<input file="base_bank.csv" separator=";" type="com.axelor.apps.base.db.Bank"/>
 	
-	<input file="base_bankAddress.csv" separator=";" type="com.axelor.apps.base.db.BankAddress"/>
+    <input file="base_bankAddress.csv" separator=";" type="com.axelor.apps.base.db.BankAddress" search="self.importId = :importId">
+        <bind to="fullAddress" eval="call:com.axelor.apps.base.service.BankAddressService:computeFullAddress(null, address, null)" />
+    </input>
 	
 	<input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails" >
 		<bind to="partner" column="partner_importId" search="self.importId =:partner_importId" update="true" />
@@ -144,9 +144,9 @@
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" call="com.axelor.csv.script.ImportProduct:importProduct">
 		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
-		<bind to="netWeight" eval="1" if="productTypeSelect == 'storable'" />
-        <bind to="grossWeight" eval="1" if="productTypeSelect == 'storable'" />
-        <bind to="weightUnit" search="self.labelToPrinting = 'kg'" if="productTypeSelect == 'storable'" />
+		<bind to="netMass" eval="1" if="productTypeSelect == 'storable'" />
+        <bind to="grossMass" eval="1" if="productTypeSelect == 'storable'" />
+        <bind to="massUnit" search="self.labelToPrinting = 'kg'" if="productTypeSelect == 'storable'" />
 	</input>
 	
 	<input file="base_productVariantAttr.csv" separator=";" type="com.axelor.apps.base.db.ProductVariantAttr" search="self.code = :code" />

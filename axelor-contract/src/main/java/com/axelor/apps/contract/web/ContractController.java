@@ -148,6 +148,45 @@ public class ContractController {
     response.setReload(true);
   }
 
+  private LocalDate getToDay() {
+    return Beans.get(AppBaseService.class).getTodayDate();
+  }
+
+  public void saveNextVersion(ActionRequest request, ActionResponse response) {
+    final ContractVersion version =
+        JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
+    if (version.getContractNext() != null) {
+      return;
+    }
+
+    Object xContractId = request.getContext().get("_xContractId");
+    Long contractId;
+
+    if (xContractId != null) {
+      contractId = Long.valueOf(xContractId.toString());
+    } else if (version.getContract() != null) {
+      contractId = version.getContract().getId();
+    } else {
+      contractId = null;
+    }
+
+    if (contractId == null) {
+      return;
+    }
+
+    JPA.runInTransaction(
+        new Runnable() {
+          @Override
+          public void run() {
+            Contract contract = JPA.find(Contract.class, contractId);
+            contract.setNextVersion(version);
+            Beans.get(ContractRepository.class).save(contract);
+          }
+        });
+
+    response.setReload(true);
+  }
+
   @Transactional
   public void copyFromTemplate(ActionRequest request, ActionResponse response) {
 

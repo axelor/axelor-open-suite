@@ -22,29 +22,30 @@ import com.axelor.apps.businessproduction.service.OperationOrderValidateBusiness
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class OperationOrderBusinessController {
 
-    /**
-     * Called from operation order view before finish.
-     * Alert the user if we will use timesheet waiting validation for the
-     * real duration of the operation order.
-     *
-     * @param request
-     * @param response
-     */
-    public void alertNonValidatedTimesheet(ActionRequest request, ActionResponse response) {
-        try {
-            OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-            if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
-                    && Beans.get(OperationOrderValidateBusinessService.class).checkTimesheet(operationOrder) > 0) {
-                response.setAlert(IExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION);
-            }
-        } catch (Exception e) {
-            TraceBackService.trace(response, e);
-        }
+  /**
+   * Called from operation order view before finish. Alert the user if we will use timesheet waiting
+   * validation for the real duration of the operation order.
+   *
+   * @param request
+   * @param response
+   */
+  public void alertNonValidatedTimesheet(ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
+          && Beans.get(OperationOrderValidateBusinessService.class).checkTimesheet(operationOrder)
+              > 0) {
+        response.setAlert(I18n.get(IExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 }

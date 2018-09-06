@@ -14,7 +14,15 @@
 	<decimal name="percentage" title="Percentage" precision="20" scale="2"  min="0" max="100"/>
 	<boolean name="hasPartnerToDebit" title="Partner to debit" />
 	<boolean name="hasPartnerToCredit" title="Partner to credit" />
-	<boolean name="isValid" title="Valid ?"/>  	
+	<boolean name="isValid" title="Valid"/>  	
+  	<extra-code><![CDATA[
+
+	// DEBIT CREDIT SELECT
+	public static final String DEBIT = "D";
+	public static final String CREDIT = "C";
+	
+	]]></extra-code>
+    
   </entity>
  
 </domain-models>

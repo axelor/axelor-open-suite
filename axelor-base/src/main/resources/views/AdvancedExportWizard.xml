@@ -14,10 +14,9 @@
 	      	<field name="_xAdvancedExport" title="Advanced export" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.AdvancedExport"
 				   form-view="advanced-export-form" grid-view="advanced-export-grid" onSelect="action-advanced-export-wizard-attr-change-domain-from-model" />
 	      	<field name="exportFormatSelect" type="integer" title="Export format" requiredIf="_xAdvancedExport != null" selection="base.advanced.export.wizard.export.format.select"/>
-	      	<field name="_xAdvancedExportFile" type="MANY_TO_ONE" target="com.axelor.meta.db.MetaFile" title="Export file" readonly="true" widget="binary-link"/>
 			<spacer/>
-	      	<button name="generateExport" title="Export" onClick="action-advanced-export-wizard-method-generate-file"/>
-	      	<button name="personalisedExport" title="Personalised export" onClick="action-advanced-export-view-open-form"/>
+	      	<button name="generateExport" title="Export" onClick="action-advanced-export-wizard-method-generate-file,close"/>
+	      	<button name="personalisedExport" title="Personalised export" onClick="action-advanced-export-view-open-form,close"/>
       	</panel>
 	</form>
 	
@@ -40,8 +39,8 @@
 	
 	<action-view name="action-advanced-export-view-open-form" title="Personalised export" model="com.axelor.apps.base.db.AdvancedExport">
 		<view type="form" name="advanced-export-form"/>
-		<context name="_contextModel" expr="eval: _metaModel"/>
-		<context name="_contextCriteria" expr="eval: _criteria"/>
+		<context name="_metaModel" expr="eval: _metaModel"/>
+		<context name="_criteria" expr="eval: _criteria"/>
 	</action-view>
 
 </object-views>

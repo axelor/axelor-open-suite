@@ -35,7 +35,7 @@
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   		</toolbar>
   		<panel name="main" >
-   			<panel colSpan="7">
+   			<panel colSpan="6">
     			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
         			<editor x-show-titles="false">
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
@@ -43,9 +43,9 @@
         			</editor>
       			</field>
     		</panel>
-    		<panel colSpan="5">
+    		<panel colSpan="6">
        			<button name="$totalVariants" title="Total variants" showIf="isModel" colSpan="4" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
-      			<panel showTitle="false" showIf="productTypeSelect == 'storable'" colSpan="8" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+      			<panel showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id" colSpan="8" if-module="axelor-stock" if="__config__.app.isApp('stock')">
        	 			<button name="$realQty" title="Real qty" colSpan="6" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
        	 			<button name="$futureQty" title="Future qty" colSpan="6" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
     	  			<field name="isModel" hidden="true"/>
@@ -150,7 +150,7 @@
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	    	</panel>
-            <panel name="accounting" title="Accounting" if="__config__.app.isApp('account')">
+            <panel name="accounting" title="Accounting">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
                 <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
                 <panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
@@ -173,7 +173,7 @@
 	    		</panel>
                 <panel name="productionInformations"
                     title="Production information" showTitle="false"
-                    showIf="productTypeSelect == 'storable' &amp;&amp; procurementMethodSelect == 'produce'"
+                    showIf="productTypeSelect == 'storable' &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"
                     onTabSelect="action-product-attrs-readonly-create-production-order"
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
@@ -196,13 +196,13 @@
 	      			<panel name="parentVariant" showIf="!parentProduct" colSpan="12">
 	        			<field name="productVariantConfig" colSpan="12" canSelect="false" canNew="true">
 				        	<editor x-show-titles="false">
-					            <field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+					            <field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value1" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
 					            <field name="productVariantValue1Set" showIf="productVariantAttr1" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-					            <field name="productVariantAttr2" showIf="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+					            <field name="productVariantAttr2" showIf="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value2" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
 					            <field name="productVariantValue2Set" showIf="productVariantAttr2" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-					            <field name="productVariantAttr3" showIf="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+					            <field name="productVariantAttr3" showIf="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value3" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
 					            <field name="productVariantValue3Set" showIf="productVariantAttr3" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-					            <field name="productVariantAttr4" showIf="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+					            <field name="productVariantAttr4" showIf="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value4" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
 					            <field name="productVariantValue4Set" showIf="productVariantAttr4" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 				          	</editor>
 	        			</field>
@@ -227,7 +227,11 @@
 	        			<panel-dashlet colSpan="12" action="action-product-view-other-product-variant" showIf="parentProduct" />
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
-	    		</panel>
+					</panel>
+				<panel title="Task templates" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct" if-module="axelor-business-project">
+					<button name="addTask" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-product-task-template-add-task"/>
+					<panel-dashlet title="Task Tree" colSpan="12" action="action-product-task-template-task-tree"/>
+				</panel>
             <panel name="links" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct" showIf="id">
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned" showIf="id" />
@@ -238,10 +242,10 @@
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical" showIf="id" />
 	    	</panel>
             <panel name="packaging" title="Packaging" hideIf="isShippingCostsProduct || productTypeSelect =='service'">
-	  			<panel name="weight" title="Weight" colSpan="6">
-	  				<field name="weightUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
-	  				<field name="grossWeight"/>
-	  				<field name="netWeight"/>
+	  			<panel name="mass" title="Mass" colSpan="6">
+	  				<field name="massUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
+	  				<field name="grossMass"/>
+	  				<field name="netMass"/>
 	  			</panel>
 			      <panel name="articleDimension" title="Article dimension" colSpan="6">
 			        <field name="lengthUnit" canEdit="false" domain="self.unitTypeSelect = 2" />
@@ -493,7 +497,7 @@
 
     <action-record name="action-product-record-tick-checkbox-purchasable"
         model="com.axelor.apps.base.db.Product">
-        <field name="purchasable" expr="eval: procurementMethodSelect == 'buy'"/>
+        <field name="purchasable" expr="eval: procurementMethodSelect == 'buy' || procurementMethodSelect == 'buyAndProduce'"/>
     </action-record>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
@@ -521,7 +525,7 @@
 	<action-view name="action-product-view-show-bill-of-material" title="Bill of materials" model="com.axelor.apps.production.db.BillOfMaterial">
 		<view type="grid" name="bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
-		<domain>self.product.id = :productId AND self.defineSubBillOfMaterial = 'false'</domain>
+		<domain>self.product.id = :productId AND self.defineSubBillOfMaterial = true</domain>
 		<context name="productId" expr="eval: id"/>
 	</action-view>
 	

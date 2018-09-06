@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -40,67 +36,94 @@ import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
-	
-	protected PurchaseProductService purchaseProductService;
 
-	@Inject
-	public InvoiceLineSupplychainService(AccountManagementService accountManagementService, CurrencyService currencyService, PriceListService priceListService,
-										 AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService, AccountManagementAccountService accountManagementAccountService)  {
-		
-		super(accountManagementService, currencyService, priceListService, appAccountService, analyticMoveLineService, accountManagementAccountService);
-		
-	}
-	
-	@Override
-	public Unit getUnit(Product product, boolean isPurchase){
-		if(isPurchase){
-			if(product.getPurchasesUnit() != null){
-				return product.getPurchasesUnit();
-			}
-			else{
-				return product.getUnit();
-			}
-		}
-		else{
-			if(product.getSalesUnit() != null){
-				return product.getPurchasesUnit();
-			}
-			else{
-				return product.getUnit();
-			}
-		}
-	}
-	
-	@Override
-	public Map<String,Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)  {
-		
-		PriceList priceList = invoice.getPriceList();
-		BigDecimal discountAmount = BigDecimal.ZERO;
-		int computeMethodDiscountSelect = appAccountService.getAppBase().getComputeMethodDiscountSelect();
-		
-		Map<String, Object> discounts = super.getDiscount(invoice, invoiceLine, price);
-		
-		if(priceList != null){
-			discountAmount = (BigDecimal) discounts.get("discountAmount");
-		}
-		
-		if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE && discountAmount.compareTo(BigDecimal.ZERO) == 0){
-			List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
-			if(supplierCatalogList != null && !supplierCatalogList.isEmpty()){
-				SupplierCatalog supplierCatalog = Beans.get(SupplierCatalogRepository.class).all().filter("self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",invoiceLine.getProduct(),invoiceLine.getQty(),invoice.getPartner()).fetchOne();
-				if(supplierCatalog != null){
-					
-					discounts = purchaseProductService.getDiscountsFromCatalog(supplierCatalog,price);
+  protected PurchaseProductService purchaseProductService;
 
-					if(computeMethodDiscountSelect != AppBaseRepository.DISCOUNT_SEPARATE){
-						discounts.put("price", priceListService.computeDiscount(price, (int) discounts.get("discountTypeSelect"), (BigDecimal) discounts.get("discountAmount")));
-					}
-				}
-			}
-		}
-		return discounts;
-	}
+  @Inject
+  public InvoiceLineSupplychainService(
+      AccountManagementService accountManagementService,
+      CurrencyService currencyService,
+      PriceListService priceListService,
+      AppAccountService appAccountService,
+      AnalyticMoveLineService analyticMoveLineService,
+      AccountManagementAccountService accountManagementAccountService,
+      PurchaseProductService purchaseProductService) {
+
+    super(
+        accountManagementService,
+        currencyService,
+        priceListService,
+        appAccountService,
+        analyticMoveLineService,
+        accountManagementAccountService);
+    this.purchaseProductService = purchaseProductService;
+  }
+
+  @Override
+  public Unit getUnit(Product product, boolean isPurchase) {
+    if (isPurchase) {
+      if (product.getPurchasesUnit() != null) {
+        return product.getPurchasesUnit();
+      } else {
+        return product.getUnit();
+      }
+    } else {
+      if (product.getSalesUnit() != null) {
+        return product.getPurchasesUnit();
+      } else {
+        return product.getUnit();
+      }
+    }
+  }
+
+  @Override
+  public Map<String, Object> getDiscount(
+      Invoice invoice, InvoiceLine invoiceLine, BigDecimal price) {
+
+    PriceList priceList = invoice.getPriceList();
+    BigDecimal discountAmount = BigDecimal.ZERO;
+    int computeMethodDiscountSelect =
+        appAccountService.getAppBase().getComputeMethodDiscountSelect();
+
+    Map<String, Object> discounts = super.getDiscount(invoice, invoiceLine, price);
+
+    if (priceList != null) {
+      discountAmount = (BigDecimal) discounts.get("discountAmount");
+    }
+
+    if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        && discountAmount.compareTo(BigDecimal.ZERO) == 0) {
+      List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
+      if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
+        SupplierCatalog supplierCatalog =
+            Beans.get(SupplierCatalogRepository.class)
+                .all()
+                .filter(
+                    "self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",
+                    invoiceLine.getProduct(),
+                    invoiceLine.getQty(),
+                    invoice.getPartner())
+                .fetchOne();
+        if (supplierCatalog != null) {
+
+          discounts = purchaseProductService.getDiscountsFromCatalog(supplierCatalog, price);
+
+          if (computeMethodDiscountSelect != AppBaseRepository.DISCOUNT_SEPARATE) {
+            discounts.put(
+                "price",
+                priceListService.computeDiscount(
+                    price,
+                    (int) discounts.get("discountTypeSelect"),
+                    (BigDecimal) discounts.get("discountAmount")));
+          }
+        }
+      }
+    }
+    return discounts;
+  }
 }

@@ -17,9 +17,10 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
-import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,21 +29,27 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class PurchaseOrderLineController {
-	
-	@Inject
-	private PurchaseOrderLineRepository purchaseOrderLineRepo;
 
-	@Inject
-	private PurchaseOrderSupplierService purchaseOrderSupplierService;
-	
-	public void generateSuppliersRequests(ActionRequest request, ActionResponse response){
-		
-		PurchaseOrderLine purchaseOrderLine = purchaseOrderLineRepo.find( request.getContext().asType(PurchaseOrderLine.class).getId() );
-		
-		try {
-			purchaseOrderSupplierService.generateSuppliersRequests(purchaseOrderLine);
-			response.setReload(true);
-		}
-		catch (Exception e) { TraceBackService.trace(response, e); }
-	}
+  @Inject private PurchaseOrderLineRepository purchaseOrderLineRepo;
+
+  @Inject private PurchaseOrderSupplierService purchaseOrderSupplierService;
+
+  public void generateSuppliersRequests(ActionRequest request, ActionResponse response) {
+
+    PurchaseOrderLine purchaseOrderLine =
+        purchaseOrderLineRepo.find(request.getContext().asType(PurchaseOrderLine.class).getId());
+
+    try {
+      if (purchaseOrderLine.getPurchaseOrder() == null) {
+        PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+
+        purchaseOrderSupplierService.generateSuppliersRequests(purchaseOrderLine, purchaseOrder);
+      } else {
+        purchaseOrderSupplierService.generateSuppliersRequests(purchaseOrderLine);
+      }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

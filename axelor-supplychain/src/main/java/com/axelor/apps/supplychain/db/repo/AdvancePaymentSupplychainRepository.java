@@ -23,23 +23,21 @@ import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-
 import javax.persistence.PersistenceException;
 
 public class AdvancePaymentSupplychainRepository extends AdvancePaymentSaleRepository {
-	
-	@Inject
-	private AppService appService;
-	
-	@Override
-	public AdvancePayment save(AdvancePayment advancePayment) {
-		try {
-			if (appService.isApp("supplychain")) {
-				Beans.get(AdvancePaymentServiceSupplychainImpl.class).validate(advancePayment);
-			}
-			return super.save(advancePayment);
-		} catch (Exception e) {
-			throw new PersistenceException(e.getLocalizedMessage());
-		}
-	}
+
+  @Inject private AppService appService;
+
+  @Override
+  public AdvancePayment save(AdvancePayment advancePayment) {
+    try {
+      if (appService.isApp("supplychain")) {
+        Beans.get(AdvancePaymentServiceSupplychainImpl.class).validate(advancePayment);
+      }
+      return super.save(advancePayment);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+  }
 }

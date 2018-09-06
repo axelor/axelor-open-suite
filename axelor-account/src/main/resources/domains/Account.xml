@@ -11,7 +11,7 @@
         <string name="code" title="Code" required="true" hashKey="true"/>
         <many-to-one name="parentAccount" ref="Account" title="Parent Account"/>
         <many-to-one name="accountType" ref="AccountType" massUpdate="true" title="Account Type"/>
-        <boolean name="reconcileOk" massUpdate="true" title="Reconcilable ?"/>
+        <boolean name="reconcileOk" massUpdate="true" title="Reconcilable"/>
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
         <many-to-many name="compatibleAccountSet" ref="com.axelor.apps.account.db.Account" title="Compatible Accounts"/>
         <boolean name="useForPartnerBalance" title="Use for partner balance"/>

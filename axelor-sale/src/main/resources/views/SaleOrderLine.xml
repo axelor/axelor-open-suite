@@ -79,7 +79,7 @@
 			</panel>
 		</panel>
  
-		<panel-tabs>
+		<panel-tabs hideIf="typeSelect == 1">
 			<panel name="informations" title="Informations" hideIf="typeSelect == 1">
   				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer><![CDATA[
@@ -99,7 +99,7 @@
 	                    </h4>
 					]]></viewer>
 				</field>
-       			<spacer/>
+       			<spacer  if="__config__.app.isApp('supplychain')"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange,action-sale-order-line-compute-total-pack,action-method-sale-order-line-available-stock" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
 				<panel colSpan="6">
 					<field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
@@ -115,7 +115,7 @@
 				<field name="$availableStock" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain" hideIf="typeSelect == 2" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<button name="updateReservedQty" hidden="true" title="Change reserved qty" onClick="action-view-sale-order-line-reserved-qty-wizard" if-module="axelor-supplychain"/>
 				<field name="unit"  hideIf="typeSelect == 2" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-				<field name="taxLine" canEdit="false" hideIf="typeSelect == 2" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+				<field name="taxLine" canEdit="false" hideIf="typeSelect == 2" colSpan="4" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 				<field name="price"  hideIf="typeSelect == 2" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
 				<field name="priceDiscounted" colSpan="4" hidden="true"/>
@@ -189,7 +189,7 @@
 			<field name="productName"/>
 			<field name="qty"  hideIf="typeSelect == 2" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="typeSelect == 2"/>
 			<field name="unit"  hideIf="typeSelect == 2" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-			<field name="taxLine"  hideIf="typeSelect == 2" colSpan="4" onChange="action-sale-order-line-method-convert-tax,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+			<field name="taxLine"  hideIf="typeSelect == 2" colSpan="4" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 			<field name="price"  hideIf="typeSelect == 2" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4"/>
 			<field name="priceDiscounted" colSpan="4" hidden="true"/>
@@ -311,7 +311,6 @@
     	<action name="action-sale-order-line-method-get-product-information" />
     	<action name="action-sale-order-line-method-create-pack-lines"  if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()"/>
     	<action name="action-sale-order-line-method-compute" />
-    	<action name="action-sale-order-line-method-compute-subMargin" />
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-get-production-information"/>
 		<action name="action-sale-order-line-method-supplier-partner-default" if="__config__.app.isApp('supplychain')"/>
@@ -324,12 +323,18 @@
     <action-group name="action-group-sale-saleorderline-qty-onchange">
     	<action name="action-sale-order-line-method-get-discount"/>
     	<action name="action-sale-order-line-method-compute"/>
-    	<action name="action-sale-order-line-method-compute-subMargin" />
     	<action name="action-sale-order-line-method-compute-analytic-distribution" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
 		<action name="action-sale-order-line-method-check-stock"
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
 		<action name="action-sale-order-line-method-check-qty"/>
     </action-group>
+
+	<action-group name="action-group-sale-saleorderline-tax-line-onchange">
+		<action name="action-sale-order-line-method-get-tax-equiv"/>
+		<action name="action-sale-order-line-method-convert-tax"/>
+		<action name="action-sale-order-line-method-compute"/>
+		<action name="action-sale-order-line-method-compute-analytic-distribution" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
+	</action-group>
 
     <action-group name="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-production">
     	<action name="action-sale-order-line-get-production-information" if="__config__.app.isApp('production')"/>
@@ -414,7 +419,11 @@
 	<action-method name="action-sale-order-line-method-check-qty">
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="checkQty"/>
 	</action-method>
-	
+
+	<action-method name="action-sale-order-line-method-get-tax-equiv">
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="getTaxEquiv"/>
+	</action-method>
+
   	<!-- ACTION ATTRS -->
     
     <action-attrs name="action-sale-order-line-attrs-hide-bill-of-material" if-module="axelor-production">
@@ -423,7 +432,7 @@
     </action-attrs>
     
 	<action-attrs name="action-sale-order-line-attrs-bill-of-material-domain">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = false AND self.personalized = false &quot;"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = true AND self.personalized = false &quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-discountamount-title">

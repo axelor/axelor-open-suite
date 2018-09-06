@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
@@ -40,175 +32,194 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class AccountingReportController {
 
-	private final Logger logger = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
-	
-	@Inject
-	AccountingReportService accountingReportService;
-	
-	@Inject
-	AccountingReportRepository  accountingReportRepo;
-	/**
-	 * @param request
-	 * @param response
-	 */
-	public void searchMoveLine(ActionRequest request, ActionResponse response) {
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+  @Inject AccountingReportService accountingReportService;
 
-		try  {
-			accountingReport = accountingReportRepo.find(accountingReport.getId());
-			
-			String query = accountingReportService.getMoveLineList(accountingReport);
-			BigDecimal debitBalance = accountingReportService.getDebitBalance();
-			BigDecimal creditBalance = accountingReportService.getCreditBalance();
+  @Inject AccountingReportRepository accountingReportRepo;
+  /**
+   * @param request
+   * @param response
+   */
+  public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
-			response.setValue("totalDebit", debitBalance);
-			response.setValue("totalCredit", creditBalance);
-			response.setValue("balance", debitBalance.subtract(creditBalance));
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 
-			ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
-			actionViewBuilder.model(MoveLine.class.getName());
-			actionViewBuilder.add("grid", "move-line-grid");
-			actionViewBuilder.add("form", "move-line-form");
-			actionViewBuilder.domain(query);
+    try {
+      accountingReport = accountingReportRepo.find(accountingReport.getId());
 
-			response.setView(actionViewBuilder.map());
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
+      String query = accountingReportService.getMoveLineList(accountingReport);
+      BigDecimal debitBalance = accountingReportService.getDebitBalance();
+      BigDecimal creditBalance = accountingReportService.getCreditBalance();
 
+      response.setValue("totalDebit", debitBalance);
+      response.setValue("totalCredit", creditBalance);
+      response.setValue("balance", debitBalance.subtract(creditBalance));
 
-	/**
-	 * @param request
-	 * @param response
-	 */
-	public void getJournalType(ActionRequest request, ActionResponse response) {
+      ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
+      actionViewBuilder.model(MoveLine.class.getName());
+      actionViewBuilder.add("grid", "move-line-grid");
+      actionViewBuilder.add("form", "move-line-form");
+      actionViewBuilder.domain(query);
 
-		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-		
-		try  {
+      response.setView(actionViewBuilder.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-			JournalType journalType = Beans.get(AccountingReportService.class).getJournalType(accountingReport);
-			if(journalType != null)  {
-				String domainQuery = "self.journalType.id = "+journalType.getId();
-				response.setAttr("journal", "domain", domainQuery);
-			}
-		}
-		catch(Exception e) { TraceBackService.trace(response, e); }
-	}
+  /**
+   * @param request
+   * @param response
+   */
+  public void getJournalType(ActionRequest request, ActionResponse response) {
 
-	/**
-	 * @param request
-	 * @param response
-	 */
-	public void getAccount(ActionRequest request, ActionResponse response) {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 
-		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    try {
 
-		try  {
-			Account account = Beans.get(AccountingReportService.class).getAccount(accountingReport);
-			logger.debug("Compte : {}", account);
-			response.setValue("account", account);			
-		}
-		catch(Exception e) { TraceBackService.trace(response, e); }
-	}
+      JournalType journalType =
+          Beans.get(AccountingReportService.class).getJournalType(accountingReport);
+      if (journalType != null) {
+        String domainQuery = "self.journalType.id = " + journalType.getId();
+        response.setAttr("journal", "domain", domainQuery);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	/**
-	 * @param request
-	 * @param response
-	 */
-	public void getReload(ActionRequest request, ActionResponse response) {
+  /**
+   * @param request
+   * @param response
+   */
+  public void getAccount(ActionRequest request, ActionResponse response) {
 
-		response.setReload(true);
-	}
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 
-	/**
-	 * @param request
-	 * @param response
-	 */
-	public void replayExport(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = Beans.get(AccountingReportService.class).getAccount(accountingReport);
+      logger.debug("Compte : {}", account);
+      response.setValue("account", account);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-		accountingReport = accountingReportRepo.find(accountingReport.getId());		
-		MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
-		
-		try {
-		    moveLineExportService.replayExportMoveLine(accountingReport);
-		}
-		catch(Exception e) { TraceBackService.trace(response, e); }
-	}
+  /**
+   * @param request
+   * @param response
+   */
+  public void getReload(ActionRequest request, ActionResponse response) {
 
-	/**
-	 * @param request
-	 * @param response
-	 */
-	public void printExportMoveLine(ActionRequest request, ActionResponse response) {
+    response.setReload(true);
+  }
 
-		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-		accountingReport = accountingReportRepo.find(accountingReport.getId());
+  /**
+   * @param request
+   * @param response
+   */
+  public void replayExport(ActionRequest request, ActionResponse response) {
 
-		try {	
-			if(accountingReport.getExportTypeSelect() == null || accountingReport.getExportTypeSelect().isEmpty() || accountingReport.getTypeSelect() == 0) {
-				response.setFlash(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_4));
-				response.setReload(true);
-				return;
-			}
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    accountingReport = accountingReportRepo.find(accountingReport.getId());
+    MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
-			logger.debug("Type selected : {}" , accountingReport.getTypeSelect());
+    try {
+      moveLineExportService.replayExportMoveLine(accountingReport);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-			if((accountingReport.getTypeSelect() >= AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY 
-					&& accountingReport.getTypeSelect() < AccountingReportRepository.REPORT_ANALYTIC_BALANCE )) {
-				
-				MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
+  /**
+   * @param request
+   * @param response
+   */
+  public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
-				moveLineExportService.exportMoveLine(accountingReport);
-				
-			}
-			else {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    accountingReport = accountingReportRepo.find(accountingReport.getId());
 
-				accountingReportService.setPublicationDateTime(accountingReport);
+    try {
+      if (accountingReport.getExportTypeSelect() == null
+          || accountingReport.getExportTypeSelect().isEmpty()
+          || accountingReport.getTypeSelect() == 0) {
+        response.setFlash(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_4));
+        response.setReload(true);
+        return;
+      }
 
-				String name = I18n.get("Accounting reporting") + " " + accountingReport.getRef();
-				
-				String fileLink = ReportFactory.createReport(String.format(IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getTypeSelect()), name+"-${date}")
-						.addParam("AccountingReportId", accountingReport.getId())
-						.addParam("Locale", ReportSettings.getPrintingLocale(null))
-						.addFormat(accountingReport.getExportTypeSelect())
-						.toAttach(accountingReport)
-						.generate()
-						.getFileLink();
+      logger.debug("Type selected : {}", accountingReport.getTypeSelect());
 
-				logger.debug("Printing "+name);
-			
-				response.setView(ActionView
-						.define(name)
-						.add("html", fileLink).map());
-				
-				accountingReportService.setStatus(accountingReport);
+      if ((accountingReport.getTypeSelect() >= AccountingReportRepository.EXPORT_ADMINISTRATION
+          && accountingReport.getTypeSelect()
+              < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
 
-			}
-		}
-		catch(Exception e) { TraceBackService.trace(response, e); }	
-	}
-	
-	
-	public void showMoveExported(ActionRequest request, ActionResponse response) {
-		
-		AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-		Map<String,Object> mapView = new HashMap<String,Object>();
-		mapView.put("title", I18n.get(IExceptionMessage.ACCOUNTING_REPORT_6));
-		mapView.put("resource", Move.class.getName());
-		mapView.put("domain", "self.accountingReport.id = "+accountingReport.getId());
-		response.setView(mapView);		
-	}
+        MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
+
+        moveLineExportService.exportMoveLine(accountingReport);
+
+      } else {
+
+        accountingReportService.setPublicationDateTime(accountingReport);
+
+        String name =
+            I18n.get(
+                    MetaStore.getSelectionItem(
+                            "accounting.report.type.select",
+                            accountingReport.getTypeSelect().toString())
+                        .getTitle())
+                + " "
+                + accountingReport.getRef();
+
+        String fileLink =
+            ReportFactory.createReport(
+                    String.format(IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getTypeSelect()),
+                    name + "-${date}")
+                .addParam("AccountingReportId", accountingReport.getId())
+                .addParam("Locale", ReportSettings.getPrintingLocale(null))
+                .addFormat(accountingReport.getExportTypeSelect())
+                .toAttach(accountingReport)
+                .generate()
+                .getFileLink();
+
+        logger.debug("Printing " + name);
+
+        response.setView(ActionView.define(name).add("html", fileLink).map());
+
+        accountingReportService.setStatus(accountingReport);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showMoveExported(ActionRequest request, ActionResponse response) {
+
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    Map<String, Object> mapView = new HashMap<String, Object>();
+    mapView.put("title", I18n.get(IExceptionMessage.ACCOUNTING_REPORT_6));
+    mapView.put("resource", Move.class.getName());
+    mapView.put("domain", "self.accountingReport.id = " + accountingReport.getId());
+    response.setView(mapView);
+  }
 }

@@ -27,7 +27,7 @@
                 onClick="action-logistical-form-carrier-validated" icon="fa-check" />
             <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-process-collected" icon="fa-truck" />
-            <button name="packagingListBtn" title="Print packaging list" showIf="statusSelect > 1" readonlyIf="!logisticalFormLineList.length"
+            <button name="packagingListBtn" title="Print packaging list" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-print-packaging-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
             <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" />
         </toolbar>
@@ -49,12 +49,13 @@
                     onChange="action-logistical-form-set-customer-account-number" />
                 <field name="accountSelectionToCarrierSelect" onChange="action-logistical-form-set-customer-account-number" />
                 <field name="customerAccountNumberToCarrier" />
-                <field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form"
-                    grid-view="partner-grid" canEdit="false" />
+                <field name="forwarderPartner" 
+                    domain="(self.isCarrier = TRUE OR self.isSupplier = TRUE) AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
+                	form-view="partner-form" grid-view="partner-grid" canEdit="false" />
                 <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 <field name="tracking" />
-                <field name="totalGrossWeight" colSpan="3" />
-                <field name="totalNetWeight" colSpan="3" />
+                <field name="totalGrossMass" colSpan="3" />
+                <field name="totalNetMass" colSpan="3" />
                 <field name="totalVolume" colSpan="6" />
                 <field name="internalDeliveryComment" />
                 <field name="externalDeliveryComment" />
@@ -82,13 +83,13 @@
     <action-group name="action-logistical-form-carrier-validated">
         <action name="action-logistical-form-save" />
         <action name="save" />
-        <action name="action-logistical-form-validate-weight" />
+        <action name="action-logistical-form-validate-mass" />
         <action name="action-logistical-form-record-change-status" />
         <action name="save" />
     </action-group>
 
-    <action-validate name="action-logistical-form-validate-weight">
-        <error message="The total net weight is higher than the total gross weight." if="totalNetWeight > totalGrossWeight" />
+    <action-validate name="action-logistical-form-validate-mass">
+        <error message="The total net mass is higher than the total gross mass." if="totalNetMass > totalGrossMass" />
     </action-validate>
 
     <action-record name="action-logistical-form-company-change" model="com.axelor.apps.stock.db.LogisticalForm">

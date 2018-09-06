@@ -27,7 +27,7 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     
-    <one-to-many name="stockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="stockMove" title="Stock move content"/>
+    <one-to-many name="stockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="stockMove" orderBy="sequence" title="Stock move content"/>
     
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
     <boolean name="isWithBackorder" title="Manage BackOrder" default="true"/>
@@ -35,7 +35,7 @@
     <string name="trackingNumber" title="Tracking Number"/>
     <integer name="numOfPackages" title="Number Of Packages"/>
     <integer name="numOfPalettes" title="Number Of Palettes"/>
-    <decimal name="grossWeight" title="Gross Weight"/>
+    <decimal name="grossMass" title="Gross Mass"/>
     
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2"/>
     
@@ -53,14 +53,21 @@
     <boolean name="fullySpreadOverLogisticalFormsFlag" default="false" title="Fully spread over logistical forms" />
 
     <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
-    <boolean name="stockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
-    <many-to-one name="stockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <boolean name="plannedStockMoveAutomaticMail" title="Send email when planning stock move" default="false"/>
+    <many-to-one name="plannedStockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <boolean name="realStockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
+    <many-to-one name="realStockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
 
-    <boolean name="isIspmRequired" title="Is ISPM15 required ?"/>
+    <boolean name="isIspmRequired" title="Is ISPM15 required"/>
     <boolean name="isReversion" readonly="true" />
+
+    <boolean name="isNeedingConformityCertificate" title="Certificate of conformity"/>
+    <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed"/>
+    <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" title="Electronic signature"/>
+    <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory user"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
     

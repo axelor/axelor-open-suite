@@ -22,52 +22,54 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public abstract class AbstractBatchService {
 
-	/**
-	 * Get batch model class.
-	 * 
-	 * @return
-	 */
-	abstract protected Class<? extends Model> getModelClass();
+  /**
+   * Get batch model class.
+   *
+   * @return
+   */
+  protected abstract Class<? extends Model> getModelClass();
 
-	/**
-	 * Run a batch with the given batch model.
-	 * 
-	 * @param model
-	 * @return
-	 * @throws AxelorException
-	 */
-	abstract public Batch run(Model model) throws AxelorException;
+  /**
+   * Run a batch with the given batch model.
+   *
+   * @param model
+   * @return
+   * @throws AxelorException
+   */
+  public abstract Batch run(Model model) throws AxelorException;
 
-	/**
-	 * Run a batch from its code.
-	 * 
-	 * @param code
-	 * @return
-	 * @throws AxelorException
-	 */
-	public Batch run(String code) throws AxelorException {
-		Model model = findModelByCode(code);
+  /**
+   * Run a batch from its code.
+   *
+   * @param code
+   * @return
+   * @throws AxelorException
+   */
+  public Batch run(String code) throws AxelorException {
+    Model model = findModelByCode(code);
 
-		if (model == null) {
-			throw new AxelorException(IException.INCONSISTENCY, I18n.get(IExceptionMessage.BASE_BATCH_2), code);
-		}
+    if (model == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BASE_BATCH_2),
+          code);
+    }
 
-		return run(model);
-	}
+    return run(model);
+  }
 
-	/**
-	 * Find batch model by its code.
-	 * 
-	 * @param code
-	 * @return
-	 */
-	public Model findModelByCode(String code) {
-		return Query.of(getModelClass()).filter("self.code = :code").bind("code", code).fetchOne();
-	}
-
+  /**
+   * Find batch model by its code.
+   *
+   * @param code
+   * @return
+   */
+  public Model findModelByCode(String code) {
+    return Query.of(getModelClass()).filter("self.code = :code").bind("code", code).fetchOne();
+  }
 }

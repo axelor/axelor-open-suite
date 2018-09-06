@@ -17,43 +17,37 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
-import javax.xml.XMLConstants;
-
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument;
-import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
-import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body;
-import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Header;
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body.TransferReceipt;
+import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Header;
+import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
+import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-
+import com.axelor.exception.db.repo.TraceBackRepository;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import javax.xml.XMLConstants;
 
 /**
- * The <code>ReceiptRequestElement</code> is the element containing the
- * receipt request to tell the server bank that all segments are received.
+ * The <code>ReceiptRequestElement</code> is the element containing the receipt request to tell the
+ * server bank that all segments are received.
  *
  * @author Hachani
- *
  */
 public class ReceiptRequestElement extends DefaultEbicsRootElement {
 
   /**
    * Construct a new <code>ReceiptRequestElement</code> element.
+   *
    * @param session the current ebics session
    * @param name the element name
    */
-  public ReceiptRequestElement(EbicsSession session,
-                               byte[] transactionId,
-                               String name)
-  {
+  public ReceiptRequestElement(EbicsSession session, byte[] transactionId, String name) {
     super(session);
     this.transactionId = transactionId;
     this.name = name;
@@ -61,28 +55,31 @@ public class ReceiptRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public void build() throws AxelorException {
-    EbicsRequest			request;
-    Header 				header;
-    Body				body;
-    MutableHeaderType 			mutable;
-    StaticHeaderType 			xstatic;
-    TransferReceipt			transferReceipt;
-    SignedInfo				signedInfo;
+    EbicsRequest request;
+    Header header;
+    Body body;
+    MutableHeaderType mutable;
+    StaticHeaderType xstatic;
+    TransferReceipt transferReceipt;
+    SignedInfo signedInfo;
 
     mutable = EbicsXmlFactory.createMutableHeaderType("Receipt", null);
     xstatic = EbicsXmlFactory.createStaticHeaderType(session.getBankID(), transactionId);
     header = EbicsXmlFactory.createEbicsRequestHeader(true, mutable, xstatic);
     transferReceipt = EbicsXmlFactory.createTransferReceipt(true, 0);
     body = EbicsXmlFactory.createEbicsRequestBody(transferReceipt);
-    request = EbicsXmlFactory.createEbicsRequest(1,
-	                                         "H003",
-	                                         header,
-	                                         body);
+    request = EbicsXmlFactory.createEbicsRequest(1, "H003", header, body);
     document = EbicsXmlFactory.createEbicsRequestDocument(request);
     signedInfo = new SignedInfo(session.getUser(), getDigest());
     signedInfo.build();
-    ((EbicsRequestDocument)document).getEbicsRequest().setAuthSignature(signedInfo.getSignatureType());
-    ((EbicsRequestDocument)document).getEbicsRequest().getAuthSignature().setSignatureValue(EbicsXmlFactory.createSignatureValueType(signedInfo.sign(toByteArray())));
+    ((EbicsRequestDocument) document)
+        .getEbicsRequest()
+        .setAuthSignature(signedInfo.getSignatureType());
+    ((EbicsRequestDocument) document)
+        .getEbicsRequest()
+        .getAuthSignature()
+        .setSignatureValue(
+            EbicsXmlFactory.createSignatureValueType(signedInfo.sign(toByteArray())));
   }
 
   @Override
@@ -94,12 +91,13 @@ public class ReceiptRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public String getName() {
-    return name  + ".xml";
+    return name + ".xml";
   }
 
   /**
    * Returns the digest value of the authenticated XML portions.
-   * @return  the digest value.
+   *
+   * @return the digest value.
    * @throws EbicsException Failed to retrieve the digest value.
    */
   public byte[] getDigest() throws AxelorException {
@@ -108,7 +106,8 @@ public class ReceiptRequestElement extends DefaultEbicsRootElement {
     try {
       return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -116,6 +115,6 @@ public class ReceiptRequestElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private byte[] 			transactionId;
-  private String			name;
+  private byte[] transactionId;
+  private String name;
 }

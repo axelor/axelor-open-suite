@@ -23,6 +23,8 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.ExpenseServiceProjectImpl;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
+import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
+import com.axelor.apps.businessproject.service.ProductTaskTemplateServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
@@ -45,21 +47,21 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl
 
 public class BusinessProjectModule extends AxelorModule {
 
-    @Override
-    protected void configure() {
-        bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceProjectServiceImpl.class);
-        bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceProjectServiceImpl.class);
-        bind(TimesheetServiceImpl.class).to(TimesheetProjectServiceImpl.class);
-        bind(TimesheetLineServiceImpl.class).to(TimesheetLineProjectServiceImpl.class);
-        bind(ExpenseServiceImpl.class).to(ExpenseServiceProjectImpl.class);
-        bind(ProjectServiceImpl.class).to(ProjectBusinessServiceImpl.class);
-        bind(ProjectBusinessService.class).to(ProjectBusinessServiceImpl.class);
-        bind(InvoicingProjectRepository.class).to(InvoicingProjectManagementRepository.class);
-        bind(AppBusinessProjectService.class).to(AppBusinessProjectServiceImpl.class);
-        bind(InvoiceServiceSupplychainImpl.class).to(InvoiceServiceProjectImpl.class);
-        bind(TeamTaskServiceImpl.class).to(TeamTaskBusinessServiceImpl.class);
-        bind(TeamTaskBusinessService.class).to(TeamTaskBusinessServiceImpl.class);
-        bind(SaleOrderSupplychainRepository.class).to(SaleOrderProjectRepository.class);
-    }
-
+  @Override
+  protected void configure() {
+    bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceProjectServiceImpl.class);
+    bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceProjectServiceImpl.class);
+    bind(TimesheetServiceImpl.class).to(TimesheetProjectServiceImpl.class);
+    bind(TimesheetLineServiceImpl.class).to(TimesheetLineProjectServiceImpl.class);
+    bind(ExpenseServiceImpl.class).to(ExpenseServiceProjectImpl.class);
+    bind(ProjectServiceImpl.class).to(ProjectBusinessServiceImpl.class);
+    bind(ProjectBusinessService.class).to(ProjectBusinessServiceImpl.class);
+    bind(InvoicingProjectRepository.class).to(InvoicingProjectManagementRepository.class);
+    bind(AppBusinessProjectService.class).to(AppBusinessProjectServiceImpl.class);
+    bind(InvoiceServiceSupplychainImpl.class).to(InvoiceServiceProjectImpl.class);
+    bind(TeamTaskServiceImpl.class).to(TeamTaskBusinessServiceImpl.class);
+    bind(TeamTaskBusinessService.class).to(TeamTaskBusinessServiceImpl.class);
+    bind(SaleOrderSupplychainRepository.class).to(SaleOrderProjectRepository.class);
+    bind(ProductTaskTemplateService.class).to(ProductTaskTemplateServiceImpl.class);
+  }
 }

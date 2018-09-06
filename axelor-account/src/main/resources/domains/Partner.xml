@@ -17,7 +17,7 @@
         <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" index="false" massUpdate="true"/>
 
         <integer name="rejectCounter" title="Reject counter"/>
-        <integer name="invoicesCopySelect" title="Invoices copy" selection="grade.0.up.to.10.select"/>
+        <integer name="invoicesCopySelect" title="Invoices copy" default="1" selection="grade.1.up.to.10.select"/>
 
         <!-- PAGE SEPA -->
         <one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner" title="UMR List"/>
@@ -27,7 +27,7 @@
 
 		<string name="specificTaxNote" title="Specific tax note" large="true"/>
 
-		<boolean name="isFactor" title="Factor?" />
+		<boolean name="isFactor" title="Factor" />
 		<boolean name="factorizedCustomer" />
 		<string name="sellerCode" />
     </entity>

@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.axelor.apps.account.db.InvoiceBatch;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.service.invoice.InvoiceBatchService;
@@ -31,68 +28,68 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class InvoiceBatchController {
 
-	@Inject
-	private InvoiceBatchService invoiceBatchService;
-	
-	@Inject
-	private InvoiceBatchRepository invoiceBatchRepo;
+  @Inject private InvoiceBatchService invoiceBatchService;
 
-	/**
-	 * Lancer le batch de mise à jour de statut.
-	 *
-	 * @param request
-	 * @param response
-	 * @throws AxelorException
-	 */
-	public void actionStatus(ActionRequest request, ActionResponse response) throws AxelorException{
+  @Inject private InvoiceBatchRepository invoiceBatchRepo;
 
-		InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
+  /**
+   * Lancer le batch de mise à jour de statut.
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  public void actionStatus(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		Batch batch = invoiceBatchService.wkf(invoiceBatchRepo.find(invoiceBatch.getId()));
+    InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
 
-		response.setFlash(batch.getComments());
-		response.setReload(true);
-	}
+    Batch batch = invoiceBatchService.wkf(invoiceBatchRepo.find(invoiceBatch.getId()));
 
-	/**
-	  * Lancer le batch à travers un web service.
-	  *
-	  * @param request
-	  * @param response
-	 * @throws AxelorException
-	  */
-	public void run(ActionRequest request, ActionResponse response) throws AxelorException{
+    response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-		Context context = request.getContext();
+  /**
+   * Lancer le batch à travers un web service.
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		Batch batch = invoiceBatchService.run((String) context.get("code"));
+    Context context = request.getContext();
 
-		Map<String,Object> mapData = new HashMap<String,Object>();
-		mapData.put("anomaly", batch.getAnomaly());
-		response.setData(mapData);
-	 }
+    Batch batch = invoiceBatchService.run((String) context.get("code"));
 
-	/**
-	  * Appliquer le domaine à la liste de facture à ventiler ou valider.
-	  *
-	  * @param request
-	  * @param response
-	  */
-	public void invoiceSetDomain(ActionRequest request, ActionResponse response){
+    Map<String, Object> mapData = new HashMap<String, Object>();
+    mapData.put("anomaly", batch.getAnomaly());
+    response.setData(mapData);
+  }
 
-		InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
+  /**
+   * Appliquer le domaine à la liste de facture à ventiler ou valider.
+   *
+   * @param request
+   * @param response
+   */
+  public void invoiceSetDomain(ActionRequest request, ActionResponse response) {
 
-		 switch (invoiceBatch.getActionSelect()) {
-		 case 1:
-			response.setAttr("invoiceSet", "domain", BatchWkf.invoiceQuery(invoiceBatch, true));
-			break;
-		 default:
-			 response.setAttr("invoiceSet", "domain", BatchWkf.invoiceQuery(invoiceBatch, false));
-			break;
-		 }
-	 }
+    InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
+
+    switch (invoiceBatch.getActionSelect()) {
+      case 1:
+        response.setAttr("invoiceSet", "domain", BatchWkf.invoiceQuery(invoiceBatch, true));
+        break;
+      default:
+        response.setAttr("invoiceSet", "domain", BatchWkf.invoiceQuery(invoiceBatch, false));
+        break;
+    }
+  }
 }

@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
-import com.google.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
@@ -34,62 +26,74 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BatchInvoicing extends BatchStrategy {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MethodHandles.lookup().lookupClass() );
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-	@Inject
-	private SubscriptionInvoiceService subscriptionInvoiceService;
+  @Inject private SubscriptionInvoiceService subscriptionInvoiceService;
 
-	@Inject
-	public BatchInvoicing(SaleOrderInvoiceService saleOrderInvoiceService) {
+  @Inject
+  public BatchInvoicing(SaleOrderInvoiceService saleOrderInvoiceService) {
 
-		super(saleOrderInvoiceService);
-	}
+    super(saleOrderInvoiceService);
+  }
 
+  @Override
+  protected void process() {
 
-	@Override
-	protected void process() {
-		
-		List<SaleOrder> saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
-		
-		while (!saleOrders.isEmpty()) {
-			for (SaleOrder saleOrder : saleOrders) {
-				try {
-					subscriptionInvoiceService.generateSubscriptionInvoice(saleOrder);
-					updateSaleOrder(saleOrder);
-				} catch (AxelorException e) {
-					TraceBackService.trace(new AxelorException(e, e.getCategory(), I18n.get("Order")+" %s", saleOrder.getSaleOrderSeq()), IException.INVOICE_ORIGIN, batch.getId());
-					incrementAnomaly();
-				} catch (Exception e) {
-					TraceBackService.trace(new Exception(String.format(I18n.get("Order")+" %s", saleOrder.getSaleOrderSeq()), e), IException.INVOICE_ORIGIN, batch.getId());
-					incrementAnomaly();
+    List<SaleOrder> saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
 
-					LOG.error("Bug(Anomalie) généré(e) pour le devis {}", saleOrder.getSaleOrderSeq());
-				}
-			}
-			JPA.clear();
-			saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
-		}
-		
-	}
+    while (!saleOrders.isEmpty()) {
+      for (SaleOrder saleOrder : saleOrders) {
+        try {
+          subscriptionInvoiceService.generateSubscriptionInvoice(saleOrder);
+          updateSaleOrder(saleOrder);
+        } catch (AxelorException e) {
+          TraceBackService.trace(
+              new AxelorException(
+                  e, e.getCategory(), I18n.get("Order") + " %s", saleOrder.getSaleOrderSeq()),
+              IException.INVOICE_ORIGIN,
+              batch.getId());
+          incrementAnomaly();
+        } catch (Exception e) {
+          TraceBackService.trace(
+              new Exception(
+                  String.format(I18n.get("Order") + " %s", saleOrder.getSaleOrderSeq()), e),
+              IException.INVOICE_ORIGIN,
+              batch.getId());
+          incrementAnomaly();
 
+          LOG.error("Bug(Anomalie) généré(e) pour le devis {}", saleOrder.getSaleOrderSeq());
+        }
+      }
+      JPA.clear();
+      saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
+    }
+  }
 
-	/**
-	 * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the entity in the persistant context.
-	 * Warning : {@code batch} entity have to be saved before.
-	 */
-	@Override
-	protected void stop() {
+  /**
+   * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the
+   * entity in the persistant context. Warning : {@code batch} entity have to be saved before.
+   */
+  @Override
+  protected void stop() {
 
-		String comment = I18n.get(IExceptionMessage.BATCH_INVOICING_1) + " ";
-		comment += String.format("\t* %s "+I18n.get(IExceptionMessage.BATCH_INVOICING_2)+"\n", batch.getDone());
-		comment += String.format("\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+    String comment = I18n.get(IExceptionMessage.BATCH_INVOICING_1) + " ";
+    comment +=
+        String.format(
+            "\t* %s " + I18n.get(IExceptionMessage.BATCH_INVOICING_2) + "\n", batch.getDone());
+    comment +=
+        String.format(
+            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
+            batch.getAnomaly());
 
-		super.stop();
-		addComment(comment);
-
-	}
-
+    super.stop();
+    addComment(comment);
+  }
 }

@@ -24,50 +24,48 @@ import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
 
 /**
- * The <code>DInitializationResponseElement</code> is the response element
- * for ebics downloads initializations.
+ * The <code>DInitializationResponseElement</code> is the response element for ebics downloads
+ * initializations.
  *
  * @author Hachani
- *
  */
 public class DInitializationResponseElement extends InitializationResponseElement {
 
   /**
    * Constructs a new <code>DInitializationResponseElement</code> object
+   *
    * @param factory the content factory
    * @param orderType the order type
    * @param name the element name
    */
-  public DInitializationResponseElement(ContentFactory factory,
-                                        OrderType orderType,
-                                        String name,
-                                        EbicsUser ebicsUser)
-  {
+  public DInitializationResponseElement(
+      ContentFactory factory, OrderType orderType, String name, EbicsUser ebicsUser) {
     super(factory, orderType, name, ebicsUser);
   }
 
   @Override
   public void build() throws AxelorException {
-    String	bodyRetCode;
+    String bodyRetCode;
 
     super.build();
     if (!returnCode.isOk()) {
-    	return;
+      return;
     }
     bodyRetCode = response.getBody().getReturnCode().getStringValue();
     returnCode = ReturnCode.toReturnCode(bodyRetCode, "");
-    numSegments = (int)response.getHeader().getStatic().getNumSegments();
+    numSegments = (int) response.getHeader().getStatic().getNumSegments();
     if (numSegments > 0) {
-    	segmentNumber = (int)response.getHeader().getMutable().getSegmentNumber().getLongValue();
-    	lastSegment = response.getHeader().getMutable().getSegmentNumber().getLastSegment();
-    	transactionKey = response.getBody().getDataTransfer().getDataEncryptionInfo().getTransactionKey();
-        orderData = response.getBody().getDataTransfer().getOrderData().getByteArrayValue();
+      segmentNumber = (int) response.getHeader().getMutable().getSegmentNumber().getLongValue();
+      lastSegment = response.getHeader().getMutable().getSegmentNumber().getLastSegment();
+      transactionKey =
+          response.getBody().getDataTransfer().getDataEncryptionInfo().getTransactionKey();
+      orderData = response.getBody().getDataTransfer().getOrderData().getByteArrayValue();
     }
-    
   }
 
   /**
    * Returns the total segments number.
+   *
    * @return the total segments number.
    */
   public int getSegmentsNumber() {
@@ -76,6 +74,7 @@ public class DInitializationResponseElement extends InitializationResponseElemen
 
   /**
    * Returns The current segment number.
+   *
    * @return the segment number.
    */
   public int getSegmentNumber() {
@@ -84,6 +83,7 @@ public class DInitializationResponseElement extends InitializationResponseElemen
 
   /**
    * Checks if it is the last segment.
+   *
    * @return True is it is the last segment.
    */
   public boolean isLastSegment() {
@@ -92,6 +92,7 @@ public class DInitializationResponseElement extends InitializationResponseElemen
 
   /**
    * Returns the transaction key.
+   *
    * @return the transaction key.
    */
   public byte[] getTransactionKey() {
@@ -100,6 +101,7 @@ public class DInitializationResponseElement extends InitializationResponseElemen
 
   /**
    * Returns the order data.
+   *
    * @return the order data.
    */
   public byte[] getOrderData() {
@@ -110,9 +112,9 @@ public class DInitializationResponseElement extends InitializationResponseElemen
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  private int				numSegments;
-  private int				segmentNumber;
-  private boolean			lastSegment;
-  private byte[]			transactionKey;
-  private byte[]			orderData;
+  private int numSegments;
+  private int segmentNumber;
+  private boolean lastSegment;
+  private byte[] transactionKey;
+  private byte[] orderData;
 }

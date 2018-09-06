@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+   
+	<grid name="data-config-line-grid" title="Data config line" model="com.axelor.apps.base.db.DataConfigLine">
+		<field name="metaModel" />
+		<field name="path" required="true" />
+	</grid> 
+    
+	<form name="data-config-line-form" title="Data config line"
+		model="com.axelor.apps.base.db.DataConfigLine" width="large">
+		<panel>
+		 	<field name="metaModel" canEdit="false"  />
+		 	<field name="tabName" />
+		 	<field name="typeSelect" onChange="action-data-config-type-select-change" colSpan="4" />
+		 	<field name="path" colSpan="8" />
+		 	<panel-related field="metaFieldSet" canNew="false" canEdit="false" colSpan="12" 
+		 	domain="self.metaModel = :metaModel and (self.relationship is null or self.relationship not in ('ManyToMany','OneToMany'))">
+		 		<field name="name" />
+		 		<field name="label" />
+		 		<field name="typeName" />
+		 	</panel-related>
+		 	<field name="resetPathSelect"  showIf="typeSelect == 0" />
+		 	<field name="record" showIf="resetPathSelect == 1 &amp;&amp; typeSelect == 0"/>
+		 	<panel-related field="toDeleteMetaFieldSet" canNew="false" canEdit="false" colSpan="12" 
+		 	domain="self in :metaFieldSet">
+		 		<field name="name" />
+		 		<field name="label" />
+		 		<field name="typeName" />
+		 	</panel-related>
+		</panel>
+	</form>
+	
+	<action-attrs name="action-data-config-type-select-change">
+		<attribute name="title" for="path" expr="eval:'Path'" if="typeSelect == 0"/>
+		<attribute name="title" for="path" expr="eval:'Query'" if="typeSelect == 1"/>
+	</action-attrs>
+  
+</object-views>

@@ -20,251 +20,247 @@ package com.axelor.exception;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 
-/**
- * Exception specific to Axelor.
- */
+/** Exception specific to Axelor. */
 public class AxelorException extends Exception {
-	
-	private static final long serialVersionUID = 1028105628735355226L;
-	
-	private final int category;
-	private final Class<? extends Model> refClass;
-	private final Long refId;
 
-	/**
-	 * Default constructor
-	 */
-	@Deprecated
-	public AxelorException() {
-		this.refClass = null;
-		this.refId = 0L;
-		this.category = 0;
-	}
+  private static final long serialVersionUID = 1028105628735355226L;
 
-	/**
-	 * Create an exception with his message and his type.
-	 * 
-	 * @param message
-	 * 		The exception message
-	 * @param category
-	 * <ul>
-	 * <li>1: Missing field</li>
-	 * <li>2: No unique key</li>
-	 * <li>3: No value</li>
-	 * <li>4: configuration error</li>
-	 * <li>5: Inconsistency</li>
-	 * </ul>
-	 */
-	@Deprecated
-	public AxelorException(String message, int category, Object... messageArgs) {
-		super(String.format(message, messageArgs));
-		this.refClass = null;
-		this.refId = 0L;
-		this.category = category;
-	}
+  private final int category;
+  private final Class<? extends Model> refClass;
+  private final Long refId;
 
-	/**
-	 * Create an exception with a category and a message.
-	 * 
-	 * @param category
-	 * @param message
-	 * @param messageArgs
-	 */
-	public AxelorException(int category, String message, Object... messageArgs) {
-		super(String.format(message, messageArgs));
-		this.refClass = null;
-		this.refId = 0L;
-		this.category = category;
-	}
-	
-	/**
-	 *  Create an exception with his cause and his type.	
-	 *    
-	 * @param cause
-	 * 		The exception cause
-	 * @param category
-	 * <ul>
-	 * <li>1: Missing field</li>
-	 * <li>2: No unique key</li>
-	 * <li>3: No value</li>
-	 * <li>4: configuration error</li>
-	 * <li>5: Inconsistency</li>
-	 * </ul>
-	 * 
-	 * @see Throwable
-	 */
-	public AxelorException(Throwable cause, int category) {
-		super(cause);
-		this.refClass = null;
-		this.refId = 0L;
-		this.category = category;
-	}
+  /** Default constructor */
+  @Deprecated
+  public AxelorException() {
+    this.refClass = null;
+    this.refId = 0L;
+    this.category = 0;
+  }
 
-	/**
-	 *  Create an exception with his message, his cause and his type.	  
-	 * 
-	 * @param message
-	 * 		The exception message
-	 * @param cause
-	 * 		The exception cause
-	 * @param category
-	 * 		The exception category
-	 * <ul>
-	 * <li>1: Missing field</li>
-	 * <li>2: No unique key</li>
-	 * <li>3: No value</li>
-	 * <li>4: configuration error</li>
-	 * <li>5: Inconsistency</li>
-	 * </ul>
-	 * 
-	 * @see Throwable
-	 */
-	@Deprecated
-	public AxelorException(String message, Throwable cause, int category, Object... messageArgs) {
-		super(String.format(message, messageArgs), cause);
-		this.refClass = null;
-		this.refId = 0L;
-		this.category = category;
-	}
+  /**
+   * Create an exception with his message and his type.
+   *
+   * @param message The exception message
+   * @param category
+   *     <ul>
+   *       <li>1: Missing field
+   *       <li>2: No unique key
+   *       <li>3: No value
+   *       <li>4: configuration error
+   *       <li>5: CATEGORY_INCONSISTENCY
+   *     </ul>
+   */
+  @Deprecated
+  public AxelorException(String message, int category, Object... messageArgs) {
+    super(String.format(message, messageArgs));
+    this.refClass = null;
+    this.refId = 0L;
+    this.category = category;
+  }
 
-	/**
-	 * Create an exception with a cause, a category, and a message.
-	 * 
-	 * @param cause
-	 * @param category
-	 * @param message
-	 * @param messageArgs
-	 */
-	public AxelorException(Throwable cause, int category, String message, Object... messageArgs) {
-		super(String.format(message, messageArgs), cause);
-		this.refClass = null;
-		this.refId = 0L;
-		this.category = category;
-	}
+  /**
+   * Create an exception with a category and a message.
+   *
+   * @param category
+   * @param message
+   * @param messageArgs
+   */
+  public AxelorException(int category, String message, Object... messageArgs) {
+    super(String.format(message, messageArgs));
+    this.refClass = null;
+    this.refId = 0L;
+    this.category = category;
+  }
 
-	/**
-	 * Create an exception with a reference class, a category, and a message.
-	 * 
-	 * @param refClass
-	 * @param category
-	 * @param message
-	 * @param messageArgs
-	 */
-	public AxelorException(Class<? extends Model> refClass, int category, String message, Object... messageArgs) {
-		super(String.format(message, messageArgs));
-		this.refClass = refClass;
-		this.refId = 0L;
-		this.category = category;
-	}
+  /**
+   * Create an exception with his cause and his type.
+   *
+   * @param cause The exception cause
+   * @param category
+   *     <ul>
+   *       <li>1: Missing field
+   *       <li>2: No unique key
+   *       <li>3: No value
+   *       <li>4: configuration error
+   *       <li>5: CATEGORY_INCONSISTENCY
+   *     </ul>
+   *
+   * @see Throwable
+   */
+  public AxelorException(Throwable cause, int category) {
+    super(cause);
+    this.refClass = null;
+    this.refId = 0L;
+    this.category = category;
+  }
 
-	/**
-	 * Create an exception with a cause, a reference class, and a category.
-	 * 
-	 * @param cause
-	 * @param refClass
-	 * @param category
-	 */
-	public AxelorException(Throwable cause, Class<? extends Model> refClass, int category) {
-		super(cause);
-		this.refClass = refClass;
-		this.refId = 0L;
-		this.category = category;
-	}
+  /**
+   * Create an exception with his message, his cause and his type.
+   *
+   * @param message The exception message
+   * @param cause The exception cause
+   * @param category The exception category
+   *     <ul>
+   *       <li>1: Missing field
+   *       <li>2: No unique key
+   *       <li>3: No value
+   *       <li>4: configuration error
+   *       <li>5: CATEGORY_INCONSISTENCY
+   *     </ul>
+   *
+   * @see Throwable
+   */
+  @Deprecated
+  public AxelorException(String message, Throwable cause, int category, Object... messageArgs) {
+    super(String.format(message, messageArgs), cause);
+    this.refClass = null;
+    this.refId = 0L;
+    this.category = category;
+  }
 
-	/**
-	 * Create an exception with a cause, a reference class, a category, and a message.
-	 * 
-	 * @param cause
-	 * @param refClass
-	 * @param category
-	 * @param message
-	 * @param messageArgs
-	 */
-	public AxelorException(Throwable cause, Class<? extends Model> refClass, int category, String message,
-			Object... messageArgs) {
-		super(String.format(message, messageArgs), cause);
-		this.refClass = refClass;
-		this.refId = 0L;
-		this.category = category;
-	}
+  /**
+   * Create an exception with a cause, a category, and a message.
+   *
+   * @param cause
+   * @param category
+   * @param message
+   * @param messageArgs
+   */
+  public AxelorException(Throwable cause, int category, String message, Object... messageArgs) {
+    super(String.format(message, messageArgs), cause);
+    this.refClass = null;
+    this.refId = 0L;
+    this.category = category;
+  }
 
-	/**
-	 * Create an exception with a reference, a category, and a message.
-	 * 
-	 * @param ref
-	 * @param category
-	 * @param message
-	 * @param messageArgs
-	 */
-	public AxelorException(Model ref, int category, String message, Object... messageArgs) {
-		super(String.format(message, messageArgs));
-		this.refClass = EntityHelper.getEntityClass(ref);
-		this.refId = ref.getId();
-		this.category = category;
-	}
+  /**
+   * Create an exception with a reference class, a category, and a message.
+   *
+   * @param refClass
+   * @param category
+   * @param message
+   * @param messageArgs
+   */
+  public AxelorException(
+      Class<? extends Model> refClass, int category, String message, Object... messageArgs) {
+    super(String.format(message, messageArgs));
+    this.refClass = refClass;
+    this.refId = 0L;
+    this.category = category;
+  }
 
-	/**
-	 * Create an exception with a cause, a reference, and a category.
-	 * 
-	 * @param cause
-	 * @param ref
-	 * @param category
-	 */
-	public AxelorException(Throwable cause, Model ref, int category) {
-		super(cause);
-		this.refClass = EntityHelper.getEntityClass(ref);
-		this.refId = ref.getId();
-		this.category = category;
-	}
+  /**
+   * Create an exception with a cause, a reference class, and a category.
+   *
+   * @param cause
+   * @param refClass
+   * @param category
+   */
+  public AxelorException(Throwable cause, Class<? extends Model> refClass, int category) {
+    super(cause);
+    this.refClass = refClass;
+    this.refId = 0L;
+    this.category = category;
+  }
 
-	/**
-	 * Create an exception with a cause, a reference, a category, and a message.
-	 * 
-	 * @param cause
-	 * @param ref
-	 * @param category
-	 * @param message
-	 * @param messageArgs
-	 */
-	public AxelorException(Throwable cause, Model ref, int category, String message, Object... messageArgs) {
-		super(String.format(message, messageArgs), cause);
-		this.refClass = EntityHelper.getEntityClass(ref);
-		this.refId = ref.getId();
-		this.category = category;
-	}
+  /**
+   * Create an exception with a cause, a reference class, a category, and a message.
+   *
+   * @param cause
+   * @param refClass
+   * @param category
+   * @param message
+   * @param messageArgs
+   */
+  public AxelorException(
+      Throwable cause,
+      Class<? extends Model> refClass,
+      int category,
+      String message,
+      Object... messageArgs) {
+    super(String.format(message, messageArgs), cause);
+    this.refClass = refClass;
+    this.refId = 0L;
+    this.category = category;
+  }
 
-	/**
-	 * Get the category of exception
-	 * 
-	 * @return
-	 * <ul>
-	 * <li>1: Missing field</li>
-	 * <li>2: No unique key</li>
-	 * <li>3: No value</li>
-	 * <li>4: configuration error</li>
-	 * <li>5: Inconsistency</li>
-	 * </ul>
-	 */
-	public int getCategory() {
-		return category;
-	}
+  /**
+   * Create an exception with a reference, a category, and a message.
+   *
+   * @param ref
+   * @param category
+   * @param message
+   * @param messageArgs
+   */
+  public AxelorException(Model ref, int category, String message, Object... messageArgs) {
+    super(String.format(message, messageArgs));
+    this.refClass = EntityHelper.getEntityClass(ref);
+    this.refId = ref.getId();
+    this.category = category;
+  }
 
-	/**
-	 * Get reference class.
-	 * 
-	 * @return
-	 */
-	public Class<? extends Model> getRefClass() {
-		return refClass;
-	}
+  /**
+   * Create an exception with a cause, a reference, and a category.
+   *
+   * @param cause
+   * @param ref
+   * @param category
+   */
+  public AxelorException(Throwable cause, Model ref, int category) {
+    super(cause);
+    this.refClass = EntityHelper.getEntityClass(ref);
+    this.refId = ref.getId();
+    this.category = category;
+  }
 
-	/**
-	 * Get reference ID.
-	 * 
-	 * @return
-	 */
-	public Long getRefId() {
-		return refId;
-	}
+  /**
+   * Create an exception with a cause, a reference, a category, and a message.
+   *
+   * @param cause
+   * @param ref
+   * @param category
+   * @param message
+   * @param messageArgs
+   */
+  public AxelorException(
+      Throwable cause, Model ref, int category, String message, Object... messageArgs) {
+    super(String.format(message, messageArgs), cause);
+    this.refClass = EntityHelper.getEntityClass(ref);
+    this.refId = ref.getId();
+    this.category = category;
+  }
 
+  /**
+   * Get the category of exception
+   *
+   * @return
+   *     <ul>
+   *       <li>1: Missing field
+   *       <li>2: No unique key
+   *       <li>3: No value
+   *       <li>4: configuration error
+   *       <li>5: CATEGORY_INCONSISTENCY
+   *     </ul>
+   */
+  public int getCategory() {
+    return category;
+  }
+
+  /**
+   * Get reference class.
+   *
+   * @return
+   */
+  public Class<? extends Model> getRefClass() {
+    return refClass;
+  }
+
+  /**
+   * Get reference ID.
+   *
+   * @return
+   */
+  public Long getRefId() {
+    return refId;
+  }
 }

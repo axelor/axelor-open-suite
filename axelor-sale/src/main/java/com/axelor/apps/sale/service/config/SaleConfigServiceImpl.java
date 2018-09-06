@@ -22,25 +22,24 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class SaleConfigServiceImpl implements SaleConfigService {
-	
-	
-	public SaleConfig getSaleConfig(Company company) throws AxelorException  {
-		
-		SaleConfig saleConfig = company.getSaleConfig();
-		
-		if(saleConfig == null)  {
-			throw new AxelorException(company, IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SALE_CONFIG_1), AppBaseServiceImpl.EXCEPTION, company.getName());
-		}
-		
-		return saleConfig;
-		
-	}
-	
-	
-	
-	
+
+  public SaleConfig getSaleConfig(Company company) throws AxelorException {
+
+    SaleConfig saleConfig = company.getSaleConfig();
+
+    if (saleConfig == null) {
+      throw new AxelorException(
+          company,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.SALE_CONFIG_1),
+          AppBaseServiceImpl.EXCEPTION,
+          company.getName());
+    }
+
+    return saleConfig;
+  }
 }

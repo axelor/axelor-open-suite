@@ -23,38 +23,36 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
-
 import java.util.List;
 
 public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProcessService {
 
-    protected ConfiguratorProdProcessLineService confProdProcessLineService;
+  protected ConfiguratorProdProcessLineService confProdProcessLineService;
 
-    @Inject
-    ConfiguratorProdProcessServiceImpl(ConfiguratorProdProcessLineService confProdProcessLineService) {
-        this.confProdProcessLineService = confProdProcessLineService;
-    }
+  @Inject
+  ConfiguratorProdProcessServiceImpl(
+      ConfiguratorProdProcessLineService confProdProcessLineService) {
+    this.confProdProcessLineService = confProdProcessLineService;
+  }
 
-    @Override
-    public ProdProcess generateProdProcessService(ConfiguratorProdProcess confProdProcess,
-                                           JsonContext attributes) throws AxelorException {
-        if (confProdProcess == null) {
-            return null;
-        }
-        List<ConfiguratorProdProcessLine> confLines =
-                confProdProcess.getConfiguratorProdProcessLineList();
-        ProdProcess prodProcess = new ProdProcess();
-        prodProcess.setName(confProdProcess.getName());
-        prodProcess.setCompany(confProdProcess.getCompany());
-        prodProcess.setStockLocation(confProdProcess.getStockLocation());
-        if (confLines != null) {
-            for (ConfiguratorProdProcessLine confLine : confLines) {
-                prodProcess.addProdProcessLineListItem(
-                        confProdProcessLineService
-                                .generateProdProcessLine(confLine, attributes)
-                );
-            }
-        }
-        return prodProcess;
+  @Override
+  public ProdProcess generateProdProcessService(
+      ConfiguratorProdProcess confProdProcess, JsonContext attributes) throws AxelorException {
+    if (confProdProcess == null) {
+      return null;
     }
+    List<ConfiguratorProdProcessLine> confLines =
+        confProdProcess.getConfiguratorProdProcessLineList();
+    ProdProcess prodProcess = new ProdProcess();
+    prodProcess.setName(confProdProcess.getName());
+    prodProcess.setCompany(confProdProcess.getCompany());
+    prodProcess.setStockLocation(confProdProcess.getStockLocation());
+    if (confLines != null) {
+      for (ConfiguratorProdProcessLine confLine : confLines) {
+        prodProcess.addProdProcessLineListItem(
+            confProdProcessLineService.generateProdProcessLine(confLine, attributes));
+      }
+    }
+    return prodProcess;
+  }
 }

@@ -19,14 +19,13 @@ package com.axelor.apps.sale.exception;
 
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 
 public class BlockedSaleOrderException extends AxelorException {
 
-    private static final long serialVersionUID = 4628915492959133388L;
+  private static final long serialVersionUID = 4628915492959133388L;
 
-    public BlockedSaleOrderException(Model model, String message) {
-        super(model, IException.CONFIGURATION_ERROR, message);
-    }
-
+  public BlockedSaleOrderException(Model model, String message) {
+    super(model, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message);
+  }
 }

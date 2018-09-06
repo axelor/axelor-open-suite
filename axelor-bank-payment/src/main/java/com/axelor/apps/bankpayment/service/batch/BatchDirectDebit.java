@@ -28,52 +28,58 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public abstract class BatchDirectDebit extends com.axelor.apps.account.service.batch.BatchStrategy {
-    protected boolean generateBankOrderFlag;
+  protected boolean generateBankOrderFlag;
 
-    @Inject
-    protected BankDetailsService bankDetailsService;
+  @Inject protected BankDetailsService bankDetailsService;
 
-    @Inject
-    protected BatchBankPaymentService batchBankPaymentService;
+  @Inject protected BatchBankPaymentService batchBankPaymentService;
 
-    @Inject
-    PaymentScheduleLineRepository paymentScheduleLineRepo;
+  @Inject PaymentScheduleLineRepository paymentScheduleLineRepo;
 
-    @Override
-    protected void start() throws IllegalAccessException, AxelorException {
-        super.start();
-        PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
-        generateBankOrderFlag = directDebitPaymentMode != null && directDebitPaymentMode.getGenerateBankOrder();
+  @Override
+  protected void start() throws IllegalAccessException, AxelorException {
+    super.start();
+    PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
+    generateBankOrderFlag =
+        directDebitPaymentMode != null && directDebitPaymentMode.getGenerateBankOrder();
+  }
+
+  @Override
+  protected void stop() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_REPORT))
+        .append(" ");
+    sb.append(
+        String.format(
+            I18n.get(
+                    com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
+                    com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
+                    batch.getDone())
+                + " ",
+            batch.getDone()));
+    sb.append(
+        String.format(
+            I18n.get(
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                batch.getAnomaly()),
+            batch.getAnomaly()));
+    addComment(sb.toString());
+    super.stop();
+  }
+
+  protected BankDetails getCompanyBankDetails(AccountingBatch accountingBatch) {
+    BankDetails companyBankDetails = accountingBatch.getBankDetails();
+
+    if (companyBankDetails == null && accountingBatch.getCompany() != null) {
+      companyBankDetails = accountingBatch.getCompany().getDefaultBankDetails();
     }
 
-    @Override
-    protected void stop() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_REPORT)).append(" ");
-        sb.append(String.format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL, batch.getDone()) + " ",
-                batch.getDone()));
-        sb.append(String
-                .format(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                        com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
-                        batch.getAnomaly()), batch.getAnomaly()));
-        addComment(sb.toString());
-        super.stop();
+    if (companyBankDetails == null && generateBankOrderFlag) {
+      throw new IllegalArgumentException(
+          I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_MISSING_COMPANY_BANK_DETAILS));
     }
 
-    protected BankDetails getCompanyBankDetails(AccountingBatch accountingBatch) {
-        BankDetails companyBankDetails = accountingBatch.getBankDetails();
-
-        if (companyBankDetails == null && accountingBatch.getCompany() != null) {
-            companyBankDetails = accountingBatch.getCompany().getDefaultBankDetails();
-        }
-
-        if (companyBankDetails == null && generateBankOrderFlag) {
-            throw new IllegalArgumentException(
-                    I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_MISSING_COMPANY_BANK_DETAILS));
-        }
-
-        return companyBankDetails;
-    }
-
+    return companyBankDetails;
+  }
 }

@@ -66,17 +66,16 @@
 		<view type="form" name="project-planning-form" />
 	</action-view>
 
-	<menuitem name="project-dasbhoard" parent="menu-project-root" order="30"
-			  title="Dashboard"
-			  action="project.dashboard"/>
-	<action-view name="project.dashboard" title="Dashboard">
-		<view type="dashboard" name="project-dashboard"/>
-	</action-view>
-
-	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki" order="31"/>
+	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki" order="30"/>
 	<action-view name="all.wiki" title="Project Wiki" model="com.axelor.apps.project.db.Wiki">
 		<view type="grid" name="wiki-grid"/>
 		<view type="form" name="wiki-form"/>
+	</action-view>
+
+	<menuitem name="project-dasbhoard" parent="menu-project-root" order="31" title="Dashboard" action="project.dashboard" icon="fa-bar-chart"/>
+
+	<action-view name="project.dashboard" title="Dashboard">
+		<view type="dashboard" name="project-dashboard"/>
 	</action-view>
 	
 	<menuitem name="project-resource" title="Resources" order="32" parent="menu-project-root" action="project.resource" if="__config__.app.getApp('project').getResourceManagement()" />
@@ -94,7 +93,7 @@
 	
 	
     <!-- PROJECT CONFIGURATION -->
-	<menuitem name="project-configurations" parent="menu-project-root" title="Configurations" order="40"/>
+	<menuitem name="project-configurations" parent="menu-project-root" title="Configuration" order="40" icon="fa-cog"/>
 	
 	<menuitem name="project-category" parent="project-configurations" title="Category" action="project-category"/>
 	<action-view name="project-category" title="Project Category" model="com.axelor.apps.project.db.ProjectCategory">

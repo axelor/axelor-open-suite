@@ -27,10 +27,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -39,116 +37,109 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelToCSV {
-	
-	public List<Map> generateExcelSheets(File file) throws IOException {
-		List<Map> newSheets = new ArrayList<>();
-		Object sheet = new Object();
 
-		FileInputStream inputStream;
-		Workbook workBook = null;
+  public List<Map> generateExcelSheets(File file) throws IOException {
+    List<Map> newSheets = new ArrayList<>();
+    Object sheet = new Object();
 
-		try {
+    FileInputStream inputStream;
+    Workbook workBook = null;
 
-			inputStream = new FileInputStream(file);
-			workBook = new XSSFWorkbook(inputStream);
+    try {
 
-			for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
-				sheet = workBook.getSheetAt(i).getSheetName();
-				Map<String, Object> newSheet = new HashMap<String, Object>();
-				newSheet.put("name", sheet);
-				newSheets.add(newSheet);
-			}
+      inputStream = new FileInputStream(file);
+      workBook = new XSSFWorkbook(inputStream);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+      for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
+        sheet = workBook.getSheetAt(i).getSheetName();
+        Map<String, Object> newSheet = new HashMap<String, Object>();
+        newSheet.put("name", sheet);
+        newSheets.add(newSheet);
+      }
 
-		return newSheets;
-	}
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
-	
-	public void writeTOCSV(File sheetFile, Sheet sheet) throws IOException, ParseException {
-		String separator = ";";
-		FileWriter writer = new FileWriter(sheetFile);
-		int cnt = 0;
-		Iterator<Row> rowIterator = sheet.iterator();
+    return newSheets;
+  }
 
-		if (rowIterator.hasNext()) {
-			Row headerRow = rowIterator.next();
-			Iterator<Cell> headerCellIterator = headerRow.cellIterator();
+  public void writeTOCSV(File sheetFile, Sheet sheet) throws IOException, ParseException {
+    String separator = ";";
+    FileWriter writer = new FileWriter(sheetFile);
+    int cnt = 0;
 
-			while (headerCellIterator.hasNext()) {
-				Cell cell = headerCellIterator.next();
-				writer.append(cell.getStringCellValue() + separator);
-				cnt++;
-			}
-			writer.append("\n");
+    for (int row = 3; row <= sheet.getLastRowNum(); row++) {
 
-			while (rowIterator.hasNext()) {
-				Row row = rowIterator.next();
-				for (int i = 0; i < cnt; i++) {
-					try {
+      if (row == 3) {
+        Row headerRow = sheet.getRow(row);
+        for (int cell = 1; cell < headerRow.getLastCellNum(); cell++) {
+          Cell headerCell = headerRow.getCell(cell);
+          writer.append(headerCell.getStringCellValue() + separator);
+          cnt++;
+        }
+        writer.append("\n");
 
-						Cell cell = row.getCell(i);
-						if (cell != null) {
+      } else {
 
-							switch (cell.getCellType()) {
+        Row dataRow = sheet.getRow(row);
+        for (int cell = 1; cell <= cnt; cell++) {
+          try {
 
-							case Cell.CELL_TYPE_STRING:
-								String strData = cell.getStringCellValue();
-								writer.append("\"" + strData + "\"" + separator);
-								break;
+            Cell dataCell = dataRow.getCell(cell);
+            if (dataCell != null) {
 
-							case Cell.CELL_TYPE_NUMERIC:
-								if (DateUtil.isCellDateFormatted(cell)) {
-									String dateInString = getDateValue(cell);
-									writer.append("\"" + dateInString + "\"" + separator);
+              switch (dataCell.getCellType()) {
+                case Cell.CELL_TYPE_STRING:
+                  String strData = dataCell.getStringCellValue();
+                  writer.append("\"" + strData + "\"" + separator);
+                  break;
 
-								} else {
-									Integer val = (int) cell.getNumericCellValue();
-									writer.append(val.toString() + separator);
-								}
-								break;
+                case Cell.CELL_TYPE_NUMERIC:
+                  if (DateUtil.isCellDateFormatted(dataCell)) {
+                    String dateInString = getDateValue(dataCell);
+                    writer.append("\"" + dateInString + "\"" + separator);
 
-							case Cell.CELL_TYPE_BLANK:
-							default:
-								writer.append("" + separator);
-								break;
-							}
-					} else {
-							writer.append("" + separator);
-						}
-				} catch (Exception e) {
-						e.printStackTrace();
-					}
-		}
-				writer.append("\n");
-			}
-		}
-		writer.flush();
-		writer.close();
-	}
-	
-	public static String getDateValue(Cell cell) {
+                  } else {
+                    Integer val = (int) dataCell.getNumericCellValue();
+                    writer.append(val.toString() + separator);
+                  }
+                  break;
 
-		Calendar cal = Calendar.getInstance();
-		Date date = cell.getDateCellValue();
-		cal.setTime(date);
-		int hours = cal.get(Calendar.HOUR_OF_DAY);
-		int minutes = cal.get(Calendar.MINUTE);
-		int seconds = cal.get(Calendar.SECOND);
+                case Cell.CELL_TYPE_BLANK:
+                default:
+                  writer.append("" + separator);
+                  break;
+              }
+            } else {
+              writer.append("" + separator);
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
+        writer.append("\n");
+      }
+    }
 
-		SimpleDateFormat format;
-		if (hours == 0 && minutes == 0 && seconds == 0)
-			format = new SimpleDateFormat("yyyy-MM-dd");
+    writer.flush();
+    writer.close();
+  }
 
-		else if (seconds == 0)
-			format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-		else
-			format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS");
+  public static String getDateValue(Cell cell) {
 
-		return format.format(date);
+    Calendar cal = Calendar.getInstance();
+    Date date = cell.getDateCellValue();
+    cal.setTime(date);
+    int hours = cal.get(Calendar.HOUR_OF_DAY);
+    int minutes = cal.get(Calendar.MINUTE);
+    int seconds = cal.get(Calendar.SECOND);
 
-	}
+    SimpleDateFormat format;
+    if (hours == 0 && minutes == 0 && seconds == 0) format = new SimpleDateFormat("yyyy-MM-dd");
+    else if (seconds == 0) format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+    else format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS");
 
+    return format.format(date);
+  }
 }

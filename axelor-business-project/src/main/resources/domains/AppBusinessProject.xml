@@ -27,6 +27,8 @@
 		<boolean name="projectPurchaseOrderLines" title="Project in Purchase order lines"/>
 
 		<boolean name="projectInvoiceLines" title="Project in Invoice Lines"/>
+
+		<boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
 		
 	</entity>
 

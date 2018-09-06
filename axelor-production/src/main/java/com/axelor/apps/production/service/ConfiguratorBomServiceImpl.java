@@ -27,120 +27,113 @@ import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
 
 public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
-    private static final int MAX_LEVEL = 10;
+  private static final int MAX_LEVEL = 10;
 
-    protected ConfiguratorBOMRepository configuratorBOMRepo;
-    protected ConfiguratorService configuratorService;
-    protected BillOfMaterialRepository billOfMaterialRepository;
-    protected ConfiguratorProdProcessService confProdProcessService;
+  protected ConfiguratorBOMRepository configuratorBOMRepo;
+  protected ConfiguratorService configuratorService;
+  protected BillOfMaterialRepository billOfMaterialRepository;
+  protected ConfiguratorProdProcessService confProdProcessService;
 
-    @Inject
-    ConfiguratorBomServiceImpl(ConfiguratorBOMRepository configuratorBOMRepo,
-                               ConfiguratorService configuratorService,
-                               BillOfMaterialRepository billOfMaterialRepository,
-                               ConfiguratorProdProcessService confProdProcessService) {
-        this.configuratorBOMRepo = configuratorBOMRepo;
-        this.configuratorService = configuratorService;
-        this.billOfMaterialRepository = billOfMaterialRepository;
-        this.confProdProcessService = confProdProcessService;
+  @Inject
+  ConfiguratorBomServiceImpl(
+      ConfiguratorBOMRepository configuratorBOMRepo,
+      ConfiguratorService configuratorService,
+      BillOfMaterialRepository billOfMaterialRepository,
+      ConfiguratorProdProcessService confProdProcessService) {
+    this.configuratorBOMRepo = configuratorBOMRepo;
+    this.configuratorService = configuratorService;
+    this.billOfMaterialRepository = billOfMaterialRepository;
+    this.confProdProcessService = confProdProcessService;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  public BillOfMaterial generateBillOfMaterial(
+      ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
+      throws AxelorException {
+    level++;
+    if (level > MAX_LEVEL) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS));
+    }
+    String name;
+    Product product;
+    BigDecimal qty;
+    Unit unit;
+    ProdProcess prodProcess;
+
+    if (configuratorBOM.getDefNameAsFormula()) {
+      name =
+          (String) configuratorService.computeFormula(configuratorBOM.getNameFormula(), attributes);
+    } else {
+      name = configuratorBOM.getName();
+    }
+    if (configuratorBOM.getDefProductFromConfigurator()) {
+      product = generatedProduct;
+    } else if (configuratorBOM.getDefProductAsFormula()) {
+      product =
+          (Product)
+              configuratorService.computeFormula(configuratorBOM.getProductFormula(), attributes);
+    } else {
+      product = configuratorBOM.getProduct();
+    }
+    if (configuratorBOM.getDefQtyAsFormula()) {
+      qty =
+          new BigDecimal(
+              configuratorService
+                  .computeFormula(configuratorBOM.getQtyFormula(), attributes)
+                  .toString());
+    } else {
+      qty = configuratorBOM.getQty();
+    }
+    if (configuratorBOM.getDefUnitAsFormula()) {
+      unit =
+          (Unit) configuratorService.computeFormula(configuratorBOM.getUnitFormula(), attributes);
+    } else {
+      unit = configuratorBOM.getUnit();
+    }
+    if (configuratorBOM.getDefProdProcessAsFormula()) {
+      prodProcess =
+          (ProdProcess)
+              configuratorService.computeFormula(
+                  configuratorBOM.getProdProcessFormula(), attributes);
+    } else if (configuratorBOM.getDefProdProcessAsConfigurator()) {
+      prodProcess =
+          confProdProcessService.generateProdProcessService(
+              configuratorBOM.getConfiguratorProdProcess(), attributes);
+    } else {
+      prodProcess = configuratorBOM.getProdProcess();
     }
 
-    @Override
-    @Transactional(rollbackOn = {Exception.class, AxelorException.class})
-    public BillOfMaterial generateBillOfMaterial(ConfiguratorBOM configuratorBOM,
-                                                 JsonContext attributes,
-                                                 int level,
-                                                 Product generatedProduct) throws AxelorException {
-        level++;
-        if (level > MAX_LEVEL) {
-            throw new AxelorException(IException.CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS));
-        }
-        String name;
-        Product product;
-        BigDecimal qty;
-        Unit unit;
-        ProdProcess prodProcess;
+    BillOfMaterial billOfMaterial = new BillOfMaterial();
+    billOfMaterial.setCompany(configuratorBOM.getCompany());
+    billOfMaterial.setName(name);
+    billOfMaterial.setProduct(product);
+    billOfMaterial.setQty(qty);
+    billOfMaterial.setUnit(unit);
+    billOfMaterial.setProdProcess(prodProcess);
 
-        if (configuratorBOM.getDefNameAsFormula()) {
-            name = (String) configuratorService.computeFormula(
-                    configuratorBOM.getNameFormula(),
-                    attributes
-            );
-        } else {
-            name = configuratorBOM.getName();
-        }
-        if (configuratorBOM.getDefProductFromConfigurator()) {
-            product = generatedProduct;
-        }
-        else if (configuratorBOM.getDefProductAsFormula()) {
-            product = (Product) configuratorService.computeFormula(
-                    configuratorBOM.getProductFormula(),
-                    attributes
-            );
-        } else {
-            product = configuratorBOM.getProduct();
-        }
-        if (configuratorBOM.getDefQtyAsFormula()) {
-            qty = new BigDecimal(
-                    configuratorService.computeFormula(
-                            configuratorBOM.getQtyFormula(),
-                            attributes
-                    ).toString()
-            );
-        } else {
-            qty = configuratorBOM.getQty();
-        }
-        if (configuratorBOM.getDefUnitAsFormula()) {
-            unit = (Unit) configuratorService.computeFormula(
-                    configuratorBOM.getUnitFormula(),
-                    attributes
-            );
-        } else {
-            unit = configuratorBOM.getUnit();
-        }
-        if (configuratorBOM.getDefProdProcessAsFormula()) {
-            prodProcess = (ProdProcess) configuratorService.computeFormula(
-                    configuratorBOM.getProdProcessFormula(), attributes);
-        } else if (configuratorBOM.getDefProdProcessAsConfigurator()) {
-            prodProcess = confProdProcessService
-                    .generateProdProcessService(
-                            configuratorBOM.getConfiguratorProdProcess(),
-                            attributes);
-        }
-        else {
-            prodProcess = configuratorBOM.getProdProcess();
-        }
-
-        BillOfMaterial billOfMaterial = new BillOfMaterial();
-        billOfMaterial.setCompany(configuratorBOM.getCompany());
-        billOfMaterial.setName(name);
-        billOfMaterial.setProduct(product);
-        billOfMaterial.setQty(qty);
-        billOfMaterial.setUnit(unit);
-        billOfMaterial.setProdProcess(prodProcess);
-
-        if (configuratorBOM.getConfiguratorBomList() != null) {
-            for (ConfiguratorBOM confBomChild : configuratorBOM
-                    .getConfiguratorBomList()) {
-                 BillOfMaterial childBom = generateBillOfMaterial(
-                         confBomChild, attributes, level, generatedProduct);
-                 billOfMaterial.addBillOfMaterialSetItem(childBom);
-            }
-        }
-
-        billOfMaterial = billOfMaterialRepository.save(billOfMaterial);
-        configuratorBOM.setBillOfMaterialId(billOfMaterial.getId());
-        configuratorBOMRepo.save(configuratorBOM);
-        return billOfMaterial;
+    if (configuratorBOM.getConfiguratorBomList() != null) {
+      for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {
+        BillOfMaterial childBom =
+            generateBillOfMaterial(confBomChild, attributes, level, generatedProduct);
+        billOfMaterial.addBillOfMaterialSetItem(childBom);
+      }
     }
+
+    billOfMaterial = billOfMaterialRepository.save(billOfMaterial);
+    configuratorBOM.setBillOfMaterialId(billOfMaterial.getId());
+    configuratorBOMRepo.save(configuratorBOM);
+    return billOfMaterial;
+  }
 }

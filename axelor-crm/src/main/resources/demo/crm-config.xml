@@ -5,7 +5,7 @@
   
 	<input file="crm_crmBatch.csv" separator=";" type="com.axelor.apps.crm.db.CrmBatch" search="self.code = :code"/>
 		
-	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead" search="self.importId = :importId">
+	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead" search="self.importId = :importId" call="com.axelor.csv.script.ImportLead:saveLead">
 			<bind column="description" to="description"/>
 			<bind column="jobTitle" to="jobTitle"/>
 			<bind to="emailAddress" search="self.address = :email">
@@ -13,12 +13,12 @@
 			</bind>
 			<bind to="contactDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
 			<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
-			<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(user)"/>
-			<bind to="user" search="self.importId = :user" update="true" column="user"/>
+			<bind to="user" search="self.importId = :userImportId" update="true"/>
+      <bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(userImportId)"/>
 	</input>
 	
-	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" search="self.importId = :importId"/>
-	
+	<input file="crm_eventCategory.csv" separator=";" type="com.axelor.apps.crm.db.EventCategory" search="self.importId = :importId"/>
+
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTimeNow)" column="startDateTimeNow"/>
 		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTimeNow)" column="endDateTimeNow" />
@@ -32,8 +32,8 @@
 	
 	<input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity" search="self.importId = :importId">
 		<bind to="expectedCloseDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(expectedCloseDate)" column="expectedCloseDate"/>
-		<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(user)"/>
-		<bind to="user" search="self.importId = :user" update="true" column="user"/>
+		<bind to="user" search="self.importId = :userImportId" update="true"/>
+		<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(userImportId)"/>
 	</input>
 	
 </csv-inputs>

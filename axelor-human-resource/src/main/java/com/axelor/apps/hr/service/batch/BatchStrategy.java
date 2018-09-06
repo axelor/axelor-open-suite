@@ -26,29 +26,25 @@ import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
-	protected LeaveManagementService leaveManagementService;
-	
-	@Inject
-	protected EmployeeRepository employeeRepository;
-	
-	@Inject
-	protected PublicHolidayHrService publicHolidayService;
-	
-	
-	public BatchStrategy(LeaveManagementService leaveManagementService) {
-		super();
-		this.leaveManagementService = leaveManagementService;
-	}
-	
-	public BatchStrategy() {
-		super();
-	}
+  protected LeaveManagementService leaveManagementService;
 
-	protected void updateEmployee( Employee employee ){
+  @Inject protected EmployeeRepository employeeRepository;
 
-		employee.addBatchSetItem( batchRepo.find( batch.getId() ) );
+  @Inject protected PublicHolidayHrService publicHolidayService;
 
-		incrementDone();
-	}
+  public BatchStrategy(LeaveManagementService leaveManagementService) {
+    super();
+    this.leaveManagementService = leaveManagementService;
+  }
 
+  public BatchStrategy() {
+    super();
+  }
+
+  protected void updateEmployee(Employee employee) {
+
+    employee.addBatchSetItem(batchRepo.find(batch.getId()));
+
+    incrementDone();
+  }
 }

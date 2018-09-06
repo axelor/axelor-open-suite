@@ -17,25 +17,35 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public interface StockRulesService {
-	void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException;
+  void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
+      throws AxelorException;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	void generatePurchaseOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type) throws AxelorException; 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  void generatePurchaseOrder(
+      Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
+      throws AxelorException;
 
-	boolean useMinStockRules(StockLocationLine stockLocationLine, StockRules stockRules, BigDecimal qty, int type); 
+  boolean useMinStockRules(
+      StockLocationLine stockLocationLine, StockRules stockRules, BigDecimal qty, int type);
 
-	StockRules getStockRules(Product product, StockLocation stockLocation, int type, int useCase);
+  StockRules getStockRules(Product product, StockLocation stockLocation, int type, int useCase);
 
-	BigDecimal getQtyToOrder(BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules, BigDecimal minReorderQty);
-	BigDecimal getQtyToOrder(BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules);
+  BigDecimal getQtyToOrder(
+      BigDecimal qty,
+      StockLocationLine stockLocationLine,
+      int type,
+      StockRules stockRules,
+      BigDecimal minReorderQty);
+
+  BigDecimal getQtyToOrder(
+      BigDecimal qty, StockLocationLine stockLocationLine, int type, StockRules stockRules);
 }

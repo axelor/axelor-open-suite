@@ -22,8 +22,7 @@ import com.axelor.exception.AxelorException;
 
 public interface NotificationService {
 
-	void populateNotificationItemList(Notification notification);
+  void populateNotificationItemList(Notification notification);
 
-	void validate(Notification notification) throws AxelorException;
-
+  void validate(Notification notification) throws AxelorException;
 }

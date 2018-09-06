@@ -41,11 +41,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ContextEntity;
@@ -77,6 +80,7 @@ public abstract class InvoiceGenerator {
   protected String externalReference;
   protected Boolean inAti;
   protected BankDetails companyBankDetails;
+  protected TradingName tradingName;
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   protected InvoiceGenerator(
@@ -92,7 +96,8 @@ public abstract class InvoiceGenerator {
       String internalReference,
       String externalReference,
       Boolean inAti,
-      BankDetails companyBankDetails)
+      BankDetails companyBankDetails,
+      TradingName tradingName)
       throws AxelorException {
 
     this.operationType = operationType;
@@ -108,6 +113,7 @@ public abstract class InvoiceGenerator {
     this.externalReference = externalReference;
     this.inAti = inAti;
     this.companyBankDetails = companyBankDetails;
+    this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
     this.journalService = new JournalService();
   }
@@ -129,7 +135,8 @@ public abstract class InvoiceGenerator {
       PriceList priceList,
       String internalReference,
       String externalReference,
-      Boolean inAti)
+      Boolean inAti,
+      TradingName tradingName)
       throws AxelorException {
 
     this.operationType = operationType;
@@ -140,6 +147,7 @@ public abstract class InvoiceGenerator {
     this.internalReference = internalReference;
     this.externalReference = externalReference;
     this.inAti = inAti;
+    this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
     this.journalService = new JournalService();
   }
@@ -162,7 +170,7 @@ public abstract class InvoiceGenerator {
         return InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
       default:
         throw new AxelorException(
-            IException.MISSING_FIELD,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.INVOICE_GENERATOR_1),
             AppAccountServiceImpl.EXCEPTION);
     }
@@ -180,9 +188,16 @@ public abstract class InvoiceGenerator {
 
     if (partner == null) {
       throw new AxelorException(
-          IException.MISSING_FIELD,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_2),
           AppAccountServiceImpl.EXCEPTION);
+    }
+    if (Beans.get(BlockingService.class)
+            .getBlocking(partner, company, BlockingRepository.INVOICING_BLOCKING)
+        != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
     }
     invoice.setPartner(partner);
 
@@ -198,7 +213,7 @@ public abstract class InvoiceGenerator {
     }
     if (paymentCondition == null) {
       throw new AxelorException(
-          IException.MISSING_FIELD,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_3),
           AppAccountServiceImpl.EXCEPTION);
     }
@@ -209,7 +224,7 @@ public abstract class InvoiceGenerator {
     }
     if (paymentMode == null) {
       throw new AxelorException(
-          IException.MISSING_FIELD,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
           AppAccountServiceImpl.EXCEPTION);
     }
@@ -220,7 +235,7 @@ public abstract class InvoiceGenerator {
     }
     if (mainInvoicingAddress == null && partner.getIsCustomer()) {
       throw new AxelorException(
-          IException.MISSING_FIELD,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_5),
           AppAccountServiceImpl.EXCEPTION);
     }
@@ -235,7 +250,7 @@ public abstract class InvoiceGenerator {
     }
     if (currency == null) {
       throw new AxelorException(
-          IException.MISSING_FIELD,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_6),
           AppAccountServiceImpl.EXCEPTION);
     }
@@ -251,6 +266,8 @@ public abstract class InvoiceGenerator {
 
     invoice.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
+
+    invoice.setTradingName(tradingName);
 
     // Set ATI mode on invoice
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
@@ -272,9 +289,9 @@ public abstract class InvoiceGenerator {
     // Set Company bank details
     if (companyBankDetails == null) {
       if (accountingSituation != null) {
-        if (partner.getOutPaymentMode().equals(paymentMode)) {
+        if (paymentMode.equals(partner.getOutPaymentMode())) {
           companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-        } else if (partner.getInPaymentMode().equals(paymentMode)) {
+        } else if (paymentMode.equals(partner.getInPaymentMode())) {
           companyBankDetails = accountingSituation.getCompanyInBankDetails();
         }
       }

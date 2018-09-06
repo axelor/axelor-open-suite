@@ -17,31 +17,28 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
-import javax.xml.XMLConstants;
-
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
-
+import com.axelor.exception.db.repo.TraceBackRepository;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import javax.xml.XMLConstants;
 
 /**
- * The <code>TransferRequestElement</code> is the common root element
- * for all ebics transfer for the bank server.
+ * The <code>TransferRequestElement</code> is the common root element for all ebics transfer for the
+ * bank server.
  *
  * @author Hachani
- *
  */
 public abstract class TransferRequestElement extends DefaultEbicsRootElement {
 
   /**
    * Constructs a new <code>TransferRequestElement</code> element.
+   *
    * @param session the current ebics session
    * @param name the element name
    * @param type the order type
@@ -49,13 +46,13 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
    * @param lastSegment is it the last segment?
    * @param transactionID the transaction ID
    */
-  public TransferRequestElement(EbicsSession session,
-                                String name,
-                                OrderType type,
-                                int segmentNumber,
-                                boolean lastSegment,
-                                byte[] transactionId)
-  {
+  public TransferRequestElement(
+      EbicsSession session,
+      String name,
+      OrderType type,
+      int segmentNumber,
+      boolean lastSegment,
+      byte[] transactionId) {
     super(session);
     this.type = type;
     this.name = name;
@@ -66,13 +63,19 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
 
   @Override
   public void build() throws AxelorException {
-    SignedInfo			signedInfo;
+    SignedInfo signedInfo;
 
     buildTransfer();
     signedInfo = new SignedInfo(session.getUser(), getDigest());
     signedInfo.build();
-    ((EbicsRequestDocument)document).getEbicsRequest().setAuthSignature(signedInfo.getSignatureType());
-    ((EbicsRequestDocument)document).getEbicsRequest().getAuthSignature().setSignatureValue(EbicsXmlFactory.createSignatureValueType(signedInfo.sign(toByteArray())));
+    ((EbicsRequestDocument) document)
+        .getEbicsRequest()
+        .setAuthSignature(signedInfo.getSignatureType());
+    ((EbicsRequestDocument) document)
+        .getEbicsRequest()
+        .getAuthSignature()
+        .setSignatureValue(
+            EbicsXmlFactory.createSignatureValueType(signedInfo.sign(toByteArray())));
   }
 
   @Override
@@ -82,7 +85,8 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
 
   /**
    * Returns the digest value of the authenticated XML portions.
-   * @return  the digest value.
+   *
+   * @return the digest value.
    * @throws EbicsException Failed to retrieve the digest value.
    */
   public byte[] getDigest() throws AxelorException {
@@ -91,12 +95,14 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
     try {
       return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-      throw new AxelorException(e.getCause(), IException.CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
   /**
    * Returns the order type of the element.
+   *
    * @return the order type element.
    */
   public String getOrderType() {
@@ -112,6 +118,7 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
 
   /**
    * Builds the transfer request.
+   *
    * @throws EbicsException
    */
   public abstract void buildTransfer() throws AxelorException;
@@ -120,9 +127,9 @@ public abstract class TransferRequestElement extends DefaultEbicsRootElement {
   // DATA MEMBERS
   // --------------------------------------------------------------------
 
-  protected int				segmentNumber;
-  protected boolean			lastSegment;
-  protected byte[]			transactionId;
-  private OrderType			type;
-  private String 			name;
+  protected int segmentNumber;
+  protected boolean lastSegment;
+  protected byte[] transactionId;
+  private OrderType type;
+  private String name;
 }

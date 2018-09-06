@@ -26,12 +26,12 @@ import com.google.inject.AbstractModule;
 
 public class TestModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
-		bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class);
+  @Override
+  protected void configure() {
+    bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class);
 
-        install(new JpaModule("testUnit", true, true));
-        install(new AuthModule());
-        install(new AppModule());
-	}
+    install(new JpaModule("testUnit", true, true));
+    install(new AuthModule());
+    install(new AppModule());
+  }
 }

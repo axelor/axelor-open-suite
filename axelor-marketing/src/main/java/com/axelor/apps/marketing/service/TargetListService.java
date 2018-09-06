@@ -17,20 +17,18 @@
  */
 package com.axelor.apps.marketing.service;
 
-import java.util.Set;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.marketing.db.TargetList;
+import java.util.Set;
 
 public interface TargetListService {
 
-	public String getPartnerQuery(TargetList targetList);
+  public String getPartnerQuery(TargetList targetList);
 
-	public String getLeadQuery(TargetList targetList);
+  public String getLeadQuery(TargetList targetList);
 
-	public Set<Partner> getAllPartners(Set<TargetList> targetListSet);
+  public Set<Partner> getAllPartners(Set<TargetList> targetListSet);
 
-	public Set<Lead> getAllLeads(Set<TargetList> targetListSet);
+  public Set<Lead> getAllLeads(Set<TargetList> targetListSet);
 }
- 
