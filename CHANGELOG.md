@@ -22,6 +22,7 @@
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 - Add supplier invoice number in supplier invoices grid.
 - Add column description in move line grid views.
+- Allow manual creation of tracking number on stock move lines.
 
 ## Bug Fixes
 - Fix on prod process report.
