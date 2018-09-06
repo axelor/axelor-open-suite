@@ -32,7 +32,6 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.db.repo.ElementsToInvoiceRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -516,13 +515,6 @@ public class InvoicingProjectService {
 
     toInvoiceCount +=
         Beans.get(TimesheetLineRepository.class)
-            .all()
-            .filter(
-                "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project)
-            .count();
-
-    toInvoiceCount +=
-        Beans.get(ElementsToInvoiceRepository.class)
             .all()
             .filter(
                 "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project)
