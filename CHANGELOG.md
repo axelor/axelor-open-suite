@@ -54,6 +54,7 @@
 - Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
 - Removed editable from some reference fields in stock form views. 
 - Vehicle : Card View - display vehicle company and driver  
+- StockRule : Sort Grid View according to Stock location, Product code, useCaseSelect ASC 
 
 ## [5.0.4] - 2018-07-26
 ## Features
