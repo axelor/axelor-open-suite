@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2200,8 +2200,12 @@ INNER JOIN
                                     <property name="updateAggregation">true</property>
                                 </structure>
                             </list-property>
-                            <column id="4130"/>
-                            <column id="4131"/>
+                            <column id="4130">
+                                <property name="width">0.9583333333333334in</property>
+                            </column>
+                            <column id="4131">
+                                <property name="width">0.9479166666666666in</property>
+                            </column>
                             <column id="4132"/>
                             <column id="4133"/>
                             <column id="4134"/>
@@ -3324,9 +3328,9 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">center</property>
                                         <image id="4578">
-                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                            <expression name="altText">""</expression>
                                         </image>
                                     </cell>
                                     <cell id="4173">
@@ -3343,6 +3347,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4191">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
@@ -3363,6 +3368,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4568">
+                                            <property name="fontSize">9pt</property>
                                             <property name="display">inline</property>
                                             <property name="dataSet">TranslateDS</property>
                                             <list-property name="paramBindings">
@@ -3795,12 +3801,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <property name="backgroundColor">#FFFFFF</property>
                                             <property name="textAlign">center</property>
                                             <image id="4531">
-                                                <expression name="altText">""</expression>
                                                 <structure name="toc"/>
                                                 <property name="source">file</property>
                                                 <property name="fitToContainer">true</property>
                                                 <property name="proportionalScale">true</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["bar_code_path"]</expression>
+                                                <expression name="altText">""</expression>
                                             </image>
                                         </cell>
                                     </row>
@@ -4194,9 +4200,9 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopWidth">thin</property>
                                                             <property name="textAlign">center</property>
                                                             <image id="4586">
-                                                                <expression name="altText">""</expression>
                                                                 <property name="source">file</property>
                                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                                                <expression name="altText">""</expression>
                                                             </image>
                                                         </cell>
                                                         <cell id="4509">
@@ -4213,6 +4219,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopStyle">solid</property>
                                                             <property name="borderTopWidth">thin</property>
                                                             <text id="4510">
+                                                                <property name="fontSize">9pt</property>
                                                                 <property name="fontWeight">normal</property>
                                                                 <property name="textAlign">left</property>
                                                                 <property name="contentType">html</property>
@@ -4233,6 +4240,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopStyle">solid</property>
                                                             <property name="borderTopWidth">thin</property>
                                                             <text id="4569">
+                                                                <property name="fontSize">9pt</property>
                                                                 <property name="display">inline</property>
                                                                 <property name="dataSet">TranslateDS</property>
                                                                 <list-property name="paramBindings">
@@ -4268,6 +4276,9 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderLeftColor">#606062</property>
                                                             <property name="borderLeftStyle">solid</property>
                                                             <property name="borderLeftWidth">thin</property>
+                                                            <property name="borderRightColor">#606062</property>
+                                                            <property name="borderRightStyle">solid</property>
+                                                            <property name="borderRightWidth">thin</property>
                                                             <property name="borderTopColor">#606062</property>
                                                             <property name="borderTopStyle">solid</property>
                                                             <property name="borderTopWidth">thin</property>
@@ -4282,6 +4293,9 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderBottomColor">#606062</property>
                                                             <property name="borderBottomStyle">solid</property>
                                                             <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderLeftColor">#606062</property>
+                                                            <property name="borderLeftStyle">solid</property>
+                                                            <property name="borderLeftWidth">thin</property>
                                                             <property name="borderRightColor">#606062</property>
                                                             <property name="borderRightStyle">solid</property>
                                                             <property name="borderRightWidth">thin</property>
@@ -4309,18 +4323,6 @@ else dataSetRow["planned_end_datet"]</expression>
                                         </cell>
                                     </row>
                                 </header>
-                                <footer>
-                                    <row id="4444">
-                                        <property name="height">0.59375in</property>
-                                        <cell id="4445"/>
-                                        <cell id="4565">
-                                            <property name="textAlign">right</property>
-                                        </cell>
-                                        <cell id="4446">
-                                            <property name="textAlign">right</property>
-                                        </cell>
-                                    </row>
-                                </footer>
                             </group>
                             <group id="4448">
                                 <property name="groupName">descriptionGroup</property>
@@ -4355,6 +4357,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <image id="4482">
                                                 <property name="height">88px</property>
                                                 <property name="width">245px</property>
+                                                <list-property name="visibility">
+                                                    <structure>
+                                                        <property name="format">all</property>
+                                                        <expression name="valueExpr" type="javascript">!row["file_path"]</expression>
+                                                    </structure>
+                                                </list-property>
                                                 <property name="source">file</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["file_path"]</expression>
                                             </image>
@@ -4383,21 +4391,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                         </cell>
                                     </row>
                                 </header>
-                                <footer>
-                                    <row id="4453">
-                                        <cell id="4454"/>
-                                        <cell id="4564"/>
-                                        <cell id="4455"/>
-                                    </row>
-                                </footer>
                             </group>
-                            <footer>
-                                <row id="4387">
-                                    <cell id="4388"/>
-                                    <cell id="4566"/>
-                                    <cell id="4389"/>
-                                </row>
-                            </footer>
                         </table>
                     </cell>
                 </row>

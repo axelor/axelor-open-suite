@@ -40,6 +40,12 @@
 	
 	<form model="com.axelor.apps.sale.db.SaleOrder" title="Sales order" name="incl-sale-order-subscrption-form">
 		<panel name="subscriptionPanel" title="Contract/Subscription" showIf="saleOrderTypeSelect == 2" >
+			<field name="contractStartDate" onChange="action-sale-order-attrs-subscription-contract-start-date-change" />
+		    <field name="contractEndDate" onChange="action-sale-order-attrs-subscription-contract-end-date-change" />
+		    <field name="contractPeriodInMonths" onChange="action-sale-order-attrs-subscription-contract-period-change" />
+			<field name="currentContractPeriodEndDate" />
+			<field name="isTacitAgreement" />
+			<separator colSpan="12" />
 			<field name="numberOfPeriods" showIf="$readonly()" colSpan="4">
 		      <viewer><![CDATA[
 		                  <span>{{record.numberOfPeriods}}</span>
@@ -50,10 +56,6 @@
 		    </field>
 		    <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4"  onChange="action-supplychain-so-method-set-next-invoicing-end-period-date" />
 		    <field name="periodicityTypeSelect" showIf="!$readonly()" colSpan="4"  onChange="action-supplychain-so-method-set-next-invoicing-end-period-date" />
-		    <field name="contractPeriodInMonths" />
-			<field name="currentContractPeriodEndDate" />
-			<field name="contractEndDate" />
-			<field name="isTacitAgreement" />
 			<field name="noticePeriodInDays" />
 			<field name="nextInvoicingDate" />
 			<field name="nextInvoicingStartPeriodDate" onChange="action-supplychain-so-method-set-next-invoicing-end-period-date" />
@@ -129,6 +131,19 @@
 				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
 		<attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 3"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-attrs-subscription-contract-start-date-change">
+		<attribute name="value" for="contractEndDate" expr="eval:contractStartDate.plusMonths(contractPeriodInMonths)" if="contractStartDate != null &amp;&amp; contractPeriodInMonths != 0"/>
+		<attribute name="value" for="contractPeriodInMonths" expr="eval:java.time.temporal.ChronoUnit.MONTHS.between(contractStartDate,contractEndDate)" if="contractStartDate != null &amp;&amp; contractEndDate != null &amp;&amp; contractPeriodInMonths == 0"/>	
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-attrs-subscription-contract-end-date-change">
+		<attribute name="value" for="contractPeriodInMonths" expr="eval:java.time.temporal.ChronoUnit.MONTHS.between(contractStartDate,contractEndDate)" if="contractStartDate != null &amp;&amp; contractEndDate != null"/>	
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-attrs-subscription-contract-period-change">
+		<attribute name="value" for="contractEndDate" expr="eval:contractStartDate.plusMonths(contractPeriodInMonths)" if="contractStartDate != null &amp;&amp; contractPeriodInMonths != 0"/>
 	</action-attrs>
 	
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">
