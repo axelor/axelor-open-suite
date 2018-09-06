@@ -57,7 +57,6 @@ public class InvoicingProjectController {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getElementsToInvoiceSet().isEmpty()
         && invoicingProject.getProjectSet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,

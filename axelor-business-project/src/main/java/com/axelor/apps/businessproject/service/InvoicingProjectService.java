@@ -31,7 +31,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.ElementsToInvoiceRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
@@ -72,8 +71,6 @@ public class InvoicingProjectService {
   @Inject protected TimesheetServiceImpl timesheetServiceImpl;
 
   @Inject protected ExpenseService expenseService;
-
-  @Inject protected ElementsToInvoiceService elementsToInvoiceService;
 
   @Inject protected PartnerService partnerService;
 
@@ -142,9 +139,6 @@ public class InvoicingProjectService {
         new ArrayList<PurchaseOrderLine>(folder.getPurchaseOrderLineSet());
     List<TimesheetLine> timesheetLineList = new ArrayList<TimesheetLine>(folder.getLogTimesSet());
     List<ExpenseLine> expenseLineList = new ArrayList<ExpenseLine>(folder.getExpenseLineSet());
-    List<ElementsToInvoice> elementsToInvoiceList =
-        new ArrayList<ElementsToInvoice>(folder.getElementsToInvoiceSet());
-    List<Project> projectList = new ArrayList<Project>(folder.getProjectSet());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     invoiceLineList.addAll(
@@ -159,9 +153,6 @@ public class InvoicingProjectService {
     invoiceLineList.addAll(
         expenseService.createInvoiceLines(
             invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
-    invoiceLineList.addAll(
-        elementsToInvoiceService.createInvoiceLines(
-            invoice, elementsToInvoiceList, folder.getElementsToInvoiceSetPrioritySelect()));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());
 
@@ -289,9 +280,6 @@ public class InvoicingProjectService {
     for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
       expenseLine.setInvoiced(true);
     }
-    for (ElementsToInvoice elementsToInvoice : invoicingProject.getElementsToInvoiceSet()) {
-      elementsToInvoice.setInvoiced(true);
-    }
     for (Project project : invoicingProject.getProjectSet()) {
       project.setInvoiced(true);
     }
@@ -371,17 +359,6 @@ public class InvoicingProjectService {
                         ExpenseRepository.STATUS_VALIDATED,
                         ExpenseRepository.STATUS_REIMBURSED)
                     .fetch());
-
-        invoicingProject
-            .getElementsToInvoiceSet()
-            .addAll(
-                Beans.get(ElementsToInvoiceRepository.class)
-                    .all()
-                    .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?2",
-                        project,
-                        invoicingProject.getDeadlineDate())
-                    .fetch());
       } else {
         invoicingProject
             .getSaleOrderLineSet()
@@ -430,16 +407,6 @@ public class InvoicingProjectService {
                         ExpenseRepository.STATUS_VALIDATED,
                         ExpenseRepository.STATUS_REIMBURSED)
                     .fetch());
-
-        invoicingProject
-            .getElementsToInvoiceSet()
-            .addAll(
-                Beans.get(ElementsToInvoiceRepository.class)
-                    .all()
-                    .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
-                        project)
-                    .fetch());
       }
       if (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE
           && !project.getInvoiced()) invoicingProject.addProjectSetItem(project);
@@ -452,7 +419,6 @@ public class InvoicingProjectService {
     invoicingProject.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>());
     invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
-    invoicingProject.setElementsToInvoiceSet(new HashSet<ElementsToInvoice>());
     invoicingProject.setProjectSet(new HashSet<Project>());
   }
 

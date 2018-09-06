@@ -42,6 +42,7 @@
 - Implement PackLine and SubLine for InvoiceLine and StockMoveLine.
 - TIMELINE : Generate lines from Project Planning
 - Account Moves: ability to set currency, currency rate and currency amount for manual moves.
+- PROJECT : Add new o2m 'manualElementList' and display it on financial report.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

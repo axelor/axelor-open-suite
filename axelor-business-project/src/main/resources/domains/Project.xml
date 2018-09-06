@@ -32,7 +32,7 @@
 		<decimal name="realTimesMargin" title="Real Margin (Time)" readonly="true"/>
 		<decimal name="realInvoicingMargin" title="Real Margin (Invoicing)" readonly="true"/>
 		
-		<one-to-many name="elementsToInvoiceList" ref="com.axelor.apps.businessproject.db.ElementsToInvoice" title="Manual elements" mappedBy="project"/>
+		<one-to-many name="manualElementList" ref="com.axelor.apps.businessproject.db.ManualElement" title="Manual elements" mappedBy="project"/>
 		
 	  	<boolean name="invoiced" readonly="true"/>
 	  	<string name="unitOnPrinting" selection="hr.time.logging.preference.select" title="Invoicing unit"/>
