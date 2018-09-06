@@ -4,6 +4,7 @@
 - Add Data Backup and Restore
 - Add unitary tests for password
 - Module for mobile app added
+- Vehicle Fuel Log : add columns vehicle name, plate no, purchasePartner in grid view
 
 ## Improvements
 - Fleet app: added FR demo data
@@ -53,6 +54,7 @@
 - Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
 - Removed editable from some reference fields in stock form views. 
 - Vehicle : rename driverContact to driverPartner & filter it.
+- Vehicle : Card View - display vehicle company and driver  
 
 ## [5.0.4] - 2018-07-26
 ## Features
