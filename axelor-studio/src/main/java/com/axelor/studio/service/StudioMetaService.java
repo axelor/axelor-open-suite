@@ -192,13 +192,11 @@ public class StudioMetaService {
   }
 
   public MetaMenu createMenu(MenuBuilder builder) {
-    String builderName = builder.getName();
-    String xmlId =
-        (builderName.startsWith(XML_ID_PREFIX)) ? builderName : XML_ID_PREFIX + builderName;
+    String xmlId = XML_ID_PREFIX + builder.getName();
     MetaMenu menu = metaMenuRepo.findByID(xmlId);
 
     if (menu == null) {
-      menu = new MetaMenu(xmlId);
+      menu = new MetaMenu(builder.getName());
       menu.setXmlId(xmlId);
       Integer priority = getPriority(MetaMenu.class.getSimpleName(), menu.getName());
       menu.setPriority(priority);
