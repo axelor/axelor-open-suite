@@ -44,6 +44,7 @@
 - Account Moves: ability to set currency, currency rate and currency amount for manual moves.
 - PROJECT : Add new o2m 'manualElementList' and display it on financial report.
 - Manuf Order: show in toConsumeProdProductList if there is product missing in stock.
+- Manuf Order: show in diff O2M the planned and real quantities.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
