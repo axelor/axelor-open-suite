@@ -71,7 +71,7 @@
 				</panel>
 			</panel>
 			<panel name="accounting" title="Accounting">
-				<field name="account"/>
+				<field name="account" onSelect="action-invoice-line-method-filter-account"/>
 			</panel>
 			<panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
@@ -225,6 +225,10 @@
 	
 	<action-method name="action-invoice-line-method-onchange-intaxprice">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="updatePrice"/>
+  </action-method> 
+
+	<action-method name="action-invoice-line-method-filter-account">
+		<call class="com.axelor.apps.account.web.InvoiceLineController" method="filterAccount"/>
 	</action-method>
 	
 	<!-- ACTION ATTRS -->

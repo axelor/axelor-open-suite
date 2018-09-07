@@ -12,7 +12,9 @@
         <bind to="canRemove" eval="can_remove == 'x' ? 'true' : 'false'"/>
         <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
     </input>
-    
+
+    <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"  search="self.name = :name"  />
+
     <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp"  />
 	
 	<input file="base_barcodeTypeConfig.csv" separator=";" type="com.axelor.apps.base.db.BarcodeTypeConfig" search="self.name = :name"/>
@@ -36,8 +38,6 @@
     	<bind to="metaModel" column="metaModel" search="self.name = :metaModel" />
     	<bind to="metaFieldSet" column="fields" search="self.name in :fields and self.metaModel.name = :metaModel" eval="fields.split(',') as List" />
     </input>
-    
-    <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"  search="self.name = :name"  />
 
     <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     	<bind to="language" eval="'en'" />
