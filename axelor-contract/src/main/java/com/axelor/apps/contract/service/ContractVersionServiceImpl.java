@@ -46,7 +46,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void waiting(ContractVersion version, LocalDate date) {
     version.setStatusSelect(WAITING_VERSION);
   }
@@ -57,7 +57,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void ongoing(ContractVersion version, LocalDate date) throws AxelorException {
     version.setActivationDate(date);
     version.setActivatedByUser(AuthUtils.getUser());
@@ -89,7 +89,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void terminate(ContractVersion version, LocalDate date) {
     version.setEndDate(date);
     version.setStatusSelect(TERMINATED_VERSION);

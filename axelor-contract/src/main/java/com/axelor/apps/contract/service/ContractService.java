@@ -38,7 +38,7 @@ public interface ContractService {
    * @param contract to active.
    * @param date to use for active contract.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   void activeContract(Contract contract, LocalDate date);
 
   /**
@@ -47,7 +47,7 @@ public interface ContractService {
    * @param contract
    * @param date
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   void waitingCurrentVersion(Contract contract, LocalDate date);
 
   /**
@@ -57,7 +57,7 @@ public interface ContractService {
    * @param contract
    * @param date
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
 
   /**
@@ -66,7 +66,7 @@ public interface ContractService {
    * @param contract
    * @param date
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   void waitingNextVersion(Contract contract, LocalDate date);
 
   /**
@@ -76,7 +76,7 @@ public interface ContractService {
    * @param contract
    * @param date
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   void activeNextVersion(Contract contract, LocalDate date) throws AxelorException;
 
   /**
@@ -85,7 +85,7 @@ public interface ContractService {
    * @param contract
    * @param date
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   void archiveVersion(Contract contract, LocalDate date);
 
   /**
@@ -94,6 +94,7 @@ public interface ContractService {
    * @param contract The contract to check.
    * @throws AxelorException Check condition failed.
    */
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   void checkCanTerminateContract(Contract contract) throws AxelorException;
 
   /**
@@ -103,7 +104,7 @@ public interface ContractService {
    * @param isManual
    * @param date
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   void terminateContract(Contract contract, Boolean isManual, LocalDate date)
       throws AxelorException;
 
@@ -113,7 +114,7 @@ public interface ContractService {
    * @param contract
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   Invoice invoicingContract(Contract contract) throws AxelorException;
 
   /**
@@ -122,7 +123,7 @@ public interface ContractService {
    * @param contract
    * @param date
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   void renewContract(Contract contract, LocalDate date) throws AxelorException;
 
   /**
@@ -141,6 +142,7 @@ public interface ContractService {
    * @param contract to be check.
    * @throws AxelorException if the contract is invalid.
    */
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   void isValid(Contract contract) throws AxelorException;
 
   /**

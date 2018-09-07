@@ -31,7 +31,7 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be waiting.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   void waiting(ContractVersion version);
 
   /**
@@ -40,7 +40,7 @@ public interface ContractVersionService {
    * @param version of the contract will be waiting.
    * @param date of waiting.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   void waiting(ContractVersion version, LocalDate date);
 
   /**
@@ -48,7 +48,7 @@ public interface ContractVersionService {
    *
    * @param version of te contract will be ongoing.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   void ongoing(ContractVersion version) throws AxelorException;
 
   /**
@@ -57,7 +57,7 @@ public interface ContractVersionService {
    * @param version of the contract will be ongoing.
    * @param date of activation.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   void ongoing(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**
@@ -65,7 +65,7 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be terminate.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   void terminate(ContractVersion version);
 
   /**
@@ -74,7 +74,7 @@ public interface ContractVersionService {
    * @param version of the contract will be terminate.
    * @param date of terminate.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   void terminate(ContractVersion version, LocalDate date);
 
   /**
