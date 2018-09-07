@@ -60,6 +60,7 @@
 - Vehicle : Card View - display vehicle company and driver  
 - Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine. 
 - Fix translation typo.
+- Add xml escape in configurator export.
 
 ## [5.0.4] - 2018-07-26
 ## Features
