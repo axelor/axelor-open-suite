@@ -25,6 +25,7 @@
       	<field name="displayTypeSelect" colSpan="4" />
       	<button name="openDashboard" title="Dashboard" onClick="open.wkf.dashboard" colSpan="4" />
       	<field name="bpmnXml" showTitle="false" colSpan="12" widget="BpmnEditor" />
+        <field name="description" widget="html" colSpan="12" />
       	<field name="$bpmnDefault" hidden="true" type="string" />
       </panel>
   </form>
