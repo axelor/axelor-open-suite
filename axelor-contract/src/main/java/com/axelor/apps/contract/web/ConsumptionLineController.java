@@ -17,25 +17,22 @@
  */
 package com.axelor.apps.contract.web;
 
-import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.apps.contract.db.ConsumptionLine;
+import com.axelor.apps.contract.service.ConsumptionLineService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
 
-@Singleton
-public class ContractLineController {
+public class ConsumptionLineController {
 
-  public void computeTotal(ActionRequest request, ActionResponse response) {
-    ContractLine contractLine = request.getContext().asType(ContractLine.class);
-    ContractLineService contractLineService = Beans.get(ContractLineService.class);
-
+  public void changeProduct(ActionRequest request, ActionResponse response) {
+    ConsumptionLine line = request.getContext().asType(ConsumptionLine.class);
     try {
-      contractLine = contractLineService.computeTotal(contractLine);
-      response.setValues(contractLine);
+      Beans.get(ConsumptionLineService.class).fill(line, line.getProduct());
+      response.setValues(line);
     } catch (Exception e) {
-      response.setValues(contractLineService.reset(contractLine));
+      TraceBackService.trace(response, e);
     }
   }
 }

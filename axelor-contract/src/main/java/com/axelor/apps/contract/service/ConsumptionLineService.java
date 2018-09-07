@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.contract.db.repo;
+package com.axelor.apps.contract.service;
 
-import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.db.JpaRepository;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.contract.db.ConsumptionLine;
 
-public class ContractLineRepository extends JpaRepository<ContractLine> {
+public interface ConsumptionLineService {
 
-  public ContractLineRepository() {
-    super(ContractLine.class);
-  }
-
-  @Override
-  public ContractLine copy(ContractLine entity, boolean deep) {
-    return super.copy(entity, deep);
-  }
+  /**
+   * Fill ConsumptionLine with Product information.
+   *
+   * @param line to fill.
+   * @param product to get information.
+   * @return ConsumptionLine filled with Product information.
+   */
+  ConsumptionLine fill(ConsumptionLine line, Product product);
 }
