@@ -1844,6 +1844,7 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4670">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
@@ -1864,6 +1865,7 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4671">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
@@ -1884,6 +1886,7 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4672">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
@@ -1904,6 +1907,7 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4673">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
@@ -2133,23 +2137,18 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                                 </structure>
                                             </list-property>
                                             <column id="4998">
+                                                <list-property name="visibility">
+                                                    <structure>
+                                                        <property name="format">all</property>
+                                                        <expression name="valueExpr" type="javascript">! row["image"]</expression>
+                                                    </structure>
+                                                </list-property>
                                                 <property name="width">5.000625cm</property>
                                             </column>
                                             <column id="4999">
                                                 <property name="width">14.181666666666667cm</property>
                                             </column>
-                                            <header>
-                                                <row id="4985">
-                                                    <cell id="4986"/>
-                                                    <cell id="4988"/>
-                                                </row>
-                                            </header>
                                             <detail>
-                                                <row id="5054">
-                                                    <property name="backgroundColor">#FFFFFF</property>
-                                                    <cell id="5055"/>
-                                                    <cell id="5056"/>
-                                                </row>
                                                 <row id="4990">
                                                     <property name="backgroundColor">#EEEEEE</property>
                                                     <cell id="4991">
@@ -2173,7 +2172,7 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                                             <property name="textAlign">left</property>
                                                             <structure name="toc"/>
                                                             <property name="contentType">html</property>
-                                                            <text-property name="content"><![CDATA[<VALUE-OF  format="HTML">row["description"]</VALUE-OF>]]></text-property>
+                                                            <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["description"] != null) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                                         </text>
                                                     </cell>
                                                 </row>

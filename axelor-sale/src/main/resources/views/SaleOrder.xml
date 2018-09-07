@@ -771,6 +771,7 @@
         <action name="action-sale-order-method-address-str"/>
 		<action name="action-sale-order-method-fill-price-list"/>
 		<action name="action-sale-order-record-compute-end-of-validity-date"/>
+        <action name="action-sale-order-method-fill-company-bank-details"/>
 	</action-group>
 
 	<action-group name="action-group-sale-order-merge-action">

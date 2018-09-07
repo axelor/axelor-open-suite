@@ -19,7 +19,6 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
-import com.axelor.apps.base.service.advancedExport.AdvancedExportGeneratorFactory;
 import com.axelor.apps.tool.NammingTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;

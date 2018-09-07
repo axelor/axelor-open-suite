@@ -1,6 +1,13 @@
 # Changelog
-## [Unreleased 5.0.5]
+## [Unreleased 5.0.5]	
+##Features
+- Add Data Backup and Restore
+- Add unitary tests for password
+- Module for mobile app added
+- Vehicle Fuel Log : add columns vehicle name, plate no, purchasePartner in grid view
+
 ## Improvements
+- Fleet app: added FR demo data
 - HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
 - Reworked ati sale orders/purchase orders/invoices.
@@ -10,6 +17,15 @@
 - Configurator: improve UI for indicators.
 - Split formula list into formulas for product and formulas for sale order line in configurator creator.
 - Add a column name to configurators, equal to the creator's name.
+- General legder report: hide the balance when it is equal to 0.
+- UserController: Improve exception handling.
+- Update translations.
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Improve account management views.
+- Add supplier invoice number in supplier invoices grid.
+- Add column description in move line grid views.
+- Allow manual creation of tracking number on stock move lines.
+- Direct debit batch: filter out payment schedule lines with inactive partner bank details.
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -24,8 +40,27 @@
 - Fix new bug when checking type on configurator.
 - BPM: Provide translation for Workflow dashboard.
 - Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
+- Budget form: add missing tranlation.
+- Invoice: reload the view after regenerating the printing.
 - DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
 - BPM: keep model read only if custom field is created from custom field creator.
+- Fix % based discounts which didn't worked with decimal values on Sale, Purchase and Invoice.
+- Fix the companyBankDetails field filling when SaleOrder is created from the Customer view.
+- Fix groovy error due to a null list in action-budget-validate-exceed-line-amount.
+- Event synchronization: fix some new events being archived.
+- Password : Fix regex.
+- Fix : error when computing the duration of a leave request without a company.
+- Invoice : filter account depending on Invoice Company and Type & Account Type
+- Fix stock move split by unit. 
+- Tracking number configuration: Fix 'Tracking number order' selection and it's static variables.
+- Tracking number configuration: display 'name' field on grid.
+- Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
+- Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
+- Removed editable from some reference fields in stock form views. 
+- Vehicle : rename driverContact to driverPartner & filter it.
+- Vehicle : Card View - display vehicle company and driver  
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine. 
+- Fix translation typo.
 
 ## [5.0.4] - 2018-07-26
 ## Features

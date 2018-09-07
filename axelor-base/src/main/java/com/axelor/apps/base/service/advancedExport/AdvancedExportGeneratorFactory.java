@@ -18,11 +18,6 @@
 package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
-import com.axelor.apps.base.service.advancedExport.AdvancedExportGenerator;
-import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
-import com.axelor.apps.base.service.advancedExport.CsvExportGenerator;
-import com.axelor.apps.base.service.advancedExport.ExcelExportGenerator;
-import com.axelor.apps.base.service.advancedExport.PdfExportGenerator;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Singleton;
 
