@@ -43,10 +43,14 @@
 			<panel name="stockLocationPanel" title="Stock Location">
 				<field name="manageWorkshop" widget="boolean-switch"/>
 			</panel>
-		</panel>
-		<panel name="actionsPanel">
-			<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
-			<panel-dashlet name="confProductionConfigDashletPanel" action="admin.root.conf.production.config" colSpan="12"/>
+			<panel name="schedulingPanel" title="Scheduling">
+				<field name="finiteCapacity"/>
+				<field name="schedulingGranularity" showIf="finiteCapacity" />
+			</panel>
+			<panel name="actionsPanel">
+				<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
+				<panel-dashlet name="confProductionConfigDashletPanel" action="admin.root.conf.production.config" colSpan="12"/>
+			</panel>
 		</panel>
 	</form>
 	

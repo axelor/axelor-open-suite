@@ -29,6 +29,9 @@
 		
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 		<boolean name="printPlannedDateOnManufOrder" title="Print planned date on manuf order ?" default="true"/>
+		
+		<boolean name="finiteCapacity" title="Finite capacity"/>
+		<integer name="schedulingGranularity" title="Scheduling granularity" selection="production.manuf.order.optaplanner.granularity.select"/>
 	</entity>
 
 </domain-models>

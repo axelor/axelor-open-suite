@@ -183,10 +183,8 @@ public class ManufOrderController {
    */
   public void consumeStockMove(ActionRequest request, ActionResponse response) {
     try {
-
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
-
       Beans.get(ManufOrderStockMoveService.class).consumeInStockMoves(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
