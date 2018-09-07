@@ -467,7 +467,7 @@ public class OperationOrderWorkflowService {
     if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
       nbCycles = qty;
     } else {
-      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.HALF_UP);
+      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
     }
 
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
