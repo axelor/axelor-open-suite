@@ -460,14 +460,14 @@ public class OperationOrderWorkflowService {
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
     long duration = 0;
-    
+
     BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
 
     BigDecimal nbCycles;
     if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
-  	  nbCycles = qty;
+      nbCycles = qty;
     } else {
-  	  nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.HALF_UP);
+      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.HALF_UP);
     }
 
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
@@ -484,9 +484,13 @@ public class OperationOrderWorkflowService {
       }
       duration += machine.getStartingDuration();
       duration += machine.getEndingDuration();
-      duration += nbCycles.subtract(new BigDecimal(1)).multiply(new BigDecimal(machine.getSetupDuration())).longValue();
+      duration +=
+          nbCycles
+              .subtract(new BigDecimal(1))
+              .multiply(new BigDecimal(machine.getSetupDuration()))
+              .longValue();
     }
-      
+
     BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
     duration += nbCycles.multiply(durationPerCycle).longValue();
 
