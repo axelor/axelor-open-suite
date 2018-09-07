@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.1.2]
 ## Features
+- Workflow: Allow creation of a new field for the object related to the workflow
+
 ## Improvements
 ## Bug Fixes
 
