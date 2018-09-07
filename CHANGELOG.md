@@ -24,6 +24,7 @@
 - Add supplier invoice number in supplier invoices grid.
 - Add column description in move line grid views.
 - Allow manual creation of tracking number on stock move lines.
+- Direct debit batch: filter out payment schedule lines with inactive partner bank details.
 
 ## Bug Fixes
 - Fix on prod process report.
