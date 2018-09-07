@@ -139,7 +139,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       contract.setInvoicePeriodEndDate(contract.getFirstPeriodEndDate());
     }
     if (contract.getCurrentContractVersion().getAutomaticInvoicing()
-        && contract.getCurrentContractVersion().getInvoicingMoment()
+        && contract.getCurrentContractVersion().getInvoicingMomentSelect()
             == ContractVersionRepository.BEGIN_INVOICING_MOMENT) {
       invoice = invoicingContract(contract);
     }
@@ -160,11 +160,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
 
     if (version.getAutomaticInvoicing()) {
-      switch (version.getInvoicingMoment()) {
-        case 1:
+      switch (version.getInvoicingMomentSelect()) {
+        case ContractVersionRepository.END_INVOICING_MOMENT:
           contract.setInvoicingDate(contract.getInvoicePeriodEndDate());
           break;
-        case 2:
+        case ContractVersionRepository.BEGIN_INVOICING_MOMENT:
           contract.setInvoicingDate(contract.getInvoicePeriodStartDate());
           break;
         default:
@@ -565,8 +565,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   public List<Contract> getContractToTerminate(LocalDate date) {
     return all()
         .filter(
-            "self.statusSelect = ?1 AND self.currentVersion.statusSelect = ?2 AND self.isTacitRenewal IS FALSE "
-                + "AND (self.toClosed IS TRUE OR self.currentVersion.supposedEndDate >= ?3)",
+            "self.statusSelect = ?1 AND self.currentContractVersion.statusSelect = ?2 AND self.isTacitRenewal IS FALSE "
+                + "AND (self.toClosed IS TRUE OR self.currentContractVersion.supposedEndDate >= ?3)",
             ACTIVE_CONTRACT,
             ContractVersionRepository.ONGOING_VERSION,
             date)
@@ -577,7 +577,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     return all()
         .filter(
             "self.statusSelect = ?1 AND self.isTacitRenewal IS TRUE AND self.toClosed IS FALSE "
-                + "AND self.currentVersion.statusSelect = ?2 AND self.currentVersion.supposedEndDate >= ?3",
+                + "AND self.currentContractVersion.statusSelect = ?2 AND self.currentContractVersion.supposedEndDate >= ?3",
             ACTIVE_CONTRACT,
             ContractVersionRepository.ONGOING_VERSION,
             date)
@@ -635,7 +635,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     version.setEngagementDuration(template.getEngagementDuration());
     version.setEngagementStartFromVersion(template.getEngagementStartFromVersion());
     version.setInvoicingDuration(template.getInvoicingDuration());
-    version.setInvoicingMoment(template.getInvoicingMoment());
+    version.setInvoicingMomentSelect(template.getInvoicingMomentSelect());
     version.setPaymentCondition(template.getPaymentCondition());
     version.setPaymentMode(template.getPaymentMode());
     version.setPriorNoticeDuration(template.getPriorNoticeDuration());

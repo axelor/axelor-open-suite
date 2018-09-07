@@ -6,34 +6,34 @@
         <panel>
             <panel colSpan="9">
                 <panel name="hiddenFields" hidden="true" colSpan="12">
-                    <field name="contractNext.contractId"/>
-                    <field name="contractNext.statusSelect"/>
-                    <field name="contractNext.targetType"/>
+                    <field name="nextContract.contractId"/>
+                    <field name="nextContract.statusSelect"/>
+                    <field name="nextContract.targetTypeSelect"/>
                 </panel>
                 <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
                 <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
-                    <viewer depends="contractNext.targetType,contractNext.statusSelect,contractNext.contractId"><![CDATA[
+                    <viewer depends="nextContract.targetTypeSelect,nextContract.statusSelect,nextContract.contractId"><![CDATA[
 			<h3 class="text-right">
-                      <span style="margin-right: 10px;"><span x-translate>Version</span><span ng-show="record.contractNext.contractId"> - {{ record.contractNext.contractId }}</span></span>
+                      <span style="margin-right: 10px;"><span x-translate>Version</span><span ng-show="record.nextContract.contractId"> - {{ record.nextContract.contractId }}</span></span>
 
-                      <span class="label label-info" x-translate ng-show="record.contractNext.targetType == 1">Customer</span>
-                      <span class="label label-warning" x-translate ng-show="record.contractNext.targetType == 2">Supplier</span>
+                      <span class="label label-info" x-translate ng-show="record.nextContract.targetTypeSelect == 1">Customer</span>
+                      <span class="label label-warning" x-translate ng-show="record.nextContract.targetTypeSelect == 2">Supplier</span>
 
-											<span class="label label-default" x-translate ng-show="record.contractNext.statusSelect == 1">Draft</span>
-                      <span class="label label-info" x-translate ng-show="record.contractNext.statusSelect == 2">Active</span>
-                      <span class="label label-important" x-translate ng-show="record.contractNext.statusSelect == 3">Closed</span>
+											<span class="label label-default" x-translate ng-show="record.nextContract.statusSelect == 1">Draft</span>
+                      <span class="label label-info" x-translate ng-show="record.nextContract.statusSelect == 2">Active</span>
+                      <span class="label label-important" x-translate ng-show="record.nextContract.statusSelect == 3">Closed</span>
 			</h3>
                   ]]></viewer>
                 </field>
-                <field name="contractNext.company" colSpan="4"/>
-                <field name="contractNext.partner" colSpan="4"/>
-                <field if="__config__.app.getApp('contract').isInvoicingManagement" name="contractNext.currency" colSpan="4"/>
-                <field name="contractNext.name" css="highlight" colSpan="12"/>
+                <field name="nextContract.company" colSpan="4"/>
+                <field name="nextContract.partner" colSpan="4"/>
+                <field if="__config__.app.getApp('contract').isInvoicingManagement" name="nextContract.currency" colSpan="4"/>
+                <field name="nextContract.name" css="highlight" colSpan="12"/>
                 <panel title="Contract Dates" hidden="true" showIf="id" colSpan="12">
-                    <field name="contractNext.createdOn" colSpan="3"/>
-                    <field name="contractNext.createdBy" colSpan="3"/>
-                    <field name="contractNext.startDate" readonly="true" showIf="contractNext.statusSelect >= 2" colSpan="3"/>
-                    <field name="contractNext.endDate" hidden="true" showIf="contractNext.statusSelect == 3" colSpan="3"/>
+                    <field name="nextContract.createdOn" colSpan="3"/>
+                    <field name="nextContract.createdBy" colSpan="3"/>
+                    <field name="nextContract.startDate" readonly="true" showIf="nextContract.statusSelect >= 2" colSpan="3"/>
+                    <field name="nextContract.endDate" hidden="true" showIf="nextContract.statusSelect == 3" colSpan="3"/>
                 </panel>
                 <panel title="Current version" colSpan="12">
                     <panel colSpan="6">
@@ -42,7 +42,7 @@
                             <field name="supposedEndDate"/>
                         </panel>
                         <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
-                            <field name="activatedBy" colSpan="4"/>
+                            <field name="activatedByUser" colSpan="4"/>
                             <field name="activationDate" colSpan="4"/>
                             <panel colSpan="4">
                                 <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
@@ -64,7 +64,7 @@
                     <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; statusSelect == 2" onClick="save,action-contract-version-method-active,close"/>
                 </panel>
                 <panel title="Notes" stacked="true">
-                    <field name="contractNext.note" showTitle="false"/>
+                    <field name="nextContract.note" showTitle="false"/>
                 </panel>
             </panel>
         </panel>
@@ -72,17 +72,17 @@
             <panel title="Content">
                 <field if="__config__.app.getApp('contract').isInvoicingManagement" name="contractLineList" colSpan="12"/>
                 <field name="description" colSpan="9" widget="html"/>
-                <field name="attachment" colSpan="3" widget="binary-link"/>
+                <field name="metaField" colSpan="3" widget="binary-link"/>
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
                 <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
-                    <field name="contractNext.isInvoicingManagement" colSpan="6" widget="boolean-switch"/>
-                    <panel hidden="true" showIf="contractNext.isInvoicingManagement" colSpan="6">
-                        <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement" widget="boolean-switch" name="contractNext.isAdditionaBenefitManagement" colSpan="6"/>
-                        <field if="__config__.app.getApp('contract').isConsumptionManagement" widget="boolean-switch" name="contractNext.isConsumptionManagement" colSpan="6"/>
+                    <field name="nextContract.isInvoicingManagement" colSpan="6" widget="boolean-switch"/>
+                    <panel hidden="true" showIf="nextContract.isInvoicingManagement" colSpan="6">
+                        <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement" widget="boolean-switch" name="nextContract.isAdditionaBenefitManagement" colSpan="6"/>
+                        <field if="__config__.app.getApp('contract').isConsumptionManagement" widget="boolean-switch" name="nextContract.isConsumptionManagement" colSpan="6"/>
                     </panel>
-                    <field if="__config__.app.getApp('contract').isConsumptionManagement" widget="boolean-switch" name="isConsumptionBeforeEndDate" hidden="true" showIf="contractNext.isConsumptionManagement" colSpan="6"/>
-                    <panel name="invoicingSubPanel" hidden="true" showIf="contractNext.isInvoicingManagement" colSpan="12">
+                    <field if="__config__.app.getApp('contract').isConsumptionManagement" widget="boolean-switch" name="isConsumptionBeforeEndDate" hidden="true" showIf="nextContract.isConsumptionManagement" colSpan="6"/>
+                    <panel name="invoicingSubPanel" hidden="true" showIf="nextContract.isInvoicingManagement" colSpan="12">
                         <panel colSpan="12">
                             <field name="paymentMode" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
                             <field name="paymentCondition" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
@@ -92,7 +92,7 @@
                         <panel colSpan="12">
                             <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
                             <panel showIf="isPeriodicInvoicing" colSpan="9">
-                                <field name="invoicingFrequency" colSpan="4"/>
+                                <field name="invoicingDuration" colSpan="4"/>
                                 <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                 <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" widget="boolean-switch" colSpan="4"/>
                             </panel>
@@ -116,13 +116,13 @@
             </panel>
         </panel-tabs>
         <panel hidden="true">
-            <field name="contractNext"/>
+            <field name="nextContract"/>
             <field name="$_xIsNext" type="Boolean"/>
         </panel>
     </form>
 
     <action-attrs name="action-contract-version-attrs-load">
-        <attribute for="$_xIsNext" name="value" expr="eval: contractNext"/>
+        <attribute for="$_xIsNext" name="value" expr="eval: nextContract"/>
         <attribute for="$_xIsNext" name="value" expr="eval: _xIsNextVersion" if="_xIsNextVersion"/>
     </action-attrs>
 

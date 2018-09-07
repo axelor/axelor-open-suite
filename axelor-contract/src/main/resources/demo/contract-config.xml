@@ -5,7 +5,7 @@
 	<input file="contract_contracts.csv" separator=";" type="com.axelor.apps.contract.db.Contract">
 		<bind to="importId" column="importId"/>
 		<bind to="name" column="name" eval="name.toUpperCase()"/>
-		<bind to="currentVersion">
+		<bind to="currentContractVersion">
 			<bind to="statusSelect" eval="1"/>
 			<bind to="supposedActivationDate" column="supposedActivationDate"/>
 		</bind>

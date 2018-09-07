@@ -7,7 +7,7 @@
 	<entity name="ContractVersion" repository="abstract">
 
 		<integer name="statusSelect" title="Status" selection="contract.version.status.select" default="1" required="true" copy="false"/>
-		<integer name="invoicingMoment" selection="contract.version.invoicing.moment.select" title="Invoicing moment" default="1"/>
+		<integer name="invoicingMomentSelect" selection="contract.version.invoicing.moment.select" title="Invoicing moment" default="1"/>
 
 		<string name="description" title="Description" multiline="true" large="true" />
 

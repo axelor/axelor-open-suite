@@ -8,7 +8,7 @@
           model="com.axelor.apps.contract.db.Contract">
         <field name="contractId"/>
         <field name="name"/>
-        <field name="targetType"/>
+        <field name="targetTypeSelect"/>
         <field name="company"/>
         <field name="partner"/>
         <field name="startDate"/>
@@ -22,14 +22,14 @@
         </toolbar>
         <panel>
             <panel colSpan="9">
-                <field name="currentVersion.statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
+                <field name="currentContractVersion.statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
                 <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
-                    <viewer depends="targetType,statusSelect,contractId,versionNumber"><![CDATA[
+                    <viewer depends="targetTypeSelect,statusSelect,contractId,versionNumber"><![CDATA[
 					<h3 class="text-right">
                         <span style="margin-right: 10px;"><span x-translate>Contract</span><span ng-show="record.contractId"> - {{ record.contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ record.versionNumber }}</span></span></span>
 
-                        <span class="label label-info" x-translate ng-show="record.targetType == 1">Customer</span>
-                        <span class="label label-warning" x-translate ng-show="record.targetType == 2">Supplier</span>
+                        <span class="label label-info" x-translate ng-show="record.targetTypeSelect == 1">Customer</span>
+                        <span class="label label-warning" x-translate ng-show="record.targetTypeSelect == 2">Supplier</span>
 
 						<span class="label label-default" x-translate ng-show="record.statusSelect == 1">Draft</span>
                         <span class="label label-info" x-translate ng-show="record.statusSelect == 2">Active</span>
@@ -38,7 +38,7 @@
                     ]]></viewer>
                 </field>
                 <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
-                <field name="partner" colSpan="4" showIf="targetType" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
+                <field name="partner" colSpan="4" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
                 <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="12" css="highlight" hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
                 <panel title="Contract Dates" hidden="true" showIf="id" colSpan="12">
@@ -48,7 +48,7 @@
                     <field name="endDate" hidden="true" showIf="statusSelect == 3" colSpan="3"/>
                 </panel>
                 <panel title="Current version" colSpan="12">
-                    <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false">
+                    <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <panel colSpan="6">
                                 <panel hideIf="statusSelect >= 3" colSpan="12">
@@ -56,7 +56,7 @@
                                     <field name="supposedEndDate"/>
                                 </panel>
                                 <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
-                                    <field name="activatedBy" colSpan="4"/>
+                                    <field name="activatedByUser" colSpan="4"/>
                                     <field name="activationDate" colSpan="4"/>
                                     <panel colSpan="4">
                                         <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
@@ -70,22 +70,22 @@
                             </panel>
                         </editor>
                     </field>
-                    <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentVersion.isPeriodicInvoicing" readonlyIf="statusSelect >= 2" colSpan="3" requiredIf="$get('currentVersion.isPeriodicInvoicing')"/>
+                    <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing" readonlyIf="statusSelect >= 2" colSpan="3" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
                 </panel>
             </panel>
             <panel colSpan="3" stacked="true">
-                <panel hidden="true" showIf="statusSelect == 1 || currentVersion.statusSelect == 1 || currentVersion.statusSelect == 2" stacked="true">
+                <panel hidden="true" showIf="statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2" stacked="true">
                     <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE" canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"/>
                     <button name="copyFromTemplate" title="Use this template" showIf="$contractTemplate" prompt="Do you really wish to fill your contract based on this template ?" onClick="save,action-contract-method-copy-from-template"/>
                 </panel>
                 <panel stacked="true">
                     <field name="nextVersion" hidden="true"/>
-                    <button if="__config__.app.getApp('contract').isAmendmentManagement" name="newVersionBtn" title="New version" showIf="id &amp;&amp; nextVersion == null &amp;&amp; currentVersion.statusSelect == 3" onClick="save,action-view-contract-add-version,close"/>
+                    <button if="__config__.app.getApp('contract').isAmendmentManagement" name="newVersionBtn" title="New version" showIf="id &amp;&amp; nextVersion == null &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-view-contract-add-version,close"/>
                     <button if="__config__.app.getApp('contract').isAmendmentManagement" name="showNextVersionBtn" title="Show next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-view-contract-show-version,close"/>
                     <button if="__config__.app.getApp('contract').isAmendmentManagement" name="deleteNextVersionBtn" title="Delete next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-contract-method-delete-next-version"/>
-                    <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; currentVersion.statusSelect == 1" onClick="save,action-contract-method-waiting"/>
-                    <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; currentVersion.statusSelect == 2" onClick="save,action-contract-method-ongoing"/>
-                    <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn" title="Renew" hidden="true" showIf="id &amp;&amp; currentVersion.statusSelect == 3" onClick="save,action-contract-method-renew"/>
+                    <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; currentContractVersion.statusSelect == 1" onClick="save,action-contract-method-waiting"/>
+                    <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; currentContractVersion.statusSelect == 2" onClick="save,action-contract-method-ongoing"/>
+                    <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn" title="Renew" hidden="true" showIf="id &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-contract-method-renew"/>
                 </panel>
                 <panel title="Notes" stacked="true">
                     <field name="note" showTitle="false"/>
@@ -96,7 +96,7 @@
             <panel title="Content">
                 <label title="You need to save your contract for add lines." hidden="true" showIf="isInvoicingManagement &amp;&amp; !id" css="label-bold font-red"/>
                 <panel name="contractLineListPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
-                    <field name="currentVersion" showTitle="false" readonlyIf="currentVersion.statusSelect > 2 || !id" colSpan="12" x-show-icons="false">
+                    <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2 || !id" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
                             <field name="contractLineList" showTitle="false" colSpan="12" form-view="contract-line-form" grid-view="contract-line-grid"/>
                         </editor>
@@ -104,27 +104,27 @@
                 </panel>
                 <field name="consumptionLineList" showIf="isConsumptionManagement" readonlyIf="!id" colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid"/>
                 <field name="additionalBenefitContractLineList" showIf="isAdditionaBenefitManagement" readonlyIf="!id" colSpan="12" form-view="additional-contract-line-form" grid-view="additional-contract-line-grid"/>
-                <panel name="currentVersionDescription" colSpan="12">
-                    <field name="currentVersion" showTitle="false" colSpan="12" x-show-icons="false">
+                <panel name="currentContractVersionDescription" colSpan="12">
+                    <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <field name="description" colSpan="9" widget="html"/>
-                            <field name="attachment" colSpan="3" widget="binary-link"/>
+                            <field name="metaFile" colSpan="3" widget="binary-link"/>
                         </editor>
                     </field>
                 </panel>
             </panel>
             <panel title="Invoicing" hidden="true" showIf="isInvoicingManagement &amp;&amp; statusSelect >= 2">
-                <field name="invoicePeriodStartDate" showIf="currentVersion.isPeriodicInvoicing" colSpan="4"/>
-                <field name="invoicePeriodEndDate" showIf="currentVersion.isPeriodicInvoicing" colSpan="4"/>
+                <field name="invoicePeriodStartDate" showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"/>
+                <field name="invoicePeriodEndDate" showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"/>
                 <field name="invoicingDate" colSpan="4"/>
-                <button name="invoicingBtn" title="Invoicing" showIf="id &amp;&amp; currentVersion.statusSelect == 3" onClick="save,action-contract-method-invoicing"/>
+                <button name="invoicingBtn" title="Invoicing" showIf="id &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-contract-method-invoicing"/>
                 <panel-dashlet readonly="false" colSpan="12" height="350" action="action-contract-view-invoicing"/>
             </panel>
             <panel title="Termination" hidden="true" showIf="statusSelect != 1" colSpan="12">
-                <panel if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Renewal" hidden="true" showIf="currentVersion.statusSelect == 3 &amp;&amp; (renewalNumber > 0 || currentVersion.isTacitRenewal)" colSpan="12">
+                <panel if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Renewal" hidden="true" showIf="currentContractVersion.statusSelect == 3 &amp;&amp; (renewalNumber > 0 || currentContractVersion.isTacitRenewal)" colSpan="12">
                     <field name="renewalNumber" hidden="true" readonly="true" showIf="renewalNumber > 0"/>
                     <field name="lastRenewalDate" hidden="true" readonly="true" showIf="renewalNumber > 0"/>
-                    <field name="currentVersion" showTitle="false" x-show-icons="false">
+                    <field name="currentContractVersion" showTitle="false" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <field name="doNotRenew" colSpan="12"/>
                         </editor>
@@ -134,20 +134,20 @@
                     <field name="terminatedDate" readonlyIf="terminatedManually" colSpan="3"/>
                     <panel colSpan="9">
                         <panel hidden="true" showIf="terminatedManually" colSpan="12">
-                            <field name="terminatedBy" readonly="true" colSpan="4"/>
+                            <field name="terminatedByUser" readonly="true" colSpan="4"/>
                             <field name="terminationDemandDate" hidden="true" readonly="true" showIf="terminationDemandDate" colSpan="4"/>
                             <field name="terminatedManually" hidden="true" readonly="true" showIf="terminatedManually" colSpan="4"/>
                         </panel>
-                        <panel if="__config__.app.getApp('contract').isConfigContract" hidden="true" showIf="id &amp;&amp; (currentVersion.isWithEngagement || currentVersion.isWithPriorNotice) &amp;&amp; !terminatedManually" colSpan="12">
-                            <panel hidden="true" readonly="true" showIf="currentVersion.isWithEngagement" colSpan="6">
+                        <panel if="__config__.app.getApp('contract').isConfigContract" hidden="true" showIf="id &amp;&amp; (currentContractVersion.isWithEngagement || currentContractVersion.isWithPriorNotice) &amp;&amp; !terminatedManually" colSpan="12">
+                            <panel hidden="true" readonly="true" showIf="currentContractVersion.isWithEngagement" colSpan="6">
                                 <field name="engagementStartDate" colSpan="6"/>
-                                <field name="currentVersion.engagementDuration" colSpan="6"/>
+                                <field name="currentContractVersion.engagementDuration" colSpan="6"/>
                             </panel>
-                            <panel hidden="true" readonly="true" showIf="currentVersion.isWithPriorNotice" colSpan="3">
-                                <field name="currentVersion.priorNoticeDuration" colSpan="12"/>
+                            <panel hidden="true" readonly="true" showIf="currentContractVersion.isWithPriorNotice" colSpan="3">
+                                <field name="currentContractVersion.priorNoticeDuration" colSpan="12"/>
                             </panel>
-                            <panel hidden="true" readonly="true" showIf="currentVersion.isTacitRenewal" colSpan="3">
-                                <field name="currentVersion.renewalDuration" colSpan="12"/>
+                            <panel hidden="true" readonly="true" showIf="currentContractVersion.isTacitRenewal" colSpan="3">
+                                <field name="currentContractVersion.renewalDuration" colSpan="12"/>
                             </panel>
                         </panel>
                     </panel>
@@ -161,13 +161,13 @@
                         <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement" name="isAdditionaBenefitManagement" colSpan="6" widget="boolean-switch"/>
                         <field if="__config__.app.getApp('contract').isConsumptionManagement" name="isConsumptionManagement" colSpan="6" widget="boolean-switch"/>
                     </panel>
-                    <field if="__config__.app.getApp('contract').isConsumptionManagement" name="currentVersion" showTitle="false" hidden="true" showIf="isConsumptionManagement" colSpan="6" x-show-icons="false">
+                    <field if="__config__.app.getApp('contract').isConsumptionManagement" name="currentContractVersion" showTitle="false" hidden="true" showIf="isConsumptionManagement" colSpan="6" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"/>
                         </editor>
                     </field>
                     <panel name="invoicingSubPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
-                        <field name="currentVersion" showTitle="false" readonlyIf="currentVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                        <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <panel colSpan="6">
                                     <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
@@ -179,11 +179,11 @@
                                 </panel>
                             </editor>
                         </field>
-                        <field name="currentVersion" showTitle="false" readonlyIf="currentVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                        <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <field name="isPeriodicInvoicing" readonlyIf="statusSelect > 2" colSpan="3" widget="boolean-switch"/>
                                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
-                                    <field name="invoicingFrequency" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
+                                    <field name="invoicingDuration" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
                                     <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                     <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                 </panel>
@@ -192,7 +192,7 @@
                     </panel>
                 </panel>
                 <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal" colSpan="12">
-                    <field name="currentVersion" showTitle="false" readonlyIf="currentVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                    <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
                             <field name="renewalDuration" hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
@@ -200,7 +200,7 @@
                         </editor>
                     </field>
                 </panel>
-                <field name="currentVersion" showTitle="false" readonlyIf="currentVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                     <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                         <panel title="Engagement">
                             <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
@@ -229,14 +229,14 @@
     </action-group>
 
     <action-attrs name="action-contract-attrs-readonly-by-config">
-        <attribute for="currentVersionDescription" name="readonly" expr="eval: __config__.app.getApp('contract').isUnchangableContract &amp;&amp; statusSelect > 1"/>
+        <attribute for="currentContractVersionDescription" name="readonly" expr="eval: __config__.app.getApp('contract').isUnchangableContract &amp;&amp; statusSelect > 1"/>
     </action-attrs>
 
     <action-record name="action-contract-record-default" model="com.axelor.apps.contract.db.Contract">
         <field name="statusSelect" expr="eval: 1"/>
         <field name="company"  expr="eval: __user__.activeCompany"/>
-        <field name="targetType" expr="eval: _xTargetType" if="_xTargetType != null"/>
-        <field name="currentVersion" expr="action:action-record-contract-version-default-record"/>
+        <field name="targetTypeSelect" expr="eval: _xTargetType" if="_xTargetType != null"/>
+        <field name="currentContractVersion" expr="action:action-record-contract-version-default-record"/>
         <field name="partner" expr="eval: _partner"/>
         <field name="currency" expr="eval: __user__.activeCompany.currency"/>
     </action-record>
@@ -247,8 +247,8 @@
 
     <action-attrs name="action-attrs-contract-partner-domain">
         <attribute for="partner" name="domain" expr="eval: &quot;self IS NULL&quot;"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer IS TRUE&quot;" if="targetType == 1"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier IS TRUE&quot;" if="targetType == 2"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer IS TRUE&quot;" if="targetTypeSelect == 1"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier IS TRUE&quot;" if="targetTypeSelect == 2"/>
     </action-attrs>
 
     <action-method name="action-contract-method-copy-from-template">
@@ -280,12 +280,12 @@
             </panel>
             <panel showIf="statusSelect >= 3" colSpan="12" readonly="true">
                 <field name="activationDate"/>
-                <field name="activatedBy"/>
+                <field name="activatedByUser"/>
             </panel>
             <field name="supposedEndDate"/>
             <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
             <field name="description" widget="html"/>
-            <field name="attachment" widget="binary-link"/>
+            <field name="metaFile" widget="binary-link"/>
             <field name="contractLineList" showTitle="false" colSpan="12" form-view="contract-line-form" grid-view="contract-line-grid"/>
         </panel>
     </form>
@@ -315,7 +315,7 @@
     <action-view name="action.contract.view.contract" model="com.axelor.apps.contract.db.Contract" title="Contract">
         <view type="form" name="contract-form"/>
         <view type="grid" name="contract-grid"/>
-        <context name="_showRecord" expr="eval: contractNext.id"/>
+        <context name="_showRecord" expr="eval: nextContract.id"/>
     </action-view>
 
     <action-view name="action-contract-view-invoicing" model="com.axelor.apps.account.db.Invoice" title="Invoices">
@@ -326,9 +326,9 @@
     </action-view>
 
     <action-attrs name="action-contract-attrs-domains-template">
-        <attribute for="$contractTemplate" name="domain" expr="eval: &quot;self.targetType = ${targetType}&quot;"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer = true&quot;" if="targetType == 1"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier = true&quot;" if="targetType == 2"/>
+        <attribute for="$contractTemplate" name="domain" expr="eval: &quot;self.targetTypeSelect = ${targetTypeSelect}&quot;"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer = true&quot;" if="targetTypeSelect == 1"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier = true&quot;" if="targetTypeSelect == 2"/>
     </action-attrs>
 
     <action-method name="action-contract-method-terminated">
@@ -336,13 +336,13 @@
     </action-method>
 
     <action-attrs name="action-contract-attrs-required-payment-config">
-        <attribute for="currentVersion.paymentMode" name="required" expr="eval: isInvoicingManagement"/>
-        <attribute for="currentVersion.paymentCondition" name="required" expr="eval: isInvoicingManagement"/>
+        <attribute for="currentContractVersion.paymentMode" name="required" expr="eval: isInvoicingManagement"/>
+        <attribute for="currentContractVersion.paymentCondition" name="required" expr="eval: isInvoicingManagement"/>
     </action-attrs>
 
     <action-attrs name="action-contract-attrs-partner-payment-config">
-        <attribute for="currentVersion.paymentMode" name="value" expr="eval: partner?.inPaymentMode"/>
-        <attribute for="currentVersion.paymentCondition" name="value" expr="eval: partner?.paymentCondition"/>
+        <attribute for="currentContractVersion.paymentMode" name="value" expr="eval: partner?.inPaymentMode"/>
+        <attribute for="currentContractVersion.paymentCondition" name="value" expr="eval: partner?.paymentCondition"/>
     </action-attrs>
 
     <action-method name="action-method-contract-change-product">

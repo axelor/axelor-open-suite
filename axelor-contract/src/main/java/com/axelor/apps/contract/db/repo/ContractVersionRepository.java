@@ -35,7 +35,7 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
     newVersion.setPaymentMode(currentVersion.getPaymentMode());
     newVersion.setPaymentCondition(currentVersion.getPaymentCondition());
     newVersion.setInvoicingDuration(currentVersion.getInvoicingDuration());
-    newVersion.setInvoicingMoment(currentVersion.getInvoicingMoment());
+    newVersion.setInvoicingMomentSelect(currentVersion.getInvoicingMomentSelect());
     newVersion.setIsPeriodicInvoicing(currentVersion.getIsPeriodicInvoicing());
     newVersion.setAutomaticInvoicing(currentVersion.getAutomaticInvoicing());
     newVersion.setIsProratedInvoice(currentVersion.getIsProratedInvoice());

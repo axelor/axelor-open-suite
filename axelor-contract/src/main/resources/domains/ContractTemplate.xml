@@ -7,8 +7,8 @@
 	<entity name="ContractTemplate">
 
 		<integer name="periodNumber" title="Number of finished periods" default="0"/>
-		<integer name="targetType" title="Type" selection="contract.target.type.select" default="1" required="true"/>
-		<integer name="invoicingMoment" selection="contract.version.invoicing.moment.select" title="Invoicing moment" default="1"/>
+		<integer name="targetTypeSelect" title="Type" selection="contract.target.type.select" default="1" required="true"/>
+		<integer name="invoicingMomentSelect" selection="contract.version.invoicing.moment.select" title="Invoicing moment" default="1"/>
 
 		<string name="description" title="Description" multiline="true" large="true" />
 		<string name="note" multiline="true" large="true" title="Notes"/>
