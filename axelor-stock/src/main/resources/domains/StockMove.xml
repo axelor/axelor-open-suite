@@ -69,7 +69,11 @@
     <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed"/>
     <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" title="Electronic signature"/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory user"/>
-    
+
+    <string name="originTypeSelect" title="Origin Type" selection="stockmove.origin.select"/>
+    <long name="originId" title="Origin Id" />
+    <string name="origin" readonly="true" title="Origin"/>
+
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
@@ -92,6 +96,7 @@
 		public static final int CONFORMITY_COMPLIANT = 2;
 		public static final int CONFORMITY_NON_COMPLIANT = 3;
 	
+		public static final String ORIGIN_INVENTORY = "com.axelor.apps.stock.db.Inventory";
 	]]></extra-code>
 
   </entity>
