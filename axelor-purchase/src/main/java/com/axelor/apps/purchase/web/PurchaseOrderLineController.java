@@ -139,7 +139,9 @@ public class PurchaseOrderLineController {
               purchaseOrder.getInAti() ? inTaxPrice : price));
 
       Map<String, Object> discounts;
-      discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, product.getInAti() ? inTaxPrice : price);
+      discounts =
+          purchaseOrderLineService.getDiscount(
+              purchaseOrder, purchaseOrderLine, product.getInAti() ? inTaxPrice : price);
 
       if (discounts != null) {
         response.setValue("discountAmount", discounts.get("discountAmount"));
@@ -289,7 +291,7 @@ public class PurchaseOrderLineController {
     try {
       BigDecimal inTaxPrice = purchaseOrderLine.getInTaxPrice();
       TaxLine taxLine = purchaseOrderLine.getTaxLine();
-  
+
       response.setValue(
           "price", purchaseOrderLineService.convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
@@ -311,7 +313,7 @@ public class PurchaseOrderLineController {
     try {
       BigDecimal exTaxPrice = purchaseOrderLine.getPrice();
       TaxLine taxLine = purchaseOrderLine.getTaxLine();
-  
+
       response.setValue(
           "inTaxPrice", purchaseOrderLineService.convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {

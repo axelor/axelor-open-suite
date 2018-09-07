@@ -175,7 +175,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   /**
-   * Returns the ex. tax unit price of the purchase order line or null if the product is not available for purchase at the supplier of the purchase order
+   * Returns the ex. tax unit price of the purchase order line or null if the product is not
+   * available for purchase at the supplier of the purchase order
    */
   @Override
   public BigDecimal getExTaxUnitPrice(
@@ -185,7 +186,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   /**
-   * Returns the incl. tax unit price of the purchase order line or null if the product is not available for purchase at the supplier of the purchase order
+   * Returns the incl. tax unit price of the purchase order line or null if the product is not
+   * available for purchase at the supplier of the purchase order
    */
   @Override
   public BigDecimal getInTaxUnitPrice(
@@ -201,7 +203,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
    * @param purchaseOrderLine
    * @param taxLine the tax applied to the unit price
    * @param resultInAti whether or not you want the result to be in ati or not
-   * @return the unit price of the purchase order line or null if the product is not available for purchase at the supplier of the purchase order
+   * @return the unit price of the purchase order line or null if the product is not available for
+   *     purchase at the supplier of the purchase order
    * @throws AxelorException
    */
   private BigDecimal getUnitPrice(

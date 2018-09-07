@@ -250,7 +250,7 @@ public class SaleOrderLineController {
     try {
       BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
       TaxLine taxLine = saleOrderLine.getTaxLine();
-  
+
       response.setValue("price", saleOrderLineService.convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
@@ -271,7 +271,7 @@ public class SaleOrderLineController {
     try {
       BigDecimal exTaxPrice = saleOrderLine.getPrice();
       TaxLine taxLine = saleOrderLine.getTaxLine();
-  
+
       response.setValue(
           "inTaxPrice", saleOrderLineService.convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {

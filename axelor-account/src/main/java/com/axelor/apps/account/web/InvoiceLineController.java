@@ -224,7 +224,7 @@ public class InvoiceLineController {
     try {
       BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
       TaxLine taxLine = invoiceLine.getTaxLine();
-      
+
       response.setValue("price", invoiceLineService.convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -245,7 +245,7 @@ public class InvoiceLineController {
     try {
       BigDecimal exTaxPrice = invoiceLine.getPrice();
       TaxLine taxLine = invoiceLine.getTaxLine();
-  
+
       response.setValue(
           "inTaxPrice", invoiceLineService.convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {
