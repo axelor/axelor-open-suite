@@ -214,28 +214,32 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Override
   public BigDecimal getExTaxUnitPrice(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException {
-
-    Product product = saleOrderLine.getProduct();
-
-    BigDecimal price =
-        product.getInAti()
-            ? this.convertUnitPrice(product.getInAti(), taxLine, product.getSalePrice())
-            : product.getSalePrice();
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            product.getSaleCurrency(), saleOrder.getCurrency(), price, saleOrder.getCreationDate())
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return this.getUnitPrice(saleOrder, saleOrderLine, taxLine, false);
   }
 
   @Override
   public BigDecimal getInTaxUnitPrice(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException {
+    return this.getUnitPrice(saleOrder, saleOrderLine, taxLine, true);
+  }
 
+  /**
+   * A function used to get the unit price of a sale order line, either in ati or wt
+   *
+   * @param saleOrder the sale order containing the sale order line
+   * @param saleOrderLine
+   * @param taxLine the tax applied to the unit price
+   * @param resultInAti whether you want the result in ati or not
+   * @return the unit price of the sale order line
+   * @throws AxelorException
+   */
+  private BigDecimal getUnitPrice(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine, boolean resultInAti)
+      throws AxelorException {
     Product product = saleOrderLine.getProduct();
 
     BigDecimal price =
-        product.getInAti()
+        (product.getInAti() == resultInAti)
             ? product.getSalePrice()
             : this.convertUnitPrice(product.getInAti(), taxLine, product.getSalePrice());
 

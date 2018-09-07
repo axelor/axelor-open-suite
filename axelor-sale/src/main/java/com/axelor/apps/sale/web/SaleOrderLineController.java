@@ -247,10 +247,14 @@ public class SaleOrderLineController {
 
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
 
-    BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
-    TaxLine taxLine = saleOrderLine.getTaxLine();
-
-    response.setValue("price", saleOrderLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+    try {
+      BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
+      TaxLine taxLine = saleOrderLine.getTaxLine();
+  
+      response.setValue("price", saleOrderLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
   }
 
   /**
@@ -264,11 +268,15 @@ public class SaleOrderLineController {
 
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
 
-    BigDecimal exTaxPrice = saleOrderLine.getPrice();
-    TaxLine taxLine = saleOrderLine.getTaxLine();
-
-    response.setValue(
-        "inTaxPrice", saleOrderLineService.convertUnitPrice(false, taxLine, exTaxPrice));
+    try {
+      BigDecimal exTaxPrice = saleOrderLine.getPrice();
+      TaxLine taxLine = saleOrderLine.getTaxLine();
+  
+      response.setValue(
+          "inTaxPrice", saleOrderLineService.convertUnitPrice(false, taxLine, exTaxPrice));
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
   }
 
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {

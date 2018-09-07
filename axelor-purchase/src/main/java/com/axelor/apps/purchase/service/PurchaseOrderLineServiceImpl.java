@@ -174,40 +174,42 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     return new String[] {"", ""};
   }
 
+  /**
+   * Returns the ex. tax unit price of the purchase order line or null if the product is not available for purchase at the supplier of the purchase order
+   */
   @Override
   public BigDecimal getExTaxUnitPrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
       throws AxelorException {
-
-    BigDecimal purchasePrice;
-    Currency purchaseCurrency;
-    Product product = purchaseOrderLine.getProduct();
-    SupplierCatalog supplierCatalog =
-        getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
-
-    if (supplierCatalog != null) {
-      purchasePrice = supplierCatalog.getPrice();
-      purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
-    } else {
-      return null;
-    }
-
-    BigDecimal price =
-        product.getInAti()
-            ? this.convertUnitPrice(product.getInAti(), taxLine, purchasePrice)
-            : purchasePrice;
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            purchaseCurrency, purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return this.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine, false);
   }
 
+  /**
+   * Returns the incl. tax unit price of the purchase order line or null if the product is not available for purchase at the supplier of the purchase order
+   */
   @Override
   public BigDecimal getInTaxUnitPrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
       throws AxelorException {
+    return this.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine, true);
+  }
 
+  /**
+   * A function used to get the unit price of a purchase order line, either in ati or wt
+   *
+   * @param purchaseOrder the purchase order containing the purchase order line
+   * @param purchaseOrderLine
+   * @param taxLine the tax applied to the unit price
+   * @param resultInAti whether or not you want the result to be in ati or not
+   * @return the unit price of the purchase order line or null if the product is not available for purchase at the supplier of the purchase order
+   * @throws AxelorException
+   */
+  private BigDecimal getUnitPrice(
+      PurchaseOrder purchaseOrder,
+      PurchaseOrderLine purchaseOrderLine,
+      TaxLine taxLine,
+      boolean resultInAti)
+      throws AxelorException {
     BigDecimal purchasePrice;
     Currency purchaseCurrency;
     Product product = purchaseOrderLine.getProduct();
@@ -222,7 +224,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     }
 
     BigDecimal price =
-        product.getInAti()
+        (product.getInAti() == resultInAti)
             ? purchasePrice
             : this.convertUnitPrice(product.getInAti(), taxLine, purchasePrice);
 

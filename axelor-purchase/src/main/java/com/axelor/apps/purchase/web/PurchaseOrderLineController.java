@@ -139,12 +139,7 @@ public class PurchaseOrderLineController {
               purchaseOrder.getInAti() ? inTaxPrice : price));
 
       Map<String, Object> discounts;
-      if (product.getInAti()) {
-        discounts =
-            purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, inTaxPrice);
-      } else {
-        discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, price);
-      }
+      discounts = purchaseOrderLineService.getDiscount(purchaseOrder, purchaseOrderLine, product.getInAti() ? inTaxPrice : price);
 
       if (discounts != null) {
         response.setValue("discountAmount", discounts.get("discountAmount"));
@@ -291,11 +286,15 @@ public class PurchaseOrderLineController {
 
     PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 
-    BigDecimal inTaxPrice = purchaseOrderLine.getInTaxPrice();
-    TaxLine taxLine = purchaseOrderLine.getTaxLine();
-
-    response.setValue(
-        "price", purchaseOrderLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+    try {
+      BigDecimal inTaxPrice = purchaseOrderLine.getInTaxPrice();
+      TaxLine taxLine = purchaseOrderLine.getTaxLine();
+  
+      response.setValue(
+          "price", purchaseOrderLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
   }
 
   /**
@@ -309,11 +308,15 @@ public class PurchaseOrderLineController {
 
     PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 
-    BigDecimal exTaxPrice = purchaseOrderLine.getPrice();
-    TaxLine taxLine = purchaseOrderLine.getTaxLine();
-
-    response.setValue(
-        "inTaxPrice", purchaseOrderLineService.convertUnitPrice(false, taxLine, exTaxPrice));
+    try {
+      BigDecimal exTaxPrice = purchaseOrderLine.getPrice();
+      TaxLine taxLine = purchaseOrderLine.getTaxLine();
+  
+      response.setValue(
+          "inTaxPrice", purchaseOrderLineService.convertUnitPrice(false, taxLine, exTaxPrice));
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
   }
 
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {

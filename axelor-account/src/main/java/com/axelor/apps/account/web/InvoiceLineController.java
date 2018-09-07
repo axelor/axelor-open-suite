@@ -221,10 +221,14 @@ public class InvoiceLineController {
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
-    BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
-    TaxLine taxLine = invoiceLine.getTaxLine();
-
-    response.setValue("price", invoiceLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+    try {
+      BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
+      TaxLine taxLine = invoiceLine.getTaxLine();
+      
+      response.setValue("price", invoiceLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
@@ -238,11 +242,15 @@ public class InvoiceLineController {
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
-    BigDecimal exTaxPrice = invoiceLine.getPrice();
-    TaxLine taxLine = invoiceLine.getTaxLine();
-
-    response.setValue(
-        "inTaxPrice", invoiceLineService.convertUnitPrice(false, taxLine, exTaxPrice));
+    try {
+      BigDecimal exTaxPrice = invoiceLine.getPrice();
+      TaxLine taxLine = invoiceLine.getTaxLine();
+  
+      response.setValue(
+          "inTaxPrice", invoiceLineService.convertUnitPrice(false, taxLine, exTaxPrice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {

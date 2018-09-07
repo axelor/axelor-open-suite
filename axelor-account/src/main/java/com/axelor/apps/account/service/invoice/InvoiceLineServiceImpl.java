@@ -144,31 +144,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
       throws AxelorException {
 
-    Product product = invoiceLine.getProduct();
-
-    BigDecimal price = null;
-    Currency productCurrency;
-
-    if (isPurchase) {
-      if (product.getInAti()) {
-        price = this.convertUnitPrice(product.getInAti(), taxLine, product.getPurchasePrice());
-      } else {
-        price = product.getPurchasePrice();
-      }
-      productCurrency = product.getPurchaseCurrency();
-    } else {
-      if (product.getInAti()) {
-        price = this.convertUnitPrice(product.getInAti(), taxLine, product.getSalePrice());
-      } else {
-        price = product.getSalePrice();
-      }
-      productCurrency = product.getSaleCurrency();
-    }
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate())
-        .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase, false);
   }
 
   @Override
@@ -176,25 +152,42 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
       throws AxelorException {
 
+    return this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase, true);
+  }
+
+  /**
+   * A function used to get the unit price of an invoice line, either in ati or wt
+   *
+   * @param invoice the invoice containing the invoice line
+   * @param invoiceLine
+   * @param taxLine the tax line applied to the unit price
+   * @param isPurchase
+   * @param resultInAti whether or not you want the result unit price in ati
+   * @return the unit price of the invoice line
+   * @throws AxelorException
+   */
+  private BigDecimal getUnitPrice(
+      Invoice invoice,
+      InvoiceLine invoiceLine,
+      TaxLine taxLine,
+      boolean isPurchase,
+      boolean resultInAti)
+      throws AxelorException {
     Product product = invoiceLine.getProduct();
 
     BigDecimal price = null;
     Currency productCurrency;
 
     if (isPurchase) {
-      if (product.getInAti()) {
-        price = product.getPurchasePrice();
-      } else {
-        price = this.convertUnitPrice(product.getInAti(), taxLine, product.getPurchasePrice());
-      }
+      price = product.getPurchasePrice();
       productCurrency = product.getPurchaseCurrency();
     } else {
-      if (product.getInAti()) {
-        price = product.getSalePrice();
-      } else {
-        price = this.convertUnitPrice(product.getInAti(), taxLine, product.getSalePrice());
-      }
+      price = product.getSalePrice();
       productCurrency = product.getSaleCurrency();
+    }
+
+    if (product.getInAti() != resultInAti) {
+      price = this.convertUnitPrice(product.getInAti(), taxLine, price);
     }
 
     return currencyService
