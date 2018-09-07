@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.AddressServiceSaleImpl;
 import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleService;
@@ -61,6 +62,7 @@ public class SaleModule extends AxelorModule {
 
   @Override
   protected void configure() {
+    bind(AddressServiceSaleImpl.class);
     bind(PartnerService.class).to(PartnerSaleService.class);
     bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
     bind(SaleOrderLineService.class).to(SaleOrderLineServiceImpl.class);

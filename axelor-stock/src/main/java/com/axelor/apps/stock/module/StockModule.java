@@ -60,8 +60,8 @@ public class StockModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(StockRulesService.class).to(StockRulesServiceImpl.class);
     bind(AddressServiceStockImpl.class);
+    bind(StockRulesService.class).to(StockRulesServiceImpl.class);
     bind(InventoryRepository.class).to(InventoryManagementRepository.class);
     bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
     bind(StockLocationLineService.class).to(StockLocationLineServiceImpl.class);

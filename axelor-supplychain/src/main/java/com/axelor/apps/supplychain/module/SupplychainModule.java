@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.BudgetService;
@@ -51,6 +52,7 @@ import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
@@ -89,6 +91,7 @@ import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainIm
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
@@ -99,6 +102,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigServiceImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceServiceImpl;
@@ -136,6 +140,7 @@ public class SupplychainModule extends AxelorModule {
     bind(InvoiceLineServiceImpl.class).to(InvoiceLineSupplychainService.class);
     bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
     bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
+    bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
     bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);
     bind(SupplychainSaleConfigService.class).to(SupplychainSaleConfigServiceImpl.class);
     bind(AccountCustomerService.class).to(AccountCustomerServiceSupplyChain.class);
@@ -158,5 +163,7 @@ public class SupplychainModule extends AxelorModule {
     bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);
     bind(SubscriptionInvoiceService.class).to(SubscriptionInvoiceServiceImpl.class);
     bind(TimetableService.class).to(TimetableServiceImpl.class);
+    bind(InvoiceServiceSupplychain.class).to(InvoiceServiceSupplychainImpl.class);
+    bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
   }
 }

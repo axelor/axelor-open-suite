@@ -28,11 +28,13 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -47,6 +49,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,10 +141,34 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       stockMove.setEstimatedDate(saleOrder.getDeliveryDate());
       stockMoveService.plan(stockMove);
+
+      if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
+        setParentStockMoveLine(stockMove);
+      }
+
       return stockMove;
     }
 
     return null;
+  }
+
+  @Transactional
+  public void setParentStockMoveLine(StockMove stockMove) {
+
+    for (StockMoveLine line : stockMove.getStockMoveLineList()) {
+      if (line.getSaleOrderLine() != null) {
+        line.setPackPriceSelect(line.getSaleOrderLine().getPackPriceSelect());
+        StockMoveLine parentStockMoveLine =
+            Beans.get(StockMoveLineRepository.class)
+                .all()
+                .filter(
+                    "self.saleOrderLine = ?1 and self.stockMove = ?2",
+                    line.getSaleOrderLine().getParentLine(),
+                    stockMove)
+                .fetchOne();
+        line.setParentLine(parentStockMoveLine);
+      }
+    }
   }
 
   protected boolean isSaleOrderWithProductsToDeliver(SaleOrder saleOrder) throws AxelorException {
@@ -328,6 +355,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         stockMoveLine.setSaleOrderLine(saleOrderLine);
         stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
       }
+
+      stockMoveLine.setLineTypeSelect(saleOrderLine.getTypeSelect());
+      stockMoveLine.setPackPriceSelect(saleOrderLine.getPackPriceSelect());
+      stockMoveLine.setIsSubLine(saleOrderLine.getIsSubLine());
 
       return stockMoveLine;
     } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {

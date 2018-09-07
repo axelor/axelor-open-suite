@@ -5,7 +5,7 @@
 	
 	<selection name="project.invoicing.type.select">
 		<option value="1">None</option>
-		<option value="2">Time-based</option>
+		<option value="2">Realised based</option>
 		<option value="3">Flat Rate</option>
 	</selection>
 	
@@ -37,6 +37,11 @@
 		<option value="1">Task</option>
 		<option value="2">Project Phase</option>
 		<option value="3">Free</option>
+	</selection>
+	
+	<selection name="business.project.manual.element.type.select">
+		<option value="1">Remaining</option>
+		<option value="2">Realised</option>
 	</selection>
 
 </object-views>

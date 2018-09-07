@@ -30,9 +30,7 @@
 		<datetime name="toDate" title="To Date"/>
 		<datetime name="dueDate" title="Due Date"/>
 		
-		<decimal name="duration" title="Duration"/>
 		<decimal name="timeSpent" title="Time Spent"/>
-		<decimal name="leadDelay" title="Lead/Delay"/>
 		
 		<decimal name="progress" title="Progress (%)"/>
 		<decimal name="sequence" title="Sequence" />

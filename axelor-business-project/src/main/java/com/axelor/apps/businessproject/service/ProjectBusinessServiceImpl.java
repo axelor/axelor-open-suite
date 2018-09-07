@@ -17,13 +17,10 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -35,8 +32,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.util.List;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     implements ProjectBusinessService {
@@ -46,9 +41,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Inject protected ProjectRepository projectRepo;
 
   @Inject
-  public ProjectBusinessServiceImpl(
-      ProjectPlanningRepository projectPlanningRepo, ProjectRepository projectRepository) {
-    super(projectPlanningRepo, projectRepository);
+  public ProjectBusinessServiceImpl(ProjectRepository projectRepository) {
+    super(projectRepository);
   }
 
   @Override
@@ -74,7 +68,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             saleOrder.getSalemanUser(),
             saleOrder.getCompany(),
             saleOrder.getClientPartner());
-    project.setSaleOrder(saleOrder);
     saleOrder.setProject(project);
     return project;
   }
@@ -94,15 +87,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (parentProject != null) {
       project.setProjInvTypeSelect(parentProject.getProjInvTypeSelect());
     }
-    Product product =
-        appBusinessProjectService.getAppBusinessProject().getProductInvoicingProject();
-    if (product != null) {
-      project.setProduct(product);
-      project.setQty(BigDecimal.ONE);
-      project.setPrice(product.getPurchasePrice());
-      project.setUnit(product.getUnit());
-      project.setExTaxTotal(product.getPurchasePrice());
-    }
     return project;
   }
 
@@ -115,32 +99,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             saleOrderLine.getSaleOrder().getSalemanUser(),
             parent.getCompany(),
             parent.getClientPartner());
-    project.setProduct(saleOrderLine.getProduct());
-    project.setQty(saleOrderLine.getQty());
-    project.setPrice(saleOrderLine.getPrice());
-    project.setUnit(saleOrderLine.getUnit());
-    project.setExTaxTotal(saleOrderLine.getCompanyExTaxTotal());
     project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);
     saleOrderLine.setProject(project);
     return project;
-  }
-
-  /**
-   * Manages invoice lines for project dashlets
-   *
-   * @param invoiceLine InvoiceLine to add or remove
-   * @param project Project to add or remove the invoice line
-   */
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void manageInvoiceLine(InvoiceLine invoiceLine, Project project) {
-    List<InvoiceLine> invoiceLines = project.getInvoiceLineList();
-    if (invoiceLines.contains(invoiceLine)) {
-      project.removeInvoiceLineListItem(invoiceLine);
-    } else {
-      project.addInvoiceLineListItem(invoiceLine);
-    }
-
-    projectRepo.save(project);
   }
 }

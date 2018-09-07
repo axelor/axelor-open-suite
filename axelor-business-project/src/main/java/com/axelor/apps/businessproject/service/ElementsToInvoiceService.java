@@ -69,7 +69,9 @@ public class ElementsToInvoiceService {
             PriceListLineRepository.AMOUNT_TYPE_NONE,
             elementsToInvoice.getSalePrice().multiply(elementsToInvoice.getQty()),
             null,
-            false) {
+            false,
+            false,
+            0) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

@@ -26,11 +26,24 @@
 - Machine type added for the machine.
 - Selection added for priority of manufacturing order.
 - Payment schedule line: management of direct debit rejection.
+- New stock location configuration for quality control.
+- Create multiple supplier stock move when purchasing products requiring a quality check and normal products.
 - Selection added for priority of manufacturing order.
 - Add currency in Accounting reports and filter all results with it.
 - New field `launchQty` on production process.
 - Fill `qty` from `launchQty` in manuf order on filling prod process.
 - Declaration of exchanges of services and declaration of services
+- Project : project assignment on Sale order, Purchase order and Invoices.
+- PROJECT : Change project planning to project planning time with some extra fields.
+- PROJECT : Change business project reporting.
+- Project view enhancements
+- TIMELINE : Generate lines from Project Planning 
+- Pack Price Select and Qty update from packLine to subLine.
+- Implement PackLine and SubLine for InvoiceLine and StockMoveLine.
+- TIMELINE : Generate lines from Project Planning
+- Account Moves: ability to set currency, currency rate and currency amount for manual moves.
+- PROJECT : Add new o2m 'manualElementList' and display it on financial report.
+- Manuf Order: show in toConsumeProdProductList if there is product missing in stock.
 - Studio: Add description field in workflow
 
 ## Improvements
@@ -47,6 +60,10 @@
 - Production processes: display status in grid view.
 - Rework Ticket UI.
 - Tax configuration: display only necessary fields for tax account management.
+- Rework project view
+- Set project on invoice and invoice line when generating it from sale order and stock move.
+- Set project on purchase order and purchase order lines when generating it from a sale order.
+- Improve account management views.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -57,9 +74,18 @@
 - Bill of material: remove duplicate toolbar button of 'Generate new version'.
 - Event: Fix fill the "Guest" using email address when fill the partner or contact or lead.
 - Studio: Fix email action.
+- Project : Fix supplier orders and it's lines & invoices and it's lines link to the any project.
+- Fix invoiced amount W.T update on sale and purchase order.
+- Fix social network icons for employee
+- Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
 
-## [Unreleased 5.0.5]
+## [Unreleased 5.0.5]	
+##Features
+- Add Data Backup and Restore
+- Add unitary tests for password
+- Module for mobile app added
 ## Improvements
+- Fleet app: added FR demo data
 - HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
 - Advanced export : code refactor and optimize the performance.
@@ -68,6 +94,12 @@
 - Configurator: improve UI for indicators.
 - Split formula list into formulas for product and formulas for sale order line in configurator creator.
 - Add a column name to configurators, equal to the creator's name.
+- General legder report: hide the balance when it is equal to 0.
+- UserController: Improve exception handling.
+- Update translations.
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Add supplier invoice number in supplier invoices grid.
+- Add column description in move line grid views.
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -79,6 +111,26 @@
 - Fix chart builder operator display issue.
 - Portal: Fix ticket view on client portal.
 - Fix wrong quantity on manuf order when generating prod product lines where bill of material quantity is different from 1.
+- Fix new bug when checking type on configurator.
+- BPM: Provide translation for Workflow dashboard.
+- Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
+- Budget form: add missing tranlation.
+- Invoice: reload the view after regenerating the printing.
+- DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
+- BPM: keep model read only if custom field is created from custom field creator.
+- Fix % based discounts which didn't worked with decimal values on Sale, Purchase and Invoice.
+- Fix the companyBankDetails field filling when SaleOrder is created from the Customer view.
+- Fix groovy error due to a null list in action-budget-validate-exceed-line-amount.
+- Event synchronization: fix some new events being archived.
+- Password : Fix regex.
+- Fix : error when computing the duration of a leave request without a company.
+- Invoice : filter account depending on Invoice Company and Type & Account Type
+- Fix stock move split by unit. 
+- Tracking number configuration: Fix 'Tracking number order' selection and it's static variables.
+- Tracking number configuration: display 'name' field on grid.
+- Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
+- Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
+- Removed editable from some reference fields in stock form views. 
 
 ## [5.0.4] - 2018-07-26
 ## Features

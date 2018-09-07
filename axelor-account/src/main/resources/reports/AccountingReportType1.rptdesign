@@ -1923,6 +1923,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                 <property name="pattern">###,##0.00</property>
                                             </structure>
                                             <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["sum_balance"]==0</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="resultSetColumn">sum_balance</property>
                                         </data>
                                     </cell>
@@ -1991,6 +1997,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                             <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["balance"]==0</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="resultSetColumn">balance</property>
                                     </data>
                                 </cell>

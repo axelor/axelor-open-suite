@@ -119,7 +119,9 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               discountTypeSelect,
               null,
               null,
-              false) {
+              false,
+              false,
+              0) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 
@@ -163,7 +165,9 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               discountTypeSelect,
               null,
               null,
-              false) {
+              false,
+              false,
+              0) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 
@@ -189,7 +193,9 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               false,
               null,
               purchaseOrderLine,
-              null) {
+              null,
+              false,
+              0) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 

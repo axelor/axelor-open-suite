@@ -68,12 +68,6 @@
 							   form-view="project-form" grid-view="project-grid"
 							   showIf="projectSet &amp;&amp; projectSet.length &gt; 0"
 							   readonlyIf="invoice"/>
-				<panel-related field="elementsToInvoiceSet" colSpan="12"
-							   canNew="false" canEdit="false" canSelect="false"
-							   grid-view="elements-to-invoice-grid"
-							   form-view="elements-to-invoice-form"
-							   showIf="elementsToInvoiceSet &amp;&amp; elementsToInvoiceSet.length &gt; 0"
-							   readonlyIf="invoice"/>
 
 				<panel-related title="Production" field="manufOrderSet"
 							   colSpan="12" canNew="false" canEdit="false"
@@ -92,7 +86,6 @@
                 <field name="logTimesSetPrioritySelect"/>
                 <field name="expenseLineSetPrioritySelect"/>
                 <field name="projectSetPrioritySelect"/>
-                <field name="elementsToInvoiceSetPrioritySelect"/>
             </panel>
         </panel-tabs>
 

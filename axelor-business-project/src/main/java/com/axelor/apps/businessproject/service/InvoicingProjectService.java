@@ -28,11 +28,9 @@ import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.businessproject.db.ElementsToInvoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.ElementsToInvoiceRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
@@ -40,6 +38,7 @@ import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
@@ -60,7 +59,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,8 +71,6 @@ public class InvoicingProjectService {
   @Inject protected TimesheetServiceImpl timesheetServiceImpl;
 
   @Inject protected ExpenseService expenseService;
-
-  @Inject protected ElementsToInvoiceService elementsToInvoiceService;
 
   @Inject protected PartnerService partnerService;
 
@@ -143,9 +139,6 @@ public class InvoicingProjectService {
         new ArrayList<PurchaseOrderLine>(folder.getPurchaseOrderLineSet());
     List<TimesheetLine> timesheetLineList = new ArrayList<TimesheetLine>(folder.getLogTimesSet());
     List<ExpenseLine> expenseLineList = new ArrayList<ExpenseLine>(folder.getExpenseLineSet());
-    List<ElementsToInvoice> elementsToInvoiceList =
-        new ArrayList<ElementsToInvoice>(folder.getElementsToInvoiceSet());
-    List<Project> projectList = new ArrayList<Project>(folder.getProjectSet());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     invoiceLineList.addAll(
@@ -160,11 +153,6 @@ public class InvoicingProjectService {
     invoiceLineList.addAll(
         expenseService.createInvoiceLines(
             invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
-    invoiceLineList.addAll(
-        elementsToInvoiceService.createInvoiceLines(
-            invoice, elementsToInvoiceList, folder.getElementsToInvoiceSetPrioritySelect()));
-    invoiceLineList.addAll(
-        this.createInvoiceLines(invoice, projectList, folder.getProjectSetPrioritySelect()));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());
 
@@ -210,7 +198,9 @@ public class InvoicingProjectService {
             false,
             saleOrderLine,
             null,
-            null) {
+            null,
+            false,
+            0) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -259,68 +249,9 @@ public class InvoicingProjectService {
             false,
             null,
             purchaseOrderLine,
-            null) {
-          @Override
-          public List<InvoiceLine> creates() throws AxelorException {
-
-            InvoiceLine invoiceLine = this.createInvoiceLine();
-
-            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-            invoiceLines.add(invoiceLine);
-
-            return invoiceLines;
-          }
-        };
-
-    return invoiceLineGenerator.creates();
-  }
-
-  public List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<Project> projectList, int priority) throws AxelorException {
-
-    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-    int count = 0;
-    for (Project project : projectList) {
-
-      invoiceLineList.addAll(this.createInvoiceLine(invoice, project, priority * 100 + count));
-      count++;
-      project.setInvoiced(true);
-      invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
-    }
-
-    return invoiceLineList;
-  }
-
-  public List<InvoiceLine> createInvoiceLine(Invoice invoice, Project project, int priority)
-      throws AxelorException {
-
-    Product product = project.getProduct();
-
-    if (product == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PRODUCT),
-          project.getFullName());
-    }
-
-    InvoiceLineGenerator invoiceLineGenerator =
-        new InvoiceLineGenerator(
-            invoice,
-            product,
-            project.getName(),
-            project.getPrice(),
-            project.getPrice(),
             null,
-            project.getQty(),
-            project.getUnit(),
-            null,
-            priority,
-            BigDecimal.ZERO,
-            PriceListLineRepository.AMOUNT_TYPE_NONE,
-            project.getPrice().multiply(project.getQty()),
-            null,
-            false) {
-
+            false,
+            0) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
@@ -348,9 +279,6 @@ public class InvoicingProjectService {
     }
     for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
       expenseLine.setInvoiced(true);
-    }
-    for (ElementsToInvoice elementsToInvoice : invoicingProject.getElementsToInvoiceSet()) {
-      elementsToInvoice.setInvoiced(true);
     }
     for (Project project : invoicingProject.getProjectSet()) {
       project.setInvoiced(true);
@@ -386,9 +314,12 @@ public class InvoicingProjectService {
                 Beans.get(SaleOrderLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.saleOrder.creationDate < ?2",
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.saleOrder.creationDate < ?2"
+                            + " AND (self.saleOrder.statusSelect = ?3 OR self.saleOrder.statusSelect = ?4)",
                         project,
-                        invoicingProject.getDeadlineDate())
+                        invoicingProject.getDeadlineDate(),
+                        SaleOrderRepository.STATUS_ORDER_CONFIRMED,
+                        SaleOrderRepository.STATUS_ORDER_COMPLETED)
                     .fetch());
 
         invoicingProject
@@ -397,7 +328,8 @@ public class InvoicingProjectService {
                 Beans.get(PurchaseOrderLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.purchaseOrder.orderDate < ?2",
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.purchaseOrder.orderDate < ?2"
+                            + " AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)",
                         project,
                         invoicingProject.getDeadlineDate())
                     .fetch());
@@ -408,7 +340,8 @@ public class InvoicingProjectService {
                 Beans.get(TimesheetLineRepository.class)
                     .all()
                     .filter(
-                        "self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?2",
+                        "self.timesheet.statusSelect = ?1 AND self.project = ?2 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?3",
+                        TimesheetRepository.STATUS_VALIDATED,
                         project,
                         invoicingProject.getDeadlineDate())
                     .fetch());
@@ -419,20 +352,12 @@ public class InvoicingProjectService {
                 Beans.get(ExpenseLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.expenseDate < ?2",
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.expenseDate < ?2"
+                            + " AND (self.expense.statusSelect = ?3 OR self.expense.statusSelect = ?4",
                         project,
-                        invoicingProject.getDeadlineDate())
-                    .fetch());
-
-        invoicingProject
-            .getElementsToInvoiceSet()
-            .addAll(
-                Beans.get(ElementsToInvoiceRepository.class)
-                    .all()
-                    .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false AND self.date < ?2",
-                        project,
-                        invoicingProject.getDeadlineDate())
+                        invoicingProject.getDeadlineDate(),
+                        ExpenseRepository.STATUS_VALIDATED,
+                        ExpenseRepository.STATUS_REIMBURSED)
                     .fetch());
       } else {
         invoicingProject
@@ -441,8 +366,11 @@ public class InvoicingProjectService {
                 Beans.get(SaleOrderLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
-                        project)
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false"
+                            + " AND (self.saleOrder.statusSelect = ?2 OR self.saleOrder.statusSelect = ?3)",
+                        project,
+                        SaleOrderRepository.STATUS_ORDER_CONFIRMED,
+                        SaleOrderRepository.STATUS_ORDER_COMPLETED)
                     .fetch());
 
         invoicingProject
@@ -451,7 +379,8 @@ public class InvoicingProjectService {
                 Beans.get(PurchaseOrderLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false"
+                            + " AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)",
                         project)
                     .fetch());
 
@@ -461,7 +390,8 @@ public class InvoicingProjectService {
                 Beans.get(TimesheetLineRepository.class)
                     .all()
                     .filter(
-                        "self.timesheet.statusSelect = 3 AND self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
+                        "self.timesheet.statusSelect = ?1 AND self.project = ?2 AND self.toInvoice = true AND self.invoiced = false",
+                        TimesheetRepository.STATUS_VALIDATED,
                         project)
                     .fetch());
 
@@ -471,18 +401,11 @@ public class InvoicingProjectService {
                 Beans.get(ExpenseLineRepository.class)
                     .all()
                     .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
-                        project)
-                    .fetch());
-
-        invoicingProject
-            .getElementsToInvoiceSet()
-            .addAll(
-                Beans.get(ElementsToInvoiceRepository.class)
-                    .all()
-                    .filter(
-                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false",
-                        project)
+                        "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false"
+                            + " AND (self.expense.statusSelect = ?2 OR self.expense.statusSelect = ?3)",
+                        project,
+                        ExpenseRepository.STATUS_VALIDATED,
+                        ExpenseRepository.STATUS_REIMBURSED)
                     .fetch());
       }
       if (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE
@@ -496,7 +419,6 @@ public class InvoicingProjectService {
     invoicingProject.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>());
     invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
-    invoicingProject.setElementsToInvoiceSet(new HashSet<ElementsToInvoice>());
     invoicingProject.setProjectSet(new HashSet<Project>());
   }
 

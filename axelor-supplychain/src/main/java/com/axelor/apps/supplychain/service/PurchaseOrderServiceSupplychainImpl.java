@@ -207,10 +207,33 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                   null,
                   null,
                   StockMoveRepository.TYPE_INCOMING);
-      stockMove.setPurchaseOrder(purchaseOrder);
 
+      StockMove qualityStockMove =
+          Beans.get(StockMoveService.class)
+              .createStockMove(
+                  address,
+                  null,
+                  company,
+                  supplierPartner,
+                  startLocation,
+                  company.getStockConfig().getQualityControlDefaultStockLocation(),
+                  null,
+                  purchaseOrder.getDeliveryDate(),
+                  purchaseOrder.getNotes(),
+                  purchaseOrder.getShipmentMode(),
+                  purchaseOrder.getFreightCarrierMode(),
+                  null,
+                  null,
+                  null,
+                  StockMoveRepository.TYPE_INCOMING);
+
+      stockMove.setPurchaseOrder(purchaseOrder);
       stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
       stockMove.setTradingName(purchaseOrder.getTradingName());
+
+      qualityStockMove.setPurchaseOrder(purchaseOrder);
+      qualityStockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
+      qualityStockMove.setTradingName(purchaseOrder.getTradingName());
 
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 
@@ -259,19 +282,37 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             taxRate = taxLine.getValue();
           }
 
-          StockMoveLine stockMoveLine =
-              Beans.get(StockMoveLineService.class)
-                  .createStockMoveLine(
-                      product,
-                      purchaseOrderLine.getProductName(),
-                      purchaseOrderLine.getDescription(),
-                      qty,
-                      priceDiscounted,
-                      unit,
-                      stockMove,
-                      StockMoveLineService.TYPE_PURCHASES,
-                      purchaseOrder.getInAti(),
-                      taxRate);
+          StockMoveLine stockMoveLine;
+          if (product.getControlOnReceipt()) {
+            stockMoveLine =
+                Beans.get(StockMoveLineService.class)
+                    .createStockMoveLine(
+                        product,
+                        purchaseOrderLine.getProductName(),
+                        purchaseOrderLine.getDescription(),
+                        qty,
+                        priceDiscounted,
+                        unit,
+                        qualityStockMove,
+                        StockMoveLineService.TYPE_PURCHASES,
+                        purchaseOrder.getInAti(),
+                        taxRate);
+          } else {
+            stockMoveLine =
+                Beans.get(StockMoveLineService.class)
+                    .createStockMoveLine(
+                        product,
+                        purchaseOrderLine.getProductName(),
+                        purchaseOrderLine.getDescription(),
+                        qty,
+                        priceDiscounted,
+                        unit,
+                        stockMove,
+                        StockMoveLineService.TYPE_PURCHASES,
+                        purchaseOrder.getInAti(),
+                        taxRate);
+          }
+
           if (stockMoveLine != null) {
 
             stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
@@ -298,8 +339,13 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       }
       if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
         Beans.get(StockMoveService.class).plan(stockMove);
+        stockMoveId = stockMove.getId();
       }
-      stockMoveId = stockMove.getId();
+      if (qualityStockMove.getStockMoveLineList() != null
+          && !qualityStockMove.getStockMoveLineList().isEmpty()) {
+        Beans.get(StockMoveService.class).plan(qualityStockMove);
+        stockMoveId = qualityStockMove.getId();
+      }
     }
     return stockMoveId;
   }

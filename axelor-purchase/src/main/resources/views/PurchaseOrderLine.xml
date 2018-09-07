@@ -65,12 +65,9 @@
         <field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" readonly="true"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid" readonly="true"/>
         <field name="productName" readonly="true"/>
-        <field name="qty" aggregate="sum" readonly="true"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
-        <field name="price" readonly="true"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>
         <field name="toInvoice"/>
-        <field name="invoiced"/>
+        <field name="amountInvoiced"/>
         <field name="purchaseOrder.statusSelect" hidden="true"/>
     </grid>
 
@@ -140,7 +137,7 @@
 				<panel-dashlet action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Business Project" if-module="axelor-business-project">
-				<field name="project" title="Business Project" requiredIf="toInvoice" form-view="project-form" grid-view="project-grid" canEdit="false"/>
+				<field name="project" domain="self.isBusinessProject = true" title="Business Project" requiredIf="toInvoice" form-view="project-form" grid-view="project-grid" canEdit="false"/>
                 <field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" colSpan="3" if-module="axelor-business-project"/>
                 <field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" colSpan="3" showTitle="false">
                 <viewer><![CDATA[
@@ -202,6 +199,7 @@
 		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-record-new"/>
+		<action name="action-purchase-order-line-record-project"/>
 		<action name="action-purchase-order-attrs-hide-ati"/>
 		<action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
 		<action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
@@ -275,13 +273,14 @@
 	
 	<!-- ACTION RECORD -->
 	
-	
-	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="desiredDelivDate" expr="eval: _parent?.deliveryDate"/>
     </action-record>
     
+    <action-record name="action-purchase-order-line-record-project" model="com.axelor.apps.purchase.db.PurchaseOrderLine" if-module="axelor-business-project">
+		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
+	</action-record>
     
    	<!-- ACTION METHOD -->
    	

@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -66,10 +67,14 @@ public class InvoiceLineController {
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    Context context = request.getContext();
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
     Invoice invoice = invoiceLine.getInvoice();
     if (invoice == null) {
-      invoice = request.getContext().getParent().asType(Invoice.class);
+      if (context.getParent().getContextClass() == InvoiceLine.class) {
+        context = request.getContext().getParent();
+      }
+      invoice = context.getParent().asType(Invoice.class);
       invoiceLine.setInvoice(invoice);
     }
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
@@ -83,6 +88,10 @@ public class InvoiceLineController {
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+
+    if (context.getParent().getContextClass() == InvoiceLine.class) {
+      context = request.getContext().getParent();
+    }
 
     Invoice invoice = this.getInvoice(context);
 
@@ -132,6 +141,9 @@ public class InvoiceLineController {
       throws AxelorException {
     Context context = request.getContext();
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    if (context.getParent().getContextClass() == InvoiceLine.class) {
+      context = request.getContext().getParent();
+    }
     Invoice invoice = this.getInvoice(context);
     Product product = invoiceLine.getProduct();
     Map<String, Object> productInformation = invoiceLineService.resetProductInformation();
@@ -169,6 +181,10 @@ public class InvoiceLineController {
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
+    if (context.getParent().getContextClass() == InvoiceLine.class) {
+      context = request.getContext().getParent();
+    }
+
     Invoice invoice = this.getInvoice(context);
 
     if (invoice == null || invoiceLine.getProduct() == null) {
@@ -198,6 +214,10 @@ public class InvoiceLineController {
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+
+    if (context.getParent().getContextClass() == InvoiceLine.class) {
+      context = request.getContext().getParent();
+    }
 
     Invoice invoice = this.getInvoice(context);
 
@@ -234,13 +254,14 @@ public class InvoiceLineController {
 
   public void emptyLine(ActionRequest request, ActionResponse response) {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-    if (invoiceLine.getIsTitleLine()) {
-      InvoiceLine newInvoiceLine = new InvoiceLine();
-      newInvoiceLine.setIsTitleLine(true);
-      newInvoiceLine.setQty(BigDecimal.ZERO);
-      newInvoiceLine.setId(invoiceLine.getId());
-      newInvoiceLine.setVersion(invoiceLine.getVersion());
-      response.setValues(Mapper.toMap(newInvoiceLine));
+
+    if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
+      Map<String, Object> newInvoiceLine = Mapper.toMap(new InvoiceLine());
+      newInvoiceLine.put("qty", BigDecimal.ZERO);
+      newInvoiceLine.put("id", invoiceLine.getId());
+      newInvoiceLine.put("version", invoiceLine.getVersion());
+      newInvoiceLine.put("typeSelect", invoiceLine.getTypeSelect());
+      response.setValues(newInvoiceLine);
     }
   }
 
@@ -283,6 +304,26 @@ public class InvoiceLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void filterAccount(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    Invoice invoice = this.getInvoice(context);
+    if (invoice != null && invoice.getCompany() != null) {
+      String domain = null;
+      if (InvoiceToolService.isPurchase(invoice)) {
+        domain =
+            "self.company.id = "
+                + invoice.getCompany().getId()
+                + "AND self.accountType.technicalTypeSelect IN ('debt' , 'immobilisation' , 'charge')";
+      } else {
+        domain =
+            "self.company.id = "
+                + invoice.getCompany().getId()
+                + " AND self.accountType.technicalTypeSelect = 'income'";
+      }
+      response.setAttr("account", "domain", domain);
     }
   }
 }

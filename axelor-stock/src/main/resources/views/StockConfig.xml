@@ -21,6 +21,7 @@
 		  <panel colSpan="12">
 			  <field name="receiptDefaultStockLocation" domain="self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			  <field name="pickupDefaultStockLocation" domain="self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+			  <field name="qualityControlDefaultStockLocation" domain="self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			  <field name="wasteStockLocation" domain="self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			  <field name="componentDefaultStockLocation" domain="self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			  <field name="finishedProductsDefaultStockLocation" domain="self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>

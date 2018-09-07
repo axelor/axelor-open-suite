@@ -213,7 +213,9 @@
 "Ideal Qty","Qté idéale",,
 "Import","Import",,
 "Import customs clearance","Déchargement en usine ou en entrepôt à l’arrivée",,
-"Import duties and taxes","Formalités douanières à l’importation droits et taxes",,
+"Import d>>>>>>> wip
+131
+uties and taxes","Formalités douanières à l’importation droits et taxes",,
 "In progress","En cours",,
 "Incl. obsolete products","Inclure produits obsolètes",,
 "Incoming move","Mvt Stock Réception",,
@@ -359,7 +361,9 @@
 "Planned Inventories","Inventaires Planifiés",,
 "Planned stock move",,,
 "Planned stock move line list",,,
-"Planned stock move lines",,,
+"Planned stock >>>>>>> wip
+324
+move lines",,,
 "Please configure mass units for this product packaging : %s","Veuillez configurer les unités de masse pour le packaging de ce produit : %s",,
 "Please enter a valid split quantity","Veuillez entrer une quantité valide pour la scission",,
 "Please fill in the delivery (to) address to get the delivery itinerary.","Veuillez remplir le champ A l'adresse pour obtenir l'itinéraire de livraison.",,
@@ -407,6 +411,7 @@
 "Purchase order",,,
 "Purchase tracking management","Suivi Achats",,
 "Qty","Qté",,
+"Quality control default stock location","Emplacement contrôle qualité",,
 "Quality rating","Niveau de qualité",,
 "Quantity","Quantité",,
 "Quantity is required on line %d.","La quantité est requise sur la ligne %d.",,

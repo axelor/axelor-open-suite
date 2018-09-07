@@ -290,20 +290,31 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-    Map<String, Object> productInformation = new HashMap<>();
-
-    Product product = invoiceLine.getProduct();
-
-    TaxLine taxLine;
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
+    productInformation.put("productName", invoiceLine.getProduct().getName());
+    productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
 
+    if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
+      productInformation.put("description", invoiceLine.getProduct().getDescription());
+    }
+
+    return productInformation;
+  }
+
+  @Override
+  public Map<String, Object> fillPriceAndAccount(
+      Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
+
+    Map<String, Object> productInformation = new HashMap<>();
+    Product product = invoiceLine.getProduct();
+    TaxLine taxLine = null;
     try {
-      taxLine = getTaxLine(invoice, invoiceLine, isPurchase);
+      taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
       productInformation.put("taxLine", taxLine);
       productInformation.put("taxRate", taxLine.getValue());
       productInformation.put("taxCode", taxLine.getTax().getCode());
-
       Tax tax =
           accountManagementAccountService.getProductTax(
               accountManagementAccountService.getAccountManagement(product, invoice.getCompany()),
@@ -312,30 +323,14 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           Beans.get(FiscalPositionService.class)
               .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
       productInformation.put("taxEquiv", taxEquiv);
-
-      // getting correct account for the product
-      AccountManagement accountManagement =
-          accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
-      Account account =
-          accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
-      productInformation.put("account", account);
     } catch (AxelorException e) {
-      taxLine = null;
       productInformation.put("taxLine", null);
       productInformation.put("taxRate", null);
       productInformation.put("taxCode", null);
       productInformation.put("taxEquiv", null);
-      productInformation.put("account", null);
     }
 
     BigDecimal price = this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
-
-    productInformation.put("productName", invoiceLine.getProduct().getName());
-    productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
-
-    if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
-      productInformation.put("description", invoiceLine.getProduct().getDescription());
-    }
 
     // getting correct account for the product
     AccountManagement accountManagement =
@@ -354,6 +349,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       }
     }
     productInformation.put("price", price);
+
     return productInformation;
   }
 }
