@@ -490,7 +490,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             PriceListLineRepository.AMOUNT_TYPE_NONE,
             line.getExTaxTotal(),
             line.getInTaxTotal(),
-            false) {
+            false,
+            false,
+            0) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
             InvoiceLine invoiceLine = this.createInvoiceLine();
