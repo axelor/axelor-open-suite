@@ -183,8 +183,6 @@ public interface ITranslation {
   public static final String INVOICING_PROJECT_EXPENSE_LINES_TO_INVOICE = /*$$(*/
       "InvoicingProject.toInvoice"; /*)*/
 
-  public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE = /*$$(*/
-      "InvoicingProject.elementsToInvoice"; /*)*/
   public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_USER = /*$$(*/
       "InvoicingProject.user"; /*)*/
   public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_DATE = /*$$(*/
