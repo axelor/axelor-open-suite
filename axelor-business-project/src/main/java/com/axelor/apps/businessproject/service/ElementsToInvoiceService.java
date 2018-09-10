@@ -60,6 +60,7 @@ public class ElementsToInvoiceService {
             product.getName(),
             elementsToInvoice.getSalePrice(),
             elementsToInvoice.getSalePrice(),
+            elementsToInvoice.getSalePrice(),
             null,
             elementsToInvoice.getQty(),
             elementsToInvoice.getUnit(),

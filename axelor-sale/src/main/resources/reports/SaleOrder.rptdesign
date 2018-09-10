@@ -1735,14 +1735,22 @@ where SaleOrder.id = ?]]></xml-property>
 	SOLine.qty as "quantity", 
 	Unit.label_to_printing as "UnitCode", 
 	SOLine.product_name as "ProductName", 
-	SOLine.price as "unit_price", 
+	(CASE WHEN SaleOrder.in_ati
+		THEN SOLine.in_tax_price
+		ELSE SOLine.price END)
+		as "unit_price", 
 	SOLine.ex_tax_total, 
 	SOLine.in_tax_total,
 	SOLine.total_pack,
 	Currency.code as "CurrencyCode",
 	TaxLine.value as "tax_line",
 	Product.code as "productCode", 
-	(SOLine.price_discounted - SOLine.price) * SOLine.qty as "totalDiscountAmount",
+	(SOLine.price_discounted 
+		- (CASE WHEN SaleOrder.in_ati 
+			THEN SOLine.in_tax_price
+			ELSE SOLine.price END))
+		* SOLine.qty 
+		as "totalDiscountAmount",
 	SOLine.sequence,
 	SaleOrder.sale_order_type_select, 
 	SaleOrder.in_ati,

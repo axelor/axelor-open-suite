@@ -137,6 +137,7 @@ public class TimetableServiceImpl implements TimetableService {
             timetable.getProductName(),
             timetable.getAmount(),
             timetable.getAmount(),
+            timetable.getAmount(),
             timetable.getComments(),
             timetable.getQty(),
             timetable.getUnit(),

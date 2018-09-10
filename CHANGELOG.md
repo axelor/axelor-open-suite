@@ -90,6 +90,7 @@
 - Fleet app: added FR demo data
 - HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
+- Reworked ati sale orders/purchase orders/invoices.
 - Advanced export : code refactor and optimize the performance.
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
 - Configure BoM form: show sub bom list.

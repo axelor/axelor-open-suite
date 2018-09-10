@@ -187,6 +187,7 @@ public class IntercoServiceImpl implements IntercoService {
                 saleOrderLine.getUnit());
     // compute amount
     purchaseOrderLine.setPrice(saleOrderLine.getPrice());
+    purchaseOrderLine.setInTaxPrice(saleOrderLine.getInTaxPrice());
     purchaseOrderLine.setExTaxTotal(saleOrderLine.getExTaxTotal());
     purchaseOrderLine.setDiscountTypeSelect(saleOrderLine.getDiscountTypeSelect());
     purchaseOrderLine.setDiscountAmount(saleOrderLine.getDiscountAmount());
@@ -220,6 +221,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     // compute amount
     saleOrderLine.setPrice(purchaseOrderLine.getPrice());
+    saleOrderLine.setInTaxPrice(purchaseOrderLine.getInTaxPrice());
     saleOrderLine.setExTaxTotal(purchaseOrderLine.getExTaxTotal());
     saleOrderLine.setDiscountTypeSelect(purchaseOrderLine.getDiscountTypeSelect());
     saleOrderLine.setDiscountAmount(purchaseOrderLine.getDiscountAmount());
