@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+   
+	<grid name="invoice-line-project-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
+		<toolbar>
+       		<button name="addSelectedLines" title="Add selected lines" showIf="_addLines" onClick="action-invoice-line-method-set-project"/>
+       		<button name="unlinkSelectedLines" title="Unlink selected lines" showIf="_unlinkLines" onClick="action-validate-unset-project,action-invoice-line-method-unset-project"/>
+        </toolbar>
+		<field name="project"/>
+		<field name="invoice" />
+		<field name="productName"/>
+		<field name="qty" aggregate="sum"/>
+		<field name="price" x-scale="2"/>
+		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		<field name="exTaxTotal" aggregate="sum"/>
+		<field name="inTaxTotal" aggregate="sum"/>
+	</grid>
+	
+	<action-method name="action-invoice-line-method-set-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="setProject"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-unset-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="unsetProject"/>
+	</action-method>
+
+</object-views>

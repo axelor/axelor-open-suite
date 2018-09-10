@@ -52,7 +52,8 @@
 		<string name="fullName" namecolumn="true" title="Name"/>
 	 	
 	 	<boolean name="isProject" title="Project/Phase" default="true" />
-
+	 	<boolean name="isShowPhasesElements" title="Show phases elements" default="true" />
+	 	
         <integer name="projectTypeSelect" selection="project.project.project.type.select" default="1"/>
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="BUSINESS_PROJECT"/>
 

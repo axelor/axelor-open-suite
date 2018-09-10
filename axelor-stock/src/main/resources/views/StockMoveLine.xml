@@ -38,7 +38,8 @@
         <field name="trackingNumber"
             form-view="tracking-number-stock-move-line-form"
             grid-view="tracking-number-grid"
-            onSelect="action-stock-move-line-attrs-tracking-number-domain"/>
+            onSelect="action-stock-move-line-attrs-tracking-number-domain"
+            canNew="true"/>
         <field name="conformitySelect"/>
         <field name="stockMove.statusSelect" hidden="true"/>
         <field name="isSubLine" hidden="true"/>
@@ -77,7 +78,8 @@
         <field name="trackingNumber"
             form-view="tracking-number-stock-move-line-form"
             grid-view="tracking-number-grid"
-            onSelect="action-stock-move-line-attrs-tracking-number-domain"/>
+            onSelect="action-stock-move-line-attrs-tracking-number-domain"
+            canNew="true"/>
         <field name="conformitySelect"/>
         <field name="stockMove.statusSelect" hidden="true"/>
     </grid>

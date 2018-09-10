@@ -17,13 +17,21 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.util.List;
 
-public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServiceSupplychainImpl {
+public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServiceSupplychainImpl
+    implements PurchaseOrderLineProjectService {
+
+  @Inject private PurchaseOrderLineRepository purchaseOrderLineRepo;
 
   @Override
   public PurchaseOrderLine createPurchaseOrderLine(
@@ -36,5 +44,21 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
     }
 
     return line;
+  }
+
+  @Transactional
+  @Override
+  public void setProject(List<Long> purchaseOrderLineIds, Project project) {
+
+    if (purchaseOrderLineIds != null) {
+
+      List<PurchaseOrderLine> purchaseOrderLineList =
+          purchaseOrderLineRepo.all().filter("self.id in ?1", purchaseOrderLineIds).fetch();
+
+      for (PurchaseOrderLine line : purchaseOrderLineList) {
+        line.setProject(project);
+        purchaseOrderLineRepo.save(line);
+      }
+    }
   }
 }

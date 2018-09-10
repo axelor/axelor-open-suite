@@ -515,9 +515,13 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         stockMoveLineProductList.add(stockMoveLine);
       }
       BigDecimal diffQty = computeDiffQty(prodProduct, stockMoveLineProductList, product);
+      BigDecimal plannedQty = prodProduct.getQty();
+      BigDecimal realQty = diffQty.add(plannedQty);
       if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
         ProdProduct diffProdProduct = new ProdProduct();
         diffProdProduct.setQty(diffQty);
+        diffProdProduct.setPlannedQty(plannedQty);
+        diffProdProduct.setRealQty(realQty);
         diffProdProduct.setProduct(product);
         diffProdProduct.setUnit(newUnit);
         diffConsumeList.add(diffProdProduct);
@@ -541,6 +545,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       if (stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
         ProdProduct diffProdProduct = new ProdProduct();
         diffProdProduct.setQty(stockMoveLine.getQty());
+        diffProdProduct.setPlannedQty(BigDecimal.ZERO);
+        diffProdProduct.setRealQty(stockMoveLine.getQty());
         diffProdProduct.setProduct(stockMoveLine.getProduct());
         diffProdProduct.setUnit(stockMoveLine.getUnit());
         diffConsumeList.add(diffProdProduct);

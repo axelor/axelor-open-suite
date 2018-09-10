@@ -553,5 +553,4 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         product.getAllowToForceSaleQty(),
         response);
   }
-
 }

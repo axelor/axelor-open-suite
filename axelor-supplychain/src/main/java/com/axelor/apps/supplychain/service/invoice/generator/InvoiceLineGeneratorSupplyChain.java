@@ -114,7 +114,17 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       Integer packPriceSelect)
       throws AxelorException {
 
-    super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice, isSubLine, packPriceSelect);
+    super(
+        invoice,
+        product,
+        productName,
+        description,
+        qty,
+        unit,
+        sequence,
+        isTaxInvoice,
+        isSubLine,
+        packPriceSelect);
 
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;

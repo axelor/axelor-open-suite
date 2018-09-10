@@ -170,7 +170,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
 
     List<InvoiceLine> subLines = new ArrayList<InvoiceLine>();
     for (InvoiceLine packLine : invoiceLines) {
-      if (packLine.getTypeSelect() == InvoiceLineRepository.TYPE_PACK && packLine.getSubLineList() != null) {
+      if (packLine.getTypeSelect() == InvoiceLineRepository.TYPE_PACK
+          && packLine.getSubLineList() != null) {
         packLine.getSubLineList().removeIf(it -> it.getId() != null && !invoiceLines.contains(it));
         packLine.setTotalPack(
             packLine

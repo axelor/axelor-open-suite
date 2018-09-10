@@ -11,18 +11,20 @@
 		    <button name="copy" title="Copy" hidden="true"/>
 		    <button name="search" title="Search" hidden="true"/>
 		</toolbar>
-		
-		<panel title="Advanced management">
-			
-			<field name="isUnchangableContract" colSpan="4" />
-			<field name="isAmendmentManagement" colSpan="4" />
-			<field name="isRenewalManagement" colSpan="4" />
-			
-			<field name="isInvoicingManagement" colSpan="4" />
-			<field name="isConsumptionManagement" colSpan="4" />
-			<field name="isAdditionalBenefitManagement" colSpan="4" />
-			<field name="isConfigContract" colSpan="4" />
-			
+		<panel>
+			<panel title="General" colSpan="12">
+				<field name="isUnchangableContract" colSpan="4" widget="boolean-switch"/>
+				<field name="isAmendmentManagement" colSpan="4" widget="boolean-switch"/>
+			</panel>
+            <panel title="Advanced" colSpan="12">
+				<field name="isConfigContract" colSpan="4" widget="boolean-switch"/>
+				<field name="isRenewalManagement" colSpan="4" widget="boolean-switch" hidden="true" showIf="isConfigContract"/>
+			</panel>
+            <panel title="Invoicing" colSpan="12" hidden="true" showIf="isConfigContract">
+				<field name="isInvoicingManagement" colSpan="4" widget="boolean-switch"/>
+				<field name="isConsumptionManagement" colSpan="4" widget="boolean-switch" hidden="true" showIf="isInvoicingManagement"/>
+				<field name="isAdditionalBenefitManagement" colSpan="4" widget="boolean-switch" hidden="true" showIf="isInvoicingManagement"/>
+			</panel>
 		</panel>
 	</form>
 	

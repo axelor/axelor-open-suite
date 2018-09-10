@@ -39,15 +39,17 @@
     </form>
 
 	<action-group name="action-prod-process-line-group-work-center-onchange">
-		<action name="action-prod-process-line-record-capacity-settings"/>
-		<action name="action-prod-process-line-attrs-hide-capacity-settings"/>
+		<action name="action-prod-process-line-method-duration"/>
+		<action name="action-prod-process-line-method-capacity-settings"/>
 	</action-group>
     
-    <action-record name="action-prod-process-line-record-capacity-settings" model="com.axelor.apps.production.db.ProdProcessLine">
-    	<field name="minCapacityPerCycle" expr="eval: workCenter?.minCapacityPerCycle"/>
-    	<field name="maxCapacityPerCycle" expr="eval: workCenter?.maxCapacityPerCycle"/>
-    	<field name="durationPerCycle" expr="eval: workCenter?.durationPerCycle"/>
-    </action-record>
+    <action-method name="action-prod-process-line-method-duration">
+    	<call class="com.axelor.apps.production.web.ProdProcessLineController" method="updateDuration"/>
+    </action-method>
+    
+    <action-method name="action-prod-process-line-method-capacity-settings">
+    	<call class="com.axelor.apps.production.web.ProdProcessLineController" method="updateCapacitySettings"/>
+    </action-method>
     
     <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
     	<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority() + 10"/>
@@ -57,14 +59,7 @@
     <action-attrs name="action-prod-process-line-attrs-default">
     	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: _parent != null ? !_parent.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
 		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
-		<attribute for="capacitySettings" name="hidden"
-				   expr="eval: workCenter?.workCenterTypeSelect == 1"/>
     </action-attrs>
-
-	<action-attrs name="action-prod-process-line-attrs-hide-capacity-settings">
-		<attribute for="capacitySettings" name="hidden"
-				   expr="eval: workCenter?.workCenterTypeSelect == 1"/>
-	</action-attrs>
     
 </object-views>
 
