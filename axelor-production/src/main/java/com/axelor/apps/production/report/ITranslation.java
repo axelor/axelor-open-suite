@@ -89,6 +89,8 @@ public interface ITranslation {
   public static final String MANUF_ORDER_FROM = /*$$(*/ "ManufOrder.from"; /*)*/
   public static final String MANUF_ORDER_TO = /*$$(*/ "ManufOrder.to"; /*)*/
   public static final String MANUF_ORDER_SERIAL = /*$$(*/ "ManufOrder.serial"; /*)*/
+  public static final String MANUF_ORDER_STOCK_LOCATION = /*$$(*/ "ManufOrder.stockLocation"; /*)*/
+  public static final String MANUF_ORDER_RACK = /*$$(*/ "ManufOrder.rack"; /*)*/
 
   public static final String PRODUCTION_PROCESS_LABEL = /*$$(*/ "ProdProcess.label"; /*)*/
   public static final String PRODUCTION_PROCESS_NAME = /*$$(*/ "ProdProcess.name"; /*)*/
