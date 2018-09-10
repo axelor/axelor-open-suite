@@ -63,6 +63,7 @@
 - Fix translation typo.
 - Add xml escape in configurator export.
 - StockRule : Sort Grid View according to Stock location, Product code, useCaseSelect ASC 
+- Warning message on missing weight unit is now shown only on delivery stock move.
 
 ## [5.0.4] - 2018-07-26
 ## Features
