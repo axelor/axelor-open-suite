@@ -17,17 +17,56 @@
  */
 package com.axelor.apps.contract.db.repo;
 
+import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.db.JpaRepository;
+import com.axelor.apps.tool.ModelTool;
+import com.axelor.inject.Beans;
+import java.util.List;
 
-public class ContractVersionRepository extends JpaRepository<ContractVersion> {
+public class ContractVersionRepository extends AbstractContractVersionRepository {
 
-  public static final int DRAFT_VERSION = 1;
-  public static final int WAITING_VERSION = 2;
-  public static final int ONGOING_VERSION = 3;
-  public static final int TERMINATED_VERSION = 4;
+  public ContractVersion copy(Contract contract) {
+    ContractVersion newVersion = new ContractVersion();
+    ContractVersion currentVersion = contract.getCurrentContractVersion();
 
-  public ContractVersionRepository() {
-    super(ContractVersion.class);
+    newVersion.setStatusSelect(ContractVersionRepository.DRAFT_VERSION);
+    newVersion.setNextContract(contract);
+    newVersion.setPaymentMode(currentVersion.getPaymentMode());
+    newVersion.setPaymentCondition(currentVersion.getPaymentCondition());
+    newVersion.setInvoicingDuration(currentVersion.getInvoicingDuration());
+    newVersion.setInvoicingMomentSelect(currentVersion.getInvoicingMomentSelect());
+    newVersion.setIsPeriodicInvoicing(currentVersion.getIsPeriodicInvoicing());
+    newVersion.setAutomaticInvoicing(currentVersion.getAutomaticInvoicing());
+    newVersion.setIsProratedInvoice(currentVersion.getIsProratedInvoice());
+    newVersion.setIsProratedFirstInvoice(currentVersion.getIsProratedFirstInvoice());
+    newVersion.setIsProratedLastInvoice(currentVersion.getIsProratedLastInvoice());
+    newVersion.setDescription(currentVersion.getDescription());
+
+    newVersion.setIsTacitRenewal(currentVersion.getIsTacitRenewal());
+    newVersion.setRenewalDuration(currentVersion.getRenewalDuration());
+    newVersion.setIsAutoEnableVersionOnRenew(currentVersion.getIsAutoEnableVersionOnRenew());
+
+    newVersion.setIsWithEngagement(currentVersion.getIsWithEngagement());
+    newVersion.setEngagementDuration(currentVersion.getEngagementDuration());
+
+    newVersion.setIsWithPriorNotice(currentVersion.getIsWithPriorNotice());
+    newVersion.setPriorNoticeDuration(currentVersion.getPriorNoticeDuration());
+
+    newVersion.setEngagementStartFromVersion(currentVersion.getEngagementStartFromVersion());
+
+    newVersion.setDoNotRenew(currentVersion.getDoNotRenew());
+
+    ContractLineRepository repository = Beans.get(ContractLineRepository.class);
+    List<ContractLine> lines =
+        ModelTool.copy(repository, currentVersion.getContractLineList(), false);
+    newVersion.setContractLineList(lines);
+
+    newVersion.setIsTimeProratedInvoice(currentVersion.getIsTimeProratedInvoice());
+    newVersion.setIsVersionProratedInvoice(currentVersion.getIsVersionProratedInvoice());
+
+    newVersion.setIsConsumptionBeforeEndDate(currentVersion.getIsConsumptionBeforeEndDate());
+
+    return newVersion;
   }
 }

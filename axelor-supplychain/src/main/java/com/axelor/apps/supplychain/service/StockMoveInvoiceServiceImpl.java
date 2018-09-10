@@ -694,19 +694,19 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       Invoice invoice, List<StockMoveLine> stockMoveLineList) throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-    
+
     Map<StockMoveLine, InvoiceLine> packLineMap = Maps.newHashMap();
     boolean setPack = Beans.get(AppSaleService.class).getAppSale().getProductPackMgt();
     for (StockMoveLine stockMoveLine : getConsolidatedStockMoveLineList(stockMoveLineList)) {
       List<InvoiceLine> invoiceLineListCreated = this.createInvoiceLine(invoice, stockMoveLine);
       if (invoiceLineListCreated != null) {
-    	  invoiceLineList.addAll(invoiceLineListCreated);
-    	  if (setPack
-          		&& !invoiceLineListCreated.isEmpty()
-          		&& (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK
-          		|| stockMoveLine.getIsSubLine())) {
-  	        	packLineMap.put(stockMoveLine, invoiceLineListCreated.get(0));
-          }
+        invoiceLineList.addAll(invoiceLineListCreated);
+        if (setPack
+            && !invoiceLineListCreated.isEmpty()
+            && (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK
+                || stockMoveLine.getIsSubLine())) {
+          packLineMap.put(stockMoveLine, invoiceLineListCreated.get(0));
+        }
       }
       // Depending on stockMove type
       if (stockMoveLine.getSaleOrderLine() != null) {
@@ -715,27 +715,26 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         stockMoveLine.getPurchaseOrderLine().setInvoiced(true);
       }
     }
-    
-    if (setPack) {
-	    for (StockMoveLine stockMoveLine : packLineMap.keySet()) {
-	    	if (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK) {
-	    		InvoiceLine invoiceLine = packLineMap.get(stockMoveLine);
-	    		if (invoiceLine == null) {
-	    			continue;
-	    		}
-	    		BigDecimal totalPack = BigDecimal.ZERO;
-	    		for (StockMoveLine subLine : stockMoveLine.getSubLineList()) {
-	    			InvoiceLine subInvoiceLine = packLineMap.get(subLine);
-	    			if (subInvoiceLine != null) {
-	    				totalPack = totalPack.add(subInvoiceLine.getExTaxTotal());
-	    				subInvoiceLine.setParentLine(invoiceLine);
-	    			}
-	    		}
-	    		invoiceLine.setTotalPack(totalPack);
-	    	}
-	    }
-    }
 
+    if (setPack) {
+      for (StockMoveLine stockMoveLine : packLineMap.keySet()) {
+        if (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK) {
+          InvoiceLine invoiceLine = packLineMap.get(stockMoveLine);
+          if (invoiceLine == null) {
+            continue;
+          }
+          BigDecimal totalPack = BigDecimal.ZERO;
+          for (StockMoveLine subLine : stockMoveLine.getSubLineList()) {
+            InvoiceLine subInvoiceLine = packLineMap.get(subLine);
+            if (subInvoiceLine != null) {
+              totalPack = totalPack.add(subInvoiceLine.getExTaxTotal());
+              subInvoiceLine.setParentLine(invoiceLine);
+            }
+          }
+          invoiceLine.setTotalPack(totalPack);
+        }
+      }
+    }
 
     return invoiceLineList;
   }

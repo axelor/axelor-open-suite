@@ -18,6 +18,9 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
@@ -163,5 +166,22 @@ public class ProjectController {
             .getFileLink();
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  public void getPartnerData(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    Partner partner = project.getClientPartner();
+
+    if (partner != null) {
+
+      response.setValue("currency", partner.getCurrency());
+
+      response.setValue(
+          "priceList",
+          project.getClientPartner() != null
+              ? Beans.get(PartnerPriceListService.class)
+                  .getDefaultPriceList(project.getClientPartner(), PriceListRepository.TYPE_SALE)
+              : null);
+    }
   }
 }

@@ -59,18 +59,6 @@
         <field name="invoiced"/>
     </grid>
 
-    <grid name="purchase-order-line-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-        <hilite if="$get('purchaseOrder.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
-        <hilite if="invoiced" color="success"/>
-        <field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" readonly="true"/>
-        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid" readonly="true"/>
-        <field name="productName" readonly="true"/>
-        <field name="exTaxTotal" aggregate="sum" readonly="true"/>
-        <field name="toInvoice"/>
-        <field name="amountInvoiced"/>
-        <field name="purchaseOrder.statusSelect" hidden="true"/>
-    </grid>
-
     <form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" onLoad="action-group-purchase-purchase-orderline-onload" readonlyIf="true" canEdit="false">
         <panel-include view="purchase-order-line-form"/>
     </form>

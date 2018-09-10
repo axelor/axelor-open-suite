@@ -52,5 +52,4 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLineList
    */
   void updateDeliveryStates(List<SaleOrderLine> saleOrderLineList);
-
 }

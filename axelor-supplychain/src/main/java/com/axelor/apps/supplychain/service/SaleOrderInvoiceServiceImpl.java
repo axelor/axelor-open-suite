@@ -140,7 +140,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     return invoice;
   }
 
-
   @Override
   public BigDecimal computeAmountToInvoicePercent(
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException {
@@ -502,37 +501,38 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
       if (qtyToInvoiceMap.containsKey(saleOrderLine.getId())) {
-    	 List<InvoiceLine> invoiceLines = this.createInvoiceLine(
-                 invoice, saleOrderLine, qtyToInvoiceMap.get(saleOrderLine.getId()));
+        List<InvoiceLine> invoiceLines =
+            this.createInvoiceLine(
+                invoice, saleOrderLine, qtyToInvoiceMap.get(saleOrderLine.getId()));
         invoiceLineList.addAll(invoiceLines);
         if (setPack
-        		&& !invoiceLineList.isEmpty()
-        		&& (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK
-        		|| saleOrderLine.getIsSubLine())) {
-	        	packLineMap.put(saleOrderLine, invoiceLines.get(0));
+            && !invoiceLineList.isEmpty()
+            && (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK
+                || saleOrderLine.getIsSubLine())) {
+          packLineMap.put(saleOrderLine, invoiceLines.get(0));
         }
         saleOrderLine.setInvoiced(true);
       }
     }
-    
+
     if (setPack) {
-	    for (SaleOrderLine saleOrderLine : packLineMap.keySet()) {
-	    	if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
-	    		InvoiceLine invoiceLine = packLineMap.get(saleOrderLine);
-	    		if (invoiceLine == null) {
-	    			continue;
-	    		}
-	    		BigDecimal totalPack = BigDecimal.ZERO;
-	    		for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
-	    			InvoiceLine subInvoiceLine = packLineMap.get(subLine);
-	    			if (subInvoiceLine != null) {
-	    				totalPack = totalPack.add(subInvoiceLine.getExTaxTotal());
-	    				subInvoiceLine.setParentLine(invoiceLine);
-	    			}
-	    		}
-	    		invoiceLine.setTotalPack(totalPack);
-	    	}
-	    }
+      for (SaleOrderLine saleOrderLine : packLineMap.keySet()) {
+        if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
+          InvoiceLine invoiceLine = packLineMap.get(saleOrderLine);
+          if (invoiceLine == null) {
+            continue;
+          }
+          BigDecimal totalPack = BigDecimal.ZERO;
+          for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
+            InvoiceLine subInvoiceLine = packLineMap.get(subLine);
+            if (subInvoiceLine != null) {
+              totalPack = totalPack.add(subInvoiceLine.getExTaxTotal());
+              subInvoiceLine.setParentLine(invoiceLine);
+            }
+          }
+          invoiceLine.setTotalPack(totalPack);
+        }
+      }
     }
 
     return invoiceLineList;
