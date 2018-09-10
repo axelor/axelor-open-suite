@@ -32,7 +32,6 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.db.repo.ElementsToInvoiceRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -493,40 +492,22 @@ public class InvoicingProjectService {
 
     int toInvoiceCount = 0;
 
-    toInvoiceCount +=
-        Beans.get(SaleOrderLineRepository.class)
-            .all()
-            .filter(
-                "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project)
-            .count();
+    String query = "self.project = ?1";
+
+    if (project.getIsShowPhasesElements()) {
+      query = "(self.project = ?1 OR self.project.parentProject = ?1)";
+    }
+
+    query += " AND self.toInvoice = true AND self.invoiced = false";
+
+    toInvoiceCount += Beans.get(SaleOrderLineRepository.class).all().filter(query, project).count();
 
     toInvoiceCount +=
-        Beans.get(PurchaseOrderLineRepository.class)
-            .all()
-            .filter(
-                "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project)
-            .count();
+        Beans.get(PurchaseOrderLineRepository.class).all().filter(query, project).count();
 
-    toInvoiceCount +=
-        Beans.get(ExpenseLineRepository.class)
-            .all()
-            .filter(
-                "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project)
-            .count();
+    toInvoiceCount += Beans.get(ExpenseLineRepository.class).all().filter(query, project).count();
 
-    toInvoiceCount +=
-        Beans.get(TimesheetLineRepository.class)
-            .all()
-            .filter(
-                "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project)
-            .count();
-
-    toInvoiceCount +=
-        Beans.get(ElementsToInvoiceRepository.class)
-            .all()
-            .filter(
-                "self.project = ?1 AND self.toInvoice = true AND self.invoiced = false", project)
-            .count();
+    toInvoiceCount += Beans.get(TimesheetLineRepository.class).all().filter(query, project).count();
 
     return toInvoiceCount;
   }

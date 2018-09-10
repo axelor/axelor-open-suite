@@ -54,6 +54,7 @@ public interface ITranslation {
   public static final String PROJECT_TYPE = /*$$(*/ "Project.type"; /*)*/
   public static final String PROJECT_TOTAL = /*$$(*/ "Project.total"; /*)*/
   public static final String PROJECT_RESULT = /*$$(*/ "Project.result"; /*)*/
+  public static final String PROJECT_CHART_TITLE = /*$$(*/ "Project.turnoverAndCostPerMonth"; /*)*/
 
   public static final String PROJECT_MANUAL_ELEMENT = /*$$(*/ "Project.manualElement"; /*)*/
   public static final String PROJECT_MANUAL_ELEMENT_TITLE = /*$$(*/
@@ -182,8 +183,6 @@ public interface ITranslation {
   public static final String INVOICING_PROJECT_EXPENSE_LINES_TO_INVOICE = /*$$(*/
       "InvoicingProject.toInvoice"; /*)*/
 
-  public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE = /*$$(*/
-      "InvoicingProject.elementsToInvoice"; /*)*/
   public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_USER = /*$$(*/
       "InvoicingProject.user"; /*)*/
   public static final String INVOICING_PROJECT_ELEMENTS_TO_INVOICE_DATE = /*$$(*/

@@ -21,7 +21,11 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
+import com.axelor.apps.businessproject.service.ExpenseLineProjectService;
+import com.axelor.apps.businessproject.service.ExpenseLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ExpenseServiceProjectImpl;
+import com.axelor.apps.businessproject.service.InvoiceLineProjectService;
+import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateServiceImpl;
@@ -30,8 +34,11 @@ import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectPurchaseServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
+import com.axelor.apps.businessproject.service.PurchaseOrderLineProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
+import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
+import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetLineProjectServiceImpl;
@@ -73,5 +80,9 @@ public class BusinessProjectModule extends AxelorModule {
     bind(SaleOrderPurchaseServiceImpl.class).to(ProjectPurchaseServiceImpl.class);
     bind(PurchaseOrderLineServiceSupplychainImpl.class)
         .to(PurchaseOrderLineServiceProjectImpl.class);
+    bind(SaleOrderLineProjectService.class).to(SaleOrderLineProjectServiceImpl.class);
+    bind(PurchaseOrderLineProjectService.class).to(PurchaseOrderLineServiceProjectImpl.class);
+    bind(ExpenseLineProjectService.class).to(ExpenseLineProjectServiceImpl.class);
+    bind(InvoiceLineProjectService.class).to(InvoiceLineProjectServiceImpl.class);
   }
 }

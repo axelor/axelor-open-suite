@@ -28,6 +28,9 @@
 			domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation')"
 			onChange="action-group-account-account-management-onchange-common" />
 		<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" />
+		<field name="purchFixedAssetsAccount"
+	 		onChange="action-group-account-account-management-onchange-common"
+			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" />
 		<field name="saleAccount" if-module="axelor-account" form-view="account-form"
 			grid-view="account-grid" if="__config__.app.isApp('account')"
 			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"

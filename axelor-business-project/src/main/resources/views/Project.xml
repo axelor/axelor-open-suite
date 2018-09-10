@@ -27,6 +27,10 @@
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="printPlannifAndCost"/>
 	</action-method>
 	
+	<action-validate name="action-validate-unset-project">
+		<alert message="Are you sure wants to unlink project from selected lines?."/>
+	</action-validate>
+	
 	<action-attrs id="business-project-action-project-project-default" name="action-project-project-default" model="com.axelor.apps.project.db.Project">
 		<attribute name="value" for="typeSelect" expr="eval:'project'" />
 		<attribute name="value" for="fromDate" expr="eval: __datetime__"/>
@@ -42,64 +46,248 @@
 		<field name="assignedTo" expr="eval: __user__"/>
 	</action-record>
 	
-	<action-view name="action-dashlet-project-sale-quotation" title="Quotation" model="com.axelor.apps.sale.db.SaleOrder">
+	<action-method name="action-project-method-get-partner-data">
+		<call class="com.axelor.apps.businessproject.web.ProjectController" method="getPartnerData"/>
+	</action-method>
+	
+	<!-- Sales -->
+	
+	<action-view name="action-project-dashlet-sale-quotation" title="Quotation" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sale-order-quotation-grid"/>
 		<view type="form" name="sale-order-form"/>
-		<domain>self.saleOrderLineList.project.id = :id and self.statusSelect &lt; 3</domain>
+		<domain>self.saleOrderLineList.project.id in (:_projectIds) AND self.statusSelect &lt; 3</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-dashlet-project-sale-order" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder">
+	<action-view name="action-project-dashlet-sale-order" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sale-order-grid"/>
 		<view type="form" name="sale-order-form"/>
-		<domain>self.saleOrderLineList.project.id = :id and self.statusSelect in (3,4)</domain>
+		<domain>self.saleOrderLineList.project.id in (:_projectIds) AND self.statusSelect in (3,4)</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-dashlet-project-customer-deliveries" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMove">
+	<action-view name="action-project-view-show-sale-order-lines" title="Sale Order Lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+        <view type="grid" name="sale-order-line-project-grid"/>
+        <view type="form" name="sale-order-line-project-form"/>
+        <domain>self.project.id in (:_projectIds)</domain>
+        <context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+        <context name="_unlinkLines" expr="eval:true"/>
+    </action-view>
+    
+    <action-view name="action-project-view-show-confirmed-sale-order-lines" title="Sale Order Lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+        <view type="grid" name="sale-order-line-project-grid"/>
+        <view type="form" name="sale-order-line-project-form"/>
+        <domain>self.saleOrder.statusSelect in (3,4) AND self.project.id in (:_projectIds)</domain>
+    	<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+        <context name="_unlinkLines" expr="eval:true"/>
+    </action-view>
+    
+    <action-view name="action-project-view-sale-order-line-select-new-lines" title="Sale Order Lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+        <view type="grid" name="sale-order-line-project-grid"/>
+        <view type="form" name="sale-order-line-project-form"/>
+        <domain>self.saleOrder.clientPartner.id = :clientPartnerId AND self.saleOrder.statusSelect in (3,4) AND self.project is null</domain>
+        <context name="_project" expr="eval:__self__"/>
+        <context name="_addLines" expr="eval:true"/>
+        <context name="clientPartnerId" expr="eval:clientPartner.id"/>
+    </action-view>
+	
+	<action-view name="action-project-dashlet-customer-deliveries" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-out-grid"/>
 		<view type="form" name="stock-move-form"/>
-		<domain>self.stockMoveLineList.saleOrderLine.project.id = :id</domain>
+		<domain>self.stockMoveLineList.saleOrderLine.project.id in (:_projectIds)</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-dashlet-project-purchase-quotation" title="Quotation" model="com.axelor.apps.purchase.db.PurchaseOrder">
+	<!-- Purchase -->
+	
+	<action-view name="action-project-project-purchase-quotation" title="Quotation" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="purchase-order-quotation-grid"/>
 		<view type="form" name="purchase-order-form"/>
-		<domain>self.purchaseOrderLineList.project.id = :id and self.statusSelect &lt; 3</domain>
+		<domain>self.purchaseOrderLineList.project.id in (:_projectIds) AND self.statusSelect &lt; 3</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-dashlet-project-purchase-order" title="Purchase order" model="com.axelor.apps.purchase.db.PurchaseOrder">
+	<action-view name="action-project-dashlet-purchase-order" title="Purchase order" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="purchase-order-grid"/>
 		<view type="form" name="purchase-order-form"/>
-		<domain>self.purchaseOrderLineList.project.id = :id and self.statusSelect in (3,4)</domain>
+		<domain>self.purchaseOrderLineList.project.id in (:_projectIds) AND self.statusSelect in (3,4)</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-dashlet-project-supplier-arrivals" title="Supplier arrivals" model="com.axelor.apps.stock.db.StockMove">
+	<action-view name="action-project-dashlet-supplier-arrivals" title="Supplier arrivals" model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-in-grid"/>
 		<view type="form" name="stock-move-form"/>
-		<domain>self.stockMoveLineList.purchaseOrderLine.project.id = :id</domain>
+		<domain>self.stockMoveLineList.purchaseOrderLine.project.id in (:_projectIds)</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-dashlet-project-expense-waiting" title="Waiting expenses" model="com.axelor.apps.hr.db.Expense">
+	<action-view name="action-project-view-show-purchase-order-lines" title="Purchase Order Lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+        <view type="grid" name="purchase-order-line-project-grid"/>
+        <view type="form" name="purchase-order-line-project-form"/>
+        <domain>self.project.id in (:_projectIds)</domain>
+        <context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+    </action-view>
+    
+    <action-view name="action-project-view-show-confirmed-purchase-order-lines" title="Purchase Order Lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+        <view type="grid" name="purchase-order-line-project-grid"/>
+        <view type="form" name="purchase-order-line-project-form"/>
+        <domain>self.purchaseOrder.statusSelect in (3,4)  AND self.project.id in (:_projectIds)</domain>
+        <context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+        <context name="_unlinkLines" expr="eval:true"/>
+    </action-view>
+    
+    <action-view name="action-project-view-purchase-order-line-select-new-lines" title="Purchase Order Lines"  model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    	<view type="grid" name="purchase-order-line-project-grid"/>
+        <view type="form" name="purchase-order-line-project-form"/>
+        <domain>self.purchaseOrder.statusSelect in (3,4)  AND self.project is null</domain>
+        <context name="_project" expr="eval:__self__"/>
+        <context name="_addLines" expr="eval:true"/>
+    </action-view>
+    
+    <!-- Expense -->
+	
+	<action-view name="action-project-dashlet-expense-waiting" title="Waiting expenses" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
-		<domain>(self.kilometricExpenseLineList.project.id = :id or self.generalExpenseLineList.project.id = :id) and self.statusSelect &lt; 3</domain>
+		<domain>(self.kilometricExpenseLineList.project.id in (:_projectIds) or self.generalExpenseLineList.project.id in (:_projectIds)) AND self.statusSelect &lt; 3</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-dashlet-project-expense-validated" title="Validated expenses" model="com.axelor.apps.hr.db.Expense">
+	<action-view name="action-project-dashlet-expense-validated" title="Validated expenses" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
-		<domain>(self.kilometricExpenseLineList.project.id = :id or self.generalExpenseLineList.project.id = :id) and self.statusSelect in (3,4)</domain>
+		<domain>(self.kilometricExpenseLineList.project.id in (:_projectIds) or self.generalExpenseLineList.project.id in (:_projectIds)) AND self.statusSelect in (3,4)</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-dashlet-project-customer-invoices" title="Customer invoices" model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-customer-grid"/>
+	<action-view name="action-project-view-show-expense-lines" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
+        <view type="grid" name="expense-line-project-grid"/>
+        <view type="form" name="expense-line-project-form"/>
+        <domain>self.project.id in (:_projectIds)</domain>
+        <context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  		<context name="_unlinkLines" expr="eval:true"/>
+    </action-view>
+    
+	<action-view name="action-project-view-show-validated-expense-lines" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
+        <view type="grid" name="expense-line-project-grid"/>
+        <view type="form" name="expense-line-project-form"/>
+        <domain>self.expense.statusSelect in (3,4) AND self.project.id in (:_projectIds)</domain>
+        <context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  		<context name="_unlinkLines" expr="eval:true"/>
+    </action-view>
+    
+    <action-view name="action-project-view-expense-line-select-new-lines" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
+        <view type="grid" name="expense-line-project-grid"/>
+        <view type="form" name="expense-line-project-form"/>
+        <domain>self.expense.statusSelect in (3,4) AND self.project is null</domain>
+  		<context name="_project" expr="eval:__self__"/>
+        <context name="_addLines" expr="eval:true"/>
+    </action-view>
+    
+    <!-- Invoice -->
+    
+	<action-view name="action-project-dashlet-customer-invoices" title="Customer invoices" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
-		<domain>self.invoiceLineList.project.id = :id and self.operationTypeSelect = 3</domain>
+		<domain>self.invoiceLineList.project.id in (:_projectIds) AND self.operationTypeSelect = 3 AND self.operationSubTypeSelect != 2</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-dashlet-project-supplier-invoices" title="Supplier invoices"  model="com.axelor.apps.account.db.Invoice">
+	<action-view name="action-project-view-show-sale-invoice-lines" title="Customer invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+        <view type="grid" name="invoice-line-project-grid"/>
+        <view type="form" name="invoice-line-form"/>
+        <domain>self.invoice.operationTypeSelect = 3 AND self.project.id in (:_projectIds) AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2</domain>
+        <context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  		<context name="_unlinkLines" expr="eval:true"/>
+    </action-view>
+    
+    <action-view name="action-project-view-show-sale-invoice-lines-select-new" title="Customer invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+        <view type="grid" name="invoice-line-project-grid"/>
+        <view type="form" name="invoice-line-form"/>
+        <domain>self.invoice.operationTypeSelect = 3 and self.invoice.partner.id = :partnerId AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2</domain>
+        <context name="_project" expr="eval:__self__"/>
+        <context name="_addLines" expr="eval:true"/>
+        <context name="partnerId" expr="eval:clientPartner.id"/>
+    </action-view>
+	
+	<action-view name="action-project-dashlet-supplier-invoices" title="Supplier invoices"  model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-supplier-grid"/>
 		<view type="form" name="invoice-form"/>
-		<domain>self.invoiceLineList.project.id = :id and self.operationTypeSelect = 1</domain>
+		<domain>self.invoiceLineList.project.id in (:_projectIds) AND self.operationTypeSelect = 1 AND self.operationSubTypeSelect != 2</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
+	<action-view name="action-project-view-show-purchase-invoice-lines" title="Supplier invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+        <view type="grid" name="invoice-line-project-grid"/>
+        <view type="form" name="invoice-line-form"/>
+        <domain>self.invoice.operationTypeSelect = 1 AND self.project.id in (:_projectIds) AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2</domain>
+        <context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  		<context name="_unlinkLines" expr="eval:true"/>
+    </action-view>
+    
+    <action-view name="action-project-view-show-purchase-invoice-lines-select-new" title="Supplier invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+        <view type="grid" name="invoice-line-project-grid"/>
+        <view type="form" name="invoice-line-form"/>
+        <domain>self.invoice.operationTypeSelect = 1 AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2</domain>
+         <context name="_project" expr="eval:__self__"/>
+        <context name="_addLines" expr="eval:true"/>
+    </action-view>
+	
+	<action-view name="action-project-dashlet-advance-payment-invoices" title="Advance payment invoices"  model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.invoiceLineList.project.id in (:_projectIds) AND self.operationSubTypeSelect = 2</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+	</action-view>
+	
+	
+	<!-- Production -->
+	
+    <action-view name="action-project-view-show-production-orders" title="Production orders" model="com.axelor.apps.production.db.ProductionOrder">
+        <view type="grid" name="production-order-grid"/>
+        <view type="form" name="production-order-form"/>
+        <domain>self.project.id in (:_projectIds)</domain>
+        <context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+    </action-view>
+    
 </object-views>

@@ -16,7 +16,7 @@
       <integer name="timepercent" title="Time %" selection="project.task.progress.select"/>
       <string name="description" title="Description" large="true" />
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
-	  <boolean name="generateTurnover" title="Generate turnover"/>
+	  <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
 	  <decimal name="realHours" title="Real hours"/>
   </entity>
   
