@@ -184,7 +184,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         planningTime.setUser(user);
         planningTime.setDate(date);
         planningTime.setProject(project);
-        planningTime.setGenerateTurnover((Boolean) datas.get("generateTurnover"));
+        planningTime.setIsIncludeInTurnoverForecast(
+            (Boolean) datas.get("isIncludeInTurnoverForecast"));
 
         BigDecimal totalHours = BigDecimal.ZERO;
         if (timePercent > 0) {
