@@ -21,10 +21,13 @@ import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +36,8 @@ public class PurchaseOrderLineProjectController {
   @Inject private PurchaseOrderLineProjectService purchaseOrderLineProjectService;
 
   @Inject private ProjectRepository projectRepository;
+
+  @Inject private PurchaseOrderLineRepository purchaseOrderLineRepo;
 
   /**
    * Set project from context selected lines
@@ -88,6 +93,25 @@ public class PurchaseOrderLineProjectController {
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
+    }
+  }
+
+  /**
+   * Invert value of 'toInvoice' field and save the record
+   *
+   * @param request
+   * @param response
+   */
+  @Transactional
+  public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      purchaseOrderLine = purchaseOrderLineRepo.find(purchaseOrderLine.getId());
+      purchaseOrderLine.setToInvoice(!purchaseOrderLine.getToInvoice());
+      purchaseOrderLineRepo.save(purchaseOrderLine);
+      response.setValue("toInvoice", purchaseOrderLine.getToInvoice());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

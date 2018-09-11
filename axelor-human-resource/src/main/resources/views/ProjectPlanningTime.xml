@@ -10,7 +10,7 @@
         <field name="plannedHours" />
         <field name="realHours"/>
         <field name="isIncludeInTurnoverForecast"/>
-        <button name="updateIsIncludeInTurnoverForecast" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-record-update-is-include-in-turnover-forecast,save" />
+        <button name="updateIsIncludeInTurnoverForecast" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
     </grid>
     
     <grid name="project-planning-db-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanningTime">
@@ -115,8 +115,8 @@
 		<call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController" method="addMultipleProjectPlanningTime"/>
 	</action-method>
 	
-	<action-record name="action-project-planning-time-record-update-is-include-in-turnover-forecast" model="com.axelor.apps.project.db.ProjectPlanningTime">
-		<field name="isIncludeInTurnoverForecast" expr="eval:!isIncludeInTurnoverForecast"/>
-	</action-record>
+	<action-method name="action-project-planning-time-method-update-is-include-in-turnover-forecast">
+		<call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController" method="updateIsIncludeInTuronverForecast"/>
+	</action-method>
 	
 </object-views>

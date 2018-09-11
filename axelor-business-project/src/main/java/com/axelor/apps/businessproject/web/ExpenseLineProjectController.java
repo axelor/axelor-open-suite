@@ -19,12 +19,15 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ExpenseLineProjectService;
+import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +36,8 @@ public class ExpenseLineProjectController {
   @Inject private ExpenseLineProjectService expenseLineProjectService;
 
   @Inject private ProjectRepository projectRepository;
+
+  @Inject private ExpenseLineRepository expenseLineRepo;
 
   /**
    * Set project from context selected lines
@@ -88,6 +93,25 @@ public class ExpenseLineProjectController {
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
+    }
+  }
+
+  /**
+   * Invert value of 'toInvoice' field and save the record
+   *
+   * @param request
+   * @param response
+   */
+  @Transactional
+  public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+      expenseLine = expenseLineRepo.find(expenseLine.getId());
+      expenseLine.setToInvoice(!expenseLine.getToInvoice());
+      expenseLineRepo.save(expenseLine);
+      response.setValue("toInvoice", expenseLine.getToInvoice());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

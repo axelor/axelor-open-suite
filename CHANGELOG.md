@@ -46,6 +46,7 @@
 - PROJECT : Add translation of financial report.
 - Manuf Order: show in toConsumeProdProductList if there is product missing in stock.
 - Manuf Order: show in diff O2M the planned and real quantities.
+- Business Project : Fill default values from Project while generating the sale Quotation.
 - Project : Change invoicing project view.
 
 ## Improvements
@@ -66,6 +67,7 @@
 - Set project on invoice and invoice line when generating it from sale order and stock move.
 - Set project on purchase order and purchase order lines when generating it from a sale order.
 - Improve account management views.
+- Rework ManufOrder printing.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -92,6 +94,7 @@
 - Fleet app: added FR demo data
 - HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
+- Reworked ati sale orders/purchase orders/invoices.
 - Advanced export : code refactor and optimize the performance.
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
 - Configure BoM form: show sub bom list.

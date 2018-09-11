@@ -176,7 +176,7 @@
 	</grid>
 
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-attrs,action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number, action-stock-move-line-attrs-show-unit-price-taxed" readonlyIf="stockMove.statusSelect == 3" width="large">
+    	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-attrs,action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3" width="large">
         <panel name="stockMove" title="Stock move">
 	    	<field name="stockMove.stockMoveSeq"/>
 	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
@@ -215,12 +215,6 @@
 		<call class="com.axelor.apps.stock.web.StockMoveLineController" method="emptyLine"/>
 	</action-method>
     
-    <action-attrs name="action-stock-move-line-attrs-show-unit-price-taxed" if-module="axelor-supplychain" >
-    	<attribute name="hidden" for="unitPriceUntaxed" expr="eval: stockMove?.saleOrder?.inAti" if="stockMove != null"/>
-    	<attribute name="hidden" for="unitPriceUntaxed" expr="eval: _parent?.saleOrder?.inAti" if="stockMove == null"/>
-    	<attribute name="hidden" for="unitPriceTaxed" expr="eval: !stockMove?.saleOrder?.inAti" if="stockMove == null"/>
-    	<attribute name="hidden" for="unitPriceTaxed" expr="eval: !_parent?.saleOrder?.inAti" if="stockMove == null"/>
-    </action-attrs>
     <action-attrs name="action-stock-move-attrs-change-conformity">
     	<attribute name="value" for="stockMove.conformitySelect" expr="eval: conformitySelect"  if="conformitySelect == 3"/>
     </action-attrs>
@@ -235,7 +229,6 @@
         <action name="action-stock-move-line-attrs"/>
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
         <action name="action-inventory-line-attrs-tracking-number"/>
-        <action name="action-stock-move-line-attrs-show-unit-price-taxed"/>
 		<action name="action-stock-move-line-tracking-number-attrs"/>
 		<action name="action-stock-move-line-qty-attrs"/>
 		<action name="action-stock-move-line-price-attrs-readonly" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>

@@ -19,7 +19,9 @@ package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -28,6 +30,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 import java.util.Collection;
 import java.util.Map;
 
@@ -35,6 +38,8 @@ import java.util.Map;
 public class ProjectPlanningTimeController {
 
   @Inject private ProjectPlanningTimeService projectPlanningTimeService;
+
+  @Inject private ProjectPlanningTimeRepository projectPlanningTimeRepo;
 
   public void showPlanning(ActionRequest request, ActionResponse response) {
 
@@ -77,5 +82,33 @@ public class ProjectPlanningTimeController {
     projectPlanningTimeService.addMultipleProjectPlanningTime(context);
 
     response.setCanClose(true);
+  }
+
+  /**
+   * Invert value of 'isIncludeInTuronverForecast' field and save the record.
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  @Transactional
+  public void updateIsIncludeInTuronverForecast(ActionRequest request, ActionResponse response) {
+
+    try {
+      ProjectPlanningTime projectPlanningTime =
+          request.getContext().asType(ProjectPlanningTime.class);
+
+      projectPlanningTime = projectPlanningTimeRepo.find(projectPlanningTime.getId());
+
+      projectPlanningTime.setIsIncludeInTurnoverForecast(
+          !projectPlanningTime.getIsIncludeInTurnoverForecast());
+
+      projectPlanningTimeRepo.save(projectPlanningTime);
+
+      response.setValue(
+          "isIncludeInTurnoverForecast", projectPlanningTime.getIsIncludeInTurnoverForecast());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
