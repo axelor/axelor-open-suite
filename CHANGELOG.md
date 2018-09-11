@@ -46,6 +46,7 @@
 - PROJECT : Add translation of financial report.
 - Manuf Order: show in toConsumeProdProductList if there is product missing in stock.
 - Manuf Order: show in diff O2M the planned and real quantities.
+- Business Project : Fill default values from Project while generating the sale Quotation.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
