@@ -110,19 +110,19 @@
 		</panel>
 
 		<panel-tabs>
-			<panel title="Phases" name="phases"
-				showIf="isProject &amp;&amp; childProjectList.length > 0">
-				<button name="addPhase" title="New" colSpan="2"
-					css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-view-phase-new" />
-				<button name="allPhases" title="All phases" colSpan="2"
-					css="btn-custom text-left" icon="fa-tasks" onClick="save,action-project-view-phase-all" />
-				<button name="allPhaseTasks" title="All phase tasks" colSpan="2"
-					css="btn-custom text-left" icon="fa-tasks"
-					onClick="save,action-project-phase-view-show-phase-task" />
-				<panel-dashlet title="Phases" colSpan="12"
-					action="tree:project-phase-tree" />
-			</panel>
 			<panel title="Task Tree" name="taskTree" showIf="isProject">
+				<panel title="Phases" name="phases"
+					showIf="isProject &amp;&amp; childProjectList.length > 0" colSpan="12" showTitle="false">
+					<button name="addPhase" title="New" colSpan="2"
+						css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-view-phase-new" />
+					<button name="allPhases" title="All phases" colSpan="2"
+						css="btn-custom text-left" icon="fa-tasks" onClick="save,action-project-view-phase-all" />
+					<button name="allPhaseTasks" title="All phase tasks" colSpan="2"
+						css="btn-custom text-left" icon="fa-tasks"
+						onClick="save,action-project-phase-view-show-phase-task" />
+					<panel-dashlet title="Phases" colSpan="12"
+						action="tree:project-phase-tree" />
+				</panel>
 				<button name="addTask" title="New" colSpan="2"
 					css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-add-task" />
 				<button name="allTask" title="All tasks" colSpan="2"
@@ -130,6 +130,8 @@
 					onClick="action-project-view-show-related-tasks" />
 				<panel-dashlet title="Task Tree" colSpan="12"
 					action="action-view-show-project-task-tree" />
+				<panel-dashlet title="Task Invoicing" colSpan="12" 
+					action="action-dashlet-project-show-all-invoicing-task" if="__config__.app.isApp('business-project')"/>
 			</panel>
 			<panel title="Members" name="members">
 				<field name="team" title="Team"
@@ -286,7 +288,7 @@
 					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
-				<field name="isShowPhasesElements" colSpan="12" widget="boolean-switch" />
+				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
 			</panel>
 			<panel if-module="axelor-business-project" name="project"
 				showIf="isProject" colSpan="12">

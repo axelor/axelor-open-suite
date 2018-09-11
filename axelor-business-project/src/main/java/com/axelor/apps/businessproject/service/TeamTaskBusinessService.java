@@ -27,7 +27,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public interface TeamTaskBusinessService extends TeamTaskService {
+
   TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo);
 
   TeamTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty);
+
+  TeamTask updateDiscount(TeamTask teamTask);
+
+  TeamTask compute(TeamTask teamTask);
 }

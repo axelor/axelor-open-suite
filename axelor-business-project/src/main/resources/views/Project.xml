@@ -49,6 +49,15 @@
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="getPartnerData"/>
 	</action-method>
 	
+	<action-view name="action-dashlet-project-show-all-invoicing-task" title="Task Invoicing" model="com.axelor.team.db.TeamTask">
+		<view type="grid" name="business-project-team-task-grid"/>
+		<view type="form" name="team-task-form"/>
+		<domain>self.project.id in (:_projectIds)</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+	</action-view>
+	
 	<!-- Sales -->
 	
 	<action-view name="action-project-dashlet-sale-quotation" title="Quotation" model="com.axelor.apps.sale.db.SaleOrder">
