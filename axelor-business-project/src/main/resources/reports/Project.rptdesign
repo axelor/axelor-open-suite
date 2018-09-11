@@ -1830,7 +1830,7 @@ from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
-where (ppt.generate_turnover = true and ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)) 
+where (ppt.is_include_in_turnover_forecast = true and ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)) 
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by ppt_activity, prod.unit]]></xml-property>
         </oda-data-set>
@@ -2217,7 +2217,7 @@ from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
-where (ppt.generate_turnover = true and ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)) 
+where (ppt.is_include_in_turnover_forecast = true and ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)) 
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month,prod.unit
 union

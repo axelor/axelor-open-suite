@@ -509,7 +509,7 @@ public class InvoicingProjectService {
     toInvoiceCount += Beans.get(ExpenseLineRepository.class).all().filter(query, project).count();
 
     toInvoiceCount += Beans.get(TimesheetLineRepository.class).all().filter(query, project).count();
-    
+
     toInvoiceCount += Beans.get(TeamTaskRepository.class).all().filter(query, project).count();
 
     return toInvoiceCount;
