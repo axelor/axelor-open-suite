@@ -10,6 +10,7 @@
 - Fleet app: added FR demo data
 - HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
+- Reworked ati sale orders/purchase orders/invoices.
 - Advanced export : code refactor and optimize the performance.
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
 - Configure BoM form: show sub bom list.
@@ -20,8 +21,11 @@
 - UserController: Improve exception handling.
 - Update translations.
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Improve account management views.
 - Add supplier invoice number in supplier invoices grid.
 - Add column description in move line grid views.
+- Allow manual creation of tracking number on stock move lines.
+- Direct debit batch: filter out payment schedule lines with inactive partner bank details.
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -53,7 +57,11 @@
 - Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
 - Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
 - Removed editable from some reference fields in stock form views. 
+- Vehicle : rename driverContact to driverPartner & filter it.
 - Vehicle : Card View - display vehicle company and driver  
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine. 
+- Fix translation typo.
+- Add xml escape in configurator export.
 - StockRule : Sort Grid View according to Stock location, Product code, useCaseSelect ASC 
 
 ## [5.0.4] - 2018-07-26

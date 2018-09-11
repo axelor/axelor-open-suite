@@ -7,7 +7,7 @@
        <field name="plateNo" />
        <field name="vehicleModel" />
        <field name="name" />
-       <field name="driverContact" />
+       <field name="driverPartner" />
        <field name="chasisNo" />
        <field name="acquisitionDate" />
        <field name="vehicleState" />
@@ -30,7 +30,7 @@
 	       </panel>
 	       <panel colSpan="12" title="General Properties" >
 	       		<panel itemSpan="12">
-		       		<field name="driverContact" />
+		       		<field name="driverPartner" domain="self.isEmployee = true" />
 		       		<field name="location" />
 		       		<field name="chasisNo" />
 		       		<field name="company" />
@@ -95,7 +95,7 @@
 		<field name="image" />
 		<field name="name" />
 		<field name="plateNo" />
-		<field name="driverContact" />
+		<field name="driverPartner" />
 		<field name="vehicleState" />
 		<field name="company"/>
 		<template><![CDATA[
@@ -107,7 +107,7 @@
 			  <div class="span8">
 			    <span>{{plateNo}}<br/>
 			    {{company.name}}<br/>
-			    {{driverContact.fullName}}<br/>
+          {{driverPartner.name}}<br/>
 			    {{vehicleState.name}}</span>
 			  </div>
 			</div>
