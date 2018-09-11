@@ -20,19 +20,7 @@
 	<integer name="projectSetPrioritySelect" selection="invoicing.project.priority.select" title="Project Priority" default="5"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice generated" />
     <date name="deadlineDate" title="Deadline"/>
-    <integer name="statusSelect" title="Status" selection="invoicing.project.status.select" />
     <string name="comments" title="Comments" large="true" />
-    
-  <extra-code>
-            <![CDATA[
-            	public static final Integer STATUS_DRAFT = 0;
-                public static final Integer STATUS_WAITING_APPROVAL = 1;
-                public static final Integer STATUS_DELIVERED_WITHOUT_RESERVES = 2;
-                public static final Integer STATUS_DELIVERED_WITH_RESERVES = 3;
-                public static final Integer STATUS_INVOICED = 4;
-                public static final Integer STATUS_CANCELED = 5;
-            ]]>
-        </extra-code>
     
   </entity>
   

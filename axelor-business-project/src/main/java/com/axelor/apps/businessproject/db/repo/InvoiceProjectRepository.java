@@ -15,11 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.report;
+package com.axelor.apps.businessproject.db.repo;
 
-public interface IReport {
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
+import com.axelor.inject.Beans;
 
-  public static final String PROJECT = "Project.rptdesign";
-  public static final String INVOICE_ANNEX = "InvoiceAnnex.rptdesign";
-  public static final String PLANNIF_AND_COST = "PlannificationAndCost.rptdesign";
+public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
+
+  @Override
+  public void remove(Invoice entity) {
+
+    Beans.get(InvoicingProjectRepository.class)
+        .all()
+        .filter("self.invoice.id = ?", entity.getId())
+        .remove();
+
+    super.remove(entity);
+  }
 }

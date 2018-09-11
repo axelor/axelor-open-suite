@@ -8,7 +8,6 @@
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="fromDate" />
 		<field name="toDate" />
-		<field name="statusSelect"/>
 	</grid>
 	
     <action-method name="action-project-method-generate-quotation">
@@ -222,6 +221,15 @@
     </action-view>
     
     <!-- Invoice -->
+    
+    <action-view name="action-dashlet-project-show-all-invoicing-project" title="Invoicing projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+		<view type="grid" name="invoicing-project-grid"/>
+		<view type="form" name="invoicing-project-form"/>
+		<domain>self.project.id in (:_projectIds)</domain>
+		<context if="id == null" name="_projectIds" expr="eval:[0]" />
+  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
+  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+	</action-view>
     
 	<action-view name="action-project-dashlet-customer-invoices" title="Customer invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>

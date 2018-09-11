@@ -6,24 +6,18 @@
 		<field name="project" form-view="project-form" grid-view="project-grid"/>
 		<field name="invoice"/>
 		<field name="deadlineDate"/>
-		<field name="createdOn"/>		
+		<field name="createdOn"/>
 	</grid>
 
 	<form name="invoicing-project-form" title="Invoicing business project" model="com.axelor.apps.businessproject.db.InvoicingProject"
 		onNew="action-invoicing-project-group-on-new" onLoad="action-invoicing-project-attrs-title-project" width="large">
 		<toolbar>
   			<button name="delete" hidden="true" showIf="invoice == null" title="Delete"/>
-  			<button name="print" title="Print delivery sheet" hidden="true" showIf="project" onClick="action-invoicing-project-method-print"/>
   		</toolbar>
 
-        <panel>
-  			<field name="statusSelect" widget="NavSelect" colSpan="12" showTitle="false"/>
-  		</panel>
-
 		<panel name="main">
-			<field name="project" form-view="project-form" grid-view="project-grid" onChange="save,action-invoicing-project-method-fill-in" readonlyIf="invoice"/>
+			<field name="project" form-view="project-form" grid-view="project-grid" onChange="save,action-invoicing-project-method-fill-in" readonly="true"/>
 			<field name="deadlineDate" readonlyIf="invoice" onChange="save,action-invoicing-project-method-fill-in"/>
-			<button name="automaticFillIn" title="Automatically Fill in" onClick="action-invoicing-project-method-fill-in" hideIf="invoice != null"/>
 			<button name="generateInvoice" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" hideIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
 			<button name="seeLinkedTimesheetLines" title="See Linked Timesheet Lines" onClick="action-invoicing-project-show-timesheet-lines" hidden="true" showIf="invoice != null"/>
@@ -105,10 +99,6 @@
 		<call class="com.axelor.apps.businessproject.web.InvoicingProjectController" method="fillIn"/>
 	</action-method>
 
-	<action-method name="action-invoicing-project-method-print">
-		<call class="com.axelor.apps.businessproject.web.InvoicingProjectController" method="print"/>
-	</action-method>
-
 	<action-attrs name="action-invoicing-project-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 		<attribute name="title" for="projectSet" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
@@ -124,5 +114,5 @@
 		<domain>self.id IN (:list) </domain>
   		<context name="list" expr="eval: logTimesSet.collect{it.id}"/>
 	</action-view>
-
+	
 </object-views>

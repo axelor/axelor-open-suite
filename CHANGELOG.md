@@ -48,6 +48,7 @@
 - Manuf Order: show in diff O2M the planned and real quantities.
 - Business Project : Fill default values from Project while generating the sale Quotation.
 - Business Project : Enhancement of task and project view.
+- Project : Change invoicing project view.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

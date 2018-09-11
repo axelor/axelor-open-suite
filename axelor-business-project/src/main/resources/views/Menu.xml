@@ -22,12 +22,4 @@
 	     <context name="_fromProject" expr="eval:false"/>
 	</action-view>
 	
-	<menuitem name="invoicing-project-all" parent="business-project-root"  if="__config__.app.isApp('business-project')"   title="Invoicing business projects"
-    	action="invoicing.project.all" order="15"/>
-
-	<action-view name="invoicing.project.all" title="Invoicing business projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
-    	<view type="grid" name="invoicing-project-grid"/>
-	    <view type="form" name="invoicing-project-form"/>
-	</action-view>
-
 </object-views>
