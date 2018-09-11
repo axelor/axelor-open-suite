@@ -21,10 +21,13 @@ import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +36,8 @@ public class SaleOrderLineProjectController {
   @Inject private SaleOrderLineProjectService saleOrderLineProjectService;
 
   @Inject private ProjectRepository projectRepository;
+
+  @Inject private SaleOrderLineRepository saleOrderLineRepo;
 
   /**
    * Set project from context selected lines
@@ -88,6 +93,25 @@ public class SaleOrderLineProjectController {
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
+    }
+  }
+
+  /**
+   * Invert value of 'toInvoice' field and save the record
+   *
+   * @param request
+   * @param response
+   */
+  @Transactional
+  public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = saleOrderLineRepo.find(saleOrderLine.getId());
+      saleOrderLine.setToInvoice(!saleOrderLine.getToInvoice());
+      saleOrderLineRepo.save(saleOrderLine);
+      response.setValue("toInvoice", saleOrderLine.getToInvoice());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
