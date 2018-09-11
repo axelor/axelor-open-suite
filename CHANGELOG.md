@@ -83,6 +83,7 @@
 - Fix invoiced amount W.T update on sale and purchase order.
 - Fix social network icons for employee
 - Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
+- Project: Fix financial report view.
 
 ## [Unreleased 5.0.5]	
 ##Features

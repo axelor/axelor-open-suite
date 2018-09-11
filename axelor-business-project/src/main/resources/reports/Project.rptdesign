@@ -511,12 +511,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
  SO.sale_order_seq as so_seq,
  SO.order_date as so_date,
  SUM(SOL.company_ex_tax_total - SOL.amount_invoiced) as sol_sales,
- SUM(((SOL.company_ex_tax_total - SOL.amount_invoiced)/SOL.company_ex_tax_total) * SOL.sub_total_cost_price) as sol_costs,
+ SUM(COALESCE(((SOL.company_ex_tax_total - SOL.amount_invoiced) / NULLIF(SOL.company_ex_tax_total, 0)) * SOL.sub_total_cost_price, 0)) as sol_costs,
  SUM(SOL.sub_total_gross_margin) as sol_expected_margin
 from sale_sale_order_line SOL
 left join sale_sale_order SO on (SO.id = SOL.sale_order)
 left join project_project project on (project.id = SOL.project)
-where SO.status_select = 3 and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (SO.status_select = 3 or SO.status_select = 4) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by so_seq, so_date
 order by so_seq]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -731,7 +733,10 @@ from hr_expense_line expl
 left join hr_expense ex on (ex.id = expl.expense)
 left join base_product prod on (prod.id = expl.expense_product)
 left join project_project project on (project.id = expl.project)
-where (expl.to_invoice = true and expl.invoiced = false ) and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (expl.to_invoice = true and expl.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (ex.status_select = 3 or ex.status_select = 4)
 group by exp_seq, expl_product
 order by exp_seq]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -941,13 +946,22 @@ order by exp_seq]]></xml-property>
             <xml-property name="queryText"><![CDATA[select 
  PO.purchase_order_seq as po_seq,
  PO.order_date as po_date,
- SUM(POL.company_ex_tax_total * prod.manag_price_coef) as pol_revenue
+ case
+   when partner.charge_back_purchase_select = 3 then
+     SUM((POL.company_ex_tax_total * partner.charge_back_purchase)/100)
+   else
+     SUM((POL.company_ex_tax_total * 100)/100)
+ end as pol_revenue
 from purchase_purchase_order_line POL
 left join purchase_purchase_order PO on (PO.id = POL.purchase_order)
 left join base_product prod on (prod.id = POL.product)
 left join project_project project on (project.id = POL.project)
-where (POL.to_invoice = true and POL.invoiced = false ) and (project.id = ? or project.parent_project = ?)
-group by po_seq, po_date 
+left join project_project parent_project on (parent_project.id = project.parent_project)
+left join base_partner partner on (partner.id = project.client_partner)
+where (POL.to_invoice = true and POL.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (PO.status_select = 3 or PO.status_select = 4)
+group by po_seq, po_date, partner.charge_back_purchase_select
 order by po_seq]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1174,75 +1188,14 @@ order by po_seq]]></xml-property>
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and invoice.status_select = 3
 and invoice.operation_type_select in (?,?)
 group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>3</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>4</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -1444,7 +1397,8 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
 		end as me_amount_cost
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = ?
 group by me_title,me_date,me.currency,project.currency,me.turnover,me.cost;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1634,9 +1588,10 @@ from hr_expense_line expl
 left join hr_expense expense on (expense.id = expl.expense)
 left join auth_user authuser on (authuser.id = expense.user_id)
 left join hr_employee emp on (emp.id = authuser.employee)
-left join project_project task on (task.id = expl.project)
-where (task.parent_project = ? or task.id = ?)
-and expense.status_select = 3
+left join project_project project on (project.id = expl.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (expense.status_select = 3 or expense.status_select = 4)
 group by emp.id,emp.name,exp_validation_date]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Timesheet" id="4784">
@@ -1770,11 +1725,14 @@ from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
-left join project_project task on (task.id = tml.project)
-where tm.status_select = 3 and (task.id = ? or task.parent_project = ?)
+left join project_project project on (project.id = tml.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where tm.status_select = 3 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by emp.id,emp.name,tm_validation_date,emp.hourly_rate]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ProjectPlanningTime" id="5634">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">ppt_activity</property>
@@ -1861,15 +1819,20 @@ group by emp.id,emp.name,tm_validation_date,emp.hourly_rate]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select prod.full_name as ppt_activity,
-		sum(planned_hours) as total_hours,
-		sum((planned_hours / (select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base))) * prod.sale_price) as revenue
+	sum(planned_hours) as total_hours,
+	case
+		when prod.unit = (select unit_hours from base_app_base) then
+			sum((planned_hours / planned_hours) * prod.sale_price)
+		else	
+			sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+	end as revenue
 from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
 left join project_project project on (project.id = ppt.project)
-where ppt.generate_turnover = true 
-and ppt.date_val < (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
-and (project.id = ? or project.parent_project = ?)
-group by ppt_activity]]></xml-property>
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (ppt.generate_turnover = true and ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by ppt_activity, prod.unit]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AnalyticMoveLine" id="4833">
             <list-property name="columnHints">
@@ -1962,9 +1925,10 @@ group by ppt_activity]]></xml-property>
 	   sum(aml.amount) as amount
 from account_analytic_move_line aml
 left join project_project project on (project.id = aml.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
 left join account_analytic_axis axis on (axis.id = aml.analytic_axis)
 left join account_analytic_account account on (account.id = aml.analytic_account)
-where project.id = ? or project.parent_project = ?
+where project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true )
 group by axis.name,account.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ChartRemaining" id="4942">
@@ -2219,38 +2183,67 @@ from (select to_char(SO.order_date,'YYYY-MM') as month, 0 as costs, sum(SOL.comp
 from sale_sale_order_line SOL
 left join sale_sale_order SO on (SO.id = SOL.sale_order)
 left join project_project project on (project.id = SOL.project)
-where SO.status_select = 3 and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (SO.status_select = 3 or SO.status_select = 4) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
-select to_char(PO.order_date,'YYYY-MM') as month, 0 as costs, sum(POL.company_ex_tax_total * prod.manag_price_coef) as turnover
+select to_char(PO.order_date,'YYYY-MM') as month, 0 as costs, 
+case
+   	when partner.charge_back_purchase_select = 3 then
+     	SUM((POL.company_ex_tax_total * partner.charge_back_purchase)/100)
+   	else
+     	SUM((POL.company_ex_tax_total * 100)/100)
+end as turnover
 from purchase_purchase_order_line POL
 left join purchase_purchase_order PO on (PO.id = POL.purchase_order)
 left join base_product prod on (prod.id = POL.product)
 left join project_project project on (project.id = POL.project)
-where (POL.to_invoice = true and POL.invoiced = false ) and (project.id = ? or project.parent_project = ?)
-group by month
+left join project_project parent_project on (parent_project.id = project.parent_project)
+left join base_partner partner on (partner.id = project.client_partner)
+and (PO.status_select = 3 or PO.status_select = 4)
+where (POL.to_invoice = true and POL.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by month,partner.charge_back_purchase_select
 union
-select to_char(ppt.date_val, 'YYYY-MM') as month, 0 as costs, sum((planned_hours / (select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base))) * prod.sale_price) as turnover
+select to_char(ppt.date_val, 'YYYY-MM') as month, 0 as costs, 
+case
+	when prod.unit = (select unit_hours from base_app_base) then
+		sum((planned_hours / planned_hours) * prod.sale_price)
+	else	
+		sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+end as turnover
 from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
 left join project_project project on (project.id = ppt.project)
-where ppt.generate_turnover = true 
-and ppt.date_val < (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
-and (project.id = ? or project.parent_project = ?)
-group by month
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (ppt.generate_turnover = true and ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by month,prod.unit
 union
-select to_char(tml.date_val, 'YYYY-MM') as month, 0 as costs, sum((hours_duration / (select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base))) * prod.sale_price) as turnover
+select to_char(tml.date_val, 'YYYY-MM') as month, 0 as costs, 
+case
+	when prod.unit = (select unit_hours from base_app_base) then
+		sum((hours_duration / hours_duration) * prod.sale_price)
+	else	
+		sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+end as turnover
 from hr_timesheet_line as tml
 left join base_product prod on (prod.id = tml.product)
 left join project_project project on (project.id = tml.project)
-where (tml.to_invoice = true and tml.invoiced = false ) and (project.id = ? or project.parent_project = ?)
-group by month
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (tml.to_invoice = true and tml.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by month,prod.unit
 union
 select to_char(expl.expense_date,'YYYY-MM') as month, 0 as costs, sum(expl.untaxed_amount) as turnover
 from hr_expense_line expl
 left join hr_expense ex on (ex.id = expl.expense)
 left join project_project project on (project.id = expl.project)
-where (expl.to_invoice = true and expl.invoiced = false) and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (expl.to_invoice = true and expl.invoiced = false) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (ex.status_select = 3 or ex.status_select = 4)
 group by month
 union
 select to_char(me.date_val, 'YYYY-MM') as month,0 as costs, 
@@ -2262,7 +2255,8 @@ case
 end as turnover
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = 1
 group by month,me.currency,project.currency
 union
@@ -2272,7 +2266,9 @@ from purchase_purchase_order_line POL
 left join purchase_purchase_order PO on (PO.id = POL.purchase_order)
 left join base_product prod on (prod.id = POL.product)
 left join project_project project on (project.id = POL.project)
-where PO.status_select = 3 and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (PO.status_select = 3 or PO.status_select = 4) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
 select to_char(ppt.date_val, 'YYYY-MM') as month, sum(planned_hours) * emp.hourly_rate as costs
@@ -2280,8 +2276,9 @@ from project_project_planning_time as ppt
 left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = ppt.project)
-where ppt.date_val < (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
-and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month, emp.hourly_rate
 union
 select to_char(me.date_val,'YYYY-MM') as month, 
@@ -2293,75 +2290,14 @@ case
 end as cost
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = 1
 group by month,me.currency,project.currency) CostData group by month)) ChartData group by month order by month
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>15</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>16</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>17</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>18</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -2653,7 +2589,8 @@ from (select to_char(invoice.invoice_date,'YYYY-MM') as month,0 as costs, sum(in
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
-where (project.id =  ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and invoice.status_select = 3 
 and invoice.operation_type_select in (3,4)
 group by month
@@ -2667,7 +2604,8 @@ case
 end as turnover
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = 2
 group by month,me.currency,project.currency
 union
@@ -2676,7 +2614,8 @@ from (select to_char(invoice.invoice_date,'YYYY-MM') as month,sum(invl.company_e
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
-where (project.id =  ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and invoice.status_select = 3 
 and invoice.operation_type_select in (1,2)
 group by month
@@ -2686,16 +2625,19 @@ from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
-left join project_project task on (task.id = tml.project)
-where tm.status_select = 3 and (task.id = ? or task.parent_project = ?)
+left join project_project project on (project.id = tml.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where tm.status_select = 3 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
 select to_char(expense.validation_date,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
 from hr_expense_line expl
-left join project_project task on (task.id = expl.project)
+left join project_project project on (project.id = expl.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
 left join hr_expense expense on (expense.id = expl.expense)
-where (task.parent_project = ? or task.id = ?)
-and expense.status_select = 3
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (expense.status_select = 3 or expense.status_select = 4)
 group by month
 union
 select to_char(me.date_val,'YYYY-MM') as month, 
@@ -2707,14 +2649,16 @@ case
 end as cost
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = 2
 group by month,me.currency,project.currency
 union
 select to_char(date_val,'YYYY-MM') as month,-1*sum(aml.amount) as cost
 from account_analytic_move_line aml
 left join project_project project on (project.id = aml.project)
-where project.id =  ? or project.parent_project = ?
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true )
 group by month) CostData group by month)) ChartData group by month order by month]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2878,49 +2822,20 @@ group by month) CostData group by month)) ChartData group by month order by mont
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select prod.full_name as tml_activity,
-		sum(hours_duration) as total_hours,
-		sum((hours_duration / (select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base))) * prod.sale_price) as revenue
+	sum(hours_duration) as total_hours,
+	case
+		when prod.unit = (select unit_hours from base_app_base) then
+			sum((hours_duration / hours_duration) * prod.sale_price)
+		else	
+			sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+	end as revenue
 from hr_timesheet_line as tml
 left join base_product prod on (prod.id = tml.product)
 left join project_project project on (project.id = tml.project)
-where (tml.to_invoice = true and tml.invoiced = false ) and (project.id = ? or project.parent_project = ?)
-group by tml_activity]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (tml.to_invoice = true and tml.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by tml_activity, prod.unit]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="PurchaseOrderLineCost" id="5739">
             <list-property name="columnHints">
@@ -3016,7 +2931,9 @@ from purchase_purchase_order_line POL
 left join purchase_purchase_order PO on (PO.id = POL.purchase_order)
 left join base_product prod on (prod.id = POL.product)
 left join project_project project on (project.id = POL.project)
-where PO.status_select = 3 and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (PO.status_select = 3 or PO.status_select = 4) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by po_seq, po_date 
 order by po_seq]]></xml-property>
         </oda-data-set>
@@ -3113,45 +3030,10 @@ from project_project_planning_time as ppt
 left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = ppt.project)
-where ppt.date_val < (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
-and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by emp.name,emp.hourly_rate]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
