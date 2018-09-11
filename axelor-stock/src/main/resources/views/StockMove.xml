@@ -201,7 +201,7 @@
                     </field>
                 </panel>
 							<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
-							<field name="signatoryUser"/>
+							<field name="signatoryUser" canEdit="false" />
 							<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
 							<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
 
