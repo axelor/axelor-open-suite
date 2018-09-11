@@ -25,11 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.projectjobscheduling.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.Job;
@@ -103,9 +102,12 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     List<ManufOrder> pinnedManufOrderList =
         Beans.get(ManufOrderRepository.class)
             .all()
-            .filter("self.plannedEndDateT > :now AND self.statusSelect != 2 AND self.id NOT IN :manufOrderIds")
+            .filter(
+                "self.plannedEndDateT > :now AND self.statusSelect != 2 AND self.id NOT IN :manufOrderIds")
             .bind("now", now)
-            .bind("manufOrderIds", manufOrderListToPlan.stream().map(it -> it.getId()).collect(Collectors.toList()))
+            .bind(
+                "manufOrderIds",
+                manufOrderListToPlan.stream().map(it -> it.getId()).collect(Collectors.toList()))
             .fetch();
 
     LocalDateTime startDate = now;
@@ -122,7 +124,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
     for (ManufOrder manufOrder : manufOrderListToPlan) {
       LocalDateTime releaseDate;
-      if(manufOrder.getPlannedStartDateT() != null && manufOrder.getPlannedStartDateT().isAfter(now)) {
+      if (manufOrder.getPlannedStartDateT() != null
+          && manufOrder.getPlannedStartDateT().isAfter(now)) {
         releaseDate = manufOrder.getPlannedStartDateT();
         releaseDate = this.roundDateTime(releaseDate);
       } else {
@@ -343,8 +346,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         this.initializePriorityToAllocationListMap(sortedPriorityList);
 
     Project project = this.initializeProject();
-    if (projectReleaseDate != null)
-      project.setReleaseDate(projectReleaseDate);
+    if (projectReleaseDate != null) project.setReleaseDate(projectReleaseDate);
     this.unsolvedJobScheduling.getProjectList().add(project);
 
     // Source Job
@@ -359,7 +361,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     List<Allocation> sourceSucccessorAllocationList =
         priorityToAllocationListMap.get(sortedPriorityList.get(1));
     Allocation sourceAllocation =
-        this.getSourceAllocation(sourceAllocationId, sourceJob, sourceSucccessorAllocationList, projectReleaseDate);
+        this.getSourceAllocation(
+            sourceAllocationId, sourceJob, sourceSucccessorAllocationList, projectReleaseDate);
     priorityToAllocationListMap.get(Integer.MIN_VALUE).add(sourceAllocation);
     this.unsolvedJobScheduling.getAllocationList().add(sourceAllocation);
 
@@ -375,7 +378,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     List<Allocation> sinkPredecessorAllocationList =
         priorityToAllocationListMap.get(sortedPriorityList.get(sortedPriorityList.size() - 2));
     Allocation sinkAllocation =
-        this.getSinkAllocation(sinkAllocationId, sinkJob, sinkPredecessorAllocationList, projectReleaseDate);
+        this.getSinkAllocation(
+            sinkAllocationId, sinkJob, sinkPredecessorAllocationList, projectReleaseDate);
     priorityToAllocationListMap.get(Integer.MAX_VALUE).add(sinkAllocation);
     this.unsolvedJobScheduling.getAllocationList().add(sinkAllocation);
 
@@ -575,14 +579,27 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   }
 
   private Allocation getSourceAllocation(
-      Long allocationId, Job sourceJob, List<Allocation> succcessorAllocationList, Integer projectReleaseDate) {
-    return this.getAllocation(allocationId, sourceJob, null, succcessorAllocationList, null, null, projectReleaseDate);
+      Long allocationId,
+      Job sourceJob,
+      List<Allocation> succcessorAllocationList,
+      Integer projectReleaseDate) {
+    return this.getAllocation(
+        allocationId, sourceJob, null, succcessorAllocationList, null, null, projectReleaseDate);
   }
 
   private Allocation getSinkAllocation(
-      Long allocationId, Job sinkJob, List<Allocation> predecessorAllocationList, Integer projectReleaseDate) {
+      Long allocationId,
+      Job sinkJob,
+      List<Allocation> predecessorAllocationList,
+      Integer projectReleaseDate) {
     return this.getAllocation(
-        allocationId, sinkJob, predecessorAllocationList, new ArrayList<Allocation>(), null, null, projectReleaseDate);
+        allocationId,
+        sinkJob,
+        predecessorAllocationList,
+        new ArrayList<Allocation>(),
+        null,
+        null,
+        projectReleaseDate);
   }
 
   private Allocation getAllocation(
@@ -602,8 +619,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     allocation.setPredecessorsDoneDate(0);
     allocation.setSourceAllocation(sourceAllocation);
     allocation.setSinkAllocation(sinkAllocation);
-    if (projectReleaseDate != null)
-      allocation.setPredecessorsDoneDate(projectReleaseDate);
+    if (projectReleaseDate != null) allocation.setPredecessorsDoneDate(projectReleaseDate);
 
     return allocation;
   }

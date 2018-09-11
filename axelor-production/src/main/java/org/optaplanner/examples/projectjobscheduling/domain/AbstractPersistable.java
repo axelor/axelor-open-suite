@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.domain;
+package org.optaplanner.examples.projectjobscheduling.domain;
 
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.CompareToBuilder;
