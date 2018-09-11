@@ -56,6 +56,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -508,6 +509,8 @@ public class InvoicingProjectService {
     toInvoiceCount += Beans.get(ExpenseLineRepository.class).all().filter(query, project).count();
 
     toInvoiceCount += Beans.get(TimesheetLineRepository.class).all().filter(query, project).count();
+    
+    toInvoiceCount += Beans.get(TeamTaskRepository.class).all().filter(query, project).count();
 
     return toInvoiceCount;
   }
