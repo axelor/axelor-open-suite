@@ -234,6 +234,7 @@
 						onClick="save,action-project-view-show-invoicing-projects"/>
 				<field name="invoicingComment" colSpan="12" />
 				<panel-related colSpan="12" field="manualElementList" form-view="manual-element-form" grid-view="manual-element-grid"/>
+				<panel-dashlet action="action-dashlet-project-show-all-invoicing-project" colSpan="12" />
 				<panel-dashlet action="action-project-dashlet-customer-invoices" colSpan="12" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" canSearch="true"/>
 				<button name="selectNewCustomerInvoiceLines" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-view-show-sale-invoice-lines-select-new"  hideIf="$popup()" colSpan="3"/>
 				<button name="manageCustomerInvoiceLines" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-view-show-sale-invoice-lines"  hideIf="$popup()" colSpan="3"/>
