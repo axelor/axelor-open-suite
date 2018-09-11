@@ -46,11 +46,13 @@ public class InvoiceLineController {
     if (invoiceLine.getPackPriceSelect() == InvoiceLineRepository.SUBLINE_PRICE_ONLY
         && invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_PACK) {
       response.setValue("price", 0.00);
+      response.setValue("inTaxPrice", 0.00);
     } else if (parentPackPriceSelect != null) {
       if (invoiceLine.getIsSubLine() != null) {
         if (parentPackPriceSelect == InvoiceLineRepository.PACK_PRICE_ONLY
             && invoiceLine.getIsSubLine()) {
           response.setValue("price", 0.00);
+          response.setValue("inTaxPrice", 0.00);
         }
       }
     }
@@ -72,21 +74,17 @@ public class InvoiceLineController {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (InvoiceLine line : invoiceLines) {
           qty = (line.getQty().divide(oldKitQty, 2, RoundingMode.HALF_EVEN)).multiply(newKitQty);
-          priceDiscounted = invoiceLineService.computeDiscount(line, invoice);
+          priceDiscounted = invoiceLineService.computeDiscount(line, invoice.getInAti());
 
           if (line.getTaxLine() != null) {
             taxRate = line.getTaxLine().getValue();
           }
 
           if (!invoice.getInAti()) {
-            exTaxTotal =
-                InvoiceLineManagement.computeAmount(
-                    qty, invoiceLineService.computeDiscount(line, invoice));
+            exTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
             inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
           } else {
-            inTaxTotal =
-                InvoiceLineManagement.computeAmount(
-                    qty, invoiceLineService.computeDiscount(line, invoice));
+            inTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
             exTaxTotal =
                 inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
           }
@@ -160,6 +158,7 @@ public class InvoiceLineController {
       if (subLines != null) {
         for (InvoiceLine line : subLines) {
           line.setPrice(BigDecimal.ZERO);
+          line.setInTaxPrice(BigDecimal.ZERO);
           line.setPriceDiscounted(BigDecimal.ZERO);
           line.setExTaxTotal(BigDecimal.ZERO);
           line.setInTaxTotal(BigDecimal.ZERO);
@@ -170,6 +169,7 @@ public class InvoiceLineController {
       response.setValue("subLineList", subLines);
     } else {
       response.setValue("price", BigDecimal.ZERO);
+      response.setValue("inTaxPrice", BigDecimal.ZERO);
       response.setValue("priceDiscounted", BigDecimal.ZERO);
       response.setValue("exTaxTotal", BigDecimal.ZERO);
       response.setValue("inTaxTotal", BigDecimal.ZERO);

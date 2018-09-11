@@ -42,8 +42,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -76,28 +74,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         appBaseService,
         stockMoveRepository,
         partnerProductQualityRatingService);
-  }
-
-  @Override
-  public BigDecimal compute(StockMove stockMove) {
-    BigDecimal exTaxTotal = BigDecimal.ZERO;
-    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-      if ((stockMove.getSaleOrder() != null && stockMove.getSaleOrder().getInAti())
-          || (stockMove.getPurchaseOrder() != null && stockMove.getPurchaseOrder().getInAti())) {
-        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-          exTaxTotal =
-              exTaxTotal.add(
-                  stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceTaxed()));
-        }
-      } else {
-        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-          exTaxTotal =
-              exTaxTotal.add(
-                  stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
-        }
-      }
-    }
-    return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
   }
 
   @Override

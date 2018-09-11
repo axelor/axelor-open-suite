@@ -617,6 +617,7 @@ public class TimesheetServiceImpl implements TimesheetService {
             productName,
             price,
             price,
+            price,
             description,
             qtyConverted,
             product.getUnit(),

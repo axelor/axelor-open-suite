@@ -43,7 +43,6 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
-import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -72,6 +71,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected Product product;
   protected String productName;
   protected BigDecimal price;
+  protected BigDecimal inTaxPrice;
   protected BigDecimal priceDiscounted;
   protected String description;
   protected BigDecimal qty;
@@ -133,6 +133,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       Product product,
       String productName,
       BigDecimal price,
+      BigDecimal inTaxPrice,
       BigDecimal priceDiscounted,
       String description,
       BigDecimal qty,
@@ -160,6 +161,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         packPriceSelect);
 
     this.price = price;
+    this.inTaxPrice = inTaxPrice;
     this.priceDiscounted = priceDiscounted;
     this.taxLine = taxLine;
     this.discountTypeSelect = discountTypeSelect;
@@ -204,6 +206,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     invoiceLine.setDescription(description);
     invoiceLine.setPrice(price);
+    invoiceLine.setInTaxPrice(inTaxPrice);
 
     invoiceLine.setIsSubLine(isSubLine);
     invoiceLine.setPriceDiscounted(priceDiscounted);
@@ -333,20 +336,17 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
    * @param invoiceLine La ligne de facture.
    * @return La ligne de facture de remboursement.
    */
-  protected InvoiceLine refundInvoiceLine(
-      InvoiceLine invoiceLine, Period period, int typeSelect, boolean daysQty) {
+  protected InvoiceLine refundInvoiceLine(InvoiceLine invoiceLine, boolean daysQty) {
 
     LOG.debug("Remboursement d'une ligne de facture (quantité = nb jour ? {}).", daysQty);
-
-    BigDecimal qty = invoiceLine.getQty();
 
     InvoiceLine refundInvoiceLine = JPA.copy(invoiceLine, true);
 
     refundInvoiceLine.setInvoice(invoice);
 
-    qty = invoiceLine.getQty();
+    BigDecimal quantity = invoiceLine.getQty();
 
-    refundInvoiceLine.setQty(qty.negate());
+    refundInvoiceLine.setQty(quantity.negate());
 
     LOG.debug("Quantité remboursée : {}", refundInvoiceLine.getQty());
 
