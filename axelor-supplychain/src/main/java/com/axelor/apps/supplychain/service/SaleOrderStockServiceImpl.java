@@ -346,9 +346,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
       }
 
-      stockMoveLine.setLineTypeSelect(saleOrderLine.getTypeSelect());
-      stockMoveLine.setPackPriceSelect(saleOrderLine.getPackPriceSelect());
-      stockMoveLine.setIsSubLine(saleOrderLine.getIsSubLine());
+      updatePackInfo(saleOrderLine, stockMoveLine);
 
       return stockMoveLine;
     } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
@@ -366,11 +364,18 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               null);
 
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+      updatePackInfo(saleOrderLine, stockMoveLine);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
 
       return stockMoveLine;
     }
     return null;
+  }
+
+  private void updatePackInfo(SaleOrderLine saleOrderLine, StockMoveLine stockMoveLine) {
+    stockMoveLine.setLineTypeSelect(saleOrderLine.getTypeSelect());
+    stockMoveLine.setPackPriceSelect(saleOrderLine.getPackPriceSelect());
+    stockMoveLine.setIsSubLine(saleOrderLine.getIsSubLine());
   }
 
   @Override
