@@ -287,7 +287,7 @@
        emp.name as emp_name,
        sum(tml.hours_duration) as total_hours,
        emp.hourly_rate as emp_rate,
-       sum(tml.hours_duration)*emp.hourly_rate as emp_cost
+       sum(tml.hours_duration) * emp.hourly_rate as emp_cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
@@ -605,7 +605,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select sum(tml.hours_duration) as total_hours,
-       sum(tml.hours_duration*emp.hourly_rate) as emp_cost,
+       sum(tml.hours_duration * emp.hourly_rate) as emp_cost,
        date_trunc('month',tml.date_val) as month_val,
        to_char(tml.date_val,'yyyy-mm') as month_text
 from hr_timesheet_line tml
@@ -731,7 +731,7 @@ group by month_val,month_text]]></xml-property>
        emp.name as emp_name,
        sum(ppt.planned_hours) as total_hours,
        emp.hourly_rate as emp_rate,
-       sum(ppt.planned_hours*emp.hourly_rate) as emp_cost
+       sum(ppt.planned_hours * emp.hourly_rate) as emp_cost
 from project_project_planning_time ppt
 left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
@@ -833,8 +833,8 @@ group by emp.id,emp.name;]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select sum(ppt.real_hrs) as total_hours,
-       sum(ppt.real_hrs*emp.hourly_rate) as emp_cost,
+            <xml-property name="queryText"><![CDATA[select sum(ppt.real_hours) as total_hours,
+       sum(ppt.real_hours * emp.hourly_rate) as emp_cost,
        date_trunc('month',ppt.date_val) as month_val,
        to_char(ppt.date_val,'yyyy-mm') as month_text
 from project_project_planning_time ppt
@@ -1106,7 +1106,7 @@ from (
 ) ts
 left join (
 	select  sum(tml_real.hours_duration) as real_hours,
-		sum(tml_real.hours_duration*emp_real.hourly_rate) as real_cost,
+		sum(tml_real.hours_duration * emp_real.hourly_rate) as real_cost,
 		date_trunc('month',tml_real.date_val) as month_val
 	from hr_timesheet_line tml_real
 	left join hr_timesheet tm_real on (tm_real.id = tml_real.timesheet)
@@ -1127,7 +1127,7 @@ left join (
 on (ts.month_val = theory_time.month_val)
 left join (
 	select sum(ppt.planned_hours) as planned_past_hours,
-      	       sum(ppt.planned_hours*emp.hourly_rate) as planned_past_cost,
+      	       sum(ppt.planned_hours * emp.hourly_rate) as planned_past_cost,
        	       date_trunc('month',ppt.date_val) as month_val
 	from project_project_planning_time ppt
 	left join auth_user usr on (usr.id = ppt.user_id)
@@ -1137,7 +1137,7 @@ left join (
 on (ts.month_val = past_planned.month_val)
 left join (
 	select sum(ppt.planned_hours) as planned_hours,
-      	       sum(ppt.planned_hours*emp.hourly_rate) as planned_cost,
+      	       sum(ppt.planned_hours * emp.hourly_rate) as planned_cost,
        	       date_trunc('month',ppt.date_val) as month_val
 	from project_project_planning_time ppt
 	left join auth_user usr on (usr.id = ppt.user_id)
