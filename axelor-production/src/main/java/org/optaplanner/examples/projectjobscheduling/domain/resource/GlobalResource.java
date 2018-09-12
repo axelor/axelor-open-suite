@@ -21,6 +21,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("PjsGlobalResource")
 public class GlobalResource extends Resource {
 
+  public GlobalResource(int capacity) {
+    super(capacity);
+  }
+
   // ************************************************************************
   // Complex methods
   // ************************************************************************

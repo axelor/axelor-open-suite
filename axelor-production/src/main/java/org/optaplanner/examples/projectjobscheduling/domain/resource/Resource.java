@@ -21,17 +21,17 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.projectjobscheduling.domain.AbstractPersistable;
 
 @XStreamAlias("PjsResource")
-@XStreamInclude({GlobalResource.class, LocalResource.class})
+@XStreamInclude({GlobalResource.class})
 public abstract class Resource extends AbstractPersistable {
 
   private int capacity;
 
-  public int getCapacity() {
-    return capacity;
+  public Resource(int capacity) {
+    this.capacity = capacity;
   }
 
-  public void setCapacity(int capacity) {
-    this.capacity = capacity;
+  public int getCapacity() {
+    return capacity;
   }
 
   // ************************************************************************

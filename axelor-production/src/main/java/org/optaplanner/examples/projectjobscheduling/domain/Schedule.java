@@ -18,6 +18,8 @@ package org.optaplanner.examples.projectjobscheduling.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
@@ -43,13 +45,22 @@ public class Schedule extends AbstractPersistable {
   @XStreamConverter(BendableScoreXStreamConverter.class)
   private BendableScore score;
 
+  public Schedule() {
+    this.jobList = new ArrayList<Job>();
+    this.projectList = new ArrayList<Project>();
+    this.resourceList = new ArrayList<Resource>();
+    this.resourceRequirementList = new ArrayList<ResourceRequirement>();
+    this.executionModeList = new ArrayList<ExecutionMode>();
+    this.allocationList = new ArrayList<Allocation>();
+  }
+
   @ProblemFactCollectionProperty
   public List<Project> getProjectList() {
     return projectList;
   }
 
-  public void setProjectList(List<Project> projectList) {
-    this.projectList = projectList;
+  public void addProject(Project project) {
+    addAbstractPersistable(project, this.projectList);
   }
 
   @ProblemFactCollectionProperty
@@ -57,8 +68,8 @@ public class Schedule extends AbstractPersistable {
     return jobList;
   }
 
-  public void setJobList(List<Job> jobList) {
-    this.jobList = jobList;
+  public void addJob(Job job) {
+    addAbstractPersistable(job, this.jobList);
   }
 
   @ProblemFactCollectionProperty
@@ -66,8 +77,8 @@ public class Schedule extends AbstractPersistable {
     return executionModeList;
   }
 
-  public void setExecutionModeList(List<ExecutionMode> executionModeList) {
-    this.executionModeList = executionModeList;
+  public void addExecutionMode(ExecutionMode executionMode) {
+    addAbstractPersistable(executionMode, this.executionModeList);
   }
 
   @ProblemFactCollectionProperty
@@ -75,8 +86,8 @@ public class Schedule extends AbstractPersistable {
     return resourceList;
   }
 
-  public void setResourceList(List<Resource> resourceList) {
-    this.resourceList = resourceList;
+  public void addResource(Resource resource) {
+    addAbstractPersistable(resource, this.resourceList);
   }
 
   @ProblemFactCollectionProperty
@@ -84,8 +95,8 @@ public class Schedule extends AbstractPersistable {
     return resourceRequirementList;
   }
 
-  public void setResourceRequirementList(List<ResourceRequirement> resourceRequirementList) {
-    this.resourceRequirementList = resourceRequirementList;
+  public void addResourceRequirement(ResourceRequirement resourceRequirement) {
+    addAbstractPersistable(resourceRequirement, this.resourceRequirementList);
   }
 
   @PlanningEntityCollectionProperty
@@ -93,8 +104,8 @@ public class Schedule extends AbstractPersistable {
     return allocationList;
   }
 
-  public void setAllocationList(List<Allocation> allocationList) {
-    this.allocationList = allocationList;
+  public void addAllocation(Allocation allocation) {
+    addAbstractPersistable(allocation, this.allocationList);
   }
 
   @PlanningScore(bendableHardLevelsSize = 1, bendableSoftLevelsSize = 2)
@@ -110,4 +121,13 @@ public class Schedule extends AbstractPersistable {
   // Complex methods
   // ************************************************************************
 
+  private Long nextId(List<? extends AbstractPersistable> list) {
+    return list.size() > 0 ? list.get(list.size() - 1).getId() + 1 : 0;
+  }
+
+  private <T extends AbstractPersistable> void addAbstractPersistable(T abstractPersistable, List<T> list) {
+    if(abstractPersistable.getId() == null)
+      abstractPersistable.setId(nextId(list));
+    list.add(abstractPersistable);
+  }
 }

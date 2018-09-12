@@ -25,21 +25,24 @@ public class LocalResource extends Resource {
   private Project project;
   private boolean renewable;
 
-  public Project getProject() {
-    return project;
+  public LocalResource(int capacity, Project project) {
+    this(capacity, project, true);
   }
 
-  public void setProject(Project project) {
+  public LocalResource(int capacity, Project project, boolean renewable) {
+    super(capacity);
+
     this.project = project;
+    this.renewable = renewable;
+  }
+
+  public Project getProject() {
+    return project;
   }
 
   @Override
   public boolean isRenewable() {
     return renewable;
-  }
-
-  public void setRenewable(boolean renewable) {
-    this.renewable = renewable;
   }
 
   // ************************************************************************

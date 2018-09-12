@@ -17,6 +17,8 @@
 package org.optaplanner.examples.projectjobscheduling.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.optaplanner.examples.projectjobscheduling.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.LocalResource;
@@ -30,12 +32,19 @@ public class Project extends AbstractPersistable {
   private List<LocalResource> localResourceList;
   private List<Job> jobList;
 
-  public int getReleaseDate() {
-    return releaseDate;
+  public Project() {
+    this(0);
+  }
+  
+  public Project(int releaseDate) {
+    this.releaseDate = releaseDate;
+
+    this.jobList = new ArrayList<Job>();
+    this.localResourceList = new ArrayList<LocalResource>();
   }
 
-  public void setReleaseDate(int releaseDate) {
-    this.releaseDate = releaseDate;
+  public int getReleaseDate() {
+    return releaseDate;
   }
 
   public int getCriticalPathDuration() {
@@ -46,20 +55,12 @@ public class Project extends AbstractPersistable {
     this.criticalPathDuration = criticalPathDuration;
   }
 
-  public List<LocalResource> getLocalResourceList() {
-    return localResourceList;
-  }
-
-  public void setLocalResourceList(List<LocalResource> localResourceList) {
-    this.localResourceList = localResourceList;
+  public void addJob(Job job) {
+    this.jobList.add(job);
   }
 
   public List<Job> getJobList() {
     return jobList;
-  }
-
-  public void setJobList(List<Job> jobList) {
-    this.jobList = jobList;
   }
 
   // ************************************************************************

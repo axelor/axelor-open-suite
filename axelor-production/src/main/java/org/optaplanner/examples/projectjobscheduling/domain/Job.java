@@ -17,6 +17,8 @@
 package org.optaplanner.examples.projectjobscheduling.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.optaplanner.examples.projectjobscheduling.domain.AbstractPersistable;
 
@@ -33,28 +35,27 @@ public class Job extends AbstractPersistable {
 
   private List<Job> successorJobList;
 
-  public Project getProject() {
-    return project;
+  public Job(Project project, List<Job> successorJobList, JobType jobType) {
+    this.executionModeList = new ArrayList<ExecutionMode>();
+    this.project = project;
+    this.successorJobList = successorJobList;
+    this.jobType = jobType;
   }
 
-  public void setProject(Project project) {
-    this.project = project;
+  public Project getProject() {
+    return project;
   }
 
   public JobType getJobType() {
     return jobType;
   }
 
-  public void setJobType(JobType jobType) {
-    this.jobType = jobType;
-  }
-
   public List<ExecutionMode> getExecutionModeList() {
     return executionModeList;
   }
 
-  public void setExecutionModeList(List<ExecutionMode> executionModeList) {
-    this.executionModeList = executionModeList;
+  public void addExecutionMode(ExecutionMode executionMode) {
+    this.executionModeList.add(executionMode);
   }
 
   public boolean isPinned() {
@@ -83,10 +84,6 @@ public class Job extends AbstractPersistable {
 
   public List<Job> getSuccessorJobList() {
     return successorJobList;
-  }
-
-  public void setSuccessorJobList(List<Job> successorJobList) {
-    this.successorJobList = successorJobList;
   }
 
   // ************************************************************************

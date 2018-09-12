@@ -50,7 +50,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
   private void initializePlanner() throws AxelorException {
     // Custom Unsolved Job Scheduling
-    this.initializeSchedule();
+    this.unsolvedJobScheduling = new Schedule();
 
     // Create Resources
     this.createResources();
@@ -215,30 +215,16 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     return tmpDateTime.plus(chronoUnit.getDuration());
   }
 
-  private void initializeSchedule() {
-    this.unsolvedJobScheduling = new Schedule();
-
-    this.unsolvedJobScheduling.setJobList(new ArrayList<Job>());
-    this.unsolvedJobScheduling.setProjectList(new ArrayList<Project>());
-    this.unsolvedJobScheduling.setResourceList(new ArrayList<Resource>());
-    this.unsolvedJobScheduling.setResourceRequirementList(new ArrayList<ResourceRequirement>());
-    this.unsolvedJobScheduling.setExecutionModeList(new ArrayList<ExecutionMode>());
-    this.unsolvedJobScheduling.setAllocationList(new ArrayList<Allocation>());
-  }
-
   private void createResources() {
     this.machineCodeToResourceMap = new HashMap<>();
 
     List<WorkCenter> workCenterList = Beans.get(WorkCenterRepository.class).all().fetch();
     for (WorkCenter workCenter : workCenterList) {
-      Resource resource = new GlobalResource();
-
-      resource.setCapacity(1);
-      resource.setId(nextId(this.unsolvedJobScheduling.getResourceList()));
+      Resource resource = new GlobalResource(1);
 
       this.machineCodeToResourceMap.put(workCenter.getCode(), resource);
 
-      this.unsolvedJobScheduling.getResourceList().add(resource);
+      this.unsolvedJobScheduling.addResource(resource);
     }
   }
 
@@ -304,15 +290,12 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
   private int maximumExecutionModeDuration(Job job) {
     int maximumExecutionModeDuration = 0;
-    if (job.getExecutionModeList() != null) {
-      for (ExecutionMode executionMode : job.getExecutionModeList()) {
-        if (maximumExecutionModeDuration < executionMode.getDuration()) {
-          maximumExecutionModeDuration = executionMode.getDuration();
-        }
+    for (ExecutionMode executionMode : job.getExecutionModeList()) {
+      if (maximumExecutionModeDuration < executionMode.getDuration()) {
+        maximumExecutionModeDuration = executionMode.getDuration();
       }
-      return maximumExecutionModeDuration;
     }
-    return 0;
+    return maximumExecutionModeDuration;
   }
 
   private Project createProject(
@@ -345,16 +328,19 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     Map<Integer, ArrayList<Allocation>> priorityToAllocationListMap =
         this.initializePriorityToAllocationListMap(sortedPriorityList);
 
-    Project project = this.initializeProject();
-    if (projectReleaseDate != null) project.setReleaseDate(projectReleaseDate);
-    this.unsolvedJobScheduling.getProjectList().add(project);
+    Project project;
+    if (projectReleaseDate != null)
+      project = new Project(projectReleaseDate);
+    else
+      project = new Project();
+    this.unsolvedJobScheduling.addProject(project);
 
     // Source Job
     List<Job> sourceSuccessorJobList = priorityToJobListMap.get(sortedPriorityList.get(1));
     Job sourceJob = this.getSourceJob(project, sourceSuccessorJobList);
-    project.getJobList().add(sourceJob);
+    project.addJob(sourceJob);
     priorityToJobListMap.get(Integer.MIN_VALUE).add(sourceJob);
-    this.unsolvedJobScheduling.getJobList().add(sourceJob);
+    this.unsolvedJobScheduling.addJob(sourceJob);
 
     // Source Allocation
     Long sourceAllocationId = (long) (project.getId() * 100);
@@ -364,13 +350,13 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         this.getSourceAllocation(
             sourceAllocationId, sourceJob, sourceSucccessorAllocationList, projectReleaseDate);
     priorityToAllocationListMap.get(Integer.MIN_VALUE).add(sourceAllocation);
-    this.unsolvedJobScheduling.getAllocationList().add(sourceAllocation);
+    this.unsolvedJobScheduling.addAllocation(sourceAllocation);
 
     // Sink Job
     Job sinkJob = this.getSinkJob(project);
-    project.getJobList().add(sinkJob);
+    project.addJob(sinkJob);
     priorityToJobListMap.get(Integer.MAX_VALUE).add(sinkJob);
-    this.unsolvedJobScheduling.getJobList().add(sinkJob);
+    this.unsolvedJobScheduling.addJob(sinkJob);
 
     // Sink Allocation
     Long sinkAllocationId =
@@ -381,7 +367,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         this.getSinkAllocation(
             sinkAllocationId, sinkJob, sinkPredecessorAllocationList, projectReleaseDate);
     priorityToAllocationListMap.get(Integer.MAX_VALUE).add(sinkAllocation);
-    this.unsolvedJobScheduling.getAllocationList().add(sinkAllocation);
+    this.unsolvedJobScheduling.addAllocation(sinkAllocation);
 
     Integer allocationIdx = 0;
     for (Integer priorityIdx = 0; priorityIdx < sortedPriorityList.size(); priorityIdx++) {
@@ -391,24 +377,23 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         Job job =
             this.getStandardJob(
                 project, priorityToJobListMap.get(sortedPriorityList.get(priorityIdx + 1)));
-        project.getJobList().add(job);
-        this.unsolvedJobScheduling.getJobList().add(job);
+        project.addJob(job);
+        this.unsolvedJobScheduling.addJob(job);
         priorityToJobListMap.get(priority).add(job);
 
         // Execution Mode
         Integer executionModeDuration =
             this.getExecutionModeDuration(operationOrder, manufOrder, granularity);
-        ExecutionMode executionMode = this.getExecutionMode(job, executionModeDuration);
-        this.unsolvedJobScheduling.getExecutionModeList().add(executionMode);
-        job.getExecutionModeList().add(executionMode);
+        ExecutionMode executionMode = new ExecutionMode(job, executionModeDuration);
+        this.unsolvedJobScheduling.addExecutionMode(executionMode);
+        job.addExecutionMode(executionMode);
 
         // Resource Requirement
         Resource resource =
             this.machineCodeToResourceMap.get(operationOrder.getWorkCenter().getCode());
-        ResourceRequirement resourceRequirement =
-            this.getResourceRequirement(executionMode, resource);
-        this.unsolvedJobScheduling.getResourceRequirementList().add(resourceRequirement);
-        executionMode.getResourceRequirementList().add(resourceRequirement);
+        ResourceRequirement resourceRequirement = new ResourceRequirement(executionMode, resource, 1);
+        this.unsolvedJobScheduling.addResourceRequirement(resourceRequirement);
+        executionMode.addResourceRequirement(resourceRequirement);
 
         // Allocation
         Long allocationId = (long) (project.getId() * 100 + (allocationIdx + 1));
@@ -427,7 +412,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
                 projectReleaseDate);
         this.allocationIdToOperationOrderMap.put(allocation.getId(), operationOrder);
         allocationIdx++;
-        this.unsolvedJobScheduling.getAllocationList().add(allocation);
+        this.unsolvedJobScheduling.addAllocation(allocation);
         priorityToAllocationListMap.get(priority).add(allocation);
 
         // Pinned job
@@ -457,21 +442,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
   private Integer durationBetween(LocalDateTime startDate, LocalDateTime endDate) {
     return (int) ChronoUnit.SECONDS.between(startDate, endDate) / this.granularity;
-  }
-
-  private Long nextId(List<? extends AbstractPersistable> list) {
-    return list.size() > 0 ? list.get(list.size() - 1).getId() + 1 : 0;
-  }
-
-  private Project initializeProject() {
-    Project project = new Project();
-
-    project.setId(nextId(this.unsolvedJobScheduling.getProjectList()));
-    project.setJobList(new ArrayList<Job>());
-    project.setLocalResourceList(new ArrayList<LocalResource>());
-    project.setReleaseDate(0);
-
-    return project;
   }
 
   private Map<Integer, List<OperationOrder>> getPriorityToOperationOrderListMap(
@@ -525,15 +495,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   }
 
   private Job getJob(Project project, List<Job> successorJobList, JobType jobType) {
-    Job job = new Job();
-
-    job.setId(nextId(this.unsolvedJobScheduling.getJobList()));
-    job.setExecutionModeList(new ArrayList<ExecutionMode>());
-    job.setProject(project);
-    job.setSuccessorJobList(successorJobList);
-    job.setJobType(jobType);
-
-    return job;
+    return new Job(project, successorJobList, jobType);
   }
 
   private Integer getExecutionModeDuration(
@@ -553,29 +515,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
               * manufOrder.getQty().intValue();
     }
     return (int) Math.ceil(((double) duration) / granularity);
-  }
-
-  private ExecutionMode getExecutionMode(Job job, Integer duration) {
-    ExecutionMode executionMode = new ExecutionMode();
-
-    executionMode.setId(nextId(this.unsolvedJobScheduling.getExecutionModeList()));
-    executionMode.setJob(job);
-    executionMode.setResourceRequirementList(new ArrayList<ResourceRequirement>());
-    executionMode.setDuration(duration);
-
-    return executionMode;
-  }
-
-  private ResourceRequirement getResourceRequirement(
-      ExecutionMode executionMode, Resource resource) {
-    ResourceRequirement resourceRequirement = new ResourceRequirement();
-
-    resourceRequirement.setId(nextId(this.unsolvedJobScheduling.getResourceRequirementList()));
-    resourceRequirement.setExecutionMode(executionMode);
-    resourceRequirement.setResource(resource);
-    resourceRequirement.setRequirement(1);
-
-    return resourceRequirement;
   }
 
   private Allocation getSourceAllocation(
@@ -610,16 +549,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       Allocation sourceAllocation,
       Allocation sinkAllocation,
       Integer projectReleaseDate) {
-    Allocation allocation = new Allocation();
+    Allocation allocation = new Allocation(job, predecessorAllocationList, successorAllocationList, sourceAllocation, sinkAllocation, projectReleaseDate != null ? projectReleaseDate : 0);
 
     allocation.setId(allocationId);
-    allocation.setJob(job);
-    allocation.setPredecessorAllocationList(predecessorAllocationList);
-    allocation.setSuccessorAllocationList(successorAllocationList);
-    allocation.setPredecessorsDoneDate(0);
-    allocation.setSourceAllocation(sourceAllocation);
-    allocation.setSinkAllocation(sinkAllocation);
-    if (projectReleaseDate != null) allocation.setPredecessorsDoneDate(projectReleaseDate);
 
     return allocation;
   }

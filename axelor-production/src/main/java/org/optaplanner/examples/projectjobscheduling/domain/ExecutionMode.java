@@ -17,6 +17,8 @@
 package org.optaplanner.examples.projectjobscheduling.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.optaplanner.examples.projectjobscheduling.domain.AbstractPersistable;
 
@@ -28,28 +30,27 @@ public class ExecutionMode extends AbstractPersistable {
 
   private List<ResourceRequirement> resourceRequirementList;
 
-  public Job getJob() {
-    return job;
+  public ExecutionMode(Job job, int duration) {
+    this.job = job;
+    this.duration = duration;
+    
+    this.resourceRequirementList = new ArrayList<ResourceRequirement>();
   }
 
-  public void setJob(Job job) {
-    this.job = job;
+  public Job getJob() {
+    return job;
   }
 
   public int getDuration() {
     return duration;
   }
 
-  public void setDuration(int duration) {
-    this.duration = duration;
-  }
-
   public List<ResourceRequirement> getResourceRequirementList() {
     return resourceRequirementList;
   }
 
-  public void setResourceRequirementList(List<ResourceRequirement> resourceRequirementList) {
-    this.resourceRequirementList = resourceRequirementList;
+  public void addResourceRequirement(ResourceRequirement resourceRequirement) {
+    this.resourceRequirementList.add(resourceRequirement);
   }
 
   // ************************************************************************
