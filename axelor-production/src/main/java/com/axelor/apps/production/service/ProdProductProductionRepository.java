@@ -21,6 +21,7 @@ import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.db.JPA;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -49,8 +50,7 @@ public class ProdProductProductionRepository extends ProdProductRepository {
     if (productId == null || qty == null || toProduceManufOrderId == null) {
       return BigDecimal.ZERO;
     }
-    BigDecimal availableQty =
-        Optional.ofNullable(
+    List<BigDecimal> queryResult =
                 JPA.em()
                     .createQuery(
                         "SELECT locationLine.currentQty "
@@ -62,8 +62,13 @@ public class ProdProductProductionRepository extends ProdProductRepository {
                         BigDecimal.class)
                     .setParameter("productId", productId)
                     .setParameter("manufOrderId", toProduceManufOrderId)
-                    .getSingleResult())
-            .orElse(BigDecimal.ZERO);
+                    .getResultList();
+    BigDecimal availableQty;
+    if (queryResult.isEmpty()) {
+      availableQty = BigDecimal.ZERO;
+    } else {
+      availableQty = queryResult.get(0);
+    }
     return BigDecimal.ZERO.max(qty.subtract(availableQty));
   }
 }
