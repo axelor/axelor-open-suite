@@ -49,6 +49,7 @@
 - Business Project : Fill default values from Project while generating the sale Quotation.
 - Business Project : Enhancement of task and project view.
 - Project : Change invoicing project view.
+- Stock Move : Add Wizard for tracking number
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
