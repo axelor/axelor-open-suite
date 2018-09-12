@@ -18,7 +18,6 @@ package org.optaplanner.examples.projectjobscheduling.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -26,7 +25,6 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.examples.projectjobscheduling.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 import org.optaplanner.persistence.xstream.api.score.buildin.bendable.BendableScoreXStreamConverter;
 
@@ -125,9 +123,9 @@ public class Schedule extends AbstractPersistable {
     return list.size() > 0 ? list.get(list.size() - 1).getId() + 1 : 0;
   }
 
-  private <T extends AbstractPersistable> void addAbstractPersistable(T abstractPersistable, List<T> list) {
-    if(abstractPersistable.getId() == null)
-      abstractPersistable.setId(nextId(list));
+  private <T extends AbstractPersistable> void addAbstractPersistable(
+      T abstractPersistable, List<T> list) {
+    if (abstractPersistable.getId() == null) abstractPersistable.setId(nextId(list));
     list.add(abstractPersistable);
   }
 }

@@ -145,7 +145,15 @@ public class ManufOrderController {
     }
   }
 
-  public void plan(ActionRequest request, ActionResponse response) {
+  public void quickPlan(ActionRequest request, ActionResponse response) {
+    plan(request, response, true);
+  }
+
+  public void slowPlan(ActionRequest request, ActionResponse response) {
+    plan(request, response, false);
+  }
+
+  private void plan(ActionRequest request, ActionResponse response, boolean quickSolve) {
 
     try {
       Context context = request.getContext();

@@ -26,4 +26,6 @@ public interface ManufOrderPlanService {
   void optaPlan(ManufOrder manufOrder) throws AxelorException;
 
   void optaPlan(List<ManufOrder> manufOrderList) throws AxelorException;
+
+  void optaPlan(List<ManufOrder> manufOrderList, boolean quickSolve) throws AxelorException;
 }

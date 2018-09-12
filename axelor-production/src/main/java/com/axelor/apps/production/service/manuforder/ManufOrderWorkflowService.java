@@ -85,6 +85,12 @@ public class ManufOrderWorkflowService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public List<ManufOrder> plan(List<ManufOrder> manufOrderList) throws AxelorException {
+    return plan(manufOrderList, true);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public List<ManufOrder> plan(List<ManufOrder> manufOrderList, boolean quickSolve)
+      throws AxelorException {
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
 
     for (ManufOrder manufOrder : manufOrderList) {
@@ -107,7 +113,7 @@ public class ManufOrderWorkflowService {
     }
 
     if (Beans.get(AppProductionRepository.class).all().fetchOne().getFiniteCapacity()) {
-      Beans.get(ManufOrderPlanService.class).optaPlan(manufOrderList);
+      Beans.get(ManufOrderPlanService.class).optaPlan(manufOrderList, quickSolve);
     } else {
       for (ManufOrder manufOrder : manufOrderList) {
         if (manufOrder.getOperationOrderList() != null) {

@@ -123,9 +123,8 @@
 	
 	<selection name="production.manuf.order.optaplanner.granularity.select">
 		<option value="1">Minutes</option>
-		<option value="2">Half-hours</option>
-		<option value="3">Hours</option>
-		<option value="4">Days</option>
+		<option value="2">Hours</option>
+		<option value="3">Days</option>
 	</selection>
 
 </object-views>

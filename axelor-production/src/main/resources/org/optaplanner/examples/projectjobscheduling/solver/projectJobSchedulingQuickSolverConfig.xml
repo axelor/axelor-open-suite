@@ -9,7 +9,9 @@
     <!--<scoreDrl>org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingScoreRules.drl</scoreDrl>-->
   </scoreDirectorFactory>
   <termination>
+    <terminationCompositionStyle>OR</terminationCompositionStyle>
     <secondsSpentLimit>20</secondsSpentLimit>
+    <bestScoreFeasible>true</bestScoreFeasible>
   </termination>
 
   <constructionHeuristic>

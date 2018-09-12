@@ -25,7 +25,6 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
-import org.optaplanner.examples.projectjobscheduling.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.DelayStrengthComparator;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.ExecutionModeStrengthWeightFactory;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.NotSourceOrSinkAllocationFilter;
@@ -49,14 +48,24 @@ public class Allocation extends AbstractPersistable {
   // Shadow variables
   private Integer predecessorsDoneDate;
 
-  public Allocation(Job job, List<Allocation> predecessorAllocationList, List<Allocation> successorAllocationList, Allocation sourceAllocation, Allocation sinkAllocation, Integer predecessorsDoneDate) {
+  public Allocation(
+      Job job,
+      List<Allocation> predecessorAllocationList,
+      List<Allocation> successorAllocationList,
+      Allocation sourceAllocation,
+      Allocation sinkAllocation,
+      Integer predecessorsDoneDate) {
     this.job = job;
     this.predecessorAllocationList = predecessorAllocationList;
     this.successorAllocationList = successorAllocationList;
     this.sourceAllocation = sourceAllocation;
     this.sinkAllocation = sinkAllocation;
     this.predecessorsDoneDate = predecessorsDoneDate;
+
+    //this.delay = 0;
   }
+
+  public Allocation() {}
 
   public Job getJob() {
     return job;

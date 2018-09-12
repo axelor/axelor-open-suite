@@ -17,10 +17,8 @@
 package org.optaplanner.examples.projectjobscheduling.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 import java.util.ArrayList;
 import java.util.List;
-import org.optaplanner.examples.projectjobscheduling.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.LocalResource;
 
 @XStreamAlias("PjsProject")
@@ -35,7 +33,7 @@ public class Project extends AbstractPersistable {
   public Project() {
     this(0);
   }
-  
+
   public Project(int releaseDate) {
     this.releaseDate = releaseDate;
 

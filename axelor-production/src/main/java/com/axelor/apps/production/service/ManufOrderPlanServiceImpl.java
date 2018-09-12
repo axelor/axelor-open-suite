@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.examples.projectjobscheduling.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.Job;
@@ -37,7 +36,6 @@ import org.optaplanner.examples.projectjobscheduling.domain.Project;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.GlobalResource;
-import org.optaplanner.examples.projectjobscheduling.domain.resource.LocalResource;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
 public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
@@ -47,6 +45,11 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   private Map<Long, OperationOrder> allocationIdToOperationOrderMap;
   private Map<Long, ManufOrder> projectIdToManufOrderMap;
   private Integer granularity;
+
+  private static final String QUICK_SOLVER_CONFIG =
+      "org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingQuickSolverConfig.xml";
+  private static final String SLOW_SOLVER_CONFIG =
+      "org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingSlowSolverConfig.xml";
 
   private void initializePlanner() throws AxelorException {
     // Custom Unsolved Job Scheduling
@@ -65,12 +68,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         this.granularity = 60;
         break;
       case (2):
-        this.granularity = 1800;
-        break;
-      case (3):
         this.granularity = 3600;
         break;
-      case (4):
+      case (3):
         this.granularity = 86400;
         break;
       default:
@@ -87,12 +87,18 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void optaPlan(List<ManufOrder> manufOrderListToPlan) throws AxelorException {
+    optaPlan(manufOrderListToPlan, true);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void optaPlan(List<ManufOrder> manufOrderListToPlan, boolean quickSolve)
+      throws AxelorException {
     this.initializePlanner();
 
     // Build the Solver
-    SolverFactory<Schedule> solverFactory =
-        SolverFactory.createFromXmlResource(
-            "projectjobscheduling/solver/projectJobSchedulingSolverConfig.xml");
+    SolverFactory<Schedule> solverFactory;
+    if (quickSolve) solverFactory = SolverFactory.createFromXmlResource(QUICK_SOLVER_CONFIG);
+    else solverFactory = SolverFactory.createFromXmlResource(SLOW_SOLVER_CONFIG);
     Solver<Schedule> solver = solverFactory.buildSolver();
 
     // Round now LocalDateTime
@@ -165,6 +171,10 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     displayManufOrder(pinnedManufOrderList, solvedJobScheduling);
     System.out.println("NOT PINNED");
     displayManufOrder(manufOrderListToPlan, solvedJobScheduling);
+    
+    for (Allocation allocation : solvedJobScheduling.getAllocationList()) {
+      System.out.println(allocation.getId() + " : " + allocation.getExecutionMode() + " " + allocation.getDelay());
+    }
   }
 
   private LocalDateTime roundDateTime(LocalDateTime dateTime) throws AxelorException {
@@ -172,10 +182,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       case (1):
         return this.ceilDateTime(dateTime, ChronoUnit.MINUTES);
       case (2):
-        return this.ceilDateTime(dateTime, ChronoUnit.HALF_DAYS);
-      case (3):
         return this.ceilDateTime(dateTime, ChronoUnit.HOURS);
-      case (4):
+      case (3):
         return this.ceilDateTime(dateTime, ChronoUnit.DAYS);
       default:
         throw new AxelorException(
@@ -329,10 +337,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         this.initializePriorityToAllocationListMap(sortedPriorityList);
 
     Project project;
-    if (projectReleaseDate != null)
-      project = new Project(projectReleaseDate);
-    else
-      project = new Project();
+    if (projectReleaseDate != null) project = new Project(projectReleaseDate);
+    else project = new Project();
     this.unsolvedJobScheduling.addProject(project);
 
     // Source Job
@@ -391,7 +397,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         // Resource Requirement
         Resource resource =
             this.machineCodeToResourceMap.get(operationOrder.getWorkCenter().getCode());
-        ResourceRequirement resourceRequirement = new ResourceRequirement(executionMode, resource, 1);
+        ResourceRequirement resourceRequirement =
+            new ResourceRequirement(executionMode, resource, 1);
         this.unsolvedJobScheduling.addResourceRequirement(resourceRequirement);
         executionMode.addResourceRequirement(resourceRequirement);
 
@@ -549,7 +556,14 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       Allocation sourceAllocation,
       Allocation sinkAllocation,
       Integer projectReleaseDate) {
-    Allocation allocation = new Allocation(job, predecessorAllocationList, successorAllocationList, sourceAllocation, sinkAllocation, projectReleaseDate != null ? projectReleaseDate : 0);
+    Allocation allocation =
+        new Allocation(
+            job,
+            predecessorAllocationList,
+            successorAllocationList,
+            sourceAllocation,
+            sinkAllocation,
+            projectReleaseDate != null ? projectReleaseDate : 0);
 
     allocation.setId(allocationId);
 
