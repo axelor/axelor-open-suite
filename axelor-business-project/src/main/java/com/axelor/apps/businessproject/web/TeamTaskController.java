@@ -22,11 +22,15 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class TeamTaskController {
 
   @Inject private TeamTaskBusinessService teamTaskBusinessService;
+
+  @Inject private TeamTaskRepository teamTaskRepo;
 
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
@@ -54,6 +58,25 @@ public class TeamTaskController {
       teamTask = teamTaskBusinessService.compute(teamTask);
       response.setValue("priceDiscounted", teamTask.getPriceDiscounted());
       response.setValue("exTaxTotal", teamTask.getExTaxTotal());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Invert value of 'toInvoice' field and save the record
+   *
+   * @param request
+   * @param response
+   */
+  @Transactional
+  public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      TeamTask teamTask = request.getContext().asType(TeamTask.class);
+      teamTask = teamTaskRepo.find(teamTask.getId());
+      teamTask.setToInvoice(!teamTask.getToInvoice());
+      teamTaskRepo.save(teamTask);
+      response.setValue("toInvoice", teamTask.getToInvoice());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
