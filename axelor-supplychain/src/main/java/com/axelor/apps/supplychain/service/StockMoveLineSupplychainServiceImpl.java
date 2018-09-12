@@ -89,7 +89,8 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, stockMove);
     } else {
       if (stockMoveLine.getProduct() != null
-          && (stockMoveLine.getLineTypeSelect() == null || stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_PACK)) {
+          && (stockMoveLine.getLineTypeSelect() == null
+              || stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_PACK)) {
         if (stockMove.getSaleOrder() != null) {
           taxLine =
               accountManagementService.getTaxLine(

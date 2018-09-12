@@ -84,6 +84,7 @@
 - Fix social network icons for employee
 - Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
 - Project: Fix financial report view.
+- Fix stock move generation with pack lines from sale order
 
 ## [Unreleased 5.0.5]	
 ##Features

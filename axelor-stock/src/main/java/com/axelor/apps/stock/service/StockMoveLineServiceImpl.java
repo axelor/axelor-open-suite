@@ -813,7 +813,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     Unit startUnit = null;
     Unit endUnit = null;
 
-    if (!product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+    if (product == null
+        || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
       return netMass;
     }
 
