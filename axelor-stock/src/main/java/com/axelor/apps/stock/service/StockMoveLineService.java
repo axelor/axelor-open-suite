@@ -220,7 +220,7 @@ public interface StockMoveLineService {
    */
   public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
       throws AxelorException;
-  
+
   @Transactional
   public void splitStockMoveLineByTrackingNumber(
       StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers);
