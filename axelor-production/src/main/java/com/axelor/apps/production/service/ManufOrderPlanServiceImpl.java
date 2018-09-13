@@ -130,9 +130,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
     for (ManufOrder manufOrder : manufOrderListToPlan) {
       LocalDateTime releaseDate;
-      if (manufOrder.getPlannedStartDateT() != null
-          && manufOrder.getPlannedStartDateT().isAfter(now)) {
-        releaseDate = manufOrder.getPlannedStartDateT();
+      if (manufOrder.getDesiredStartDateT() != null
+          && manufOrder.getDesiredStartDateT().isAfter(now)) {
+        releaseDate = manufOrder.getDesiredStartDateT();
         releaseDate = this.roundDateTime(releaseDate);
       } else {
         releaseDate = now;
@@ -171,9 +171,10 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     displayManufOrder(pinnedManufOrderList, solvedJobScheduling);
     System.out.println("NOT PINNED");
     displayManufOrder(manufOrderListToPlan, solvedJobScheduling);
-    
+
     for (Allocation allocation : solvedJobScheduling.getAllocationList()) {
-      System.out.println(allocation.getId() + " : " + allocation.getExecutionMode() + " " + allocation.getDelay());
+      System.out.println(
+          allocation.getId() + " : " + allocation.getExecutionMode() + " " + allocation.getDelay());
     }
   }
 
@@ -347,7 +348,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     project.addJob(sourceJob);
     priorityToJobListMap.get(Integer.MIN_VALUE).add(sourceJob);
     this.unsolvedJobScheduling.addJob(sourceJob);
-    
+
     // Source execution mode
     ExecutionMode sourceExecutionMode = new ExecutionMode(sourceJob, 0);
     this.unsolvedJobScheduling.addExecutionMode(sourceExecutionMode);
@@ -370,7 +371,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     project.addJob(sinkJob);
     priorityToJobListMap.get(Integer.MAX_VALUE).add(sinkJob);
     this.unsolvedJobScheduling.addJob(sinkJob);
-    
+
     // Sink execution mode
     ExecutionMode sinkExecutionMode = new ExecutionMode(sinkJob, 0);
     this.unsolvedJobScheduling.addExecutionMode(sinkExecutionMode);

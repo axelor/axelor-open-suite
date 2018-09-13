@@ -138,6 +138,10 @@
 		<panel-tabs name="mainPanelTab" colSpan="4" >
 			<panel-related name="operationOrderListPanel" field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form" grid-view="operation-order-grid"/>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
+				<panel name="desiredDates" title="Desired dates" colSpan="12">
+					<field name="desiredStartDateT" title="Start date"/>
+					<field name="desiredEndDateT" title="End date"/>
+				</panel>
 				<panel name="plannedDatesPanel" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>
