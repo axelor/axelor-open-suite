@@ -30,6 +30,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SaleOrderLineProjectController {
 
@@ -48,29 +49,37 @@ public class SaleOrderLineProjectController {
   public void setProject(ActionRequest request, ActionResponse response) {
 
     try {
-      Map<String, Object> projectMap = (Map<String, Object>) request.getContext().get("_project");
 
-      Project project = null;
-      if (projectMap != null && projectMap.get("id") != null) {
-        project = projectRepository.find(Long.parseLong(projectMap.get("id").toString()));
-      }
+      Project project = request.getContext().asType(Project.class);
+      project = projectRepository.find(project.getId());
 
-      if (project == null) {
-        response.setFlash(IExceptionMessage.NO_PROJECT_IN_CONTEXT);
-        return;
-      }
-
-      List<Long> lineIds = (List<Long>) request.getContext().get("_ids");
-
-      if (lineIds.isEmpty()) {
-        response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
-      } else {
-        saleOrderLineProjectService.setProject(lineIds, project);
-        response.setCanClose(true);
-      }
+      setProject(request, response, project);
 
     } catch (Exception e) {
       TraceBackService.trace(e);
+    }
+  }
+
+  private void setProject(ActionRequest request, ActionResponse response, Project project) {
+    List<Map<String, Object>> saleOrderLineSet =
+        (List<Map<String, Object>>) request.getContext().get("salesOrderLineSet");
+    if (saleOrderLineSet == null || saleOrderLineSet.isEmpty()) {
+      response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
+    } else {
+      List<Long> lineIds =
+          saleOrderLineSet
+              .stream()
+              .map(it -> Long.parseLong(it.get("id").toString()))
+              .collect(Collectors.toList());
+      saleOrderLineProjectService.setProject(lineIds, project);
+      response.setAttr("$salesOrderLineSet", "hidden", true);
+      response.setAttr("addSelectedSOLines", "hidden", true);
+      response.setAttr("unlinkSelectedSOLines", "hidden", true);
+      response.setAttr("cancelManageSOLines", "hidden", true);
+      response.setAttr("saleOrderLineDashlet", "refresh", true);
+      response.setAttr("saleOrderDashlet", "refresh", true);
+      response.setAttr("selectNewSOLines", "readonly", false);
+      response.setAttr("manageSOLines", "readonly", false);
     }
   }
 
@@ -83,14 +92,7 @@ public class SaleOrderLineProjectController {
   public void unsetProject(ActionRequest request, ActionResponse response) {
 
     try {
-      List<Long> lineIds = (List<Long>) request.getContext().get("_ids");
-
-      if (lineIds.isEmpty()) {
-        response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
-      } else {
-        saleOrderLineProjectService.setProject(lineIds, null);
-        response.setCanClose(true);
-      }
+      setProject(request, response, null);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

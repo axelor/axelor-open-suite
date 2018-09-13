@@ -4,10 +4,6 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
    
 	<grid name="invoice-line-project-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
-		<toolbar>
-       		<button name="addSelectedLines" title="Add selected lines" showIf="_addLines" onClick="action-invoice-line-method-set-project"/>
-       		<button name="unlinkSelectedLines" title="Unlink selected lines" showIf="_unlinkLines" onClick="action-validate-unset-project,action-invoice-line-method-unset-project"/>
-        </toolbar>
 		<field name="project"/>
 		<field name="invoice" />
 		<field name="productName"/>
@@ -18,12 +14,20 @@
 		<field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 	
-	<action-method name="action-invoice-line-method-set-project">
-		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="setProject"/>
+	<action-method name="action-invoice-line-method-set-customer-invoice-line-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="setCustomerInvoiceLineProject"/>
 	</action-method>
 	
-	<action-method name="action-invoice-line-method-unset-project">
-		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="unsetProject"/>
+	<action-method name="action-invoice-line-method-unset-customer-invoice-line-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="unsetCustomerInvoiceLineProject"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-set-supplier-invoice-line-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="setSupplierInvoiceLineProject"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-unset-supplier-invoice-line-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="unsetSupplierInvoiceLineProject"/>
 	</action-method>
 
 </object-views>

@@ -27,6 +27,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class InvoiceLineProjectController {
 
@@ -40,32 +41,42 @@ public class InvoiceLineProjectController {
    * @param request
    * @param response
    */
-  public void setProject(ActionRequest request, ActionResponse response) {
+  public void setCustomerInvoiceLineProject(ActionRequest request, ActionResponse response) {
 
     try {
-      Map<String, Object> projectMap = (Map<String, Object>) request.getContext().get("_project");
+      Project project = request.getContext().asType(Project.class);
+      project = projectRepository.find(project.getId());
 
-      Project project = null;
-      if (projectMap != null && projectMap.get("id") != null) {
-        project = projectRepository.find(Long.parseLong(projectMap.get("id").toString()));
-      }
-
-      if (project == null) {
-        response.setFlash(IExceptionMessage.NO_PROJECT_IN_CONTEXT);
-        return;
-      }
-
-      List<Long> lineIds = (List<Long>) request.getContext().get("_ids");
-
-      if (lineIds.isEmpty()) {
-        response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
-      } else {
-        invoiceLineProjectService.setProject(lineIds, project);
-        response.setCanClose(true);
-      }
+      setCustomerInvoiceLineProject(request, response, project);
 
     } catch (Exception e) {
       TraceBackService.trace(e);
+    }
+  }
+
+  private void setCustomerInvoiceLineProject(
+      ActionRequest request, ActionResponse response, Project project) {
+
+    List<Map<String, Object>> customerInvoiceLineSet =
+        (List<Map<String, Object>>) request.getContext().get("customerInvoiceLineSet");
+
+    if (customerInvoiceLineSet == null || customerInvoiceLineSet.isEmpty()) {
+      response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
+    } else {
+      List<Long> lineIds =
+          customerInvoiceLineSet
+              .stream()
+              .map(it -> Long.parseLong(it.get("id").toString()))
+              .collect(Collectors.toList());
+      invoiceLineProjectService.setProject(lineIds, project);
+      response.setAttr("$customerInvoiceLineSet", "hidden", true);
+      response.setAttr("addSelectedCustomerInvoiceLines", "hidden", true);
+      response.setAttr("unlinkSelectedCustomerInvoiceLines", "hidden", true);
+      response.setAttr("cancelManageCustomerInvoiceLines", "hidden", true);
+      response.setAttr("customerInvoiceLineDashlet", "refresh", true);
+      response.setAttr("customerInvoiceDashlet", "refresh", true);
+      response.setAttr("selectNewCustomerInvoiceLines", "readonly", false);
+      response.setAttr("manageCustomerInvoiceLines", "readonly", false);
     }
   }
 
@@ -75,17 +86,70 @@ public class InvoiceLineProjectController {
    * @param request
    * @param response
    */
-  public void unsetProject(ActionRequest request, ActionResponse response) {
+  public void unsetCustomerInvoiceLineProject(ActionRequest request, ActionResponse response) {
 
     try {
-      List<Long> lineIds = (List<Long>) request.getContext().get("_ids");
+      setCustomerInvoiceLineProject(request, response, null);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
 
-      if (lineIds.isEmpty()) {
-        response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
-      } else {
-        invoiceLineProjectService.setProject(lineIds, null);
-        response.setCanClose(true);
-      }
+  /**
+   * Set project from context selected lines
+   *
+   * @param request
+   * @param response
+   */
+  public void setSupplierInvoiceLineProject(ActionRequest request, ActionResponse response) {
+
+    try {
+      Project project = request.getContext().asType(Project.class);
+      project = projectRepository.find(project.getId());
+
+      setSupplierInvoiceLineProject(request, response, project);
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  private void setSupplierInvoiceLineProject(
+      ActionRequest request, ActionResponse response, Project project) {
+
+    List<Map<String, Object>> supplierInvoiceLineSet =
+        (List<Map<String, Object>>) request.getContext().get("supplierInvoiceLineSet");
+
+    if (supplierInvoiceLineSet == null || supplierInvoiceLineSet.isEmpty()) {
+      response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
+    } else {
+      List<Long> lineIds =
+          supplierInvoiceLineSet
+              .stream()
+              .map(it -> Long.parseLong(it.get("id").toString()))
+              .collect(Collectors.toList());
+      invoiceLineProjectService.setProject(lineIds, project);
+      response.setAttr("$supplierInvoiceLineSet", "hidden", true);
+      response.setAttr("addSelectedSupplierInvoiceLines", "hidden", true);
+      response.setAttr("unlinkSelectedSupplierInvoiceLines", "hidden", true);
+      response.setAttr("cancelManageSupplierInvoiceLines", "hidden", true);
+      response.setAttr("supplierInvoiceLineDashlet", "refresh", true);
+      response.setAttr("supplierInvoiceDashlet", "refresh", true);
+      response.setAttr("selectNewSupplierInvoiceLines", "readonly", false);
+      response.setAttr("manageSupplierInvoiceLines", "readonly", false);
+    }
+  }
+
+  /**
+   * Remove project from selected lines
+   *
+   * @param request
+   * @param response
+   */
+  public void unsetSupplierInvoiceLineProject(ActionRequest request, ActionResponse response) {
+
+    try {
+      setSupplierInvoiceLineProject(request, response, null);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

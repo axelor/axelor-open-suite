@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class ProdProductProductionRepository extends ProdProductRepository {
 
@@ -51,18 +50,18 @@ public class ProdProductProductionRepository extends ProdProductRepository {
       return BigDecimal.ZERO;
     }
     List<BigDecimal> queryResult =
-                JPA.em()
-                    .createQuery(
-                        "SELECT locationLine.currentQty "
-                            + "FROM ManufOrder manufOrder "
-                            + "LEFT JOIN StockLocationLine locationLine "
-                            + "ON locationLine.stockLocation.id = manufOrder.prodProcess.stockLocation.id "
-                            + "WHERE locationLine.product.id = :productId "
-                            + "AND manufOrder.id = :manufOrderId",
-                        BigDecimal.class)
-                    .setParameter("productId", productId)
-                    .setParameter("manufOrderId", toProduceManufOrderId)
-                    .getResultList();
+        JPA.em()
+            .createQuery(
+                "SELECT locationLine.currentQty "
+                    + "FROM ManufOrder manufOrder "
+                    + "LEFT JOIN StockLocationLine locationLine "
+                    + "ON locationLine.stockLocation.id = manufOrder.prodProcess.stockLocation.id "
+                    + "WHERE locationLine.product.id = :productId "
+                    + "AND manufOrder.id = :manufOrderId",
+                BigDecimal.class)
+            .setParameter("productId", productId)
+            .setParameter("manufOrderId", toProduceManufOrderId)
+            .getResultList();
     BigDecimal availableQty;
     if (queryResult.isEmpty()) {
       availableQty = BigDecimal.ZERO;

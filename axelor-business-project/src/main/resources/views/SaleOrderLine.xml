@@ -5,10 +5,6 @@
 	
 	
 	<grid name="sale-order-line-project-grid" title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="-saleOrder.orderDate">
-    	<toolbar>
-       		<button name="addSelectedLines" title="Add selected lines" showIf="_addLines" onClick="action-sale-order-line-method-set-project"/>
-       		<button name="unlinkSelectedLines" title="Unlink selected lines" showIf="_unlinkLines" onClick="action-validate-unset-project,action-sale-order-line-method-unset-project"/>
-        </toolbar>
         <hilite if="$get('saleOrder.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
         <hilite if="invoiced" color="success"/>
         <field name="project" />
