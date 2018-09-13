@@ -61,8 +61,6 @@ public class Allocation extends AbstractPersistable {
     this.sourceAllocation = sourceAllocation;
     this.sinkAllocation = sinkAllocation;
     this.predecessorsDoneDate = predecessorsDoneDate;
-
-    //this.delay = 0;
   }
 
   public Allocation() {}

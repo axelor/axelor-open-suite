@@ -347,6 +347,11 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     project.addJob(sourceJob);
     priorityToJobListMap.get(Integer.MIN_VALUE).add(sourceJob);
     this.unsolvedJobScheduling.addJob(sourceJob);
+    
+    // Source execution mode
+    ExecutionMode sourceExecutionMode = new ExecutionMode(sourceJob, 0);
+    this.unsolvedJobScheduling.addExecutionMode(sourceExecutionMode);
+    sourceJob.addExecutionMode(sourceExecutionMode);
 
     // Source Allocation
     Long sourceAllocationId = (long) (project.getId() * 100);
@@ -357,12 +362,19 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
             sourceAllocationId, sourceJob, sourceSucccessorAllocationList, projectReleaseDate);
     priorityToAllocationListMap.get(Integer.MIN_VALUE).add(sourceAllocation);
     this.unsolvedJobScheduling.addAllocation(sourceAllocation);
+    sourceAllocation.setExecutionMode(sourceExecutionMode);
+    sourceAllocation.setDelay(0);
 
     // Sink Job
     Job sinkJob = this.getSinkJob(project);
     project.addJob(sinkJob);
     priorityToJobListMap.get(Integer.MAX_VALUE).add(sinkJob);
     this.unsolvedJobScheduling.addJob(sinkJob);
+    
+    // Sink execution mode
+    ExecutionMode sinkExecutionMode = new ExecutionMode(sinkJob, 0);
+    this.unsolvedJobScheduling.addExecutionMode(sinkExecutionMode);
+    sinkJob.addExecutionMode(sinkExecutionMode);
 
     // Sink Allocation
     Long sinkAllocationId =
@@ -374,6 +386,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
             sinkAllocationId, sinkJob, sinkPredecessorAllocationList, projectReleaseDate);
     priorityToAllocationListMap.get(Integer.MAX_VALUE).add(sinkAllocation);
     this.unsolvedJobScheduling.addAllocation(sinkAllocation);
+    sinkAllocation.setExecutionMode(sinkExecutionMode);
+    sinkAllocation.setDelay(0);
 
     Integer allocationIdx = 0;
     for (Integer priorityIdx = 0; priorityIdx < sortedPriorityList.size(); priorityIdx++) {
