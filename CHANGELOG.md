@@ -26,6 +26,7 @@
 - Add column description in move line grid views.
 - Allow manual creation of tracking number on stock move lines.
 - Direct debit batch: filter out payment schedule lines with inactive partner bank details.
+- Fix mass invoicing of stock moves sometimes opening up unrelated forms when trying to open a single stock move for more details.
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -64,6 +65,8 @@
 - Add xml escape in configurator export.
 - StockRule : Sort Grid View according to Stock location, Product code, useCaseSelect ASC 
 - Warning message on missing weight unit is now shown only on delivery stock move.
+- Add missing translations.
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine.
 - Fixed wrong calculation of necessary scale for decimal result when inverting a unit convertion coefficient.
 
 ## [5.0.4] - 2018-07-26
