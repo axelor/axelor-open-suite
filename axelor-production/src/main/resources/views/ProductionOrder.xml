@@ -43,7 +43,7 @@
                 <field name="qty"/>
                 <field name="plannedStartDateT"/>
                 <field name="plannedEndDateT"/>
-                <field name="priority"/>
+                <field name="prioritySelect"/>
                 <field name="statusSelect"/>
                 <field name="createdBy"/>
                 <field name="createdOn"/>
