@@ -4,7 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="stock-move-line-grid" title="Stock move lines"
-        model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
+        model="com.axelor.apps.stock.db.StockMoveLine" editable="true"
+        canNew="false" canDelete="false">
         <field name="product"
             onChange="action-group-stock-stockmoveline-product-onchange"
             onSelect="action-stock-move-line-attrs-product-domain"
@@ -43,7 +44,8 @@
     </grid>
 
     <grid name="stock-move-line-planned-grid" title="Stock move lines"
-        model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
+        model="com.axelor.apps.stock.db.StockMoveLine" editable="true"
+        canNew="false" canDelete="false">
         <field name="product"
             onChange="action-group-stock-stockmoveline-product-onchange"
             onSelect="action-stock-move-line-attrs-product-domain"
@@ -82,7 +84,8 @@
     </grid>
 
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-group-onload" width="large">
+    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-group-onload" width="large"
+    	canNew="false" canDelete="false">
         <panel name="main" >
 	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
@@ -101,7 +104,8 @@
         </panel>
     </form>
 
-	<grid name="stock-move-line-split-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
+	<grid name="stock-move-line-split-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true"
+		canNew="false" canDelete="false">
 		<field name="product" readonly="true" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 		<field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
 		<field name="productName" readonly="true" />
@@ -113,7 +117,8 @@
 		<field name="conformitySelect" readonly="true"/>
 	</grid>
     
-    <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move lines" orderBy="-stockMove.estimatedDate">
+    <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move lines" orderBy="-stockMove.estimatedDate"
+    	canNew="false" canDelete="false">
     	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
         <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
@@ -127,7 +132,8 @@
         <field name="conformitySelect"/>
     </grid>
     
-    <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine"
+    	canNew="false" canDelete="false">
     	<field name="stockMove.stockMoveSeq"/>
     	<field name="stockMove.realDate"/>
         <field name="stockMove.fromStockLocation"/>
@@ -143,7 +149,8 @@
         <field name="stockMove.statusSelect"/>
     </grid>
 
-	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine"
+		canNew="false" canDelete="false">
 		<field name="stockMove.stockMoveSeq" />
 		<field name="stockMove.estimatedDate" />
 		<field name="stockMove.fromStockLocation" />
@@ -160,7 +167,8 @@
 	</grid>
 
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3" width="large">
+    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3" width="large"
+    	canNew="false" canDelete="false">
         <panel name="stockMove" title="Stock move">
 	    	<field name="stockMove.stockMoveSeq"/>
 	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
