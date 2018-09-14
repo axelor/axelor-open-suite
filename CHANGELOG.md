@@ -73,6 +73,7 @@
 - Set project on purchase order and purchase order lines when generating it from a sale order.
 - Improve account management views.
 - Rework ManufOrder printing.
+- Added nameColumn for ExpenseLine and ProjectPlanningTime.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

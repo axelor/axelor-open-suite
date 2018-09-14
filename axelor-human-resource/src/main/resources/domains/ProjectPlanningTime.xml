@@ -18,6 +18,31 @@
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
 	  <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
 	  <decimal name="realHours" title="Real hours"/>
+	  
+	  <string name="fullName" namecolumn="true">
+			<![CDATA[
+	  		String fullName = "";
+	  		
+	  		if(user != null && user.getName() != null)  {
+				fullName += user.getName();
+			}
+			
+			if (project != null && project.getCode() != null) {
+				fullName += "-" + project.getCode();
+			}
+			
+			String dateStr = date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+			if (!fullName.isEmpty()) {
+				fullName += "-" + dateStr;
+			}
+			else {
+				fullName = dateStr;
+			}
+			
+	  		return fullName;
+	  	]]>
+	  </string>
+		
   </entity>
   
 </domain-models>
