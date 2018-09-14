@@ -5,6 +5,7 @@
 - Add unitary tests for password
 - Module for mobile app added
 - Vehicle Fuel Log : add columns vehicle name, plate no, purchasePartner in grid view
+- Manufacturing orders can now be "permanent", quantity is set to 0. Regular orders cannot have quantity to 0 anymore.
 
 ## Improvements
 - Fleet app: added FR demo data
@@ -26,6 +27,7 @@
 - Add column description in move line grid views.
 - Allow manual creation of tracking number on stock move lines.
 - Direct debit batch: filter out payment schedule lines with inactive partner bank details.
+- Solved an issue linked to having a manufacturing order with a planned quantity of 0.
 - Fix mass invoicing of stock moves sometimes opening up unrelated forms when trying to open a single stock move for more details.
 - Improve exception handling in supplychain demo.
 
