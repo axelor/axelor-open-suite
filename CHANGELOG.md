@@ -53,6 +53,7 @@
 - Production: new report showing raw material requirements.
 - Business Project : add new m2m 'teamTaskSet' in invoicing project.
 - Add translation of project view.
+- New boolean for manuf order printing to choose whether planned date needs to be showed.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
