@@ -89,7 +89,8 @@
 - Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
 - Project: Fix financial report view.
 - Fix stock move generation with pack lines from sale order
-- Pack feature: Display only  pack line for partially invoicing and fix quantity for partially invoicing lines on pack lines. 
+- Pack feature: Display only  pack line for partially invoicing and fix quantity for partially invoicing lines on pack lines.
+- Business Project : Fix Financial report.
 
 ## [Unreleased 5.0.5]	
 ##Features

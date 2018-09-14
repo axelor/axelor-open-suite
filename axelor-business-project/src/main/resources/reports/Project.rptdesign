@@ -164,8 +164,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-wip</property>
             <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1830,7 +1831,12 @@ from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
-where (ppt.is_include_in_turnover_forecast = true and ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)) 
+where (ppt.is_include_in_turnover_forecast = true and 
+case 
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	else 1 = 1
+end )
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by ppt_activity, prod.unit]]></xml-property>
         </oda-data-set>
@@ -2217,14 +2223,19 @@ from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
-where (ppt.is_include_in_turnover_forecast = true and ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)) 
+where (ppt.is_include_in_turnover_forecast = true and 
+case 
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	else 1 = 1
+end )
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month,prod.unit
 union
 select to_char(tml.date_val, 'YYYY-MM') as month, 0 as costs, 
 case
 	when prod.unit = (select unit_hours from base_app_base) then
-		sum((hours_duration / hours_duration) * prod.sale_price)
+		sum(hours_duration * prod.sale_price)
 	else	
 		sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
 end as turnover
@@ -2277,7 +2288,12 @@ left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
-where ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
+where 
+case 
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	else 1 = 1
+end
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month, emp.hourly_rate
 union
@@ -2825,7 +2841,7 @@ group by month) CostData group by month)) ChartData group by month order by mont
 	sum(hours_duration) as total_hours,
 	case
 		when prod.unit = (select unit_hours from base_app_base) then
-			sum((hours_duration / hours_duration) * prod.sale_price)
+			sum(hours_duration * prod.sale_price)
 		else	
 			sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
 	end as revenue
@@ -3031,7 +3047,12 @@ left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
-where ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
+where
+case 
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	else 1 = 1
+end
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by emp.name,emp.hourly_rate]]></xml-property>
         </oda-data-set>
@@ -4071,7 +4092,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalManualElementTurnover"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -4483,6 +4504,12 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <detail>
                             <row id="5828">
                                 <property name="height">0.34375in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["me_amount_turnover"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="5829">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -7263,7 +7290,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalManualElementCost"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -7675,6 +7702,12 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <detail>
                             <row id="5863">
                                 <property name="height">0.34375in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["me_amount_cost"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="5864">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -11004,7 +11037,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalSales"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="boundDataColumns">
@@ -11496,6 +11529,12 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <detail>
                             <row id="4569">
                                 <property name="height">0.2708333333333333in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["sol_sales"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="4570">
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -14895,7 +14934,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalManualElementTurnover"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -15307,6 +15346,12 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         <detail>
                             <row id="5896">
                                 <property name="height">0.34375in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["me_amount_turnover"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="5897">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -17215,7 +17260,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalManualElementCost"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -17627,6 +17672,12 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                         <detail>
                             <row id="5927">
                                 <property name="height">0.34375in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["me_amount_cost"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="5928">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
