@@ -68,6 +68,7 @@
 - Warning message on missing weight unit is now shown only on delivery stock move.
 - Add missing translations.
 - Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine.
+- Fixed wrong calculation of necessary scale for decimal result when inverting a unit convertion coefficient.
 - Stock move lines can no longer be created from nothing (i.e not from a stock move or such) as it has no functionnal use and ensues anomalies.
 
 ## [5.0.4] - 2018-07-26
