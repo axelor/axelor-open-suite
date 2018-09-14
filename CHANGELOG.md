@@ -27,6 +27,7 @@
 - Allow manual creation of tracking number on stock move lines.
 - Direct debit batch: filter out payment schedule lines with inactive partner bank details.
 - Fix mass invoicing of stock moves sometimes opening up unrelated forms when trying to open a single stock move for more details.
+- Improve exception handling in supplychain demo.
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -68,6 +69,7 @@
 - Add missing translations.
 - Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine.
 - Fixed wrong calculation of necessary scale for decimal result when inverting a unit convertion coefficient.
+- Stock move lines can no longer be created from nothing (i.e not from a stock move or such) as it has no functionnal use and ensues anomalies.
 
 ## [5.0.4] - 2018-07-26
 ## Features
