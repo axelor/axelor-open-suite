@@ -75,6 +75,9 @@ public class ManufOrderStockMoveService {
     if (manufOrder.getToConsumeProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToConsumeStockMove(manufOrder, company);
+      stockMove.setOriginId(manufOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+      stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
       for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
 
@@ -178,6 +181,9 @@ public class ManufOrderStockMoveService {
     if (manufOrder.getToProduceProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToProduceStockMove(manufOrder, company);
+      stockMove.setOriginId(manufOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+      stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
       for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 

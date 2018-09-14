@@ -74,6 +74,7 @@
 - Set project on purchase order and purchase order lines when generating it from a sale order.
 - Improve account management views.
 - Rework ManufOrder printing.
+- Add new Origin field in stock moves and remove fields sale order and purchase order.
 - Added nameColumn for ExpenseLine and ProjectPlanningTime.
 
 ## Bug Fixes
@@ -91,6 +92,7 @@
 - Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
 - Project: Fix financial report view.
 - Fix stock move generation with pack lines from sale order
+- MRP: Fix concurrent modification exception.
 - Pack feature: Display only  pack line for partially invoicing and fix quantity for partially invoicing lines on pack lines. 
 
 ## [Unreleased 5.0.5]	

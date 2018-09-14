@@ -1063,8 +1063,8 @@
 	<action-view name="action-view-show-stock-move-line" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMoveLine">
 		<view type="grid" name="stock-move-line-sale-order-grid"/>
 		<view type="form" name="stock-move-line-form"/>
-		<domain>self.stockMove.saleOrder = :saleOrder</domain>
-		<context name="saleOrder" expr="eval: __self__"/>
+		<domain>self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder</domain>
+		<context name="saleOrder" expr="eval: __self__.id"/>
 	</action-view>
 
 	<action-view name="action-view-open-quotation-lines" title="Quotation lines" model="com.axelor.apps.sale.db.SaleOrderLine">

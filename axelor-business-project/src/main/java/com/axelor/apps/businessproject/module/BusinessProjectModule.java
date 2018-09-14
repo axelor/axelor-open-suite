@@ -80,7 +80,8 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProductTaskTemplateService.class).to(ProductTaskTemplateServiceImpl.class);
     bind(StockMoveInvoiceServiceImpl.class).to(ProjectStockMoveInvoiceServiceImpl.class);
     bind(SaleOrderPurchaseServiceImpl.class).to(ProjectPurchaseServiceImpl.class);
-    bind(PurchaseOrderLineServiceSupplychainImpl.class).to(PurchaseOrderLineServiceProjectImpl.class);
+    bind(PurchaseOrderLineServiceSupplychainImpl.class)
+        .to(PurchaseOrderLineServiceProjectImpl.class);
     bind(SaleOrderLineProjectService.class).to(SaleOrderLineProjectServiceImpl.class);
     bind(PurchaseOrderLineProjectService.class).to(PurchaseOrderLineServiceProjectImpl.class);
     bind(ExpenseLineProjectService.class).to(ExpenseLineProjectServiceImpl.class);
