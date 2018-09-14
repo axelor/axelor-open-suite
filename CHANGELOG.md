@@ -76,6 +76,7 @@
 - Rework ManufOrder printing.
 - Add new Origin field in stock moves and remove fields sale order and purchase order.
 - Added nameColumn for ExpenseLine and ProjectPlanningTime.
+- Change unique constraints in analytic account move line.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
