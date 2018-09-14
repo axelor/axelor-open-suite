@@ -26,6 +26,7 @@
 - Add column description in move line grid views.
 - Allow manual creation of tracking number on stock move lines.
 - Direct debit batch: filter out payment schedule lines with inactive partner bank details.
+- Reorganised the logistical forms view and made buttons more explicit as to whne they can or cannot be clicked.
 
 ## Bug Fixes
 - Fix on prod process report.
