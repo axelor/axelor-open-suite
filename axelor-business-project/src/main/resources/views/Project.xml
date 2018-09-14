@@ -139,7 +139,7 @@
 	
 	<!-- Purchase -->
 	
-	<action-view name="action-project-project-purchase-quotation" title="Quotation" model="com.axelor.apps.purchase.db.PurchaseOrder">
+	<action-view name="action-project-project-purchase-quotation" title="PO.Quotation" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="purchase-order-quotation-grid"/>
 		<view type="form" name="purchase-order-form"/>
 		<domain>self.purchaseOrderLineList.project.id in (:_projectIds) AND self.statusSelect &lt; 3</domain>

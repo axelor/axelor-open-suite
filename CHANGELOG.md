@@ -52,6 +52,7 @@
 - Stock Move : Add Wizard for tracking number
 - Production: new report showing raw material requirements.
 - Business Project : add new m2m 'teamTaskSet' in invoicing project.
+- Add translation of project view.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

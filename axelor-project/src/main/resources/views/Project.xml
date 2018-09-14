@@ -115,9 +115,9 @@
 					showIf="isProject &amp;&amp; childProjectList.length > 0" colSpan="12" showTitle="false">
 					<button name="addPhase" title="New" colSpan="2"
 						css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-view-phase-new" />
-					<button name="allPhases" title="All phases" colSpan="2"
+					<button name="allPhases" title="All phases" colSpan="4"
 						css="btn-custom text-left" icon="fa-tasks" onClick="save,action-project-view-phase-all" />
-					<button name="allPhaseTasks" title="All phase tasks" colSpan="2"
+					<button name="allPhaseTasks" title="All phase tasks" colSpan="6"
 						css="btn-custom text-left" icon="fa-tasks"
 						onClick="save,action-project-phase-view-show-phase-task" />
 					<panel-dashlet title="Phases" colSpan="12"
@@ -131,7 +131,7 @@
 				<panel-dashlet title="Task Tree" colSpan="12"
 					action="action-view-show-project-task-tree" />
 				<panel-dashlet title="Task Invoicing" colSpan="12" 
-					action="action-dashlet-project-show-all-invoicing-task" if="__config__.app.isApp('business-project')"/>
+					action="action-dashlet-project-show-all-invoicing-task" if="__config__.app.isApp('business-project')" canSearch="true"/>
 			</panel>
 			<panel title="Members" name="members">
 				<field name="team" title="Team"
@@ -167,7 +167,7 @@
 					grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
 					<button name="removeSelectedPlanningTime" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
 					<button name="cancelRemovePlanningTime" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
-					<panel-dashlet name="projectPlanningDashlet" action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
+					<panel-dashlet name="projectPlanningDashlet" title="Project planning time" action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
 				</panel>
 			</panel>
 			
@@ -175,8 +175,8 @@
 				 if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource">
 				<field name="timeSpent" title="Time Spent" readonly="true"
 					colSpan="3" />
-				<panel-dashlet action="action-project-dashlet-validated-timeshet-lines" colSpan="12" canSearch="true"/>
-				<panel-dashlet action="action-project-dashlet-project-waiting-timeshet-lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet action="action-project-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet action="action-project-dashlet-project-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
 			</panel>
 			<panel title="Sales" name="sales"  showIf="isBusinessProject"
 				if="__config__.app.isApp('business-project')
