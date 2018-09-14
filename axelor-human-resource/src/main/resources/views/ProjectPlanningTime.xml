@@ -107,6 +107,24 @@
 		<attribute name="value" for="userSet" expr="eval:_project.membersUserSet" if="_project != null"/>
 	</action-attrs>
 	
+	<action-attrs name="action-project-attrs-project-planning-time-remove">
+		<attribute name="readonly" for="removeProjectPlanningTimeLine" expr="eval:true"/>
+		<attribute name="hidden" for="cancelRemovePlanningTime" expr="eval:false"/>
+		<attribute name="hidden" for="removeSelectedPlanningTime" expr="eval:false"/>
+		<attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:false"/>
+		<attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
+		<attribute name="title" for="$projectPlanningTimeSet" expr="eval:'Select lines to remove'"/>
+		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.project.id = :id&quot;" if="!isShowPhasesElements"/>
+		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.project.id = :id OR self.project.parentProject.id = :id&quot;" if="isShowPhasesElements"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-attrs-project-planning-time-cancel-remove">
+		<attribute name="readonly" for="removeProjectPlanningTimeLine" expr="eval:false"/>
+		<attribute name="hidden" for="cancelRemovePlanningTime" expr="eval:true"/>
+		<attribute name="hidden" for="removeSelectedPlanningTime" expr="eval:true"/>
+		<attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:true"/>
+	</action-attrs>
+	
 	<action-method name="action-project-planning-time-method-show-planning">
 		<call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController" method="showPlanning"/>
 	</action-method>
@@ -118,5 +136,13 @@
 	<action-method name="action-project-planning-time-method-update-is-include-in-turnover-forecast">
 		<call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController" method="updateIsIncludeInTuronverForecast"/>
 	</action-method>
+	
+	<action-method name="action-project-planning-time-method-remove-project-planning-time">
+		<call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController" method="removeProjectPlanningTime"/>
+	</action-method>
+	
+	<action-validate name="action-project-validate-remove-project-planning-time">
+		<alert message="Are you sure wants to remove selected lines?"/>
+	</action-validate>
 	
 </object-views>

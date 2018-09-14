@@ -47,7 +47,8 @@ public class InvoicingProjectController {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectSet().isEmpty()) {
+        && invoicingProject.getProjectSet().isEmpty()
+        && invoicingProject.getTeamTaskSet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

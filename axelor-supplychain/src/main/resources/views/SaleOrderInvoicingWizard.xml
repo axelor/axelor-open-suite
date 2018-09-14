@@ -50,9 +50,10 @@
 		<field name="exTaxTotal" readonly="true" aggregate="sum"/>
 		<field name="amountInvoiced" readonly="true"/>
         <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
-			   readonlyIf="invoiceAll" min="0"/>
+			   readonlyIf="invoiceAll || isSubline" min="0"/>
         <field name="invoiceAll" title="Invoice all" type="boolean"
 			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+		<field name="isSubline" hidden="true" />
 	</grid>
 
 	<action-group name="action-group-sale-order-invoicing-wizard-onload">
@@ -77,7 +78,7 @@
 		<attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
 				   expr="eval: exTaxTotal - amountInvoiced"/>
 	</action-attrs>
-
+	
 	<action-method name="action-method-sale-order-invoicing-wizard-operation-select-domain">
         <call class="com.axelor.apps.supplychain.web.SaleOrderController"
 			  method="changeWizardOperationDomain"/>

@@ -85,7 +85,6 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
-        <context name="_unlinkLines" expr="eval:true"/>
     </action-view>
     
     <action-view name="action-project-view-show-confirmed-sale-order-lines" title="Sale Order Lines" model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -95,18 +94,8 @@
     	<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
-        <context name="_unlinkLines" expr="eval:true"/>
     </action-view>
     
-    <action-view name="action-project-view-sale-order-line-select-new-lines" title="Sale Order Lines" model="com.axelor.apps.sale.db.SaleOrderLine">
-        <view type="grid" name="sale-order-line-project-grid"/>
-        <view type="form" name="sale-order-line-project-form"/>
-        <domain>self.saleOrder.clientPartner.id = :clientPartnerId AND self.saleOrder.statusSelect in (3,4) AND self.project is null</domain>
-        <context name="_project" expr="eval:__self__"/>
-        <context name="_addLines" expr="eval:true"/>
-        <context name="clientPartnerId" expr="eval:clientPartner.id"/>
-    </action-view>
-	
 	<action-view name="action-project-dashlet-customer-deliveries" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-out-grid"/>
 		<view type="form" name="stock-move-form"/>
@@ -116,9 +105,41 @@
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
+	<action-attrs name="action-project-attrs-sales-order-line-select-lines">
+		<attribute name="readonly" for="selectNewSOLines" expr="eval:true"/>
+		<attribute name="readonly" for="manageSOLines" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedSOLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageSOLines" expr="eval:false"/>
+		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
+		<attribute name="value" for="$salesOrderLineSet" expr="eval:false"/>
+		<attribute name="title" for="$salesOrderLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="domain" for="$salesOrderLineSet" expr="eval:&quot;self.saleOrder.clientPartner = :clientPartner AND self.saleOrder.statusSelect in (3,4) AND self.project is null&quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-attrs-sales-order-line-manage-lines">
+		<attribute name="readonly" for="selectNewSOLines" expr="eval:true"/>
+		<attribute name="readonly" for="manageSOLines" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedSOLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageSOLines" expr="eval:false"/>
+		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
+		<attribute name="value" for="$salesOrderLineSet" expr="eval:null"/>
+		<attribute name="title" for="$salesOrderLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="domain" for="$salesOrderLineSet" expr="eval:&quot;self.saleOrder.statusSelect in (3,4) AND self.project.id = :id&quot;" if="!isShowPhasesElements"/>
+		<attribute name="domain" for="$salesOrderLineSet" expr="eval:&quot;self.saleOrder.statusSelect in (3,4) AND (self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-attrs-sales-order-line-cancel-manage-lines">
+		<attribute name="readonly" for="selectNewSOLines" expr="eval:false"/>
+		<attribute name="readonly" for="manageSOLines" expr="eval:false"/>
+		<attribute name="hidden" for="unlinkSelectedSOLines" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedSOLines" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManageSOLines" expr="eval:true"/>
+		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:true"/>
+	</action-attrs>
+	
 	<!-- Purchase -->
 	
-	<action-view name="action-project-project-purchase-quotation" title="Quotation" model="com.axelor.apps.purchase.db.PurchaseOrder">
+	<action-view name="action-project-project-purchase-quotation" title="PO.Quotation" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="purchase-order-quotation-grid"/>
 		<view type="form" name="purchase-order-form"/>
 		<domain>self.purchaseOrderLineList.project.id in (:_projectIds) AND self.statusSelect &lt; 3</domain>
@@ -161,16 +182,40 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
-        <context name="_unlinkLines" expr="eval:true"/>
     </action-view>
     
-    <action-view name="action-project-view-purchase-order-line-select-new-lines" title="Purchase Order Lines"  model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    	<view type="grid" name="purchase-order-line-project-grid"/>
-        <view type="form" name="purchase-order-line-project-form"/>
-        <domain>self.purchaseOrder.statusSelect in (3,4)  AND self.project is null</domain>
-        <context name="_project" expr="eval:__self__"/>
-        <context name="_addLines" expr="eval:true"/>
-    </action-view>
+    
+    <action-attrs name="action-project-attrs-purchase-order-line-select-lines">
+		<attribute name="readonly" for="selectNewPOLines" expr="eval:true"/>
+		<attribute name="readonly" for="managePOLines" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedPOLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManagePOLines" expr="eval:false"/>
+		<attribute name="hidden" for="$purchaseOrderLineSet" expr="eval:false"/>
+		<attribute name="value" for="$purchaseOrderLineSet" expr="eval:null"/>
+		<attribute name="title" for="$purchaseOrderLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="domain" for="$purchaseOrderLineSet" expr="eval:&quot;self.purchaseOrder.statusSelect in (3,4)  AND self.project is null&quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-attrs-purchase-order-line-manage-lines">
+		<attribute name="readonly" for="selectNewPOLines" expr="eval:true"/>
+		<attribute name="readonly" for="managePOLines" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedPOLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManagePOLines" expr="eval:false"/>
+		<attribute name="hidden" for="$purchaseOrderLineSet" expr="eval:false"/>
+		<attribute name="value" for="$purchaseOrderLineSet" expr="eval:null"/>
+		<attribute name="title" for="$purchaseOrderLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="domain" for="$purchaseOrderLineSet" expr="eval:&quot;self.purchaseOrder.statusSelect in (3,4) AND self.project.id = :id&quot;" if="!isShowPhasesElements"/>
+		<attribute name="domain" for="$purchaseOrderLineSet" expr="eval:&quot;self.purchaseOrder.statusSelect in (3,4) AND (self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-attrs-purchase-order-line-cancel-manage-lines">
+		<attribute name="readonly" for="selectNewPOLines" expr="eval:false"/>
+		<attribute name="readonly" for="managePOLines" expr="eval:false"/>
+		<attribute name="hidden" for="addSelectedPOLines" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedPOLines" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManagePOLines" expr="eval:true"/>
+		<attribute name="hidden" for="$purchaseOrderLineSet" expr="eval:true"/>
+	</action-attrs>
     
     <!-- Expense -->
 	
@@ -199,7 +244,6 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
-  		<context name="_unlinkLines" expr="eval:true"/>
     </action-view>
     
 	<action-view name="action-project-view-show-validated-expense-lines" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
@@ -209,16 +253,39 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
-  		<context name="_unlinkLines" expr="eval:true"/>
     </action-view>
     
-    <action-view name="action-project-view-expense-line-select-new-lines" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
-        <view type="grid" name="expense-line-project-grid"/>
-        <view type="form" name="expense-line-project-form"/>
-        <domain>self.expense.statusSelect in (3,4) AND self.project is null</domain>
-  		<context name="_project" expr="eval:__self__"/>
-        <context name="_addLines" expr="eval:true"/>
-    </action-view>
+    <action-attrs name="action-project-attrs-expense-line-select-lines">
+		<attribute name="readonly" for="selectNewExpenseLines" expr="eval:true"/>
+		<attribute name="readonly" for="manageExpenseLines" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedExpenseLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageExpenseLines" expr="eval:false"/>
+		<attribute name="hidden" for="$expenseLineSet" expr="eval:false"/>
+		<attribute name="value" for="$expenseLineSet" expr="eval:null"/>
+		<attribute name="title" for="$expenseLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="domain" for="$expenseLineSet" expr="eval:&quot;self.expense.statusSelect in (3,4)  AND self.project is null&quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-attrs-expense-line-manage-lines">
+		<attribute name="readonly" for="selectNewExpenseLines" expr="eval:true"/>
+		<attribute name="readonly" for="manageExpenseLines" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedExpenseLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageExpenseLines" expr="eval:false"/>
+		<attribute name="hidden" for="$expenseLineSet" expr="eval:false"/>
+		<attribute name="value" for="$expenseLineSet" expr="eval:false"/>
+		<attribute name="title" for="$expenseLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="domain" for="$expenseLineSet" expr="eval:&quot;self.expense.statusSelect in (3,4) AND self.project.id = :id&quot;" if="!isShowPhasesElements"/>
+		<attribute name="domain" for="$expenseLineSet" expr="eval:&quot;self.expense.statusSelect in (3,4) AND (self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
+	</action-attrs>
+    
+    <action-attrs name="action-project-attrs-expense-line-cancel-manage-lines">
+    	<attribute name="readonly" for="selectNewExpenseLines" expr="eval:false"/>
+		<attribute name="readonly" for="manageExpenseLines" expr="eval:false"/>
+		<attribute name="hidden" for="unlinkSelectedExpenseLines" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedExpenseLines" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManageExpenseLines" expr="eval:true"/>
+		<attribute name="hidden" for="$expenseLineSet" expr="eval:true"/>
+    </action-attrs>
     
     <!-- Invoice -->
     
@@ -247,18 +314,8 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
-  		<context name="_unlinkLines" expr="eval:true"/>
     </action-view>
     
-    <action-view name="action-project-view-show-sale-invoice-lines-select-new" title="Customer invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
-        <view type="grid" name="invoice-line-project-grid"/>
-        <view type="form" name="invoice-line-form"/>
-        <domain>self.invoice.operationTypeSelect = 3 and self.invoice.partner.id = :partnerId AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2</domain>
-        <context name="_project" expr="eval:__self__"/>
-        <context name="_addLines" expr="eval:true"/>
-        <context name="partnerId" expr="eval:clientPartner.id"/>
-    </action-view>
-	
 	<action-view name="action-project-dashlet-supplier-invoices" title="Supplier invoices"  model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-supplier-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -275,17 +332,8 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
-  		<context name="_unlinkLines" expr="eval:true"/>
     </action-view>
     
-    <action-view name="action-project-view-show-purchase-invoice-lines-select-new" title="Supplier invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
-        <view type="grid" name="invoice-line-project-grid"/>
-        <view type="form" name="invoice-line-form"/>
-        <domain>self.invoice.operationTypeSelect = 1 AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2</domain>
-         <context name="_project" expr="eval:__self__"/>
-        <context name="_addLines" expr="eval:true"/>
-    </action-view>
-	
 	<action-view name="action-project-dashlet-advance-payment-invoices" title="Advance payment invoices"  model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -294,6 +342,70 @@
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
+	
+	<action-attrs name="action-project-attrs-customer-invoice-line-select-lines">
+		<attribute name="readonly" for="selectNewCustomerInvoiceLines" expr="eval:true"/>
+		<attribute name="readonly" for="manageCustomerInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedCustomerInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageCustomerInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="$customerInvoiceLineSet" expr="eval:false"/>
+		<attribute name="value" for="$customerInvoiceLineSet" expr="eval:null"/>
+		<attribute name="title" for="$customerInvoiceLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="domain" for="$customerInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 3 AND self.invoice.partner = :clientPartner AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-attrs-customer-invoice-line-manage-lines">
+		<attribute name="readonly" for="selectNewCustomerInvoiceLines" expr="eval:true"/>
+		<attribute name="readonly" for="manageCustomerInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedCustomerInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageCustomerInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="$customerInvoiceLineSet" expr="eval:false"/>
+		<attribute name="value" for="$customerInvoiceLineSet" expr="eval:null"/>
+		<attribute name="title" for="$customerInvoiceLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="domain" for="$customerInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 3 AND self.project.id = :id AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;" if="!isShowPhasesElements"/>
+		<attribute name="domain" for="$customerInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 3 AND (self.project.id = :id OR self.project.parentProject.id = :id) AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;" if="isShowPhasesElements"/>
+	</action-attrs>
+    
+    <action-attrs name="action-project-attrs-customer-invoice-line-cancel-manage-lines">
+    	<attribute name="readonly" for="selectNewCustomerInvoiceLines" expr="eval:false"/>
+		<attribute name="readonly" for="manageCustomerInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="unlinkSelectedCustomerInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedCustomerInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManageCustomerInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="$customerInvoiceLineSet" expr="eval:true"/>
+    </action-attrs>
+    
+    <action-attrs name="action-project-attrs-supplier-invoice-line-select-lines">
+		<attribute name="readonly" for="selectNewSupplierInvoiceLines" expr="eval:true"/>
+		<attribute name="readonly" for="manageSupplierInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedSupplierInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageSupplierInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="$supplierInvoiceLineSet" expr="eval:false"/>
+		<attribute name="value" for="$supplierInvoiceLineSet" expr="eval:null"/>
+		<attribute name="title" for="$supplierInvoiceLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="domain" for="$supplierInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 1 AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-attrs-supplier-invoice-line-manage-lines">
+		<attribute name="readonly" for="selectNewSupplierInvoiceLines" expr="eval:true"/>
+		<attribute name="readonly" for="manageSupplierInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedSupplierInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageSupplierInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="$supplierInvoiceLineSet" expr="eval:false"/>
+		<attribute name="value" for="$supplierInvoiceLineSet" expr="eval:null"/>
+		<attribute name="title" for="$supplierInvoiceLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="domain" for="$supplierInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 1 AND self.project.id = :id AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;" if="!isShowPhasesElements"/>
+		<attribute name="domain" for="$supplierInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 1 AND (self.project.id = :id OR self.project.parentProject.id = :id) AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;" if="isShowPhasesElements"/>
+	</action-attrs>
+    
+    <action-attrs name="action-project-attrs-supplier-invoice-line-cancel-manage-lines">
+    	<attribute name="readonly" for="selectNewSupplierInvoiceLines" expr="eval:false"/>
+		<attribute name="readonly" for="manageSupplierInvoiceLines" expr="eval:false"/>
+		<attribute name="hidden" for="addSelectedSupplierInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedSupplierInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManageSupplierInvoiceLines" expr="eval:true"/>
+		<attribute name="hidden" for="$supplierInvoiceLineSet" expr="eval:true"/>
+    </action-attrs>
 	
 	
 	<!-- Production -->

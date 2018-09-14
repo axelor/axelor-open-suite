@@ -129,4 +129,20 @@ public interface ITranslation {
       "BOM.defineSubBillOfMaterial"; /*)*/
   public static final String BILL_OF_MATERIAL_HAS_NO_MANAGE_STOCK = /*$$(*/
       "BOM.hasNoManageStock"; /*)*/
+
+  String RAW_MATERIAL_REQUIREMENT_TITLE = /*$$(*/ "RawMaterialRequirement.title"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_COMPANY = /*$$(*/ "RawMaterialRequirement.company"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_FROM = /*$$(*/ "RawMaterialRequirement.from"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_TO = /*$$(*/ "RawMaterialRequirement.to"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_PRODUCT = /*$$(*/ "RawMaterialRequirement.product"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_MANUF_ORDER = /*$$(*/ "RawMaterialRequirement.manufOrder"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_STOCK_LOCATION = /*$$(*/
+      "RawMaterialRequirement.stockLocation"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_STOCK_LOCATIONS = /*$$(*/
+      "RawMaterialRequirement.stockLocations"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_NEEDED_QUANTITY = /*$$(*/
+      "RawMaterialRequirement.neededQuantity"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_MISSING_QUANTITY = /*$$(*/
+      "RawMaterialRequirement.missingQuantity"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_AVAILABLE = /*$$(*/ "RawMaterialRequirement.available"; /*)*/
 }

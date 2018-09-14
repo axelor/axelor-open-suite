@@ -49,6 +49,11 @@
 - Business Project : Fill default values from Project while generating the sale Quotation.
 - Business Project : Enhancement of task and project view.
 - Project : Change invoicing project view.
+- Stock Move : Add Wizard for tracking number
+- Production: new report showing raw material requirements.
+- Business Project : add new m2m 'teamTaskSet' in invoicing project.
+- Add translation of project view.
+- New boolean for manuf order printing to choose whether planned date needs to be showed.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -70,6 +75,7 @@
 - Improve account management views.
 - Rework ManufOrder printing.
 - Add new Origin field in stock moves and remove fields sale order and purchase order.
+- Added nameColumn for ExpenseLine and ProjectPlanningTime.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -87,6 +93,7 @@
 - Project: Fix financial report view.
 - Fix stock move generation with pack lines from sale order
 - MRP: Fix concurrent modification exception.
+- Pack feature: Display only  pack line for partially invoicing and fix quantity for partially invoicing lines on pack lines. 
 
 ## [Unreleased 5.0.5]	
 ##Features
@@ -115,6 +122,8 @@
 - Add column description in move line grid views.
 - Allow manual creation of tracking number on stock move lines.
 - Direct debit batch: filter out payment schedule lines with inactive partner bank details.
+- Fix mass invoicing of stock moves sometimes opening up unrelated forms when trying to open a single stock move for more details.
+- Improve exception handling in supplychain demo.
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -153,6 +162,8 @@
 - Add xml escape in configurator export.
 - StockRule : Sort Grid View according to Stock location, Product code, useCaseSelect ASC 
 - Warning message on missing weight unit is now shown only on delivery stock move.
+- Add missing translations.
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine.
 
 ## [5.0.4] - 2018-07-26
 ## Features

@@ -32,6 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -110,5 +111,22 @@ public class ProjectPlanningTimeController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @Transactional
+  public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
+
+    List<Map<String, Object>> lines =
+        (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeSet");
+
+    if (lines != null) {
+      for (Map<String, Object> line : lines) {
+        ProjectPlanningTime projectPlanningTime =
+            projectPlanningTimeRepo.find(Long.parseLong(line.get("id").toString()));
+        projectPlanningTimeRepo.remove(projectPlanningTime);
+      }
+    }
+
+    response.setReload(true);
   }
 }

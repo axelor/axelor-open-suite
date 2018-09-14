@@ -73,8 +73,14 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
       AccountManagementService accountManagementService,
       PriceListService priceListService,
       PurchaseProductService productService,
-      UnitConversionService unitConversionService) {
-    super(trackingNumberService, appBaseService, appStockService, stockMoveService);
+      UnitConversionService unitConversionService,
+      StockMoveLineRepository stockMoveLineRepository) {
+    super(
+        trackingNumberService,
+        appBaseService,
+        appStockService,
+        stockMoveService,
+        stockMoveLineRepository);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.productService = productService;

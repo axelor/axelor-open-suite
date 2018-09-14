@@ -3,10 +3,6 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="expense-line-project-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
-		<toolbar>
-       		<button name="addSelectedLines" title="Add selected lines" showIf="_addLines" onClick="action-expense-line-method-set-project"/>
-       		<button name="unlinkSelectedLines" title="Unlink selected lines" showIf="_unlinkLines" onClick="action-validate-unset-project,action-expense-line-method-unset-project"/>
-        </toolbar>
         <hilite if="$get('expense.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
         <hilite if="invoiced" color="success"/>
         <field name="project" />

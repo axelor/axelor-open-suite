@@ -85,7 +85,7 @@
 			</panel>
 			<panel name="financialData" title="Financial Data" colSpan="12">
 				<field name="toInvoice" colSpan="3" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-				<field name="Invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="4" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="4" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
 					<viewer><![CDATA[
                         <h4>
                             <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>

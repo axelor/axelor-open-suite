@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
@@ -27,11 +30,14 @@ import com.axelor.apps.project.service.TeamTaskServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
@@ -154,5 +160,59 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
             .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
 
     return amount;
+  }
+
+  @Override
+  public List<InvoiceLine> createInvoiceLines(
+      Invoice invoice, List<TeamTask> teamTaskList, int priority) throws AxelorException {
+
+    List<InvoiceLine> invoiceLineList = new ArrayList<>();
+    int count = 0;
+    for (TeamTask teamTask : teamTaskList) {
+      invoiceLineList.addAll(this.createInvoiceLine(invoice, teamTask, priority * 100 + count));
+      count++;
+      teamTask.setInvoiced(true);
+    }
+    return invoiceLineList;
+  }
+
+  @Override
+  public List<InvoiceLine> createInvoiceLine(Invoice invoice, TeamTask teamTask, int priority)
+      throws AxelorException {
+
+    InvoiceLineGenerator invoiceLineGenerator =
+        new InvoiceLineGenerator(
+            invoice,
+            teamTask.getProduct(),
+            teamTask.getName(),
+            teamTask.getUnitPrice(),
+            BigDecimal.ZERO,
+            teamTask.getPriceDiscounted(),
+            teamTask.getDescription(),
+            teamTask.getQuantity(),
+            teamTask.getUnit(),
+            null,
+            priority,
+            teamTask.getDiscountAmount(),
+            teamTask.getDiscountTypeSelect(),
+            teamTask.getExTaxTotal(),
+            BigDecimal.ZERO,
+            false,
+            false,
+            0) {
+
+          @Override
+          public List<InvoiceLine> creates() throws AxelorException {
+
+            InvoiceLine invoiceLine = this.createInvoiceLine();
+
+            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+            invoiceLines.add(invoiceLine);
+
+            return invoiceLines;
+          }
+        };
+
+    return invoiceLineGenerator.creates();
   }
 }
