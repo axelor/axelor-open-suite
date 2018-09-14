@@ -66,6 +66,7 @@
 - Add xml escape in configurator export.
 - StockRule : Sort Grid View according to Stock location, Product code, useCaseSelect ASC 
 - Warning message on missing weight unit is now shown only on delivery stock move.
+- Fixed unit conversion issues when calculating the cost price of a bill of material.
 - Add missing translations.
 - Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine.
 - Fixed wrong calculation of necessary scale for decimal result when inverting a unit convertion coefficient.
