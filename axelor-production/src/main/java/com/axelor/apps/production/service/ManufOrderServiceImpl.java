@@ -441,11 +441,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void updatePlannedQty(ManufOrder manufOrder) {
+  public void updatePlannedQty(ManufOrder manufOrder) throws AxelorException {
     manufOrder.clearToConsumeProdProductList();
     manufOrder.clearToProduceProdProductList();
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
+    updateRealQty(manufOrder, manufOrder.getQty());
 
     manufOrderRepo.save(manufOrder);
   }
