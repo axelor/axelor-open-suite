@@ -54,6 +54,7 @@
 - Business Project : add new m2m 'teamTaskSet' in invoicing project.
 - Add translation of project view.
 - New boolean for manuf order printing to choose whether planned date needs to be showed.
+- Project Business Generator: when generating phases by lines, product's task templates are added to each phase.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
