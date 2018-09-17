@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
@@ -29,6 +30,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -163,6 +165,26 @@ public class InventoryController {
 
         response.setValue(
             "inventorySeq", inventoryService.getInventorySequence(stockLocation.getCompany()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showStockMove(ActionRequest request, ActionResponse response) {
+    try {
+      Inventory inventory = request.getContext().asType(Inventory.class);
+      StockMove stockMove = inventoryService.findStockMove(inventory);
+      if (inventory != null) {
+        ActionViewBuilder builder =
+            ActionView.define(I18n.get("Stock Move"))
+                .model(StockMove.class.getName())
+                .add("grid", "stock-move-grid")
+                .add("form", "stock-move-form")
+                .context("_showRecord", stockMove.getId());
+        response.setView(builder.map());
+      } else {
+        response.setFlash(I18n.get("No record found"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

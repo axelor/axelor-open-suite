@@ -363,6 +363,9 @@ public class InventoryService {
     StockMove stockMove =
         this.createStockMoveHeader(
             inventory, company, toStockLocation, inventory.getDateT().toLocalDate(), inventorySeq);
+    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_INVENTORY);
+    stockMove.setOriginId(inventory.getId());
+    stockMove.setOrigin(inventorySeq);
 
     for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
       BigDecimal currentQty = inventoryLine.getCurrentQty();
@@ -595,5 +598,15 @@ public class InventoryService {
     try (InputStream is = new FileInputStream(file)) {
       Beans.get(MetaFiles.class).attach(is, fileName, inventory);
     }
+  }
+
+  public StockMove findStockMove(Inventory inventory) {
+    return stockMoveRepo
+        .all()
+        .filter(
+            "self.originTypeSelect = ?1 AND self.originId = ?2",
+            StockMoveRepository.ORIGIN_INVENTORY,
+            inventory.getId())
+        .fetchOne();
   }
 }

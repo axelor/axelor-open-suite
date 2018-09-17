@@ -7,11 +7,11 @@
 
   <entity name="AnalyticAccount" lang="java">
   
-    <string name="code" title="Code" required="true" unique="true"/>
-    <string name="name" title="Name" required="true" unique="true"/>
+    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Name" required="true"/>
     <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis" title="Analytic axis"/>
     <many-to-one name="parent" ref="com.axelor.apps.account.db.AnalyticAccount" title="Parent Analytic Acc."/>
-    
+    <unique-constraint columns="code,name,analyticAxis"/>
   </entity>
 
 </domain-models>

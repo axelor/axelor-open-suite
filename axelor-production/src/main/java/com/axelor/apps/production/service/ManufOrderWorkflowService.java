@@ -67,6 +67,11 @@ public class ManufOrderWorkflowService {
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
 
+    if (Beans.get(SequenceService.class)
+        .isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
+      manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq());
+    }
+
     if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
       manufOrderService.preFillOperations(manufOrder);
     }
@@ -96,11 +101,6 @@ public class ManufOrderWorkflowService {
 
     manufOrderStockMoveService.createToProduceStockMove(manufOrder);
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
-
-    if (Beans.get(SequenceService.class)
-        .isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
-      manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq());
-    }
 
     return manufOrderRepo.save(manufOrder);
   }

@@ -135,12 +135,12 @@
 			</panel>
 			<panel name="stockMoves" title="Stock moves" showIf="statusSelect &gt;= 3" readonly="true">
 				<panel title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
-					<field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-grid" hideIf="isConsProOnOperation" colSpan="12"/>
-					<field name="outStockMoveList" form-view="stock-move-form" grid-view="stock-move-grid" colSpan="12"/>
+					<field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
+					<field name="outStockMoveList" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" colSpan="12"/>
 				</panel>
 				<panel name="productionWaste" title="Production waste" colSpan="12" showIf="statusSelect &gt;= 4">
 					<button name="generateWasteStockMove" title="Generate waste stock move" readonlyIf="wasteStockMove != null" onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
-					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-grid" readonly="true"/>
+					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" readonly="true"/>
 				</panel>
 			</panel>
 			<panel name="consumedProducts" title="Consumed products" hideIf="isConsProOnOperation || statusSelect &lt; 3">

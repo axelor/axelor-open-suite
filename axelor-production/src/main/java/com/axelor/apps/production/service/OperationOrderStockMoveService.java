@@ -64,6 +64,9 @@ public class OperationOrderStockMoveService {
     if (operationOrder.getToConsumeProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToConsumeStockMove(operationOrder, company);
+      stockMove.setOriginId(operationOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_OPERATION_ORDER);
+      stockMove.setOrigin(operationOrder.getOperationName());
 
       for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
 

@@ -1494,7 +1494,7 @@ from stock_logistical_form_line as LogisticalFormLine
 left join stock_stock_move_line as StockMoveLine on LogisticalFormLine.stock_move_line = StockMoveLine.id
 left join stock_stock_move as StockMove on StockMoveLine.stock_move = StockMove.id
 left join base_product as Product on StockMoveLine.product = Product.id
-left join sale_sale_order as SaleOrder on StockMove.sale_order = SaleOrder.id
+left join sale_sale_order as SaleOrder on StockMove.origin_id = SaleOrder.id
 left join meta_translation as translat on translat.language = ?
 and translat.message_key = case LogisticalFormLine.type_select
 when 1 then 'Parcel No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>'
@@ -2012,6 +2012,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                         <image id="30">
                                             <property name="height">35px</property>
                                             <property name="width">120px</property>
+                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value + row["company_logo_file_path"]</expression>
                                         </image>
