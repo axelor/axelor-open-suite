@@ -19,12 +19,15 @@ package com.axelor.apps.hr.web.timesheet;
 
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
 public class TimesheetLineController {
@@ -32,6 +35,8 @@ public class TimesheetLineController {
   private final String HOURS_DURATION_FIELD = "hoursDuration";
 
   private final String DURATION_FIELD = "duration";
+
+  @Inject private TimesheetLineRepository timesheetLineRepo;
 
   /**
    * Called from timesheet line editable grid or form. Get the timesheet corresponding to
@@ -84,6 +89,26 @@ public class TimesheetLineController {
               .computeHoursDuration(timesheet, timesheetLine.getHoursDuration(), false);
 
       response.setValue(DURATION_FIELD, duration);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Invert value of 'toInvoice' field and save the record
+   *
+   * @param request
+   * @param response
+   */
+  @Transactional
+  public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      timesheetLine = timesheetLineRepo.find(timesheetLine.getId());
+      timesheetLine.setToInvoice(!timesheetLine.getToInvoice());
+      timesheetLineRepo.save(timesheetLine);
+      response.setValue("toInvoice", timesheetLine.getToInvoice());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

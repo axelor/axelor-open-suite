@@ -85,4 +85,37 @@ public interface ITranslation {
   public static final String STOCK_MOVE_RACK_NUMBER = /*$$(*/ "StockMove.rackNbr"; /*)*/
   public static final String STOCK_MOVE_COMMENTS = /*$$(*/ "StockMove.comments"; /*)*/
   public static final String STOCK_MOVE_BARCODE = /*$$(*/ "StockMove.barcode"; /*)*/
+
+  // Certificate of conformity
+  public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/
+      "ConformityCertificate.certificateNumber"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_CUSTOMER_NAME = /*$$(*/
+      "ConformityCertificate.customerName"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_ORDER_NUMBER = /*$$(*/
+      "ConformityCertificate.orderNumber"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_DATE_OF_ORDER = /*$$(*/
+      "ConformityCertificate.orderDate"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_NUMBER_AND_DATE_DELIVERY = /*$$(*/
+      "ConformityCertificate.numberAndDateDelivery"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_PART_NUMBER = /*$$(*/
+      "ConformityCertificate.partNumber"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_DESIGNATION = /*$$(*/
+      "ConformityCertificate.designation"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_QUANTITY = /*$$(*/
+      "ConformityCertificate.quantity"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_SIGNATURE = /*$$(*/
+      "ConformityCertificate.signature"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_NAME = /*$$(*/
+      "ConformityCertificate.name"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_FUNCTION = /*$$(*/
+      "ConformityCertificate.function"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_QTY = /*$$(*/ "ConformityCertificate.qty"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_SEQUENCE = /*$$(*/
+      "ConformityCertificate.sequence"; /*)*/
+
+  public static final String DECLARATION_OF_EXCHANGES_INTRODUCTION = /*$$(*/ "Introduction"; /*)*/
+  public static final String DECLARATION_OF_EXCHANGES_EXPEDITION = /*$$(*/ "Expedition"; /*)*/
+  public static final String
+      DECLARATION_OF_EXCHANGES_OF_GOODS_BETWEEN_MEMBER_STATES_OF_THE_EUROPEAN_COMMUNITY = /*$$(*/
+          "DECLARATION OF EXCHANGES OF GOODS BETWEEN MEMBER STATES OF THE EUROPEAN COMMUNITY"; /*)*/
 }

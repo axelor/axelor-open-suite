@@ -27,7 +27,7 @@
      
      <many-to-one name="parentMenu" title="Parent" ref="com.axelor.meta.db.MetaMenu"/>
      <many-to-one name="actionBuilder" ref="ActionBuilder" title="Action"/>
-     <boolean name="showAction" title="Object?"/>
+     <boolean name="showAction" title="Object"/>
      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
      <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" />
   </entity>

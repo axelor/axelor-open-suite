@@ -5,6 +5,10 @@
 	<action-method name="action-invoice-business-project-method-print-annex">
 		<call class="com.axelor.apps.businessproject.web.InvoiceController" method="exportAnnex"/>
 	</action-method>
+	
+	<action-method name="action-invoice-business-project-method-update-lines">
+		<call class="com.axelor.apps.businessproject.web.InvoiceController" method="updateLines"/>
+	</action-method>
 
     <action-record name="action-invoice-record-printing-fields" model="com.axelor.apps.account.db.Invoice">
         <field name="displayTimesheetOnPrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"/>

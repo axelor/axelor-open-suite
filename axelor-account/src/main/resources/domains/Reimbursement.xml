@@ -18,9 +18,9 @@
     <string name="description" title="Description"/>
     
     <boolean name="rejectedOk" title="Rejected reimbursement" default="false" readonly="true"/>
-    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason" readonly="true"/>
-    <date name="rejectDate" title="Reject Date" readonly="true"/>
-	<many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject Move line" readonly="true"/>
+    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason" readonly="true"/>
+    <date name="rejectDate" title="Rejection date" readonly="true"/>
+	<many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Rejection move line" readonly="true"/>
   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	
 	<decimal name="amountToReimburse" title="Amount to reimburse" readonly="true">

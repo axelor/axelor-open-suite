@@ -5,7 +5,8 @@
 	
 	<form name="app-helpdesk-config-form" title="App helpdesk" model="com.axelor.apps.base.db.AppHelpdesk" canDelete="false" canNew="false" width="large">
 		<panel>
-			<field name="isSla" widget="boolean-switch"/>
+			<field name="isSla" widget="boolean-switch" colSpan="3"/>
+			<field name="manageTimer" widget="boolean-switch" colSpan="3"/>
 		</panel>
 	</form>
 	

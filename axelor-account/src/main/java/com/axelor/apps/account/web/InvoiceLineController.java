@@ -17,13 +17,19 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -62,10 +68,14 @@ public class InvoiceLineController {
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    Context context = request.getContext();
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
     Invoice invoice = invoiceLine.getInvoice();
     if (invoice == null) {
-      invoice = request.getContext().getParent().asType(Invoice.class);
+      if (context.getParent().getContextClass() == InvoiceLine.class) {
+        context = request.getContext().getParent();
+      }
+      invoice = context.getParent().asType(Invoice.class);
       invoiceLine.setInvoice(invoice);
     }
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
@@ -80,21 +90,33 @@ public class InvoiceLineController {
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
+    if (context.getParent().getContextClass() == InvoiceLine.class) {
+      context = request.getContext().getParent();
+    }
+
     Invoice invoice = this.getInvoice(context);
 
-    if (invoice == null || invoiceLine.getPrice() == null || invoiceLine.getQty() == null) {
+    if (invoice == null
+        || invoiceLine.getPrice() == null
+        || invoiceLine.getInTaxPrice() == null
+        || invoiceLine.getQty() == null) {
       return;
     }
 
-    BigDecimal exTaxTotal = BigDecimal.ZERO;
-    BigDecimal companyExTaxTotal = BigDecimal.ZERO;
-    BigDecimal inTaxTotal = BigDecimal.ZERO;
-    BigDecimal companyInTaxTotal = BigDecimal.ZERO;
-    BigDecimal priceDiscounted = invoiceLineService.computeDiscount(invoiceLine, invoice);
+    BigDecimal exTaxTotal;
+    BigDecimal companyExTaxTotal;
+    BigDecimal inTaxTotal;
+    BigDecimal companyInTaxTotal;
+    BigDecimal priceDiscounted =
+        invoiceLineService.computeDiscount(invoiceLine, invoice.getInAti());
 
     response.setValue("priceDiscounted", priceDiscounted);
     response.setAttr(
-        "priceDiscounted", "hidden", priceDiscounted.compareTo(invoiceLine.getPrice()) == 0);
+        "priceDiscounted",
+        "hidden",
+        priceDiscounted.compareTo(
+                invoice.getInAti() ? invoiceLine.getInTaxPrice() : invoiceLine.getPrice())
+            == 0);
 
     BigDecimal taxRate = BigDecimal.ZERO;
     if (invoiceLine.getTaxLine() != null) {
@@ -104,14 +126,10 @@ public class InvoiceLineController {
     }
 
     if (!invoice.getInAti()) {
-      exTaxTotal =
-          InvoiceLineManagement.computeAmount(
-              invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine, invoice));
+      exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
       inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
     } else {
-      inTaxTotal =
-          InvoiceLineManagement.computeAmount(
-              invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine, invoice));
+      inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
       exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
 
@@ -128,6 +146,9 @@ public class InvoiceLineController {
       throws AxelorException {
     Context context = request.getContext();
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    if (context.getParent().getContextClass() == InvoiceLine.class) {
+      context = request.getContext().getParent();
+    }
     Invoice invoice = this.getInvoice(context);
     Product product = invoiceLine.getProduct();
     Map<String, Object> productInformation = invoiceLineService.resetProductInformation();
@@ -159,11 +180,15 @@ public class InvoiceLineController {
     response.setValues(productInformation);
   }
 
-  public void getDiscount(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void getDiscount(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+
+    if (context.getParent().getContextClass() == InvoiceLine.class) {
+      context = request.getContext().getParent();
+    }
 
     Invoice invoice = this.getInvoice(context);
 
@@ -172,20 +197,79 @@ public class InvoiceLineController {
     }
 
     try {
-      BigDecimal price = invoiceLine.getPrice();
-
-      Map<String, Object> discounts = invoiceLineService.getDiscount(invoice, invoiceLine, price);
+      Map<String, Object> discounts;
+      if (invoiceLine.getProduct().getInAti()) {
+        discounts =
+            invoiceLineService.getDiscount(invoice, invoiceLine, invoiceLine.getInTaxPrice());
+      } else {
+        discounts = invoiceLineService.getDiscount(invoice, invoiceLine, invoiceLine.getPrice());
+      }
 
       if (discounts != null) {
         response.setValue("discountAmount", discounts.get("discountAmount"));
         response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 
         if (discounts.get("price") != null) {
-          response.setValue("price", discounts.get("price"));
+          if (invoiceLine.getProduct().getInAti()) {
+            response.setValue("inTaxPrice", discounts.get("price"));
+            response.setValue(
+                "price",
+                invoiceLineService.convertUnitPrice(
+                    true, invoiceLine.getTaxLine(), (BigDecimal) discounts.get("price")));
+          } else {
+            response.setValue("price", discounts.get("price"));
+            response.setValue(
+                "inTaxPrice",
+                invoiceLineService.convertUnitPrice(
+                    false, invoiceLine.getTaxLine(), (BigDecimal) discounts.get("price")));
+          }
         }
       }
     } catch (Exception e) {
       response.setFlash(e.getMessage());
+    }
+  }
+
+  /**
+   * Update the ex. tax unit price of an invoice line from its in. tax unit price.
+   *
+   * @param request
+   * @param response
+   */
+  public void updatePrice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+
+    try {
+      BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
+      TaxLine taxLine = invoiceLine.getTaxLine();
+
+      response.setValue("price", invoiceLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Update the in. tax unit price of an invoice line from its ex. tax unit price.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateInTaxPrice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+
+    try {
+      BigDecimal exTaxPrice = invoiceLine.getPrice();
+      TaxLine taxLine = invoiceLine.getTaxLine();
+
+      response.setValue(
+          "inTaxPrice", invoiceLineService.convertUnitPrice(false, taxLine, exTaxPrice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -195,34 +279,24 @@ public class InvoiceLineController {
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
+    if (context.getParent().getContextClass() == InvoiceLine.class) {
+      context = request.getContext().getParent();
+    }
+
     Invoice invoice = this.getInvoice(context);
 
     if (invoice == null
         || invoiceLine.getProduct() == null
-        || !invoiceLineService.unitPriceShouldBeUpdate(invoice, invoiceLine.getProduct())) {
+        || invoiceLine.getPrice() == null
+        || invoiceLine.getInTaxPrice() == null) {
       return;
     }
 
     try {
+      BigDecimal price = invoiceLine.getPrice();
+      BigDecimal inTaxPrice = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
 
-      BigDecimal price =
-          invoiceLineService.getUnitPrice(
-              invoice,
-              invoiceLine,
-              invoiceLine.getTaxLine(),
-              invoiceLineService.isPurchase(invoice));
-
-      Map<String, Object> discounts = invoiceLineService.getDiscount(invoice, invoiceLine, price);
-
-      if (discounts != null) {
-
-        response.setValue("discountAmount", discounts.get("discountAmount"));
-        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-        if (discounts.get("price") != null) {
-          price = (BigDecimal) discounts.get("price");
-        }
-      }
-      response.setValue("price", price);
+      response.setValue("inTaxPrice", inTaxPrice);
 
     } catch (Exception e) {
       response.setFlash(e.getMessage());
@@ -231,13 +305,14 @@ public class InvoiceLineController {
 
   public void emptyLine(ActionRequest request, ActionResponse response) {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-    if (invoiceLine.getIsTitleLine()) {
-      InvoiceLine newInvoiceLine = new InvoiceLine();
-      newInvoiceLine.setIsTitleLine(true);
-      newInvoiceLine.setQty(BigDecimal.ZERO);
-      newInvoiceLine.setId(invoiceLine.getId());
-      newInvoiceLine.setVersion(invoiceLine.getVersion());
-      response.setValues(Mapper.toMap(newInvoiceLine));
+
+    if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
+      Map<String, Object> newInvoiceLine = Mapper.toMap(new InvoiceLine());
+      newInvoiceLine.put("qty", BigDecimal.ZERO);
+      newInvoiceLine.put("id", invoiceLine.getId());
+      newInvoiceLine.put("version", invoiceLine.getVersion());
+      newInvoiceLine.put("typeSelect", invoiceLine.getTypeSelect());
+      response.setValues(newInvoiceLine);
     }
   }
 
@@ -255,5 +330,51 @@ public class InvoiceLineController {
     }
 
     return invoice;
+  }
+
+  public void getAccount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      if (invoiceLine != null) {
+        Product product = invoiceLine.getProduct();
+        Invoice invoice = this.getInvoice(request.getContext());
+        if (product != null) {
+          AccountManagement accountManagement =
+              Beans.get(AccountManagementService.class)
+                  .getAccountManagement(product, invoice.getCompany());
+          if (accountManagement != null) {
+            Account account = null;
+            if (invoiceLine.getFixedAssets()) {
+              account = accountManagement.getPurchFixedAssetsAccount();
+            } else {
+              account = accountManagement.getPurchaseAccount();
+            }
+            response.setValue("account", account);
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void filterAccount(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    Invoice invoice = this.getInvoice(context);
+    if (invoice != null && invoice.getCompany() != null) {
+      String domain = null;
+      if (InvoiceToolService.isPurchase(invoice)) {
+        domain =
+            "self.company.id = "
+                + invoice.getCompany().getId()
+                + "AND self.accountType.technicalTypeSelect IN ('debt' , 'immobilisation' , 'charge')";
+      } else {
+        domain =
+            "self.company.id = "
+                + invoice.getCompany().getId()
+                + " AND self.accountType.technicalTypeSelect = 'income'";
+      }
+      response.setAttr("account", "domain", domain);
+    }
   }
 }

@@ -42,6 +42,7 @@
 	<selection name='iinvoice.operation.sub.type.select' id="contract.iinvoice.operation.sub.type.select">
 		<option value='4'>Contract invoice</option>
 		<option value='5'>Contract closing invoice</option>
+		<option value='7'>Periodic contract</option>
 	</selection>
 
 </object-views>

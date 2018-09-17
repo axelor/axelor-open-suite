@@ -34,6 +34,9 @@
   				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom" widget="boolean-switch"/>
 			</panel>
+			<panel name="printing" title="Printings">
+				<field name="printPlannedDateOnManufOrder"/>
+			</panel>
 		</panel>
 		<panel>
 			<button name="generateProductionConfigurations" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>

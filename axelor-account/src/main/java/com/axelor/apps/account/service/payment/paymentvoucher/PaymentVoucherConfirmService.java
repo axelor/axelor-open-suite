@@ -33,7 +33,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -128,7 +127,7 @@ public class PaymentVoucherConfirmService {
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PAYBOX_3),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
 
     if (paymentVoucher.getPayboxPaidOk()) {
@@ -274,7 +273,9 @@ public class PaymentVoucherConfirmService {
         Reconcile reconcile =
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);
-        reconcileService.confirmReconcile(reconcile, true);
+        if (reconcile != null) {
+          reconcileService.confirmReconcile(reconcile, true);
+        }
       } else {
 
         moveLine =
@@ -450,8 +451,10 @@ public class PaymentVoucherConfirmService {
 
     Reconcile reconcile =
         reconcileService.createReconcile(moveLineToPay, moveLine, amountInCompanyCurrency, true);
-    log.debug("Reconcile : : : {}", reconcile);
-    reconcileService.confirmReconcile(reconcile, true);
+    if (reconcile != null) {
+      log.debug("Reconcile : : : {}", reconcile);
+      reconcileService.confirmReconcile(reconcile, true);
+    }
     return moveLine;
   }
 }

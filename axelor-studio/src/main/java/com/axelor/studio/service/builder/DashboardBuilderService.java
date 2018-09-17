@@ -132,7 +132,7 @@ public class DashboardBuilderService {
 
     String otherView = "form";
     String view = dashletBuilder.getViewType();
-    if (view == "form") {
+    if (view.equals("form")) {
       otherView = "grid";
     }
 

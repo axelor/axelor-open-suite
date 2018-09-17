@@ -18,43 +18,48 @@
 package com.axelor.meta.web;
 
 import com.axelor.auth.db.IMessage;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaGroupMenuAssistantRepository;
 import com.axelor.meta.service.MetaGroupMenuAssistantService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.LocalDateTime;
 
 @Singleton
 public class MetaGroupMenuAssistantController {
 
-  @Inject private MetaGroupMenuAssistantService groupMenuAssistantService;
-
-  @Inject private MetaGroupMenuAssistantRepository groupMenuAssistantRepo;
-
   public void createGroupMenuFile(ActionRequest request, ActionResponse response) {
-
-    Long groupMenuAssistantId = (Long) request.getContext().get("id");
-    groupMenuAssistantService.createGroupMenuFile(
-        groupMenuAssistantRepo.find(groupMenuAssistantId));
-    response.setReload(true);
+    try {
+      Long groupMenuAssistantId = (Long) request.getContext().get("id");
+      Beans.get(MetaGroupMenuAssistantService.class)
+          .createGroupMenuFile(
+              Beans.get(MetaGroupMenuAssistantRepository.class).find(groupMenuAssistantId));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void importGroupMenu(ActionRequest request, ActionResponse response) {
+    try {
+      Long groupMenuAssistantId = (Long) request.getContext().get("id");
+      String errorLog =
+          Beans.get(MetaGroupMenuAssistantService.class)
+              .importGroupMenu(
+                  Beans.get(MetaGroupMenuAssistantRepository.class).find(groupMenuAssistantId));
 
-    Long groupMenuAssistantId = (Long) request.getContext().get("id");
-    String errorLog =
-        groupMenuAssistantService.importGroupMenu(
-            groupMenuAssistantRepo.find(groupMenuAssistantId));
-
-    response.setValue("log", errorLog);
-    if (errorLog.equals("")) {
-      response.setFlash(I18n.get(IMessage.IMPORT_OK));
-      response.setValue("importDate", LocalDateTime.now());
-    } else {
-      response.setFlash(I18n.get(IMessage.ERR_IMPORT));
+      response.setValue("log", errorLog);
+      if (errorLog.isEmpty()) {
+        response.setFlash(I18n.get(IMessage.IMPORT_OK));
+        response.setValue("importDate", LocalDateTime.now());
+      } else {
+        response.setFlash(I18n.get(IMessage.ERR_IMPORT));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

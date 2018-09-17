@@ -1,2 +1,2 @@
-"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
-"perm.project.all";"com.axelor.apps.project.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.project.all";"com.axelor.apps.project.db.*";"x";"x";"x";"x";"x";;;"Admin"

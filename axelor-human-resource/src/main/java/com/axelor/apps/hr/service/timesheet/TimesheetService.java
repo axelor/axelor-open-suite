@@ -37,7 +37,6 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 public interface TimesheetService {
-  public void getTimeFromTask(Timesheet timesheet) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException;
@@ -72,8 +71,14 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Timesheet timesheet) throws AxelorException;
+
+  /**
+   * Set the timesheet to draft status.
+   *
+   * @param timesheet a timesheet
+   */
+  void draft(Timesheet timesheet);
 
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
@@ -139,4 +144,8 @@ public interface TimesheetService {
    * @return the updated timesheet
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
+
+  @Transactional
+  public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
+      throws AxelorException;
 }

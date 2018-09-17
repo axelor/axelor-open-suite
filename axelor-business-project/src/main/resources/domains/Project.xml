@@ -7,13 +7,9 @@
 
 	<entity name="Project" cachable="true">
         
-        <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  		<decimal name="qty" title="Qty" default="1"/>
-  		<decimal name="price" title="Unit price" precision="20" scale="10"/>
-  		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-  		<decimal name="exTaxTotal" title="Total W.T."/>
-		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Original Sale order"/>
+  		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
 		<integer name="projInvTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type" default="1"/>
+		<string name="invoicingComment" title="Invoicing comment" large="true" />
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
@@ -36,7 +32,7 @@
 		<decimal name="realTimesMargin" title="Real Margin (Time)" readonly="true"/>
 		<decimal name="realInvoicingMargin" title="Real Margin (Invoicing)" readonly="true"/>
 		
-		<one-to-many name="elementsToInvoiceList" ref="com.axelor.apps.businessproject.db.ElementsToInvoice" title="Other Elements To Invoice" mappedBy="project"/>
+		<one-to-many name="manualElementList" ref="com.axelor.apps.businessproject.db.ManualElement" title="Manual elements" mappedBy="project"/>
 		
 	  	<boolean name="invoiced" readonly="true"/>
 	  	<string name="unitOnPrinting" selection="hr.time.logging.preference.select" title="Invoicing unit"/>
@@ -48,7 +44,7 @@
 		
 		
 		<boolean name="isBusinessProject" title="Business project" />
-		
+
 	 	<extra-code><![CDATA[
 		
 		   	// TYPE SELECT
@@ -60,8 +56,15 @@
    			public static final int TASK_PER_LINE_PHASE = 2;
    			public static final int TASK_PER_LINE_TASK = 3;
 		]]></extra-code>
-		
-		
+
+
 	</entity>
-  
+
+	<enum name="ProjectGeneratorType">
+		<item name="PROJECT_ALONE" title="Project alone"/>
+		<item name="PHASE_BY_LINE" title="Phase by line"/>
+		<item name="TASK_BY_LINE" title="Task by line"/>
+		<item name="TASK_TEMPLATE" title="Tasks by product"/>
+	</enum>
+
 </domain-models>

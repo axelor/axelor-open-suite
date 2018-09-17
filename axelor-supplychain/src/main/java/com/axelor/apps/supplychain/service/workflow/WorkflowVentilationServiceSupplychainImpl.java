@@ -34,13 +34,14 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +59,8 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
   private AccountingSituationSupplychainService accountingSituationSupplychainService;
 
+  private AppSupplychainService appSupplychainService;
+
   @Inject
   public WorkflowVentilationServiceSupplychainImpl(
       AccountConfigService accountConfigService,
@@ -67,7 +70,8 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      AppSupplychainService appSupplychainService) {
 
     super(accountConfigService, invoicePaymentRepo, invoicePaymentCreateService);
     this.saleOrderInvoiceService = saleOrderInvoiceService;
@@ -75,6 +79,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.appSupplychainService = appSupplychainService;
   }
 
   public void afterVentilation(Invoice invoice) throws AxelorException {
@@ -93,39 +98,32 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
   private void saleOrderProcess(Invoice invoice) throws AxelorException {
 
-    SaleOrder invoiceSaleOrder = invoice.getSaleOrder();
+    // Get all different saleOrders from invoice
+    Set<SaleOrder> saleOrderSet = new HashSet<>();
 
-    if (invoiceSaleOrder != null) {
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      SaleOrder saleOrder = null;
 
-      saleOrderInvoiceService.update(invoiceSaleOrder, invoice.getId(), false);
-      accountingSituationSupplychainService.updateUsedCredit(invoiceSaleOrder.getClientPartner());
-      log.debug(
-          "Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
+      if (appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()) {
+        saleOrder = this.saleOrderLineProcess(invoice, invoiceLine);
+      } else {
+        saleOrder = invoiceLine.getSaleOrder();
+      }
+
+      if (saleOrder != null) {
+        saleOrderSet.add(saleOrder);
+      }
+    }
+
+    for (SaleOrder saleOrder : saleOrderSet) {
+      log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
+      saleOrderInvoiceService.update(saleOrder, invoice.getId(), false);
+      saleOrderRepository.save(saleOrder);
+      accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
 
       // determine if the invoice is a balance invoice.
-      if (invoiceSaleOrder.getAmountInvoiced().compareTo(invoiceSaleOrder.getExTaxTotal()) == 0) {
+      if (saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) == 0) {
         invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_BALANCE);
-      }
-
-    } else {
-
-      // Get all different saleOrders from invoice
-      List<SaleOrder> saleOrderList = Lists.newArrayList();
-
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-
-        SaleOrder saleOrder = this.saleOrderLineProcess(invoice, invoiceLine);
-
-        if (saleOrder != null && !saleOrderList.contains(saleOrder)) {
-          saleOrderList.add(saleOrder);
-        }
-      }
-
-      for (SaleOrder saleOrder : saleOrderList) {
-        log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
-        saleOrderInvoiceService.update(saleOrder, invoice.getId(), false);
-        saleOrderRepository.save(saleOrder);
-        accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
       }
     }
   }
@@ -167,41 +165,30 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
   private void purchaseOrderProcess(Invoice invoice) throws AxelorException {
 
-    PurchaseOrder invoicePurchaseOrder = invoice.getPurchaseOrder();
+    // Get all different purchaseOrders from invoice
+    Set<PurchaseOrder> purchaseOrderSet = new HashSet<>();
 
-    if (invoicePurchaseOrder != null) {
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      PurchaseOrder purchaseOrder = null;
 
+      if (appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()) {
+        purchaseOrder = this.purchaseOrderLineProcess(invoice, invoiceLine);
+      } else {
+        purchaseOrder = invoiceLine.getPurchaseOrder();
+      }
+
+      if (purchaseOrder != null) {
+        purchaseOrderSet.add(purchaseOrder);
+      }
+    }
+
+    for (PurchaseOrder purchaseOrder : purchaseOrderSet) {
       log.debug(
           "Update the invoiced amount of the purchase order : {}",
-          invoicePurchaseOrder.getPurchaseOrderSeq());
-      invoicePurchaseOrder.setAmountInvoiced(
-          purchaseOrderInvoiceService.getInvoicedAmount(
-              invoicePurchaseOrder, invoice.getId(), false));
-
-    } else {
-
-      // Get all different purchaseOrders from invoice
-
-      List<PurchaseOrder> purchaseOrderList = Lists.newArrayList();
-      ;
-
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-
-        PurchaseOrder purchaseOrder = this.purchaseOrderLineProcess(invoice, invoiceLine);
-
-        if (purchaseOrder != null && !purchaseOrderList.contains(purchaseOrder)) {
-          purchaseOrderList.add(purchaseOrder);
-        }
-      }
-
-      for (PurchaseOrder purchaseOrder : purchaseOrderList) {
-        log.debug(
-            "Update the invoiced amount of the purchase order : {}",
-            purchaseOrder.getPurchaseOrderSeq());
-        purchaseOrder.setAmountInvoiced(
-            purchaseOrderInvoiceService.getInvoicedAmount(purchaseOrder, invoice.getId(), false));
-        purchaseOrderRepository.save(purchaseOrder);
-      }
+          purchaseOrder.getPurchaseOrderSeq());
+      purchaseOrder.setAmountInvoiced(
+          purchaseOrderInvoiceService.getInvoicedAmount(purchaseOrder, invoice.getId(), false));
+      purchaseOrderRepository.save(purchaseOrder);
     }
   }
 

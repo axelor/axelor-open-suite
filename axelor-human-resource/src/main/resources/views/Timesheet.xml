@@ -55,9 +55,9 @@
 				<item name="printTimesheet" title="Print" action="save,action-print-timesheet"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench">
-				<item title="Get time from projects" showIf="statusSelect == 1"
-					  action="action-timesheet-validate-tasks,save,com.axelor.apps.hr.web.timesheet.TimesheetController:getTimeFromTask"/>
 				<item title="Generate Lines Automatically" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false"/>
+				<item title="Generate Lines From Expected Planning" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-expected-planning" />
+				<item title="Generate Lines From Realise Planning" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-realise-planning" />
 			</menu>
 		</menubar>
 		<panel>
@@ -72,7 +72,7 @@
 				<button name="validateButton" hidden="true" onClick="action-timesheet-group-validate" title="Validate" icon="fa-check" css="btn-success"/>
 				<button name="refuseButton" hidden="true" onClick="action-timesheet-group-refuse" title="Refuse" icon="fa-times" css="btn-danger" />
 				<button name="cancelButton" hidden="true" onClick="save,action-timesheet-method-cancel,action-timesheet-attrs-buttons" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-				<button name="draftButton" onClick="action-timesheet-record-draft,save,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+				<button name="draftButton" onClick="save,action-timesheet-method-draft,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 				<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
 						if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
 			</panel>
@@ -101,7 +101,7 @@
 		</panel>
 		<panel name="lines">
 			<panel-dashlet name="timesheetLineEditor" colSpan="12" action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
-			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true"/>
+			<panel-related field="timesheetLineList"   colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true"/>
 			<panel-related field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-manuf-order-grid" editable="true" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2" x-can-copy="true" if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
 			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true" />
 			<panel-related field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-manuf-order-grid" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2" x-can-copy="true" if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
@@ -113,7 +113,7 @@
 			<field name="periodTotal" readonly="true"/>
 			<field name="$periodTotalConvert" type="decimal" readonly="true" hidden="true"/>
 		</panel>
-		<panel-dashlet name="panelDashboard" title="Total Hours per Day" showIf="id" action="action-timesheet-view-total-hours-per-day"/>
+		<panel-dashlet name="panelDashboard" title="Total Hours per Day" hidden="true" showIf="id &amp;&amp; user.employee.timesheetImputationSelect != 2" action="action-timesheet-view-total-hours-per-day"/>
 		<panel showIf="sentDate != null">
 		 	<field name="sentDate"/>
 			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid" showIf="validatedBy != null"/>
@@ -148,6 +148,7 @@
 	<action-group name="action-timesheet-group-onsave">
 		<action name="action-timesheet-validate-toDate"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-method-update-operation-order" if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
 	</action-group>
 
 	<action-group name="action-timesheet-group-onload">
@@ -218,14 +219,18 @@
         <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="updateTimeLoggingPreference"/>
 	</action-method>
 
+	<action-method name="action-timesheet-method-generate-lines-from-realise-planning">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="generateLinesFromRealisePlanning"/>
+	</action-method>
+	
+	<action-method name="action-timesheet-method-generate-lines-from-expected-planning">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="generateLinesFromExpectedPlanning"/>
+	</action-method>
+
 	<action-record name="action-timesheet-record-default" model="com.axelor.apps.hr.db.Timesheet">
 	    <field name="user" expr="eval:__user__"/>
 		<field name="timeLoggingPreferenceSelect" expr="eval: __user__?.employee?.timeLoggingPreferenceSelect"/>
 	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-	</action-record>
-
-	<action-record name="action-timesheet-record-draft" model="com.axelor.apps.hr.db.Timesheet">
-	    <field name="statusSelect" expr="1"/>
 	</action-record>
 
 	<action-record name="action-hr-timesheet-record-empty-product" model="com.axelor.apps.hr.db.Timesheet">
@@ -241,10 +246,6 @@
 		<field name="toDate" expr="eval:fromDate.with(java.time.DayOfWeek.FRIDAY)" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 1"/>
 		<field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 2"/>
 	</action-record>
-
-	<action-validate name="action-timesheet-validate-tasks">
-		<error message="No log time found or all log times already added" if="__repo__(TimesheetLine).all().filter('self.user = ?1 AND self.timesheet = null',__user__).fetchOne() == null"/>
-	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-timesheet-selected">
 		<error message="You have to choose at least one timesheet" if="timesheetSelect == null"/>
@@ -370,6 +371,10 @@
 	
 	<action-method name="action-timesheet-method-cancel">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="cancel"/>
+	</action-method>
+
+	<action-method name="action-timesheet-method-draft">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="draft"/>
 	</action-method>
 	
 	<action-method name="action-timesheet-method-timesheet-timer">

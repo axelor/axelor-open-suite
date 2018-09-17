@@ -98,7 +98,8 @@
 		title="Send a Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<view type="grid" name="bank-order-send-grid"/>
 		<view type="form" name="bank-order-send-form"/>
-		<domain>self.generatedMetaFile != NULL AND self.nbOfLines = 0</domain>
+		<domain>self.orderTypeSelect = 7</domain>
+		<context name="_orderTypeSelect" expr="7"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-order-awaiting-for-signature"
@@ -240,5 +241,22 @@
 		<view type="grid" name="bank-statement-file-format-grid"/>
 		<view type="form" name="bank-statement-file-format-form"/>
 	</action-view>
-	
+
+    <menuitem name="account-root-payment-schedule-payment-schedule-line-reject"
+      parent="account-root-payment-schedule" title="Payment schedule line rejection"
+      action="account.root.payment.schedule.payment.schedule.line.reject"/>
+
+    <action-view name="account.root.payment.schedule.payment.schedule.line.reject"
+      title="Payment schedule line rejection" model="com.axelor.apps.account.db.PaymentScheduleLine">
+      <view type="grid" name="payment-schedule-line-reject-grid"/>
+      <view type="form" name="payment-schedule-line-form"/>
+      <domain>self.paymentSchedule.statusSelect = :paymentScheduleConfirmed
+              AND self.statusSelect = :statusValidated
+              AND self.rejectDate IS NULL</domain>
+      <context name="paymentScheduleConfirmed"
+        expr="eval: __repo__(PaymentSchedule).STATUS_CONFIRMED"/>
+      <context name="statusValidated"
+        expr="eval: __repo__(PaymentScheduleLine).STATUS_VALIDATED"/>
+    </action-view>
+
 </object-views>

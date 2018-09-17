@@ -167,8 +167,7 @@ public class OperationOrderController {
       LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       operationOrder.setRealStartDateT(realStartDateT);
-      Beans.get(OperationOrderWorkflowService.class).finish(operationOrder);
-      Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
+      Beans.get(OperationOrderWorkflowService.class).finishAndAllOpFinished(operationOrder);
 
       response.setReload(true);
     } catch (Exception e) {

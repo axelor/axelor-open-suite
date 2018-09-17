@@ -28,12 +28,15 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -46,6 +49,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,12 +131,44 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         stockMove.setFullySpreadOverLogisticalFormsFlag(true);
       }
 
+      boolean isNeedingConformityCertificate = saleOrder.getIsNeedingConformityCertificate();
+      stockMove.setIsNeedingConformityCertificate(isNeedingConformityCertificate);
+
+      if (isNeedingConformityCertificate) {
+        stockMove.setSignatoryUser(
+            stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
+      }
+
       stockMove.setEstimatedDate(saleOrder.getDeliveryDate());
       stockMoveService.plan(stockMove);
+
+      if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
+        setParentStockMoveLine(stockMove);
+      }
+
       return stockMove;
     }
 
     return null;
+  }
+
+  @Transactional
+  public void setParentStockMoveLine(StockMove stockMove) {
+
+    for (StockMoveLine line : stockMove.getStockMoveLineList()) {
+      if (line.getSaleOrderLine() != null) {
+        line.setPackPriceSelect(line.getSaleOrderLine().getPackPriceSelect());
+        StockMoveLine parentStockMoveLine =
+            Beans.get(StockMoveLineRepository.class)
+                .all()
+                .filter(
+                    "self.saleOrderLine = ?1 and self.stockMove = ?2",
+                    line.getSaleOrderLine().getParentLine(),
+                    stockMove)
+                .fetchOne();
+        line.setParentLine(parentStockMoveLine);
+      }
+    }
   }
 
   protected boolean isSaleOrderWithProductsToDeliver(SaleOrder saleOrder) throws AxelorException {
@@ -170,12 +206,38 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             saleOrder.getFreightCarrierMode(),
             saleOrder.getCarrierPartner(),
             saleOrder.getForwarderPartner(),
-            saleOrder.getIncoterm());
+            saleOrder.getIncoterm(),
+            StockMoveRepository.TYPE_OUTGOING);
 
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
-    stockMove.setSaleOrder(saleOrder);
+    stockMove.setOriginId(saleOrder.getId());
+    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_SALE_ORDER);
+    stockMove.setOrigin(saleOrder.getSaleOrderSeq());
     stockMove.setStockMoveLineList(new ArrayList<>());
+    stockMove.setTradingName(saleOrder.getTradingName());
+
+    if (stockMove.getPartner() != null) {
+      setDefaultAutoMailSettings(stockMove);
+    }
     return stockMove;
+  }
+
+  /**
+   * Set automatic mail configuration from the partner.
+   *
+   * @param stockMove
+   */
+  protected void setDefaultAutoMailSettings(StockMove stockMove) throws AxelorException {
+    Partner partner = stockMove.getPartner();
+    Company company = stockMove.getCompany();
+
+    PartnerStockSettings mailSettings =
+        Beans.get(PartnerStockSettingsService.class).getOrCreateMailSettings(partner, company);
+
+    stockMove.setRealStockMoveAutomaticMail(mailSettings.getRealStockMoveAutomaticMail());
+    stockMove.setRealStockMoveMessageTemplate(mailSettings.getRealStockMoveMessageTemplate());
+    stockMove.setPlannedStockMoveAutomaticMail(mailSettings.getPlannedStockMoveAutomaticMail());
+    stockMove.setPlannedStockMoveMessageTemplate(mailSettings.getPlannedStockMoveMessageTemplate());
   }
 
   /**
@@ -248,6 +310,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
+
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convertWithProduct(
@@ -285,6 +348,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
       }
 
+      updatePackInfo(saleOrderLine, stockMoveLine);
+
       return stockMoveLine;
     } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
       StockMoveLine stockMoveLine =
@@ -301,6 +366,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               null);
 
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+      updatePackInfo(saleOrderLine, stockMoveLine);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
 
       return stockMoveLine;
@@ -308,10 +374,22 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     return null;
   }
 
+  private void updatePackInfo(SaleOrderLine saleOrderLine, StockMoveLine stockMoveLine) {
+    stockMoveLine.setLineTypeSelect(saleOrderLine.getTypeSelect());
+    stockMoveLine.setPackPriceSelect(saleOrderLine.getPackPriceSelect());
+    stockMoveLine.setIsSubLine(saleOrderLine.getIsSubLine());
+  }
+
   @Override
   public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException {
+    return isStockMoveProduct(saleOrderLine, saleOrderLine.getSaleOrder());
+  }
 
-    Company company = saleOrderLine.getSaleOrder().getCompany();
+  @Override
+  public boolean isStockMoveProduct(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+
+    Company company = saleOrder.getCompany();
 
     SupplyChainConfig supplyChainConfig =
         Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
@@ -358,7 +436,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
-      if (this.isStockMoveProduct(saleOrderLine)) {
+      if (this.isStockMoveProduct(saleOrderLine, saleOrder)) {
 
         if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
           if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED

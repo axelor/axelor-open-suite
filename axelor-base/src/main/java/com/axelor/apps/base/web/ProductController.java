@@ -78,7 +78,7 @@ public class ProductController {
   }
 
   @SuppressWarnings("unchecked")
-  public void printProductCatelog(ActionRequest request, ActionResponse response)
+  public void printProductCatalog(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     User user = Beans.get(UserService.class).getUser();
@@ -90,10 +90,6 @@ public class ProductController {
 
     if (lstSelectedProduct != null) {
       productIds = Joiner.on(",").join(lstSelectedProduct);
-    }
-
-    if (!productIds.equals("")) {
-      productIds = productIds.substring(0, productIds.length() - 1);
     }
 
     String name = I18n.get("Product Catalog");

@@ -12,7 +12,6 @@
 		<option value="3">In process</option>
 		<option value="4">Converted</option>
 		<option value="5">Lost</option>
-		<option value="6">Recycled</option>
 	</selection>
 	
 	<selection name="crm.event.related.to.select">
@@ -29,7 +28,7 @@
     </selection>
 
 	<selection name="crm.opportunity.sales.stage.select">
-		<option value="1">New</option>
+		<option value="1">crm.New</option>
 		<option value="2">Qualification</option>
 		<option value="3">Proposition</option>
 		<option value="4">Negotiation</option>

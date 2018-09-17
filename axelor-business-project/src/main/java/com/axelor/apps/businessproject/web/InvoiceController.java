@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -53,6 +54,8 @@ public class InvoiceController {
   @Inject private AppSupplychainService appSupplychainService;
 
   @Inject protected SaleOrderInvoiceProjectServiceImpl saleOrderInvoiceProjectServiceImpl;
+
+  @Inject private InvoiceRepository invoiceRepo;
 
   // Generate single invoice from several
   @SuppressWarnings({"rawtypes", "unchecked"})
@@ -317,5 +320,15 @@ public class InvoiceController {
     }
 
     response.setView(ActionView.define(reportInfo.get(0)).add("html", reportInfo.get(1)).map());
+  }
+
+  public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = invoiceRepo.find(invoice.getId());
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      invoiceLine.setProject(invoice.getProject());
+    }
+    response.setValue("invoiceLineList", invoice.getInvoiceLineList());
   }
 }

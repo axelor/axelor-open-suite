@@ -40,11 +40,13 @@ public interface InvoiceLineService {
   TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException;
 
-  BigDecimal getUnitPrice(
+  BigDecimal getExTaxUnitPrice(
       Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
       throws AxelorException;
 
-  boolean isPurchase(Invoice invoice);
+  BigDecimal getInTaxUnitPrice(
+      Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
+      throws AxelorException;
 
   BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException;
 
@@ -52,12 +54,9 @@ public interface InvoiceLineService {
 
   PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList);
 
-  BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice);
+  BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti);
 
-  BigDecimal computeDiscount(
-      int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice, Invoice invoice);
-
-  BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, Invoice invoice);
+  BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
 
   Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
 
@@ -65,10 +64,11 @@ public interface InvoiceLineService {
 
   Unit getUnit(Product product, boolean isPurchase);
 
-  boolean unitPriceShouldBeUpdate(Invoice invoice, Product product);
-
   Map<String, Object> resetProductInformation();
 
   Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException;
+
+  public Map<String, Object> fillPriceAndAccount(
+      Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException;
 }

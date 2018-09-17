@@ -8,10 +8,13 @@
   <entity name="StockMoveLine" lang="java">
   
   	<many-to-one name="stockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
+    <many-to-one name="plannedStockMove" ref="com.axelor.apps.stock.db.StockMove"/>
 
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
 	<decimal name="qty" title="Expected Qty"/>
 	<decimal name="realQty" title="Real Qty"/>
+	<decimal name="oldQty" hidden="true"/>
+	<boolean name="isSubLine" title="Sub line" readonly="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="netMass" title="Net mass"/>
     <decimal name="totalNetMass" title="Total net mass"/>
@@ -34,17 +37,78 @@
     <decimal name="unitPriceTaxed" precision="20" scale="10" title="Unit price"/>
     
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
-    
+    <integer name="sequence" title="Seq."/>
+
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
-
     <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" mappedBy="stockMoveLine" title="Logistical form lines" />
+    <integer name="lineTypeSelect" title="Type" selection="sale.order.line.type.select"/>
+    <integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
+
+    <enum name="regime" ref="com.axelor.apps.stock.db.Regime"/>
+    <enum name="natureOfTransaction" ref="com.axelor.apps.stock.db.NatureOfTransaction"/>
+    <many-to-one name="countryOfOrigin" ref="com.axelor.apps.base.db.Country"/>
+
+    <finder-method name="findForDeclarationOfExchanges"
+      using="LocalDate:fromDate,LocalDate:toDate,String:productTypeSelect,int:stockMoveTypeSelect,com.axelor.apps.base.db.Country:country"
+      filter="
+        self.stockMove.realDate BETWEEN :fromDate AND :toDate
+        AND self.product.productTypeSelect = :productTypeSelect
+        AND self.stockMove.typeSelect = :stockMoveTypeSelect
+        AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country) = :country
+        OR COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country) = :country)
+        AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country)
+        != COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country)
+        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
+        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)"
+      orderBy="stockMove.realDate,id" all="true"/>
 
     <extra-code><![CDATA[
         // CONFORMITY SELECT
         public static final int CONFORMITY_NONE = 1;
         public static final int CONFORMITY_COMPLIANT = 2;
         public static final int CONFORMITY_NON_COMPLIANT = 3;
+        
+        public static final int TYPE_NORMAL = 0;
+		public static final int TYPE_TITLE = 1;
+		public static final int TYPE_PACK = 2;
+		
+		public static final int PACK_PRICE_ONLY = 0;
+		public static final int SUBLINE_PRICE_ONLY = 1;
     ]]></extra-code>
   </entity>
+
+  <enum name="Regime" numeric="true">
+    <item name="INTRACOMMUNITY_ACQUISITION_TAXABLE_IN_FRANCE" value="11"/>
+    <item name="OTHER_INTRODUCTIONS" value="19"/>
+
+    <item name="EXONERATED_SHIPMENT_AND_TRANSFER" value="21"/>
+    <item name="COMMERCIAL_REGULARIZATION_RESULTING_IN_VALUE_REDUCTION" value="25"/>
+    <item name="COMMERCIAL_REGULARIZATION_RESULTING_IN_VALUE_INCREASE" value="26"/>
+    <item name="OTHER_EXPEDITIONS" value="29"/>
+    <item name="SPECIAL_OPERATIONS" value="31"/>
+  </enum>
+
+  <enum name="NatureOfTransaction" numeric="true">
+    <item name="FIRM_PURCHASE_OR_SALE" value="11"/>
+    <item name="DELIVERY_FOR_TRIAL_SALE" value="12"/>
+    <item name="BARTER" value="13"/>
+    <item name="FINANCIAL_LEASING" value="14"/>
+    <item name="TRANSACTION_LEADING_TO_PROPERTY_TRANSFER" value="19"/>
+    <item name="RETURN_OF_GOODS" value="21"/>
+    <item name="REPLACEMENT_OF_RETURNED_GOODS" value="22"/>
+    <item name="REPLACEMENT_OF_NON_RETURNED_GOODS" value="23"/>
+    <item name="OTHER_RETURNS" value="29"/>
+    <item name="NON_TEMPORARY_IMPLYING_TRANSFER_OF_PROPERTY_WITHOUT_COMPENSATION" value="30"/>
+    <item name="OPERATIONS_FOR_CUSTOM_WORK_RETURN" value="41"/>
+    <item name="OPERATIONS_FOR_CUSTOM_WORK_NON_RETURN" value="42"/>
+    <item name="OPERATION_AFTER_CUSTOM_WORK_RETURN_TO_INITIAL_STATE" value="51"/>
+    <item name="OPERATION_AFTER_CUSTOM_WORK_RETURN_TO_OTHER_STATE" value="52"/>
+    <item name="TRANSFERS_UNDER_INWARD_PROCESSING" value="65"/>
+    <item name="DEFENSE_OR_INTERGOVERNMENTAL_PROGRAM" value="70"/>
+    <item name="MATERIALS_FOR_CONSTRUCTION_CONTRACT" value="80"/>
+    <item name="RENTAL_LOAN_LEASING_MORE_THAN_24_MONTHS" value="91"/>
+    <item name="OTHER_TRANSACTIONS" value="99"/>
+  </enum>
+
 </domain-models>

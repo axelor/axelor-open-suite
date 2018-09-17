@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -228,7 +227,7 @@ public class DebtRecoverySessionService {
               + I18n.get("Partner")
               + " %s: +"
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           debtRecovery.getAccountingSituation().getPartner().getName());
     }
     for (DebtRecoveryMethodLine debtRecoveryMethodLine :

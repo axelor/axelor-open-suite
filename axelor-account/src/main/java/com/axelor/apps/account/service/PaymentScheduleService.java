@@ -106,4 +106,12 @@ public interface PaymentScheduleService {
    * @throws AxelorException
    */
   void checkTotalLineAmount(PaymentSchedule paymentSchedule) throws AxelorException;
+
+  /**
+   * Get next payment schedule line sequence number.
+   *
+   * @param paymentSchedule
+   * @return
+   */
+  int getNextScheduleLineSeq(PaymentSchedule paymentSchedule);
 }

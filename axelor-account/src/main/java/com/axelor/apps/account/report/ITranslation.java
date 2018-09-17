@@ -29,11 +29,16 @@ public interface ITranslation {
   public static final String INVOICE_QTY_UNIT = /*$$(*/ "Invoice.qtyUnit"; /*)*/
   public static final String INVOICE_UNIT_PRICE = /*$$(*/ "Invoice.unitPrice"; /*)*/
   public static final String INVOICE_PRICE_EXCL_TAX = /*$$(*/ "Invoice.priceExclTax"; /*)*/
+  public static final String INVOICE_PRICE_INCL_TAX = /*$$(*/ "Invoice.priceInclTax"; /*)*/
   public static final String INVOICE_BASE = /*$$(*/ "Invoice.base"; /*)*/
   public static final String INVOICE_TAX_AMOUNT = /*$$(*/ "Invoice.taxAmount"; /*)*/
   public static final String INVOICE_TOTAL_EXCL_TAX = /*$$(*/ "Invoice.totalExclTax"; /*)*/
+  public static final String INVOICE_TOTAL_EXCL_TAX_WITHOUT_DISCOUNT = /*$$(*/
+      "Invoice.totalExclTaxWithoutDiscount"; /*)*/
   public static final String INVOICE_TOTAL_TAX = /*$$(*/ "Invoice.totalTax"; /*)*/
   public static final String INVOICE_TOTAL_INCL_TAX = /*$$(*/ "Invoice.totalInclTax"; /*)*/
+  public static final String INVOICE_TOTAL_DISCOUNT = /*$$(*/ "Invoice.totalDiscount"; /*)*/
+  public static final String INVOICE_AFTER_DISCOUNT = /*$$(*/ "Invoice.afterDiscount"; /*)*/
   public static final String INVOICE_NOTE = /*$$(*/ "Invoice.note"; /*)*/
   public static final String INVOICE_CHEQUE = /*$$(*/ "Invoice.cheque"; /*)*/
   public static final String INVOICE_BANK_DETAILS = /*$$(*/ "Invoice.bankDetails"; /*)*/
@@ -77,6 +82,16 @@ public interface ITranslation {
 
   public static final String INVOICE_SUBSCRIPTION_PERIOD = /*$$(*/
       "Invoice.subscriptionPeriod"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
+      "AccountingReport.editionDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/
+      "AccountingReport.recapByAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_TOTAL_DEBIT_ACCOUNT = /*$$(*/
+      "AccountingReport.totalDebitAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_TOTAL_CREDIT_ACCOUNT = /*$$(*/
+      "AccountingReport.totalCreditAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_CONTROL = /*$$(*/ "AccountingReport.control"; /*)*/
 
   public static final String ACCOUNTING_REPORT_1_TITLE = /*$$(*/
       "AccountingReportType1.title"; /*)*/
@@ -137,6 +152,9 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_2_GENERAL_BALANCE = /*$$(*/
       "AccountingReportType2.generalBalance"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_6_TITLE = /*$$(*/
+      "AccountingReportType6.title"; /*)*/
+
   public static final String ACCOUNTING_REPORT_15_TITLE = /*$$(*/
       "AccountingReportType15.title"; /*)*/
   public static final String ACCOUNTING_REPORT_15_COMPANY = /*$$(*/
@@ -151,6 +169,8 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_15_PRINT_DATE = /*$$(*/
       "AccountingReportType15.printDate"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
+      "AccountingReportType11.daySubTotal"; /*)*/
   public static final String ACCOUNTING_REPORT_2000_TITLE = /*$$(*/
       "AccountingReportType2000.title"; /*)*/
   public static final String ACCOUNTING_REPORT_2000_ANALYTIC_JOURNAL = /*$$(*/

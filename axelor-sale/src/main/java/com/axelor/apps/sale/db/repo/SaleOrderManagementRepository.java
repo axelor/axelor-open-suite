@@ -26,7 +26,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import java.util.List;
 import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
@@ -35,8 +34,6 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   public SaleOrder copy(SaleOrder entity, boolean deep) {
 
     SaleOrder copy = super.copy(entity, deep);
-
-    List<SaleOrderLine> saleOrderLines = copy.getSaleOrderLineList();
 
     copy.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     copy.setSaleOrderSeq(null);
@@ -54,11 +51,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setEndOfValidityDate(null);
     copy.setDeliveryDate(null);
 
-    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+    for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
       saleOrderLine.setDeliveryDate(null);
     }
-
-    copy.setSaleOrderLineList(saleOrderLines);
 
     return copy;
   }

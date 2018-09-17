@@ -88,8 +88,9 @@
             </panel>
 
             <panel name="Currency" title="Currencies">
-                <field name="currency" readonly="true"/>
+                <field name="currency" readonlyIf="moveLineList != null &amp;&amp; moveLineList.length != 0" onChange="action-move-record-set-currency-code"/>
                 <field name="companyCurrency" readonly="true"/>
+                <field name="currencyCode" hidden="true"/>
             </panel>
 
             <panel name="others" title="Others">
@@ -134,6 +135,11 @@
     <action-record name="default-move-record-currency" model="com.axelor.apps.account.db.Move">
 		<field name="companyCurrency" expr="eval: company?.currency" />
 		<field name="currency" expr="eval: company?.currency" />
+		<field name="currencyCode" expr="eval: company?.currency.code" />
+    </action-record>
+
+    <action-record name="action-move-record-set-currency-code" model="com.axelor.apps.account.db.Move">
+    	<field name="currencyCode" expr="eval: currency.code"/>
     </action-record>
 
     <action-record name="action-move-record-journal" model="com.axelor.apps.account.db.Move">
@@ -158,7 +164,7 @@
 		<attribute name="hidden" for="moveLineList.counter" expr="eval: statusSelect == null || statusSelect == 1"/>
 		<attribute name="hidden" for="moveLineList.amountRemaining" expr="eval: statusSelect == null || statusSelect == 1"/>
 	</action-attrs>
-	
+
 	<!-- ACTION METHOD -->
 	<action-method name="action-move-method-validate">
 		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
@@ -198,7 +204,7 @@
 	<action-method name="action-account-move-method-print-move">
 		<call class="com.axelor.apps.account.web.MoveController" method="printMove"/>
 	</action-method>
-	
+
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>

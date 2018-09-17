@@ -31,15 +31,20 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -50,6 +55,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -118,6 +124,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMove.setInvoice(invoice);
       stockMoveRepo.save(stockMove);
     }
+
     return invoice;
   }
 
@@ -223,6 +230,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMove.setInvoice(invoice);
       stockMoveRepo.save(stockMove);
     }
+
     return invoice;
   }
 
@@ -238,6 +246,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Currency invoiceCurrency = null;
     Partner invoiceClientPartner = null;
     Company invoiceCompany = null;
+    TradingName invoiceTradingName = null;
     PaymentCondition invoicePaymentCondition = null;
     PaymentMode invoicePaymentMode = null;
     Address invoiceMainInvoicingAddress = null;
@@ -247,6 +256,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Boolean invoiceInAti = null;
 
     Map<String, Object> mapResult = new HashMap<String, Object>();
+
+    StringBuilder fieldErrors = new StringBuilder();
 
     int count = 1;
     List<StockMove> stockMoveToInvoiceList = new ArrayList<StockMove>();
@@ -266,11 +277,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           continue;
         }
       }
-      SaleOrder saleOrder = stockMove.getSaleOrder();
+      SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(stockMove.getOriginId());
       if (saleOrder != null && count == 1) {
         invoiceCurrency = saleOrder.getCurrency();
         invoiceClientPartner = saleOrder.getClientPartner();
         invoiceCompany = saleOrder.getCompany();
+        invoiceTradingName = saleOrder.getTradingName();
         invoicePaymentCondition = saleOrder.getPaymentCondition();
         invoicePaymentMode = saleOrder.getPaymentMode();
         invoiceMainInvoicingAddress = saleOrder.getMainInvoicingAddress();
@@ -291,6 +303,15 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
         if (invoiceCompany != null && !invoiceCompany.equals(saleOrder.getCompany())) {
           invoiceCompany = null;
+        }
+
+        if ((invoiceTradingName != null && !invoiceTradingName.equals(saleOrder.getTradingName()))
+            || (invoiceTradingName == null && saleOrder.getTradingName() != null)) {
+          invoiceTradingName = null;
+          if (fieldErrors.length() > 0) {
+            fieldErrors.append("<br/>");
+          }
+          fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_SO));
         }
 
         if (invoicePaymentCondition != null
@@ -328,8 +349,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (stockMoveToInvoiceList.isEmpty()) {
       return mapResult;
     }
-
-    StringBuilder fieldErrors = new StringBuilder();
 
     /**
      * * Step 1, check if required and similar fields are correct The currency, the clientPartner
@@ -408,23 +427,27 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     String internalRef = "";
     String externalRef = "";
     List<Long> stockMoveIdList = new ArrayList<Long>();
+    SaleOrderRepository saleRepo = Beans.get(SaleOrderRepository.class);
+    SaleOrder saleOrder;
+
     for (StockMove stockMoveLocal : stockMoveToInvoiceList) {
+
+      saleOrder = saleRepo.find(stockMoveLocal.getOriginId());
       if (!numSeq.isEmpty()) {
         numSeq += "-";
       }
-      numSeq += stockMoveLocal.getSaleOrder().getSaleOrderSeq();
+      numSeq += saleOrder.getSaleOrderSeq();
 
       if (!internalRef.isEmpty()) {
         internalRef += "|";
       }
-      internalRef +=
-          stockMoveLocal.getStockMoveSeq() + ":" + stockMoveLocal.getSaleOrder().getSaleOrderSeq();
+      internalRef += stockMoveLocal.getStockMoveSeq() + ":" + saleOrder.getSaleOrderSeq();
 
       if (!externalRef.isEmpty()) {
         externalRef += "|";
       }
-      if (stockMoveLocal.getSaleOrder().getExternalReference() != null) {
-        externalRef += stockMoveLocal.getSaleOrder().getExternalReference();
+      if (saleOrder.getExternalReference() != null) {
+        externalRef += saleOrder.getExternalReference();
       }
 
       stockMoveIdList.add(stockMoveLocal.getId());
@@ -444,7 +467,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             numSeq,
             externalRef,
             null,
-            null) {
+            null,
+            invoiceTradingName) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -487,11 +511,16 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       List<StockMove> stockMoveList, Partner contactPartnerIn) throws AxelorException {
 
     Company invoiceCompany = null;
+    TradingName invoiceTradingName = null;
     Partner invoiceSupplierPartner = null;
     Partner invoiceContactPartner = null;
     PriceList invoicePriceList = null;
+    PurchaseOrderRepository purchaseRepo = Beans.get(PurchaseOrderRepository.class);
+    PurchaseOrder purchaseOrder;
 
     Map<String, Object> mapResult = new HashMap<String, Object>();
+
+    StringBuilder fieldErrors = new StringBuilder();
 
     int count = 1;
     List<StockMove> stockMoveToInvoiceList = new ArrayList<StockMove>();
@@ -510,9 +539,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           continue;
         }
       }
-      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
+      purchaseOrder = purchaseRepo.find(stockMove.getOriginId());
       if (purchaseOrder != null && count == 1) {
         invoiceCompany = purchaseOrder.getCompany();
+        invoiceTradingName = purchaseOrder.getTradingName();
         invoiceSupplierPartner = purchaseOrder.getSupplierPartner();
         invoiceContactPartner = purchaseOrder.getContactPartner();
         invoicePriceList = purchaseOrder.getPriceList();
@@ -520,6 +550,16 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
         if (invoiceCompany != null && !invoiceCompany.equals(purchaseOrder.getCompany())) {
           invoiceCompany = null;
+        }
+
+        if ((invoiceTradingName != null
+                && !invoiceTradingName.equals(purchaseOrder.getTradingName()))
+            || (invoiceTradingName == null && purchaseOrder.getTradingName() != null)) {
+          invoiceTradingName = null;
+          if (fieldErrors.length() > 0) {
+            fieldErrors.append("<br/>");
+          }
+          fieldErrors.append(I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_PO));
         }
 
         if (invoiceSupplierPartner != null
@@ -543,8 +583,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (stockMoveToInvoiceList.isEmpty()) {
       return mapResult;
     }
-
-    StringBuilder fieldErrors = new StringBuilder();
 
     /**
      * * Step 1, check if required and similar fields are correct the supplierPartner and the
@@ -589,16 +627,17 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     String externalRef = "";
     List<Long> stockMoveIdList = new ArrayList<Long>();
     for (StockMove stockMoveLocal : stockMoveToInvoiceList) {
+      purchaseOrder = purchaseRepo.find(stockMoveLocal.getOriginId());
       if (!numSeq.isEmpty()) {
         numSeq += "-";
       }
-      numSeq += stockMoveLocal.getPurchaseOrder().getPurchaseOrderSeq();
+      numSeq += purchaseOrder.getPurchaseOrderSeq();
 
       if (!externalRef.isEmpty()) {
         externalRef += "|";
       }
-      if (stockMoveLocal.getPurchaseOrder().getExternalReference() != null) {
-        externalRef += stockMoveLocal.getPurchaseOrder().getExternalReference();
+      if (purchaseOrder.getExternalReference() != null) {
+        externalRef += purchaseOrder.getExternalReference();
       }
 
       stockMoveIdList.add(stockMoveLocal.getId());
@@ -613,7 +652,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             invoicePriceList,
             numSeq,
             externalRef,
-            null) {
+            null,
+            invoiceTradingName) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -664,14 +704,44 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
+    Map<StockMoveLine, InvoiceLine> packLineMap = Maps.newHashMap();
+    boolean setPack = Beans.get(AppSaleService.class).getAppSale().getProductPackMgt();
     for (StockMoveLine stockMoveLine : getConsolidatedStockMoveLineList(stockMoveLineList)) {
       List<InvoiceLine> invoiceLineListCreated = this.createInvoiceLine(invoice, stockMoveLine);
-      if (invoiceLineListCreated != null) invoiceLineList.addAll(invoiceLineListCreated);
+      if (invoiceLineListCreated != null) {
+        invoiceLineList.addAll(invoiceLineListCreated);
+        if (setPack
+            && !invoiceLineListCreated.isEmpty()
+            && (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK
+                || stockMoveLine.getIsSubLine())) {
+          packLineMap.put(stockMoveLine, invoiceLineListCreated.get(0));
+        }
+      }
       // Depending on stockMove type
       if (stockMoveLine.getSaleOrderLine() != null) {
         stockMoveLine.getSaleOrderLine().setInvoiced(true);
       } else if (stockMoveLine.getPurchaseOrderLine() != null) {
         stockMoveLine.getPurchaseOrderLine().setInvoiced(true);
+      }
+    }
+
+    if (setPack) {
+      for (StockMoveLine stockMoveLine : packLineMap.keySet()) {
+        if (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK) {
+          InvoiceLine invoiceLine = packLineMap.get(stockMoveLine);
+          if (invoiceLine == null) {
+            continue;
+          }
+          BigDecimal totalPack = BigDecimal.ZERO;
+          for (StockMoveLine subLine : stockMoveLine.getSubLineList()) {
+            InvoiceLine subInvoiceLine = packLineMap.get(subLine);
+            if (subInvoiceLine != null) {
+              totalPack = totalPack.add(subInvoiceLine.getExTaxTotal());
+              subInvoiceLine.setParentLine(invoiceLine);
+            }
+          }
+          invoiceLine.setTotalPack(totalPack);
+        }
       }
     }
 
@@ -723,7 +793,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             false,
             stockMoveLine.getSaleOrderLine(),
             stockMoveLine.getPurchaseOrderLine(),
-            stockMoveLine) {
+            stockMoveLine,
+            stockMoveLine.getIsSubLine(),
+            stockMoveLine.getPackPriceSelect()) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 

@@ -259,17 +259,30 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     }
   }
 
+  /**
+   * Returns the type of an mrp proposal.
+   *
+   * <p>First checks for a stock rule, then if there isn't one, checks for the
+   * procurementMethodSelect field of the product. If the product can be both bought and produced, a
+   * manufacturing order is generated.
+   */
   @Override
-  protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules) throws AxelorException {
+  protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules, Product product)
+      throws AxelorException {
 
-    // TODO manage the default value in general administration
-
-    if (stockRules != null
-        && stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
-      return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);
+    if (stockRules != null) {
+      if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
+        return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);
+      } else {
+        return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
+      }
     }
 
-    return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
+    if (product.getProcurementMethodSelect().equals(ProductRepository.PROCUREMENT_METHOD_BUY)) {
+      return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
+    } else {
+      return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);
+    }
   }
 
   @Override

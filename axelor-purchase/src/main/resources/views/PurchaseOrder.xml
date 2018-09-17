@@ -110,12 +110,12 @@
 					onSelect="action-invoice-attrs-domain-company-bank-details"
 					form-view="bank-details-form" grid-view="bank-details-grid"
 					if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management"/>
-			<field name="inAti" onChange="action-purchase-order-attrs-in-ati"/>
+			<field name="inAti" onChange="action-purchase-order-attrs-in-ati" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"/>
 			<field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 		</panel>
 
 		<panel name="supplierInformation" title="Supplier information"  hideIf="company == null">
-			<field name="supplierPartner" onChange="action-group-purchase-order-partner-onchange" readonlyIf="statusSelect >= 3" onSelect="action-set-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="supplierPartner" onChange="action-group-purchase-order-partner-onchange" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3" onSelect="action-set-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner"
 				domain="self.isContact = true"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
@@ -137,6 +137,10 @@
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" if="__config__.app.isApp('stock')" />
 				<panel-dashlet colSpan="12" action="action-purchase-order-view-stock-moves" height="178" showIf="statusSelect >= 3"/>
 		    </panel>
+		    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
+				<field name="project" domain="self.isBusinessProject = true" form-view="project-form" grid-view="project-grid" colSpan="6"/>
+				<button name="updateLines" title="Update lines with selected project" onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6" readonlyIf="!project"/>
+			</panel>
 			<panel name="POManagement" title="PO Management" if-module="axelor-supplier-management" colSpan="12" if="__config__.app.getApp('purchase').getSupplierRequestMgt()" >
 				<panel-include view="purchase-order-supplier-form" from="axelor-supplier-management" />
 			</panel>
@@ -150,12 +154,10 @@
 				<field name="budget"/>
 				<button name="applyToAll" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget"/>
 			</panel>
-			<panel name="otherInformation" title="Other Information" hideIf="statusSelect &gt; 2">
-				<field name="priceDisplay" colSpan="12"/>
-				<field name="priceRequest" hideIf="priceDisplay" colSpan="12" x-height="5"/>
-			</panel>
 			<panel name="printing" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
+				<field name="priceDisplay" colSpan="12"/>
+				<field name="priceRequest" hideIf="priceDisplay" colSpan="12" x-height="5"/>
 			</panel>
 			<panel name="invoicing" title="Invoicing" hideIf="statusSelect &lt; 3">
 				<field if="__config__.app.isApp('invoice')" if-module="axelor-account" name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
@@ -209,11 +211,7 @@
             </field>
 	   </panel>
 	   <panel name="financialTerms" title="Financial terms" sidebar="true" colSpan="12">
-			<field name="paymentMode" canEdit="false" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6">
-				<viewer depends="name,code"><![CDATA[
-					{{record.name}} [{{record.code}}]
-				]]></viewer>
-			</field>
+			<field name="paymentMode" canEdit="false" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/> 
 			<field name="paymentCondition" canEdit="false" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/>
 	   </panel>
 	  <panel-mail>
@@ -255,7 +253,7 @@
 					</div>
 			  </div>
 			  <div>
-				  <div class="span7">
+				  <div class="span6">
 					  	<h5>
 							<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
 							<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
@@ -267,7 +265,7 @@
 							<span class="label label-success" ng-show="record.receiptState > 0 && record.receiptState == 3" x-translate>Received</span>
 						</h5>
 				  </div>
-				  <div class="span5">
+				  <div class="span6">
 				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
 				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
 				  </div>
@@ -309,7 +307,7 @@
 					</div>
 			  </div>
 			  <div>
-				  <div class="span7">
+				  <div class="span6">
 				  	<h5>
 						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
 					<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
@@ -321,7 +319,7 @@
 						<span class="label label-success" ng-show="record.receiptState > 0 && record.receiptState == 3" x-translate>Received</span>
 					</h5>
 				  </div>
-				  <div class="span5">
+				  <div class="span6">
 				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
 				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
 				  </div>
@@ -401,7 +399,9 @@
 
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
+    	<attribute name="hidden" for="purchaseOrderLineList.price" expr="inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="purchaseOrderLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
     									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
     </action-attrs>
@@ -430,6 +430,7 @@
     	<field name="buyerUser" expr="eval:__user__"/>
     	<field name="orderDate" expr="eval: __date__"/>
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
+		<field name="project" expr="eval:_project" />
     </action-record>
 
     <action-record name="action-purchase-order-record-company-configuration" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -542,8 +543,8 @@
 	<action-view name="action-purchase-order-view-stock-moves" model="com.axelor.apps.stock.db.StockMove" title="Stock move">
 		<view name="stock-move-grid" type="grid"/>
 		<view name="stock-move-form" type="form"/>
-		<domain>self.purchaseOrder.id = :id</domain>
-		<context name="id" expr="eval: id"/>
+		<domain>self.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND self.originId = :purchaseOrder</domain>
+		<context name="purchaseOrder" expr="eval: __self__.id"/>
 	</action-view>
 
   	<action-validate name="action-purchase-order-validate-stock-location">

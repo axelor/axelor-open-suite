@@ -20,7 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.production.db.CostSheet;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -32,12 +32,14 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,6 +67,11 @@ public class ManufOrderWorkflowService {
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
 
+    if (Beans.get(SequenceService.class)
+        .isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
+      manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq());
+    }
+
     if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
       manufOrderService.preFillOperations(manufOrder);
     }
@@ -81,10 +88,9 @@ public class ManufOrderWorkflowService {
       manufOrder.setPlannedStartDateT(
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     }
-    if (manufOrder.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-        operationOrderWorkflowService.plan(operationOrder);
-      }
+
+    for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
+      operationOrderWorkflowService.plan(operationOrder);
     }
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
@@ -95,7 +101,6 @@ public class ManufOrderWorkflowService {
 
     manufOrderStockMoveService.createToProduceStockMove(manufOrder);
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
-    manufOrder.setManufOrderSeq(Beans.get(ManufOrderService.class).getManufOrderSeq());
 
     return manufOrderRepo.save(manufOrder);
   }
@@ -185,14 +190,17 @@ public class ManufOrderWorkflowService {
     }
 
     // create cost sheet
-    CostSheet costSheet = Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+    Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
 
     // update price in product
     Product product = manufOrder.getProduct();
     if (product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_FORECAST) {
       product.setLastProductionPrice(manufOrder.getBillOfMaterial().getCostPrice());
     } else if (product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_REAL) {
-      product.setLastProductionPrice(costSheet.getCostPrice());
+      BigDecimal costPrice = computeOneUnitProductionPrice(manufOrder);
+      if (costPrice.signum() != 0) {
+        product.setLastProductionPrice(costPrice);
+      }
     } else {
       // default value is forecast
       product.setRealOrEstimatedPriceSelect(ProductRepository.PRICE_METHOD_FORECAST);
@@ -216,6 +224,17 @@ public class ManufOrderWorkflowService {
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
+  }
+
+  /** Return the cost price for one unit in a manufacturing order. */
+  protected BigDecimal computeOneUnitProductionPrice(ManufOrder manufOrder) {
+    BigDecimal qty = manufOrder.getQty();
+    if (qty.signum() != 0) {
+      int scale = Beans.get(AppProductionService.class).getNbDecimalDigitForUnitPrice();
+      return manufOrder.getCostPrice().divide(qty, scale, BigDecimal.ROUND_HALF_EVEN);
+    } else {
+      return BigDecimal.ZERO;
+    }
   }
 
   /**
@@ -260,6 +279,9 @@ public class ManufOrderWorkflowService {
           .getProducedStockMoveLineList()
           .forEach(stockMoveLine -> stockMoveLine.setProducedManufOrder(null));
     }
+    if (manufOrder.getDiffConsumeProdProductList() != null) {
+      manufOrder.clearDiffConsumeProdProductList();
+    }
 
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_CANCELED);
     manufOrderRepo.save(manufOrder);
@@ -301,7 +323,7 @@ public class ManufOrderWorkflowService {
   public OperationOrder getLastOperationOrder(ManufOrder manufOrder) {
     return operationOrderRepo
         .all()
-        .filter("self.manufOrder = ?", manufOrder)
+        .filter("self.manufOrder = ? AND self.plannedEndDateT IS NOT NULL", manufOrder)
         .order("-plannedEndDateT")
         .fetchOne();
   }
@@ -337,7 +359,8 @@ public class ManufOrderWorkflowService {
    * @return
    */
   private List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
-    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+    List<OperationOrder> operationOrderList =
+        MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
     Comparator<OperationOrder> byPriority =
         Comparator.comparing(
             OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()));

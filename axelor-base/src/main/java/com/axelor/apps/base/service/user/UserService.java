@@ -21,10 +21,14 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
+import javax.mail.MessagingException;
 
 /** UserService is a class that implement all methods for user informations */
 public interface UserService {
@@ -96,4 +100,58 @@ public interface UserService {
    * @return
    */
   Optional<Address> getUserActiveCompanyAddress();
+
+  /**
+   * Change user password.
+   *
+   * @param user
+   * @param values
+   * @return
+   * @throws ClassNotFoundException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @throws MessagingException
+   * @throws IOException
+   * @throws AxelorException
+   */
+  User changeUserPassword(User user, Map<String, Object> values)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException;
+
+  /**
+   * Processs changed user password.
+   *
+   * @param user
+   * @throws ClassNotFoundException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @throws MessagingException
+   * @throws IOException
+   * @throws AxelorException
+   */
+  void processChangedPassword(User user)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException;
+
+  /**
+   * Match password with configured pattern.
+   *
+   * @param password
+   * @return
+   */
+  boolean matchPasswordPattern(CharSequence password);
+
+  /**
+   * Generate a random password.
+   *
+   * @return
+   */
+  CharSequence generateRandomPassword();
+
+  /**
+   * Get password pattern description.
+   *
+   * @return
+   */
+  String getPasswordPatternDescription();
 }

@@ -20,10 +20,9 @@ package com.axelor.web;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.auth.AuthUtils;
@@ -36,7 +35,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,19 +47,16 @@ import javax.ws.rs.core.MediaType;
 @Path("/map")
 public class MapRest {
 
+  @Inject private MapRestService mapRestService;
+
+  @Inject private TranslationService translationService;
+
   @Inject private PartnerService partnerService;
 
   @Inject private PartnerRepository partnerRepo;
 
-  @Inject private AddressRepository addressRepo;
-
-  @Inject private MapService mapService;
-
-  @Inject private TranslationService translationService;
-
   JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
 
-  @Transactional
   @Path("/partner")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -92,8 +87,8 @@ public class MapRest {
         }
 
         Address address = partnerService.getInvoicingAddress(partner);
-        if (address != null && address.getFullName() != null) {
-          String addressString = mapService.makeAddressString(address, objectNode);
+        if (address != null && StringUtils.notBlank(address.getFullName())) {
+          String addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
         }
 
@@ -106,9 +101,9 @@ public class MapRest {
         arrayNode.add(objectNode);
       }
 
-      mapService.setData(mainNode, arrayNode);
+      mapRestService.setData(mainNode, arrayNode);
     } catch (Exception e) {
-      mapService.setError(mainNode, e);
+      mapRestService.setError(mainNode, e);
     }
 
     return mainNode;
@@ -159,7 +154,7 @@ public class MapRest {
 
         if (!StringUtils.isBlank(address.getFullName())) {
           String addressString;
-          addressString = mapService.makeAddressString(address, objectNode);
+          addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
         }
 
@@ -169,15 +164,14 @@ public class MapRest {
         arrayNode.add(objectNode);
       }
 
-      mapService.setData(mainNode, arrayNode);
+      mapRestService.setData(mainNode, arrayNode);
     } catch (Exception e) {
-      mapService.setError(mainNode, e);
+      mapRestService.setError(mainNode, e);
     }
 
     return mainNode;
   }
 
-  @Transactional
   @Path("/customer")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -203,8 +197,7 @@ public class MapRest {
 
         Address address = partnerService.getInvoicingAddress(customer);
         if (address != null) {
-          String addressString = mapService.makeAddressString(address, objectNode);
-          addressRepo.save(address);
+          String addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
         }
 
@@ -213,15 +206,14 @@ public class MapRest {
         arrayNode.add(objectNode);
       }
 
-      mapService.setData(mainNode, arrayNode);
+      mapRestService.setData(mainNode, arrayNode);
     } catch (Exception e) {
-      mapService.setError(mainNode, e);
+      mapRestService.setError(mainNode, e);
     }
 
     return mainNode;
   }
 
-  @Transactional
   @Path("/prospect")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -247,8 +239,7 @@ public class MapRest {
 
         Address address = partnerService.getInvoicingAddress(prospect);
         if (address != null) {
-          String addressString = mapService.makeAddressString(address, objectNode);
-          addressRepo.save(address);
+          String addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
         }
 
@@ -257,15 +248,14 @@ public class MapRest {
         arrayNode.add(objectNode);
       }
 
-      mapService.setData(mainNode, arrayNode);
+      mapRestService.setData(mainNode, arrayNode);
     } catch (Exception e) {
-      mapService.setError(mainNode, e);
+      mapRestService.setError(mainNode, e);
     }
 
     return mainNode;
   }
 
-  @Transactional
   @Path("/supplier")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -290,8 +280,7 @@ public class MapRest {
 
         Address address = partnerService.getInvoicingAddress(supplier);
         if (address != null) {
-          String addressString = mapService.makeAddressString(address, objectNode);
-          addressRepo.save(address);
+          String addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
         }
 
@@ -300,9 +289,9 @@ public class MapRest {
         arrayNode.add(objectNode);
       }
 
-      mapService.setData(mainNode, arrayNode);
+      mapRestService.setData(mainNode, arrayNode);
     } catch (Exception e) {
-      mapService.setError(mainNode, e);
+      mapRestService.setError(mainNode, e);
     }
 
     return mainNode;
@@ -316,7 +305,7 @@ public class MapRest {
     ObjectNode mainNode = nodeFactory.objectNode();
 
     String language = AuthUtils.getUser().getLanguage();
-    String translation = translationService.getValueTranslation(key, language);
+    String translation = translationService.getTranslation(key, language);
 
     if (translation.equals(key)) {
       translation = translation.substring(ITranslation.PREFIX.length());

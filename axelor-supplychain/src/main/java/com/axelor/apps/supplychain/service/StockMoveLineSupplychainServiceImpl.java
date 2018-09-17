@@ -26,13 +26,18 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -68,8 +73,14 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
       AccountManagementService accountManagementService,
       PriceListService priceListService,
       PurchaseProductService productService,
-      UnitConversionService unitConversionService) {
-    super(trackingNumberService, appBaseService, appStockService, stockMoveService);
+      UnitConversionService unitConversionService,
+      StockMoveLineRepository stockMoveLineRepository) {
+    super(
+        trackingNumberService,
+        appBaseService,
+        appStockService,
+        stockMoveService,
+        stockMoveLineRepository);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.productService = productService;
@@ -83,21 +94,23 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
     BigDecimal unitPriceTaxed = BigDecimal.ZERO;
     TaxLine taxLine = null;
     BigDecimal discountAmount = BigDecimal.ZERO;
-    if (stockMove == null
-        || (stockMove.getSaleOrder() == null && stockMove.getPurchaseOrder() == null)) {
+    if (stockMove == null || (stockMove.getOriginId() == null)) {
       return super.compute(stockMoveLine, stockMove);
     } else {
-      if (stockMoveLine.getProduct() != null) {
-        if (stockMove.getSaleOrder() != null) {
+      if (stockMoveLine.getProduct() != null
+          && (stockMoveLine.getLineTypeSelect() == null
+              || stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_PACK)) {
+        if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+          SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(stockMove.getOriginId());
           taxLine =
               accountManagementService.getTaxLine(
                   appBaseService.getTodayDate(),
                   stockMoveLine.getProduct(),
                   stockMove.getCompany(),
-                  stockMove.getSaleOrder().getClientPartner().getFiscalPosition(),
+                  saleOrder.getClientPartner().getFiscalPosition(),
                   false);
           unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
-          PriceList priceList = stockMove.getSaleOrder().getPriceList();
+          PriceList priceList = saleOrder.getPriceList();
           if (priceList != null) {
             PriceListLine priceListLine =
                 priceListService.getPriceListLine(
@@ -112,15 +125,17 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
             }
           }
         } else {
+          PurchaseOrder purchaseOrder =
+              Beans.get(PurchaseOrderRepository.class).find(stockMove.getOriginId());
           taxLine =
               accountManagementService.getTaxLine(
                   appBaseService.getTodayDate(),
                   stockMoveLine.getProduct(),
                   stockMove.getCompany(),
-                  stockMove.getPurchaseOrder().getSupplierPartner().getFiscalPosition(),
+                  purchaseOrder.getSupplierPartner().getFiscalPosition(),
                   true);
           unitPriceUntaxed = stockMoveLine.getProduct().getPurchasePrice();
-          PriceList priceList = stockMove.getPurchaseOrder().getPriceList();
+          PriceList priceList = purchaseOrder.getPriceList();
           if (priceList != null) {
             PriceListLine priceListLine =
                 priceListService.getPriceListLine(
@@ -145,7 +160,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
                           "self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",
                           stockMoveLine.getProduct(),
                           unitPriceUntaxed,
-                          stockMove.getPurchaseOrder().getSupplierPartner())
+                          purchaseOrder.getSupplierPartner())
                       .fetchOne();
               if (supplierCatalog != null) {
                 Map<String, Object> discounts =
@@ -179,7 +194,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
       stockMoveService.cancel(stockMoveLine.getStockMove());
       stockMoveLine.setReservedQty(reservedQty);
-      stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
+      stockMoveService.goBackToDraft(stockMove);
       stockMoveService.plan(stockMove);
       if (statusSelect == StockMoveRepository.STATUS_REALIZED) {
         stockMoveService.realize(stockMove);

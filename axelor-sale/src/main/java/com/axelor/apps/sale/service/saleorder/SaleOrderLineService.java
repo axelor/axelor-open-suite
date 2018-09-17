@@ -20,7 +20,6 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -38,7 +37,8 @@ public interface SaleOrderLineService {
    * @param saleOrderLine
    * @param saleOrder
    */
-  void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  void computeProductInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException;
 
   /**
@@ -50,7 +50,10 @@ public interface SaleOrderLineService {
    * @throws AxelorException
    */
   void computeProductInformation(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean taxLineIsOptional)
+      SaleOrderLine saleOrderLine,
+      SaleOrder saleOrder,
+      boolean taxLineIsOptional,
+      Integer packPriceSelect)
       throws AxelorException;
 
   SaleOrderLine resetProductInformation(SaleOrderLine line);
@@ -69,16 +72,25 @@ public interface SaleOrderLineService {
   /**
    * Compute the excluded tax total amount of a sale order line.
    *
-   * @param quantity The quantity.
-   * @param price The unit price.
+   * @param saleOrderLine the sale order line which total amount you want to compute.
    * @return The excluded tax total amount.
    */
   public BigDecimal computeAmount(SaleOrderLine saleOrderLine);
 
+  /**
+   * Compute the excluded tax total amount of a sale order line.
+   *
+   * @param quantity The quantity.
+   * @param price The unit price.
+   * @return The excluded tax total amount.
+   */
   public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price);
 
-  public BigDecimal getUnitPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine)
-      throws AxelorException;
+  public BigDecimal getExTaxUnitPrice(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+
+  public BigDecimal getInTaxUnitPrice(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
 
   public TaxLine getTaxLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
@@ -91,10 +103,27 @@ public interface SaleOrderLineService {
 
   public PriceListLine getPriceListLine(SaleOrderLine saleOrderLine, PriceList priceList);
 
-  public BigDecimal computeDiscount(SaleOrderLine saleOrderLine);
+  /**
+   * Compute and return the discounted price of a sale order line.
+   *
+   * @param saleOrderLine the sale order line.
+   * @param inAti whether or not the sale order line (and thus the discounted price) includes taxes.
+   * @return the discounted price of the line, including taxes if inAti is true.
+   */
+  public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti);
 
-  public BigDecimal convertUnitPrice(
-      Product product, TaxLine taxLine, BigDecimal price, SaleOrder saleOrder);
+  /**
+   * Convert a product's unit price from incl. tax to ex. tax or the other way round.
+   *
+   * <p>If the price is ati, it will be converted to ex. tax, and if it isn't it will be converted
+   * to ati.
+   *
+   * @param priceIsAti a boolean indicating if the price is ati.
+   * @param taxLine the tax to apply.
+   * @param price the unit price to convert.
+   * @return the converted price as a BigDecimal.
+   */
+  public BigDecimal convertUnitPrice(Boolean inAti, TaxLine taxLine, BigDecimal price);
 
   public Map<String, Object> getDiscount(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
@@ -102,8 +131,6 @@ public interface SaleOrderLineService {
   public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
   public Unit getSaleUnit(SaleOrderLine saleOrderLine);
-
-  public boolean unitPriceShouldBeUpdate(SaleOrder saleOrder, Product product);
 
   public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine);
 
@@ -115,4 +142,18 @@ public interface SaleOrderLineService {
   public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
 
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
+
+  /**
+   * Fill price based on packPriceSelect only for packLine or subline. Works normal for standard
+   * line.
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @param packPriceSelect
+   * @throws AxelorException
+   */
+  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
+      throws AxelorException;
+
+  public boolean checkTaxRequired(SaleOrderLine saleOrderLine, Integer packPriceSelect);
 }

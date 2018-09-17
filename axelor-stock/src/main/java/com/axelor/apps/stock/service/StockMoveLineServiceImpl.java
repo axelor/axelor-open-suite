@@ -42,13 +42,17 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,17 +63,20 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected AppStockService appStockService;
   protected StockMoveService stockMoveService;
   private TrackingNumberService trackingNumberService;
+  protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public StockMoveLineServiceImpl(
       TrackingNumberService trackingNumberService,
       AppBaseService appBaseService,
       AppStockService appStockService,
-      StockMoveService stockMoveService) {
+      StockMoveService stockMoveService,
+      StockMoveLineRepository stockMoveLineRepository) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.stockMoveService = stockMoveService;
+    this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
   /**
@@ -283,9 +290,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
-      stockMoveLine.setNetMass(this.computeNetMass(stockMoveLine, stockMove.getCompany()));
+      stockMoveLine.setNetMass(
+          this.computeNetMass(stockMove, stockMoveLine, stockMove.getCompany()));
     } else {
-      stockMoveLine.setNetMass(this.computeNetMass(stockMoveLine, null));
+      stockMoveLine.setNetMass(this.computeNetMass(stockMove, stockMoveLine, null));
     }
 
     stockMoveLine.setTotalNetMass(stockMoveLine.getRealQty().multiply(stockMoveLine.getNetMass()));
@@ -373,12 +381,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     StockLocationServiceImpl stockLocationServiceImpl = Beans.get(StockLocationServiceImpl.class);
+    stockMoveLineList = MoreObjects.firstNonNull(stockMoveLineList, Collections.emptyList());
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
 
       Product product = stockMoveLine.getProduct();
 
       if (product != null
+          && stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_PACK
           && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
         Unit productUnit = stockMoveLine.getProduct().getUnit();
         Unit stockMoveLineUnit = stockMoveLine.getUnit();
@@ -777,7 +787,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public void setProductInfo(StockMoveLine stockMoveLine, Company company) throws AxelorException {
+  public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
+      throws AxelorException {
     Preconditions.checkNotNull(stockMoveLine);
     Preconditions.checkNotNull(company);
     Product product = stockMoveLine.getProduct();
@@ -797,25 +808,25 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setProductModel(product.getParentProduct());
     }
 
-    BigDecimal netMass = this.computeNetMass(stockMoveLine, company);
+    BigDecimal netMass = this.computeNetMass(stockMove, stockMoveLine, company);
     stockMoveLine.setNetMass(netMass);
   }
 
-  public BigDecimal computeNetMass(StockMoveLine stockMoveLine, Company company)
-      throws AxelorException {
+  public BigDecimal computeNetMass(
+      StockMove stockMove, StockMoveLine stockMoveLine, Company company) throws AxelorException {
 
-    BigDecimal netMass = null;
+    BigDecimal netMass;
     Product product = stockMoveLine.getProduct();
-    Unit startUnit = null;
-    Unit endUnit = null;
+    Unit startUnit;
+    Unit endUnit;
 
-    if (!product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-      return netMass;
+    if (product == null
+        || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+      return null;
     }
 
     startUnit = product.getMassUnit();
     if (startUnit == null) {
-      StockMove stockMove = stockMoveLine.getStockMove();
 
       if (stockMove != null && !stockMoveService.checkMassesRequired(stockMove)) {
         return product.getNetMass();
@@ -839,5 +850,43 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         Beans.get(UnitConversionService.class)
             .convertWithProduct(startUnit, endUnit, product.getNetMass(), product);
     return netMass;
+  }
+
+  @Override
+  @Transactional
+  public void splitStockMoveLineByTrackingNumber(
+      StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers) {
+    boolean draft = true;
+    if (stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+      draft = false;
+    }
+
+    for (LinkedHashMap<String, Object> trackingNumberItem : trackingNumbers) {
+      BigDecimal counter = new BigDecimal(trackingNumberItem.get("counter").toString());
+
+      TrackingNumber trackingNumber = new TrackingNumber();
+      trackingNumber.setCounter(counter);
+      trackingNumber.setTrackingNumberSeq(trackingNumberItem.get("trackingNumberSeq").toString());
+      if (trackingNumberItem.get("warrantyExpirationDate") != null) {
+        trackingNumber.setWarrantyExpirationDate(
+            LocalDate.parse(trackingNumberItem.get("warrantyExpirationDate").toString()));
+      }
+      if (trackingNumberItem.get("perishableExpirationDate") != null) {
+        trackingNumber.setPerishableExpirationDate(
+            LocalDate.parse(trackingNumberItem.get("perishableExpirationDate").toString()));
+      }
+      trackingNumber.setProduct(stockMoveLine.getProduct());
+
+      StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
+      if (draft) {
+        newStockMoveLine.setQty(counter);
+      } else {
+        newStockMoveLine.setQty(counter);
+      }
+      newStockMoveLine.setTrackingNumber(trackingNumber);
+      newStockMoveLine.setStockMove(stockMoveLine.getStockMove());
+      stockMoveLineRepository.save(newStockMoveLine);
+    }
+    stockMoveLineRepository.remove(stockMoveLine);
   }
 }

@@ -163,7 +163,7 @@ public class MoveValidateService {
 
     this.validateEquiponderanteMove(move);
     this.fillMoveLines(move);
-    moveRepository.save(move);
+    move = moveRepository.save(move);
 
     moveCustAccountService.updateCustomerAccount(move);
 

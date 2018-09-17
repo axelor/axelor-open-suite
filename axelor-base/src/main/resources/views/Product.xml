@@ -35,7 +35,7 @@
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   		</toolbar>
   		<panel name="main" >
-   			<panel colSpan="7">
+   			<panel colSpan="6">
     			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
         			<editor x-show-titles="false">
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
@@ -43,7 +43,7 @@
         			</editor>
       			</field>
     		</panel>
-    		<panel colSpan="5">
+    		<panel colSpan="6">
        			<button name="$totalVariants" title="Total variants" showIf="isModel" colSpan="4" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
       			<panel showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id" colSpan="8" if-module="axelor-stock" if="__config__.app.isApp('stock')">
        	 			<button name="$realQty" title="Real qty" colSpan="6" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
@@ -80,7 +80,7 @@
 		        	<field name="productCategory" canEdit="false" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
 		      	</panel>
       			<panel colSpan="12">
-			        <field name="inAti" colSpan="6"/>
+			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
 			        <field name="isPack" if="__config__.app.getApp('sale')?.getProductPackMgt()" hideIf="isShippingCostsProduct"/>
 			        <field name="expense" hidden="true"/>
       			</panel>
@@ -153,7 +153,7 @@
             <panel name="accounting" title="Accounting">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
                 <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
-                <panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
+                <panel-related field="accountManagementList" form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
 	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
@@ -227,7 +227,11 @@
 	        			<panel-dashlet colSpan="12" action="action-product-view-other-product-variant" showIf="parentProduct" />
 	      			</panel>
 	      			<button name="updateProductsPrices" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
-	    		</panel>
+					</panel>
+				<panel title="Task templates" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct" if-module="axelor-business-project">
+					<button name="addTask" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-product-task-template-add-task"/>
+					<panel-dashlet title="Task Tree" colSpan="12" action="action-product-task-template-task-tree"/>
+				</panel>
             <panel name="links" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct" showIf="id">
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-planned" showIf="id" />
@@ -252,7 +256,10 @@
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
   			</panel>
-  			<panel-related field="packLines" showIf="isPack" if="__config__.app.getApp('sale')?.getProductPackMgt()" />
+  			<panel title="Pack Lines" showIf="isPack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()">
+  				<field name="packPriceSelect"/>
+  				<panel-related field="packLines" colSpan="12"/>
+  			</panel>
   		</panel-tabs>
   		<panel>
   			<field name="attrs" colSpan="12" />
@@ -347,6 +354,7 @@
 		<action name="action-product-attrs-scale-and-precision-stock"/>
         <action name="action-product-attrs-title-unit"/>
 		<action name="action-product-attrs-in-ati"/>
+		<action name="action-product-attrs-change-title-based-on-inAti"/>
         <action name="action-product-set-stock"/>
         <action name="action-product-set-total-variants"/>
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
@@ -372,6 +380,13 @@
     	<attribute name="hidden" for="inAti" expr=" eval: __config__.app.getApp('base').getProductInAtiSelect() == 1 || __config__.app.getApp('base').getProductInAtiSelect() == 2"/>
 		<attribute if=" __config__.app.getApp('base').getProductInAtiSelect() == 1 || __config__.app.getApp('base').getProductInAtiSelect() == 2"
 				   name="value" for="inAti" expr="eval: __config__.app.getApp('base').getProductInAtiSelect() == 2" />
+    </action-attrs>
+    
+    <action-attrs name="action-product-attrs-change-title-based-on-inAti">
+    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!inAti"/>
     </action-attrs>
 
     <action-attrs name="action-product-attrs-scale-and-precision">
@@ -440,7 +455,7 @@
 	</action-validate> 
 	
 	<action-method name="action-print-product-catalog" >
-		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatelog"/>
+		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatalog"/>
 	</action-method>
 	
 	<action-method name="action-product-method-show-product-sheet" >

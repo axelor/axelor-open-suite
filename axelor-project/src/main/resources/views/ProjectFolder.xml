@@ -7,12 +7,12 @@
 		<field name="name"/>
 		<field name="description" widget="html"/>
 	</grid>
-	
+
 	<form title="Project Folder" name="project-folder-form"  model="com.axelor.apps.project.db.ProjectFolder" width="large">
 		<panel>
-			<field name="name" colSpan="12"/>
+			<field name="name" showTitle="false" colSpan="12" css="label-bold bold large"/>
 			<field name="description" colSpan="12" widget="html"/>
-			<field name="projectSet" colSpan="12" edit-window="blank" form-view="project-form" grid-view="folder-project-grid"/>
+			<field name="projectSet" colSpan="12" edit-window="blank" form-view="project-form" grid-view="folder-project-grid" canNew="false" canEdit="false"/>
 		</panel>
 	</form>
 	

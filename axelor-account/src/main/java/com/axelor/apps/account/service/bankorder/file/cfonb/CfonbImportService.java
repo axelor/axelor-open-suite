@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.bankorder.file.cfonb;
 import com.axelor.apps.account.db.CfonbConfig;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.file.FileTool;
@@ -132,7 +131,7 @@ public class CfonbImportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_IMPORT_1),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
 
     String headerCFONB = null;
@@ -149,7 +148,7 @@ public class CfonbImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CFONB_IMPORT_2),
-            AppAccountServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             fileName);
       }
       this.importFile.remove(headerCFONB);
@@ -159,7 +158,7 @@ public class CfonbImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CFONB_IMPORT_3),
-            AppAccountServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             fileName);
       }
       for (String detail : multiDetailsCFONB) {
@@ -171,7 +170,7 @@ public class CfonbImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CFONB_IMPORT_4),
-            AppAccountServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             fileName);
       }
       this.importFile.remove(endingCFONB);
@@ -216,7 +215,7 @@ public class CfonbImportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_IMPORT_1),
-          AppAccountServiceImpl.EXCEPTION);
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
 
     String headerCFONB = null;
@@ -233,7 +232,7 @@ public class CfonbImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CFONB_IMPORT_2),
-            AppAccountServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             fileName);
       }
       this.importFile.remove(headerCFONB);
@@ -243,7 +242,7 @@ public class CfonbImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CFONB_IMPORT_3),
-            AppAccountServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             fileName);
       }
       for (String detail : multiDetailsCFONB) {
@@ -255,7 +254,7 @@ public class CfonbImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CFONB_IMPORT_4),
-            AppAccountServiceImpl.EXCEPTION,
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
             fileName);
       }
       this.importFile.remove(endingCFONB);
@@ -319,7 +318,7 @@ public class CfonbImportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CFONB_IMPORT_5),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           fileName,
           endingCFONB);
     }

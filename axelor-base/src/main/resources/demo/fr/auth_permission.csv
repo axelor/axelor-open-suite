@@ -1,5 +1,5 @@
 "name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"condition";"conditionParams"
-"perms.user";"com.axelor.auth.db.User";"true";"false";"false";"false";"true";;
+"perms.user";"com.axelor.auth.db.User";"true";"true";"true";"true";"true";;
 "perm.base.rw";"com.axelor.apps.base.db.*";"true";"true";"false";"false";"true";;
 "perm.base.rwc";"com.axelor.apps.base.db.*";"true";"true";"true";"false";"true";;
 "perm.message.rwc";"com.axelor.apps.message.db.*";"true";"true";"true";"false";"true";;
@@ -40,3 +40,8 @@
 "perm.crm.config.block";"com.axelor.apps.crm.db.CrmConfig";"false";"false";"false";"false";"false";;
 "perm.supplychain.config.block";"com.axelor.apps.supplychain.db.SupplyChainConfig";"false";"false";"false";"false";"false";;
 "perm.base.company.r";"com.axelor.apps.base.db.Company";"true";"false";"false";"false";"false";;
+"perm.base.calendar.shared.readonly";"com.axelor.apps.base.db.Icalendar";"true";"false";"false";"false";"false";"(?1) in (SELECT setting.sharedWith FROM self.sharingSettingList setting WHERE setting.visible = true AND setting.rights = 1) OR self.user = (?1)";"__user__"
+"perm.base.calendar.shared.modification";"com.axelor.apps.base.db.Icalendar";"true";"true";"true";"true";"true";"(?1) in (SELECT setting.sharedWith FROM self.sharingSettingList setting WHERE setting.visible = true AND setting.rights = 2) OR self.user = (?1)";"__user__"
+"perm.helpdesk.Ticket.rwc";"com.axelor.apps.helpdesk.db.Ticket";"true";"true";"true";"false";"false";;
+"perm.helpdesk.TicketType.rwc";"com.axelor.apps.helpdesk.db.TicketType";"true";"true";"true";"false";"false";;
+"perm.helpdesk.Sla.rwc";"com.axelor.apps.helpdesk.db.Sla";"true";"true";"true";"false";"false";;

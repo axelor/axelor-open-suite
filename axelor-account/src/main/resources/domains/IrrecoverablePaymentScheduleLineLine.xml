@@ -9,7 +9,7 @@
   
   	<many-to-one name="irrecoverableCustomerLine" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Customer" index="idx_acc_irreco_paym_schedule_line_line_irreco_cust_line"/>
 
-  	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Rejected Schedule line" index="idx_acc_irreco_paym_schedule_line_line_paym_schedule_line"/>
+  	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Rejected schedule line" index="idx_acc_irreco_paym_schedule_line_line_paym_schedule_line"/>
   	<one-to-many name="irrecoverableReportLineList" ref="com.axelor.apps.account.db.IrrecoverableReportLine" mappedBy="irrecoverablePaymentScheduleLineLine" title="Reportings"/>
  	
  	<string name="name" title="Name">

@@ -90,13 +90,13 @@
 	<form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload" width="large">
-		<panel-include view="partner-form" from="axelor-base"/>
+		<panel-include view="partner-form" />
 	</form>
 
 	<form name="partner-supplier-form"  title="Supplier" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload" width="large">
-		<panel-include view="partner-form" from="axelor-base"/>
+		<panel-include view="partner-form" />
 	</form>
 
 	<form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-base-partner-form">
@@ -122,21 +122,21 @@
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
 		<panel name="main" >
-			<panel colSpan="3">
+			<panel colSpan="2">
 				<field name="picture" showTitle="false" widget="Image" colSpan="12">
 					<viewer>
 						<![CDATA[
 					    <div>
-			    			<img width="50%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect != 2" src="img/company-default.jpg" />
-          					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 1" src="img/partner-m-default.png" />
-          					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 2" src="img/partner-w-default.png" />
-        					<img width="50%" ng-show="!record.picture && record.partnerTypeSelect == 2 && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
+			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect != 2" src="img/company-default.jpg" />
+          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 1" src="img/partner-m-default.png" />
+          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 2" src="img/partner-w-default.png" />
+        					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
      					</div>
 					]]>
 					</viewer>
 				</field>
-				<panel colSpan="8" showIf="fullName != null">
+				<panel colSpan="12" showIf="fullName != null">
 					<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
@@ -144,22 +144,24 @@
 					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
 			</panel>
-			<panel colSpan="9">
+			<panel colSpan="10">
 				<panel colSpan="12">
-					<field name="fullName" colSpan="6" showTitle="false" css="label-bold bold large">
+					<field name="fullName" colSpan="7" showTitle="false" css="label-bold bold large">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
-							<field name="partnerTypeSelect" showTitle="false" showIf="partnerTypeSelect == 1" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="12" placeholder="Partner Type"/>
+						  <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="12" placeholder="Partner Type"/>
+			              <panel showIf="partnerTypeSelect == 1" colSpan="12">
 							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="12"/>
-              <panel showIf="partnerTypeSelect == 2" colSpan="12">
-                <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
-                <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
-                <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
-              </panel>
+						  </panel>
+			              <panel showIf="partnerTypeSelect == 2" colSpan="12">
+			                <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
+			                <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+			                <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-partner-method-check-name,action-partner-record-full-name,action-partner-method-set-social-network-url" colSpan="5"/>
+			              </panel>
 						</editor>
 					</field>
-          <field name="partnerSeq" showTitle="false" colSpan="3" css="label-bold bold large"/>
-					<button if="__config__.app.isApp('account')" name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" hideIf="!$readonly()"/>
+          			<field name="partnerSeq" showTitle="false" colSpan="2" css="label-bold bold large"/>
+					<button if="__config__.app.isApp('account')" name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
 					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
 				<field name="isProspect"  colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly()" onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
@@ -243,7 +245,7 @@
 							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 						</editor>
 					</field>
-					<field name="webSite" placeholder="www.url.com" pattern="([^\s]+\.[^\s]+\.[^\s]{2,})"/>
+					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				</panel>
 				<panel name="partnerDetails" title="Partner Details" hideIf="isEmployee" colSpan="12" >
 					<panel colSpan="6">
@@ -267,7 +269,7 @@
 					<panel title="Assigned to" colSpan="12">
 						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
-						<field name="companySet" colSpan="12" widget="TagSelect" onChange="action-partner-method-generate-customer-credit-line" canNew="false" form-view="company-form" grid-view="company-grid"/>
+						<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
 				</panel>
 				<panel name="notes" title="Notes" colSpan="12">
@@ -301,7 +303,7 @@
 			<panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
 				<field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
-				<field name="supplierCatalogList" colSpan="12" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+				<field name="supplierCatalogList" colSpan="12" x-can-copy="true" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
 				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer/>
@@ -317,6 +319,7 @@
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode"/>
                 <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true"/>
 				<field name="isIspmRequired" hidden="true" showIf="isCustomer || isProspect"/>
+							<field name="isNeedingConformityCertificate" showIf="isCustomer || isProspect"/>
 				<field name="partnerStockSettingsList" colSpan="12"
 					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
                 <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form"/>
@@ -383,7 +386,7 @@
 					<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 					<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 					<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-					<field name="webSite"/>
+					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				</panel>
 			</panel>
 		</panel-tabs>
@@ -494,7 +497,7 @@
 			<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 			<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 			<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-			<field name="webSite" placeholder="www.url.com" pattern="([^\s]+\.[^\s]+\.[^\s]{2,})"/>
+			<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 		</panel>
 	</form>
 
@@ -654,6 +657,7 @@
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select"/>
 		<action name="action-partner-record-set-default"/>
+		<action name="action-partner-attrs-set-default"/>
 		<action name="action-partner-record-set-default-cash-management"/>
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
@@ -719,10 +723,24 @@
 		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
 		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$balance == 0"/>
 	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-set-default">
+	  <attribute name="value:add" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()" for="companySet"/>
+	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-set-domain">
+		<attribute name="domain" for="partner" expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true) AND self.isEmployee = false &quot;"/>
+	</action-attrs>
 
-	<action-record name="action-partner-record-set-balance" model="com.axelor.apps.base.db.Partner">
-		<field name="$balance" expr="eval: __repo__(AccountingSituation).all().filter('self.partner.id = ?', id).fetch().sum{ it.balanceDueCustAccount }"/>
-	</action-record>
+    <action-record name="action-partner-record-set-balance"
+        model="com.axelor.apps.base.db.Partner">
+        <field name="$balance"
+            expr="#{accountingSituationList.stream().map(
+                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
+                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
+                    : (x -> x.balanceCustAccount)
+                ).sum()}"/>
+    </action-record>
 
 	<action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">
 		<field name="contactPartnerSet" expr="eval: null"/>
@@ -749,7 +767,6 @@
 		<field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}" />
 		<field name="user"  expr="#{__user__}"/>
 		<field name="team"  expr="#{__user__.activeTeam}"/>
-		<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
 		<field name="language" expr="#{__config__.app.getApp('base').getDefaultPartnerLanguage()}" />
 		<field name="isCustomer" expr="true" if="_isCustomer"/>
 		<field name="isSupplier" expr="true" if="_isSupplier"/>
@@ -772,13 +789,13 @@
 		<field name="partnerTypeSelect" expr="#{2}" />
 		<field name="isContact" expr="#{false}"/>
 		<field name="isEmployee" expr="#{true}"/>
-		<field name="companySet" expr="#{_parent.companySet}"/>
-		<field name="language" expr="#{_parent != null ? _parent.language : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
-		<field name="user"  expr="#{_parent.user}" if="#{_parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="team"  expr="#{_parent.team}" if="#{_parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent?._model != 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent?._model != 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent.id != null &amp;&amp; _parent?._model == 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="companySet" expr="#{__parent__.companySet}"/>
+		<field name="language" expr="#{__parent__ != null ? __parent__.language : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
+		<field name="user"  expr="#{__parent__.user}" if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="team"  expr="#{__parent__.team}" if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="user"  expr="#{__user__}" if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="team"  expr="#{__user__.activeTeam}" if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="mainPartner" expr="#{__repo__(Partner).find(__parent__.id)}" if="#{__parent__ &amp;&amp; __parent__.id != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-record>
 
     <action-method name="action-partner-method-normalize-fixedPhone">

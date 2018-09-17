@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -34,15 +35,23 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   protected PurchaseProductService purchaseProductService;
+
+  @Inject private AppSupplychainService appSupplychainService;
+
+  @Inject private AppSaleService appSaleService;
 
   @Inject
   public InvoiceLineSupplychainService(
@@ -51,7 +60,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       PriceListService priceListService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      PurchaseProductService purchaseProductService) {
 
     super(
         accountManagementService,
@@ -60,6 +70,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         appAccountService,
         analyticMoveLineService,
         accountManagementAccountService);
+    this.purchaseProductService = purchaseProductService;
   }
 
   @Override
@@ -123,5 +134,46 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       }
     }
     return discounts;
+  }
+
+  @Override
+  public Map<String, Object> fillPriceAndAccount(
+      Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
+
+    try {
+      return super.fillPriceAndAccount(invoice, invoiceLine, isPurchase);
+    } catch (AxelorException e) {
+      if (checkTaxRequired(invoiceLine, invoiceLine.getPackPriceSelect())) {
+        throw e;
+      } else {
+        Map<String, Object> productInformation = new HashMap<>();
+        productInformation.put("taxLine", null);
+        productInformation.put("taxRate", BigDecimal.ZERO);
+        productInformation.put("taxCode", null);
+        productInformation.put("taxEquiv", null);
+        productInformation.put("account", null);
+        productInformation.put("discountAmount", BigDecimal.ZERO);
+        productInformation.put("discountTypeSelect", 0);
+        productInformation.put("price", BigDecimal.ZERO);
+        return productInformation;
+      }
+    }
+  }
+
+  public boolean checkTaxRequired(InvoiceLine invoiceLine, Integer packPriceSelect) {
+
+    if (appSupplychainService.getAppSupplychain().getActive()
+        && appSaleService.getAppSale().getProductPackMgt()) {
+
+      if (invoiceLine.getIsSubLine() && packPriceSelect == InvoiceLineRepository.PACK_PRICE_ONLY) {
+        return false;
+      }
+      if (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_PACK
+          && packPriceSelect == InvoiceLineRepository.SUBLINE_PRICE_ONLY) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

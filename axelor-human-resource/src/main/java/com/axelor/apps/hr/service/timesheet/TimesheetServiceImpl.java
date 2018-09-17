@@ -51,6 +51,8 @@ import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -95,6 +97,8 @@ public class TimesheetServiceImpl implements TimesheetService {
 
   protected TimesheetLineService timesheetLineService;
 
+  protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
+
   @Inject
   public TimesheetServiceImpl(
       PriceListService priceListService,
@@ -104,7 +108,8 @@ public class TimesheetServiceImpl implements TimesheetService {
       ProjectRepository projectRepo,
       UserRepository userRepo,
       UserHrService userHrService,
-      TimesheetLineService timesheetLineService) {
+      TimesheetLineService timesheetLineService,
+      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -113,29 +118,11 @@ public class TimesheetServiceImpl implements TimesheetService {
     this.userRepo = userRepo;
     this.userHrService = userHrService;
     this.timesheetLineService = timesheetLineService;
+    this.projectPlanningTimeRepository = projectPlanningTimeRepository;
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void getTimeFromTask(Timesheet timesheet) throws AxelorException {
-
-    List<TimesheetLine> timesheetLineList =
-        TimesheetLineRepository.of(TimesheetLine.class)
-            .all()
-            .filter(
-                "self.user = ?1 AND self.timesheet = null AND self.project != null",
-                timesheet.getUser())
-            .fetch();
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      timesheetLine.setDuration(
-          Beans.get(TimesheetLineService.class)
-              .computeHoursDuration(timesheet, timesheetLine.getHoursDuration(), false));
-      timesheet.addTimesheetLineListItem(timesheetLine);
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
 
     this.validToDate(timesheet);
@@ -188,8 +175,8 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validate(Timesheet timesheet) throws AxelorException {
+  @Transactional
+  public void validate(Timesheet timesheet) {
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
@@ -223,8 +210,8 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void refuse(Timesheet timesheet) throws AxelorException {
+  @Transactional
+  public void refuse(Timesheet timesheet) {
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
     timesheet.setRefusedBy(AuthUtils.getUser());
@@ -249,7 +236,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -261,6 +248,12 @@ public class TimesheetServiceImpl implements TimesheetService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void cancel(Timesheet timesheet) {
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
+  }
+
+  @Override
+  @Transactional
+  public void draft(Timesheet timesheet) {
+    timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
   }
 
   @Override
@@ -624,6 +617,7 @@ public class TimesheetServiceImpl implements TimesheetService {
             productName,
             price,
             price,
+            price,
             description,
             qtyConverted,
             product.getUnit(),
@@ -633,7 +627,9 @@ public class TimesheetServiceImpl implements TimesheetService {
             discountTypeSelect,
             price.multiply(qtyConverted),
             null,
-            false) {
+            false,
+            false,
+            0) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -883,5 +879,72 @@ public class TimesheetServiceImpl implements TimesheetService {
                 .computeHoursDuration(timesheet, timesheetLine.getHoursDuration(), false));
       }
     }
+  }
+
+  @Transactional
+  @Override
+  public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
+      throws AxelorException {
+    User user = timesheet.getUser();
+    List<ProjectPlanningTime> planningList = getProjectPlanningTimeList(timesheet);
+    for (ProjectPlanningTime projectPlanningTime : planningList) {
+      TimesheetLine timesheetLine = new TimesheetLine();
+      if (realHours) {
+        timesheetLine.setHoursDuration(projectPlanningTime.getRealHours());
+        timesheetLine.setDuration(
+            timesheetLineService.computeHoursDuration(
+                timesheet, projectPlanningTime.getRealHours(), false));
+      } else {
+        timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+        timesheetLine.setDuration(
+            timesheetLineService.computeHoursDuration(
+                timesheet, projectPlanningTime.getPlannedHours(), false));
+      }
+
+      timesheetLine.setTimesheet(timesheet);
+      timesheetLine.setUser(user);
+      timesheetLine.setProduct(projectPlanningTime.getProduct());
+      timesheetLine.setProject(projectPlanningTime.getProject());
+      timesheetLine.setDate(projectPlanningTime.getDate());
+      timesheetLine.setProjectPlanningTime(projectPlanningTime);
+      timesheet.addTimesheetLineListItem(timesheetLine);
+    }
+  }
+
+  private List<ProjectPlanningTime> getProjectPlanningTimeList(Timesheet timesheet) {
+    List<ProjectPlanningTime> planningList;
+    if (timesheet.getToDate() == null) {
+      planningList =
+          projectPlanningTimeRepository
+              .all()
+              .filter(
+                  "self.user.id = ?1 "
+                      + "AND self.date >= ?2 "
+                      + "AND self.id NOT IN "
+                      + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
+                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "AND timesheetLine.timesheet = ?3)",
+                  timesheet.getUser().getId(),
+                  timesheet.getFromDate(),
+                  timesheet)
+              .fetch();
+    } else {
+      planningList =
+          projectPlanningTimeRepository
+              .all()
+              .filter(
+                  "self.user.id = ?1 "
+                      + "AND self.date ?2 BETWEEN ?3 "
+                      + "AND self.id NOT IN "
+                      + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
+                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "AND timesheetLine.timesheet = ?4)",
+                  timesheet.getUser().getId(),
+                  timesheet.getFromDate(),
+                  timesheet.getToDate(),
+                  timesheet)
+              .fetch();
+    }
+    return planningList;
   }
 }

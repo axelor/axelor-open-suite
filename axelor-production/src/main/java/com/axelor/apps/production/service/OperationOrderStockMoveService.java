@@ -64,6 +64,9 @@ public class OperationOrderStockMoveService {
     if (operationOrder.getToConsumeProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToConsumeStockMove(operationOrder, company);
+      stockMove.setOriginId(operationOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_OPERATION_ORDER);
+      stockMove.setOrigin(operationOrder.getOperationName());
 
       for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
 
@@ -117,7 +120,8 @@ public class OperationOrderStockMoveService {
         virtualStockLocation,
         null,
         operationOrder.getPlannedStartDateT().toLocalDate(),
-        null);
+        null,
+        StockMoveRepository.TYPE_INTERNAL);
   }
 
   protected StockMoveLine _createStockMoveLine(ProdProduct prodProduct, StockMove stockMove)
@@ -201,7 +205,8 @@ public class OperationOrderStockMoveService {
             toStockLocation,
             null,
             operationOrder.getPlannedStartDateT().toLocalDate(),
-            null);
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     createNewStockMoveLines(operationOrder, newStockMove);

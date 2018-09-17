@@ -33,7 +33,7 @@
     <date name="dueDate" title="Due Date"/>
     
     <!-- Accounting information -->
-    <boolean name="schedulePaymentOk" title="Belong to a payment schedule ?" default="false"/>
+    <boolean name="schedulePaymentOk" title="Belong to a payment schedule" default="false"/>
     <many-to-one name="paymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule" title="Payment Schedule" readonly="true"/>
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
     <many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
@@ -51,7 +51,7 @@
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice" title="Tax Lines" readonly="true" />
     
     <!-- Configuration -->
-    <boolean name="alreadyPrintedOk" title="Already printed ?" default="true"/>
+    <boolean name="alreadyPrintedOk" title="Already printed" default="true"/>
     <many-to-one name="originalInvoice" ref="Invoice" title="Invoice of origin"/>
     <one-to-many name="refundInvoiceList" ref="Invoice" mappedBy="originalInvoice" title="Refunds"/>
     <integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
@@ -73,11 +73,11 @@
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
     <many-to-one name="directDebitManagement" ref="com.axelor.apps.account.db.DirectDebitManagement" title="Direct debit list"/>
-    <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject move line"/>
+    <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Rejection move line"/>
    	<boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
     <decimal name="amountRejected" title="Rejected amount"/> 
-    <date name="rejectDate" title="Reject Date"/>
-    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
+    <date name="rejectDate" title="Rejection date"/>
+    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
     <decimal name="directDebitAmount" title="Debited amount" readonly="true"/> 
     <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move" title="Payment Move"/>
     

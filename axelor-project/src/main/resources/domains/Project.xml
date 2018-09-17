@@ -30,9 +30,7 @@
 		<datetime name="toDate" title="To Date"/>
 		<datetime name="dueDate" title="Due Date"/>
 		
-		<decimal name="duration" title="Duration"/>
 		<decimal name="timeSpent" title="Time Spent"/>
-		<decimal name="leadDelay" title="Lead/Delay"/>
 		
 		<decimal name="progress" title="Progress (%)"/>
 		<decimal name="sequence" title="Sequence" />
@@ -54,9 +52,10 @@
 		<string name="fullName" namecolumn="true" title="Name"/>
 	 	
 	 	<boolean name="isProject" title="Project/Phase" default="true" />
-
+	 	<boolean name="isShowPhasesElements" title="Show phases elements" default="true" />
+	 	
         <integer name="projectTypeSelect" selection="project.project.project.type.select" default="1"/>
-      	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="PROJECT_ALONE"/>
+      	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="BUSINESS_PROJECT"/>
 
       	<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
         <finder-method name="findByName" using="name"/>
@@ -75,7 +74,7 @@
   </entity>
 
 	<enum name="GenProjTypePerOrderLine">
-		<item name="PROJECT_ALONE" title="Project alone"/>
+		<item name="BUSINESS_PROJECT" title="Business project"/>
 		<item name="PHASE_BY_LINE" title="Phase by line"/>
         <item name="TASK_BY_LINE" title="Task by line"/>
 	</enum>

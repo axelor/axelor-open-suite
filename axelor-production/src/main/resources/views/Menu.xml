@@ -90,7 +90,7 @@
 		<view type="calendar" name="operation-order-real-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
-		<domain>self.statusSelect = 4 OR self.statusSelect = 5</domain>
+		<domain>self.statusSelect = 6</domain>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
@@ -99,6 +99,15 @@
 	<action-view name="manufacturing.root.charge.by.machine.dashboard" title="Charge by machine">
 		<view type="dashboard" name="charge.by.machine.dashboard" />
 		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+
+	<menuitem name="manufacturing-root-raw-material-requirement" parent="manufacturing-root"
+		title="Raw material requirement" action="manufacturing.root.raw.material.requirement" order="42"/>
+
+	<action-view name="manufacturing.root.raw.material.requirement" title="Raw material requirement"
+		model="com.axelor.apps.production.db.RawMaterialRequirement">
+		<view type="grid" name="raw-material-requirement-report-grid"/>
+		<view type="form" name="raw-material-requirement-report-form"/>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
@@ -134,6 +143,15 @@
 		model="com.axelor.apps.production.db.Machine" >
 		<view type="grid" name="machine-grid" />
 		<view type="form" name="machine-form" />
+	</action-view>
+	
+	<menuitem name="manufacturing-conf-machine-type" parent="manufacturing-conf"
+		title="Machine Types" action="manufacturing.conf.machine.type" />
+
+	<action-view name="manufacturing.conf.machine.type" title="Machine Types"
+		model="com.axelor.apps.production.db.MachineType" >
+		<view type="grid" name="machine-type-grid" />
+		<view type="form" name="machine-type-form" />
 	</action-view>
 	
 	<menuitem name="manufacturing-conf-cost-sheet-group" parent="manufacturing-conf"

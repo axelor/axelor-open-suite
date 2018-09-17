@@ -11,18 +11,25 @@
 
     <many-to-one name="receiptDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
     <many-to-one name="pickupDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Pickup default stock location"/>
+    <many-to-one name="qualityControlDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Quality control default stock location"/>
 
    	<many-to-one name="customerVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"/>
     <many-to-one name="supplierVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
     <many-to-one name="inventoryVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"/>
-    
+
 	<many-to-one name="customsMassUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of mass"/>
 
     <boolean name="realizeStockMovesUponParcelPalletCollection" title="Realize stock moves upon parcel/pallet collection" />
 
-    <boolean name="stockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
-    <many-to-one name="stockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <boolean name="plannedStockMoveAutomaticMail" title="Send email when planning stock move" default="false"/>
+    <boolean name="realStockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
+    <many-to-one name="plannedStockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <many-to-one name="realStockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
     <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" title="Customer account numbers to carriers" mappedBy="stockConfig"/>
+
+    <string name="conformityCertificateTitle" title="Certificate of conformity title" translatable="true"/>
+    <string name="conformityCertificateDescription" title="Text in certificate of conformity" large="true" translatable="true"/>
+    <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Default signatory user"/>
 
   </entity>
   

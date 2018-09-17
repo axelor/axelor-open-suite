@@ -44,6 +44,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.db.repo.ReconcileGroupAccountRepository;
+import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -67,6 +69,10 @@ import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
+import com.axelor.apps.account.service.ReconcileGroupSequenceService;
+import com.axelor.apps.account.service.ReconcileGroupSequenceServiceImpl;
+import com.axelor.apps.account.service.ReconcileGroupService;
+import com.axelor.apps.account.service.ReconcileGroupServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseService;
@@ -101,7 +107,6 @@ import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
-import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
@@ -112,7 +117,7 @@ public class AccountModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
+    bind(AddressServiceAccountImpl.class);
 
     bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
 
@@ -200,5 +205,11 @@ public class AccountModule extends AxelorModule {
     PartnerAddressRepository.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
 
     bind(UmrNumberService.class).to(UmrNumberServiceImpl.class);
+
+    bind(ReconcileGroupSequenceService.class).to(ReconcileGroupSequenceServiceImpl.class);
+
+    bind(ReconcileGroupRepository.class).to(ReconcileGroupAccountRepository.class);
+
+    bind(ReconcileGroupService.class).to(ReconcileGroupServiceImpl.class);
   }
 }

@@ -20,12 +20,9 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectPlanning;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.team.db.TeamTask;
 import java.math.BigDecimal;
-import java.util.List;
 
 public interface ProjectService {
   Project generateProject(
@@ -38,10 +35,6 @@ public interface ProjectService {
   Partner getClientPartnerFromProject(Project project) throws AxelorException;
 
   BigDecimal computeDurationFromChildren(Long projectId);
-
-  List<ProjectPlanning> createPlanning(Project project);
-
-  ProjectPlanning createPlanning(Project project, TeamTask task);
 
   /**
    * Generate a project from a partner.

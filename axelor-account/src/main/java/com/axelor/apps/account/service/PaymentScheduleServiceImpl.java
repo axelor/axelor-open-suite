@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -36,6 +35,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -43,6 +43,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -182,7 +183,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           "%s :\n" + I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName());
     }
     return seq;
@@ -357,7 +358,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
           paymentSchedule,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6),
-          AppAccountServiceImpl.EXCEPTION,
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           paymentSchedule.getPaymentScheduleSeq());
     }
 
@@ -367,7 +368,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
       paymentScheduleLine.setStatusSelect(PaymentScheduleLineRepository.STATUS_IN_PROGRESS);
     }
 
-    this.updateInvoices(paymentSchedule); // TODO
+    this.updateInvoices(paymentSchedule);
 
     paymentSchedule.setStatusSelect(PaymentScheduleRepository.STATUS_CONFIRMED);
   }
@@ -589,5 +590,19 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
         TraceBackRepository.CATEGORY_MISSING_FIELD,
         I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
         partner.getName());
+  }
+
+  @Override
+  public int getNextScheduleLineSeq(PaymentSchedule paymentSchedule) {
+    List<PaymentScheduleLine> paymentScheduleLines =
+        MoreObjects.firstNonNull(
+            paymentSchedule.getPaymentScheduleLineList(), Collections.emptyList());
+    int currentMaxSequenceNumber =
+        paymentScheduleLines
+            .stream()
+            .mapToInt(PaymentScheduleLine::getScheduleLineSeq)
+            .max()
+            .orElse(0);
+    return currentMaxSequenceNumber + 1;
   }
 }

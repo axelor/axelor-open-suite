@@ -9,6 +9,7 @@
     <date name="dateFrom" title="From" />
     <date name="dateTo" title="To"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
     <many-to-one name="journal" ref="Journal" title="Journal"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
@@ -21,7 +22,6 @@
     <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
     <boolean name="global" title="Global" default="false"/>
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
-    <boolean name="globalByPost" title="Subtotal by cash register" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
     
@@ -43,6 +43,7 @@
 		public static final int REPORT_BALANCE = 3;
 		public static final int REPORT_AGED_BALANCE = 4;
 		public static final int REPORT_CHEQUE_DEPOSIT = 5;
+		public static final int REPORT_PARNER_BALANCE = 6;
 		public static final int REPORT_CASH_PAYMENTS = 10;
 		public static final int REPORT_JOURNAL = 11;
 		public static final int REPORT_VAT_STATEMENT_INVOICE = 12;

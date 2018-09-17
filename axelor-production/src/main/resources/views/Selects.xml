@@ -21,6 +21,13 @@
         <option value="3">Applicable</option>
         <option value="4">Obsolete</option>
     </selection>
+    
+    <selection name="production.prod.process.status.select">
+        <option value="1">Draft</option>
+        <option value="2">Validated</option>
+        <option value="3">Applicable</option>
+        <option value="4">Obsolete</option>
+    </selection>
 
 	<selection name="production.manuf.order.stock.move.realize.order.select">
 		<option value="0">On Start</option>
@@ -31,6 +38,7 @@
 		<option value="1">Low</option>
 		<option value="2">Normal</option>
 		<option value="3">High</option>
+		<option value="4">Urgent</option>
 	</selection>
 	
 	<selection name="iproduction.work.center.type.select">

@@ -39,6 +39,7 @@ public interface ITranslation {
   public static final String SALES_ORDER_QTY_UNIT = /*$$(*/ "SaleOrder.qtyUnit"; /*)*/
   public static final String SALES_ORDER_UNIT_PRICE = /*$$(*/ "SaleOrder.unitPrice"; /*)*/
   public static final String SALES_ORDER_PRICE_EXCL_TAX = /*$$(*/ "SaleOrder.priceExclTax"; /*)*/
+  public static final String SALES_ORDER_PRICE_INCL_TAX = /*$$(*/ "SaleOrder.priceInclTax"; /*)*/
   public static final String SALES_ORDER_BASE = /*$$(*/ "SaleOrder.base"; /*)*/
   public static final String SALES_ORDER_TAX_AMOUNT = /*$$(*/ "SaleOrder.taxAmount"; /*)*/
   public static final String SALES_ORDER_TOTAL_EXCL_TAX = /*$$(*/ "SaleOrder.totalExclTax"; /*)*/
@@ -61,6 +62,7 @@ public interface ITranslation {
   public static final String SALES_ORDER_TOTAL_EXCL_TAX_WITHOUT_DISCOUNT = /*$$(*/
       "SaleOrder.totalExclTaxWithoutDiscount"; /*)*/
   public static final String SALES_ORDER_TOTAL_DISCOUNT = /*$$(*/ "SaleOrder.totalDiscount"; /*)*/
+  public static final String SALES_ORDER_AFTER_DISCOUNT = /*$$(*/ "SaleOrder.afterDiscount"; /*)*/
   public static final String SALES_ORDER_OTHERS = /*$$(*/ "SaleOrder.others"; /*)*/
   public static final String SALES_ORDER_SUBSCRIPTION_CONTRACT = /*$$(*/
       "SaleOrder.subscriptionContract"; /*)*/

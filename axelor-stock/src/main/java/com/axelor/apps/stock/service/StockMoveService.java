@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface StockMoveService {
 
@@ -63,6 +64,7 @@ public interface StockMoveService {
    * @param carrierPartner
    * @param forwarderPartner
    * @param incoterm
+   * @param typeSelect
    * @return
    * @throws AxelorException No Stock move sequence defined
    */
@@ -80,26 +82,28 @@ public interface StockMoveService {
       FreightCarrierMode freightCarrierMode,
       Partner carrierPartner,
       Partner forwarderPartner,
-      Incoterm incoterm)
+      Incoterm incoterm,
+      int typeSelect)
       throws AxelorException;
 
   /**
    * Generic method to create any stock move for internal stock move (without partner information)
    *
-   * @param fromAddress
-   * @param toAddress
-   * @param company
    * @param clientPartner
-   * @param fromStockLocation
-   * @param toStockLocation
-   * @param realDate
-   * @param estimatedDate
-   * @param description
    * @param shipmentMode
    * @param freightCarrierMode
    * @param carrierPartner
    * @param forwarderPartner
    * @param incoterm
+   * @param fromAddress
+   * @param toAddress
+   * @param company
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @param realDate
+   * @param estimatedDate
+   * @param description
+   * @param typeSelect
    * @return
    * @throws AxelorException No Stock move sequence defined
    */
@@ -111,26 +115,34 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description)
+      String description,
+      int typeSelect)
       throws AxelorException;
 
   public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation);
 
   public void validate(StockMove stockMove) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void goBackToDraft(StockMove stockMove) throws AxelorException;
+
   public void plan(StockMove stockMove) throws AxelorException;
 
   public String realize(StockMove stockMove) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException;
 
   public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList);
 
-  public StockMove copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
+  public Optional<StockMove> copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
 
-  public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split)
+  public Optional<StockMove> copyAndSplitStockMove(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines) throws AxelorException;
+
+  public Optional<StockMove> copyAndSplitStockMoveReverse(StockMove stockMove, boolean split)
+      throws AxelorException;
+
+  public Optional<StockMove> copyAndSplitStockMoveReverse(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, boolean split)
       throws AxelorException;
 
   void cancel(StockMove stockMove) throws AxelorException;
@@ -148,7 +160,7 @@ public interface StockMoveService {
   public void copyQtyToRealQty(StockMove stockMove);
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public StockMove generateReversion(StockMove stockMove) throws AxelorException;
+  public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException;
 
   public StockMove splitInto2(
       StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
@@ -195,11 +207,11 @@ public interface StockMoveService {
    *
    * @param stockMove
    * @param lstSelectedMove
-   * @param isPicking true if we print a picking order
+   * @param reportType true if we print a picking order
    * @return the link to the PDF file
    * @throws AxelorException
    */
-  String printStockMove(StockMove stockMove, List<Integer> lstSelectedMove, boolean isPicking)
+  String printStockMove(StockMove stockMove, List<Integer> lstSelectedMove, String reportType)
       throws AxelorException;
 
   /**
@@ -249,4 +261,22 @@ public interface StockMoveService {
    * @return
    */
   boolean checkMassesRequired(StockMove stockMove);
+
+  /**
+   * Get partner address.
+   *
+   * @param stockMove
+   * @return
+   * @throws AxelorException
+   */
+  Address getPartnerAddress(StockMove stockMove) throws AxelorException;
+
+  /**
+   * Get company address.
+   *
+   * @param stockMove
+   * @return
+   * @throws AxelorException
+   */
+  Address getCompanyAddress(StockMove stockMove) throws AxelorException;
 }

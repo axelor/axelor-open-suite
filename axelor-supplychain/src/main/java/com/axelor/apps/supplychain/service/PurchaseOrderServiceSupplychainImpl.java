@@ -205,11 +205,39 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                   purchaseOrder.getFreightCarrierMode(),
                   null,
                   null,
-                  null);
-      stockMove.setPurchaseOrder(purchaseOrder);
+                  null,
+                  StockMoveRepository.TYPE_INCOMING);
 
+      StockMove qualityStockMove =
+          Beans.get(StockMoveService.class)
+              .createStockMove(
+                  address,
+                  null,
+                  company,
+                  supplierPartner,
+                  startLocation,
+                  company.getStockConfig().getQualityControlDefaultStockLocation(),
+                  null,
+                  purchaseOrder.getDeliveryDate(),
+                  purchaseOrder.getNotes(),
+                  purchaseOrder.getShipmentMode(),
+                  purchaseOrder.getFreightCarrierMode(),
+                  null,
+                  null,
+                  null,
+                  StockMoveRepository.TYPE_INCOMING);
+
+      stockMove.setOriginId(purchaseOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
+      stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
       stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
       stockMove.setTradingName(purchaseOrder.getTradingName());
+
+      qualityStockMove.setOriginId(purchaseOrder.getId());
+      qualityStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
+      qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
+      qualityStockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
+      qualityStockMove.setTradingName(purchaseOrder.getTradingName());
 
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 
@@ -228,6 +256,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
           Unit unit = purchaseOrderLine.getProduct().getUnit();
           BigDecimal qty = purchaseOrderLine.getQty();
           BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
+
           if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
             qty =
                 unitConversionService.convertWithProduct(
@@ -246,19 +275,37 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             taxRate = taxLine.getValue();
           }
 
-          StockMoveLine stockMoveLine =
-              Beans.get(StockMoveLineService.class)
-                  .createStockMoveLine(
-                      product,
-                      purchaseOrderLine.getProductName(),
-                      purchaseOrderLine.getDescription(),
-                      qty,
-                      priceDiscounted,
-                      unit,
-                      stockMove,
-                      StockMoveLineService.TYPE_PURCHASES,
-                      purchaseOrder.getInAti(),
-                      taxRate);
+          StockMoveLine stockMoveLine;
+          if (product.getControlOnReceipt()) {
+            stockMoveLine =
+                Beans.get(StockMoveLineService.class)
+                    .createStockMoveLine(
+                        product,
+                        purchaseOrderLine.getProductName(),
+                        purchaseOrderLine.getDescription(),
+                        qty,
+                        priceDiscounted,
+                        unit,
+                        qualityStockMove,
+                        StockMoveLineService.TYPE_PURCHASES,
+                        purchaseOrder.getInAti(),
+                        taxRate);
+          } else {
+            stockMoveLine =
+                Beans.get(StockMoveLineService.class)
+                    .createStockMoveLine(
+                        product,
+                        purchaseOrderLine.getProductName(),
+                        purchaseOrderLine.getDescription(),
+                        qty,
+                        priceDiscounted,
+                        unit,
+                        stockMove,
+                        StockMoveLineService.TYPE_PURCHASES,
+                        purchaseOrder.getInAti(),
+                        taxRate);
+          }
+
           if (stockMoveLine != null) {
 
             stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
@@ -285,8 +332,13 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       }
       if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
         Beans.get(StockMoveService.class).plan(stockMove);
+        stockMoveId = stockMove.getId();
       }
-      stockMoveId = stockMove.getId();
+      if (qualityStockMove.getStockMoveLineList() != null
+          && !qualityStockMove.getStockMoveLineList().isEmpty()) {
+        Beans.get(StockMoveService.class).plan(qualityStockMove);
+        stockMoveId = qualityStockMove.getId();
+      }
     }
     return stockMoveId;
   }
@@ -311,7 +363,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "self.purchaseOrder.id = ? AND self.statusSelect <> ?",
+                "self.originTypeSelect LIKE ? AND self.originId = ? AND self.statusSelect <> ?",
+                StockMoveRepository.ORIGIN_PURCHASE_ORDER,
                 purchaseOrderId,
                 StockMoveRepository.STATUS_CANCELED)
             .count();

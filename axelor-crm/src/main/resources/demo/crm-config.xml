@@ -17,8 +17,8 @@
       <bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(userImportId)"/>
 	</input>
 	
-	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType" search="self.importId = :importId"/>
-	
+	<input file="crm_eventCategory.csv" separator=";" type="com.axelor.apps.crm.db.EventCategory" search="self.importId = :importId"/>
+
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTimeNow)" column="startDateTimeNow"/>
 		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTimeNow)" column="endDateTimeNow" />

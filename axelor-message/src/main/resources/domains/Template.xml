@@ -9,7 +9,7 @@
 
   	<string name="name" title="Name" required="true" namecolumn="true"/>
   	<string name="content" large="true" multiline="true" title="Content"/>
-  	<string name="subject" large="true" multiline="true" title="Suject"/>
+  	<string name="subject" large="true" multiline="true" title="Subject"/>
   	<string name="fromAdress" large="true" multiline="true" title="From" />
   	<string name="replyToRecipients" large="true" multiline="true" title="Reply to" />
   	<string name="toRecipients" large="true" multiline="true" title="To"/>
@@ -19,8 +19,8 @@
   	<integer name="mediaTypeSelect" title="Media Type" required="true" selection="template.media.type.select" default="2"/>
   	<string name="addressBlock" large="true" multiline="true" title="Address Block"/>
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
-	<boolean name="isDefault" title="Default ?"/>
-	<boolean name="isSystem" title="System ?"/>
+	<boolean name="isDefault" title="Default"/>
+	<boolean name="isSystem" title="System"/>
 
 	<extra-code><![CDATA[
 		// MEDIA TYPE SELECT

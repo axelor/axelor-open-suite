@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="TaskTemplate">
+    <string name="name" namecolumn="true" title="Name" search="id,name"/>
+    <decimal name="delayToStart" default="0" title="Delay to start (Hours)"/>
+    <decimal name="duration" title="Duration (Hours)"/>
+    <decimal name="totalPlannedHrs" title="Total planned hours"/>
+    <many-to-one name="parentTaskTemplate" ref="com.axelor.apps.project.db.TaskTemplate"
+      title="Parent task"/>
+    <one-to-many name="taskTemplateList" ref="com.axelor.apps.project.db.TaskTemplate"
+      mappedBy="parentTaskTemplate" orphanRemoval="true"/>
+    <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
+    <many-to-one name="team" ref="com.axelor.team.db.Team"/>
+    <boolean name="isUniqueTaskForMultipleQuantity"/>
+  </entity>
+
+</domain-models>

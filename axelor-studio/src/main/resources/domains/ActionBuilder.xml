@@ -17,15 +17,17 @@
      <string name="title" title="Title" />
      <many-to-one name="emailTemplate" ref="com.axelor.apps.message.db.Template" title="Template" />
      <one-to-many name="filters" ref="Filter" title="Filters"/>
-     <boolean name="transactional" title="Transactional ?" />
+     <boolean name="transactional" title="Transactional" />
      <integer name="scriptType" title="Script type" selection="studio.action.builder.script.type.select"/>
      <string name="scriptText" title="Script" large="true"/>
-     <boolean name="openRecord" title="Open record?" />
+     <boolean name="openRecord" title="Open record" />
      <string name="displayMsg" title="Display message" />
+     <integer name="emailSendOptionSelect" title="Send option" selection="studio.action.builder.email.send.option.select"/>
      
      <!-- Action view fields -->
-     <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder"/>
-     <boolean name="isJson" title="Json ?" />
+     <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder" orderBy="sequence"/>
+     <boolean name="isJson" title="Json" />
+
      <string name="domainCondition" title="Domain" />
      <one-to-many name="viewParams" title="View params" ref="ActionBuilderLine" orphanRemoval="true" />
      <boolean name="menuAction" />

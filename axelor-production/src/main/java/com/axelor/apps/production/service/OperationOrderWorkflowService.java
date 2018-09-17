@@ -22,13 +22,13 @@ import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.stock.db.StockMove;
@@ -36,6 +36,8 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -268,6 +270,12 @@ public class OperationOrderWorkflowService {
     operationOrderRepo.save(operationOrder);
   }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
+    finish(operationOrder);
+    Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
+  }
+
   /**
    * Cancels the given {@link OperationOrder} and its linked stock moves And sets its stopping time
    *
@@ -324,13 +332,30 @@ public class OperationOrderWorkflowService {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
-      Machine machine = operationOrder.getWorkCenter().getMachine();
+      WorkCenter machineWorkCenter = operationOrder.getMachineWorkCenter();
+      Machine machine = null;
+      if (machineWorkCenter != null) {
+        machine = machineWorkCenter.getMachine();
+      } else if (operationOrder.getWorkCenter() != null) {
+        machine = operationOrder.getWorkCenter().getMachine();
+      }
       if (machine != null) {
         machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
       }
     }
 
     operationOrderDurationRepo.save(duration);
+  }
+
+  /**
+   * Compute the duration of operation order, then fill {@link OperationOrder#realDuration} with the
+   * computed value.
+   *
+   * @param operationOrder
+   */
+  public void updateRealDuration(OperationOrder operationOrder) {
+    long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
+    operationOrder.setRealDuration(durationLong);
   }
 
   /**
@@ -409,13 +434,13 @@ public class OperationOrderWorkflowService {
       operationOrder.setPlannedDuration(duration);
     }
 
-    duration = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
-    operationOrder.setRealDuration(duration);
+    updateRealDuration(operationOrder);
 
     return operationOrder;
   }
 
-  public LocalDateTime computePlannedEndDateT(OperationOrder operationOrder) {
+  public LocalDateTime computePlannedEndDateT(OperationOrder operationOrder)
+      throws AxelorException {
 
     if (operationOrder.getWorkCenter() != null) {
       return operationOrder
@@ -429,69 +454,46 @@ public class OperationOrderWorkflowService {
     return operationOrder.getPlannedStartDateT();
   }
 
-  public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty) {
-
-    long machineDuration = this.computeMachineDuration(operationOrder, qty);
-
-    long humanDuration = this.computeHumanDuration(operationOrder, qty);
-
-    if (machineDuration >= humanDuration) {
-      return machineDuration;
-    } else {
-      return humanDuration;
-    }
-  }
-
-  public long computeMachineDuration(OperationOrder operationOrder, BigDecimal qty) {
+  public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
+      throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
     long duration = 0;
+
+    BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
+
+    BigDecimal nbCycles;
+    if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
+      nbCycles = qty;
+    } else {
+      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
+    }
 
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
     if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE
         || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
       Machine machine = workCenter.getMachine();
-      duration += machine.getStartingDuration();
-
-      BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
-      BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
-
-      if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
-        duration += qty.multiply(durationPerCycle).longValue();
-      } else {
-        duration +=
-            (qty.divide(maxCapacityPerCycle, RoundingMode.HALF_UP))
-                .multiply(durationPerCycle)
-                .longValue();
+      if (machine == null) {
+        throw new AxelorException(
+            workCenter,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE),
+            workCenter.getName());
       }
-
+      duration += machine.getStartingDuration();
       duration += machine.getEndingDuration();
+      duration +=
+          nbCycles
+              .subtract(new BigDecimal(1))
+              .multiply(new BigDecimal(machine.getSetupDuration()))
+              .longValue();
     }
+
+    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
+    duration += nbCycles.multiply(durationPerCycle).longValue();
 
     return duration;
-  }
-
-  public long computeHumanDuration(OperationOrder operationOrder, BigDecimal qty) {
-    WorkCenter workCenter = operationOrder.getProdProcessLine().getWorkCenter();
-
-    long duration = 0;
-
-    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-
-    if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN
-        || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
-
-      if (operationOrder.getProdHumanResourceList() != null) {
-
-        for (ProdHumanResource prodHumanResource : operationOrder.getProdHumanResourceList()) {
-
-          duration += prodHumanResource.getDuration();
-        }
-      }
-    }
-
-    return qty.multiply(new BigDecimal(duration)).longValue();
   }
 }

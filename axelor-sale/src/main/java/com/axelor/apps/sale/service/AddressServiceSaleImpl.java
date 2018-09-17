@@ -18,26 +18,18 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.google.inject.Inject;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.db.JPA;
 
 public class AddressServiceSaleImpl extends AddressServiceImpl {
+  static {
+    registerCheckUsedFunc(AddressServiceSaleImpl::checkAddressUsedSale);
+  }
 
-  @Inject private SaleOrderRepository saleOrderRepo;
-
-  @Override
-  public boolean checkAddressUsed(Long addressId) {
-
-    super.checkAddressUsed(addressId);
-
-    if (addressId != null) {
-      if (saleOrderRepo
-              .all()
-              .filter(
-                  "self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1", addressId)
-              .fetchOne()
-          != null) return true;
-    }
-    return false;
+  private static boolean checkAddressUsedSale(Long addressId) {
+    return JPA.all(SaleOrder.class)
+            .filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1", addressId)
+            .fetchOne()
+        != null;
   }
 }

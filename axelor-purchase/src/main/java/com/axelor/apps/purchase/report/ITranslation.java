@@ -44,13 +44,23 @@ public interface ITranslation {
   public static final String PURCHASE_ORDER_UNIT_PRICE = /*$$(*/ "PurchaseOrder.unitPrice"; /*)*/
   public static final String PURCHASE_ORDER_PRICE_EXCL_TAX = /*$$(*/
       "PurchaseOrder.priceExclTax"; /*)*/
+  public static final String PURCHASE_ORDER_PRICE_INCL_TAX = /*$$(*/
+      "PurchaseOrder.priceInclTax"; /*)*/
+  public static final String PURCHASE_ORDER_DISCOUNT_AMOUNT = /*$$(*/
+      "PurchaseOrder.discountAmount"; /*)*/
   public static final String PURCHASE_ORDER_BASE = /*$$(*/ "PurchaseOrder.base"; /*)*/
   public static final String PURCHASE_ORDER_TAX_AMOUNT = /*$$(*/ "PurchaseOrder.taxAmount"; /*)*/
+  public static final String PURCHASE_ORDER_TOTAL_EXCL_TAX_WITHOUT_DISCOUNT = /*$$(*/
+      "PurchaseOrder.totalExclTaxWithoutDiscount"; /*)*/
   public static final String PURCHASE_ORDER_TOTAL_EXCL_TAX = /*$$(*/
       "PurchaseOrder.totalExclTax"; /*)*/
   public static final String PURCHASE_ORDER_TOTAL_TAX = /*$$(*/ "PurchaseOrder.totalTax"; /*)*/
   public static final String PURCHASE_ORDER_TOTAL_INCL_TAX = /*$$(*/
       "PurchaseOrder.totalInclTax"; /*)*/
+  public static final String PURCHASE_ORDER_TOTAL_DISCOUNT = /*$$(*/
+      "PurchaseOrder.totalDiscount"; /*)*/
+  public static final String PURCHASE_ORDER_AFTER_DISCOUNT = /*$$(*/
+      "PurchaseOrder.afterDiscount"; /*)*/
   public static final String PURCHASE_ORDER_NOTE = /*$$(*/ "PurchaseOrder.note"; /*)*/
   public static final String PURCHASE_ORDER_BANKING_INFO = /*$$(*/
       "PurchaseOrder.bankingInfo"; /*)*/

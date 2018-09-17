@@ -10,7 +10,7 @@
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
     <integer name="priority" title="Priority"/>
-    <boolean name="isActive" title="Active ?"/>
+    <boolean name="isActive" title="Active"/>
     
     <one-to-many name="routingRuleList" ref="com.axelor.apps.base.db.RoutingRule" mappedBy="routing" title="Routing rules"/>
     <one-to-many name="routingActionList" ref="com.axelor.apps.base.db.RoutingAction" mappedBy="routing" title="Routing actions"/>

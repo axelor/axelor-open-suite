@@ -1,0 +1,4 @@
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.businessproject.InvoicingProject.r";"com.axelor.apps.businessproject.db.InvoicingProject";"x";;;;;;;"Business Project Read"
+"perm.businessproject.InvoicingProject.rwc";"com.axelor.apps.businessproject.db.InvoicingProject";"x";"x";"x";;;;;"Business Project User"
+"perm.businessproject.InvoicingProject.rwcde";"com.axelor.apps.businessproject.db.InvoicingProject";"x";"x";"x";"x";"x";;;"Business Project Manager"
