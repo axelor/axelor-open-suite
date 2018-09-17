@@ -19,7 +19,7 @@ package com.axelor.apps.contract.batch;
 
 import com.axelor.apps.base.service.batch.BatchStrategy;
 import com.axelor.apps.contract.db.Contract;
-import com.axelor.apps.contract.db.ContractBatchAction;
+import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -39,15 +39,15 @@ public class BatchContract extends BatchStrategy {
     this.repository = repository;
   }
 
-  public static BatchContractFactory getFactory(ContractBatchAction action) {
+  public static BatchContractFactory getFactory(int action) {
     switch (action) {
-      case INVOICING:
+      case ContractBatchRepository.INVOICING:
         return Beans.get(BatchContractFactoryInvoicing.class);
-      case TERMINATE:
+      case ContractBatchRepository.TERMINATE:
         return Beans.get(BatchContractFactoryTerminate.class);
-      case NEXT_VERSION_ACTIVATION:
+      case ContractBatchRepository.NEXT_VERSION_ACTIVATION:
         return Beans.get(BatchContractFactoryNextActivation.class);
-      case CURRENT_VERSION_ACTIVATION:
+      case ContractBatchRepository.CURRENT_VERSION_ACTIVATION:
         return Beans.get(BatchContractFactoryCurrentActivation.class);
       default:
         return null;
@@ -57,12 +57,12 @@ public class BatchContract extends BatchStrategy {
   @Override
   protected void process() {
     try {
-      BatchContractFactory factory = getFactory(batch.getContractBatch().getActionEnum());
+      BatchContractFactory factory = getFactory(batch.getContractBatch().getActionSelect());
       Preconditions.checkNotNull(
           factory,
           String.format(
               I18n.get("Action %s has no Batch implementation."),
-              batch.getContractBatch().getActionEnum().getValue()));
+              batch.getContractBatch().getActionSelect()));
 
       Query<Contract> query = factory.prepare(batch);
       List<Contract> contracts;

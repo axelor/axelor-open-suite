@@ -5,14 +5,14 @@
 
     <grid name="contract-batch-grid" title="Contract batches" model="com.axelor.apps.contract.db.ContractBatch">
         <field name="code"/>
-        <field name="actionEnum"/>
+        <field name="actionSelect"/>
         <field name="company"/>
         <field name="description"/>
     </grid>
 
     <form name="contract-batch-form" title="Contract batch" model="com.axelor.apps.contract.db.ContractBatch">
         <panel name="main" >
-            <field name="actionEnum"/>
+            <field name="actionSelect"/>
             <field name="code"/>
             <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         </panel>
