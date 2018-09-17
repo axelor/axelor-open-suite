@@ -80,8 +80,8 @@
 - Added nameColumn for ExpenseLine and ProjectPlanningTime.
 - Change unique constraints in analytic account move line.
 - ManufOrder: Change quantity also in stock move on updating planned quantity.
-- ManufOrder report: larger "name" column on to consume product table.
 - Project: Reorganization of Resource Booking form view.
+- Tweaks on manuf order report.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
