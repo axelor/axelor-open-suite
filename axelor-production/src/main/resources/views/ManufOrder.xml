@@ -345,17 +345,19 @@
 	</action-method>
 
    	<action-view name="action-manuf-order-view-operation-order-to-consume-product" title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
-  		<view type="grid" name="prod-product-grid"/>
+  		<view type="grid" name="prod-product-consume-manuf-order-grid"/>
 		<view type="form" name="prod-product-form"/>
+			<view-param name="popup" value="true"/>
   		<domain>self.toConsumeOperationOrder.manufOrder.id = :id</domain>
-  		<context name="id" expr="eval: id"/>
+			<context name="companyIdFromParent" expr="eval: company.id"/>
   	</action-view>
   	
   	<action-view name="action-manuf-order-view-operation-order-diff-consume-product" title="Differences" model="com.axelor.apps.production.db.ProdProduct">
-  		<view type="grid" name="prod-product-grid"/>
+  		<view type="grid" name="prod-product-diff-manuf-order-grid"/>
 		<view type="form" name="prod-product-form"/>
+			<view-param name="popup" value="true"/>
   		<domain>self.diffConsumeOperationOrder.manufOrder.id = :id</domain>
-  		<context name="id" expr="eval: id"/>
+			<context name="companyIdFromParent" expr="eval: company.id"/>
   	</action-view>
   	
   	<action-view name="action-manuf-order-view-operation-order-consumed-product" title="Consumed products" model="com.axelor.apps.stock.db.StockMoveLine">

@@ -51,8 +51,8 @@
       title="Available stock" model="com.axelor.apps.stock.db.StockLocationLine">
       <view type="grid" name="stock-location-line-product-grid"/>
       <view type="form" name="stock-location-line-form"/>
-      <domain>self.product = :product and self.stockLocation.typeSelect = 1 and (:manufOrderCompany IS NULL OR self.stockLocation.company = :manufOrderCompany)</domain>
-      <context name="manufOrderCompany" expr="eval: __parent__?.company"/>
+      <domain>self.product = :product and self.stockLocation.typeSelect = 1 and (:manufOrderCompanyId IS NULL OR self.stockLocation.company.id = :manufOrderCompanyId)</domain>
+      <context name="manufOrderCompanyId" expr="eval: __parent__?.company.id ?: companyIdFromParent"/>
     </action-view>
 
     <action-record name="action-product-record-default" model="com.axelor.apps.production.db.ProdProduct">
@@ -64,7 +64,7 @@
     </action-record>
 
   <action-attrs name="action-prod-product-attrs-on-load" model="com.axelor.apps.production.db.ProdProduct">
-    <attribute name="hidden" for="showStockPanel" expr="!__parent__ || __parent__._model != 'com.axelor.apps.production.db.ManufOrder'"/>
+    <attribute name="hidden" for="showStockPanel" expr="!companyIdFromParent &amp;&amp; (!__parent__ || __parent__._model != 'com.axelor.apps.production.db.ManufOrder')"/>
   </action-attrs>
     
 </object-views>

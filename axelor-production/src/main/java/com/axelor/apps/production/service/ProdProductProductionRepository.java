@@ -30,13 +30,20 @@ public class ProdProductProductionRepository extends ProdProductRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     Object productFromView = json.get("product");
     Object qtyFromView = json.get("qty");
-    Object toProduceManufOrderIdFromView = json.get("toConsumeManufOrder");
+    Object toProduceManufOrderIdFromView;
+    if (context == null || context.isEmpty()) {
+      toProduceManufOrderIdFromView =
+          json.get("toConsumeManufOrder") == null
+              ? null
+              : ((HashMap<String, Object>) json.get("toConsumeManufOrder")).get("id");
+    } else {
+      toProduceManufOrderIdFromView = context.get("id");
+    }
     if (productFromView == null || qtyFromView == null || toProduceManufOrderIdFromView == null) {
       return super.populate(json, context);
     } else {
       Long productId = (Long) ((HashMap<String, Object>) productFromView).get("id");
-      Long toProduceManufOrderId =
-          (Long) ((HashMap<String, Object>) toProduceManufOrderIdFromView).get("id");
+      Long toProduceManufOrderId = (Long) toProduceManufOrderIdFromView;
       json.put(
           "$missingQty",
           computeMissingQty(productId, (BigDecimal) qtyFromView, toProduceManufOrderId));
