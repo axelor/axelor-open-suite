@@ -23,6 +23,10 @@ public interface ITranslation {
   public static final String PROJECT_CURRENCY = /*$$(*/ "Project.currency"; /*)*/
   public static final String PROJECT_INITIAL = /*$$(*/ "Project.initial"; /*)*/
   public static final String PROJECT_SO = /*$$(*/ "Project.salesOrders"; /*)*/
+  public static final String PROJECT_TASK = /*$$(*/ "Project.tasks"; /*)*/
+  public static final String PROJECT_TASK_NAME = /*$$(*/ "Project.taskName"; /*)*/
+  public static final String PROJECT_END_DATE = /*$$(*/ "Project.endDate"; /*)*/
+  public static final String PROJECT_PROGRESS = /*$$(*/ "Project.progress"; /*)*/
   public static final String PROJECT_SO_NO = /*$$(*/ "Project.salesOrderNumber"; /*)*/
   public static final String PROJECT_PO_NO = /*$$(*/ "Project.purchaseOrderNumber"; /*)*/
   public static final String PROJECT_DATE = /*$$(*/ "Project.date"; /*)*/
