@@ -54,6 +54,7 @@
 - Business Project : add new m2m 'teamTaskSet' in invoicing project.
 - Add translation of project view.
 - New boolean for manuf order printing to choose whether planned date needs to be showed.
+- STOCK MOVE : add column availablity qty of product on grid view displayed in popup when click on select button on m2o product.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

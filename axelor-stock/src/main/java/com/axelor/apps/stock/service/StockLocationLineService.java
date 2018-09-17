@@ -162,4 +162,13 @@ public interface StockLocationLineService {
    */
   public StockLocationLine createDetailLocationLine(
       StockLocation stockLocation, Product product, TrackingNumber trackingNumber);
+
+  /**
+   * Allow to get the available qty of product in a given location.
+   *
+   * @param stockLocation
+   * @param product
+   * @return
+   */
+  public BigDecimal getAvailableQty(StockLocation stockLocation, Product product);
 }

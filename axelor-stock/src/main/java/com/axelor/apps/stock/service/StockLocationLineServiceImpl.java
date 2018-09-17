@@ -439,4 +439,14 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
     return detailLocationLine;
   }
+
+  @Override
+  public BigDecimal getAvailableQty(StockLocation stockLocation, Product product) {
+    StockLocationLine stockLocationLine = getStockLocationLine(stockLocation, product);
+    BigDecimal availableQty = BigDecimal.ZERO;
+    if (stockLocationLine != null) {
+      availableQty = stockLocationLine.getCurrentQty();
+    }
+    return availableQty;
+  }
 }
