@@ -2645,13 +2645,13 @@ INNER JOIN
                                 <property name="width">3.571875cm</property>
                             </column>
                             <column id="4182">
-                                <property name="width">3.8893750000000002cm</property>
+                                <property name="width">1.3229166666666667in</property>
                             </column>
                             <column id="4183">
-                                <property name="width">4.392083333333334cm</property>
+                                <property name="width">3.2395833333333335in</property>
                             </column>
                             <column id="4184">
-                                <property name="width">2.354791666666667cm</property>
+                                <property name="width">0.9270833333333334in</property>
                             </column>
                             <column id="4198">
                                 <property name="width">2.354791666666667cm</property>
