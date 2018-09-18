@@ -56,6 +56,7 @@
 - New boolean for manuf order printing to choose whether planned date needs to be showed.
 - Project Business Generator: when generating phases by lines, product's task templates are added to each phase.
 - Project: Move tasks menu entry to root menu and move tasks historical menu entry in historical submenu.
+- Product : Remove 'isPack' field and update productTypeSelect selection to add it.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
