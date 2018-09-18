@@ -104,6 +104,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.alarmEngineService = alarmEngineService;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
+    this.partnerService = partnerService;
+    this.invoiceLineService = invoiceLineService;
   }
 
   // WKF
