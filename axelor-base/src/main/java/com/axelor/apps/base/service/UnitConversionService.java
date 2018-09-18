@@ -203,7 +203,7 @@ public class UnitConversionService {
     Preconditions.checkNotNull(unitConversion.getCoef());
 
     if (unitConversion.getCoef().doubleValue() % 10 == 0) {
-      return (int) Math.log10(unitConversion.getCoef().intValue());
+      return (int) Math.ceil(Math.log10(unitConversion.getCoef().intValue()));
     }
 
     return getCoefficientScale();

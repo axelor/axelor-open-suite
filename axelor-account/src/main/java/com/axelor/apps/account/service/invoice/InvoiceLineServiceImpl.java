@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -299,6 +300,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("inTaxTotal", null);
     productInformation.put("companyInTaxTotal", null);
     productInformation.put("companyExTaxTotal", null);
+    productInformation.put("subLineList", null);
+    productInformation.put("totalPack", null);
+    productInformation.put("packPriceSelect", 0);
+    productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
     if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
       productInformation.put("description", null);
     }

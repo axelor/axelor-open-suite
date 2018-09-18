@@ -48,7 +48,7 @@
         <integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
         <boolean name="isSubLine" title="Sub line" readonly="true"/>
         <integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
-        <decimal name="totalPack" title="Total pack"/>
+        <decimal name="totalPack" title="Total for pack lines"/>
 
         <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
         <string name="taxCode" readonly="true"/>

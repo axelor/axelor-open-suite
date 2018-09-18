@@ -223,7 +223,13 @@
 				</button-group>
 				<button name="cancelManagePOLines" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-purchase-order-line-cancel-manage-lines" />
 				<panel-dashlet name="purchaseOrderLineDashlet" action="action-project-view-show-confirmed-purchase-order-lines" colSpan="12" canSearch="true"/>
-				<panel-dashlet action="action-project-dashlet-supplier-arrivals" colSpan="12"/>			
+				<panel-dashlet action="action-project-dashlet-supplier-arrivals" colSpan="12"/>
+			</panel>
+			<panel title="Resource booking" if="__config__.app.getApp('project').resourceManagement">
+				<panel-related field="resourceBookingList" form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project" colSpan="12"/>
+			</panel>
+			<panel title="Additional elements to be invoiced" name="additionalElementsToBeInvoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="isBusinessProject">
+				<panel-related colSpan="12" field="elementsToInvoiceList" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form"/>
 			</panel>
 			<panel title="Expenses" name="expenses"  showIf="isBusinessProject"
 				if="__config__.app.isApp('business-project') 

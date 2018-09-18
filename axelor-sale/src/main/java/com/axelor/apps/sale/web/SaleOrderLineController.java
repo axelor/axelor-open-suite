@@ -106,8 +106,8 @@ public class SaleOrderLineController {
       try {
         product = Beans.get(ProductRepository.class).find(product.getId());
         saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder, packPriceSelect);
-        response.setValue("saleSupplySelect", product.getSaleSupplySelect());
         response.setValues(saleOrderLine);
+        response.setValue("saleSupplySelect", product.getSaleSupplySelect());
       } catch (Exception e) {
         resetProductInformation(response, saleOrderLine);
         TraceBackService.trace(response, e);
