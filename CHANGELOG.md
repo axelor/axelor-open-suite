@@ -57,6 +57,7 @@
 - Project Business Generator: when generating phases by lines, product's task templates are added to each phase.
 - Project: Move tasks menu entry to root menu and move tasks historical menu entry in historical submenu.
 - Product : Remove 'isPack' field and update productTypeSelect selection to add it.
+- STOCK MOVE : add column availablity qty of product on grid view displayed in popup when click on select button on m2o product.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
