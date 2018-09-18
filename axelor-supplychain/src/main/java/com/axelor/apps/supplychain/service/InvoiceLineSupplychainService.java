@@ -17,14 +17,18 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -35,12 +39,15 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,5 +182,105 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
     }
 
     return true;
+  }
+
+  @Override
+  public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+
+    Map<String, Object> productInformation = super.fillProductInformation(invoice, invoiceLine);
+
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    Integer sequence = invoiceLine.getSequence();
+    
+    if ((sequence == null || sequence == 0) && invoice.getInvoiceLineList() != null) {
+    	sequence = invoice.getInvoiceLineList().size();
+    	invoiceLine.setSequence(sequence);
+    }
+    
+    if (appSupplychainService.getAppSupplychain().getActive()
+        && appSaleService.getAppSale().getProductPackMgt()
+        && invoiceLine.getProduct() != null
+        && invoiceLine.getProduct().getIsPack()
+        && invoiceLine.getProduct().getPackLines() != null) {
+
+      List<InvoiceLine> subLineList = new ArrayList<>();
+      Integer packPriceSelect = invoiceLine.getProduct().getPackPriceSelect();
+      for (PackLine packLine : invoiceLine.getProduct().getPackLines()) {
+    	  
+        InvoiceLine subLine = new InvoiceLine();
+        subLine.setProduct(packLine.getProduct());
+        subLine.setUnit(this.getUnit(packLine.getProduct(), isPurchase));
+        subLine.setProductName(packLine.getProduct().getName());
+        subLine.setQty(new BigDecimal(packLine.getQuantity()));
+        String description = null;
+        if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
+        	description = invoiceLine.getProduct().getDescription();
+        }
+        Map<String, Object> accountInfo = super.fillPriceAndAccount(invoice, subLine, isPurchase);
+        subLine.setAccount((Account) accountInfo.get("account"));
+        if (packPriceSelect != InvoiceLineRepository.PACK_PRICE_ONLY) {
+          subLine.setPrice((BigDecimal) accountInfo.get("price"));
+          subLine.setInTaxPrice((BigDecimal) accountInfo.get("inTaxPrice"));
+          subLine.setPriceDiscounted(computeDiscount(subLine, invoice.getInAti()));
+        }
+        
+        int discountTypeSelect = 0;
+        if (accountInfo.get("discountTypeSelect") != null) {
+        	discountTypeSelect = (Integer) accountInfo.get("discountTypeSelect");
+        }
+        
+        BigDecimal qty = new BigDecimal(packLine.getQuantity());
+        
+        if (invoiceLine.getQty() != null) {
+        	qty = qty.multiply(invoiceLine.getQty()).setScale(2,RoundingMode.HALF_EVEN);
+        }
+        
+        InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(
+        		invoice,
+        		subLine.getProduct(),
+        		subLine.getProductName(),
+        		subLine.getPrice(),
+        		subLine.getInTaxPrice(),
+        		subLine.getPriceDiscounted(),
+        		description,
+        		qty,
+        		subLine.getUnit(),
+        		(TaxLine) accountInfo.get("taxLine"),
+        		++sequence,
+        		(BigDecimal) accountInfo.get("discountAmount"),
+        		discountTypeSelect,
+        		null,
+        		null,
+        		false,
+        		true,
+        		packPriceSelect
+        		) {
+			
+			@Override
+			public List<InvoiceLine> creates() throws AxelorException {
+				
+				InvoiceLine invoiceLine = this.createInvoiceLine();
+				
+				List<InvoiceLine> lines = new ArrayList<>();
+				lines.add(invoiceLine);
+				
+				return lines;
+			}
+		};
+        subLineList.addAll(invoiceLineGenerator.creates());
+      }
+      productInformation.put("typeSelect", InvoiceLineRepository.TYPE_PACK);
+      productInformation.put("packPriceSelect", packPriceSelect);
+      productInformation.put("subLineList", subLineList);
+    }
+    else {
+    	productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
+        productInformation.put("packPriceSelect", InvoiceLineRepository.PACK_PRICE_ONLY);
+        productInformation.put("subLineList", null);
+        productInformation.put("totalPack", BigDecimal.ZERO);
+    }
+
+    return productInformation;
   }
 }

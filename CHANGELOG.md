@@ -101,6 +101,7 @@
 - Pack feature: Display only  pack line for partially invoicing and fix quantity for partially invoicing lines on pack lines.
 - MRP: Fix concurrent modification exception.
 - Business Project : Fix Financial report.
+- Pack feature: Fix invoice subline generation and sequence. 
 
 ## [Unreleased 5.0.5]	
 ##Features

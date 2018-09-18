@@ -66,7 +66,7 @@
 	<integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
 	<many-to-one name="parentLine" ref="com.axelor.apps.sale.db.SaleOrderLine" />
   	<one-to-many name="subLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="parentLine" title="Pack lines"/>
-  	<decimal name="totalPack" title="Total pack"/>
+  	<decimal name="totalPack" title="Total for pack lines"/>
 	<integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
 	
 	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>

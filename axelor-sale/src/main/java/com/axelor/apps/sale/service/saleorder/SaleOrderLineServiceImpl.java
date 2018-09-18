@@ -119,14 +119,31 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       throws AxelorException {
     List<SaleOrderLine> subLines = new ArrayList<SaleOrderLine>();
 
+    Integer sequence = saleOrderLine.getSequence();
+    if (sequence == null) {
+      sequence = 0;
+    }
+    if (saleOrder.getSaleOrderLineList() != null && sequence == 0) {
+      for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
+        if (orderLine.getSequence() > sequence) {
+          sequence = orderLine.getSequence();
+        }
+      }
+    }
+
+    if (saleOrderLine.getSequence() == null) {
+      saleOrderLine.setSequence(++sequence);
+    }
+
     for (PackLine packLine : saleOrderLine.getProduct().getPackLines()) {
       SaleOrderLine subLine = new SaleOrderLine();
       Product subProduct = packLine.getProduct();
       subLine.setProduct(subProduct);
-      subLine.setQty(new BigDecimal(packLine.getQuantity()));
+      subLine.setQty(new BigDecimal(packLine.getQuantity()).multiply(saleOrderLine.getQty()));
       subLine.setIsSubLine(true);
       computeProductInformation(subLine, saleOrder, saleOrderLine.getPackPriceSelect());
       computeValues(saleOrder, subLine);
+      subLine.setSequence(++sequence);
       subLines.add(subLine);
     }
 
