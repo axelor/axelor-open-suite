@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -192,22 +193,22 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     Integer sequence = invoiceLine.getSequence();
-    
+
     if ((sequence == null || sequence == 0) && invoice.getInvoiceLineList() != null) {
-    	sequence = invoice.getInvoiceLineList().size();
-    	invoiceLine.setSequence(sequence);
+      sequence = invoice.getInvoiceLineList().size();
+      invoiceLine.setSequence(sequence);
     }
-    
+
     if (appSupplychainService.getAppSupplychain().getActive()
         && appSaleService.getAppSale().getProductPackMgt()
         && invoiceLine.getProduct() != null
-        && invoiceLine.getProduct().getIsPack()
+        && invoiceLine.getProduct().getProductTypeSelect() == ProductRepository.PRODUCT_TYPE_PACK
         && invoiceLine.getProduct().getPackLines() != null) {
 
       List<InvoiceLine> subLineList = new ArrayList<>();
       Integer packPriceSelect = invoiceLine.getProduct().getPackPriceSelect();
       for (PackLine packLine : invoiceLine.getProduct().getPackLines()) {
-    	  
+
         InvoiceLine subLine = new InvoiceLine();
         subLine.setProduct(packLine.getProduct());
         subLine.setUnit(this.getUnit(packLine.getProduct(), isPurchase));
@@ -215,7 +216,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         subLine.setQty(new BigDecimal(packLine.getQuantity()));
         String description = null;
         if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
-        	description = invoiceLine.getProduct().getDescription();
+          description = invoiceLine.getProduct().getDescription();
         }
         Map<String, Object> accountInfo = super.fillPriceAndAccount(invoice, subLine, isPurchase);
         subLine.setAccount((Account) accountInfo.get("account"));
@@ -224,61 +225,60 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
           subLine.setInTaxPrice((BigDecimal) accountInfo.get("inTaxPrice"));
           subLine.setPriceDiscounted(computeDiscount(subLine, invoice.getInAti()));
         }
-        
+
         int discountTypeSelect = 0;
         if (accountInfo.get("discountTypeSelect") != null) {
-        	discountTypeSelect = (Integer) accountInfo.get("discountTypeSelect");
+          discountTypeSelect = (Integer) accountInfo.get("discountTypeSelect");
         }
-        
+
         BigDecimal qty = new BigDecimal(packLine.getQuantity());
-        
+
         if (invoiceLine.getQty() != null) {
-        	qty = qty.multiply(invoiceLine.getQty()).setScale(2,RoundingMode.HALF_EVEN);
+          qty = qty.multiply(invoiceLine.getQty()).setScale(2, RoundingMode.HALF_EVEN);
         }
-        
-        InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(
-        		invoice,
-        		subLine.getProduct(),
-        		subLine.getProductName(),
-        		subLine.getPrice(),
-        		subLine.getInTaxPrice(),
-        		subLine.getPriceDiscounted(),
-        		description,
-        		qty,
-        		subLine.getUnit(),
-        		(TaxLine) accountInfo.get("taxLine"),
-        		++sequence,
-        		(BigDecimal) accountInfo.get("discountAmount"),
-        		discountTypeSelect,
-        		null,
-        		null,
-        		false,
-        		true,
-        		packPriceSelect
-        		) {
-			
-			@Override
-			public List<InvoiceLine> creates() throws AxelorException {
-				
-				InvoiceLine invoiceLine = this.createInvoiceLine();
-				
-				List<InvoiceLine> lines = new ArrayList<>();
-				lines.add(invoiceLine);
-				
-				return lines;
-			}
-		};
+
+        InvoiceLineGenerator invoiceLineGenerator =
+            new InvoiceLineGenerator(
+                invoice,
+                subLine.getProduct(),
+                subLine.getProductName(),
+                subLine.getPrice(),
+                subLine.getInTaxPrice(),
+                subLine.getPriceDiscounted(),
+                description,
+                qty,
+                subLine.getUnit(),
+                (TaxLine) accountInfo.get("taxLine"),
+                ++sequence,
+                (BigDecimal) accountInfo.get("discountAmount"),
+                discountTypeSelect,
+                null,
+                null,
+                false,
+                true,
+                packPriceSelect) {
+
+              @Override
+              public List<InvoiceLine> creates() throws AxelorException {
+
+                InvoiceLine invoiceLine = this.createInvoiceLine();
+
+                List<InvoiceLine> lines = new ArrayList<>();
+                lines.add(invoiceLine);
+
+                return lines;
+              }
+            };
         subLineList.addAll(invoiceLineGenerator.creates());
       }
       productInformation.put("typeSelect", InvoiceLineRepository.TYPE_PACK);
       productInformation.put("packPriceSelect", packPriceSelect);
       productInformation.put("subLineList", subLineList);
-    }
-    else {
-    	productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
-        productInformation.put("packPriceSelect", InvoiceLineRepository.PACK_PRICE_ONLY);
-        productInformation.put("subLineList", null);
-        productInformation.put("totalPack", BigDecimal.ZERO);
+    } else {
+      productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
+      productInformation.put("packPriceSelect", InvoiceLineRepository.PACK_PRICE_ONLY);
+      productInformation.put("subLineList", null);
+      productInformation.put("totalPack", BigDecimal.ZERO);
     }
 
     return productInformation;

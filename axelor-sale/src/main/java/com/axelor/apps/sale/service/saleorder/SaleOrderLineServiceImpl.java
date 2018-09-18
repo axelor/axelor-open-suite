@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -75,7 +76,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     saleOrderLine.setPackPriceSelect(null);
 
     if (appSaleService.getAppSale().getProductPackMgt()
-        && saleOrderLine.getProduct().getIsPack()
+        && saleOrderLine.getProduct().getProductTypeSelect() == ProductRepository.PRODUCT_TYPE_PACK
         && !saleOrderLine.getIsSubLine()) {
       saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_PACK);
       saleOrderLine.setPackPriceSelect(packPriceSelect);
