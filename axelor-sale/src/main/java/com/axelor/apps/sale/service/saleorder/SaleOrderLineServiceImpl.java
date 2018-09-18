@@ -76,7 +76,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     saleOrderLine.setPackPriceSelect(null);
 
     if (appSaleService.getAppSale().getProductPackMgt()
-        && saleOrderLine.getProduct().getProductTypeSelect() == ProductRepository.PRODUCT_TYPE_PACK
+        && saleOrderLine
+            .getProduct()
+            .getProductTypeSelect()
+            .equals(ProductRepository.PRODUCT_TYPE_PACK)
         && !saleOrderLine.getIsSubLine()) {
       saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_PACK);
       saleOrderLine.setPackPriceSelect(packPriceSelect);

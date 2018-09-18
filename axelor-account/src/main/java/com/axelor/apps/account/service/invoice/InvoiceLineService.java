@@ -66,6 +66,8 @@ public interface InvoiceLineService {
 
   Map<String, Object> resetProductInformation();
 
+  boolean isAccountRequired(InvoiceLine invoiceLine);
+
   Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException;
 

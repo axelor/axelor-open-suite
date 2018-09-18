@@ -331,6 +331,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
 
     Map<String, Object> productInformation = new HashMap<>();
+    
+    boolean isAccountRequired = isAccountRequired(invoiceLine);
     Product product = invoiceLine.getProduct();
     TaxLine taxLine = null;
     try {
@@ -352,40 +354,54 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("taxCode", null);
       productInformation.put("taxEquiv", null);
     }
-
-    BigDecimal price = this.getExTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
-    BigDecimal inTaxPrice = this.getInTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
-
-    // getting correct account for the product
-    AccountManagement accountManagement =
-        accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
-    Account account =
-        accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
-    productInformation.put("account", account);
-
-    Map<String, Object> discounts;
-    if (product.getInAti()) {
-      discounts = this.getDiscount(invoice, invoiceLine, inTaxPrice);
-    } else {
-      discounts = this.getDiscount(invoice, invoiceLine, price);
-    }
-
-    if (discounts != null) {
-      productInformation.put("discountAmount", discounts.get("discountAmount"));
-      productInformation.put("discountTypeSelect", discounts.get("discountTypeSelect"));
-      if (discounts.get("price") != null) {
+    
+    if (isAccountRequired) {
+    	BigDecimal price = this.getExTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
+    	BigDecimal inTaxPrice = this.getInTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
+    	Map<String, Object> discounts;
         if (product.getInAti()) {
-          inTaxPrice = (BigDecimal) discounts.get("price");
-          price = this.convertUnitPrice(true, taxLine, inTaxPrice);
+          discounts = this.getDiscount(invoice, invoiceLine, inTaxPrice);
         } else {
-          price = (BigDecimal) discounts.get("price");
-          inTaxPrice = this.convertUnitPrice(false, taxLine, price);
+          discounts = this.getDiscount(invoice, invoiceLine, price);
         }
-      }
+
+        if (discounts != null) {
+          productInformation.put("discountAmount", discounts.get("discountAmount"));
+          productInformation.put("discountTypeSelect", discounts.get("discountTypeSelect"));
+          if (discounts.get("price") != null) {
+            if (product.getInAti()) {
+              inTaxPrice = (BigDecimal) discounts.get("price");
+              price = this.convertUnitPrice(true, taxLine, inTaxPrice);
+            } else {
+              price = (BigDecimal) discounts.get("price");
+              inTaxPrice = this.convertUnitPrice(false, taxLine, price);
+            }
+          }
+        }
+        productInformation.put("price", price);
+        productInformation.put("inTaxPrice", inTaxPrice);
     }
-    productInformation.put("price", price);
-    productInformation.put("inTaxPrice", inTaxPrice);
+    
+    try {
+	    // getting correct account for the product
+	    AccountManagement accountManagement =
+	        accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
+	    Account account =
+	        accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
+	    productInformation.put("account", account);
+    } catch (Exception e) {
+    	if (isAccountRequired) {
+    		throw e;
+    	}
+    }
+
+    
 
     return productInformation;
+  }
+
+  @Override
+  public boolean isAccountRequired(InvoiceLine invoiceLine) {
+    return true;
   }
 }

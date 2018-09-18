@@ -33,18 +33,12 @@
 		  onLoad="action-group-account-invoice-line-onload">
 		<panel name="panelTitle" hideIf="typeSelect != 1">
 			<field name="productName"  title="Title" requiredIf="typeSelect == 1"  colSpan="9"/>
-			<panel colSpan="3">
-				<field name="typeSelect" colSpan="12" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-		    	<field name="typeSelect" colSpan="12" onChange="action-invoice-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-			</panel>
+			<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]" />
 		</panel>
 		<panel-tabs hideIf="typeSelect == 1">
 			<panel name="informations" title="Information">
 				<field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid" domain="self.isModel = false"/>
-				<panel colSpan="3">
-					<field name="typeSelect" colSpan="12" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-			    	<field name="typeSelect" colSpan="12" onChange="action-invoice-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-				</panel>
+				<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]"  />
 				<field name="packPriceSelect" colSpan="3" showIf="typeSelect == 2" onChange="action-group-invoice-line-pack-price-select-onchange" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 				<field name="productName" colSpan="12" requiredIf="typeSelect != 1"/>
 				<field name="qty" colSpan="3" required="true" readonlyIf="isSubLine" onChange="action-group-account-invoice-line-qty-onchange"/>

@@ -112,7 +112,7 @@ public class ProductStockRepository extends ProductBaseRepository {
         if (stockLocation != null) {
           BigDecimal availableQty =
               stockLocationLineService.getAvailableQty(stockLocation, product);
-          
+
           json.put("$availableQty", availableQty);
         }
       }

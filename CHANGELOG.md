@@ -104,6 +104,7 @@
 - MRP: Fix concurrent modification exception.
 - Business Project : Fix Financial report.
 - Pack feature: Fix invoice subline generation and sequence. 
+- Pack feature: Fix type selection, pack type can be only selected based on product on Invoice and SaleOrder. Fixed invoice ventilation based on PackPriceSelect criteria. 
 
 ## [Unreleased 5.0.5]	
 ##Features

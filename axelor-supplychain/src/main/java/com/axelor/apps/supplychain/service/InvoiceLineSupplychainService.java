@@ -43,6 +43,7 @@ import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -188,13 +189,16 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-
-    Map<String, Object> productInformation = super.fillProductInformation(invoice, invoiceLine);
-
+	
+	Map<String, Object> productInformation = new HashMap<>();
+	  
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     Integer sequence = invoiceLine.getSequence();
-
-    if ((sequence == null || sequence == 0) && invoice.getInvoiceLineList() != null) {
+    if (sequence == null) {
+    	sequence = 0;
+    }
+    
+    if (sequence == 0 && invoice.getInvoiceLineList() != null) {
       sequence = invoice.getInvoiceLineList().size();
       invoiceLine.setSequence(sequence);
     }
@@ -202,11 +206,16 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
     if (appSupplychainService.getAppSupplychain().getActive()
         && appSaleService.getAppSale().getProductPackMgt()
         && invoiceLine.getProduct() != null
-        && invoiceLine.getProduct().getProductTypeSelect() == ProductRepository.PRODUCT_TYPE_PACK
+        && invoiceLine
+            .getProduct()
+            .getProductTypeSelect()
+            .equals(ProductRepository.PRODUCT_TYPE_PACK)
         && invoiceLine.getProduct().getPackLines() != null) {
 
       List<InvoiceLine> subLineList = new ArrayList<>();
       Integer packPriceSelect = invoiceLine.getProduct().getPackPriceSelect();
+      invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_PACK);
+      invoiceLine.setPackPriceSelect(packPriceSelect);
       for (PackLine packLine : invoiceLine.getProduct().getPackLines()) {
 
         InvoiceLine subLine = new InvoiceLine();
@@ -214,6 +223,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         subLine.setUnit(this.getUnit(packLine.getProduct(), isPurchase));
         subLine.setProductName(packLine.getProduct().getName());
         subLine.setQty(new BigDecimal(packLine.getQuantity()));
+        subLine.setIsSubLine(true);
+        subLine.setPackPriceSelect(packPriceSelect);
         String description = null;
         if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
           description = invoiceLine.getProduct().getDescription();
@@ -238,7 +249,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         }
 
         InvoiceLineGenerator invoiceLineGenerator =
-            new InvoiceLineGenerator(
+            new InvoiceLineGeneratorSupplyChain(
                 invoice,
                 subLine.getProduct(),
                 subLine.getProductName(),
@@ -255,6 +266,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
                 null,
                 null,
                 false,
+                null,
+                null,
+                null,
                 true,
                 packPriceSelect) {
 
@@ -279,8 +293,29 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       productInformation.put("packPriceSelect", InvoiceLineRepository.PACK_PRICE_ONLY);
       productInformation.put("subLineList", null);
       productInformation.put("totalPack", BigDecimal.ZERO);
+      invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
+    }
+    
+    productInformation.putAll(super.fillProductInformation(invoice, invoiceLine));
+    
+    return productInformation;
+  }
+
+  @Override
+  public boolean isAccountRequired(InvoiceLine invoiceLine) {
+
+    if (appSaleService.getAppSale().getProductPackMgt()) {
+
+      if (invoiceLine.getIsSubLine()
+          && invoiceLine.getPackPriceSelect() == InvoiceLineRepository.PACK_PRICE_ONLY) {
+        return false;
+      }
+      if (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_PACK
+          && invoiceLine.getPackPriceSelect() == InvoiceLineRepository.SUBLINE_PRICE_ONLY) {
+        return false;
+      }
     }
 
-    return productInformation;
+    return true;
   }
 }
