@@ -2213,13 +2213,19 @@ where (SO.status_select = 3 or SO.status_select = 4)
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
-select to_char(task.task_end_date,'YYYY-MM') as month, 0 as costs, sum(task.ex_tax_total) as turnover
+select to_char(task.task_end_date,'YYYY-MM') as month, 0 as costs, 
+case
+	when task.currency != project.currency then 
+		sum(task.ex_tax_total * (select exchange_rate from base_currency_conversion_line where start_currency = task.currency and end_currency = project.currency order by id desc LIMIT 1)) 
+	else
+		task.ex_tax_total
+end as turnover
 from team_task as task
 left join project_project as project on (project.id = task.project)
 left join project_project as parent_project on (parent_project.id = project.parent_project)
 where (task.to_invoice = true and task.invoiced = false )
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
-group by month
+group by month, task.currency, project.currency, task.ex_tax_total
 union
 select to_char(PO.order_date,'YYYY-MM') as month, 0 as costs, 
 case
@@ -3189,14 +3195,19 @@ group by emp.name,emp.hourly_rate]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select task.name as task_name, 
 	task.task_end_date as task_end_date, 
-	task.progress_select as task_progress, 
-	SUM(task.ex_tax_total) as task_amount
+	task.progress_select as task_progress,
+	case
+		when task.currency != project.currency then 
+			SUM(task.ex_tax_total * (select exchange_rate from base_currency_conversion_line where start_currency = task.currency and end_currency = project.currency order by id desc LIMIT 1)) 
+		else
+			task.ex_tax_total
+	end as task_amount
 from team_task as task
 left join project_project as project on (project.id = task.project)
 left join project_project as parent_project on (parent_project.id = project.parent_project)
 where (task.to_invoice = true and task.invoiced = false )
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
-group by task_name, task_end_date, task_progress
+group by task_name, task_end_date, task_progress, task.currency, project.currency, task.ex_tax_total
 order by task_end_date]]></xml-property>
         </oda-data-set>
     </data-sets>
