@@ -281,7 +281,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
   public void computeTotal() {
 
-    if (typeSelect == InvoiceLineRepository.TYPE_TITLE) {
+    if (typeSelect == InvoiceLineRepository.TYPE_TITLE || !isAccountRequired()) {
       return;
     }
 
@@ -301,7 +301,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
   public void computeCompanyTotal(InvoiceLine invoiceLine) throws AxelorException {
 
-    if (typeSelect == InvoiceLineRepository.TYPE_TITLE) {
+    if (typeSelect == InvoiceLineRepository.TYPE_TITLE || !isAccountRequired()) {
       return;
     }
 

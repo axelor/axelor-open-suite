@@ -167,18 +167,17 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       return;
     }
 
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+
     List<SaleOrderLine> lines = new ArrayList<SaleOrderLine>();
-    lines.addAll(saleOrder.getSaleOrderLineList());
+    lines.addAll(saleOrderLines);
     for (SaleOrderLine line : lines) {
       if (line.getSubLineList() == null || line.getSubLineList().isEmpty()) {
         continue;
       }
-      int subSequence = 1;
       for (SaleOrderLine subLine : line.getSubLineList()) {
         if (subLine.getSaleOrder() == null) {
-          subLine.setSequence(subSequence + line.getSequence());
-          saleOrder.getSaleOrderLineList().add(subLine);
-          subSequence++;
+          saleOrderLines.add(subLine);
         }
       }
     }

@@ -76,8 +76,6 @@ import org.slf4j.LoggerFactory;
 /** InvoiceService est une classe implémentant l'ensemble des services de facturation. */
 public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService {
 
-  @Inject protected PartnerService partnerService;
-
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected ValidateFactory validateFactory;
@@ -86,7 +84,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AlarmEngineService<Invoice> alarmEngineService;
   protected InvoiceRepository invoiceRepo;
   protected AppAccountService appAccountService;
-
+  protected PartnerService partnerService;
+  protected InvoiceLineService invoiceLineService;
+  
   @Inject
   public InvoiceServiceImpl(
       ValidateFactory validateFactory,
@@ -94,7 +94,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       CancelFactory cancelFactory,
       AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      PartnerService partnerService,
+      InvoiceLineService invoiceLineService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -102,6 +104,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.alarmEngineService = alarmEngineService;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
+    this.partnerService = partnerService;
+    this.invoiceLineService = invoiceLineService;
   }
 
   // WKF
@@ -226,7 +230,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect()
-              == InvoiceLineRepository.TYPE_NORMAL)) { // TODO Check for Pack ?
+              == InvoiceLineRepository.TYPE_NORMAL)
+          && invoiceLineService.isAccountRequired(invoiceLine)) { 
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,

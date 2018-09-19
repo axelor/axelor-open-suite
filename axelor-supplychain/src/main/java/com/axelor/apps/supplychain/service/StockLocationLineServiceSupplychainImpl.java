@@ -133,4 +133,14 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       }
     }
   }
+
+  @Override
+  public BigDecimal getAvailableQty(StockLocation stockLocation, Product product) {
+    StockLocationLine stockLocationLine = getStockLocationLine(stockLocation, product);
+    BigDecimal availableQty = BigDecimal.ZERO;
+    if (stockLocationLine != null) {
+      availableQty = stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
+    }
+    return availableQty;
+  }
 }

@@ -307,14 +307,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
 
-      if (isSubLine
-          && saleOrderLine.getParentLine() != null
-          && saleOrderLine.getParentLine().getPackPriceSelect()
-              == InvoiceLineRepository.PACK_PRICE_ONLY) {
+      if (isSubLine && packPriceSelect == InvoiceLineRepository.PACK_PRICE_ONLY) {
         return false;
       }
       if (typeSelect == InvoiceLineRepository.TYPE_PACK
-          && saleOrderLine.getPackPriceSelect() == InvoiceLineRepository.SUBLINE_PRICE_ONLY) {
+          && packPriceSelect == InvoiceLineRepository.SUBLINE_PRICE_ONLY) {
         return false;
       }
     }
