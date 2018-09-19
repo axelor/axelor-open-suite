@@ -94,7 +94,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
     BigDecimal unitPriceTaxed = BigDecimal.ZERO;
     TaxLine taxLine = null;
     BigDecimal discountAmount = BigDecimal.ZERO;
-    if (stockMove == null || (stockMove.getOriginId() == null)) {
+    if (stockMove == null || stockMove.getOriginId() == null || stockMove.getOriginId() == 0L) {
       return super.compute(stockMoveLine, stockMove);
     } else {
       if (stockMoveLine.getProduct() != null
