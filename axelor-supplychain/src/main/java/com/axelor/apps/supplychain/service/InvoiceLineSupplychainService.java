@@ -276,7 +276,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
               public List<InvoiceLine> creates() throws AxelorException {
 
                 InvoiceLine invoiceLine = this.createInvoiceLine();
-                invoiceLine.setInvoice(null); //Enable line to be added on main o2m
+                invoiceLine.setInvoice(null); // Enable line to be added on main o2m
                 List<InvoiceLine> lines = new ArrayList<>();
                 lines.add(invoiceLine);
 
