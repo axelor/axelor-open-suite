@@ -310,6 +310,7 @@ public class InvoicingProjectService {
             project.getName(),
             project.getPrice(),
             project.getPrice(),
+            project.getPrice(),
             null,
             project.getQty(),
             project.getUnit(),

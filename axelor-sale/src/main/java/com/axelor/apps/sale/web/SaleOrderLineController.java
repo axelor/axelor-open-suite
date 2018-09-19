@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -61,7 +62,11 @@ public class SaleOrderLineController {
       response.setAttr(
           "priceDiscounted",
           "hidden",
-          map.getOrDefault("priceDiscounted", BigDecimal.ZERO).compareTo(saleOrderLine.getPrice())
+          map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
+                  .compareTo(
+                      saleOrder.getInAti()
+                          ? saleOrderLine.getInTaxPrice()
+                          : saleOrderLine.getPrice())
               == 0);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -120,6 +125,7 @@ public class SaleOrderLineController {
         response.setValue("discountTypeSelect", saleOrderLine.getDiscountTypeSelect());
       }
       response.setValue("price", saleOrderLine.getPrice());
+      response.setValue("inTaxPrice", saleOrderLine.getInTaxPrice());
 
       if (saleOrderLine.getTaxLine() == null) {
         String msg;
@@ -153,6 +159,7 @@ public class SaleOrderLineController {
     response.setValue("discountAmount", null);
     response.setValue("discountTypeSelect", null);
     response.setValue("price", null);
+    response.setValue("inTaxPrice", null);
     response.setValue("exTaxTotal", null);
     response.setValue("inTaxTotal", null);
     response.setValue("companyInTaxTotal", null);
@@ -191,10 +198,16 @@ public class SaleOrderLineController {
     }
 
     try {
-      BigDecimal price = saleOrderLine.getPrice();
 
-      Map<String, Object> discounts =
-          saleOrderLineService.getDiscount(saleOrder, saleOrderLine, price);
+      Map<String, Object> discounts;
+      if (saleOrderLine.getProduct().getInAti()) {
+        discounts =
+            saleOrderLineService.getDiscount(
+                saleOrder, saleOrderLine, saleOrderLine.getInTaxPrice());
+      } else {
+        discounts =
+            saleOrderLineService.getDiscount(saleOrder, saleOrderLine, saleOrderLine.getPrice());
+      }
 
       if (discounts == null) {
         return;
@@ -203,9 +216,64 @@ public class SaleOrderLineController {
       response.setValue("discountAmount", discounts.get("discountAmount"));
       response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
       if (discounts.get("price") != null) {
-        response.setValue("price", discounts.get("price"));
+        if (saleOrderLine.getProduct().getInAti()) {
+          response.setValue("inTaxPrice", discounts.get("price"));
+          response.setValue(
+              "price",
+              saleOrderLineService.convertUnitPrice(
+                  true, saleOrderLine.getTaxLine(), (BigDecimal) discounts.get("price")));
+        } else {
+          response.setValue("price", discounts.get("price"));
+          response.setValue(
+              "inTaxPrice",
+              saleOrderLineService.convertUnitPrice(
+                  false, saleOrderLine.getTaxLine(), (BigDecimal) discounts.get("price")));
+        }
       }
 
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
+
+  /**
+   * Update the ex. tax unit price of an invoice line from its in. tax unit price.
+   *
+   * @param request
+   * @param response
+   */
+  public void updatePrice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+
+    try {
+      BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
+      TaxLine taxLine = saleOrderLine.getTaxLine();
+
+      response.setValue("price", saleOrderLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
+
+  /**
+   * Update the in. tax unit price of an invoice line from its ex. tax unit price.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateInTaxPrice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+
+    try {
+      BigDecimal exTaxPrice = saleOrderLine.getPrice();
+      TaxLine taxLine = saleOrderLine.getTaxLine();
+
+      response.setValue(
+          "inTaxPrice", saleOrderLineService.convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -221,28 +289,17 @@ public class SaleOrderLineController {
 
     if (saleOrder == null
         || saleOrderLine.getProduct() == null
-        || !saleOrderLineService.unitPriceShouldBeUpdate(saleOrder, saleOrderLine.getProduct())) {
+        || saleOrderLine.getPrice() == null
+        || saleOrderLine.getInTaxPrice() == null) {
       return;
     }
 
     try {
 
-      BigDecimal price =
-          saleOrderLineService.getUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
+      BigDecimal price = saleOrderLine.getPrice();
+      BigDecimal inTaxPrice = price.add(price.multiply(saleOrderLine.getTaxLine().getValue()));
 
-      Map<String, Object> discounts =
-          saleOrderLineService.getDiscount(saleOrder, saleOrderLine, price);
-
-      if (discounts != null) {
-
-        response.setValue("discountAmount", discounts.get("discountAmount"));
-        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-        if (discounts.get("price") != null) {
-          price = (BigDecimal) discounts.get("price");
-        }
-      }
-
-      response.setValue("price", price);
+      response.setValue("inTaxPrice", inTaxPrice);
 
     } catch (Exception e) {
       response.setFlash(e.getMessage());

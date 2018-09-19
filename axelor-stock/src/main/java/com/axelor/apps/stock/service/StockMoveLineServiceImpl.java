@@ -56,10 +56,9 @@ import java.util.stream.Collectors;
 @RequestScoped
 public class StockMoveLineServiceImpl implements StockMoveLineService {
 
-  private TrackingNumberService trackingNumberService;
-
   protected AppBaseService appBaseService;
   protected StockMoveService stockMoveService;
+  private TrackingNumberService trackingNumberService;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -282,9 +281,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
-      stockMoveLine.setNetWeight(this.computeNetWeight(stockMoveLine, stockMove.getCompany()));
+      stockMoveLine.setNetWeight(
+          this.computeNetWeight(stockMove, stockMoveLine, stockMove.getCompany()));
     } else {
-      stockMoveLine.setNetWeight(this.computeNetWeight(stockMoveLine, null));
+      stockMoveLine.setNetWeight(this.computeNetWeight(stockMove, stockMoveLine, null));
     }
 
     stockMoveLine.setTotalNetWeight(
@@ -778,7 +778,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public void setProductInfo(StockMoveLine stockMoveLine, Company company) throws AxelorException {
+  public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
+      throws AxelorException {
     Preconditions.checkNotNull(stockMoveLine);
     Preconditions.checkNotNull(company);
     Product product = stockMoveLine.getProduct();
@@ -794,25 +795,24 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setProductModel(product.getParentProduct());
     }
 
-    BigDecimal netWeight = this.computeNetWeight(stockMoveLine, company);
+    BigDecimal netWeight = this.computeNetWeight(stockMove, stockMoveLine, company);
     stockMoveLine.setNetWeight(netWeight);
   }
 
-  public BigDecimal computeNetWeight(StockMoveLine stockMoveLine, Company company)
-      throws AxelorException {
+  public BigDecimal computeNetWeight(
+      StockMove stockMove, StockMoveLine stockMoveLine, Company company) throws AxelorException {
 
-    BigDecimal netWeight = null;
+    BigDecimal netWeight;
     Product product = stockMoveLine.getProduct();
-    Unit startUnit = null;
-    Unit endUnit = null;
+    Unit startUnit;
+    Unit endUnit;
 
     if (!product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-      return netWeight;
+      return null;
     }
 
     startUnit = product.getWeightUnit();
     if (startUnit == null) {
-      StockMove stockMove = stockMoveLine.getStockMove();
 
       if (stockMove != null && !stockMoveService.checkWeightsRequired(stockMove)) {
         return product.getNetWeight();

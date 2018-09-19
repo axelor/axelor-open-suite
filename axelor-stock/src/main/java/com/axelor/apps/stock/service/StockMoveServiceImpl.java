@@ -689,7 +689,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
     Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
 
-    return fromCountry != null && toCountry != null && !fromCountry.equals(toCountry);
+    return (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
+        && fromCountry != null
+        && toCountry != null
+        && !fromCountry.equals(toCountry);
   }
 
   @Override

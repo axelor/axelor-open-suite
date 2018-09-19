@@ -211,9 +211,11 @@ public interface StockMoveLineService {
   /**
    * Set product information.
    *
+   * @param stockMove
    * @param stockMoveLine
    * @param company
    * @throws AxelorException
    */
-  public void setProductInfo(StockMoveLine stockMoveLine, Company company) throws AxelorException;
+  public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
+      throws AxelorException;
 }
