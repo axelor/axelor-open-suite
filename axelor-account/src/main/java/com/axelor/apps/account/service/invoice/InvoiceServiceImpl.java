@@ -86,7 +86,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AppAccountService appAccountService;
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
-  
+
   @Inject
   public InvoiceServiceImpl(
       ValidateFactory validateFactory,
@@ -229,9 +229,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public void ventilate(Invoice invoice) throws AxelorException {
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       if (invoiceLine.getAccount() == null
-          && (invoiceLine.getTypeSelect()
-              == InvoiceLineRepository.TYPE_NORMAL)
-          && invoiceLineService.isAccountRequired(invoiceLine)) { 
+          && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
+          && invoiceLineService.isAccountRequired(invoiceLine)) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
