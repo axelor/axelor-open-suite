@@ -8,6 +8,7 @@
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
+- Currency conversion: allow to fetch today's rate on newly created conversion lines.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.

@@ -17,7 +17,7 @@
         <panel name="main">
 		  <field name="startCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
 		  <field name="endCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
-		  <button name="getRate" title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null || id == null"   onClick="action-group-base-currencyconversionline-getrate-click"/>
+		  <button name="getRate" title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null"   onClick="action-group-base-currencyconversionline-getrate-click"/>
 		</panel> 
 		<panel name="applicableDates" title="Applicable dates" readonlyIf="startCurrency == null || endCurrency == null">
 		    <field name="fromDate" onChange="action-currency-conversion-line-method-check-date"/>
