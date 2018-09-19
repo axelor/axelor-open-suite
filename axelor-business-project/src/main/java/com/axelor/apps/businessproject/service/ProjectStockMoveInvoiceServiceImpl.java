@@ -20,9 +20,9 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -30,7 +30,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceImpl {
 
@@ -50,21 +50,22 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
+  public List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine)
       throws AxelorException {
 
-    Invoice invoice = super.createInvoiceFromSaleOrder(stockMove, saleOrder);
-
-    // invoice.setProject(saleOrder.getProject());
-
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, stockMoveLine);
+    for (InvoiceLine invoiceLine : invoiceLines) {
       SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
       if (saleOrderLine != null) {
         invoiceLine.setProject(saleOrderLine.getProject());
       }
+
+      PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
+      if (purchaseOrderLine != null) {
+        invoiceLine.setProject(purchaseOrderLine.getProject());
+      }
     }
 
-    return invoice;
+    return invoiceLines;
   }
 }

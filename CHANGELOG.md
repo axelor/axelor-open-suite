@@ -85,6 +85,7 @@
 - Project: Reorganization of Resource Booking form view.
 - Tweaks on manuf order report.
 
+
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
 - Timeshee editor: Allows to delete a line when use unique product for the timesheet. 
@@ -105,6 +106,7 @@
 - Business Project : Fix Financial report.
 - Pack feature: Fix invoice subline generation and sequence. 
 - Pack feature: Fix type selection, pack type can be only selected based on product on Invoice and SaleOrder. Fixed invoice ventilation based on PackPriceSelect criteria. 
+- Project : Link project from purchase line while invoicing from stock move
 
 ## [Unreleased 5.0.5]	
 ##Features
