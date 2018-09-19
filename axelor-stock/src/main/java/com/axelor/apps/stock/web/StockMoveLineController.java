@@ -63,7 +63,7 @@ public class StockMoveLineController {
         stockMove = request.getContext().getParent().asType(StockMove.class);
       }
 
-      stockMoveLineService.setProductInfo(stockMoveLine, stockMove.getCompany());
+      stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
       response.setValues(stockMoveLine);
     } catch (Exception e) {
       stockMoveLine = new StockMoveLine();

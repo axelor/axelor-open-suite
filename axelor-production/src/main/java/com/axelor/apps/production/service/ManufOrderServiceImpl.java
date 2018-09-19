@@ -320,9 +320,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  public String getManufOrderSeq() throws AxelorException {
+  public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException {
 
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.MANUF_ORDER);
+    String seq =
+        sequenceService.getSequenceNumber(SequenceRepository.MANUF_ORDER, manufOrder.getCompany());
 
     if (seq == null) {
       throw new AxelorException(

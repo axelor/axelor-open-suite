@@ -15,7 +15,8 @@
         <string name="productName"  title="Product Name"/>
         <string name="productCode" title="Product Code"/>
 
-        <decimal name="price" title="Unit price" precision="20" scale="10"/>
+        <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
+        <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
         <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
         <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
         <decimal name="qty" title="Qty" precision="20" scale="2"/>

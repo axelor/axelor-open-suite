@@ -395,7 +395,9 @@
 
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
+    	<attribute name="hidden" for="purchaseOrderLineList.price" expr="inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="purchaseOrderLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
     									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
     </action-attrs>
