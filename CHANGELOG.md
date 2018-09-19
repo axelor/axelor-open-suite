@@ -31,6 +31,7 @@
 - Fix mass invoicing of stock moves sometimes opening up unrelated forms when trying to open a single stock move for more details.
 - Improve exception handling in supplychain demo.
 - Account: use partner name as default account name when creating from partner's account configuration screen
+- Added labels to several buttons, especially in the opportunity views.
 
 ## Bug Fixes
 - Fix on prod process report.
