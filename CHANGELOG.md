@@ -1,4 +1,87 @@
 # Changelog
+## [5.0.5] - 2018-09-19
+##Features
+- Add Data Backup and Restore
+- Add unitary tests for password
+- Module for mobile app added
+- Vehicle Fuel Log : add columns vehicle name, plate no, purchasePartner in grid view
+- Manufacturing orders can now be "permanent", quantity is set to 0. Regular orders cannot have quantity to 0 anymore.
+
+## Improvements
+- Fleet app: added FR demo data
+- HR menu: added `order` for top menuitems
+- Marketing app: added FR demo data
+- Reworked ati sale orders/purchase orders/invoices.
+- Advanced export : code refactor and optimize the performance.
+- BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
+- Configure BoM form: show sub bom list.
+- Configurator: improve UI for indicators.
+- Split formula list into formulas for product and formulas for sale order line in configurator creator.
+- Add a column name to configurators, equal to the creator's name.
+- General legder report: hide the balance when it is equal to 0.
+- UserController: Improve exception handling.
+- Update translations.
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Improve account management views.
+- Add supplier invoice number in supplier invoices grid.
+- Add column description in move line grid views.
+- Make the boolean IsValid set to false when a line is changed in MoveTemplate.
+- Can now select an ahead date in the Move From Template view wizard.
+- Add a "Generate the pdf printing during sale order finalization" to configuration of Sale app.
+- Allow manual creation of tracking number on stock move lines.
+- Direct debit batch: filter out payment schedule lines with inactive partner bank details.
+- Solved an issue linked to having a manufacturing order with a planned quantity of 0.
+- Fix mass invoicing of stock moves sometimes opening up unrelated forms when trying to open a single stock move for more details.
+- Improve exception handling in supplychain demo.
+- Account: use partner name as default account name when creating from partner's account configuration screen
+- Added labels to several buttons, especially in the opportunity views.
+
+## Bug Fixes
+- Fix on prod process report.
+- Fix json field creator's issue of model change not reflected on fields. 
+- Configurator export: add contextField to metaJsonField.
+- Configurator creator: fill default attributes for both product and sale order line.
+- Computation of value of a given stock location is now the same in the form and in the printing.
+- BPM: Provide translations for some fields.
+- Fix chart builder operator display issue.
+- Portal: Fix ticket view on client portal.
+- Fix wrong quantity on manuf order when generating prod product lines where bill of material quantity is different from 1.
+- Fix new bug when checking type on configurator.
+- BPM: Provide translation for Workflow dashboard.
+- Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
+- Budget form: add missing tranlation.
+- Invoice: reload the view after regenerating the printing.
+- DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
+- BPM: keep model read only if custom field is created from custom field creator.
+- Fix % based discounts which didn't worked with decimal values on Sale, Purchase and Invoice.
+- Fix the companyBankDetails field filling when SaleOrder is created from the Customer view.
+- Fix groovy error due to a null list in action-budget-validate-exceed-line-amount.
+- Event synchronization: fix some new events being archived.
+- Password : Fix regex.
+- Fix : error when computing the duration of a leave request without a company.
+- Invoice : filter account depending on Invoice Company and Type & Account Type
+- Fix stock move split by unit. 
+- Tracking number configuration: Fix 'Tracking number order' selection and it's static variables.
+- Tracking number configuration: display 'name' field on grid.
+- Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
+- Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
+- Removed editable from some reference fields in stock form views. 
+- Now displays purchase orders in the Activity panel of a partner form for suppliers and carriers.
+- Vehicle : rename driverContact to driverPartner & filter it.
+- Vehicle : Card View - display vehicle company and driver  
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine. 
+- Fix translation typo.
+- Add xml escape in configurator export.
+- StockRule : Sort Grid View according to Stock location, Product code, useCaseSelect ASC 
+- Warning message on missing weight unit is now shown only on delivery stock move.
+- Fixed unit conversion issues when calculating the cost price of a bill of material.
+- Add missing translations.
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine.
+- Fixed wrong calculation of necessary scale for decimal result when inverting a unit convertion coefficient.
+- Stock move lines can no longer be created from nothing (i.e not from a stock move or such) as it has no functionnal use and ensues anomalies.
+- Data model fix: add missing mappedBy in operation order `inStockMoveLineList`.
+- Manuf Order: fetch sequence using company.
+
 ## [5.0.4] - 2018-07-26
 ## Features
 - User : Add a search filter to see the active users.
@@ -66,7 +149,6 @@
 - Fix total amount reseting on save in bank orders.
 - Configurator: fix using M2O in formula.
 - Tracking number search: Fix stock location binding.
-
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
@@ -171,7 +253,7 @@ Also, improve the sale order line grid and form views.
 - Fix line removal in confirmed sale order.
 - Product: fix printing catalog of selected products.
 - Product: fix missing pictures in catalog when not all products have pictures.
-
+- Fix MRP : stock location filter. Only internal and external stock location should be able to use on MRP
 
 ## [5.0.0] - 2018-06-13
 ## Features
@@ -780,6 +862,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[5.0.4]: https://github.com/axelor/abs-webapp/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/abs-webapp/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/abs-webapp/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/axelor/abs-webapp/compare/v5.0.1...v5.0.2
