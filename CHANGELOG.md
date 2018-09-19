@@ -75,6 +75,7 @@
 - Fixed wrong calculation of necessary scale for decimal result when inverting a unit convertion coefficient.
 - Stock move lines can no longer be created from nothing (i.e not from a stock move or such) as it has no functionnal use and ensues anomalies.
 - Data model fix: add missing mappedBy in operation order `inStockMoveLineList`.
+- Manuf Order: fetch sequence using company.
 
 ## [5.0.4] - 2018-07-26
 ## Features

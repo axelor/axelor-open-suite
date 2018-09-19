@@ -99,7 +99,7 @@ public class ManufOrderWorkflowService {
 
     if (Beans.get(SequenceService.class)
         .isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
-      manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq());
+      manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
     }
 
     return manufOrderRepo.save(manufOrder);
