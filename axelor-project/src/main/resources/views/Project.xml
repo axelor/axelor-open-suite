@@ -321,7 +321,7 @@
 		<panel>
 			<field name="attrs" colSpan="12" hidden="true" />
 		</panel>
-		<panel hideIf="statusSelect == 4" colSpan="2" sidebar="true">
+		<panel  colSpan="2" sidebar="true">
 			<button name="start" title="Start" hidden="true" showIf="statusSelect == 1"
 				colSpan="12" icon="fa-play" onClick="action-project-record-status-in-progress,save" />
 			<button name="finish" title="Finish" hidden="true" showIf="statusSelect == 2"
@@ -329,6 +329,9 @@
 			<button name="cancel" title="Cancel" hidden="true"
 				showIf="statusSelect == 2 || statusSelect == 3" colSpan="12" css="btn-danger"
 				icon="fa-times-circle" onClick="action-project-record-status-canceled,save" />
+			<button name="newStatus" title="Reset to New" hidden="true"
+				showIf="statusSelect == 4" colSpan="12" css="btn-danger"
+				icon="fa-file" onClick="action-project-record-status-new,save" />
 		</panel>
 		<panel name="caracteristics" title="Caracteristics" colSpan="12"
 			sidebar="true" canCollapse="true">
@@ -734,6 +737,10 @@
 
 	<action-record name="action-project-record-status-canceled" model="com.axelor.apps.project.db.Project">
 		<field name="statusSelect" expr="eval: __repo__(Project).STATE_CANCELED"/>
+	</action-record>
+	
+	<action-record name="action-project-record-status-new" model="com.axelor.apps.project.db.Project">
+		<field name="statusSelect" expr="eval: __repo__(Project).STATE_NEW"/>
 	</action-record>
 	
 	 <action-validate name="action-wizard-validate-user-select">

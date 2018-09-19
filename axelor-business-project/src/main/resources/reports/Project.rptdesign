@@ -21106,7 +21106,6 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
                 <cell id="5574"/>
             </row>
             <row id="5575">
-                <property name="height">0.5104166666666666in</property>
                 <cell id="5576">
                     <text id="5587">
                         <property name="fontWeight">bold</property>

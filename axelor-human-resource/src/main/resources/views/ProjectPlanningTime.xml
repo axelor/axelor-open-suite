@@ -70,6 +70,7 @@
 	<action-view name="action-project-dashlet-project-planning-time" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-time-grid"/>
 		<view type="form" name="project-planning-time-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.project.id in (:_projectIds)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>

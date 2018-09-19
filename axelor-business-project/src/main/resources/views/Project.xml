@@ -52,6 +52,8 @@
 	<action-view name="action-dashlet-project-show-all-invoicing-task" title="Task Invoicing" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="business-project-team-task-grid"/>
 		<view type="form" name="team-task-form"/>
+		<view-param name="show-toolbar" value="true" />
+		<view-param name="popup" value="reload"/>
 		<domain>self.project.id in (:_projectIds)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -63,6 +65,7 @@
 	<action-view name="action-project-dashlet-sale-quotation" title="Quotation" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sale-order-quotation-grid"/>
 		<view type="form" name="sale-order-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.saleOrderLineList.project.id in (:_projectIds) AND self.statusSelect &lt; 3</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -72,6 +75,7 @@
 	<action-view name="action-project-dashlet-sale-order" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sale-order-grid"/>
 		<view type="form" name="sale-order-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.saleOrderLineList.project.id in (:_projectIds) AND self.statusSelect in (3,4)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -90,6 +94,7 @@
     <action-view name="action-project-view-show-confirmed-sale-order-lines" title="Sale Order Lines" model="com.axelor.apps.sale.db.SaleOrderLine">
         <view type="grid" name="sale-order-line-project-grid"/>
         <view type="form" name="sale-order-line-project-form"/>
+        <view-param name="popup" value="true"/>
         <domain>self.saleOrder.statusSelect in (3,4) AND self.project.id in (:_projectIds)</domain>
     	<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -99,6 +104,7 @@
 	<action-view name="action-project-dashlet-customer-deliveries" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-out-grid"/>
 		<view type="form" name="stock-move-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.stockMoveLineList.saleOrderLine.project.id in (:_projectIds)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -142,6 +148,7 @@
 	<action-view name="action-project-project-purchase-quotation" title="PO.Quotation" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="purchase-order-quotation-grid"/>
 		<view type="form" name="purchase-order-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.purchaseOrderLineList.project.id in (:_projectIds) AND self.statusSelect &lt; 3</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -151,6 +158,7 @@
 	<action-view name="action-project-dashlet-purchase-order" title="Purchase order" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="purchase-order-grid"/>
 		<view type="form" name="purchase-order-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.purchaseOrderLineList.project.id in (:_projectIds) AND self.statusSelect in (3,4)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -160,6 +168,7 @@
 	<action-view name="action-project-dashlet-supplier-arrivals" title="Supplier arrivals" model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-in-grid"/>
 		<view type="form" name="stock-move-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.stockMoveLineList.purchaseOrderLine.project.id in (:_projectIds)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -178,6 +187,7 @@
     <action-view name="action-project-view-show-confirmed-purchase-order-lines" title="Purchase Order Lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
         <view type="grid" name="purchase-order-line-project-grid"/>
         <view type="form" name="purchase-order-line-project-form"/>
+        <view-param name="popup" value="true"/>
         <domain>self.purchaseOrder.statusSelect in (3,4)  AND self.project.id in (:_projectIds)</domain>
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -222,6 +232,7 @@
 	<action-view name="action-project-dashlet-expense-waiting" title="Waiting expenses" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>(self.kilometricExpenseLineList.project.id in (:_projectIds) or self.generalExpenseLineList.project.id in (:_projectIds)) AND self.statusSelect &lt; 3</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -231,6 +242,7 @@
 	<action-view name="action-project-dashlet-expense-validated" title="Validated expenses" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>(self.kilometricExpenseLineList.project.id in (:_projectIds) or self.generalExpenseLineList.project.id in (:_projectIds)) AND self.statusSelect in (3,4)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -249,6 +261,7 @@
 	<action-view name="action-project-view-show-validated-expense-lines" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine">
         <view type="grid" name="expense-line-project-grid"/>
         <view type="form" name="expense-line-project-form"/>
+        <view-param name="popup" value="true"/>
         <domain>self.expense.statusSelect in (3,4) AND self.project.id in (:_projectIds)</domain>
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -292,6 +305,7 @@
     <action-view name="action-dashlet-project-show-all-invoicing-project" title="Invoicing projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
 		<view type="grid" name="invoicing-project-grid"/>
 		<view type="form" name="invoicing-project-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.project.id in (:_projectIds)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -301,6 +315,7 @@
 	<action-view name="action-project-dashlet-customer-invoices" title="Customer invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.invoiceLineList.project.id in (:_projectIds) AND self.operationTypeSelect = 3 AND self.operationSubTypeSelect != 2</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -310,6 +325,7 @@
 	<action-view name="action-project-view-show-sale-invoice-lines" title="Customer invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
         <view type="grid" name="invoice-line-project-grid"/>
         <view type="form" name="invoice-line-form"/>
+        <view-param name="popup" value="true"/>
         <domain>self.invoice.operationTypeSelect = 3 AND self.project.id in (:_projectIds) AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2</domain>
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -319,6 +335,7 @@
 	<action-view name="action-project-dashlet-supplier-invoices" title="Supplier invoices"  model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-supplier-grid"/>
 		<view type="form" name="invoice-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.invoiceLineList.project.id in (:_projectIds) AND self.operationTypeSelect = 1 AND self.operationSubTypeSelect != 2</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -328,6 +345,7 @@
 	<action-view name="action-project-view-show-purchase-invoice-lines" title="Supplier invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
         <view type="grid" name="invoice-line-project-grid"/>
         <view type="form" name="invoice-line-form"/>
+        <view-param name="popup" value="true"/>
         <domain>self.invoice.operationTypeSelect = 1 AND self.project.id in (:_projectIds) AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2</domain>
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -337,6 +355,7 @@
 	<action-view name="action-project-dashlet-advance-payment-invoices" title="Advance payment invoices"  model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.invoiceLineList.project.id in (:_projectIds) AND self.operationSubTypeSelect = 2</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
