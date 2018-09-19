@@ -4,9 +4,6 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="product-expense-grid" title="Expense types" model="com.axelor.apps.base.db.Product" orderBy="name">
-   		<toolbar>
-        	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
-	    </toolbar>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -17,7 +14,7 @@
 	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
-   <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" >
+   <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" onLoad="action-product-attrs-scale-and-precision">
     <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -53,7 +50,7 @@
 					<field name="description" showTitle="false" colSpan="12" widget="html"/>
 				</panel>
 			</panel>
-	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
+	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-form" grid-view="account-management-product-grid"/>
 	        <panel name="trackingNumber" title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-stock" if="__config__.app.isApp('stock')">
         		<panel colSpan="12">
         			<field name="hasWarranty" />
@@ -140,7 +137,7 @@
 					<field name="managPriceCoef" onChange="action-product-record-compute-sale-price" colSpan="12"/>
 				</panel>        
 			</panel>
-	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
+	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-form" grid-view="account-management-product-grid"/>
 	  	</panel-tabs>
 	</form>    
     
@@ -148,6 +145,7 @@
     	<action name="action-product-record-default-new-expense"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
+    	<action name="action-product-attrs-scale-and-precision"/>
     </action-group>
     
     <action-record name="action-product-activity-record-default-activity" model="com.axelor.apps.base.db.Product">

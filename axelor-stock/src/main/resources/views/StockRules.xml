@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules">
+    <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,product.code,useCaseSelect">
         <toolbar>
         <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
         </toolbar>
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="product.code" form-view="product-form" grid-view="product-grid"/>
-        <field name="product.name" form-view="product-form" grid-view="product-grid"/>
+        <field name="product.code" title="Product code" form-view="product-form" grid-view="product-grid"/>
+        <field name="product.name" title="Product name" form-view="product-form" grid-view="product-grid"/>
         <field name="minQty" aggregate="min"/>
         <field name="idealQty" aggregate="min"/>
         <field name="maxQty" aggregate="min"/>

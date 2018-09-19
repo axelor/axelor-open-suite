@@ -44,123 +44,39 @@ public class DuplicateObjectsService {
   @Inject private MetaFieldRepository metaFieldRepo;
 
   @Transactional
-  public void removeDuplicate(List<Long> selectedIds, String modelName) {
+  public void removeDuplicate(Long originalId, List<Long> duplicateIds, Class<?> modelName) {
+    List<Object> duplicateObjects = this.getDuplicateObjects(duplicateIds, modelName);
+    Object originalObject = JPA.em().find(modelName, originalId);
 
-    List<Object> duplicateObjects = getDuplicateObject(selectedIds, modelName);
-    Object originalObjct = getOriginalObject(selectedIds, modelName);
-    List<MetaField> allField =
-        metaFieldRepo
-            .all()
-            .filter(
-                "(relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))",
-                modelName)
-            .fetch();
-    for (MetaField metaField : allField) {
+    Mapper mapper = Mapper.of(originalObject.getClass());
+
+    for (MetaField metaField : this.getAllRelationalFields(modelName)) {
       if ("ManyToOne".equals(metaField.getRelationship())) {
-        Query update =
-            JPA.em()
-                .createQuery(
-                    "UPDATE "
-                        + metaField.getMetaModel().getFullName()
-                        + " self SET self."
-                        + metaField.getName()
-                        + " = :value WHERE self."
-                        + metaField.getName()
-                        + " in (:duplicates)");
-        update.setParameter("value", originalObjct);
-        update.setParameter("duplicates", duplicateObjects);
-        update.executeUpdate();
-      } else if ("ManyToMany".equals(metaField.getRelationship())) {
 
-        if (metaField.getTypeName().equals(modelName)) {
-          Query select =
-              JPA.em()
-                  .createQuery(
-                      "select self from "
-                          + metaField.getMetaModel().getFullName()
-                          + " self LEFT JOIN self."
-                          + metaField.getName()
-                          + " as x WHERE x IN (:ids)");
-          select.setParameter("ids", duplicateObjects);
-          List<?> list = select.getResultList();
-          for (Object obj : list) {
-            Set<Object> items =
-                (Set<Object>) Mapper.of(obj.getClass()).get(obj, metaField.getName());
-            for (Object dupObj : duplicateObjects) {
-              if (items.contains(dupObj)) {
-                items.remove(dupObj);
-              }
-            }
-            items.add(originalObjct);
-          }
-        }
-        Mapper mapper = Mapper.of(originalObjct.getClass());
-        Set<Object> existRelationalObjects =
-            (Set<Object>) mapper.get(originalObjct, metaField.getName());
+        this.updateManyToOneField(metaField, originalObject, duplicateObjects);
 
-        for (int i = 0; i < duplicateObjects.size(); i++) {
-          Set<Object> newRelationalObjects =
-              (Set<Object>) mapper.get(duplicateObjects.get(i), metaField.getName());
-          if (newRelationalObjects != null) {
-            existRelationalObjects.addAll(newRelationalObjects);
-            mapper.set(duplicateObjects.get(i), metaField.getName(), new HashSet<>());
-          }
-        }
+      } else {
+
+        this.updateManyToManyField(metaField, originalObject, duplicateObjects, mapper);
       }
     }
+
     JPA.em().flush();
     JPA.em().clear();
-    for (Object obj : getDuplicateObject(selectedIds, modelName)) {
+
+    for (Object obj : this.getDuplicateObjects(duplicateIds, modelName)) {
       JPA.em().remove(obj);
     }
   }
 
   @Transactional
-  public Object getOriginalObject(List<Long> selectedIds, String modelName) {
-    Query originalObj =
-        JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id = :ids");
-    originalObj.setParameter("ids", selectedIds.get(0));
-    Object originalObjct = originalObj.getSingleResult();
-    return originalObjct;
-  }
-
-  @Transactional
-  public List<Object> getDuplicateObject(List<Long> selectedIds, String modelName) {
-    Query duplicateObj =
-        JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
-    duplicateObj.setParameter("ids", selectedIds.subList(1, selectedIds.size()));
-    List<Object> duplicateObjects = duplicateObj.getResultList();
-    return duplicateObjects;
-  }
-
-  @Transactional
-  public List<Object> getAllSelectedObject(List<Long> selectedIds, String modelName) {
-    Query duplicateObj =
-        JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
-    duplicateObj.setParameter("ids", selectedIds);
-    List<Object> duplicateObjects = duplicateObj.getResultList();
-    return duplicateObjects;
-  }
-
-  @Transactional
-  public Object getWizardValue(Long id, String modelName, String nameColumn) {
-    Query selectedObj;
-    if (nameColumn == null) {
-      selectedObj =
-          JPA.em().createQuery("SELECT self.id FROM " + modelName + " self WHERE self.id = :id");
-    } else {
-      selectedObj =
-          JPA.em()
-              .createQuery(
-                  "SELECT self.id ,self."
-                      + nameColumn
-                      + " FROM "
-                      + modelName
-                      + " self WHERE self.id = :id");
-    }
-    selectedObj.setParameter("id", id);
-    Object selectedObject = selectedObj.getSingleResult();
-    return selectedObject;
+  private List<Object> getDuplicateObjects(List<Long> duplicateIds, Class<?> modelName) {
+    Query query =
+        JPA.em()
+            .createQuery(
+                "SELECT self FROM " + modelName.getSimpleName() + " self WHERE self.id IN (:ids)");
+    query.setParameter("ids", duplicateIds);
+    return query.getResultList();
   }
 
   public List<?> findDuplicatedRecordIds(Set<String> fieldSet, Class<?> modelClass, String filter)
@@ -180,10 +96,8 @@ public class DuplicateObjectsService {
 
   private String concatFields(Class<?> modelClass, Set<String> fieldSet) throws AxelorException {
 
-    StringBuilder fields = new StringBuilder("concat(");
+    StringBuilder concatField = new StringBuilder("concat(");
     Mapper mapper = Mapper.of(modelClass);
-
-    int count = 0;
 
     for (String field : fieldSet) {
       Property property = mapper.getProperty(field);
@@ -200,20 +114,24 @@ public class DuplicateObjectsService {
             I18n.get(IExceptionMessage.GENERAL_9),
             field);
       }
+
+      int count = 0;
       if (count != 0) {
-        fields.append(",");
+        concatField.append(",");
       }
       count++;
-      fields.append("cast(self" + "." + field);
+
+      concatField.append("cast(self" + "." + field);
 
       if (property.getTarget() != null) {
-        fields.append(".id");
+        concatField.append(".id");
       }
-      fields.append(" as string)");
+      concatField.append(" as string)");
     }
-    fields.append(")");
 
-    return fields.toString();
+    concatField.append(")");
+
+    return concatField.toString();
   }
 
   private String createSubQuery(Class<?> modelClass, String filter, String concatedFields) {
@@ -245,5 +163,76 @@ public class DuplicateObjectsService {
     List<?> recordIds = JPA.em().createQuery(queryBuilder.toString()).getResultList();
 
     return recordIds;
+  }
+
+  private List<MetaField> getAllRelationalFields(Class<?> modelName) {
+    return metaFieldRepo
+        .all()
+        .filter(
+            "(relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))",
+            modelName.getSimpleName())
+        .fetch();
+  }
+
+  private void updateManyToOneField(
+      MetaField metaField, Object originalObject, List<Object> duplicateObjects) {
+    Query update =
+        JPA.em()
+            .createQuery(
+                "UPDATE "
+                    + metaField.getMetaModel().getFullName()
+                    + " self SET self."
+                    + metaField.getName()
+                    + " = :value WHERE self."
+                    + metaField.getName()
+                    + " in (:duplicates)");
+    update.setParameter("value", originalObject);
+    update.setParameter("duplicates", duplicateObjects);
+    update.executeUpdate();
+  }
+
+  private void removeDuplicateFromList(
+      MetaField metaField, Object originalObject, List<Object> duplicateObjects) {
+
+    Query select =
+        JPA.em()
+            .createQuery(
+                "select self from "
+                    + metaField.getMetaModel().getFullName()
+                    + " self LEFT JOIN self."
+                    + metaField.getName()
+                    + " as x WHERE x IN (:ids)");
+    select.setParameter("ids", duplicateObjects);
+
+    for (Object object : select.getResultList()) {
+      Set<Object> items =
+          (Set<Object>) Mapper.of(object.getClass()).get(object, metaField.getName());
+      items.removeAll(duplicateObjects);
+      items.add(originalObject);
+    }
+  }
+
+  private void addToExistRelationalFields(
+      Mapper mapper, List<Object> duplicateObjects, String metaFieldName, Object originalObject) {
+
+    Set<Object> existRelationalFields = (Set<Object>) mapper.get(originalObject, metaFieldName);
+
+    for (Object object : duplicateObjects) {
+      Set<Object> newRelationalFields = (Set<Object>) mapper.get(object, metaFieldName);
+      if (newRelationalFields != null) {
+        existRelationalFields.addAll(newRelationalFields);
+        mapper.set(object, metaFieldName, new HashSet<>());
+      }
+    }
+  }
+
+  private void updateManyToManyField(
+      MetaField metaField, Object originalObject, List<Object> duplicateObjects, Mapper mapper) {
+    if (metaField.getTypeName().equals(mapper.getBeanClass().getSimpleName())) {
+
+      this.removeDuplicateFromList(metaField, originalObject, duplicateObjects);
+    }
+
+    this.addToExistRelationalFields(mapper, duplicateObjects, metaField.getName(), originalObject);
   }
 }

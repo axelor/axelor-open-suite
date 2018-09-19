@@ -20,11 +20,12 @@ package com.axelor.apps.base.service.imports.importer;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.xml.XMLImporter;
+import java.io.IOException;
 
 class ImporterXML extends Importer {
 
   @Override
-  protected ImportHistory process(String bind, String data) {
+  protected ImportHistory process(String bind, String data) throws IOException {
 
     XMLImporter importer = new XMLImporter(bind, data);
 

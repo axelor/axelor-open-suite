@@ -122,6 +122,7 @@
 				<bind node="views/view" to="actionBuilderViews">
 					<bind node="@type" to="viewType" />
 					<bind node="@name" to="viewName" />
+					<bind node="@sequence" to="sequence" />
 				</bind>
 				<bind node="@domain" to="domainCondition" />
 				<bind node="context/ctx" to="lines">

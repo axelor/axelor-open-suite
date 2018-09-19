@@ -49,12 +49,15 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected PurchaseOrderLine purchaseOrderLine;
   protected StockMoveLine stockMoveLine;
 
+  protected UnitConversionService unitConversionService;
+
   @Inject
   public InvoiceLineGeneratorSupplyChain(
       Invoice invoice,
       Product product,
       String productName,
       BigDecimal price,
+      BigDecimal inTaxPrice,
       BigDecimal priceDiscounted,
       String description,
       BigDecimal qty,
@@ -74,6 +77,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         product,
         productName,
         price,
+        inTaxPrice,
         priceDiscounted,
         description,
         qty,
@@ -88,6 +92,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
+    this.unitConversionService = Beans.get(UnitConversionService.class);
   }
 
   protected InvoiceLineGeneratorSupplyChain(
@@ -109,19 +114,33 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
+    this.unitConversionService = Beans.get(UnitConversionService.class);
 
     if (saleOrderLine != null) {
       this.discountAmount = saleOrderLine.getDiscountAmount();
       this.price = saleOrderLine.getPrice();
+      this.inTaxPrice = saleOrderLine.getInTaxPrice();
+      if (this.unit != null && !this.unit.equals(saleOrderLine.getUnit())) {
+        this.qty =
+            unitConversionService.convertWithProduct(
+                this.unit, saleOrderLine.getUnit(), qty, product);
+        this.unit = saleOrderLine.getUnit();
+      }
       this.priceDiscounted = saleOrderLine.getPriceDiscounted();
       this.taxLine = saleOrderLine.getTaxLine();
       this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
       this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
     } else if (purchaseOrderLine != null) {
       this.isTitleLine = purchaseOrderLine.getIsTitleLine();
-      this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();
+      this.inTaxPrice = purchaseOrderLine.getInTaxPrice();
+      if (this.unit != null && !this.unit.equals(purchaseOrderLine.getUnit())) {
+        this.qty =
+            unitConversionService.convertWithProduct(
+                this.unit, purchaseOrderLine.getUnit(), qty, product);
+        this.unit = purchaseOrderLine.getUnit();
+      }
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
@@ -133,11 +152,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           && this.unit != null
           && !this.unit.equals(saleOrPurchaseUnit)) {
         this.qty =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
+            unitConversionService.convertWithProduct(
+                this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
         this.priceDiscounted =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
+            unitConversionService.convertWithProduct(
+                this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
         this.unit = saleOrPurchaseUnit;
       }
     }
@@ -167,13 +186,25 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
     } else if (stockMoveLine != null) {
 
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+
       this.price =
-          Beans.get(InvoiceLineService.class)
-              .getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+          invoiceLineService.getExTaxUnitPrice(
+              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+      this.inTaxPrice =
+          invoiceLineService.getInTaxUnitPrice(
+              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+
       this.price =
-          Beans.get(UnitConversionService.class)
-              .convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
+          unitConversionService.convertWithProduct(
+              stockMoveLine.getUnit(), this.unit, this.price, product);
+      this.inTaxPrice =
+          unitConversionService.convertWithProduct(
+              stockMoveLine.getUnit(), this.unit, this.inTaxPrice, product);
+
       invoiceLine.setPrice(price);
+      invoiceLine.setInTaxPrice(inTaxPrice);
     }
 
     return invoiceLine;

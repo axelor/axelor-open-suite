@@ -19,15 +19,16 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.repo.TrackingNumberConfigurationRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -68,10 +69,10 @@ public class TrackingNumberService {
           trackingNumberConfiguration.getProductAutoTrackingNbrOrderSelect();
     }
     switch (autoTrackingNbrOrderSelect) {
-      case ProductRepository.SALE_TRACKING_ORDER_FIFO:
+      case TrackingNumberConfigurationRepository.TRACKING_NUMBER_ORDER_FIFO:
         return " ORDER BY self.trackingNumber ASC";
 
-      case ProductRepository.SALE_TRACKING_ORDER_LIFO:
+      case TrackingNumberConfigurationRepository.TRACKING_NUMBER_ORDER_LIFO:
         return " ORDER BY self.trackingNumber DESC";
 
       default:
@@ -81,6 +82,9 @@ public class TrackingNumberService {
 
   public TrackingNumber createTrackingNumber(Product product, Company company, LocalDate date)
       throws AxelorException {
+    Preconditions.checkNotNull(product, I18n.get("Product cannot be null."));
+    Preconditions.checkNotNull(company, I18n.get("Company cannot be null."));
+    Preconditions.checkNotNull(date, I18n.get("Date cannot be null."));
 
     TrackingNumber trackingNumber = new TrackingNumber();
 

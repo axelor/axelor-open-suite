@@ -17,21 +17,15 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import groovy.util.XmlSlurper;
@@ -43,8 +37,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -63,7 +57,7 @@ public class MapService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public JSONObject geocodeGoogle(String qString) throws AxelorException, JSONException {
-    if (qString == null) {
+    if (StringUtils.isBlank(qString)) {
       return null;
     }
     // http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
@@ -233,6 +227,14 @@ public class MapService {
     }
   }
 
+  public String getMapUrl(Pair<BigDecimal, BigDecimal> latLong) {
+    return getMapUrl(latLong.getLeft(), latLong.getRight(), null);
+  }
+
+  public String getMapUrl(Pair<BigDecimal, BigDecimal> latLong, String title) {
+    return getMapUrl(latLong.getLeft(), latLong.getRight(), title);
+  }
+
   public String getMapUrl(BigDecimal latitude, BigDecimal longitude) {
     return getMapUrl(latitude, longitude, null);
   }
@@ -260,6 +262,18 @@ public class MapService {
       TraceBackService.trace(e);
       return getErrorURI(e.getMessage());
     }
+  }
+
+  public String getDirectionUrl(
+      String key,
+      Pair<BigDecimal, BigDecimal> departureLatLong,
+      Pair<BigDecimal, BigDecimal> arrivalLatLong) {
+    return getDirectionUrl(
+        key,
+        departureLatLong.getLeft(),
+        departureLatLong.getRight(),
+        arrivalLatLong.getLeft(),
+        arrivalLatLong.getRight());
   }
 
   public String getDirectionUrl(
@@ -328,70 +342,6 @@ public class MapService {
     }
 
     return null;
-  }
-
-  public String makeAddressString(Address address, ObjectNode objectNode)
-      throws AxelorException, JSONException {
-
-    address = Beans.get(AddressService.class).checkLatLong(address, false);
-    BigDecimal latit = address.getLatit();
-    BigDecimal longit = address.getLongit();
-    if (BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0) {
-      return null;
-    }
-    objectNode.put("latit", latit);
-    objectNode.put("longit", longit);
-
-    return makeAddressString(address);
-  }
-
-  public void setData(ObjectNode mainNode, ArrayNode arrayNode)
-      throws AxelorException, JSONException {
-    mainNode.put("status", 0);
-    mainNode.set("data", arrayNode);
-
-    Optional<Address> optionalAddress = Beans.get(UserService.class).getUserActiveCompanyAddress();
-
-    if (optionalAddress.isPresent()) {
-      Address address = Beans.get(AddressService.class).checkLatLong(optionalAddress.get(), false);
-
-      JsonNodeFactory factory = JsonNodeFactory.instance;
-      ObjectNode objectNode = factory.objectNode();
-      objectNode.put("lat", address.getLatit());
-      objectNode.put("lng", address.getLongit());
-      mainNode.set("company", objectNode);
-    }
-  }
-
-  public void setError(ObjectNode mainNode, Exception e) {
-    TraceBackService.trace(e);
-    mainNode.put("status", -1);
-    mainNode.put("errorMsg", e.getLocalizedMessage());
-  }
-
-  public String makeAddressString(Address address) {
-    StringBuilder addressString = new StringBuilder();
-
-    if (address.getAddressL2() != null) {
-      addressString.append(address.getAddressL2() + "<br/>");
-    }
-    if (address.getAddressL3() != null) {
-      addressString.append(address.getAddressL3() + "<br/>");
-    }
-    if (address.getAddressL4() != null) {
-      addressString.append(address.getAddressL4() + "<br/>");
-    }
-    if (address.getAddressL5() != null) {
-      addressString.append(address.getAddressL5() + "<br/>");
-    }
-    if (address.getAddressL6() != null) {
-      addressString.append(address.getAddressL6());
-    }
-    if (address.getAddressL7Country() != null) {
-      addressString = addressString.append("<br/>" + address.getAddressL7Country().getName());
-    }
-
-    return addressString.toString();
   }
 
   public void testGMapService() throws AxelorException, JSONException {
@@ -487,5 +437,16 @@ public class MapService {
         StringUtils.notBlank(appBaseService.getAppBase().getGoogleMapsApiKey()),
         I18n.get(IExceptionMessage.MAP_GOOGLE_MAPS_API_KEY_MISSING));
     return appBaseService.getAppBase().getGoogleMapsApiKey();
+  }
+
+  public boolean isConfigured() {
+    switch (appBaseService.getAppBase().getMapApiSelect()) {
+      case AppBaseRepository.MAP_API_GOOGLE:
+        return StringUtils.notBlank(appBaseService.getAppBase().getGoogleMapsApiKey());
+
+      case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+      default:
+        return false;
+    }
   }
 }

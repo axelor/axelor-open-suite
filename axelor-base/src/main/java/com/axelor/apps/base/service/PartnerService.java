@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -342,7 +341,7 @@ public class PartnerService {
           partner,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PARTNER_2),
-          AppBaseServiceImpl.EXCEPTION,
+          I18n.get(IExceptionMessage.EXCEPTION),
           partner.getName());
     } else {
       String registrationCode = partner.getRegistrationCode();

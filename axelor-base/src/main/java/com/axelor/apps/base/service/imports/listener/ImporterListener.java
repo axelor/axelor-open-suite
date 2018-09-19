@@ -38,7 +38,6 @@ public class ImporterListener implements Listener {
 
   public ImporterListener(String name) {
     this.name = name;
-    this.totalRecord = this.successRecord = this.notNull = this.anomaly = 0;
   }
 
   public String getImportLog() {
@@ -65,14 +64,14 @@ public class ImporterListener implements Listener {
   @Override
   public void imported(Model bean) {
     if (bean != null) {
-      notNull++;
+      ++notNull;
     }
   }
 
   @Override
   public void imported(Integer total, Integer success) {
-    totalRecord = total;
-    successRecord = success;
+    totalRecord += total;
+    successRecord += success;
   }
 
   @Override

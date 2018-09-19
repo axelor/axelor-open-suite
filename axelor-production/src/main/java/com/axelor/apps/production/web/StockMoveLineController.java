@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.ManufOrderStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -32,8 +33,34 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import java.util.Optional;
 
 public class StockMoveLineController {
+
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    Optional<StockMove> stockMove = Optional.ofNullable(stockMoveLine.getStockMove());
+
+    if (!stockMove.isPresent()) {
+      Context parentContext = request.getContext().getParent();
+      if (parentContext.getContextClass().equals(StockMove.class)) {
+        stockMove = Optional.ofNullable(parentContext.asType(StockMove.class));
+      } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
+        ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
+        ManufOrderStockMoveService manufOrderStockMoveService =
+            Beans.get(ManufOrderStockMoveService.class);
+        stockMove = manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
+      }
+
+      if (!stockMove.isPresent()) {
+        return;
+      }
+    }
+
+    stockMoveLine = Beans.get(StockMoveLineService.class).compute(stockMoveLine, stockMove.get());
+    response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
+    response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
+  }
 
   /**
    * Called from stock move line form. Fill product info using the company either from the stock
@@ -71,7 +98,7 @@ public class StockMoveLineController {
         company = stockMove.getCompany();
       }
 
-      Beans.get(StockMoveLineService.class).setProductInfo(stockMoveLine, company);
+      Beans.get(StockMoveLineService.class).setProductInfo(stockMove, stockMoveLine, company);
       response.setValues(stockMoveLine);
     } catch (Exception e) {
       stockMoveLine = new StockMoveLine();

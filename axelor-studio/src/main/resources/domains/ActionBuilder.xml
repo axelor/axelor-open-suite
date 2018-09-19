@@ -24,7 +24,7 @@
      <string name="displayMsg" title="Display message" />
      
      <!-- Action view fields -->
-     <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder"/>
+     <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder" orderBy="sequence"/>
      <boolean name="isJson" title="Json ?" />
      <string name="domainCondition" title="Domain" />
      <one-to-many name="viewParams" title="View params" ref="ActionBuilderLine" orphanRemoval="true" />

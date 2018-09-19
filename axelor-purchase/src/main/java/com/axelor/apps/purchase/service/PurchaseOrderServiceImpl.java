@@ -394,7 +394,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
         if (product != null) {
-          product.setPurchasePrice(purchaseOrderLine.getPrice());
+          product.setPurchasePrice(
+              purchaseOrder.getInAti()
+                  ? purchaseOrderLine.getInTaxPrice()
+                  : purchaseOrderLine.getPrice());
           if (product.getDefShipCoefByPartner()) {
             BigDecimal shippingCoef =
                 Beans.get(ShippingCoefService.class)
@@ -405,7 +408,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             }
           }
           if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
-            product.setCostPrice(purchaseOrderLine.getPrice());
+            product.setCostPrice(
+                purchaseOrder.getInAti()
+                    ? purchaseOrderLine.getInTaxPrice()
+                    : purchaseOrderLine.getPrice());
             if (product.getAutoUpdateSalePrice()) {
               Beans.get(ProductService.class).updateSalePrice(product);
             }

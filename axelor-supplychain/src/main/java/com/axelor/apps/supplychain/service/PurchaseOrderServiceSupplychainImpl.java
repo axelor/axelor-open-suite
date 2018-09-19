@@ -228,6 +228,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
           Unit unit = purchaseOrderLine.getProduct().getUnit();
           BigDecimal qty = purchaseOrderLine.getQty();
           BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
+
           if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
             qty =
                 unitConversionService.convertWithProduct(

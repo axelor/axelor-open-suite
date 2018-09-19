@@ -47,7 +47,6 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void calculate(StockMove stockMove) throws AxelorException {
-
     Partner partner = stockMove.getPartner();
 
     if (partner == null || !partner.getIsSupplier()) {

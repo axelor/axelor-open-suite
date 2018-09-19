@@ -23,6 +23,7 @@ import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.apps.supplychain.service.batch.BatchInvoicing;
 import com.axelor.apps.supplychain.service.batch.SaleBatchService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -34,8 +35,6 @@ import java.util.Map;
 public class SaleBatchController {
 
   @Inject private SaleBatchService saleBatchService;
-
-  @Inject private BatchInvoicing batchInvoicing;
 
   @Inject private SaleBatchRepository saleBatchRepo;
 
@@ -59,7 +58,7 @@ public class SaleBatchController {
 
     SaleBatch saleBatch = request.getContext().asType(SaleBatch.class);
     saleBatch = saleBatchRepo.find(saleBatch.getId());
-    Batch batch = batchInvoicing.run(saleBatch);
+    Batch batch = Beans.get(BatchInvoicing.class).run(saleBatch);
     response.setFlash(batch.getComments());
     response.setReload(true);
   }

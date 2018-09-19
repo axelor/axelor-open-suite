@@ -22,7 +22,6 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.DuplicateObjectsService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -40,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,93 +50,68 @@ public class DuplicateObjectsController {
 
   @Inject private DuplicateObjectsService duplicateObjectService;
 
-  public void removeDuplicate(ActionRequest request, ActionResponse response) {
-    List<Long> selectedIds = new ArrayList<>();
-    String originalId =
-        ((Map) request.getContext().get("originalObject")).get("recordId").toString();
-    selectedIds.add(Long.parseLong(originalId));
+  public void removeDuplicate(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
+
+    Long originalId =
+        Long.parseLong(
+            ((Map) request.getContext().get("originalObject")).get("recordId").toString());
+
     List<Map<String, Object>> duplicateObjects =
         (List<Map<String, Object>>) request.getContext().get("duplicateObjects");
+
+    List<Long> duplicateIds = new ArrayList<>();
+
     for (Map map : duplicateObjects) {
-      if (!map.get("recordId").toString().equals(originalId)) {
-        selectedIds.add(Long.parseLong(map.get("recordId").toString()));
+      if (!map.get("recordId").toString().equals(originalId.toString())) {
+        duplicateIds.add(Long.parseLong(map.get("recordId").toString()));
       }
     }
+
     String model = request.getContext().get("_modelName").toString();
-    String modelName = model.substring(model.lastIndexOf(".") + 1, model.length());
-    duplicateObjectService.removeDuplicate(selectedIds, modelName);
+    duplicateObjectService.removeDuplicate(originalId, duplicateIds, Class.forName(model));
     response.setCanClose(true);
   }
 
   public void defaultObjects(ActionRequest request, ActionResponse response)
-      throws NoSuchFieldException, SecurityException {
-    List<Long> selectedIds = new ArrayList<>();
-    List<Object[]> duplicateObjects = new ArrayList<>();
-    List<Wizard> wizardDataList = new ArrayList<>();
+      throws NoSuchFieldException, SecurityException, ClassNotFoundException {
+
+    List<Long> selectedObjectIds = new ArrayList<>();
     for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
-      selectedIds.add(Long.parseLong("" + id));
-    }
-    String modelName = request.getContext().get("_modelName").toString();
-    List<Object> duplicateObj = duplicateObjectService.getAllSelectedObject(selectedIds, modelName);
-
-    for (Object object : duplicateObj) {
-      Long id = (Long) Mapper.of(object.getClass()).get(object, "id");
-      Property propertyNameColumn = Mapper.of(object.getClass()).getNameField();
-      String nameColumn =
-          propertyNameColumn == null ? null : propertyNameColumn.getName().toString();
-      Property propertyCode = Mapper.of(object.getClass()).getProperty("code");
-      String code = propertyCode == null ? null : propertyCode.getName().toString();
-      String noColumn = null;
-      if (nameColumn != null) {
-        duplicateObjects.add(
-            (Object[]) duplicateObjectService.getWizardValue(id, modelName, nameColumn));
-      } else if (code != null) {
-        duplicateObjects.add((Object[]) duplicateObjectService.getWizardValue(id, modelName, code));
-      } else {
-        Object obj = duplicateObjectService.getWizardValue(id, modelName, noColumn);
-        Wizard wizard = new Wizard();
-        wizard.setRecordId(obj.toString());
-        wizard.setName(obj.toString());
-        wizardDataList.add(wizard);
-      }
-    }
-    for (Object[] obj : duplicateObjects) {
-      String recordName = obj[1].toString();
-      String recordId = obj[0].toString();
-      Wizard wizard = new Wizard();
-      wizard.setRecordId(recordId);
-      wizard.setRecordName(recordName);
-      wizard.setName(recordName);
-      wizardDataList.add(wizard);
+      selectedObjectIds.add(new Long(id));
     }
 
-    response.setAttr("$duplicateObjects", "value", wizardDataList);
+    Class<?> klass = Class.forName(request.getContext().get("_modelName").toString());
+    String nameColumn = Mapper.of(klass).getNameField().getName();
+
+    response.setAttr(
+        "$duplicateObjects", "value", this.getWizards(selectedObjectIds, klass, nameColumn));
   }
 
   public void addOriginal(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    List<Map<String, Object>> duplicateObj =
+    List<Map<String, Object>> duplicateObjects =
         (List<Map<String, Object>>) context.get("duplicateObjects");
-    Object originalObj = null;
-    Object original = "";
-    boolean flag = false;
-    for (Map map : duplicateObj) {
+    Object currentOriginalObject = null;
+    for (Map map : duplicateObjects) {
       if ((boolean) map.get("selected")) {
-        originalObj = context.get("originalObject");
         response.setAttr("$originalObject", "value", map);
-        original = map;
-        flag = true;
+        currentOriginalObject = map;
+        break;
       }
     }
-    if (!flag) {
-      response.setAlert("Please select original object");
+
+    if (currentOriginalObject == null) {
+      response.setAlert(I18n.get(IExceptionMessage.GENERAL_11));
     }
-    duplicateObj.remove(original);
-    if (originalObj != null) {
-      duplicateObj.add((Map<String, Object>) originalObj);
+    duplicateObjects.remove(currentOriginalObject);
+
+    Object previousOriginalObject = context.get("originalObject");
+    if (previousOriginalObject != null) {
+      duplicateObjects.add((Map<String, Object>) previousOriginalObject);
     }
 
-    response.setAttr("$duplicateObjects", "value", duplicateObj);
+    response.setAttr("$duplicateObjects", "value", duplicateObjects);
   }
 
   /**
@@ -156,7 +131,7 @@ public class DuplicateObjectsController {
 
     if (fields.size() > 0) {
 
-      String filter = findDuplicated(request, fields, modelClass);
+      String filter = findDuplicated(context, fields, modelClass);
 
       if (filter == null) {
         response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
@@ -183,28 +158,26 @@ public class DuplicateObjectsController {
     }
   }
 
-  private String findDuplicated(ActionRequest request, Set<String> fields, Class<?> modelClass)
+  private String findDuplicated(Context context, Set<String> fields, Class<?> modelClass)
       throws AxelorException {
 
-    Context context = request.getContext();
     LOG.debug("Duplicate finder fields: {}", fields);
 
     List<Long> contextIds = (List<Long>) context.get("_ids");
 
-    String filter = null;
-    if (contextIds != null && !contextIds.isEmpty()) {
-      filter = "self.id in (" + Joiner.on(",").join(contextIds) + ")";
-    } else {
-      filter = (String) context.get("_domain_");
-    }
+    String filter =
+        (contextIds != null && !contextIds.isEmpty())
+            ? "self.id in (" + Joiner.on(",").join(contextIds) + ")"
+            : (String) context.get("_domain_");
 
-    List<?> ids = duplicateObjectService.findDuplicatedRecordIds(fields, modelClass, filter);
+    List<?> duplicateIds =
+        duplicateObjectService.findDuplicatedRecordIds(fields, modelClass, filter);
 
-    if (ids.isEmpty()) {
+    if (duplicateIds.isEmpty()) {
       return null;
     }
 
-    return "self.id in (" + Joiner.on(",").join(ids) + ")";
+    return "self.id in (" + Joiner.on(",").join(duplicateIds) + ")";
   }
 
   private Class<?> extractModel(ActionRequest request, Set<String> fields) {
@@ -223,12 +196,42 @@ public class DuplicateObjectsController {
       if (context.get("fieldsSet") != null) {
         List<HashMap<String, Object>> fieldsSet =
             (List<HashMap<String, Object>>) context.get("fieldsSet");
-        for (HashMap<String, Object> field : fieldsSet) {
-          fields.add((String) field.get("name"));
-        }
+
+        fieldsSet.forEach(it -> fields.add((String) it.get("name")));
       }
     }
 
     return JPA.model(model);
+  }
+
+  private List<Wizard> getWizards(
+      List<Long> selectedObjectIds, Class<?> modelName, String nameColumn) {
+    StringBuilder queryString = new StringBuilder("SELECT NEW Map(self.id as id");
+    if (nameColumn != null) {
+      queryString.append(" ,self." + nameColumn + " as " + nameColumn);
+    }
+    queryString.append(") FROM ");
+    queryString.append(modelName.getSimpleName());
+    queryString.append(" self WHERE self.id IN (:ids)");
+
+    Query query = JPA.em().createQuery(queryString.toString(), Map.class);
+    query.setParameter("ids", selectedObjectIds);
+
+    List<Wizard> wizardList = new ArrayList<>();
+
+    for (Object obj : query.getResultList()) {
+      Map<String, Object> map = (Map<String, Object>) obj;
+      Wizard wizard = new Wizard();
+      wizard.setRecordId(map.get("id").toString());
+      if (map.containsKey(nameColumn)) {
+        wizard.setName(map.get(nameColumn).toString());
+        wizard.setRecordName(map.get(nameColumn).toString());
+      } else {
+        wizard.setName(map.get("id").toString());
+      }
+      wizardList.add(wizard);
+    }
+
+    return wizardList;
   }
 }

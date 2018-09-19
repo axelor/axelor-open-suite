@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
@@ -34,7 +35,9 @@ import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,5 +191,23 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     timesheet.addTimesheetLineListItem(timesheetLine);
 
     return timesheetLine;
+  }
+
+  @Override
+  public Duration computeTotalDuration(List<TimesheetLine> timesheetLineList) {
+    if (timesheetLineList == null || timesheetLineList.isEmpty()) {
+      return Duration.ZERO;
+    }
+    long totalSecDuration = 0L;
+    for (TimesheetLine timesheetLine : timesheetLineList) {
+      // if null, that means the timesheet line is just created so the parent is not canceled.
+      if (timesheetLine.getTimesheet() == null
+          || timesheetLine.getTimesheet().getStatusSelect()
+              != TimesheetRepository.STATUS_CANCELED) {
+        totalSecDuration +=
+            timesheetLine.getHoursDuration().multiply(new BigDecimal("3600")).longValue();
+      }
+    }
+    return Duration.ofSeconds(totalSecDuration);
   }
 }

@@ -90,7 +90,12 @@
     </action-method>
 
     <action-record name="action-icalendar-event-default-record" model="com.axelor.apps.base.db.ICalendarEvent">
-        <field name="calendar" expr="eval: __repo__(ICalendar).findByUser(__user__)" />
+      <field name="calendar"
+        expr="eval: _calendar ?: __user__.iCalendar ?: __repo__(ICalendar).findByUser(__user__)" />
+      <field name="startDateTime"
+        expr="eval: __config__.app.getTodayDateTime().truncatedTo(java.time.temporal.ChronoUnit.HOURS).plusHours(1)" if="!startDateTime"/>
+      <field name="endDateTime"
+        expr="eval: __config__.app.getTodayDateTime().truncatedTo(java.time.temporal.ChronoUnit.HOURS).plusHours(2)" if="!endDateTime"/>
     </action-record>
 
 </object-views>

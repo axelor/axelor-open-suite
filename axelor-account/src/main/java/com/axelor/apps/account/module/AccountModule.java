@@ -101,7 +101,6 @@ import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
-import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
@@ -112,7 +111,7 @@ public class AccountModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(AddressServiceImpl.class).to(AddressServiceAccountImpl.class);
+    bind(AddressServiceAccountImpl.class);
 
     bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
 
