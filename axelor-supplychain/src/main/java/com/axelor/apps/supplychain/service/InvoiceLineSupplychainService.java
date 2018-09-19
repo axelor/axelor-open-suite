@@ -189,15 +189,15 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-	
-	Map<String, Object> productInformation = new HashMap<>();
-	  
+
+    Map<String, Object> productInformation = new HashMap<>();
+
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     Integer sequence = invoiceLine.getSequence();
     if (sequence == null) {
-    	sequence = 0;
+      sequence = 0;
     }
-    
+
     if (sequence == 0 && invoice.getInvoiceLineList() != null) {
       sequence = invoice.getInvoiceLineList().size();
       invoiceLine.setSequence(sequence);
@@ -226,7 +226,14 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         subLine.setIsSubLine(true);
         subLine.setPackPriceSelect(packPriceSelect);
         String description = null;
-        if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
+        if ((invoice.getOperationTypeSelect() == 3
+                && appAccountService
+                    .getAppInvoice()
+                    .getIsEnabledProductDescriptionCopyForCustomers())
+            || (invoice.getOperationTypeSelect() == 1
+                && appAccountService
+                    .getAppInvoice()
+                    .getIsEnabledProductDescriptionCopyForSuppliers())) {
           description = invoiceLine.getProduct().getDescription();
         }
         Map<String, Object> accountInfo = super.fillPriceAndAccount(invoice, subLine, isPurchase);
@@ -295,9 +302,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       productInformation.put("totalPack", BigDecimal.ZERO);
       invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
     }
-    
+
     productInformation.putAll(super.fillProductInformation(invoice, invoiceLine));
-    
+
     return productInformation;
   }
 

@@ -3954,7 +3954,7 @@ row["ClientPartFirstName"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                            <property name="name">in_ati</property>
+                                <property name="name">in_ati</property>
                                 <text-property name="displayName">in_ati</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
                                 <property name="dataType">boolean</property>
@@ -3967,7 +3967,7 @@ row["ClientPartFirstName"]
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
-							<structure>
+                            <structure>
                                 <property name="name">is_sub_line</property>
                                 <text-property name="displayName">is_sub_line</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>

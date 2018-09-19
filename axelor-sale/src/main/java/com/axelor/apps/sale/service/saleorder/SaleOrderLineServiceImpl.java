@@ -71,6 +71,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       throws AxelorException {
     saleOrderLine.setProductName(saleOrderLine.getProduct().getName());
     saleOrderLine.setUnit(this.getSaleUnit(saleOrderLine));
+    if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
+      saleOrderLine.setDescription(saleOrderLine.getProduct().getDescription());
+    }
+
     saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
     saleOrderLine.setSubLineList(null);
     saleOrderLine.setPackPriceSelect(null);
@@ -85,7 +89,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       saleOrderLine.setPackPriceSelect(packPriceSelect);
       saleOrderLine.setSubLineList(createPackLines(saleOrderLine, saleOrder));
     }
-    ;
 
     fillPrice(saleOrderLine, saleOrder, packPriceSelect);
   }
@@ -97,7 +100,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     boolean taxRequired = checkTaxRequired(saleOrderLine, packPriceSelect);
 
     if (taxRequired) {
-      fillTaxInformation(saleOrderLine, saleOrder, packPriceSelect);
+      fillTaxInformation(saleOrderLine, saleOrder);
       saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
       BigDecimal exTaxPrice;
       BigDecimal inTaxPrice;
@@ -170,8 +173,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return price;
   }
 
-  private void fillTaxInformation(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
+  private void fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
     TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
@@ -204,43 +206,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     return true;
-  }
-
-  @Override
-  public void computeProductInformation(
-      SaleOrderLine saleOrderLine,
-      SaleOrder saleOrder,
-      boolean taxLineIsOptional,
-      Integer packPriceSelect)
-      throws AxelorException {
-
-    Product product = saleOrderLine.getProduct();
-    TaxLine taxLine;
-
-    try {
-      taxLine = getTaxLine(saleOrder, saleOrderLine);
-      saleOrderLine.setTaxLine(taxLine);
-
-      Tax tax =
-          accountManagementService.getProductTax(
-              accountManagementService.getAccountManagement(product, saleOrder.getCompany()),
-              false);
-      TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class)
-              .getTaxEquiv(saleOrder.getClientPartner().getFiscalPosition(), tax);
-
-      saleOrderLine.setTaxEquiv(taxEquiv);
-    } catch (AxelorException e) {
-      if (!taxLineIsOptional) {
-        throw e;
-      }
-      saleOrderLine.setTaxLine(null);
-      saleOrderLine.setTaxEquiv(null);
-    }
-
-    if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
-      saleOrderLine.setDescription(product.getDescription());
-    }
   }
 
   @Override

@@ -7,7 +7,8 @@
 		<panel>
 			<field name="isInvoiceMoveConsolidated" widget="boolean-switch"/>
             <field name="isVentilationSkipped" widget="boolean-switch"/>
-			<field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
+			<field name="isEnabledProductDescriptionCopyForCustomers" widget="boolean-switch"/>
+			<field name="isEnabledProductDescriptionCopyForSuppliers" widget="boolean-switch"/>
 		</panel>
 	</form>
 	

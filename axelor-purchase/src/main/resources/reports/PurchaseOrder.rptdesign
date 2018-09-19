@@ -3419,6 +3419,11 @@ row["first_name"]
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["product_name"]}</VALUE-OF>]]></text-property>
                                         </text>
+                                        <text id="3779">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="3436">
                                         <property name="backgroundAttachment">scroll</property>
