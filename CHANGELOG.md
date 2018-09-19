@@ -62,6 +62,7 @@
 - Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
 - Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
 - Removed editable from some reference fields in stock form views. 
+- Now displays purchase orders in the Activity panel of a partner form for suppliers and carriers.
 - Vehicle : rename driverContact to driverPartner & filter it.
 - Vehicle : Card View - display vehicle company and driver  
 - Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine. 
@@ -144,7 +145,6 @@
 - Fix total amount reseting on save in bank orders.
 - Configurator: fix using M2O in formula.
 - Tracking number search: Fix stock location binding.
-
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
