@@ -98,7 +98,7 @@ public class StockMoveLineController {
         company = stockMove.getCompany();
       }
 
-      Beans.get(StockMoveLineService.class).setProductInfo(stockMoveLine, company);
+      Beans.get(StockMoveLineService.class).setProductInfo(stockMove, stockMoveLine, company);
       response.setValues(stockMoveLine);
     } catch (Exception e) {
       stockMoveLine = new StockMoveLine();

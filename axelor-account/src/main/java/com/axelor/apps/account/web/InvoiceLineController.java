@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -83,19 +84,27 @@ public class InvoiceLineController {
 
     Invoice invoice = this.getInvoice(context);
 
-    if (invoice == null || invoiceLine.getPrice() == null || invoiceLine.getQty() == null) {
+    if (invoice == null
+        || invoiceLine.getPrice() == null
+        || invoiceLine.getInTaxPrice() == null
+        || invoiceLine.getQty() == null) {
       return;
     }
 
-    BigDecimal exTaxTotal = BigDecimal.ZERO;
-    BigDecimal companyExTaxTotal = BigDecimal.ZERO;
-    BigDecimal inTaxTotal = BigDecimal.ZERO;
-    BigDecimal companyInTaxTotal = BigDecimal.ZERO;
-    BigDecimal priceDiscounted = invoiceLineService.computeDiscount(invoiceLine, invoice);
+    BigDecimal exTaxTotal;
+    BigDecimal companyExTaxTotal;
+    BigDecimal inTaxTotal;
+    BigDecimal companyInTaxTotal;
+    BigDecimal priceDiscounted =
+        invoiceLineService.computeDiscount(invoiceLine, invoice.getInAti());
 
     response.setValue("priceDiscounted", priceDiscounted);
     response.setAttr(
-        "priceDiscounted", "hidden", priceDiscounted.compareTo(invoiceLine.getPrice()) == 0);
+        "priceDiscounted",
+        "hidden",
+        priceDiscounted.compareTo(
+                invoice.getInAti() ? invoiceLine.getInTaxPrice() : invoiceLine.getPrice())
+            == 0);
 
     BigDecimal taxRate = BigDecimal.ZERO;
     if (invoiceLine.getTaxLine() != null) {
@@ -105,14 +114,10 @@ public class InvoiceLineController {
     }
 
     if (!invoice.getInAti()) {
-      exTaxTotal =
-          InvoiceLineManagement.computeAmount(
-              invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine, invoice));
+      exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
       inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
     } else {
-      inTaxTotal =
-          InvoiceLineManagement.computeAmount(
-              invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine, invoice));
+      inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
       exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
 
@@ -160,7 +165,7 @@ public class InvoiceLineController {
     response.setValues(productInformation);
   }
 
-  public void getDiscount(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void getDiscount(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
 
@@ -173,20 +178,79 @@ public class InvoiceLineController {
     }
 
     try {
-      BigDecimal price = invoiceLine.getPrice();
-
-      Map<String, Object> discounts = invoiceLineService.getDiscount(invoice, invoiceLine, price);
+      Map<String, Object> discounts;
+      if (invoiceLine.getProduct().getInAti()) {
+        discounts =
+            invoiceLineService.getDiscount(invoice, invoiceLine, invoiceLine.getInTaxPrice());
+      } else {
+        discounts = invoiceLineService.getDiscount(invoice, invoiceLine, invoiceLine.getPrice());
+      }
 
       if (discounts != null) {
         response.setValue("discountAmount", discounts.get("discountAmount"));
         response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
 
         if (discounts.get("price") != null) {
-          response.setValue("price", discounts.get("price"));
+          if (invoiceLine.getProduct().getInAti()) {
+            response.setValue("inTaxPrice", discounts.get("price"));
+            response.setValue(
+                "price",
+                invoiceLineService.convertUnitPrice(
+                    true, invoiceLine.getTaxLine(), (BigDecimal) discounts.get("price")));
+          } else {
+            response.setValue("price", discounts.get("price"));
+            response.setValue(
+                "inTaxPrice",
+                invoiceLineService.convertUnitPrice(
+                    false, invoiceLine.getTaxLine(), (BigDecimal) discounts.get("price")));
+          }
         }
       }
     } catch (Exception e) {
       response.setFlash(e.getMessage());
+    }
+  }
+
+  /**
+   * Update the ex. tax unit price of an invoice line from its in. tax unit price.
+   *
+   * @param request
+   * @param response
+   */
+  public void updatePrice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+
+    try {
+      BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
+      TaxLine taxLine = invoiceLine.getTaxLine();
+
+      response.setValue("price", invoiceLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Update the in. tax unit price of an invoice line from its ex. tax unit price.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateInTaxPrice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+
+    try {
+      BigDecimal exTaxPrice = invoiceLine.getPrice();
+      TaxLine taxLine = invoiceLine.getTaxLine();
+
+      response.setValue(
+          "inTaxPrice", invoiceLineService.convertUnitPrice(false, taxLine, exTaxPrice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -200,30 +264,17 @@ public class InvoiceLineController {
 
     if (invoice == null
         || invoiceLine.getProduct() == null
-        || !invoiceLineService.unitPriceShouldBeUpdate(invoice, invoiceLine.getProduct())) {
+        || invoiceLine.getPrice() == null
+        || invoiceLine.getInTaxPrice() == null) {
       return;
     }
 
     try {
 
-      BigDecimal price =
-          invoiceLineService.getUnitPrice(
-              invoice,
-              invoiceLine,
-              invoiceLine.getTaxLine(),
-              invoiceLineService.isPurchase(invoice));
+      BigDecimal price = invoiceLine.getPrice();
+      BigDecimal inTaxPrice = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
 
-      Map<String, Object> discounts = invoiceLineService.getDiscount(invoice, invoiceLine, price);
-
-      if (discounts != null) {
-
-        response.setValue("discountAmount", discounts.get("discountAmount"));
-        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-        if (discounts.get("price") != null) {
-          price = (BigDecimal) discounts.get("price");
-        }
-      }
-      response.setValue("price", price);
+      response.setValue("inTaxPrice", inTaxPrice);
 
     } catch (Exception e) {
       response.setFlash(e.getMessage());

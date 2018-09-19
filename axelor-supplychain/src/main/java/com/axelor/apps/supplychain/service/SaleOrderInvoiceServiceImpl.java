@@ -262,6 +262,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                 .multiply(saleOrderLineTax.getExTaxBase())
                 .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_EVEN);
         TaxLine taxLine = saleOrderLineTax.getTaxLine();
+        BigDecimal lineAmountToInvoiceInclTax =
+            (taxLine != null)
+                ? lineAmountToInvoice.add(lineAmountToInvoice.multiply(taxLine.getValue()))
+                : lineAmountToInvoice;
 
         InvoiceLineGenerator invoiceLineGenerator =
             new InvoiceLineGenerator(
@@ -269,7 +273,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                 invoicingProduct,
                 invoicingProduct.getName(),
                 lineAmountToInvoice,
-                lineAmountToInvoice,
+                lineAmountToInvoiceInclTax,
+                invoice.getInAti() ? lineAmountToInvoiceInclTax : lineAmountToInvoice,
                 invoicingProduct.getDescription(),
                 BigDecimal.ONE,
                 invoicingProduct.getUnit(),

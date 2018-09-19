@@ -18,6 +18,7 @@
   
     <string name="manufOrderSeq" title="MO" namecolumn="true" initParam="true"/>
     <integer name="priority" title="Priority" initParam="true"/>
+    <boolean name="isPermanent"/> <!-- Permanent manuf orders are used to log time and have a planned quantity set to 0 -->
     
     
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeManufOrder" title="Products to consume"/>
