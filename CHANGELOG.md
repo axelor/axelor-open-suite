@@ -25,6 +25,7 @@
 - Improve account management views.
 - Add supplier invoice number in supplier invoices grid.
 - Add column description in move line grid views.
+- Add a "Generate the pdf printing during sale order finalization" to configuration of Sale app.
 - Allow manual creation of tracking number on stock move lines.
 - Direct debit batch: filter out payment schedule lines with inactive partner bank details.
 - Solved an issue linked to having a manufacturing order with a planned quantity of 0.
