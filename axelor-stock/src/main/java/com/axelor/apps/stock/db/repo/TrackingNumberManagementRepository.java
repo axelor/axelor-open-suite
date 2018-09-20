@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.stock.db.repo;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class TrackingNumberManagementRepository extends TrackingNumberRepository {
 
