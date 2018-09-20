@@ -126,7 +126,7 @@ public class InvoiceLineController {
 
     Invoice invoice = this.getInvoice(context);
 
-    if (packLine.getOldQty().compareTo(BigDecimal.ZERO) == 0) {
+    if (packLine.getOldQty() == null || packLine.getOldQty().compareTo(BigDecimal.ZERO) == 0) {
       if (packLine.getId() != null) {
         InvoiceLine line = invoiceLineRepo.find(packLine.getId());
         if (line.getQty().compareTo(BigDecimal.ZERO) != 0) {
