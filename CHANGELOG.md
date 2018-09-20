@@ -64,6 +64,7 @@
 - Manuf Order : Apply domain on clientPartner and saleOrder & Assign them while generating manufOrder from saleOrder.
 - PROJECT : add translations on project view.
 - STOCK MOVE : add column availability qty of selected product on grid view displayed in popup when click on select button on m2o tracking number.
+- New field workshop on production process, bill of material and manufacturing order.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
