@@ -118,7 +118,7 @@
 		<attribute name="hidden" for="cancelManageSOLines" expr="eval:false"/>
 		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$salesOrderLineSet" expr="eval:false"/>
-		<attribute name="title" for="$salesOrderLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="title" for="$salesOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
 		<attribute name="domain" for="$salesOrderLineSet" expr="eval:&quot;self.saleOrder.clientPartner = :clientPartner AND self.saleOrder.statusSelect in (3,4) AND self.project is null&quot;"/>
 	</action-attrs>
 	
@@ -129,7 +129,7 @@
 		<attribute name="hidden" for="cancelManageSOLines" expr="eval:false"/>
 		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$salesOrderLineSet" expr="eval:null"/>
-		<attribute name="title" for="$salesOrderLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="title" for="$salesOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
 		<attribute name="domain" for="$salesOrderLineSet" expr="eval:&quot;self.saleOrder.statusSelect in (3,4) AND self.project.id = :id&quot;" if="!isShowPhasesElements"/>
 		<attribute name="domain" for="$salesOrderLineSet" expr="eval:&quot;self.saleOrder.statusSelect in (3,4) AND (self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
 	</action-attrs>
@@ -202,7 +202,7 @@
 		<attribute name="hidden" for="cancelManagePOLines" expr="eval:false"/>
 		<attribute name="hidden" for="$purchaseOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$purchaseOrderLineSet" expr="eval:null"/>
-		<attribute name="title" for="$purchaseOrderLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="title" for="$purchaseOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
 		<attribute name="domain" for="$purchaseOrderLineSet" expr="eval:&quot;self.purchaseOrder.statusSelect in (3,4)  AND self.project is null&quot;"/>
 	</action-attrs>
 	
@@ -213,7 +213,7 @@
 		<attribute name="hidden" for="cancelManagePOLines" expr="eval:false"/>
 		<attribute name="hidden" for="$purchaseOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$purchaseOrderLineSet" expr="eval:null"/>
-		<attribute name="title" for="$purchaseOrderLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="title" for="$purchaseOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
 		<attribute name="domain" for="$purchaseOrderLineSet" expr="eval:&quot;self.purchaseOrder.statusSelect in (3,4) AND self.project.id = :id&quot;" if="!isShowPhasesElements"/>
 		<attribute name="domain" for="$purchaseOrderLineSet" expr="eval:&quot;self.purchaseOrder.statusSelect in (3,4) AND (self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
 	</action-attrs>
@@ -275,7 +275,7 @@
 		<attribute name="hidden" for="cancelManageExpenseLines" expr="eval:false"/>
 		<attribute name="hidden" for="$expenseLineSet" expr="eval:false"/>
 		<attribute name="value" for="$expenseLineSet" expr="eval:null"/>
-		<attribute name="title" for="$expenseLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="title" for="$expenseLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
 		<attribute name="domain" for="$expenseLineSet" expr="eval:&quot;self.expense.statusSelect in (3,4)  AND self.project is null&quot;"/>
 	</action-attrs>
 	
@@ -286,7 +286,7 @@
 		<attribute name="hidden" for="cancelManageExpenseLines" expr="eval:false"/>
 		<attribute name="hidden" for="$expenseLineSet" expr="eval:false"/>
 		<attribute name="value" for="$expenseLineSet" expr="eval:false"/>
-		<attribute name="title" for="$expenseLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="title" for="$expenseLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
 		<attribute name="domain" for="$expenseLineSet" expr="eval:&quot;self.expense.statusSelect in (3,4) AND self.project.id = :id&quot;" if="!isShowPhasesElements"/>
 		<attribute name="domain" for="$expenseLineSet" expr="eval:&quot;self.expense.statusSelect in (3,4) AND (self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
 	</action-attrs>
@@ -369,7 +369,7 @@
 		<attribute name="hidden" for="cancelManageCustomerInvoiceLines" expr="eval:false"/>
 		<attribute name="hidden" for="$customerInvoiceLineSet" expr="eval:false"/>
 		<attribute name="value" for="$customerInvoiceLineSet" expr="eval:null"/>
-		<attribute name="title" for="$customerInvoiceLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="title" for="$customerInvoiceLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
 		<attribute name="domain" for="$customerInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 3 AND self.invoice.partner = :clientPartner AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;"/>
 	</action-attrs>
 	
@@ -380,7 +380,7 @@
 		<attribute name="hidden" for="cancelManageCustomerInvoiceLines" expr="eval:false"/>
 		<attribute name="hidden" for="$customerInvoiceLineSet" expr="eval:false"/>
 		<attribute name="value" for="$customerInvoiceLineSet" expr="eval:null"/>
-		<attribute name="title" for="$customerInvoiceLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="title" for="$customerInvoiceLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
 		<attribute name="domain" for="$customerInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 3 AND self.project.id = :id AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;" if="!isShowPhasesElements"/>
 		<attribute name="domain" for="$customerInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 3 AND (self.project.id = :id OR self.project.parentProject.id = :id) AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;" if="isShowPhasesElements"/>
 	</action-attrs>
@@ -401,7 +401,7 @@
 		<attribute name="hidden" for="cancelManageSupplierInvoiceLines" expr="eval:false"/>
 		<attribute name="hidden" for="$supplierInvoiceLineSet" expr="eval:false"/>
 		<attribute name="value" for="$supplierInvoiceLineSet" expr="eval:null"/>
-		<attribute name="title" for="$supplierInvoiceLineSet" expr="eval:'Select lines to add'"/>
+		<attribute name="title" for="$supplierInvoiceLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
 		<attribute name="domain" for="$supplierInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 1 AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;"/>
 	</action-attrs>
 	
@@ -412,7 +412,7 @@
 		<attribute name="hidden" for="cancelManageSupplierInvoiceLines" expr="eval:false"/>
 		<attribute name="hidden" for="$supplierInvoiceLineSet" expr="eval:false"/>
 		<attribute name="value" for="$supplierInvoiceLineSet" expr="eval:null"/>
-		<attribute name="title" for="$supplierInvoiceLineSet" expr="eval:'Select lines to unlink'"/>
+		<attribute name="title" for="$supplierInvoiceLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
 		<attribute name="domain" for="$supplierInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 1 AND self.project.id = :id AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;" if="!isShowPhasesElements"/>
 		<attribute name="domain" for="$supplierInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 1 AND (self.project.id = :id OR self.project.parentProject.id = :id) AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;" if="isShowPhasesElements"/>
 	</action-attrs>

@@ -195,6 +195,8 @@
 "Sale order lines","Lignes de commande",,
 "Sale order lines Priority","Lignes de Devis/Cmde client : priorité",,
 "See Linked Timesheet Lines","Voir les lignes de feuille de temps liées",,
+"Select lines to add","Selectionnez des lignes à ajouter",,
+"Select lines to unlink","Selectionnez des lignes à délier",,
 "Show expense order lines related to the project","Afficher les lignes de notes de frais relatives au projet",,
 "Show production orders related to the project","Afficher les ordres de production relatifs au projet",,
 "Show purchase invoice line related to the project","Afficher les lignes de factures fournisseurs relatives au projet",,
