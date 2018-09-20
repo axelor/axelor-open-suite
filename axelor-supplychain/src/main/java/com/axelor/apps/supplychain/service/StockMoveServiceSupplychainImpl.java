@@ -218,10 +218,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     List<StockMoveLine> subLines = new ArrayList<StockMoveLine>();
     for (StockMoveLine packLine : moveLines) {
-      if (packLine != null 
-    		  && packLine.getLineTypeSelect() != null 
-    		  && packLine.getLineTypeSelect() == 2 
-    		  && packLine.getSubLineList() != null) {
+      if (packLine != null
+          && packLine.getLineTypeSelect() != null
+          && packLine.getLineTypeSelect() == 2
+          && packLine.getSubLineList() != null) {
         packLine.getSubLineList().removeIf(it -> it.getId() != null && !moveLines.contains(it));
         subLines.addAll(packLine.getSubLineList());
       }

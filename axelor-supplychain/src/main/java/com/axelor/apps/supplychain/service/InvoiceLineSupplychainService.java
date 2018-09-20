@@ -189,15 +189,15 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-	
-	Map<String, Object> productInformation = new HashMap<>();
-	  
+
+    Map<String, Object> productInformation = new HashMap<>();
+
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     Integer sequence = invoiceLine.getSequence();
     if (sequence == null) {
-    	sequence = 0;
+      sequence = 0;
     }
-    
+
     if (sequence == 0 && invoice.getInvoiceLineList() != null) {
       sequence = invoice.getInvoiceLineList().size();
       invoiceLine.setSequence(sequence);
@@ -276,7 +276,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
               public List<InvoiceLine> creates() throws AxelorException {
 
                 InvoiceLine invoiceLine = this.createInvoiceLine();
-
+                invoiceLine.setInvoice(null); // Enable line to be added on main o2m
                 List<InvoiceLine> lines = new ArrayList<>();
                 lines.add(invoiceLine);
 
@@ -295,9 +295,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       productInformation.put("totalPack", BigDecimal.ZERO);
       invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
     }
-    
+
     productInformation.putAll(super.fillProductInformation(invoice, invoiceLine));
-    
+
     return productInformation;
   }
 

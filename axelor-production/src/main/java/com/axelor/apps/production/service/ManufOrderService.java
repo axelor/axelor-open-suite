@@ -76,7 +76,7 @@ public interface ManufOrderService {
   @Transactional
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 
-  public String getManufOrderSeq() throws AxelorException;
+  public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException;
 
   public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
 

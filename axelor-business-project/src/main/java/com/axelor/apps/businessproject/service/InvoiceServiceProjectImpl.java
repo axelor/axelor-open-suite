@@ -48,7 +48,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
-	  InvoiceLineService invoiceLineService) {
+      InvoiceLineService invoiceLineService) {
     super(
         validateFactory,
         ventilateFactory,
