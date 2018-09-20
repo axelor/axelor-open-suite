@@ -615,7 +615,7 @@
 		<view-param name="popup-save" value="true"/>
 		<view-param name="show-confirm" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
-		<context name="_project" expr="eval:__self__"/>
+		<context name="_project" expr="eval:__this__"/>
 	</action-view>
 
 	<action-view name="action-project-open-popup-select-users" title="Select Users" model="com.axelor.apps.base.db.Wizard">
