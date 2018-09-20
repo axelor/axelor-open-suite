@@ -61,6 +61,7 @@
 - Project : add 'Task invoicing' table in financial report.
 - SALE ORDER : add column availablity qty of product on grid view displayed in popup when click on select button on m2o product.
 - SaleOrder : modify the invoice generation from Sale Order.
+- Manuf Order : Apply domain on clientPartner and saleOrder & Assign them while generating manufOrder from saleOrder.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
