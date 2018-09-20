@@ -59,6 +59,7 @@
 - Product : Remove 'isPack' field and update productTypeSelect selection to add it.
 - STOCK MOVE : add column availablity qty of product on grid view displayed in popup when click on select button on m2o product.
 - Project : add 'Task invoicing' table in financial report.
+- Manuf Order : Apply domain on clientPartner and saleOrder & Assign them while generating manufOrder from saleOrder.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
