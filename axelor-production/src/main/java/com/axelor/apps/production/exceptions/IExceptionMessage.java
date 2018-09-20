@@ -61,6 +61,8 @@ public interface IExceptionMessage {
       "You must configure a finished products default stock location for company %s." /*)*/;
   static final String PRODUCTION_CONFIG_5 = /*$$(*/
       "You must configure a component default stock location for company %s." /*)*/;
+  static final String PRODUCTION_CONFIG_MISSING_MANUF_ORDER_SEQ = /*$$(*/
+      "You must configure a sequence for manufacturing order for company %s" /*)*/;
 
   /** Manuf Order Controller */
   static final String MANUF_ORDER_1 = /*$$(*/

@@ -19,8 +19,8 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -32,10 +32,12 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
+import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -322,8 +324,14 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException {
 
-    String seq =
-        sequenceService.getSequenceNumber(SequenceRepository.MANUF_ORDER, manufOrder.getCompany());
+    ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
+    ProductionConfig productionConfig =
+        productionConfigService.getProductionConfig(manufOrder.getCompany());
+    Sequence sequence =
+        productionConfigService.getManufOrderSequence(
+            productionConfig, manufOrder.getWorkshopStockLocation());
+
+    String seq = sequenceService.getSequenceNumber(sequence);
 
     if (seq == null) {
       throw new AxelorException(
