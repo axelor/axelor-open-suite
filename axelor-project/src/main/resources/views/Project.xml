@@ -5,7 +5,7 @@
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
-			<button name="projectPlanning" title="Project planning" onClick="action-project-open-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
+			<button name="projectPlanning" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 		</toolbar>
 		<menubar>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
