@@ -57,12 +57,13 @@
 - Project Business Generator: when generating phases by lines, product's task templates are added to each phase.
 - Project: Move tasks menu entry to root menu and move tasks historical menu entry in historical submenu.
 - Product : Remove 'isPack' field and update productTypeSelect selection to add it.
-- STOCK MOVE : add column availablity qty of product on grid view displayed in popup when click on select button on m2o product.
+- STOCK MOVE : add column availability qty of product on grid view displayed in popup when click on select button on m2o product.
 - Project : add 'Task invoicing' table in financial report.
-- SALE ORDER : add column availablity qty of product on grid view displayed in popup when click on select button on m2o product.
+- SALE ORDER : add column availability qty of product on grid view displayed in popup when click on select button on m2o product.
 - SaleOrder : modify the invoice generation from Sale Order.
 - Manuf Order : Apply domain on clientPartner and saleOrder & Assign them while generating manufOrder from saleOrder.
 - PROJECT : add translations on project view.
+- STOCK MOVE : add column availability qty of selected product on grid view displayed in popup when click on select button on m2o tracking number.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
