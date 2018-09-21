@@ -66,6 +66,7 @@
 - STOCK MOVE : add column availability qty of selected product on grid view displayed in popup when click on select button on m2o tracking number.
 - New field workshop on production process, bill of material and manufacturing order.
 - Manufacturing order sequence is now configured in company config, and can be configured by workshop.
+- Studio: Add description field in workflow
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
