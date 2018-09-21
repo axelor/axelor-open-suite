@@ -114,10 +114,10 @@ public class MoveTemplateController {
     }
   }
 
-  public void setIsValid(ActionRequest request, ActionResponse response){
+  public void setIsValid(ActionRequest request, ActionResponse response) {
     MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
-    if(!moveTemplate.getIsValid()) {
-      for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+    if (!moveTemplate.getIsValid()) {
+      for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
         line.setIsValid(false);
       }
       response.setValue("moveTemplateLineList", moveTemplate.getMoveTemplateLineList());

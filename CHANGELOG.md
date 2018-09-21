@@ -1,4 +1,12 @@
 # Changelog
+## [5.0.6] - Unreleased
+##Features
+
+## Improvements
+
+## Bug Fixes
+- Removed 'cachable' from all extended apps. 
+
 ## [5.0.5] - 2018-09-19
 ##Features
 - Add Data Backup and Restore
