@@ -74,7 +74,7 @@ public class MenuBuilderController {
     values.put("mobile", menu.getMobile());
     values.put("hidden", menu.getHidden());
 
-    if (menu.getAction() != null && menu.getAction().getType().contentEquals("action-view")) {
+    if (menu.getAction() != null && menu.getAction().getType().equals("action-view")) {
       ActionBuilder actionBuilder = menuBuilderService.createActionBuilder(menu.getAction());
       if (actionBuilder != null) {
         values.put("actionBuilder", actionBuilder);

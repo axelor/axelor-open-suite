@@ -20,6 +20,7 @@ package com.axelor.studio.service.builder;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.studio.db.ActionBuilder;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -39,32 +40,31 @@ public class ActionBuilderService {
   @Transactional
   public MetaAction build(ActionBuilder builder) {
 
-    if (builder.getTypeSelect() < 2
+    if (builder == null) {
+      return null;
+    }
+
+    Integer typeSelect = builder.getTypeSelect();
+    log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
+
+    if (typeSelect < ActionBuilderRepository.TYPE_SCRIPT
         && (builder.getLines() == null || builder.getLines().isEmpty())) {
       return null;
     }
 
     MetaAction metaAction = null;
 
-    switch (builder.getTypeSelect()) {
-      case 2:
-        metaAction = actionScriptBuilderService.build(builder);
-        break;
-      case 3:
-        metaAction = actionViewBuilderService.build(builder);
-        break;
-      case 4:
-        metaAction = actionEmailBuilderService.build(builder);
-        break;
-      default:
-        break;
+    if (typeSelect <= ActionBuilderRepository.TYPE_SCRIPT) {
+      metaAction = actionScriptBuilderService.build(builder);
+    } else if (typeSelect == ActionBuilderRepository.TYPE_VIEW) {
+      metaAction = actionViewBuilderService.build(builder);
+    } else if (typeSelect == ActionBuilderRepository.TYPE_EMAIL) {
+      metaAction = actionEmailBuilderService.build(builder);
     }
 
     if (builder.getMetaModule() != null) {
       metaAction.setModule(builder.getMetaModule().getName());
     }
-
-    log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
 
     MetaStore.clear();
 

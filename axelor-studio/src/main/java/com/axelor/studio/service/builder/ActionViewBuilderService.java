@@ -36,6 +36,10 @@ public class ActionViewBuilderService {
 
   public MetaAction build(ActionBuilder builder) {
 
+    if (builder == null) {
+      return null;
+    }
+
     List<ActionBuilderView> views = builder.getActionBuilderViews();
     if (views == null || views.isEmpty()) {
       return null;

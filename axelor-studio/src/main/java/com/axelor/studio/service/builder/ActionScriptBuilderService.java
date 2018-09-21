@@ -26,6 +26,7 @@ import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.repo.ActionBuilderLineRepository;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.filter.FilterSqlService;
 import com.axelor.studio.service.wkf.WkfTrackingService;
@@ -67,7 +68,7 @@ public class ActionScriptBuilderService {
     String lang = "js";
     String transactional = "true";
 
-    if (builder.getTypeSelect() == 2) {
+    if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SCRIPT) {
       code = "\n" + builder.getScriptText();
       if (builder.getScriptType() == 1) {
         lang = "groovy";
@@ -109,9 +110,11 @@ public class ActionScriptBuilderService {
     stb.append(format("var ctx = $request.context;", level));
 
     String targetModel =
-        builder.getTypeSelect() == 0 ? builder.getTargetModel() : builder.getModel();
+        builder.getTypeSelect() == ActionBuilderRepository.TYPE_CREATE
+            ? builder.getTargetModel()
+            : builder.getModel();
 
-    if (builder.getTypeSelect() == 0) {
+    if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_CREATE) {
       isCreate = true;
       addCreateCode(builder.getIsJson(), stb, level, targetModel);
       if (builder.getOpenRecord()) {
