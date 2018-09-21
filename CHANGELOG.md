@@ -1,6 +1,15 @@
 # Changelog
-## [Unreleased 5.0.5]	
-##Features
+## [5.0.6] - Unreleased
+## Features
+
+## Improvements
+
+## Bug Fixes
+- Removed 'cachable' from all extended apps.
+- Vehicle : modify vehicleState from reference field to string and remove vehicleState model 
+
+## [5.0.5] - 2018-09-19
+## Features
 - Add Data Backup and Restore
 - Add unitary tests for password
 - Module for mobile app added
@@ -25,12 +34,16 @@
 - Improve account management views.
 - Add supplier invoice number in supplier invoices grid.
 - Add column description in move line grid views.
+- Make the boolean IsValid set to false when a line is changed in MoveTemplate.
+- Can now select an ahead date in the Move From Template view wizard.
+- Add a "Generate the pdf printing during sale order finalization" to configuration of Sale app.
 - Allow manual creation of tracking number on stock move lines.
 - Direct debit batch: filter out payment schedule lines with inactive partner bank details.
 - Solved an issue linked to having a manufacturing order with a planned quantity of 0.
 - Fix mass invoicing of stock moves sometimes opening up unrelated forms when trying to open a single stock move for more details.
 - Improve exception handling in supplychain demo.
 - Account: use partner name as default account name when creating from partner's account configuration screen
+- Added labels to several buttons, especially in the opportunity views.
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -62,6 +75,7 @@
 - Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
 - Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
 - Removed editable from some reference fields in stock form views. 
+- Now displays purchase orders in the Activity panel of a partner form for suppliers and carriers.
 - Vehicle : rename driverContact to driverPartner & filter it.
 - Vehicle : Card View - display vehicle company and driver  
 - Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine. 
@@ -75,7 +89,7 @@
 - Fixed wrong calculation of necessary scale for decimal result when inverting a unit convertion coefficient.
 - Stock move lines can no longer be created from nothing (i.e not from a stock move or such) as it has no functionnal use and ensues anomalies.
 - Data model fix: add missing mappedBy in operation order `inStockMoveLineList`.
-- Vehicle : modify vehicleState from reference field to string and remove vehicleState model 
+- Manuf Order: fetch sequence using company.
 
 ## [5.0.4] - 2018-07-26
 ## Features
@@ -144,7 +158,6 @@
 - Fix total amount reseting on save in bank orders.
 - Configurator: fix using M2O in formula.
 - Tracking number search: Fix stock location binding.
-
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
@@ -858,7 +871,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...dev
+[5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...v5.0.2
