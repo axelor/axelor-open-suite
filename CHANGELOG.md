@@ -67,6 +67,7 @@
 - New field workshop on production process, bill of material and manufacturing order.
 - Manufacturing order sequence is now configured in company config, and can be configured by workshop.
 - Studio: Add description field in workflow
+- Business Project : Link project or phase and price list to invoice and invoice line generated from invoicing project.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
