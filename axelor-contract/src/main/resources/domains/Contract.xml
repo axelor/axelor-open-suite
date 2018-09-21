@@ -47,6 +47,8 @@
 		<one-to-many name="versionHistory" ref="com.axelor.apps.contract.db.ContractVersion" mappedBy="contractHistory" orderBy="-createdOn"/>
 		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
 
+		<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
+
 		<extra-code><![CDATA[
             static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";
             static final String SUPPLIER_CONTRACT_SEQUENCE = "supplierContract";
