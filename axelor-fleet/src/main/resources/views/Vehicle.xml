@@ -26,7 +26,7 @@
 	     		<field name="name" readonly="true"/>
 	    		<field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
 	    		<field name="vehicleTagSet" widget="TagSelect"  /> 
-	    		<field name="vehicleState" /> 
+	    		<field name="vehicleState" widget="html"/> 
 	       </panel>
 	       <panel colSpan="12" title="General Properties" >
 	       		<panel itemSpan="12">
@@ -107,8 +107,7 @@
 			  <div class="span8">
 			    <span>{{plateNo}}<br/>
 			    {{company.name}}<br/>
-          {{driverPartner.name}}<br/>
-			    {{vehicleState.name}}</span>
+			    {{driverPartner.fullName}}<br/></span>
 			  </div>
 			</div>
 		]]>

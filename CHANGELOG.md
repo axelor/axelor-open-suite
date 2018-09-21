@@ -1,14 +1,15 @@
 # Changelog
 ## [5.0.6] - Unreleased
-##Features
+## Features
 
 ## Improvements
 
 ## Bug Fixes
-- Removed 'cachable' from all extended apps. 
+- Removed 'cachable' from all extended apps.
+- Vehicle : modify vehicleState from reference field to string and remove vehicleState model 
 
 ## [5.0.5] - 2018-09-19
-##Features
+## Features
 - Add Data Backup and Restore
 - Add unitary tests for password
 - Module for mobile app added
