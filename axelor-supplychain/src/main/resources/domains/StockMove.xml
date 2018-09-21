@@ -8,11 +8,16 @@
   <entity name="StockMove" lang="java">
   
     <!-- Onglet Configuration -->
-    <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
-    <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
 
-    <finder-method name="findAllBySaleOrderAndStatus" using="saleOrder,statusSelect" all="true"/>
-    
+    <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
+
+    <extra-code>
+    <![CDATA[
+		public static final String ORIGIN_SALE_ORDER = "com.axelor.apps.sale.db.SaleOrder";
+		public static final String ORIGIN_PURCHASE_ORDER = "com.axelor.apps.purchase.db.PurchaseOrder";
+    ]]>
+    </extra-code>
+
   </entity>
 </domain-models>

@@ -1,26 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
-    <grid name="consumption-line-grid" title="Consumption Lines" model="com.axelor.apps.contract.db.ConsumptionLine">
-    	<hilite if="isError" background="danger"/>
-    	<field name="consumptionLineDate" />
-        <field name="reference" />
-        <field name="product" />
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+	http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="consumption-line-grid" title="Consumption Lines"
+          model="com.axelor.apps.contract.db.ConsumptionLine"
+          orderBy="lineDate">
+        <hilite if="isError" background="danger"/>
+        <hilite if="isInvoiced" background="success"/>
+        <field name="lineDate"/>
+        <field name="reference"/>
+        <field name="product"/>
         <field name="qty"/>
-        <field name="unit" />
+        <field name="unit"/>
+        <field name="isInvoiced" hidden="true"/>
+        <field name="isError" hidden="true"/>
     </grid>
 
-    <form name="consumption-line-form" title="Consumption Line" model="com.axelor.apps.contract.db.ConsumptionLine">
-        <panel>
-        	<field name="consumptionLineDate" required="true" />
-        	<field name="product" required="true" />
-        	<field name="reference" />
-        	<field name="unit" />
+    <form name="consumption-line-form" title="Consumption Line"
+          model="com.axelor.apps.contract.db.ConsumptionLine">
+        <panel readonlyIf="isInvoiced">
+            <field name="product" required="true" canEdit="false"
+                   onChange="action-consumption-line-method-change-product"/>
+            <field name="lineDate" required="true"/>
+            <field name="reference"/>
+            <field name="unit" canEdit="false"/>
             <field name="qty"/>
-            <field name="isInvoiced" readonly="true" />
-            <field name="isError" readonly="true" />
+            <field name="isInvoiced" readonly="true" colSpan="3"/>
+            <field name="isError" readonly="true" colSpan="3"/>
         </panel>
     </form>
-    
+
+    <action-method name="action-consumption-line-method-change-product">
+        <call class="com.axelor.apps.contract.web.ConsumptionLineController"
+              method="changeProduct"/>
+    </action-method>
+
 </object-views>

@@ -210,7 +210,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             StockMoveRepository.TYPE_OUTGOING);
 
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
-    stockMove.setSaleOrder(saleOrder);
+    stockMove.setOriginId(saleOrder.getId());
+    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_SALE_ORDER);
+    stockMove.setOrigin(saleOrder.getSaleOrderSeq());
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
 
@@ -307,18 +309,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (this.isStockMoveProduct(saleOrderLine)) {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
-      BigDecimal priceDiscounted;
-      if (!saleOrderLine.getSaleOrder().getInAti()) {
-        priceDiscounted = saleOrderLine.getPriceDiscounted();
-      } else {
-        priceDiscounted =
-            saleOrderLine
-                .getPriceDiscounted()
-                .divide(
-                    saleOrderLine.getTaxLine().getValue().add(BigDecimal.ONE),
-                    2,
-                    BigDecimal.ROUND_HALF_UP);
-      }
+      BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
+
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convertWithProduct(
@@ -356,9 +348,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
       }
 
-      stockMoveLine.setLineTypeSelect(saleOrderLine.getTypeSelect());
-      stockMoveLine.setPackPriceSelect(saleOrderLine.getPackPriceSelect());
-      stockMoveLine.setIsSubLine(saleOrderLine.getIsSubLine());
+      updatePackInfo(saleOrderLine, stockMoveLine);
 
       return stockMoveLine;
     } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
@@ -376,11 +366,18 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               null);
 
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+      updatePackInfo(saleOrderLine, stockMoveLine);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
 
       return stockMoveLine;
     }
     return null;
+  }
+
+  private void updatePackInfo(SaleOrderLine saleOrderLine, StockMoveLine stockMoveLine) {
+    stockMoveLine.setLineTypeSelect(saleOrderLine.getTypeSelect());
+    stockMoveLine.setPackPriceSelect(saleOrderLine.getPackPriceSelect());
+    stockMoveLine.setIsSubLine(saleOrderLine.getIsSubLine());
   }
 
   @Override

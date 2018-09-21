@@ -399,7 +399,9 @@
 
     <action-attrs name="action-purchase-order-attrs-in-ati">
     	<attribute name="hidden" for="purchaseOrderLineList.exTaxTotal" expr="inAti"/>
+    	<attribute name="hidden" for="purchaseOrderLineList.price" expr="inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="purchaseOrderLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
     									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
     </action-attrs>
@@ -541,8 +543,8 @@
 	<action-view name="action-purchase-order-view-stock-moves" model="com.axelor.apps.stock.db.StockMove" title="Stock move">
 		<view name="stock-move-grid" type="grid"/>
 		<view name="stock-move-form" type="form"/>
-		<domain>self.purchaseOrder.id = :id</domain>
-		<context name="id" expr="eval: id"/>
+		<domain>self.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND self.originId = :purchaseOrder</domain>
+		<context name="purchaseOrder" expr="eval: __self__.id"/>
 	</action-view>
 
   	<action-validate name="action-purchase-order-validate-stock-location">

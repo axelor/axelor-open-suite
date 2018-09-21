@@ -39,6 +39,18 @@
 	    <field name="$stockMax" title="Max stock" type="integer" />
     </grid>
     
+    <grid name="stock-move-line-product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="100"/>
+	    <field name="name" width="300"/>
+	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
+	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
+	    <field name="productTypeSelect" width="100"/>
+	   	<field name="salePrice" x-scale="2" />
+	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
+	    <field name="internalDescription" widget="html" width="400" />
+	    <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
+	</grid>
+    
     <form name="stock-product-form" title="Product" model="com.axelor.apps.base.db.Product" width="large"
     	onLoad="action-stock-product-method-set-stock-per-day">
     	<panel name="main">

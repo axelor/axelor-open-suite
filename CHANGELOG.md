@@ -43,7 +43,29 @@
 - TIMELINE : Generate lines from Project Planning
 - Account Moves: ability to set currency, currency rate and currency amount for manual moves.
 - PROJECT : Add new o2m 'manualElementList' and display it on financial report.
+- PROJECT : Add translation of financial report.
 - Manuf Order: show in toConsumeProdProductList if there is product missing in stock.
+- Manuf Order: show in diff O2M the planned and real quantities.
+- Business Project : Fill default values from Project while generating the sale Quotation.
+- Business Project : Enhancement of task and project view.
+- Project : Change invoicing project view.
+- Stock Move : Add Wizard for tracking number
+- Production: new report showing raw material requirements.
+- Business Project : add new m2m 'teamTaskSet' in invoicing project.
+- Add translation of project view.
+- New boolean for manuf order printing to choose whether planned date needs to be showed.
+- Project Business Generator: when generating phases by lines, product's task templates are added to each phase.
+- Project: Move tasks menu entry to root menu and move tasks historical menu entry in historical submenu.
+- Product : Remove 'isPack' field and update productTypeSelect selection to add it.
+- STOCK MOVE : add column availability qty of product on grid view displayed in popup when click on select button on m2o product.
+- Project : add 'Task invoicing' table in financial report.
+- SALE ORDER : add column availability qty of product on grid view displayed in popup when click on select button on m2o product.
+- SaleOrder : modify the invoice generation from Sale Order.
+- Manuf Order : Apply domain on clientPartner and saleOrder & Assign them while generating manufOrder from saleOrder.
+- PROJECT : add translations on project view.
+- STOCK MOVE : add column availability qty of selected product on grid view displayed in popup when click on select button on m2o tracking number.
+- New field workshop on production process, bill of material and manufacturing order.
+- Manufacturing order sequence is now configured in company config, and can be configured by workshop.
 - Studio: Add description field in workflow
 
 ## Improvements
@@ -64,6 +86,14 @@
 - Set project on invoice and invoice line when generating it from sale order and stock move.
 - Set project on purchase order and purchase order lines when generating it from a sale order.
 - Improve account management views.
+- Rework ManufOrder printing.
+- Add new Origin field in stock moves and remove fields sale order and purchase order.
+- Added nameColumn for ExpenseLine and ProjectPlanningTime.
+- Change unique constraints in analytic account move line.
+- ManufOrder: Change quantity also in stock move on updating planned quantity.
+- Project: Reorganization of Resource Booking form view.
+- Tweaks on manuf order report.
+
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -78,16 +108,29 @@
 - Fix invoiced amount W.T update on sale and purchase order.
 - Fix social network icons for employee
 - Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
+- Project: Fix financial report view.
+- Fix stock move generation with pack lines from sale order
+- Pack feature: Display only  pack line for partially invoicing and fix quantity for partially invoicing lines on pack lines.
+- MRP: Fix concurrent modification exception.
+- Business Project : Fix Financial report.
+- Pack feature: Fix invoice subline generation and sequence. 
+- Pack feature: Fix type selection, pack type can be only selected based on product on Invoice and SaleOrder. Fixed invoice ventilation based on PackPriceSelect criteria. 
+- Project : Link project from purchase line while invoicing from stock move
+- PROJECT : Fix team assignment on task creation .
 
 ## [Unreleased 5.0.5]	
 ##Features
 - Add Data Backup and Restore
 - Add unitary tests for password
 - Module for mobile app added
+- Vehicle Fuel Log : add columns vehicle name, plate no, purchasePartner in grid view
+- Manufacturing orders can now be "permanent", quantity is set to 0. Regular orders cannot have quantity to 0 anymore.
+
 ## Improvements
 - Fleet app: added FR demo data
 - HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
+- Reworked ati sale orders/purchase orders/invoices.
 - Advanced export : code refactor and optimize the performance.
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
 - Configure BoM form: show sub bom list.
@@ -98,8 +141,15 @@
 - UserController: Improve exception handling.
 - Update translations.
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Improve account management views.
 - Add supplier invoice number in supplier invoices grid.
 - Add column description in move line grid views.
+- Allow manual creation of tracking number on stock move lines.
+- Direct debit batch: filter out payment schedule lines with inactive partner bank details.
+- Solved an issue linked to having a manufacturing order with a planned quantity of 0.
+- Fix mass invoicing of stock moves sometimes opening up unrelated forms when trying to open a single stock move for more details.
+- Improve exception handling in supplychain demo.
+- Account: use partner name as default account name when creating from partner's account configuration screen
 
 ## Bug Fixes
 - Fix on prod process report.
@@ -131,6 +181,20 @@
 - Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
 - Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
 - Removed editable from some reference fields in stock form views. 
+- Vehicle : rename driverContact to driverPartner & filter it.
+- Vehicle : Card View - display vehicle company and driver  
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine. 
+- Fix translation typo.
+- Add xml escape in configurator export.
+- StockRule : Sort Grid View according to Stock location, Product code, useCaseSelect ASC 
+- Warning message on missing weight unit is now shown only on delivery stock move.
+- Fixed unit conversion issues when calculating the cost price of a bill of material.
+- Add missing translations.
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine.
+- Fixed wrong calculation of necessary scale for decimal result when inverting a unit convertion coefficient.
+- Stock move lines can no longer be created from nothing (i.e not from a stock move or such) as it has no functionnal use and ensues anomalies.
+- Data model fix: add missing mappedBy in operation order `inStockMoveLineList`.
+- Manuf Order: fetch sequence using company.
 
 ## [5.0.4] - 2018-07-26
 ## Features

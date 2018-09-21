@@ -58,6 +58,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       Product product,
       String productName,
       BigDecimal price,
+      BigDecimal inTaxPrice,
       BigDecimal priceDiscounted,
       String description,
       BigDecimal qty,
@@ -79,6 +80,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         product,
         productName,
         price,
+        inTaxPrice,
         priceDiscounted,
         description,
         qty,
@@ -134,6 +136,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     if (saleOrderLine != null) {
       this.discountAmount = saleOrderLine.getDiscountAmount();
       this.price = saleOrderLine.getPrice();
+      this.inTaxPrice = saleOrderLine.getInTaxPrice();
       if (this.unit != null && !this.unit.equals(saleOrderLine.getUnit())) {
         this.qty =
             unitConversionService.convertWithProduct(
@@ -151,6 +154,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();
+      this.inTaxPrice = purchaseOrderLine.getInTaxPrice();
       if (this.unit != null && !this.unit.equals(purchaseOrderLine.getUnit())) {
         this.qty =
             unitConversionService.convertWithProduct(
@@ -203,13 +207,25 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     } else if (stockMoveLine != null) {
 
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+
       this.price =
-          Beans.get(InvoiceLineService.class)
-              .getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+          invoiceLineService.getExTaxUnitPrice(
+              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+      this.inTaxPrice =
+          invoiceLineService.getInTaxUnitPrice(
+              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+
       this.price =
           unitConversionService.convertWithProduct(
               stockMoveLine.getUnit(), this.unit, this.price, product);
+      this.inTaxPrice =
+          unitConversionService.convertWithProduct(
+              stockMoveLine.getUnit(), this.unit, this.inTaxPrice, product);
+
       invoiceLine.setPrice(price);
+      invoiceLine.setInTaxPrice(inTaxPrice);
     }
 
     return invoiceLine;
@@ -291,14 +307,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
 
-      if (isSubLine
-          && saleOrderLine.getParentLine() != null
-          && saleOrderLine.getParentLine().getPackPriceSelect()
-              == InvoiceLineRepository.PACK_PRICE_ONLY) {
+      if (isSubLine && packPriceSelect == InvoiceLineRepository.PACK_PRICE_ONLY) {
         return false;
       }
       if (typeSelect == InvoiceLineRepository.TYPE_PACK
-          && saleOrderLine.getPackPriceSelect() == InvoiceLineRepository.SUBLINE_PRICE_ONLY) {
+          && packPriceSelect == InvoiceLineRepository.SUBLINE_PRICE_ONLY) {
         return false;
       }
     }

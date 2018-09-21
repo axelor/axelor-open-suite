@@ -15,6 +15,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="statusSelect"/>
+        <field name="origin"/>
         <field name="typeSelect" hidden="true" />
         <field name="toAddressStr" hidden="true" form-view="address-form" grid-view="address-grid"/>
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
@@ -36,6 +37,7 @@
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
+        <field name="origin"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirection" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -55,6 +57,7 @@
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
+        <field name="origin"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirection" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -201,7 +204,7 @@
                     </field>
                 </panel>
 							<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
-							<field name="signatoryUser"/>
+							<field name="signatoryUser" canEdit="false" />
 							<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
 							<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
 
@@ -216,14 +219,13 @@
                 <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
               </panel>
               <panel>
-								<field name="realStockMoveAutomaticMail"/>
-								<field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
-							</panel>
+                <field name="realStockMoveAutomaticMail"/>
+                <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+              </panel>
             </panel>
 
             <panel title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-                <field name="saleOrder" onChange="action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1" grid-view="sale-order-grid" form-view="sale-order-form" canEdit="false"/>
-                <field name="purchaseOrder" readonlyIf="statusSelect != 1" grid-view="purchase-order-grid" form-view="purchase-order-form" canEdit="false"/>
+                <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
                 <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false"/>
                 <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
             </panel>
@@ -361,8 +363,6 @@
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move lines')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move lines')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move lines')" if="typeSelect == 3"/>
-    	<attribute name="hidden" for="stockMoveLineList.unitPriceUntaxed" expr="eval: saleOrder?.inAti"/>
-    	<attribute name="hidden" for="stockMoveLineList.unitPriceTaxed" expr="eval: !saleOrder?.inAti"/>
     </action-attrs>
 
     <action-attrs name="action-stock-move-generate-invoice-button">

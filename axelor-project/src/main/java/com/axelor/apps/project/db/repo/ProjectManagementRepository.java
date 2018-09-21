@@ -62,8 +62,10 @@ public class ProjectManagementRepository extends ProjectRepository {
 
     if (project.getSynchronize()) {
       Team team = project.getTeam();
-      team.clearMembers();
-      project.getMembersUserSet().forEach(team::addMember);
+      if (team != null) {
+        team.clearMembers();
+        project.getMembersUserSet().forEach(team::addMember);
+      }
     }
     return super.save(project);
   }

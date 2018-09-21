@@ -22,6 +22,7 @@
     <boolean name="personalized" title="Personalized"/>
    	<decimal name="wasteRate" title="Waste rate (%)"/>
     <integer name="statusSelect" title="Status" readonly="true" selection="production.bill.of.material.status.select" default="1"/>
+		<many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
 
   	<one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheets" mappedBy="billOfMaterial"/>
 

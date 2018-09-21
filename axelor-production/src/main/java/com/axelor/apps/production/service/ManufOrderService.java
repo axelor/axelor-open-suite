@@ -76,7 +76,7 @@ public interface ManufOrderService {
   @Transactional
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 
-  public String getManufOrderSeq() throws AxelorException;
+  public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException;
 
   public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
 
@@ -92,12 +92,12 @@ public interface ManufOrderService {
 
   /**
    * Update planned qty in {@link ManufOrder#toConsumeProdProductList} and {@link
-   * ManufOrder#toProduceProdProductList}
+   * ManufOrder#toProduceProdProductList} then update quantity in stock move lines to match the new
+   * planned qty.
    *
    * @param manufOrder
-   * @return
    */
-  void updatePlannedQty(ManufOrder manufOrder);
+  void updatePlannedQty(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Update real qty in {@link ManufOrder#consumedStockMoveLineList} and {@link
@@ -105,7 +105,6 @@ public interface ManufOrderService {
    *
    * @param manufOrder
    * @param qtyToUpdate
-   * @return
    */
   void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException;
 

@@ -198,10 +198,11 @@
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
         </panel>
 
-		<panel name="subscriptionPanel" title="Subscription period" showIf="operationSubTypeSelect == 6">
-        	<field name="subscriptionFromDate" />
-        	<field name="subscriptionToDate" />
-        </panel>
+		<panel name="subscriptionPanel" title="Subscription period"
+			   showIf="[6, 7].includes(operationSubTypeSelect)">
+			<field name="subscriptionFromDate" />
+			<field name="subscriptionToDate" />
+		</panel>
 
 		<panel-tabs hideIf="partner == null">
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
@@ -688,7 +689,9 @@
 	
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
+    	<attribute name="hidden" for="invoiceLineList.price" expr="inAti"/>
     	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="invoiceLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
     </action-attrs>
