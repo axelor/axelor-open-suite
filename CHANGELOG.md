@@ -68,6 +68,7 @@
 - Manufacturing order sequence is now configured in company config, and can be configured by workshop.
 - Studio: Add description field in workflow
 - Group menu assistant: Add support for roles management.  
+- HR: replace the m2o 'user' field to m2o 'employee' field.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

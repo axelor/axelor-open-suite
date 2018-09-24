@@ -13,7 +13,7 @@
     <date name="fromDate" title="Date from" />
     <date name="toDate" title="Date to (Included)" />
     <string name="comments" title="Comments" large="true" multiline="true"/>
-    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
+    <many-to-one name="employee" ref="Employee" title="Employee" required="true"/>
     <boolean name="counted"/>
   </entity>
   

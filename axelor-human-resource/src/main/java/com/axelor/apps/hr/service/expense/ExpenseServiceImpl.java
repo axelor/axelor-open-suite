@@ -134,7 +134,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       analyticMoveLineList =
           analyticMoveLineService.generateLines(
-              expenseLine.getUser().getPartner(),
+              expenseLine.getEmployee().getContactPartner(),
               expenseLine.getExpenseProduct(),
               expense.getCompany(),
               expenseLine.getUntaxedAmount());
@@ -243,12 +243,12 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void validate(Expense expense) throws AxelorException {
 
-    if (expense.getUser().getEmployee() == null) {
+    if (expense.getEmployee() == null) {
       throw new AxelorException(
           expense,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-          expense.getUser().getFullName());
+          expense.getEmployee().getName());
     }
 
     if (expense.getPeriod() == null) {
@@ -263,12 +263,11 @@ public class ExpenseServiceImpl implements ExpenseService {
       for (ExpenseLine line : expense.getKilometricExpenseLineList()) {
         BigDecimal amount =
             Beans.get(KilometricService.class)
-                .computeKilometricExpense(line, expense.getUser().getEmployee());
+                .computeKilometricExpense(line, expense.getEmployee());
         line.setTotalAmount(amount);
         line.setUntaxedAmount(amount);
 
-        Beans.get(KilometricService.class)
-            .updateKilometricLog(line, expense.getUser().getEmployee());
+        Beans.get(KilometricService.class).updateKilometricLog(line, expense.getEmployee());
       }
       compute(expense);
     }
@@ -278,7 +277,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     expense.setValidatedBy(AuthUtils.getUser());
     expense.setValidationDate(appAccountService.getTodayDate());
 
-    PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+    PaymentMode paymentMode = expense.getEmployee().getContactPartner().getOutPaymentMode();
     expense.setPaymentMode(paymentMode);
 
     expenseRepository.save(expense);
@@ -352,12 +351,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     Account account = null;
     AccountConfig accountConfig = accountConfigService.getAccountConfig(expense.getCompany());
 
-    if (expense.getUser().getPartner() == null) {
+    if (expense.getEmployee().getContactPartner() == null) {
       throw new AxelorException(
           expense,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(com.axelor.apps.account.exception.IExceptionMessage.USER_PARTNER),
-          expense.getUser().getName());
+          expense.getEmployee().getName());
     }
 
     Move move =
@@ -367,9 +366,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 accountConfigService.getExpenseJournal(accountConfig),
                 accountConfig.getCompany(),
                 null,
-                expense.getUser().getPartner(),
+                expense.getEmployee().getContactPartner(),
                 moveDate,
-                expense.getUser().getPartner().getInPaymentMode(),
+                expense.getEmployee().getContactPartner().getInPaymentMode(),
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
     List<MoveLine> moveLines = new ArrayList<>();
@@ -382,11 +381,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     int expenseLineId = 1;
     Account employeeAccount =
         accountingSituationService.getEmployeeAccount(
-            expense.getUser().getPartner(), expense.getCompany());
+            expense.getEmployee().getContactPartner(), expense.getCompany());
     moveLines.add(
         moveLineService.createMoveLine(
             move,
-            expense.getUser().getPartner(),
+            expense.getEmployee().getContactPartner(),
             employeeAccount,
             expense.getInTaxTotal(),
             false,
@@ -417,7 +416,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       MoveLine moveLine =
           moveLineService.createMoveLine(
               move,
-              expense.getUser().getPartner(),
+              expense.getEmployee().getContactPartner(),
               account,
               exTaxTotal,
               true,
@@ -448,7 +447,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       MoveLine moveLine =
           moveLineService.createMoveLine(
               move,
-              expense.getUser().getPartner(),
+              expense.getEmployee().getContactPartner(),
               account,
               taxTotal,
               true,
@@ -519,7 +518,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     PaymentMode paymentMode = expense.getPaymentMode();
 
     if (paymentMode == null) {
-      paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+      paymentMode = expense.getEmployee().getContactPartner().getOutPaymentMode();
 
       if (paymentMode == null) {
         throw new AxelorException(
@@ -679,14 +678,14 @@ public class ExpenseServiceImpl implements ExpenseService {
         Beans.get(ExpenseRepository.class)
             .all()
             .filter(
-                "self.statusSelect = ?1 AND self.user.id = ?2",
+                "self.statusSelect = ?1 AND self.employee.user.id = ?2",
                 ExpenseRepository.STATUS_DRAFT,
                 user.getId())
             .order("-id")
             .fetchOne();
     if (expense == null) {
       expense = new Expense();
-      expense.setUser(user);
+      expense.setEmployee(user.getEmployee());
       Company company = null;
       if (user.getEmployee() != null && user.getEmployee().getMainEmploymentContract() != null) {
         company = user.getEmployee().getMainEmploymentContract().getPayCompany();
@@ -782,13 +781,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     LocalDate expenseDate = expenseLine.getExpenseDate();
-    if (expense.getUser() == null
-        || expense.getUser().getEmployee() == null
-        || expenseDate == null) {
+    if (expense.getEmployee() == null || expenseDate == null) {
       return kilometricAllowParamList;
     }
 
-    List<EmployeeVehicle> vehicleList = expense.getUser().getEmployee().getEmployeeVehicleList();
+    List<EmployeeVehicle> vehicleList = expense.getEmployee().getEmployeeVehicleList();
 
     for (EmployeeVehicle vehicle : vehicleList) {
       LocalDate startDate = vehicle.getStartDate();
@@ -822,11 +819,11 @@ public class ExpenseServiceImpl implements ExpenseService {
       expense = expenseRepository.find(expense.getId());
     }
 
-    if (expense.getUser() != null && expense.getUser().getEmployee() == null) {
+    if (expense.getEmployee() != null) {
       return kilometricAllowParamList;
     }
 
-    List<EmployeeVehicle> vehicleList = expense.getUser().getEmployee().getEmployeeVehicleList();
+    List<EmployeeVehicle> vehicleList = expense.getEmployee().getEmployeeVehicleList();
     LocalDate expenseDate = expenseLine.getExpenseDate();
 
     if (expenseDate == null) {

@@ -22,13 +22,12 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
@@ -59,7 +58,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   @Inject private ProductRepository productRepo;
 
-  @Inject private UserRepository userRepo;
+  @Inject private EmployeeRepository employeeRepo;
 
   @Override
   public BigDecimal getTaskPlannedHrs(TeamTask task) {
@@ -122,7 +121,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   public void addMultipleProjectPlanningTime(Map<String, Object> datas) throws AxelorException {
 
     if (datas.get("project") == null
-        || datas.get("user") == null
+        || datas.get("employee") == null
         || datas.get("fromDate") == null
         || datas.get("toDate") == null) {
       return;
@@ -143,10 +142,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       timePercent = Integer.parseInt(datas.get("timepercent").toString());
     }
 
-    objMap = (Map) datas.get("user");
-    User user = userRepo.find(Long.parseLong(objMap.get("id").toString()));
+    objMap = (Map) datas.get("employee");
+    Employee employee = employeeRepo.find(Long.parseLong(objMap.get("id").toString()));
 
-    if (user.getEmployee() == null) {
+    if (employee == null) {
       return;
     }
 
@@ -161,7 +160,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       activity = productRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
 
-    Employee employee = user.getEmployee();
     BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 
     while (fromDate.isBefore(toDate)) {
@@ -181,7 +179,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         planningTime.setTask(teamTask);
         planningTime.setProduct(activity);
         planningTime.setTimepercent(timePercent);
-        planningTime.setUser(user);
+        planningTime.setEmployee(employee);
         planningTime.setDate(date);
         planningTime.setProject(project);
         planningTime.setIsIncludeInTurnoverForecast(
