@@ -100,6 +100,21 @@
 	        <field name="productName" />
 	        <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="realQty" colSpan="3" onChange="action-stock-move-line-group-real-qty-onchange" />
+	        <spacer colSpan="6"/>
+			<field name="availableQty" readonly="true" hidden="true" colSpan="3"/>
+			<field name="availableQtyForProduct" readonly="true" hidden="true" colSpan="5"/>
+			<field name="availableStatus" readonly="true" hidden="true" colSpan="3">
+				<viewer><![CDATA[
+					<h4>
+						<span class="label label-success" style="font-weight:bold" ng-show="($number(record.availableQty) >= $number(record.realQty)) && record.product" x-translate>Available</span>
+						<span class="label label-info" style="font-weight:bold" ng-show="($number(record.availableQtyForProduct) >= $number(record.realQty)) && record.product" x-translate>Av. for product</span>
+						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product" x-translate>Missing</span> 
+						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product && !record.product.trackingNumberConfiguration">{{record.availableQty - record.realQty}}</span>
+						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.availableQtyForProduct - record.realQty}}</span>
+					</h4>
+				]]></viewer>
+			</field>
+			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
 			    <field name="reservedQty" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 	        <field name="unitPriceUntaxed" />
@@ -201,6 +216,19 @@
 	        <field name="stockMove.partner"/>
 			<field name="qty" colSpan="3" min="0" onChange="action-stock-move-line-group-qty-onchange" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="realQty" colSpan="3" min="0" onChange="action-stock-move-line-group-real-qty-onchange"/>
+	        <field name="availableQty" readonly="true" hidden="true" colSpan="3"/>
+			<field name="availableStatus" readonly="true" hidden="true" colSpan="3">
+				<viewer><![CDATA[
+					<h4>
+						<span class="label label-success" style="font-weight:bold" ng-show="($number(record.availableQty) >= $number(record.realQty)) && record.product" x-translate>Available</span>
+						<span class="label label-info" style="font-weight:bold" ng-show="($number(record.availableQtyForProduct) >= $number(record.realQty)) && record.product" x-translate>Av. for product</span>
+						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product" x-translate>Missing</span> 
+						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product && !record.product.trackingNumberConfiguration">{{record.availableQty - record.realQty}}</span>
+						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.availableQtyForProduct - record.realQty}}</span>
+					</h4>
+				]]></viewer>
+			</field>
+			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="unitPriceUntaxed"/>
        		<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
@@ -261,6 +289,7 @@
 		<action name="action-stock-move-line-qty-attrs"/>
 		<action name="action-stock-move-line-price-attrs-readonly" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-stock-move-subline-price-attrs-readonly" if="isSubLine &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+		<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
 	</action-group>
 
     <action-group name="action-group-stock-stockmoveline-product-onchange">
@@ -269,6 +298,7 @@
     	<action name="action-stock-move-line-compute-price"/>
     	<action name="action-stock-move-line-store-product-type"/>
     	<action name="action-stock-move-line-method-get-product-price" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+    	<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
     </action-group>
 
     <action-group name="action-group-stock-move-line-on-new">
@@ -284,6 +314,7 @@
     <action-attrs name="action-stock-move-line-attrs">
       <attribute name="hidden" for="countryOfOrigin"
         expr="eval: __parent__?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING"/>
+	  <attribute name="hidden" for="availableQty,availableQtyForProduct,availableStatus" expr="_parent?.statusSelect > 2"/>
     </action-attrs>
 
     <action-group name="action-stock-move-line-group-qty-onchange">
@@ -305,7 +336,7 @@
 	    <field name="qty" expr="1"/>
 	    <field name="realQty" expr="1"/>
 	</action-record>
-
+	
     <action-group name="action-stock-move-line-group-real-qty-onchange">
         <action name="action-stock-move-line-compute-price"/>
         <action name="action-stock-move-line-record-total-net-mass"/>
@@ -409,6 +440,10 @@
 		<error message="Split quantity cannot be negative." if="qty &lt; 0"/>
 		<error message="Split quantity cannot be higher than real quantity." if="qty &gt; realQty"/>
 	</action-validate>
+	
+	<action-method name="action-stock-move-line-method-compute-available-qty">
+		<call class="com.axelor.apps.stock.web.StockMoveLineController" method="computeAvailableQty"/>
+	</action-method>
 
 	<action-method name="action-stock-move-line-method-get-product-price">
 		<call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="getProductPrice"/>
