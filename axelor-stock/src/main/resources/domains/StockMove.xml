@@ -17,6 +17,7 @@
 
     <integer name="statusSelect" title="Status" selection="stock.move.status.select" required="true" readonly="true" default="1"/>
     <integer name="typeSelect" title="Type Status" required="true" selection="stock.move.type.select"/>
+    <string name="availableStatus" title="Available status" transient="true"/>
     
     <many-to-one name="fromAddress" ref="com.axelor.apps.base.db.Address" title="From address"/>
     <many-to-one name="toAddress" ref="com.axelor.apps.base.db.Address" title="To address"/>
