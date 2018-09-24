@@ -67,6 +67,7 @@
 - New field workshop on production process, bill of material and manufacturing order.
 - Manufacturing order sequence is now configured in company config, and can be configured by workshop.
 - Studio: Add description field in workflow
+- Group menu assistant: Add support for roles management.  
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
