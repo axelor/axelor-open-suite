@@ -132,7 +132,7 @@ public class ForecastRecapService {
                     opportunity.getCompany().getCurrency(),
                     opportunity
                         .getAmount()
-                        .multiply(opportunity.getProbability())
+                        .multiply(BigDecimal.valueOf(opportunity.getProbability()))
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
                 .setScale(2, RoundingMode.HALF_UP);
@@ -152,7 +152,7 @@ public class ForecastRecapService {
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
                     new BigDecimal(opportunity.getBestCase())
-                        .multiply(opportunity.getProbability())
+                        .multiply(BigDecimal.valueOf(opportunity.getProbability()))
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
                 .setScale(2, RoundingMode.HALF_UP);
@@ -171,7 +171,7 @@ public class ForecastRecapService {
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
                     new BigDecimal(opportunity.getWorstCase())
-                        .multiply(opportunity.getProbability())
+                        .multiply(BigDecimal.valueOf(opportunity.getProbability()))
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
                 .setScale(2, RoundingMode.HALF_UP);
@@ -226,7 +226,7 @@ public class ForecastRecapService {
                     opportunity.getCompany().getCurrency(),
                     opportunity
                         .getAmount()
-                        .multiply(opportunity.getProbability())
+                        .multiply(BigDecimal.valueOf(opportunity.getProbability()))
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
                 .setScale(2, RoundingMode.HALF_UP);
@@ -238,7 +238,7 @@ public class ForecastRecapService {
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
                     new BigDecimal(opportunity.getBestCase())
-                        .multiply(opportunity.getProbability())
+                        .multiply(BigDecimal.valueOf(opportunity.getProbability()))
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
                 .setScale(2, RoundingMode.HALF_UP);
@@ -249,7 +249,7 @@ public class ForecastRecapService {
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
                     new BigDecimal(opportunity.getWorstCase())
-                        .multiply(opportunity.getProbability())
+                        .multiply(BigDecimal.valueOf(opportunity.getProbability()))
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
                 .setScale(2, RoundingMode.HALF_UP);
