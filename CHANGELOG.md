@@ -69,6 +69,7 @@
 - Studio: Add description field in workflow
 - Group menu assistant: Add support for roles management.  
 - Stock Move : add three transient fields 'availableQty','availableQtyForProduct' and 'availableStatus' to know the availability of the product on stock move line.
+- Product : add unique constraint on product code.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
