@@ -88,7 +88,7 @@ public class ActionViewBuilderService {
 
     if (addJsonCtx && builder.getIsJson() && builder.getModel() != null) {
       xml.append("\n" + INDENT + "<context name=\"jsonModel\" ");
-      xml.append("expr=\"eval:" + builder.getModel() + "\" />");
+      xml.append("expr=\"" + builder.getModel() + "\" />");
     }
   }
 
