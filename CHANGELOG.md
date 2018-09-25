@@ -8,6 +8,7 @@
 - Removed 'cachable' from all extended apps.
 - Vehicle : modify vehicleState from reference field to string and remove vehicleState model 
 - Account : Modify Account Move Report
+- Supplychain batch : Fix invoice all orders.
 
 ## [5.0.5] - 2018-09-19
 ## Features
