@@ -106,16 +106,21 @@ public class PartnerService {
   }
 
   public String computeFullName(Partner partner) {
+    String fullName = "";
     if (!Strings.isNullOrEmpty(partner.getName())
         && !Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getName() + " " + partner.getFirstName();
+      fullName = partner.getName() + " " + partner.getFirstName();
     } else if (!Strings.isNullOrEmpty(partner.getName())) {
-      return partner.getName();
+      fullName = partner.getName();
     } else if (!Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getFirstName();
+      fullName = partner.getFirstName();
     } else {
-      return "" + partner.getId();
+      fullName = "" + partner.getId();
     }
+    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
+      return partner.getPartnerSeq() + " - " + fullName;
+    }
+    return fullName;
   }
 
   public Map<String, String> getSocialNetworkUrl(

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -667,7 +667,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	CompanyAddress.addressl6 as company_addressl6,
 	CompanyCountry.name as company_country,
 	Customer.partner_seq as customer_seq,
-	Customer.full_name as customer_full_name,
+	CONCAT(Customer.name, ' ', Customer.first_name) as customer_full_name,
 	Unit.label_to_printing as unit_label
 from stock_logistical_form as LogisticalForm
 left join base_company as Company on LogisticalForm.company = Company.id

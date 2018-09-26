@@ -760,6 +760,10 @@
 		<field name="fullName" expr="#{name}" if="#{name != null &amp;&amp; firstName == null}"/>
 		<field name="fullName" expr="#{firstName}" if="#{firstName != null &amp;&amp; name == null}"/>
 		<field name="fullName" expr="#{id}" if="#{firstName == null &amp;&amp; name == null}"/>
+		<field name="fullName" expr="#{partnerSeq += ' - ' += name += ' ' += firstName}" if="#{partnerSeq != null &amp;&amp; firstName != null &amp;&amp; name != null}"/>
+		<field name="fullName" expr="#{partnerSeq += ' - ' += firstName}" if="#{partnerSeq != null &amp;&amp; firstName != null &amp;&amp; name == null}"/>
+		<field name="fullName" expr="#{partnerSeq += ' - ' += name}" if="#{partnerSeq != null &amp;&amp; firstName == null &amp;&amp; name != null}"/>
+		<field name="fullName" expr="#{partnerSeq}" if="#{partnerSeq != null &amp;&amp; firstName == null &amp;&amp; name == null}"/>
 	</action-record>
 
 	<action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
