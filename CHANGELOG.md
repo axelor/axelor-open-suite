@@ -98,6 +98,7 @@
 - Project: Reorganization of Resource Booking form view.
 - Tweaks on manuf order report.
 - Rework CRM events view.
+- Rework Target and Target configuration views in CRM.
 
 
 ## Bug Fixes
