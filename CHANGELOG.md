@@ -71,6 +71,7 @@
 - Stock Move : add three transient fields 'availableQty','availableQtyForProduct' and 'availableStatus' to know the availability of the product on stock move line.
 - Studio: Modified custom editor with new design
 - Product : add unique constraint on product code.
+- Timesheet : add menu 'All timesheets'.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
