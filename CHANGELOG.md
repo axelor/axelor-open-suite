@@ -3,6 +3,7 @@
 ## Features
 
 ## Improvements
+- Translate file name of manuf order printing.
 
 ## Bug Fixes
 - Removed 'cachable' from all extended apps.
