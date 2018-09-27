@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
@@ -114,7 +115,8 @@ public interface TimesheetService {
       User user,
       String date,
       BigDecimal hoursDuration,
-      int priority)
+      int priority,
+      PriceList priceList)
       throws AxelorException;
 
   @Transactional

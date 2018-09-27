@@ -42,6 +42,11 @@
             onSelect="action-stock-move-line-attrs-tracking-number-domain"
             canNew="true"/>
         <field name="conformitySelect"/>
+        <field name="availableStatus" width="150">
+        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
+        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
+        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        </field>
         <field name="stockMove.statusSelect" hidden="true"/>
         <field name="isSubLine" hidden="true"/>
         <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="$get('stockMove.statusSelect') > 1"/>
@@ -84,6 +89,11 @@
             onSelect="action-stock-move-line-attrs-tracking-number-domain"
             canNew="true"/>
         <field name="conformitySelect"/>
+        <field name="availableStatus" width="150">
+        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
+        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
+        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        </field>
         <field name="stockMove.statusSelect" hidden="true"/>
         <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
     </grid>
@@ -101,16 +111,16 @@
 	        <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="realQty" colSpan="3" onChange="action-stock-move-line-group-real-qty-onchange" />
 	        <spacer colSpan="6"/>
-			<field name="availableQty" readonly="true" hidden="true" colSpan="3"/>
-			<field name="availableQtyForProduct" readonly="true" hidden="true" colSpan="5"/>
+			<field name="$availableQty" type="decimal" title="Available qty" readonly="true" hidden="true" colSpan="3"/>
+			<field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" hidden="true" colSpan="5"/>
 			<field name="availableStatus" readonly="true" hidden="true" colSpan="3">
 				<viewer><![CDATA[
 					<h4>
-						<span class="label label-success" style="font-weight:bold" ng-show="($number(record.availableQty) >= $number(record.realQty)) && record.product" x-translate>Available</span>
-						<span class="label label-info" style="font-weight:bold" ng-show="($number(record.availableQtyForProduct) >= $number(record.realQty)) && record.product" x-translate>Av. for product</span>
-						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product" x-translate>Missing</span> 
-						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product && !record.product.trackingNumberConfiguration">{{record.availableQty - record.realQty}}</span>
-						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.availableQtyForProduct - record.realQty}}</span>
+						<span class="label label-success" style="font-weight:bold" ng-show="($number(record.$availableQty) >= $number(record.realQty)) && record.product" x-translate>Available</span>
+						<span class="label label-info" style="font-weight:bold" ng-show="($number(record.$availableQtyForProduct) >= $number(record.realQty)) && record.product" x-translate>Av. for product</span>
+						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product" x-translate>Missing</span> 
+						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && !record.product.trackingNumberConfiguration">{{record.$availableQty - record.realQty}}</span>
+						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.$availableQtyForProduct - record.realQty}}</span>
 					</h4>
 				]]></viewer>
 			</field>
@@ -147,6 +157,11 @@
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="trackingNumber" readonly="true" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="conformitySelect" readonly="true"/>
+		<field name="availableStatus" width="150">
+        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
+        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
+        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        </field>
 	</grid>
     
     <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move lines" orderBy="-stockMove.estimatedDate"
@@ -162,6 +177,11 @@
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
         <field name="conformitySelect"/>
+        <field name="availableStatus" width="150">
+        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
+        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
+        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        </field>
     </grid>
     
     <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine"
@@ -179,6 +199,11 @@
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
         <field name="stockMove.statusSelect"/>
+        <field name="availableStatus" width="150">
+        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
+        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
+        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        </field>
     </grid>
 
 	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine"
@@ -196,10 +221,15 @@
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
 		<field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="stockMove.statusSelect" />
+		<field name="availableStatus" width="150">
+        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
+        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
+        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        </field>
 	</grid>
 
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-attrs,action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3" width="large"
+    	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-group-all-onload" readonlyIf="stockMove.statusSelect == 3" width="large"
     	canNew="false" canDelete="false">
         <panel name="stockMove" title="Stock move">
 	    	<field name="stockMove.stockMoveSeq"/>
@@ -216,15 +246,16 @@
 	        <field name="stockMove.partner"/>
 			<field name="qty" colSpan="3" min="0" onChange="action-stock-move-line-group-qty-onchange" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="realQty" colSpan="3" min="0" onChange="action-stock-move-line-group-real-qty-onchange"/>
-	        <field name="availableQty" readonly="true" hidden="true" colSpan="3"/>
-			<field name="availableStatus" readonly="true" hidden="true" colSpan="3">
+	        <field name="$availableQty" type="decimal" title="Available qty" readonly="true" showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="3"/>
+	        <field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="5"/>
+			<field name="availableStatus" readonly="true" showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="3">
 				<viewer><![CDATA[
 					<h4>
-						<span class="label label-success" style="font-weight:bold" ng-show="($number(record.availableQty) >= $number(record.realQty)) && record.product" x-translate>Available</span>
-						<span class="label label-info" style="font-weight:bold" ng-show="($number(record.availableQtyForProduct) >= $number(record.realQty)) && record.product" x-translate>Av. for product</span>
-						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product" x-translate>Missing</span> 
-						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product && !record.product.trackingNumberConfiguration">{{record.availableQty - record.realQty}}</span>
-						<span class="label label-important" ng-show="($number(record.availableQty) < $number(record.realQty)) && ($number(record.availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.availableQtyForProduct - record.realQty}}</span>
+						<span class="label label-success" style="font-weight:bold" ng-show="($number(record.$availableQty) >= $number(record.realQty)) && record.product" x-translate>Available</span>
+						<span class="label label-info" style="font-weight:bold" ng-show="($number(record.$availableQtyForProduct) >= $number(record.realQty)) && record.product" x-translate>Av. for product</span>
+						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product" x-translate>Missing</span> 
+						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && !record.product.trackingNumberConfiguration">{{record.$availableQty - record.realQty}}</span>
+						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.$availableQtyForProduct - record.realQty}}</span>
 					</h4>
 				]]></viewer>
 			</field>
@@ -291,6 +322,13 @@
 		<action name="action-stock-move-subline-price-attrs-readonly" if="isSubLine &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
 	</action-group>
+	
+	<action-group name="action-stock-move-line-group-all-onload">
+		<action name="action-stock-move-line-attrs"/>
+		<action name="action-stock-move-line-attrs-scale-and-precision"/>
+		<action name="action-inventory-line-attrs-tracking-number"/>
+		<action name="action-stock-move-line-method-compute-available-qty" if="stockMove &amp;&amp; stockMove.statusSelect &lt; 3"/>
+	</action-group>
 
     <action-group name="action-group-stock-stockmoveline-product-onchange">
     	<action name="action-inventory-line-attrs-tracking-number"/>
@@ -314,7 +352,7 @@
     <action-attrs name="action-stock-move-line-attrs">
       <attribute name="hidden" for="countryOfOrigin"
         expr="eval: __parent__?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING"/>
-	  <attribute name="hidden" for="availableQty,availableQtyForProduct,availableStatus" expr="_parent?.statusSelect > 2"/>
+	  <attribute name="hidden" for="$availableQty,$availableQtyForProduct,availableStatus" expr="_parent?.statusSelect > 2" if="_parent"/>
     </action-attrs>
 
     <action-group name="action-stock-move-line-group-qty-onchange">
