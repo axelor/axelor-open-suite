@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="view-builder-grid" title="View builders"
+		model="com.axelor.studio.db.ViewBuilder">
+		<field name="name" />
+		<field name="title" />
+		<field name="model" />
+	</grid>
+
+	<form name="view-builder-kanban-form" title="View builder" width="large"
+		model="com.axelor.studio.db.ViewBuilder" onNew="action-view-builder-record-default">
+		<panel>
+			<field name="isJson" colSpan="2"/>
+			<field name="module" colSpan="5" widget="ref-text" x-target="com.axelor.studio.db.ModuleBuilder" x-target-name="name"/>
+			<panel itemSpan="12" colSpan="5">
+				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="name" showIf="!isJson" requiredIf="!isJson"/>
+				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson"/>
+			</panel>
+			<field name="name" required="true" />
+			<field name="title" required="true"/>
+			<panel readonlyIf="model == null" colSpan="8">
+				<field name="columnBy"  widget="ref-text" x-target="com.axelor.meta.db.MetaField" x-target-name="name" requiredIf="viewType == 'kanban' &amp;&amp; !isJson" showIf="!isJson" form-view="meta-field-form" grid-view="meta-field-grid" domain="self.metaModel.name = :model"/>
+				<field name="sequenceBy" widget="ref-text" x-target="com.axelor.meta.db.MetaField"  x-target-name="name" requiredIf="viewType == 'kanban' &amp;&amp; !isJson" showIf="!isJson" form-view="meta-field-form" grid-view="meta-field-grid" domain="self.metaModel.name = :model and self.typeName = 'Integer' and self.name != 'version'" />
+				<field name="columnBy"  widget="ref-text" x-target="com.axelor.meta.db.MetaJsonField" x-target-name="name" requiredIf="viewType == 'kanban' &amp;&amp; isJson" showIf="isJson" form-view="json-field-form" grid-view="json-field-grid" domain="self.jsonModel.name = :model and self.type not in ('button','panel','separator')"/>
+				<field name="sequenceBy" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonField"  x-target-name="name" requiredIf="viewType == 'kanban' &amp;&amp; isJson" showIf="isJson" form-view="json-field-form" grid-view="json-field-grid" domain="self.jsonModel.name = :model and self.type = 'integer'" />
+				<field name="customSearch" widget="BooleanSwitch"/>
+				<field name="draggable" widget="BooleanSwitch"/>
+				<field name="recordLimit" />
+				<field name="freeSearchSelect"/>
+				<field name="onNew" colSpan="12"  />
+				<field name="onLoad" title="On move" colSpan="12" />
+			</panel>
+			<panel readonlyIf="model == null" colSpan="4">
+				<panel-related field="viewItemList"  colSpan="12" editable="true" title="Fields" form-view="view-item-form" canMove="true" orderBy="sequence" grid-view="view-item-meta-grid" requiredIf="isJson" showIf="!isJson" />
+				<panel-related field="viewItemList"  colSpan="12" editable="true" title="Fields" form-view="view-item-form" canMove="true" orderBy="sequence"  grid-view="view-item-json-grid" requiredIf="isJson" showIf="isJson" />
+			</panel>
+			<button name="preview" title="Preview" onClick="save,action-view-builder-method-show-preview" showIf="!isJson" colSpan="4"/>
+			<field name="viewType" hidden="true"/>
+		</panel>
+	</form>
+	
+	<form name="view-builder-calendar-form" title="View builder" width="large"
+		model="com.axelor.studio.db.ViewBuilder" onNew="action-view-builder-record-default">
+		<panel>
+			<field name="isJson" colSpan="2"/>
+			<field name="module" colSpan="5" widget="ref-text" x-target="com.axelor.studio.db.ModuleBuilder" x-target-name="name"/>
+			<panel itemSpan="12" colSpan="5">
+				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="name" showIf="!isJson" requiredIf="!isJson"/>
+				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson"/>
+			</panel>
+			<field name="name" required="true" />
+			<field name="title" required="true"/>
+			<panel readonlyIf="model == null" colSpan="8">
+				<field name="eventStart" widget="ref-text" x-target="com.axelor.meta.db.MetaField" x-target-name="name"  requiredIf="viewType == 'calendar' &amp;&amp; !isJson"  showIf="!isJson" form-view="meta-field-form" grid-view="meta-field-grid" domain="self.metaModel.name = :model and self.typeName in ('LocalDate','ZonedDateTime','LocalDateTime')" />
+				<field name="eventStop" widget="ref-text" x-target="com.axelor.meta.db.MetaField" x-target-name="name" form-view="meta-field-form" grid-view="meta-field-grid" showIf="!isJson"  domain="self.metaModel.name = :model and self.typeName in ('LocalDate','ZonedDateTime','LocalDateTime')" />
+				<field name="eventStart" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonField" x-target-name="name"  requiredIf="viewType == 'calendar' &amp;&amp; isJson"  showIf="isJson" form-view="json-field-form" grid-view="json-field-grid" domain="self.jsonModel.name = :model and self.type in ('date','datetime')" />
+				<field name="eventStop" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonField" x-target-name="name" form-view="json-field-form" grid-view="json-field-grid" showIf="isJson"  domain="self.jsonModel.name = :model and self.type in ('date','datetime')" />
+				<field name="eventLength" />
+				<panel itemSpan="12">
+					<field name="colorBy" widget="ref-text" x-target="com.axelor.meta.db.MetaField" x-target-name="name" form-view="meta-field-form" grid-view="meta-field-grid" showIf="!isJson"  domain="self.metaModel.name = :model" />
+					<field name="colorBy" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonField" x-target-name="name" form-view="json-field-form" grid-view="meta-field-grid" showIf="isJson"  domain="self.jsonModel.name = :model and self.type not in ('button','panel','separator')"/>
+				</panel>
+				<field name="modeSelect"/>
+				<field name="onLoad" title="On change"/>
+			</panel>
+			<panel readonlyIf="model == null" colSpan="4">
+				<panel-related field="viewItemList"  colSpan="12" editable="true" title="Fields" form-view="view-item-form" canMove="true" orderBy="sequence" grid-view="view-item-meta-grid" requiredIf="isJson" showIf="!isJson" />
+				<panel-related field="viewItemList"  colSpan="12" editable="true" title="Fields" form-view="view-item-form" canMove="true" orderBy="sequence"  grid-view="view-item-json-grid" requiredIf="isJson" showIf="isJson" />
+			</panel>
+			<button name="preview" title="Preview" onClick="save,action-view-builder-method-show-preview" showIf="!isJson" colSpan="4"/>
+			<field name="viewType" hidden="true"/>
+		</panel>
+	</form>
+	
+	
+	<form name="view-builder-cards-form" title="View builder" width="large"
+		model="com.axelor.studio.db.ViewBuilder" onNew="action-view-builder-record-default">
+		<panel>
+			<field name="isJson" colSpan="2"/>
+			<field name="module" colSpan="5" widget="ref-text" x-target="com.axelor.studio.db.ModuleBuilder" x-target-name="name"/>
+			<panel itemSpan="12" colSpan="5">
+				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="name" showIf="!isJson" requiredIf="!isJson"/>
+				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson"/>
+			</panel>
+			<field name="name" required="true" />
+			<field name="title" required="true"/>
+			<panel readonlyIf="model == null" colSpan="6">
+				<panel-related field="viewItemList"  colSpan="12" editable="true" title="Fields" form-view="view-item-form" canMove="true" orderBy="sequence" grid-view="view-item-meta-grid" requiredIf="isJson" showIf="!isJson" />
+				<panel-related field="viewItemList"  colSpan="12" editable="true" title="Fields" form-view="view-item-form" canMove="true" orderBy="sequence"  grid-view="view-item-json-grid" requiredIf="isJson" showIf="isJson" />
+			</panel>
+			<spacer/>
+			<button name="preview" title="Preview" onClick="save,action-view-builder-method-show-preview" showIf="!isJson" colSpan="4"/>
+			<field name="viewType" hidden="true"/>
+		</panel>
+	</form>
+
+	<action-record name="action-view-builder-record-default"
+		model="com.axelor.studio.db.ViewBuilder">
+		<field name="viewType" expr="eval:_viewType" />
+	</action-record>
+	
+	<action-method name="action-view-builder-method-show-preview">
+		<call class="com.axelor.studio.web.ViewBuilderController" method="preview"/>
+	</action-method>
+	
+</object-views>
