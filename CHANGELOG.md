@@ -121,7 +121,7 @@
 - Pack feature: Fix invoice subline generation and sequence. 
 - Pack feature: Fix type selection, pack type can be only selected based on product on Invoice and SaleOrder. Fixed invoice ventilation based on PackPriceSelect criteria. 
 - Project : Link project from purchase line while invoicing from stock move
-- PROJECT : Fix team assignment on task creation .
+- PROJECT : Fix team assignment on task creation.
 - Sale order,purchase order : Fix demo data.
 
 ## [5.0.6] - Unreleased
