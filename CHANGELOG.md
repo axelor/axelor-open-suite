@@ -75,6 +75,7 @@
 - Stock move : display availability status and missing qty on stock move line grid.
 - Timesheet : add menu 'All timesheets'.
 - Partner : Modify fullName value calculation to add partnerSeq and update reports accordingly.
+- Sale order line : add 'Partially invoiced' tag and invoiced tag depends on 'amountInvoiced' and 'exTaxTotal'.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
