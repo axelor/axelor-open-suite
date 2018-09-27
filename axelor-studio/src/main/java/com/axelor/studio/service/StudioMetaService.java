@@ -119,7 +119,7 @@ public class StudioMetaService {
    * @param viewIterator ViewBuilder iterator
    */
   @Transactional
-  public MetaView generateMetaView(AbstractView view) {
+  public MetaView generateMetaView(AbstractView view, String module) {
 
     String name = view.getName();
     String xmlId = view.getXmlId();
@@ -165,6 +165,7 @@ public class StudioMetaService {
 
     String viewXml = XMLViews.toXml(view, true);
     metaView.setXml(viewXml);
+    metaView.setModule(module);
     return metaViewRepo.save(metaView);
   }
 

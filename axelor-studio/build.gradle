@@ -14,6 +14,7 @@ axelor {
 dependencies {
     compile project(":modules:axelor-admin")
 	compile project(":modules:axelor-message")
+	testCompile project(":modules:axelor-base")
 	compile 'commons-lang:commons-lang:2.3'
 //	compile 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'
 	compile 'org.eclipse.birt.runtime.3_7_1:Tidy:1'

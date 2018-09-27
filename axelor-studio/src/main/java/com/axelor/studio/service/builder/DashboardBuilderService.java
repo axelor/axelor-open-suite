@@ -112,7 +112,7 @@ public class DashboardBuilderService {
 
     MetaStore.clear();
 
-    return metaService.generateMetaView(dashboard);
+    return metaService.generateMetaView(dashboard, null);
   }
 
   /**
