@@ -45,6 +45,7 @@
 - PROJECT : Add new o2m 'manualElementList' and display it on financial report.
 - Manuf Order: show in toConsumeProdProductList if there is product missing in stock.
 - Manuf Order: show in diff O2M the planned and real quantities.
+- Add some checkboxes to identify which stock location can be selected on sale order, purchase order, manuf order.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
