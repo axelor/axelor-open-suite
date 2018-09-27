@@ -13,8 +13,6 @@
 
   <input file="fleet_vehicleModel.csv" separator=";" type="com.axelor.apps.fleet.db.VehicleModel" search="self.importId = :importId"/>
 
-  <input file="fleet_vehicleState.csv" separator=";" type="com.axelor.apps.fleet.db.VehicleState" search="self.importId = :importId"/>
-
   <input file="fleet_vehicle.csv" separator=";" type="com.axelor.apps.fleet.db.Vehicle" search="self.importId = :importId" call="com.axelor.csv.script.ImportVehicle:importVehicle">
     <bind column="acquisitionDate" to="acquisitionate" eval="call: com.axelor.csv.script.ImportDateTime:importDate(acquisitionDate)"/>
     <bind column="vehicleTagSetImportId" to="vehicleTagSet" search="self.importId in :vehicleTagSetImportId" eval="vehicleTagSetImportId.split('\\|') as List"/>
