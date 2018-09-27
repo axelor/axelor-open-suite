@@ -108,7 +108,7 @@
 				</viewer>
 			</field>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND (:workshopStockLocation IS NULL OR self.workshopStockLocation = :workshopStockLocation)" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
+			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
@@ -397,8 +397,8 @@
    	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-prodProcess">
-		<attribute name="domain" for="prodProcess" expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND (:workshopStockLocation IS NULL OR self.workshopStockLocation = :workshopStockLocation) &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
-		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND (:workshopStockLocation IS NULL OR self.workshopStockLocation = :workshopStockLocation) &quot;" if="billOfMaterial == null"/>
+		<attribute name="domain" for="prodProcess" expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
+		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;" if="billOfMaterial == null"/>
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-product">

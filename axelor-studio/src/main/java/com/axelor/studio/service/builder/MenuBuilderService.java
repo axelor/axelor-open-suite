@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -113,7 +114,7 @@ public class MenuBuilderService {
         return actionBuilder;
       }
     } catch (JAXBException e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
 
     return null;

@@ -34,11 +34,13 @@ import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.TrackingNumberService;
@@ -74,13 +76,15 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
       PriceListService priceListService,
       PurchaseProductService productService,
       UnitConversionService unitConversionService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      StockLocationLineService stockLocationLineService) {
     super(
         trackingNumberService,
         appBaseService,
         appStockService,
         stockMoveService,
-        stockMoveLineRepository);
+        stockMoveLineRepository,
+        stockLocationLineService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.productService = productService;
@@ -239,5 +243,58 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
         lastFutureStockMoveDate,
         trackingNumber,
         realReservedQty);
+  }
+
+  @Override
+  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation) {
+    BigDecimal availableQty = BigDecimal.ZERO;
+    BigDecimal availableQtyForProduct = BigDecimal.ZERO;
+
+    if (stockMoveLine.getProduct() != null) {
+      if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
+
+        if (stockMoveLine.getTrackingNumber() != null) {
+          StockLocationLine stockLocationLine =
+              stockLocationLineService.getDetailLocationLine(
+                  stockLocation, stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
+
+          if (stockLocationLine != null) {
+            availableQty =
+                stockLocationLine
+                    .getCurrentQty()
+                    .add(stockMoveLine.getReservedQty())
+                    .subtract(stockLocationLine.getReservedQty());
+          }
+        }
+
+        if (availableQty.compareTo(stockMoveLine.getRealQty()) < 0) {
+          StockLocationLine stockLocationLineForProduct =
+              stockLocationLineService.getStockLocationLine(
+                  stockLocation, stockMoveLine.getProduct());
+
+          if (stockLocationLineForProduct != null) {
+            availableQtyForProduct =
+                stockLocationLineForProduct
+                    .getCurrentQty()
+                    .add(stockMoveLine.getReservedQty())
+                    .subtract(stockLocationLineForProduct.getReservedQty());
+          }
+        }
+      } else {
+        StockLocationLine stockLocationLine =
+            stockLocationLineService.getStockLocationLine(
+                stockLocation, stockMoveLine.getProduct());
+
+        if (stockLocationLine != null) {
+          availableQty =
+              stockLocationLine
+                  .getCurrentQty()
+                  .add(stockMoveLine.getReservedQty())
+                  .subtract(stockLocationLine.getReservedQty());
+        }
+      }
+    }
+    stockMoveLine.setAvailableQty(availableQty);
+    stockMoveLine.setAvailableQtyForProduct(availableQtyForProduct);
   }
 }

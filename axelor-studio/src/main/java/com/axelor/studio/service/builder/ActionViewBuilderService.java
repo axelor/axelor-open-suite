@@ -36,6 +36,10 @@ public class ActionViewBuilderService {
 
   public MetaAction build(ActionBuilder builder) {
 
+    if (builder == null) {
+      return null;
+    }
+
     List<ActionBuilderView> views = builder.getActionBuilderViews();
     if (views == null || views.isEmpty()) {
       return null;
@@ -84,7 +88,7 @@ public class ActionViewBuilderService {
 
     if (addJsonCtx && builder.getIsJson() && builder.getModel() != null) {
       xml.append("\n" + INDENT + "<context name=\"jsonModel\" ");
-      xml.append("expr=\"eval:" + builder.getModel() + "\" />");
+      xml.append("expr=\"" + builder.getModel() + "\" />");
     }
   }
 

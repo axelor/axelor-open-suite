@@ -18,8 +18,10 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -44,6 +46,10 @@ import java.util.Map;
 public class StockMoveLineController {
 
   @Inject protected StockMoveLineService stockMoveLineService;
+
+  @Inject protected StockMoveLineRepository stockMoveLineRepo;
+
+  @Inject protected StockLocationRepository stockLocationRepo;
 
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
@@ -139,5 +145,36 @@ public class StockMoveLineController {
             .context("_hasWarranty", _hasWarranty)
             .context("_isPerishable", _isPerishable)
             .map());
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public void computeAvailableQty(ActionRequest request, ActionResponse response) {
+
+    Context context = request.getContext();
+    StockMoveLine stockMoveLineContext = context.asType(StockMoveLine.class);
+    StockMoveLine stockMoveLine = null;
+    if (stockMoveLineContext.getId() != null) {
+      stockMoveLine = stockMoveLineRepo.find(stockMoveLineContext.getId());
+      if (stockMoveLineContext.getProduct() != null
+          && !stockMoveLineContext.getProduct().equals(stockMoveLine.getProduct())) {
+        stockMoveLine = stockMoveLineContext;
+      }
+    } else {
+      stockMoveLine = stockMoveLineContext;
+    }
+
+    if (context.get("_parent") != null
+        && ((Map) context.get("_parent")).get("fromStockLocation") != null) {
+
+      Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
+
+      StockLocation stockLocation =
+          stockLocationRepo.find(
+              Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
+
+      stockMoveLineService.updateAvailableQty(stockMoveLine, stockLocation);
+      response.setValue("availableQty", stockMoveLine.getAvailableQty());
+      response.setValue("availableQtyForProduct", stockMoveLine.getAvailableQtyForProduct());
+    }
   }
 }

@@ -11,7 +11,7 @@
 			translatable="true" />
 		<string name="serialNumber" title="Serial Nbr"/>
 		<string name="sequence" title="Product N°" readonly="true" />
-		<string name="code" title="Code" required="true" initParam="true" />
+		<string name="code" title="Code" required="true" initParam="true" unique="true"/>
 
 		<string name="description" large="true" title="Description"
 			initParam="true" translatable="true" />
