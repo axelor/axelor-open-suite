@@ -10,6 +10,7 @@
 - Vehicle : modify vehicleState from reference field to string and remove vehicleState model 
 - Account : Modify Account Move Report
 - Supplychain batch : Fix invoice all orders.
+- StockLocation report: show right cost price when using average price.
 
 ## [5.0.5] - 2018-09-19
 ## Features
