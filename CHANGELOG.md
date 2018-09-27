@@ -73,6 +73,7 @@
 - Product : add unique constraint on product code.
 - Business Project : Link project or phase and price list to invoice and invoice line generated from invoicing project.
 - Stock move : display availability status and missing qty on stock move line grid.
+- Timesheet : add menu 'All timesheets'.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
