@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="studio" package="com.axelor.studio.db" />
+
+	<entity name="ViewBuilder" cachable="true">
+		<string name="title" title="Title" required="true" />
+		<string name="name" title="Name" required="true" />
+		<string name="model" title="Model" />
+		<boolean name="isJson" title="Custom"  />
+		<one-to-many name="viewItemList" ref="ViewItem" title="View items"
+			mappedBy="viewBuilder" orderBy="sequence" />
+		<string name="viewType" title="View type" selection="view.type.selection" />
+		<string name="onNew" title="On new" />
+		<string name="onLoad" title="On load" />
+		<boolean name="editable" title="Editable" />
+		<string name="module" title="Module" required="true" />
+
+		<!-- Kanban -->
+		<string name="columnBy" title="Column By" />
+		<string name="sequenceBy" title="Sequence By" />
+		<integer name="recordLimit" title="Limit" />
+		<boolean name="customSearch" title="Custom search" default="true"/>
+		<string name="freeSearchSelect" title="Free search" selection="view.builder.free.search.select" default="name" />
+		<boolean name="draggable" title="Draggable" default="true" />
+		
+		<!-- Calendar -->
+		<string name="eventStart" title="Event start" />
+		<string name="eventStop" title="Event stop" />
+		<integer name="eventLength" title="Event length" min="1" max="24" default="1"/>
+		<string name="colorBy" title="Color by" />
+		<string name="modeSelect" title="Mode" selection="view.builder.model.select" default="month"/>
+		
+		<many-to-one name="metaViewGenerated" ref="com.axelor.meta.db.MetaView" />
+	</entity>
+
+
+</domain-models>

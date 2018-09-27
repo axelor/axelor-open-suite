@@ -107,7 +107,7 @@ public class ChartBuilderService {
 
     ObjectViews chartView = XMLViews.fromXML(xml);
 
-    MetaView metaView = metaService.generateMetaView(chartView.getViews().get(0));
+    MetaView metaView = metaService.generateMetaView(chartView.getViews().get(0), null);
 
     if (metaView != null) {
       chartBuilder.setMetaViewGenerated(metaView);

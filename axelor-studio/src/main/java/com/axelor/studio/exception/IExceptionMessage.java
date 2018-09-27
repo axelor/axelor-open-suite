@@ -28,4 +28,13 @@ public interface IExceptionMessage {
 
   /** Message to display on click of edit icon of node or transition if workflow is not saved. */
   static final String WKF_1 = /*$$(*/ "Workflow is not saved" /*)*/;
+
+  /** Message to display if model specified on ViewBuilder is not found on database * */
+  static final String MODEL_NOT_FOUND = /*$$(*/ "Model '%s' is not found" /*)*/;
+
+  /** Field not found on model * */
+  static final String FIELD_NOT_FOUND = /*$$(*/ "Field '%s' is not found on model %s" /*)*/;
+
+  /** No fields define on view builders * */
+  static final String PLEASE_ADD_FIELDS = /*$$(*/ "Please add fields" /*)*/;
 }

@@ -80,5 +80,17 @@
 		<option value="0">Send directly</option>
 		<option value="1">Edit before send</option>
 	</selection>
+	
+	<selection name="view.builder.model.select">
+		<option value="month">Month</option>
+		<option value="week">Week</option>
+		<option value="day">Day</option>
+	</selection>
+	
+	<selection name="view.builder.free.search.select">
+		<option value="name">Name</option>
+		<option value="all">All</option>
+		<option value="none">None</option>
+	</selection>
     
 </object-views>
