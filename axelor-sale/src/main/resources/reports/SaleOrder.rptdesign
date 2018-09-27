@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -1239,7 +1239,7 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
-SalemanPartner.full_name as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
+CONCAT(SalemanPartner.name, ' ', SalemanPartner.first_name) as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
 SalemanEmailAddress.address as "SalemanEmail", SaleConfig.display_saleman_on_printing as "DisplaySaleman", 
 SaleOrder.shipment_date as "ShipmentDate", SaleConfig.sale_order_client_box as "ClientBox", 
 SaleConfig.sale_order_legal_note as "LegalNote", SaleConfig.display_del_cond_on_printing as "DisplayDeliveryCondition", 
@@ -3954,7 +3954,7 @@ row["ClientPartFirstName"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                            <property name="name">in_ati</property>
+                                <property name="name">in_ati</property>
                                 <text-property name="displayName">in_ati</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
                                 <property name="dataType">boolean</property>
@@ -3967,7 +3967,7 @@ row["ClientPartFirstName"]
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
-							<structure>
+                            <structure>
                                 <property name="name">is_sub_line</property>
                                 <text-property name="displayName">is_sub_line</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>
