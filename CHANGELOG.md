@@ -71,6 +71,7 @@
 - Stock Move : add three transient fields 'availableQty','availableQtyForProduct' and 'availableStatus' to know the availability of the product on stock move line.
 - Studio: Modified custom editor with new design
 - Product : add unique constraint on product code.
+- Business Project : Link project or phase and price list to invoice and invoice line generated from invoicing project.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

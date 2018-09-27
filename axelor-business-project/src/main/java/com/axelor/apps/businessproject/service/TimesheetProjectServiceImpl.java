@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -116,8 +117,6 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
         key = String.valueOf(timesheetLine.getId());
         timeSheetInformationsMap.put(key, tabInformations);
       }
-
-      timesheetLine.setInvoiced(true);
     }
 
     for (Object[] timesheetInformations : timeSheetInformationsMap.values()) {
@@ -129,6 +128,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       LocalDate endDate = (LocalDate) timesheetInformations[3];
       BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
       Project project = (Project) timesheetInformations[5];
+      PriceList priceList = project.getPriceList();
       if (consolidate) {
         strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
       } else {
@@ -137,8 +137,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
 
       invoiceLineList.addAll(
           this.createInvoiceLine(
-              invoice, product, user, strDate, hoursDuration, priority * 100 + count));
-      invoiceLineList.get(0).setProject(project);
+              invoice, product, user, strDate, hoursDuration, priority * 100 + count, priceList));
+      invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
       count++;
     }
 
