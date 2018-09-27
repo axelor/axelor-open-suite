@@ -3,6 +3,10 @@
 ## [Unreleased 5.1.2]
 ## Features
 ## Improvements
+- BPM - WkfTransition: alertTypeSelect uses a RadioSelect widget.
+- BPM - WkfTransition: logic operator is displayed in first column.
+- BPM - WkfTransition: "Restricted roles" has been renamed into "Roles".
+
 ## Bug Fixes
 
 
