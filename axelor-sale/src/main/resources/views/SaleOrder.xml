@@ -240,8 +240,9 @@
 	  	</panel>
 	    <panel colSpan="12">
 	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="3"/>
-	      <field name="clientPartner" hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
 	      <field name="currency" readonlyIf="statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
+	      <field name="clientPartner" hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="4"/>
+	      <button name="changeCustomer" colSpan="2" title="Change Customer" onClick="save,action-sale-order-view-select-partner-wizard" showIf="statusSelect == 1 &amp;&amp; company != null"/>
 	      <field name="priceList" readonlyIf="statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
 	      <field name="contactPartner" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="versionNumber" colSpan="3"/>
@@ -621,6 +622,13 @@
 	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
 	  </panel-tabs>
 	</form>
+	
+	<form name="sale-order-customer-select-wizard-form" title="Customer"  model="com.axelor.apps.base.db.Wizard">
+		<panel>
+			<field name="$customer" required="true" title="Customer" type="many-to-one" target="com.axelor.apps.base.db.Partner" canNew="false" onSelect="action-sale-order-attrs-customer-domain"/>
+			<button name="changeCustomer" title="Change Customer" onClick="action-sale-order-method-change-customer" colSpan="3" />
+		</panel>
+	</form>
 
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<toolbar>
@@ -749,6 +757,10 @@
 
 	<action-attrs name="action-attrs-sale-other-reason">
 		<attribute for="cancelReasonStr" name="hidden" expr="cancelReason.freeText == false"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-attrs-customer-domain">
+		<attribute name="domain" for="$customer" expr="self.id != :_customerId AND self.currency = :_currency AND self.fiscalPosition = :_fiscalPosition"/>
 	</action-attrs>
 
 	<action-group name="action-group-partner-saleorder-onnew">
@@ -1090,6 +1102,18 @@
 		<view-param name="show-confirm" value="false"/>
         <context name="_saleOrderId" expr="eval: id"/>
 	</action-view>
+	
+	<action-view name="action-sale-order-view-select-partner-wizard" title="Partner" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="sale-order-customer-select-wizard-form"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+ 	  	<view-param name="popup-save" value="false"/>
+		<view-param name="popup" value="reload"/>
+		<context name="_saleOrder" expr="eval:__this__"/>
+		<context name="_currency" expr="eval: clientPartner?.currency"/>
+		<context name="_fiscalPosition" expr="eval: clientPartner?.fiscalPosition"/>
+		<context name="_customerId" expr="eval: clientPartner?.id"/>
+	</action-view>
 
 	<action-validate name="action-sale-order-validate-information">
 		<info message="${clientPartner?.saleOrderInformation}" if="clientPartner?.saleOrderInformation != null &amp;&amp; !clientPartner?.saleOrderInformation.isEmpty()"/>
@@ -1146,6 +1170,10 @@
 
 	<action-method name="action-sale-method-printing-settings-default-values">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="fillDefaultPrintingSettings"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-change-customer">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="changeCustomer"/>
 	</action-method>
 
 	<action-validate name="action-sale-order-validate-check-on-confirm">

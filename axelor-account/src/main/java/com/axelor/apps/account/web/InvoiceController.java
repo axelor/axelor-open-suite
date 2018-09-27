@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -59,9 +60,11 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -767,6 +770,35 @@ public class InvoiceController {
       response.setAttr("priceList", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  @Transactional
+  public void changePartner(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    if (context.get("customer") == null) {
+      response.setAlert(I18n.get(IExceptionMessage.INVOICE_CUSTOMER_WIZARD_ERROR));
+    } else {
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> invoiceMap =
+          (LinkedHashMap<String, Object>) context.get("_invoice");
+      Invoice invoice = invoiceRepo.find(new Long((Integer) invoiceMap.get("id")));
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> customerMap =
+          (LinkedHashMap<String, Object>) context.get("customer");
+      Partner customer =
+          Beans.get(PartnerRepository.class).find(new Long((Integer) customerMap.get("id")));
+      invoice.setPartner(customer);
+      invoice.setContactPartner(null);
+
+      invoice.setPaymentMode(InvoiceToolService.getPaymentMode(invoice));
+      invoice.setPaymentCondition(customer.getPaymentCondition());
+      invoice.setAddress(Beans.get(PartnerService.class).getInvoicingAddress(customer));
+      invoice.setAddressStr(
+          Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
+
+      invoiceRepo.save(invoice);
+      response.setCanClose(true);
     }
   }
 }

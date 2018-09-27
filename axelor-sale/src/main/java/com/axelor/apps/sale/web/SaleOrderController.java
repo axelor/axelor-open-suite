@@ -27,8 +27,10 @@ import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -56,9 +58,11 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.birt.core.exception.BirtException;
@@ -588,6 +592,42 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
+    }
+  }
+
+  @Transactional
+  public void changeCustomer(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    if (context.get("customer") == null) {
+      response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_CUSTOMER_WIZARD_ERROR));
+    } else {
+
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> saleOrderMap =
+          (LinkedHashMap<String, Object>) context.get("_saleOrder");
+      SaleOrder saleOrder = saleOrderRepo.find(new Long((Integer) saleOrderMap.get("id")));
+
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> customerMap =
+          (LinkedHashMap<String, Object>) context.get("customer");
+      Partner customer =
+          Beans.get(PartnerRepository.class).find(new Long((Integer) customerMap.get("id")));
+
+      saleOrder.setClientPartner(customer);
+      saleOrder.setContactPartner(null);
+
+      PartnerService partnerService = Beans.get(PartnerService.class);
+      AddressService addressService = Beans.get(AddressService.class);
+
+      saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(customer));
+      saleOrder.setMainInvoicingAddressStr(
+          addressService.computeAddressStr(saleOrder.getMainInvoicingAddress()));
+      saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(customer));
+      saleOrder.setDeliveryAddressStr(
+          addressService.computeAddressStr(saleOrder.getDeliveryAddress()));
+
+      saleOrderRepo.save(saleOrder);
+      response.setCanClose(true);
     }
   }
 }

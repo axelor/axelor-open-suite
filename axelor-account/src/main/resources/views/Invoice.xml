@@ -181,7 +181,8 @@
         </panel>
 
         <panel title="Invoicing informations" hideIf="company == null">
-            <field name="partner" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+            <field name="partner" colSpan="4" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+            <button name="changePartner" colSpan="2" title="Change Partner" onClick="save,action-invoice-view-select-partner-wizard" showIf="(operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect == 1"/>
             <field name="contactPartner" onSelect="action-set-partner-domain" domain="self.isContact = true" readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
             <panel stacked="true">
                 <field name="address" hideIf="$readonly() || statusSelect &gt; 1" onSelect="action-invoice-attrs-domain-address" onChange="action-method-invoice-address-str" canEdit="false" canNew="true" form-view="address-partner-address-form" grid-view="address-grid"/>
@@ -530,7 +531,12 @@
 		</panel>
 	</form>
 
-
+	<form name="invoice-customer-select-wizard-form" title="Customer"  model="com.axelor.apps.base.db.Wizard">
+		<panel>
+			<field name="$customer" required="true" title="Customer" type="many-to-one" target="com.axelor.apps.base.db.Partner" canNew="false" onSelect="action-invoice-attrs-customer-domain"/>
+			<button name="changePartner" title="Change Partner" onClick="action-invoice-method-change-customer" colSpan="3" />
+		</panel>
+	</form>
 
     <!-- invoice-account  -->
     <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
@@ -843,6 +849,10 @@
 	<action-attrs name="action-invoice-attrs-domain-address">
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
+    
+    <action-attrs name="action-invoice-attrs-customer-domain">
+		<attribute name="domain" for="$customer" expr="self.id != :_customerId AND self.currency = :_currency AND self.fiscalPosition = :_fiscalPosition"/>
+	</action-attrs>
 
     <!-- ACTION VALIDATE -->
 
@@ -973,6 +983,24 @@
 		<call class="com.axelor.apps.account.web.InvoiceController"
 			  method="changePriceListDomain"/>
 	</action-method>
+	
+	<action-method name="action-invoice-method-change-customer">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="changePartner"/>
+	</action-method>
+	
+	<!-- ACTION VIEW -->
+	
+	<action-view name="action-invoice-view-select-partner-wizard" title="Partner" model="com.axelor.apps.base.db.Wizard">
+	<view type="form" name="invoice-customer-select-wizard-form"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+ 	  	<view-param name="popup-save" value="false"/>
+		<view-param name="popup" value="reload"/>
+		<context name="_invoice" expr="eval:__this__"/>
+		<context name="_currency" expr="eval: partner?.currency"/>
+		<context name="_fiscalPosition" expr="eval: partner?.fiscalPosition"/>
+		<context name="_customerId" expr="eval: partner?.id"/>
+	</action-view>
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
     	<view type="form" name="invoice-payment-form"/>
