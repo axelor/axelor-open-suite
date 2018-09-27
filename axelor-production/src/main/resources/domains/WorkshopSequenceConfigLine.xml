@@ -9,6 +9,7 @@
     <many-to-one name="workshopStockLocation" required="true" ref="com.axelor.apps.stock.db.StockLocation"
       title="Workshop"/>
     <many-to-one name="sequence" required="true" title="Sequence" ref="com.axelor.apps.base.db.Sequence"/>
+    <many-to-one name="productionConfig" ref="com.axelor.apps.production.db.ProductionConfig"/>
   </entity>
 
 </domain-models>

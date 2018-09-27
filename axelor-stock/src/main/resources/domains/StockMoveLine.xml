@@ -14,6 +14,9 @@
 	<decimal name="qty" title="Expected Qty"/>
 	<decimal name="realQty" title="Real Qty"/>
 	<decimal name="oldQty" hidden="true"/>
+	<decimal name="availableQty" title="Available qty" transient="true"/>
+	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true"/>
+	<string name="availableStatus" title="Status" transient="true"/>
 	<boolean name="isSubLine" title="Sub line" readonly="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="netMass" title="Net mass"/>

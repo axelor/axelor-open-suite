@@ -12,8 +12,9 @@
   
   <form title="Group Menu Assistant" name="meta-group-menu-assistant-form" model="com.axelor.meta.db.MetaGroupMenuAssistant" width="large">
     <panel name="main" >
-      <panel-related field="groupSet" colSpan="4" />
-      <panel-related field="menuSet" grid-view="simple-meta-menu-grid" colSpan="8"/>
+      <panel-related field="groupSet" colSpan="6" />
+      <panel-related field="roleSet" colSpan="6" />
+      <panel-related field="menuSet" grid-view="simple-meta-menu-grid" colSpan="12"/>
       <field name="metaFile" colSpan="6" widget="binary-link" />
       <field name="language" readonlyIf="metaFile"/>
       <button name="createFile" title="Create file" colSpan="3" onClick="save,action-meta-method-create-group-menu-file"/>

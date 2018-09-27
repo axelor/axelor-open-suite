@@ -17,7 +17,7 @@
 		<one-to-many name="vehicleCostList" ref="VehicleCost" title="Vehicle Cost" mappedBy="vehicle"/>
 		<date name="acquisitionDate" title="Acquisition Date" />
 		<string name="color" title="Color" />
-		<many-to-one name="vehicleState" ref="VehicleState" title="State" />
+		<string name="vehicleState" title="State" large="true"/>
 		<string name="location" title="Location" />
 		<integer name="seats" title="Seats" />
 		<integer name="doors" title="Doors" />

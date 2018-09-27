@@ -41,7 +41,7 @@
 							   canSelect="false"
 							   grid-view="purchase-order-line-invoicing-project-grid"
 							   form-view="purchase-order-line-form"
-							   showIf="purchaseOrderLine &amp;&amp; purchaseOrderLine.length &gt; 0"
+							   showIf="purchaseOrderLineSet &amp;&amp; purchaseOrderLineSet.length &gt; 0"
 							   readonlyIf="invoice"/>
 				<panel-related title="Time spent" field="logTimesSet"
 							   colSpan="12" canNew="false" canEdit="false"

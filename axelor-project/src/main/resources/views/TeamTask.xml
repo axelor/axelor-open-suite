@@ -19,7 +19,7 @@
 		model="com.axelor.team.db.TeamTask" onNew="action-team-task-group-onnew"
 		onLoad="action-team-task-group-timer-process" width="large">
 		<toolbar>
-			<button name="grabEvent" icon="fa-suitcase" onClick="action-team-task-record-assigned-yourself,save"/>
+			<button name="grabEvent" icon="fa-suitcase" help="Take charge" onClick="action-team-task-record-assigned-yourself,save"/>
 			<button name="start" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
 			<button name="accept" icon="fa-check" onClick="action-team-task-record-status-closed,save"/>
 			<button name="stop" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save"/>

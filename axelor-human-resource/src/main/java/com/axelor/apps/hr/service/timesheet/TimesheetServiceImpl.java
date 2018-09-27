@@ -531,6 +531,9 @@ public class TimesheetServiceImpl implements TimesheetService {
       LocalDate startDate = (LocalDate) timesheetInformations[2];
       LocalDate endDate = (LocalDate) timesheetInformations[3];
       BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
+      PriceList priceList =
+          Beans.get(PartnerPriceListService.class)
+              .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 
       if (consolidate) {
         strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
@@ -540,7 +543,7 @@ public class TimesheetServiceImpl implements TimesheetService {
 
       invoiceLineList.addAll(
           this.createInvoiceLine(
-              invoice, product, user, strDate, hoursDuration, priority * 100 + count));
+              invoice, product, user, strDate, hoursDuration, priority * 100 + count, priceList));
       count++;
     }
 
@@ -554,7 +557,8 @@ public class TimesheetServiceImpl implements TimesheetService {
       User user,
       String date,
       BigDecimal hoursDuration,
-      int priority)
+      int priority,
+      PriceList priceList)
       throws AxelorException {
 
     int discountTypeSelect = 1;
@@ -573,9 +577,6 @@ public class TimesheetServiceImpl implements TimesheetService {
                 product.getUnit(),
                 hoursDuration);
 
-    PriceList priceList =
-        Beans.get(PartnerPriceListService.class)
-            .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
     if (priceList != null) {
       PriceListLine priceListLine =
           priceListService.getPriceListLine(product, qtyConverted, priceList);

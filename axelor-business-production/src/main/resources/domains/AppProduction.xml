@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppProduction" lang="java" cachable="true" extends="App">
+	<entity name="AppProduction" lang="java" extends="App">
 
 		<boolean name="manageBusinessProduction" title="Manage business production" />
 		<boolean name="enableTimesheetOnManufOrder" title="Enable timesheet on manuf order" default="false"/>
