@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="view-item-grid" title="Items" model="com.axelor.studio.db.ViewItem"
+		orderBy="sequence" canMove="true">
+		<field name="name" />
+	</grid>
+	
+	<grid name="view-item-meta-grid" title="Items" model="com.axelor.studio.db.ViewItem"
+		orderBy="sequence" canMove="true"  >
+		<field name="name" colSpan="12" widget="ref-text" x-target="com.axelor.meta.db.MetaField" x-target-name="name" onSelect="action-view-item-attrs-name-domain" form-view="meta-field-form" grid-view="meta-field-grid"/>
+	</grid>
+	
+	<grid name="view-item-json-grid" title="Items" model="com.axelor.studio.db.ViewItem"
+		orderBy="sequence" canMove="true" >
+		<field name="name" colSpan="12" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonField" x-target-name="name" onSelect="action-view-item-attrs-name-json-domain" form-view="json-field-form" grid-view="json-field-grid"/>
+	</grid>
+
+	<form name="view-item-form" title="Item" model="com.axelor.studio.db.ViewItem">
+		<panel>
+			<field name="name" readonly="true"/>
+		</panel>
+	</form>
+	
+	<action-attrs name="action-view-item-attrs-name-domain">
+		<attribute name="domain" for="name" expr="eval:&quot;self.metaModel.name = '${_parent.model}'&quot;" />
+	</action-attrs>
+	
+	<action-attrs name="action-view-item-attrs-name-json-domain">
+		<attribute name="domain" for="name" expr="eval:&quot;self.jsonModel.name = '${_parent.model}' and self.type not in ('button','panel','separator')&quot;"/>
+	</action-attrs>
+
+</object-views>
