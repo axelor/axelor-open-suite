@@ -72,6 +72,7 @@
 - Studio: Modified custom editor with new design
 - Product : add unique constraint on product code.
 - Business Project : Link project or phase and price list to invoice and invoice line generated from invoicing project.
+- Stock move : display availability status and missing qty on stock move line grid.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
