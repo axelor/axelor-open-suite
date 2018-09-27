@@ -26,13 +26,13 @@
 
     <menuitem id="calendar.root.menu" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnableCalendars()" name="menu-calendar" order="-110" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
 
-    <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events" parent="menu-calendar" action="calendar.root.menu.my.calendar"/>
+    <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events" parent="menu-calendar" action="calendar.root.menu.my.calendar" order="1"/>
 
 	<action-method name="calendar.root.menu.my.calendar">
 		<call class="com.axelor.apps.base.web.ICalendarController" method="showMyEvents"/>
 	</action-method>
 
-    <menuitem id="calendar.root.menu.configuration" name="menu-calendar-configuration" title="Configuration" parent="menu-calendar" icon="fa-cog"/>
+    <menuitem id="calendar.root.menu.configuration" name="menu-calendar-configuration" title="Configuration" parent="menu-calendar" icon="fa-cog" order="3"/>
 
     <menuitem id="calendar.root.menu.configuration.calendars" name="menu-calendar-configuration-calendars" title="My calendars" parent="menu-calendar-configuration" action="calendar.root.menu.my.calendars"/>
 
