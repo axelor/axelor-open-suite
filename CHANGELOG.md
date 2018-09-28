@@ -127,6 +127,7 @@
 - Project : Link project from purchase line while invoicing from stock move
 - PROJECT : Fix team assignment on task creation.
 - Sale order,purchase order : Fix demo data.
+- Sale order,purchase order,invoice: Fix translation.
 
 ## [5.0.6] - Unreleased
 ## Features
