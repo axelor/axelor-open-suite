@@ -103,6 +103,7 @@
 - Project: Reorganization of Resource Booking form view.
 - Tweaks on manuf order report.
 - Rework CRM events view.
+- Use editor for prod process line descriptions.
 
 
 ## Bug Fixes

@@ -33,7 +33,16 @@
     	</panel>
     	<panel-tabs>
 			<panel-related name="toConsumeProdProductList" field="toConsumeProdProductList" title="To consume products" editable="true" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
-    		<panel-related  field="objectDescriptionList" colSpan="12"/>
+				<panel title="Descriptions">
+					<field name="objectDescriptionList" colSpan="12">
+						<editor x-layout="table" x-show-on-new="false" x-viewer="true">
+							<panel name="main" colSpan="12">
+								<field name="image" colSpan="3" canNew="true" widget="Image"/>
+								<field name="description" widget="html" colSpan="12"/>
+							</panel>
+						</editor>
+					</field>
+				</panel>
     	</panel-tabs>
     	        
     </form>
