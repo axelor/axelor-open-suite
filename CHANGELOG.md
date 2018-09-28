@@ -103,6 +103,7 @@
 - Project: Reorganization of Resource Booking form view.
 - Tweaks on manuf order report.
 - Rework CRM events view.
+- Rework debt recovery and debt recovery history view.
 
 
 ## Bug Fixes
