@@ -1,6 +1,7 @@
 # Changelog
 ## [5.0.6] - Unreleased
 ## Features
+- Stock move : add hilite on stock move grid.
 
 ## Improvements
 - Translate file name of manuf order printing.
