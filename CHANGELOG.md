@@ -3,6 +3,8 @@
 ## [Unreleased 5.1.2]
 ## Features
 ## Improvements
+- BPM - WkfNode : use a RadioSelect with following values: "startNode, taskNode, endNode".
+
 ## Bug Fixes
 
 
