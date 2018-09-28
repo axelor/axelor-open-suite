@@ -129,6 +129,7 @@
 - PROJECT : Fix team assignment on task creation.
 - Sale order,purchase order : Fix demo data.
 - Sale order,purchase order,invoice: Fix translation.
+- Sale Order : Modify sale order pack lines in Partial invoicing
 
 ## [5.0.6] - Unreleased
 ## Features

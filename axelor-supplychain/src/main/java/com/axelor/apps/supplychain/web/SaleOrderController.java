@@ -587,16 +587,30 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (saleOrderLine.getIsSubLine()) {
-          continue;
+        if (!saleOrderLine.getIsSubLine()) {
+          if (saleOrderLine.getPackPriceSelect() == SaleOrderLineRepository.SUBLINE_PRICE_ONLY) {
+            List<SaleOrderLine> saleOrderLines =
+                saleOrderLineRepo
+                    .all()
+                    .filter("self.parentLine.id = ?", saleOrderLine.getId())
+                    .fetch();
+            for (SaleOrderLine saleOrderLineitem : saleOrderLines) {
+              saleOrderLineList.add(getMapOfSaleOrderLine(saleOrderLineitem));
+            }
+          } else {
+            saleOrderLineList.add(getMapOfSaleOrderLine(saleOrderLine));
+          }
         }
-        Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
-        saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
-        saleOrderLineList.add(saleOrderLineMap);
       }
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private Map<String, Object> getMapOfSaleOrderLine(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
+    saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
+    return saleOrderLineMap;
   }
 }
