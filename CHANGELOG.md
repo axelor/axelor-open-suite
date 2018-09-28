@@ -131,6 +131,7 @@
 - Update stock when modifying quantities in manufacturing order using wizard.
 - Add App related data in Data Back & restore functionality.
 - Data Backup : export the record sorted by Model fullName.
+- Rework invoice form view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
