@@ -11,6 +11,7 @@
 - Account : Modify Account Move Report
 - Supplychain batch : Fix invoice all orders.
 - StockLocation report: show right cost price when using average price.
+- Stock move: Fix sort the record on stock move and stock move line grid view.
 
 ## [5.0.5] - 2018-09-19
 ## Features

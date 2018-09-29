@@ -5,7 +5,7 @@
 
     <grid name="stock-move-line-grid" title="Stock move lines"
         model="com.axelor.apps.stock.db.StockMoveLine" editable="true"
-        canNew="false" canDelete="false">
+        canNew="false" canDelete="false" orderBy="stockMove.statusSelect,-stockMove.estimatedDate">
         <field name="product"
             onChange="action-group-stock-stockmoveline-product-onchange"
             onSelect="action-stock-move-line-attrs-product-domain"
