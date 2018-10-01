@@ -130,6 +130,7 @@
 - PROJECT : Fix team assignment on task creation.
 - Sale order,purchase order : Fix demo data.
 - Sale order,purchase order,invoice: Fix translation.
+- Project : Make TimesheetLine and InvoiceLine readonly.
 
 ## [5.0.6] - Unreleased
 ## Features
