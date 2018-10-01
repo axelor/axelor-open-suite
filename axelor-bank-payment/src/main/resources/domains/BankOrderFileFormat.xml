@@ -43,6 +43,9 @@
   	<integer name="feesImputationModeSelect" title="Default fees imputation" selection="bankpayment.bank.order.line.fees.imputation.mode.select"/>
   	
 	<boolean name="displayFurtherInformations" title="Display further information?"/>
+	
+	<boolean name="displayReceiverAddress" title="Display receiver address?"/>
+	<one-to-many name="bankOrderFileFormatCountryList" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormatCountry" title="Config. per country" mappedBy="bankOrderFileFormat"/>
   	
 	 
  	<extra-code><![CDATA[

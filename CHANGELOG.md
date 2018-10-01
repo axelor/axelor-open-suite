@@ -3,6 +3,7 @@
 ## [Unreleased 4.2.5]
 ### Improvements
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- BANK ORDER : receiver address management for internationnal transfer
 
 ### Bug Fixes
 - Fix NPE in BankOrder generation on missing bank name.
