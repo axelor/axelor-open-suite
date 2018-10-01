@@ -4,6 +4,7 @@
 ## Features
 ## Improvements
 ## Bug Fixes
+- AppBuilder: fix export/import of a MetaJsonModel.
 
 
 ## [5.1.1] - 2019-01-18
