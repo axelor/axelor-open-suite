@@ -19,9 +19,15 @@
  		</bind>
  		<bind node="models/model" type="com.axelor.meta.db.MetaJsonModel" search="self.name = :name" update="true">
  			<bind node="name" to="name" />
- 			<bind node="title" to="title" />
- 			<bind node="onSave" to="onSave" />
- 			<bind node="onNew" to="onNew" />
+            <bind node="title" to="title" />
+            <bind node="onNew" to="onNew" />
+            <bind node="onSave" to="onSave" />
+            <bind node="menuTitle" to="menuTitle" />
+            <bind node="menuIcon" to="menuIcon" />
+            <bind node="menuBackground" to="menuBackground" />
+            <bind node="menuOrder" to="menuOrder" />
+            <bind node="menuTop" to="menuTop" />
+            <bind node="menuParent" to="menuParent" search="self.id = :menuParent" create="false"  />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"  />
  		</bind>
  		<bind node="fields/field" type="com.axelor.meta.db.MetaJsonField"  if="jsonModel != null &amp;&amp; !jsonModel.empty"
