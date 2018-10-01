@@ -122,6 +122,7 @@
 "Enable the process for other products","Autoriser l’usage de la gamme pour d’autres produits",,
 "End date","Date de fin",,
 "Ending duration (hh:mm)","Temps clôture (hh:mm)",,
+"Error : You must configure a raw material requirement reporting sequence for the company %s","Erreur: vous devez configurer une séquence pour le rapport des besoins matières pour la société %s.",,
 "Error during production's order's creation","Erreur lors de la création de l'ordre de production",,
 "Expected/Future Quantity",,,
 "Finish","Terminer",,

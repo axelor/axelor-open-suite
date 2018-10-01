@@ -122,6 +122,7 @@
 "Enable the process for other products",,,
 "End date",,,
 "Ending duration (hh:mm)",,,
+"Error : You must configure a raw material requirement reporting sequence for the company %s",,,
 "Error during production's order's creation",,,
 "Expected/Future Quantity",,,
 "Finish",,,
