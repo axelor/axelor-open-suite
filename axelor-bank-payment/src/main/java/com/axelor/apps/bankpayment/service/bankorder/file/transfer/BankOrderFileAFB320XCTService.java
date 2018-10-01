@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderEconomicReason;
+import com.axelor.apps.bankpayment.db.BankOrderFileFormatCountry;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
@@ -552,14 +553,14 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       // "1" ou "2")
       // Si le nom du bénéficiaire contient plus de 35 caractères, utiliser le début de la première
       // zone pour le compléter et le reste de cette zone pour indiquer le début de l'adresse)
+
       detailRecord +=
           cfonbToolService.createZone(
               "7",
-              "",
+              getReceiverAddress(bankOrderLine),
               cfonbToolService.STATUS_DEPENDENT,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
-              3 * 35); // TODO Prendre l'adresse de facturation (et la recopier sur les lignes
-      // d'ordres bancaires)
+              3 * 35);
 
       // Zone 8 : Identification nationale du bénéficiaire (Cette zone n'est pas utilisée)
       detailRecord +=
@@ -768,6 +769,44 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
           I18n.get(IExceptionMessage.BANK_ORDER_WRONG_MAIN_DETAIL_RECORD) + ": " + e.getMessage(),
           bankOrderLine.getSequence());
     }
+  }
+
+  protected String getReceiverAddress(BankOrderLine bankOrderLine) throws AxelorException {
+
+    String receiverAddress = bankOrderLine.getReceiverAddressStr();
+
+    if (Strings.isNullOrEmpty(receiverAddress)) {
+      if (receiverAddressRequired(bankOrderLine.getReceiverCountry())) {
+
+        throw new AxelorException(
+            String.format(
+                I18n.get(IExceptionMessage.BANK_ORDER_LINE_NO_RECEIVER_ADDRESS),
+                bankOrderLine.getPartner().getFullName()),
+            IException.INCONSISTENCY);
+      } else {
+        return "";
+      }
+    }
+
+    return receiverAddress;
+  }
+
+  protected boolean receiverAddressRequired(Country country) {
+
+    if (bankOrderFileFormat.getBankOrderFileFormatCountryList() == null || country == null) {
+      return false;
+    }
+
+    for (BankOrderFileFormatCountry bankOrderFileFormatCountry :
+        bankOrderFileFormat.getBankOrderFileFormatCountryList()) {
+
+      if (bankOrderFileFormatCountry.getCountry().equals(country)
+          && bankOrderFileFormatCountry.getReceiverAddressRequired()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

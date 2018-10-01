@@ -55,8 +55,9 @@
 			<field name="bankOrderAmount" />
 			<field name="receiverReference" colSpan="6" />
 			<field name="receiverLabel" colSpan="6" />
-			<field name="receiverCountry" colSpan="4" />
-			<field name="receiverCountry.alpha2Code" colSpan="2" />
+			<field name="receiverCountry" colSpan="4"/>
+			<field name="receiverCountry.alpha2Code" colSpan="2"/>
+			<field name="receiverAddressStr" colSpan="12" max="105"/>
 		</panel>
 		<panel name="action" showIf="bankOrder != null" itemSpan="12"
 			sidebar="true">

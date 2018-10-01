@@ -151,8 +151,8 @@
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>
 					<field name="bankOrderDate" hidden="true"/>
 					<panel colSpan="6" itemSpan="12">
-						<field name="receiverCompany" canEdit="false" form-view="company-form" grid-view="company-grid" css="label-bold bold" onChange="action-bank-order-line-group-receiver-company-change,action-bank-order-line-record-receiver-bank-details-onchange"/>
-						<field name="partner" canView="false" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-method-fill-bank-details,action-bank-order-line-record-receiver-bank-details-onchange"/>
+						<field name="receiverCompany" canEdit="false" form-view="company-form" grid-view="company-grid" css="label-bold bold" onChange="action-bank-order-line-group-receiver-company-change,action-bank-order-line-record-receiver-bank-details-onchange,action-bank-order-line-method-fill-receiver-address"/>
+						<field name="partner" canView="false" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-method-fill-bank-details,action-bank-order-line-record-receiver-bank-details-onchange,action-bank-order-line-method-fill-receiver-address"/>
 					</panel>
                     <panel colSpan="6" itemSpan="12">
                         <field name="receiverBankDetails" showIf="receiverCompany" canView="false" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-receiver-bank-details-onchange" form-view="bank-details-form" grid-view="bank-details-bank-order-company-grid"/>
@@ -176,6 +176,7 @@
 						<field name="receiverCountry.alpha2Code" colSpan="2" showTitle="false"/>
 						<field name="paymentModeSelect"/>
 						<field name="feesImputationModeSelect"/>
+						<field name="receiverAddressStr" colSpan="12" max="105"/>
 					</panel>
 					
 					<panel name="furtherInformationPanel" title="Further information" colSpan="12" canCollapse="true" collapseIf="true" hidden="true">
@@ -360,6 +361,7 @@
 		<attribute name="hidden" for="bankOrderLineList.bankOrderDate" expr="eval: !bankOrderFileFormat?.isMultiDate"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrderCurrency" expr="eval: !bankOrderFileFormat?.isMultiCurrency"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrder.bankOrderCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="hidden" for="bankOrderLineList.receiverAddressStr" expr="eval: !bankOrderFileFormat?.displayReceiverAddress"/>
 	</action-attrs>
 	
 	<action-attrs name="action-bank-order-attrs-bank-order-file-format-change">
@@ -379,6 +381,7 @@
 		<attribute name="hidden" for="bankOrderLineList.bankOrderDate" expr="eval: !bankOrderFileFormat?.isMultiDate"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrderCurrency" expr="eval: !bankOrderFileFormat?.isMultiCurrency"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrder.bankOrderCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="hidden" for="bankOrderLineList.receiverAddressStr" expr="eval: !bankOrderFileFormat?.displayReceiverAddress"/>
 	</action-attrs>
 	
 	<action-attrs name="action-bank-order-line-attrs-on-new-from-bank-order-file-format">
@@ -387,7 +390,7 @@
 		<attribute name="value" for="paymentModeSelect" expr="eval: __parent__.bankOrderFileFormat?.paymentModeSelect"/>
 		<attribute name="value" for="feesImputationModeSelect" expr="eval: __parent__.bankOrderFileFormat?.feesImputationModeSelect"/>
 		<attribute name="value" for="bankOrder.companyCurrency" expr="__parent__.companyCurrency"/>
-		
+	
 		<attribute name="hidden" for="additionnalInformationPanel" expr="eval: !__parent__.bankOrderFileFormat?.displayAdditionnalInformations"/>
 		<attribute name="hidden" for="bankOrderEconomicReason" expr="eval: !__parent__.bankOrderFileFormat?.displayBankOrderEconomicReason"/>
 		<attribute name="hidden" for="receiverCountry" expr="eval: !__parent__.bankOrderFileFormat?.displayReceiverCountry"/>
@@ -398,6 +401,7 @@
 		<attribute name="hidden" for="bankOrderDate" expr="eval: !__parent__.bankOrderFileFormat?.isMultiDate"/>
 		<attribute name="hidden" for="bankOrderCurrency" expr="eval: !__parent__.bankOrderFileFormat?.isMultiCurrency"/>
 		<attribute name="hidden" for="bankOrder.bankOrderCurrency" expr="eval: __parent__.bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="hidden" for="receiverAddressStr" expr="eval: !__parent__.bankOrderFileFormat?.displayReceiverAddress"/>
 	</action-attrs>
 
 	<action-attrs name="action-bank-order-attrs-show-partner-or-receiver-company">
@@ -552,6 +556,10 @@
 	<action-record name="action-bank-order-line-record-receiver-bank-details-onchange" model="com.axelor.apps.bankpayment.db.BankOrderLine">
 		<field name="bankOrderCurrency" expr="eval: receiverBankDetails?.currency" if="__parent__?.isMultiCurrency"/>
 		<field name="receiverCountry" expr="eval: receiverBankDetails?.bank?.country" if="__parent__?.bankOrderFileFormat?.orderFileFormatSelect?.equals('pain.xxx.cfonb320.xct')"/>
+	</action-record>
+	
+ 	<action-record name="action-bank-order-line-method-fill-receiver-address" model="com.axelor.apps.bankpayment.db.BankOrderLine">
+		<field name="receiverAddressStr" expr="call:com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService:getReceiverAddress(partner)"  if="__parent__?.bankOrderFileFormat?.orderFileFormatSelect?.equals('pain.xxx.cfonb320.xct')"/>	
 	</action-record>
 
 	<!-- Actions Methods -->

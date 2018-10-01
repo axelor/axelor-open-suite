@@ -663,6 +663,7 @@ Also, improve the sale order line grid and form views.
 - Add a new button on bank order grids to display the bank order lines.
 - Bank orders can now be deleted when their status is "draft" or "canceled".
 - Improve bank order printing layout.
+- BANK ORDER : receiver address management for internationnal transfer
 
 ### Bug Fixes
 - Fix NPE in BankOrder generation on missing bank name.

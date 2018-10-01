@@ -135,6 +135,8 @@ public interface IExceptionMessage {
       "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details currency is not compatible with the currency in bank order." /*)*/;
+  static final String BANK_ORDER_LINE_NO_RECEIVER_ADDRESS = /*$$(*/
+      "No address has been defined in the receiver %s" /*)*/;
 
   /** BankOrder merge */
   static final String BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS = /*$$(*/
