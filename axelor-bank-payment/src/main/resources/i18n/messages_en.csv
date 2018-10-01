@@ -166,6 +166,7 @@
 "Bank order export folder path",,,
 "Bank order file format",,,
 "Bank order file formats",,,
+"Bank orders can only be deleted at draft or canceled status.",,,
 "Bank payment batch",,,
 "Bank payment batches",,,
 "Bank reconciliation",,,
