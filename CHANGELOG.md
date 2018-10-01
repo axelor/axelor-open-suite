@@ -3,6 +3,8 @@
 ## [Unreleased 5.1.2]
 ## Features
 ## Improvements
+- BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
+- BPM: list of custom models is filtered accordingly the selected appBuilder.
 ## Bug Fixes
 
 
