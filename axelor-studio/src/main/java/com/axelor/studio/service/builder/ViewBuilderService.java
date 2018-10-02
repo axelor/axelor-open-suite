@@ -33,7 +33,9 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
+import com.axelor.meta.schema.ObjectViews;
 import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.meta.schema.views.AbstractWidget;
 import com.axelor.meta.schema.views.Field;
@@ -43,6 +45,7 @@ import com.axelor.studio.db.repo.MetaJsonFieldRepo;
 import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.inject.Inject;
+import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +53,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,24 +68,28 @@ public class ViewBuilderService {
 
   @Inject private MetaModelRepository metaModelRepo;
 
-  public static final String PACKAGE_PREFIX = "com.axelor.apps.base.db";
+  @Inject private MetaViewRepository metaViewRepo;
+  
+  @Inject private ModelBuilderService modelBuilderService;
 
-  public static final List<String> DATE_TYPES =
+  private static final List<String> DATE_TYPES =
       Arrays.asList(
           new String[] {
             "date", "datetime", "LocalDate", "LocalDateTime", "ZonnedDateTime",
           });
 
-  public static final List<String> NUMBER_TYPES =
+  private static final List<String> NUMBER_TYPES =
       Arrays.asList(new String[] {"integer", "Integer", "Long", "decimal", "BigDecimal"});
 
-  public AbstractView processCommon(AbstractView view, ViewBuilder viewBuilder)
+  public AbstractView processCommon(AbstractView view, ViewBuilder viewBuilder, String module)
       throws AxelorException {
 
     view.setName(viewBuilder.getName());
     view.setTitle(viewBuilder.getTitle());
-    view.setModel(getModelName(viewBuilder, viewBuilder.getModule()));
-    view.setXmlId(viewBuilder.getModule() + "-" + viewBuilder.getName());
+    view.setModel(getModelName(viewBuilder, module));
+    if (module != null) {
+      view.setXmlId(module + "-" + viewBuilder.getName());
+    }
 
     return view;
   }
@@ -98,9 +106,11 @@ public class ViewBuilderService {
     }
 
     if (viewBuilder.getIsJson()) {
-      modelName = getJsonModelName(moduleName, modelName);
+      if (moduleName != null) {
+        modelName = modelBuilderService.getModelFullName(moduleName, modelName);
+      }
     } else {
-      MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(modelName);
+      MetaModel metaModel = metaModelRepo.findByName(modelName);
       if (metaModel == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -113,17 +123,12 @@ public class ViewBuilderService {
     return modelName;
   }
 
-  public String getJsonModelName(String moduleName, String modelName) {
+  public String createXml(ObjectViews objectViews) throws JAXBException {
 
-    moduleName = Inflector.getInstance().dasherize(moduleName).replaceAll("-", ".");
-    modelName = Inflector.getInstance().classify(modelName);
+    StringWriter writer = new StringWriter();
+    XMLViews.marshal(objectViews, writer);
 
-    return PACKAGE_PREFIX + "." + moduleName + "." + modelName;
-  }
-
-  public String createXml(AbstractView view) {
-
-    return XMLViews.toXml(view, true);
+    return writer.toString();
   }
 
   public String[] getJsonField(String model, String name) throws AxelorException {
@@ -296,7 +301,7 @@ public class ViewBuilderService {
     return name;
   }
 
-  public void genereateMetaView(ViewBuilder viewBuilder) throws AxelorException {
+  public void genereateMetaView(ViewBuilder viewBuilder, String module) throws AxelorException {
 
     if (viewBuilder == null || viewBuilder.getIsJson()) {
       return;
@@ -305,20 +310,35 @@ public class ViewBuilderService {
     AbstractView view = null;
     switch (viewBuilder.getViewType()) {
       case "kanban":
-        view = Beans.get(KanbanBuilderService.class).build(viewBuilder);
+        view = Beans.get(KanbanBuilderService.class).build(viewBuilder, module);
         break;
       case "calendar":
-        view = Beans.get(CalendarBuilderService.class).build(viewBuilder);
+        view = Beans.get(CalendarBuilderService.class).build(viewBuilder, module);
         break;
       case "cards":
-        view = Beans.get(CardsBuilderService.class).build(viewBuilder);
+        view = Beans.get(CardsBuilderService.class).build(viewBuilder, module);
         break;
     }
 
     if (view != null) {
-      MetaView metaView =
-          Beans.get(StudioMetaService.class).generateMetaView(view, viewBuilder.getModule());
+      MetaView metaView = Beans.get(StudioMetaService.class).generateMetaView(view, module);
       viewBuilder.setMetaViewGenerated(metaView);
     }
+  }
+
+  public String getViewTitle(String viewName) {
+
+    MetaView metaView = metaViewRepo.findByName(viewName);
+
+    if (metaView != null) {
+      return metaView.getTitle();
+    }
+
+    return viewName;
+  }
+
+  public String getDefaultViewName(String type, String simpleModelName) {
+
+    return Inflector.getInstance().dasherize(simpleModelName) + "-" + type;
   }
 }
