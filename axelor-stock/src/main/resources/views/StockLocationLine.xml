@@ -13,14 +13,14 @@
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
+    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
     	<panel name="main">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
 	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-            <field name="avgPrice" x-scale="2"/>
+            <field name="avgPrice"/>
             <field name="rack"/>
         </panel>
 		<panel name="lastInventory" title="Last inventory">
@@ -43,14 +43,14 @@
         <field name="rack"/>
     </grid>
 
-    <form name="stock-location-line-bad-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
+    <form name="stock-location-line-bad-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
         <panel name="main">
             <field name="product" form-view="product-form" grid-view="product-grid"/>
             <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
             <field name="currentQty" colSpan="4"/>
             <field name="futureQty" colSpan="4"/>
             <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" x-scale="2" colSpan="4"/>
+            <field name="avgPrice" colSpan="4"/>
             <field name="rack"/>
         </panel>
     </form>
@@ -65,14 +65,14 @@
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
+    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale"> 
 		<panel name="main">
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
 	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" x-scale="2"/>
+            <field name="avgPrice"/>
 	        <field name="lastFutureStockMoveDate"/>
             <field name="rack"/>
         </panel>
@@ -102,13 +102,13 @@
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
+    <form name="stock-location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
 		<panel name="main">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
 	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" x-scale="2"/>
+            <field name="avgPrice"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 	        <field name="trackingNumber" domain="self.product = :product"/>
             <field name="rack"/>
@@ -134,5 +134,9 @@
     	<context name="productId" expr="eval: product?.id"/>
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
+    
+    <action-attrs name="action-stock-location-line-atts-avg-price-scale">
+    	<attribute name="scale" for="avgPrice" expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
+    </action-attrs>
     
 </object-views>
