@@ -9,6 +9,7 @@
     </toolbar>
     <panel>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      <field name="isReal" />
     </panel>
     <panel-include view="json-model-form" from="axelor-core"/>
   </form>

@@ -241,7 +241,7 @@ class WkfTransitionService {
     attrs.add(attr);
     actions.add(actionName);
     xml = getActionXML(actionName, attrs);
-    metaService.updateMetaAction(actionName, "action-record", xml, null);
+    metaService.updateMetaAction(actionName, "action-attrs", xml, null);
     // actions.add("save");
     //		actions.add(WkfTrackingService.ACTION_TRACK);
 

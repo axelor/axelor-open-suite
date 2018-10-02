@@ -20,18 +20,25 @@ package com.axelor.studio.service.builder;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.schema.views.AbstractWidget;
 import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.FormView;
+import com.axelor.meta.schema.views.Panel;
+import com.axelor.meta.schema.views.PanelField;
+import com.axelor.meta.schema.views.PanelTabs;
+import com.axelor.meta.schema.views.Separator;
 import com.axelor.meta.schema.views.SimpleWidget;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.json.Json;
-
-import org.hsqldb.lib.StringInputStream;
+import java.util.Map;
+import javax.xml.namespace.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,54 +48,175 @@ public class FormBuilderService {
 
   @Inject private ViewBuilderService viewBuilderService;
 
-  public String build(MetaJsonModel jsonModel, String moduleName) throws AxelorException {
+  @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
+  
+  @Inject private ModelBuilderService modelBuilderService;
 
-    String model = viewBuilderService.getJsonModelName(moduleName, jsonModel.getName());
+  public FormView build(MetaJsonModel jsonModel, String module) throws AxelorException {
 
-    FormView view = new FormView();
-    view.setModel(model);
-    view.setTitle(jsonModel.getTitle());
-    view.setOnNew(jsonModel.getOnNew());
-    view.setOnSave(jsonModel.getOnSave());
-    List<AbstractWidget> items = getItems(jsonModel);
-    view.setItems(items);
+    if (jsonModel == null || module == null || jsonModel.getFields().isEmpty()) {
+      return null;
+    }
 
-    return viewBuilderService.createXml(view);
+    String model = modelBuilderService.getModelFullName(module, jsonModel.getName());
+    String name = viewBuilderService.getDefaultViewName("form", jsonModel.getName());
+
+    FormView formView = new FormView();
+    formView.setModel(model);
+    formView.setName(name);
+    formView.setTitle(jsonModel.getTitle());
+    formView.setOnNew(jsonModel.getOnNew());
+    formView.setOnSave(jsonModel.getOnSave());
+    formView.setXmlId(module + "-" + name);
+    List<AbstractWidget> items = createItems(jsonModel.getFields());
+    formView.setItems(items);
+
+    return formView;
   }
 
-  private List<AbstractWidget> getItems(MetaJsonModel jsonModel) {
+  public FormView build(MetaModel metaModel, String module) throws AxelorException {
+
+    if (metaModel == null) {
+      return null;
+    }
+
+    List<MetaJsonField> fields =
+        metaJsonFieldRepo.all().filter("self.model = ?1", metaModel.getFullName()).fetch();
+
+    if (fields.isEmpty()) {
+      return null;
+    }
+
+    String name = viewBuilderService.getDefaultViewName("form", metaModel.getName());
+
+    FormView formView = new FormView();
+    formView.setModel(metaModel.getFullName());
+    formView.setName(name);
+    formView.setTitle(viewBuilderService.getViewTitle(name));
+    formView.setExtension(true);
+    formView.setXmlId(module + "-" + name);
+    List<AbstractWidget> items = createItems(fields);
+    formView.setItems(items);
+
+    return formView;
+  }
+
+  private List<AbstractWidget> createItems(List<MetaJsonField> fields) {
 
     List<AbstractWidget> items = new ArrayList<>();
 
-    for (MetaJsonField field : jsonModel.getFields()) {
-      SimpleWidget item = null;
-      switch (field.getType()) {
-        case "button":
-          item = createButton(field);
-          break;
-      }
+    PanelTabs panelTabs = null;
+    Panel panel = null;
+    modelBuilderService.sortJsonFields(fields);
 
-      if (item != null) {
-        processCommon(item, field);
-        items.add(item);
+    for (MetaJsonField field : fields) {
+       if (field.getName().equals("trackFlow")) {
+    	   continue;
+       }
+      HashMap<String, Object> widgetAttrs = getWidgetAttrs(field);
+
+      if (field.getType().equals("panel")) {
+        Boolean tab = isTabPanel(widgetAttrs);
+        panel = createPanel(field, (Boolean) widgetAttrs.get("tab"));
+        processCommon(panel, field, widgetAttrs);
+        if (tab) {
+          if (panelTabs == null) {
+            panelTabs = new PanelTabs();
+            panelTabs.setItems(new ArrayList<>());
+            items.add(panelTabs);
+          }
+          panelTabs.getItems().add(panel);
+        } else {
+          items.add(panel);
+        }
+      } else if (panel != null) {
+        SimpleWidget item = createSimpleItem(field);
+        if (item != null) {
+          processCommon(item, field, widgetAttrs);
+          panel.getItems().add(item);
+        }
+      } else {
+        log.debug("Panel null for field: {}", field.getName());
       }
     }
 
     return items;
   }
 
-  private void processCommon(SimpleWidget item, MetaJsonField field) {
+  private Boolean isTabPanel(HashMap<String, Object> widgetAttrs) {
+
+    Boolean tab = false;
+    if (widgetAttrs.get("tab") != null) {
+      tab = Boolean.parseBoolean(widgetAttrs.get("tab").toString());
+      widgetAttrs.remove("tab");
+    }
+
+    return tab;
+  }
+
+  private SimpleWidget createSimpleItem(MetaJsonField field) {
+
+    SimpleWidget item = null;
+    switch (field.getType()) {
+      case "button":
+        item = createButton(field);
+        break;
+      case "separator":
+        item = createSeparator(field);
+        break;
+      default:
+        item = createField(field);
+    }
+
+    return item;
+  }
+
+  private HashMap<String, Object> getWidgetAttrs(MetaJsonField field) {
+
+    HashMap<String, Object> widgetAttrs = new HashMap<>();
+
+    if (field.getWidgetAttrs() != null) {
+      try {
+        widgetAttrs = new ObjectMapper().readValue(field.getWidgetAttrs(), HashMap.class);
+      } catch (IOException e) {
+      }
+    }
+
+    return widgetAttrs;
+  }
+
+  private void processCommon(
+      SimpleWidget item, MetaJsonField field, HashMap<String, Object> widgetAttrs) {
 
     item.setName(field.getName());
-    item.setTitle(field.getTitle());
-    item.setReadonly(field.getReadonly());
-    item.setReadonlyIf(field.getReadonlyIf());
-    item.setHidden(field.getHidden());
-    item.setHideIf(field.getHideIf());
+    if (!(item instanceof PanelField)) {
+    	item.setTitle(field.getTitle());
+    }	
     
-//    if (field.getWidgetAttrs() != null) {
-//    	Json.createParser(new StringInputStream(field.getWidgetAttrs()));
-//    }
+    if (field.getReadonly()) {
+      item.setReadonly(field.getReadonly());
+    }
+    if (field.getReadonlyIf() != null) {
+      item.setReadonlyIf(field.getReadonlyIf());
+    }
+    if (field.getHidden()) {
+      item.setHidden(field.getHidden());
+    }
+    item.setHideIf(field.getShowIf());
+
+    if (widgetAttrs.containsKey("colSpan")) {
+      item.setColSpan(Integer.parseInt(widgetAttrs.get("colSpan").toString()));
+      widgetAttrs.remove("colSpan");
+    }
+
+    Map<QName, String> otherAttrs = new HashMap<>();
+    for (String key : widgetAttrs.keySet()) {
+      if (key.equals("col") || key.equals("width")) {
+        continue;
+      }
+      otherAttrs.put(new QName(key), widgetAttrs.get(key).toString());
+    }
+    item.setOtherAttributes(otherAttrs);
   }
 
   private SimpleWidget createButton(MetaJsonField field) {
@@ -97,5 +225,30 @@ public class FormBuilderService {
     button.setOnClick(field.getOnClick());
 
     return button;
+  }
+
+  private SimpleWidget createSeparator(MetaJsonField field) {
+    return new Separator();
+  }
+
+  private Panel createPanel(MetaJsonField field, Boolean tab) {
+
+    Panel panel = new Panel();
+    panel.setItems(new ArrayList<>());
+
+    return panel;
+  }
+
+  private SimpleWidget createField(MetaJsonField jsonField) {
+
+    PanelField field = new PanelField();
+    field.setWidget(jsonField.getWidget());
+    field.setOnChange(jsonField.getOnChange());
+    if (jsonField.getRequired()) {
+      field.setRequired(jsonField.getRequired());
+    }
+    field.setRequiredIf(jsonField.getRequiredIf());
+
+    return field;
   }
 }

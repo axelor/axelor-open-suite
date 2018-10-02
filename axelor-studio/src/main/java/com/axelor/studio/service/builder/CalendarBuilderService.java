@@ -20,7 +20,6 @@ package com.axelor.studio.service.builder;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.meta.schema.views.CalendarView;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
@@ -37,12 +36,10 @@ public class CalendarBuilderService {
 
   @Inject private ViewBuilderService viewBuilderService;
 
-  public AbstractView build(ViewBuilder viewBuilder) throws AxelorException {
+  public CalendarView build(ViewBuilder viewBuilder, String module) throws AxelorException {
 
     log.debug(
-        "Creating calendar view for module: {}, viewBuilder: {}",
-        viewBuilder.getModule(),
-        viewBuilder.getName());
+        "Creating calendar view for module: {}, viewBuilder: {}", module, viewBuilder.getName());
 
     List<ViewItem> viewItems = viewBuilder.getViewItemList();
     if (viewItems.isEmpty()) {
@@ -53,7 +50,7 @@ public class CalendarBuilderService {
     }
 
     CalendarView view = new CalendarView();
-    viewBuilderService.processCommon(view, viewBuilder);
+    viewBuilderService.processCommon(view, viewBuilder, module);
     view.setOnChange(viewBuilder.getOnLoad());
     view.setMode(viewBuilder.getModeSelect());
     view.setEventStart(viewBuilder.getEventStart());

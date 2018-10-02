@@ -20,7 +20,6 @@ package com.axelor.studio.service.builder;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.meta.schema.views.CardsView;
 import com.axelor.studio.db.ViewBuilder;
 import com.axelor.studio.db.ViewItem;
@@ -37,12 +36,9 @@ public class CardsBuilderService {
 
   @Inject private ViewBuilderService viewBuilderService;
 
-  public AbstractView build(ViewBuilder viewBuilder) throws AxelorException {
+  public CardsView build(ViewBuilder viewBuilder, String module) throws AxelorException {
 
-    log.debug(
-        "Creating cards view for module: {}, viewBuilder: {}",
-        viewBuilder.getModule(),
-        viewBuilder.getName());
+    log.debug("Creating cards view for module: {}, viewBuilder: {}", module, viewBuilder.getName());
 
     List<ViewItem> viewItems = viewBuilder.getViewItemList();
     if (viewItems.isEmpty()) {
@@ -53,7 +49,7 @@ public class CardsBuilderService {
     }
 
     CardsView view = new CardsView();
-    viewBuilderService.processCommon(view, viewBuilder);
+    viewBuilderService.processCommon(view, viewBuilder, module);
     view.setCss("rect-image");
     view.setItems(viewBuilderService.getItems(viewBuilder));
     view.setTemplate(createTemplate(viewBuilder));

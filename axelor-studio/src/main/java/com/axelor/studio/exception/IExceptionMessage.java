@@ -37,4 +37,7 @@ public interface IExceptionMessage {
 
   /** No fields define on view builders * */
   static final String PLEASE_ADD_FIELDS = /*$$(*/ "Please add fields" /*)*/;
+
+  /** No module related views or models to export * */
+  static final String NO_MODULE_DATA = /*$$(*/ "No module related views or model found" /*)*/;
 }

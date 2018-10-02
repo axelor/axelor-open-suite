@@ -10,7 +10,12 @@
   	<form name="module-builder-form" title="Module builder" model="com.axelor.studio.db.ModuleBuilder">
   		<panel>
       		<field name="name" />
+      		<button name="exportModule" title="Export" onClick="action-module-builder-method-export-module"/>
       	</panel>
   	</form>
+  	
+  	<action-method name="action-module-builder-method-export-module">
+  		<call class="com.axelor.studio.web.ModuleBuilderController" method="exportModule"/>
+  	</action-method>
 	
 </object-views>

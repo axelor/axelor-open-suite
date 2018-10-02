@@ -38,16 +38,17 @@ public class ViewBuilderController {
 
       ViewBuilder viewBuilder = request.getContext().asType(ViewBuilder.class);
 
-      viewBuilderService.genereateMetaView(viewBuilderRepo.find(viewBuilder.getId()));
+      viewBuilderService.genereateMetaView(viewBuilderRepo.find(viewBuilder.getId()), null);
 
-      String model = viewBuilderService.getModelName(viewBuilder, viewBuilder.getModule());
-      
-      response.setView(
-          ActionView.define(viewBuilder.getTitle())
-              .model(model)
-              .add(viewBuilder.getViewType(), viewBuilder.getName())
-              .map());
+      String model = viewBuilderService.getModelName(viewBuilder, null);
 
+      if (model != null) {
+        response.setView(
+            ActionView.define(viewBuilder.getTitle())
+                .model(model)
+                .add(viewBuilder.getViewType(), viewBuilder.getName())
+                .map());
+      }
       response.setReload(true);
     } catch (AxelorException e) {
       response.setFlash(e.getMessage());

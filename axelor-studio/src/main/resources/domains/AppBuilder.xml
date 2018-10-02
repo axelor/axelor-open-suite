@@ -13,6 +13,7 @@
 		<many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Image"/>
 		<integer name="sequence" title="Sequence" />
 		<many-to-one name="generatedApp" ref="com.axelor.apps.base.db.App" />
+		<boolean name="isReal" title="Export as real"/>
 	</entity>
 
 </domain-models>

@@ -5,7 +5,7 @@
 	<module name="meta" package="com.axelor.meta.db" />
 
 	<entity name="MetaModel" cachable="true">
-		<boolean name="isExportAsReal" title="Export as real" />
+		<boolean name="isReal" title="Export as real" />
 	</entity>
 
 </domain-models>

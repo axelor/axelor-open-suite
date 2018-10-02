@@ -32,7 +32,7 @@ public class ViewBuilderRepo extends ViewBuilderRepository {
     viewBuilder = super.save(viewBuilder);
 
     try {
-      Beans.get(ViewBuilderService.class).genereateMetaView(viewBuilder);
+      Beans.get(ViewBuilderService.class).genereateMetaView(viewBuilder, null);
     } catch (AxelorException e) {
       e.printStackTrace();
     }

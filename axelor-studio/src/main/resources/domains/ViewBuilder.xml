@@ -15,7 +15,6 @@
 		<string name="onNew" title="On new" />
 		<string name="onLoad" title="On load" />
 		<boolean name="editable" title="Editable" />
-		<string name="module" title="Module" required="true" />
 
 		<!-- Kanban -->
 		<string name="columnBy" title="Column By" />
