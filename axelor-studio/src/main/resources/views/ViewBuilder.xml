@@ -14,7 +14,6 @@
 		model="com.axelor.studio.db.ViewBuilder" onNew="action-view-builder-record-default">
 		<panel>
 			<field name="isJson" colSpan="2"/>
-			<field name="module" colSpan="5" widget="ref-text" x-target="com.axelor.studio.db.ModuleBuilder" x-target-name="name"/>
 			<panel itemSpan="12" colSpan="5">
 				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="name" showIf="!isJson" requiredIf="!isJson"/>
 				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson"/>
@@ -46,7 +45,6 @@
 		model="com.axelor.studio.db.ViewBuilder" onNew="action-view-builder-record-default">
 		<panel>
 			<field name="isJson" colSpan="2"/>
-			<field name="module" colSpan="5" widget="ref-text" x-target="com.axelor.studio.db.ModuleBuilder" x-target-name="name"/>
 			<panel itemSpan="12" colSpan="5">
 				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="name" showIf="!isJson" requiredIf="!isJson"/>
 				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson"/>
@@ -80,7 +78,6 @@
 		model="com.axelor.studio.db.ViewBuilder" onNew="action-view-builder-record-default">
 		<panel>
 			<field name="isJson" colSpan="2"/>
-			<field name="module" colSpan="5" widget="ref-text" x-target="com.axelor.studio.db.ModuleBuilder" x-target-name="name"/>
 			<panel itemSpan="12" colSpan="5">
 				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="name" showIf="!isJson" requiredIf="!isJson"/>
 				<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson"/>

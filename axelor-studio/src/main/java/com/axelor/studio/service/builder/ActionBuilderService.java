@@ -17,17 +17,27 @@
  */
 package com.axelor.studio.service.builder;
 
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.repo.MetaActionRepository;
+import com.axelor.meta.loader.XMLViews;
+import com.axelor.meta.schema.ObjectViews;
+import com.axelor.meta.schema.actions.Action;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.xml.bind.JAXBException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +50,8 @@ public class ActionBuilderService {
   @Inject private ActionScriptBuilderService actionScriptBuilderService;
 
   @Inject private ActionEmailBuilderService actionEmailBuilderService;
+  
+  @Inject private MetaActionRepository metaActionRepo;
 
   @Transactional
   public MetaAction build(ActionBuilder builder) {
@@ -108,5 +120,48 @@ public class ActionBuilderService {
     actionBuilderView.setViewType(viewType);
     actionBuilderView.setViewName(viewName);
     actionBuilderViews.add(actionBuilderView);
+  }
+
+  public List<Action> build(List<MetaJsonField> fields, String module) throws AxelorException, JAXBException {
+	
+	List<Action> actions = new ArrayList<>();
+	if (fields == null || module == null) {
+		return actions;
+	}
+    
+	for (MetaJsonField field : fields) {
+		addActions(module, field.getOnChange(),actions);
+		addActions(module, field.getOnClick(),actions);
+	}
+    
+    
+    return actions;
+  }
+
+  private void addActions(String module, String actionNames, List<Action> actions) throws JAXBException {
+	  
+	  if (actionNames == null) {
+		  return;
+	  }
+	  
+	  String[] names = actionNames.split(",");
+	  
+	  for (String name : names) {
+		  if (name.equals("save")) {
+			  continue;
+		  }
+		  MetaAction metaAction = metaActionRepo
+				  .all()
+				  .filter("self.name = ?1 and self.module is null", name)
+				  .fetchOne();
+		  if (metaAction != null) {
+			  ObjectViews views = XMLViews.fromXML(metaAction.getXml());
+			  Action action = views.getActions().get(0);
+			  action.setXmlId(module + "-" + action.getName());
+			  actions.add(action);
+		  }
+		  
+	  }
+	  
   }
 }
