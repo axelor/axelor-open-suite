@@ -30,14 +30,12 @@ import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +48,7 @@ public class ActionBuilderService {
   @Inject private ActionScriptBuilderService actionScriptBuilderService;
 
   @Inject private ActionEmailBuilderService actionEmailBuilderService;
-  
+
   @Inject private MetaActionRepository metaActionRepo;
 
   @Transactional
@@ -122,46 +120,43 @@ public class ActionBuilderService {
     actionBuilderViews.add(actionBuilderView);
   }
 
-  public List<Action> build(List<MetaJsonField> fields, String module) throws AxelorException, JAXBException {
-	
-	List<Action> actions = new ArrayList<>();
-	if (fields == null || module == null) {
-		return actions;
-	}
-    
-	for (MetaJsonField field : fields) {
-		addActions(module, field.getOnChange(),actions);
-		addActions(module, field.getOnClick(),actions);
-	}
-    
-    
+  public List<Action> build(List<MetaJsonField> fields, String module)
+      throws AxelorException, JAXBException {
+
+    List<Action> actions = new ArrayList<>();
+    if (fields == null || module == null) {
+      return actions;
+    }
+
+    for (MetaJsonField field : fields) {
+      addActions(module, field.getOnChange(), actions);
+      addActions(module, field.getOnClick(), actions);
+    }
+
     return actions;
   }
 
-  private void addActions(String module, String actionNames, List<Action> actions) throws JAXBException {
-	  
-	  if (actionNames == null) {
-		  return;
-	  }
-	  
-	  String[] names = actionNames.split(",");
-	  
-	  for (String name : names) {
-		  if (name.equals("save")) {
-			  continue;
-		  }
-		  MetaAction metaAction = metaActionRepo
-				  .all()
-				  .filter("self.name = ?1 and self.module is null", name)
-				  .fetchOne();
-		  if (metaAction != null) {
-			  ObjectViews views = XMLViews.fromXML(metaAction.getXml());
-			  Action action = views.getActions().get(0);
-			  action.setXmlId(module + "-" + action.getName());
-			  actions.add(action);
-		  }
-		  
-	  }
-	  
+  private void addActions(String module, String actionNames, List<Action> actions)
+      throws JAXBException {
+
+    if (actionNames == null) {
+      return;
+    }
+
+    String[] names = actionNames.split(",");
+
+    for (String name : names) {
+      if (name.equals("save")) {
+        continue;
+      }
+      MetaAction metaAction =
+          metaActionRepo.all().filter("self.name = ?1 and self.module is null", name).fetchOne();
+      if (metaAction != null) {
+        ObjectViews views = XMLViews.fromXML(metaAction.getXml());
+        Action action = views.getActions().get(0);
+        action.setXmlId(module + "-" + action.getName());
+        actions.add(action);
+      }
+    }
   }
 }

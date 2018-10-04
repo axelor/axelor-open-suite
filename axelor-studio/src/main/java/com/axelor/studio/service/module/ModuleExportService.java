@@ -87,15 +87,14 @@ public class ModuleExportService {
   @Inject private FormBuilderService formBuilderService;
 
   @Inject private GridBuilderService gridBuilderService;
-  
+
   @Inject private ActionBuilderService actionBuilderService;
 
   @Inject private MetaFiles metaFiles;
 
   @Inject private MetaFileRepository metaFileRepo;
-  
-  @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
 
+  @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
 
   @Transactional
   public MetaFile export(String module)
@@ -112,18 +111,18 @@ public class ModuleExportService {
 
     File zipFile = MetaFiles.createTempFile(module, ".zip").toFile();
     ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile));
-    
+
     addBuildGradle(module, zipOut);
 
     Map<String, ObjectViews> viewMap = new HashMap<>();
-    
+
     addJsonModel(module, jsonModels, zipOut, viewMap);
     addMetaModel(module, metaModels, zipOut, viewMap);
     addMenu(module, jsonModels, viewMap);
     addView(module, viewBuilders, zipOut, viewMap);
-    
-    Beans.get(ModuleExportDataInitService.class).addDataInit(module, zipOut);
-    
+
+    Beans.get(ModuleExportDataInitService.class).exportDataInit(module, zipOut);
+
     zipOut.close();
 
     MetaFile metaFile = metaFiles.upload(zipFile);
@@ -205,7 +204,7 @@ public class ModuleExportService {
 
     for (MetaModel model : metaModels) {
       List<MetaJsonField> fields =
-    	        metaJsonFieldRepo.all().filter("self.model = ?1", model.getFullName()).fetch();
+          metaJsonFieldRepo.all().filter("self.model = ?1", model.getFullName()).fetch();
       String fileText = modelBuilderService.build(model, fields, module);
       addZipEntry(DOMAIN_DIR + model.getName() + ".xml", fileText, zipOut);
       updateViewMap(model.getName(), viewMap, formBuilderService.build(model, module));
@@ -272,7 +271,7 @@ public class ModuleExportService {
     objectViews.setMenus(new ArrayList<>());
     objectViews.setActions(new ArrayList<>());
     viewMap.put("Menu", objectViews);
-    
+
     for (MetaJsonModel jsonModel : jsonModels) {
       MetaMenu menu = jsonModel.getMenu();
       if (menu == null) {
@@ -283,9 +282,9 @@ public class ModuleExportService {
       }
       addMenu(module, jsonModel.getName(), menu, viewMap);
     }
-    
+
     if (objectViews.getMenus().isEmpty()) {
-    	viewMap.remove("Menu");
+      viewMap.remove("Menu");
     }
   }
 
@@ -330,44 +329,43 @@ public class ModuleExportService {
 
     viewMap.get("Menu").getMenus().add(menu);
   }
-  
-  public void addActions(String model, String module, List<MetaJsonField> fields, Map<String, ObjectViews> viewMap) throws AxelorException, JAXBException {
-	  
-	  ObjectViews views = viewMap.get(model);
 
-	  List<Action> actions = actionBuilderService.build(fields, module);
-	  
-	  views.setActions(actions);
-	  
+  public void addActions(
+      String model, String module, List<MetaJsonField> fields, Map<String, ObjectViews> viewMap)
+      throws AxelorException, JAXBException {
+
+    ObjectViews views = viewMap.get(model);
+
+    List<Action> actions = actionBuilderService.build(fields, module);
+
+    views.setActions(actions);
   }
-  
-  public void addSelection(List<MetaJsonField> fields, Map<String, ObjectViews> viewMap) throws AxelorException, JAXBException {
-	  
-	  
-	  List<Selection> selections = new ArrayList<>();
-	  
-	  for (MetaJsonField field : fields) {
-		  if (field.getIsWkf()  && field.getSelection() != null) {
-			  List<Option> options = MetaStore.getSelectionList(field.getSelection());
-			  if (!ObjectUtils.isEmpty(options)) { 
-				  Selection selection = new Selection();
-				  selection.setName(field.getSelection());
-				  selection.setOptions(options);
-				  selections.add(selection);
-			  }
-		  }
-	  }
-	  
-	  if (!selections.isEmpty()) {
-		  ObjectViews views = viewMap.get("Selects");
-		  if (views == null) {
-			  views = new ObjectViews();
-			  views.setSelections(new ArrayList<>());
-			  viewMap.put("Selects", views);
-		  }
-		  views.getSelections().addAll(selections);
-	  }
-	  
-	  
+
+  public void addSelection(List<MetaJsonField> fields, Map<String, ObjectViews> viewMap)
+      throws AxelorException, JAXBException {
+
+    List<Selection> selections = new ArrayList<>();
+
+    for (MetaJsonField field : fields) {
+      if (field.getIsWkf() && field.getSelection() != null) {
+        List<Option> options = MetaStore.getSelectionList(field.getSelection());
+        if (!ObjectUtils.isEmpty(options)) {
+          Selection selection = new Selection();
+          selection.setName(field.getSelection());
+          selection.setOptions(options);
+          selections.add(selection);
+        }
+      }
+    }
+
+    if (!selections.isEmpty()) {
+      ObjectViews views = viewMap.get("Selects");
+      if (views == null) {
+        views = new ObjectViews();
+        views.setSelections(new ArrayList<>());
+        viewMap.put("Selects", views);
+      }
+      views.getSelections().addAll(selections);
+    }
   }
 }

@@ -22,10 +22,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.schema.ObjectViews;
-import com.google.inject.Inject;
-
 import java.util.Comparator;
 import java.util.List;
 
@@ -34,7 +31,7 @@ public class ModelBuilderService {
   private static final String NAMESPACE = "http://axelor.com/xml/ns/domain-models";
 
   private static final String REMOTE_SCHEMA = "domain-models_" + ObjectViews.VERSION + ".xsd";
-  
+
   private static final String PACKAGE_PREFIX = "com.axelor.apps";
 
   public String build(MetaJsonModel model, String module) throws AxelorException {
@@ -43,7 +40,7 @@ public class ModelBuilderService {
       return null;
     }
     String packageName = getPackageName(module);
-//    String modelName = Inflector.getInstance().classify(model.getName());
+    //    String modelName = Inflector.getInstance().classify(model.getName());
     String modelName = model.getName();
 
     StringBuilder builder = new StringBuilder();
@@ -54,14 +51,14 @@ public class ModelBuilderService {
 
     return prepareXML(builder.toString());
   }
- 
+
   public String build(String modelSimple, String module, String parent) throws AxelorException {
 
     if (modelSimple == null || module == null || parent == null) {
       return null;
     }
     String packageName = getPackageName(module);
-//    String modelName = Inflector.getInstance().classify(modelSimple);
+    //    String modelName = Inflector.getInstance().classify(modelSimple);
 
     StringBuilder builder = new StringBuilder();
     builder.append("\t<module name=\"" + module + "\" package=\"" + packageName + "\"/>\n\n");
@@ -70,14 +67,13 @@ public class ModelBuilderService {
     return prepareXML(builder.toString());
   }
 
-  
-  public String build(MetaModel model, List<MetaJsonField> fields, String module) throws AxelorException {
+  public String build(MetaModel model, List<MetaJsonField> fields, String module)
+      throws AxelorException {
 
     if (model == null || module == null || fields.isEmpty()) {
       return null;
     }
 
-    
     String packageName = model.getPackageName();
     String modelName = model.getName();
 
@@ -98,7 +94,7 @@ public class ModelBuilderService {
 
     for (MetaJsonField field : fields) {
       String type = getType(field.getType());
-      if (type == null) {
+      if (type == null || field.getIsWkf()) {
         continue;
       }
       StringBuilder builder = new StringBuilder();
@@ -176,29 +172,29 @@ public class ModelBuilderService {
 
     return sb.toString();
   }
-  
+
   public String getModelFullName(String moduleName, String modelName) {
 
-	    if (moduleName == null || modelName == null) {
-	      return null;
-	    }
+    if (moduleName == null || modelName == null) {
+      return null;
+    }
 
-//	    modelName = Inflector.getInstance().classify(modelName);
+    //	    modelName = Inflector.getInstance().classify(modelName);
 
-	    return getPackageName(moduleName) + "." +  modelName;
-	  }
+    return getPackageName(moduleName) + "." + modelName;
+  }
 
   public String getPackageName(String moduleName) {
 
-	    if (moduleName == null) {
-	      return null;
-	    }
-	    moduleName = moduleName.substring(moduleName.indexOf("-") + 1, moduleName.length());
-	    moduleName = Inflector.getInstance().dasherize(moduleName).replaceAll("-", ".");
+    if (moduleName == null) {
+      return null;
+    }
+    moduleName = moduleName.substring(moduleName.indexOf("-") + 1, moduleName.length());
+    moduleName = Inflector.getInstance().dasherize(moduleName).replaceAll("-", ".");
 
-	    return PACKAGE_PREFIX + "." + moduleName + ".db";
+    return PACKAGE_PREFIX + "." + moduleName + ".db";
   }
-  
+
   public void sortJsonFields(List<MetaJsonField> fields) {
 
     fields.sort(
@@ -210,6 +206,4 @@ public class ModelBuilderService {
           }
         });
   }
-
-
 }

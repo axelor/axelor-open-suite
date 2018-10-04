@@ -37,7 +37,7 @@ public class GridBuilderService {
   @Inject private ViewBuilderService viewBuilderService;
 
   @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
-  
+
   @Inject private ModelBuilderService modelBuilderService;
 
   public GridView build(MetaJsonModel jsonModel, String module) throws AxelorException {
@@ -90,7 +90,7 @@ public class GridBuilderService {
 
     for (MetaJsonField field : fields) {
 
-      if (!field.getVisibleInGrid()) {
+      if (!field.getVisibleInGrid() || field.getIsWkf()) {
         continue;
       }
 
@@ -126,7 +126,7 @@ public class GridBuilderService {
 
     item.setName(field.getName());
     if (!(item instanceof Field)) {
-    	item.setTitle(field.getTitle());
+      item.setTitle(field.getTitle());
     }
     if (field.getReadonly()) {
       item.setReadonly(field.getReadonly());

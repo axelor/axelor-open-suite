@@ -40,4 +40,33 @@ public interface IExceptionMessage {
 
   /** No module related views or models to export * */
   static final String NO_MODULE_DATA = /*$$(*/ "No module related views or model found" /*)*/;
+
+  /** Invalid zip * */
+  static final String INVALID_ZIP = /*$$(*/
+      "Uploaded file is not a zip file, please upload only zip file" /*)*/;
+
+  /** Invalid module zip * */
+  static final String INVALID_MODULE_ZIP = /*$$(*/
+      "Uploaded zip file name is not a valid module name" /*)*/;
+
+  /** Invalid zip entry * */
+  static final String INVALID_ZIP_ENTRY = /*$$(*/ "Invalid zip entry: %s" /*)*/;
+
+  /** Source direcotry not found * */
+  static final String NO_SOURCE_DIR = /*$$(*/ "Source directory not configured" /*)*/;
+
+  /** Module imported successfully * */
+  static final String MODULE_IMPORTED = /*$$(*/
+      "Module imported successfully, please restart server to install it" /*)*/;
+
+  /** No build directory found * */
+  static final String NO_BUILD_DIR = /*$$(*/
+      "Error in application build. No build directory found" /*)*/;
+
+  /** Set environment variables to build app and restart server */
+  static final String NO_ENVIROMENT_VARIABLE = /*$$(*/ "Please set %s environment variable" /*)*/;
+
+  /** Error in application build please check log */
+  static final String BUILD_LOG_CHECK = /*$$(*/
+      "Error in application build. Please check the log file" /*)*/;
 }

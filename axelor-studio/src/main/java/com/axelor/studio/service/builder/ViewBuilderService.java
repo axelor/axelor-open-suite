@@ -69,7 +69,7 @@ public class ViewBuilderService {
   @Inject private MetaModelRepository metaModelRepo;
 
   @Inject private MetaViewRepository metaViewRepo;
-  
+
   @Inject private ModelBuilderService modelBuilderService;
 
   private static final List<String> DATE_TYPES =

@@ -4,18 +4,49 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="module-builder-grid" title="Module builder" model="com.axelor.studio.db.ModuleBuilder">
+		<toolbar>
+			<button name="importModule" title="Import module" onClick="action-module-builder-view-module-builder-wizard"/>
+			<button name="restartServer" title="Restart server" onClick="action-module-builder-validate-restart-server,action-module-builder-method-restart-server"/>
+		</toolbar>
       <field name="name" />
   	</grid>
   	
   	<form name="module-builder-form" title="Module builder" model="com.axelor.studio.db.ModuleBuilder">
   		<panel>
-      		<field name="name" />
+      		<field name="name" pattern="axelor(-[a-z]+)+" />
       		<button name="exportModule" title="Export" onClick="action-module-builder-method-export-module"/>
+      	</panel>
+  	</form>
+  	
+  	<form name="module-builder-wizard-form" title="Import module" model="com.axelor.studio.db.ModuleBuilder">
+  		<panel>
+      		<field name="metaFile" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link" title="File"/>
+      		<button showIf="metaFile != null" name="importModule" title="Import module" onClick="action-module-builder-method-import-module"/>
       	</panel>
   	</form>
   	
   	<action-method name="action-module-builder-method-export-module">
   		<call class="com.axelor.studio.web.ModuleBuilderController" method="exportModule"/>
   	</action-method>
+  	
+  	<action-method name="action-module-builder-method-import-module">
+  		<call class="com.axelor.studio.web.ModuleBuilderController" method="importModule"/>
+  	</action-method>
+  	
+  	<action-method name="action-module-builder-method-restart-server">
+  		<call class="com.axelor.studio.web.ModuleBuilderController" method="restartServer"/>
+  	</action-method>
+  	
+  	<action-view name="action-module-builder-view-module-builder-wizard" model="com.axelor.studio.db.ModuleBuilder" title="Import module">
+  		<view type="form" name="module-builder-wizard-form"/>
+  		<view-param name="show-toolbar" value="false"/>
+  		<view-param name="popup" value="true"/>
+  		<view-param name="popup-save" value="false"/>
+  		<view-param name="show-confirm" value="false"/>
+  	</action-view>
+  	
+  	<action-validate name="action-module-builder-validate-restart-server">
+  		<alert message="Are you sure wants to restart the server?"/>
+  	</action-validate>
 	
 </object-views>
