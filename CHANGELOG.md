@@ -13,6 +13,7 @@
 - Supplychain batch : Fix invoice all orders.
 - StockLocation report: show right cost price when using average price.
 - Stock move: Fix sort the record on stock move and stock move line grid view.
+- Improve error message when trying to reserve too much quantity in stock.
 - Duration : add translation to compute fullName.
 
 ## [5.0.5] - 2018-09-19

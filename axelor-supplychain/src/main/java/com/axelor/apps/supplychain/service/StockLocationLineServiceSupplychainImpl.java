@@ -46,7 +46,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_1),
+          I18n.get(IExceptionMessage.LOCATION_LINE_RESERVED_QTY),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
 
@@ -127,7 +127,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         throw new AxelorException(
             stockLocationLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LOCATION_LINE_1),
+            I18n.get(IExceptionMessage.LOCATION_LINE_RESERVED_QTY),
             stockLocationLine.getProduct().getName(),
             stockLocationLine.getProduct().getCode());
       }
