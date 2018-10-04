@@ -80,8 +80,8 @@ public class MenuBuilderController {
           menuBuilderService.createActionBuilder(menu.getAction());
       actionBuilderOpt.ifPresent(
           actionBuilder -> {
-        values.put("actionBuilder", actionBuilder);
-        values.put("showAction", true);
+            values.put("actionBuilder", actionBuilder);
+            values.put("showAction", true);
           });
     }
 

@@ -214,13 +214,13 @@ public class ActionScriptBuilderService {
 
     lines.sort(
         (l1, l2) -> {
-            if (l1.getDummy() && !l2.getDummy()) {
-              return -1;
-            }
-            if (!l1.getDummy() && l2.getDummy()) {
-              return 1;
-            }
-            return 0;
+          if (l1.getDummy() && !l2.getDummy()) {
+            return -1;
+          }
+          if (!l1.getDummy() && l2.getDummy()) {
+            return 1;
+          }
+          return 0;
         });
 
     for (ActionBuilderLine line : lines) {

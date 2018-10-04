@@ -305,7 +305,7 @@ public class WkfService {
 
   @Transactional
   public void clearWkf(Wkf wkf) {
-    
+
     String actions = "action-" + wkfId + ",action-group" + wkfId;
     actions = clearFields(wkf, actions);
 

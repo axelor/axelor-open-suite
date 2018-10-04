@@ -69,7 +69,7 @@ public class ActionBuilderService {
         metaAction = actionViewBuilderService.build(builder);
         break;
       case ActionBuilderRepository.TYPE_SELECT_EMAIL:
-      metaAction = actionEmailBuilderService.build(builder);
+        metaAction = actionEmailBuilderService.build(builder);
     }
 
     if (builder.getMetaModule() != null) {
