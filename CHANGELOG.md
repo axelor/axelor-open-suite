@@ -77,6 +77,7 @@
 - Partner : Modify fullName value calculation to add partnerSeq and update reports accordingly.
 - Sale order line : add 'Partially invoiced' tag and invoiced tag depends on 'amountInvoiced' and 'exTaxTotal'.
 - Stock Location Line : display stock avgPrice with as much decimal digit as specified in config.  
+- Stock : Move the stock Location menu to root menu from configration menu.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
