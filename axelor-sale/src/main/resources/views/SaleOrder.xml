@@ -6,7 +6,7 @@
     <grid name="sale-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-placeholder-print"/>
+                <item title="Print" action="action-sale-order-method-show-sale-order"/>
             </menu>
             <menu title="Tools" icon="fa-wrench" showTitle="true">
                 <item title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
@@ -34,7 +34,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-placeholder-print"/>
+                <item title="Print" action="action-sale-order-method-show-sale-order"/>
             </menu>
             <menu title="Tools" icon="fa-wrench" showTitle="true">
                 <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
@@ -65,7 +65,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-placeholder-print"/>
+                <item title="Print" action="action-sale-order-method-show-sale-order"/>
             </menu>
             <menu title="Tools" icon="fa-wrench" showTitle="true">
                 <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
