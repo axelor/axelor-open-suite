@@ -106,6 +106,7 @@
 - Tweaks on manuf order report.
 - Rework CRM events view.
 - Use editor for prod process line descriptions.
+- On creating stock move line, get the price from orders instead of computing it.
 
 
 ## Bug Fixes
