@@ -49,7 +49,7 @@ public class FormBuilderService {
   @Inject private ViewBuilderService viewBuilderService;
 
   @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
-  
+
   @Inject private ModelBuilderService modelBuilderService;
 
   public FormView build(MetaJsonModel jsonModel, String module) throws AxelorException {
@@ -110,9 +110,9 @@ public class FormBuilderService {
     modelBuilderService.sortJsonFields(fields);
 
     for (MetaJsonField field : fields) {
-       if (field.getName().equals("trackFlow")) {
-    	   continue;
-       }
+      if (field.getIsWkf()) {
+        continue;
+      }
       HashMap<String, Object> widgetAttrs = getWidgetAttrs(field);
 
       if (field.getType().equals("panel")) {
@@ -190,9 +190,9 @@ public class FormBuilderService {
 
     item.setName(field.getName());
     if (!(item instanceof PanelField)) {
-    	item.setTitle(field.getTitle());
-    }	
-    
+      item.setTitle(field.getTitle());
+    }
+
     if (field.getReadonly()) {
       item.setReadonly(field.getReadonly());
     }

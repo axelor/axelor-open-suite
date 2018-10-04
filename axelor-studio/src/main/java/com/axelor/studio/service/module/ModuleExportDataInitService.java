@@ -6,6 +6,7 @@ import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVInput;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
@@ -17,17 +18,17 @@ import com.axelor.studio.service.builder.ModelBuilderService;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
-
 import org.apache.commons.io.FilenameUtils;
 
 public class ModuleExportDataInitService {
+
+  public static final String DATA_INIT_DIR = "src/main/resources/data-init/";
 
   @Inject private MetaJsonModelRepository metaJsonModelRepo;
 
@@ -36,12 +37,14 @@ public class ModuleExportDataInitService {
   @Inject private ModuleExportService moduleExportService;
 
   @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
-  
+
   @Inject private ModelBuilderService modelBuilderService;
+
+  private static final char CSV_SEPRATOR = ';';
 
   private static final String[] APP_HEADER =
       new String[] {"code", "name", "description", "imagePath", "sequence", "depends"};
-  
+
   private static final String REMOTE_SCHEMA = "data-import_" + CSVConfig.VERSION + ".xsd";
 
   private static final String[] JSON_HEADER =
@@ -66,7 +69,7 @@ public class ModuleExportDataInitService {
         "type",
         "model",
         "modelField",
-        "jsonModel.name",
+        "jsonModelName",
         "targetModel",
         "targetJsonModel.name",
         "appBuilder.code",
@@ -106,36 +109,37 @@ public class ModuleExportDataInitService {
         "widgetAttrs"
       };
 
-  private static final String dataInitDir = "src/main/resources/data-init/";
-
-  public void addDataInit(String module, ZipOutputStream zipOut) throws IOException, AxelorException {
+  public void exportDataInit(String module, ZipOutputStream zipOut)
+      throws IOException, AxelorException {
 
     String modulePrefix = getModulePrefix(module);
-    
+
     CSVConfig csvConfig = new CSVConfig();
     csvConfig.setInputs(new ArrayList<>());
-    
+
     addApps(module, zipOut, csvConfig);
     addAppBuilders(modulePrefix, zipOut, csvConfig);
     addJsonModels(modulePrefix, zipOut, csvConfig);
     addJsonFields(modulePrefix, zipOut, csvConfig);
+    Beans.get(ModuleExportWkfService.class).exportWkf(modulePrefix, zipOut, csvConfig);
     addInputConfig(csvConfig, zipOut);
-    
   }
 
- private void addApps(String module, ZipOutputStream zipOut, CSVConfig csvConfig) throws IOException, AxelorException {
+  private void addApps(String module, ZipOutputStream zipOut, CSVConfig csvConfig)
+      throws IOException, AxelorException {
 
     List<AppBuilder> appBuilders = appBuilderRepo.all().filter("self.isReal = true").fetch();
 
     for (AppBuilder appBuilder : appBuilders) {
-    	
+
       String fileName = getModulePrefix(module) + appBuilder.getCode() + ".csv";
-      
-      CSVInput input  = new CSVInput();
-      input.setFileName(fileName);
-      input.setSeparator(';');
-      input.setTypeName(addAppEntity(module, appBuilder, zipOut));
-      input.setCallable("com.axelor.csv.script.ImportApp:importApp");
+
+      CSVInput input =
+          createCSVInput(
+              fileName,
+              addAppEntity(module, appBuilder, zipOut),
+              "com.axelor.csv.script.ImportApp:importApp",
+              null);
       addAppDependsBind(input);
       csvConfig.getInputs().add(input);
 
@@ -147,37 +151,58 @@ public class ModuleExportDataInitService {
     }
   }
 
-private void addAppDependsBind(CSVInput input) {
-	
-  input.setBindings(new ArrayList<>());
-  
-  CSVBind bind = new CSVBind();
-  bind.setColumn("depends");
-  bind.setField("dependsOnSet");
-  bind.setSearch("self.code in :depends");
-  bind.setExpression("depends.split('|') as List");
-  input.getBindings().add(bind);
-  
-}
+  public CSVInput createCSVInput(String fileName, String typeName, String callable, String search) {
 
-  private String addAppEntity(String module, AppBuilder appBuilder, ZipOutputStream zipOut) throws AxelorException, IOException {
-	  
-	  String model = "App" + appBuilder.getCode();
-	  String xml = modelBuilderService.build(model, module, App.class.getName());
-	  String filePath = ModuleExportService.DOMAIN_DIR + model + ".xml";
-	  
-	  moduleExportService.addZipEntry(filePath, xml, zipOut);
-	  
-	  return modelBuilderService.getModelFullName(module, model);
+    CSVInput input = new CSVInput();
+    input.setFileName(fileName);
+    input.setSeparator(CSV_SEPRATOR);
+    input.setTypeName(typeName);
+    input.setCallable(callable);
+    input.setSearch(search);
+    input.setBindings(new ArrayList<>());
+
+    return input;
   }
 
-  private void addCsv(ZipOutputStream zipOut, String fileName, String[] header, List<String[]> data)
+  public CSVBind createCSVBind(
+      String column, String field, String search, String expression, Boolean update) {
+
+    CSVBind bind = new CSVBind();
+    bind.setColumn(column);
+    bind.setField(field);
+    bind.setSearch(search);
+    bind.setExpression(expression);
+    bind.setUpdate(update);
+
+    return bind;
+  }
+
+  private void addAppDependsBind(CSVInput input) {
+
+    CSVBind bind =
+        createCSVBind(
+            "depends", "dependsOnSet", "self.code in :depends", "depends.split('|') as List", true);
+    input.getBindings().add(bind);
+  }
+
+  private String addAppEntity(String module, AppBuilder appBuilder, ZipOutputStream zipOut)
+      throws AxelorException, IOException {
+
+    String model = "App" + appBuilder.getCode();
+    String xml = modelBuilderService.build(model, module, App.class.getName());
+    String filePath = ModuleExportService.DOMAIN_DIR + model + ".xml";
+
+    moduleExportService.addZipEntry(filePath, xml, zipOut);
+
+    return modelBuilderService.getModelFullName(module, model);
+  }
+
+  public void addCsv(ZipOutputStream zipOut, String fileName, String[] header, List<String[]> data)
       throws IOException {
 
     File file = MetaFiles.createTempFile(fileName.replace(".csv", ""), ".csv").toFile();
     CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', header, data);
-    moduleExportService.addZipEntry(dataInitDir + "input/" + fileName, file, zipOut);
-    
+    moduleExportService.addZipEntry(DATA_INIT_DIR + "input/" + fileName, file, zipOut);
   }
 
   private String getModulePrefix(String module) {
@@ -189,7 +214,8 @@ private void addAppDependsBind(CSVInput input) {
     return module.substring(module.indexOf("-") + 1) + "_";
   }
 
-  private void addAppBuilders(String modulePrefix, ZipOutputStream zipOut, CSVConfig csvConfig) throws IOException {
+  private void addAppBuilders(String modulePrefix, ZipOutputStream zipOut, CSVConfig csvConfig)
+      throws IOException {
 
     List<AppBuilder> appBuilders = appBuilderRepo.all().filter("self.isReal = false").fetch();
 
@@ -204,15 +230,12 @@ private void addAppDependsBind(CSVInput input) {
     for (AppBuilder appBuilder : appBuilders) {
       createAppRecord(appBuilder, data, zipOut);
     }
-    
-    CSVInput input = new CSVInput();
-    input.setFileName(fileName);
-    input.setTypeName(AppBuilder.class.getName());
-    input.setSeparator(';');
-    input.setSearch("self.code = :code");
+
+    CSVInput input =
+        createCSVInput(fileName, AppBuilder.class.getName(), null, "self.code = :code");
     addAppDependsBind(input);
     csvConfig.getInputs().add(input);
-    
+
     addCsv(zipOut, fileName, APP_HEADER, data);
   }
 
@@ -220,10 +243,10 @@ private void addAppDependsBind(CSVInput input) {
 
     File imageFile = MetaFiles.getPath(appBuilder.getImage()).toFile();
     String extension = FilenameUtils.getExtension(imageFile.getName());
-    String imagePath = dataInitDir + "img/app-" + appBuilder.getCode() + "." + extension;
-    moduleExportService.addZipEntry(imagePath, imageFile, zipOut);
+    String imageName = "app-" + appBuilder.getCode() + "." + extension;
+    moduleExportService.addZipEntry(DATA_INIT_DIR + "img/" + imageName, imageFile, zipOut);
 
-    return "app-" + appBuilder.getCode();
+    return imageName;
   }
 
   private void createAppRecord(AppBuilder appBuilder, List<String[]> data, ZipOutputStream zipOut)
@@ -251,8 +274,14 @@ private void addAppDependsBind(CSVInput input) {
     data.add(record);
   }
 
-  private void addJsonModels(String modulePrefix, ZipOutputStream zipOut, CSVConfig csvConfig) throws IOException {
-    List<MetaJsonModel> jsonModels = metaJsonModelRepo.all().filter("self.isReal = false").fetch();
+  private void addJsonModels(String modulePrefix, ZipOutputStream zipOut, CSVConfig csvConfig)
+      throws IOException {
+    List<MetaJsonModel> jsonModels =
+        metaJsonModelRepo
+            .all()
+            .filter(
+                "self.isReal = false OR self.id in (SELECT jsonModel.id FROM MetaJsonField WHERE isWkf = true)")
+            .fetch();
 
     if (jsonModels.isEmpty()) {
       return;
@@ -277,23 +306,21 @@ private void addAppDependsBind(CSVInput input) {
     }
 
     String fileName = modulePrefix + MetaJsonModel.class.getSimpleName() + ".csv";
-    CSVInput input = new CSVInput();
-    input.setFileName(fileName);
-    input.setTypeName(MetaJsonModel.class.getName());
-    input.setSeparator(';');
-    input.setSearch("self.name = :name");
+    CSVInput input =
+        createCSVInput(fileName, MetaJsonModel.class.getName(), null, "self.name = :name");
     csvConfig.getInputs().add(input);
-    
+
     addCsv(zipOut, fileName, JSON_HEADER, data);
   }
 
-  private void addJsonFields(String modulePrefix, ZipOutputStream zipOut, CSVConfig csvConfig) throws IOException {
+  private void addJsonFields(String modulePrefix, ZipOutputStream zipOut, CSVConfig csvConfig)
+      throws IOException {
 
     List<MetaJsonField> jsonFields =
         metaJsonFieldRepo
             .all()
             .filter(
-                "self.jsonModel.isReal = false OR self.model IN (SELECT fullName FROM MetaModel WHERE isReal = false)")
+                "self.isWkf = true OR self.jsonModel.isReal = false OR self.model IN (SELECT fullName FROM MetaModel WHERE isReal = false AND name != 'MetaJsonRecord')")
             .fetch();
 
     if (jsonFields.isEmpty()) {
@@ -359,43 +386,39 @@ private void addAppDependsBind(CSVInput input) {
             jsonField.getWidgetAttrs()
           });
     }
-    
+
     String fileName = modulePrefix + MetaJsonField.class.getSimpleName() + ".csv";
-    
-    CSVInput input = new CSVInput();
-    input.setFileName(fileName);
-    input.setTypeName(MetaJsonField.class.getName());
-    input.setSeparator(';');
-    input.setSearch("self.name = :name and self.model = :model and self.modelField = :modelField");
-    
-    input.setBindings(new ArrayList<>());
-    CSVBind bind = new CSVBind();
-    bind.setColumn("roleNames");
-    bind.setField("roles");
-    bind.setSearch("self.name in :roleNames");
-    bind.setExpression("roleNames.split('|') as List");
+
+    CSVInput input =
+        createCSVInput(
+            fileName,
+            MetaJsonField.class.getName(),
+            null,
+            "self.name = :name AND (self.jsonModel.name = :jsonModelName OR self.model = :model AND self.modelField = :modelField)");
+    CSVBind bind =
+        createCSVBind(
+            "roleNames", "roles", "self.name in :roleNames", "roleNames.split('|') as List", true);
     input.getBindings().add(bind);
-    
+    bind = createCSVBind("jsonModelName", "jsonModel", "self.name = :jsonModelName", null, true);
+    input.getBindings().add(bind);
     csvConfig.getInputs().add(input);
-    
+
     addCsv(zipOut, fileName, JSON_FIELD_HEADER, data);
   }
-  
-  
+
   private void addInputConfig(CSVConfig csvConfig, ZipOutputStream zipOut) throws IOException {
-	  
-	  XStream xStream = new XStream();
-	  xStream.processAnnotations(CSVConfig.class);
-	  String xml = prepareXML(xStream.toXML(csvConfig));
-	  
-	  moduleExportService.addZipEntry(dataInitDir + "input-config.xml", xml, zipOut);
-	  
+
+    XStream xStream = new XStream();
+    xStream.processAnnotations(CSVConfig.class);
+    String xml = prepareXML(xStream.toXML(csvConfig));
+
+    moduleExportService.addZipEntry(DATA_INIT_DIR + "input-config.xml", xml, zipOut);
   }
-  
+
   private String prepareXML(String xml) {
-	
-	xml = xml.replace("<csv-inputs>", "").replaceAll("</csv-inputs>", "");
-	
+
+    xml = xml.replace("<csv-inputs>", "").replaceAll("</csv-inputs>", "");
+
     StringBuilder sb = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?>\n");
     sb.append("<csv-inputs")
         .append(" xmlns='")
@@ -410,7 +433,7 @@ private void addAppDependsBind(CSVInput input) {
         .append(">\n\n")
         .append(xml)
         .append("\n\n</csv-inputs>");
-	 
+
     return sb.toString();
   }
 }
