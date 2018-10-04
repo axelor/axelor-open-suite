@@ -20,4 +20,9 @@ package com.axelor.apps.base.translation;
 public interface ITranslation {
 
   public static final String BASE_APP_NAME = /*$$(*/ "value:Base"; /*)*/
+
+  public static final String BASE_DURATION_MONTH = /*$$(*/ "month"; /*)*/
+  public static final String BASE_DURATION_MONTHS = /*$$(*/ "months"; /*)*/
+  public static final String BASE_DURATION_DAY = /*$$(*/ "day"; /*)*/
+  public static final String BASE_DURATION_DAYS = /*$$(*/ "days"; /*)*/
 }
