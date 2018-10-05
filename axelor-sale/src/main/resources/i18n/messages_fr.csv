@@ -246,6 +246,8 @@
 "Partner Type","Type tiers",,
 "Partner price lists","Listes de prix pour tiers",,
 "Periodicity type","Type de périodicité",,
+"Please fill printing settings on sale order %s.","Merci de remplir les paramètres d'impressions sur les devis/commandes suivantes : %s",,
+"Please select the sale order(s) to print.","Merci de sélectionner le(s) devis/commande(s) à imprimer",,
 "Price List",,,
 "Price list","Liste de prix",,
 "Price lists","Listes de prix",,

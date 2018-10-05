@@ -331,6 +331,7 @@
 "Nomenclature",,,
 "Non temporary implying transfer of property without compensation",,,
 "Non-compliant",,,
+"Not enough quantity are available for reservation for product %s (%s)",,,
 "Number Of Packages",,,
 "Number Of Palettes","Number of palet",,
 "Old qty",,,

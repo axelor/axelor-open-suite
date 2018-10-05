@@ -147,9 +147,12 @@
 
 ## [5.0.6] - Unreleased
 ## Features
+- Stock move : add hilite on stock move grid.
+- Sale : add multiple sale order printing.
 
 ## Improvements
 - Translate file name of manuf order printing.
+- Stock Location Report : Modify Sorting field.
 
 ## Bug Fixes
 - Removed 'cachable' from all extended apps.
@@ -157,6 +160,11 @@
 - Account : Modify Account Move Report
 - Supplychain batch : Fix invoice all orders.
 - StockLocation report: show right cost price when using average price.
+- Stock move: Fix sort the record on stock move and stock move line grid view.
+- Improve error message when trying to reserve too much quantity in stock.
+- Duration : add translation to compute fullName.
+- Partner : Fix add partner seq on card view.
+- Purchase Order Line : Fix NPE when clear the 'Tax' field.
 
 ## [5.0.5] - 2018-09-19
 ## Features
