@@ -1,4 +1,12 @@
 # Changelog
+## [Unreleased 5.0.7]
+## Features
+
+## Improvements
+
+## Bug Fixes
+
+
 ## [5.0.6] - 2018-10-06
 ## Features
 - Stock move : add hilite on stock move grid.
@@ -885,6 +893,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[Unreleased 5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...dev
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
