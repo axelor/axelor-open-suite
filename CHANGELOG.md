@@ -1,5 +1,5 @@
 # Changelog
-## [5.0.6] - Unreleased
+## [5.0.6] - 2018-10-06
 ## Features
 - Stock move : add hilite on stock move grid.
 - Sale : add multiple sale order printing.
@@ -885,6 +885,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
