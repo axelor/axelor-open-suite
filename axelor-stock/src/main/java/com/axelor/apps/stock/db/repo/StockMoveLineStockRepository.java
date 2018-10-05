@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.stock.db.repo;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class StockMoveLineStockRepository extends StockMoveLineRepository {
 

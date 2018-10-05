@@ -1645,6 +1645,7 @@
 "moveLine.origin",,,
 "moveLine.partner",,,
 "moveLine.reconcile.list",,,
+"moveLine.reconcileGroup",,,
 "moveLine.tax.rate",,,
 "success",,,
 "value:Accounting",,,

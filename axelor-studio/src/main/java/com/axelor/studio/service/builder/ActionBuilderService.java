@@ -17,13 +17,18 @@
  */
 package com.axelor.studio.service.builder;
 
+import com.axelor.common.ObjectUtils;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.studio.db.ActionBuilder;
+import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,19 +52,24 @@ public class ActionBuilderService {
     Integer typeSelect = builder.getTypeSelect();
     log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
 
-    if (typeSelect < ActionBuilderRepository.TYPE_SCRIPT
-        && (builder.getLines() == null || builder.getLines().isEmpty())) {
+    if (Arrays.asList(
+                ActionBuilderRepository.TYPE_SELECT_CREATE,
+                ActionBuilderRepository.TYPE_SELECT_UPDATE)
+            .contains(builder.getTypeSelect())
+        && ObjectUtils.isEmpty(builder.getLines())) {
       return null;
     }
 
     MetaAction metaAction = null;
-
-    if (typeSelect <= ActionBuilderRepository.TYPE_SCRIPT) {
-      metaAction = actionScriptBuilderService.build(builder);
-    } else if (typeSelect == ActionBuilderRepository.TYPE_VIEW) {
-      metaAction = actionViewBuilderService.build(builder);
-    } else if (typeSelect == ActionBuilderRepository.TYPE_EMAIL) {
-      metaAction = actionEmailBuilderService.build(builder);
+    switch (builder.getTypeSelect()) {
+      case ActionBuilderRepository.TYPE_SELECT_SCRIPT:
+        metaAction = actionScriptBuilderService.build(builder);
+        break;
+      case ActionBuilderRepository.TYPE_SELECT_VIEW:
+        metaAction = actionViewBuilderService.build(builder);
+        break;
+      case ActionBuilderRepository.TYPE_SELECT_EMAIL:
+        metaAction = actionEmailBuilderService.build(builder);
     }
 
     if (builder.getMetaModule() != null) {
@@ -69,5 +79,30 @@ public class ActionBuilderService {
     MetaStore.clear();
 
     return metaAction;
+  }
+
+  public ActionBuilder setActionBuilderViews(
+      ActionBuilder actionBuilder, String modelName, String formViewName, String gridViewName) {
+    if (actionBuilder.getActionBuilderViews() == null) {
+      actionBuilder.setActionBuilderViews(new ArrayList<>());
+    }
+    List<ActionBuilderView> actionBuilderViews = actionBuilder.getActionBuilderViews();
+    if (formViewName != null) {
+      setActionBuilderView("form", formViewName, actionBuilderViews);
+    }
+    if (gridViewName != null) {
+      setActionBuilderView("grid", gridViewName, actionBuilderViews);
+    }
+
+    actionBuilder.setModel(modelName);
+    return actionBuilder;
+  }
+
+  private void setActionBuilderView(
+      String viewType, String viewName, List<ActionBuilderView> actionBuilderViews) {
+    ActionBuilderView actionBuilderView = new ActionBuilderView();
+    actionBuilderView.setViewType(viewType);
+    actionBuilderView.setViewName(viewName);
+    actionBuilderViews.add(actionBuilderView);
   }
 }

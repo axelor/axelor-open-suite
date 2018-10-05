@@ -27,6 +27,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
@@ -38,7 +39,9 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -54,7 +57,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import org.apache.commons.io.FileUtils;
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
 import org.slf4j.Logger;
@@ -65,6 +67,8 @@ public class DataBackupCreateService {
   private static final char SEPARATOR = ',';
   private static final char QUOTE_CHAR = '"';
   private static final char REFERENCE_FIELD_SEPARATOR = '|';
+
+  private static final int BUFFER_SIZE = 1000;
 
   @Inject private MetaModelRepository metaModelRepo;
 
@@ -150,8 +154,8 @@ public class DataBackupCreateService {
             fileNameList.add(metaModel.getName() + ".csv");
           }
         }
-      } catch (ClassNotFoundException | IOException | InterruptedException e) {
-        e.printStackTrace();
+      } catch (Exception e) {
+        TraceBackService.trace(e, DataBackupService.class.getName());
       }
     }
 
@@ -350,8 +354,6 @@ public class DataBackupCreateService {
   }
 
   private File generateZIP(String dirPath, List<String> fileNameList) {
-    int length = 0;
-    byte[] data = null;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
     String backupZipFileName = "DataBackup_" + LocalDateTime.now().format(formatter) + ".zip";
@@ -363,10 +365,14 @@ public class DataBackupCreateService {
         ZipEntry e = new ZipEntry(fileName);
         out.putNextEntry(e);
         File file = new File(dirPath, fileName);
-        length = (int) file.length();
-        data = new byte[length];
-        data = FileUtils.readFileToByteArray(file);
-        out.write(data, 0, data.length);
+        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file));
+        byte[] data = new byte[BUFFER_SIZE];
+        int off = 0;
+        while (bin.available() > 0) {
+          bin.read(data, off, BUFFER_SIZE);
+          out.write(data, off, data.length);
+        }
+        bin.close();
         out.closeEntry();
         file.delete();
       }
