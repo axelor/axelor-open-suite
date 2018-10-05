@@ -41,6 +41,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.concurrent.ThreadSafe;
@@ -70,7 +72,7 @@ public class SequenceService {
 
   private SequenceRepository sequenceRepo;
 
-  private static Lock lock = new ReentrantLock(true);
+  private static ConcurrentMap<Long, Lock> lockMap = new ConcurrentHashMap<>();
 
   @Inject
   public SequenceService(
@@ -193,35 +195,40 @@ public class SequenceService {
    * @param sequence
    * @return
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
+    Lock lock = lockMap.computeIfAbsent(sequence.getId(), key -> new ReentrantLock(true));
     lock.lock();
 
     try {
-      SequenceVersion sequenceVersion = getVersion(sequence, refDate);
-      String seqPrefix = StringUtils.defaultString(sequence.getPrefixe(), "");
-      String seqSuffix = StringUtils.defaultString(sequence.getSuffixe(), "");
-      String padLeft =
-          StringUtils.leftPad(
-              sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
-
-      String nextSeq =
-          (seqPrefix + padLeft + seqSuffix)
-              .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
-              .replaceAll(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
-              .replaceAll(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
-              .replaceAll(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
-              .replaceAll(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
-              .replaceAll(
-                  PATTERN_WEEK, Integer.toString(refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
-
-      log.debug("nextSeq : : : : {}", nextSeq);
-
-      sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
-      return nextSeq;
+      return getSequenceNumberInTransaction(sequence, refDate);
     } finally {
       lock.unlock();
     }
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected String getSequenceNumberInTransaction(Sequence sequence, LocalDate refDate) {
+    SequenceVersion sequenceVersion = getVersion(sequence, refDate);
+    String seqPrefix = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffix = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String padLeft =
+        StringUtils.leftPad(
+            sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
+
+    String nextSeq =
+        (seqPrefix + padLeft + seqSuffix)
+            .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
+            .replaceAll(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
+            .replaceAll(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
+            .replaceAll(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
+            .replaceAll(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
+            .replaceAll(
+                PATTERN_WEEK, Integer.toString(refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
+
+    log.debug("nextSeq : : : : {}", nextSeq);
+
+    sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
+    return nextSeq;
   }
 
   protected SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {
