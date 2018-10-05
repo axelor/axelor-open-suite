@@ -79,6 +79,7 @@
 - Stock Location Line : display stock avgPrice with as much decimal digit as specified in config.  
 - Stock : Move the stock Location menu to root menu from configration menu.
 - Add a button on studio process tracking to display related workflow dashboard.
+- Stock Location Line : Add Button to display detailed stock location lines with tracking number.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
