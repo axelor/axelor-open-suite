@@ -1,6 +1,29 @@
 # Changelog
+## [5.0.6] - 2018-10-06
+## Features
+- Stock move : add hilite on stock move grid.
+- Sale : add multiple sale order printing.
+
+## Improvements
+- Translate file name of manuf order printing.
+- Translate event types.
+- Stock Location Report : Modify Sorting field.
+
+## Bug Fixes
+- Removed 'cachable' from all extended apps.
+- Vehicle : modify vehicleState from reference field to string and remove vehicleState model 
+- Account : Modify Account Move Report
+- Supplychain batch : Fix invoice all orders.
+- StockLocation report: show right cost price when using average price.
+- Stock move: Fix sort the record on stock move and stock move line grid view.
+- Improve error message when trying to reserve too much quantity in stock.
+- Duration : add translation to compute fullName.
+- User : restrict active team selection to only teams that the user is already in.
+- Partner : Fix add partner seq on card view.
+- Purchase Order Line : Fix NPE when clear the 'Tax' field.
+
 ## [5.0.5] - 2018-09-19
-##Features
+## Features
 - Add Data Backup and Restore
 - Add unitary tests for password
 - Module for mobile app added
@@ -862,6 +885,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[5.0.6]: https://github.com/axelor/abs-webapp/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/abs-webapp/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/abs-webapp/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/abs-webapp/compare/v5.0.2...v5.0.3
