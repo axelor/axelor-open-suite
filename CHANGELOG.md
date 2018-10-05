@@ -141,6 +141,7 @@
 - Project : Make TimesheetLine and InvoiceLine readonly.
 - Fix data backup heap size and crash issue.
 - Studio: fix app builder and properties related issues.
+- Fix data restore issue & Modify error log.
 
 ## [5.0.6] - Unreleased
 ## Features
