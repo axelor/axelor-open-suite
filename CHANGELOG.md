@@ -7,6 +7,7 @@
 ## Improvements
 - Translate file name of manuf order printing.
 - Translate event types.
+- Stock Location Report : Modify Sorting field.
 
 ## Bug Fixes
 - Removed 'cachable' from all extended apps.
@@ -18,6 +19,8 @@
 - Improve error message when trying to reserve too much quantity in stock.
 - Duration : add translation to compute fullName.
 - User : restrict active team selection to only teams that the user is already in.
+- Partner : Fix add partner seq on card view.
+- Purchase Order Line : Fix NPE when clear the 'Tax' field.
 
 ## [5.0.5] - 2018-09-19
 ## Features
