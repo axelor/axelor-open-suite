@@ -60,6 +60,8 @@
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
     
+    <string name="note" large="true"/>
+    
     <unique-constraint columns="manufOrderSeq,company"/>
 
 	<extra-code><![CDATA[

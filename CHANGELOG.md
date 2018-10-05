@@ -105,7 +105,7 @@
 - Tweaks on manuf order report.
 - Rework CRM events view.
 - Use editor for prod process line descriptions.
-
+- Manuf Order : Add new tab - Note.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
