@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 4.2.5]
+## [4.2.5] - 2018-10-06
 ### Improvements
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
 - BANK ORDER : receiver address management for internationnal transfer
@@ -359,7 +359,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-[Unreleased 4.2.5]: https://github.com/axelor/axelor-business-suite/compare/v4.2.4...v4.2.5
+[4.2.5]: https://github.com/axelor/axelor-business-suite/compare/v4.2.4...v4.2.5
 [4.2.4]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.3...v4.2.3
 [4.2.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.2.2
