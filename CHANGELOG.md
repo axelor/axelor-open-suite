@@ -111,6 +111,7 @@
 - On creating stock move line, get the price from orders instead of computing it.
 - Improve exception handling in axelor-studio module.
 - Improve organization of AppBuilder menu
+- Manuf Order : Add new tab - Note.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
