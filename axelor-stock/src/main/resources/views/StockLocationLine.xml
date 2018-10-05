@@ -13,7 +13,7 @@
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
+    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onLoad="action-stock-location-line-atts-avg-price-scale">
     	<panel name="main">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
@@ -28,8 +28,9 @@
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
 		<panel>
-        	<button name="plannedStockMoveLineBtn" title="Planned stock move lines" onClick="action-stock-location-line-view-planned-stock-move-lines"/>
-        	<button name="realizedStockMoveLineBtn" title="Realized stock move lines" onClick="action-stock-location-line-view-realized-stock-move-lines"/>
+        	<button name="plannedStockMoveLineBtn" title="Planned stock move lines" onClick="action-stock-location-line-view-planned-stock-move-lines" colSpan="4"/>
+        	<button name="realizedStockMoveLineBtn" title="Realized stock move lines" onClick="action-stock-location-line-view-realized-stock-move-lines" colSpan="4"/>
+        	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="4"/>
         </panel>
     </form>
 
@@ -135,6 +136,14 @@
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
     
+    <action-view name="action-stock-location-line-view-show-detailed-stock" title="Detailed stock" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<view type="grid" name="stock-location-line-details-grid"/>
+    	<view type="form" name="stock-location-line-details-form"/>
+    	<domain>self.detailsStockLocation.id = :stockLocationId AND self.product.id = :productId</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+    	<context name="stockLocationId" expr="eval: stockLocation?.id "/>
+    </action-view>
+
     <action-attrs name="action-stock-location-line-atts-avg-price-scale">
     	<attribute name="scale" for="avgPrice" expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>

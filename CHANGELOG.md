@@ -67,7 +67,7 @@
 - New field workshop on production process, bill of material and manufacturing order.
 - Manufacturing order sequence is now configured in company config, and can be configured by workshop.
 - Studio: Add description field in workflow
-- Group menu assistant: Add support for roles management.  
+- Group menu assistant: Add support for roles management.
 - Stock Move : add three transient fields 'availableQty','availableQtyForProduct' and 'availableStatus' to know the availability of the product on stock move line.
 - Studio: Modified custom editor with new design
 - Product : add unique constraint on product code.
@@ -77,6 +77,9 @@
 - Partner : Modify fullName value calculation to add partnerSeq and update reports accordingly.
 - Sale order line : add 'Partially invoiced' tag and invoiced tag depends on 'amountInvoiced' and 'exTaxTotal'.
 - Stock Location Line : display stock avgPrice with as much decimal digit as specified in config.  
+- Stock : Move the stock Location menu to root menu from configration menu.
+- Add a button on studio process tracking to display related workflow dashboard.
+- Stock Location Line : Add Button to display detailed stock location lines with tracking number.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -105,6 +108,10 @@
 - Tweaks on manuf order report.
 - Rework CRM events view.
 - Use editor for prod process line descriptions.
+- On creating stock move line, get the price from orders instead of computing it.
+- Improve exception handling in axelor-studio module.
+- Improve organization of AppBuilder menu
+- Manuf Order : Add new tab - Note.
 - Account Move Report : Add reconcileGroup column in Account Move Lines.
 
 ## Bug Fixes
@@ -132,6 +139,7 @@
 - Sale order,purchase order : Fix demo data.
 - Sale order,purchase order,invoice: Fix translation.
 - Project : Make TimesheetLine and InvoiceLine readonly.
+- Fix data backup heap size and crash issue. 
 
 ## [5.0.6] - Unreleased
 ## Features
@@ -215,7 +223,7 @@
 - Removed editable from some reference fields in stock form views. 
 - Now displays purchase orders in the Activity panel of a partner form for suppliers and carriers.
 - Vehicle : rename driverContact to driverPartner & filter it.
-- Vehicle : Card View - display vehicle company and driver  
+- Vehicle : Card View - display vehicle company and driver
 - Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine. 
 - Fix translation typo.
 - Add xml escape in configurator export.
