@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased 4.2.6]
+### Improvements
+
+### Bug Fixes
+
 ## [4.2.5] - 2018-10-06
 ### Improvements
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
@@ -359,6 +364,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+[Unreleased 4.2.6]: https://github.com/axelor/axelor-business-suite/compare/v4.2.5...4.2-dev
 [4.2.5]: https://github.com/axelor/axelor-business-suite/compare/v4.2.4...v4.2.5
 [4.2.4]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.3...v4.2.3
