@@ -6,6 +6,7 @@
 
 ## Improvements
 - Translate file name of manuf order printing.
+- Stock Location Report : Modify Sorting field.
 
 ## Bug Fixes
 - Removed 'cachable' from all extended apps.
