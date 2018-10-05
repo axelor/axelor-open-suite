@@ -332,7 +332,8 @@ public class PurchaseOrderLineController {
     if (purchaseOrder == null
         || purchaseOrderLine.getProduct() == null
         || purchaseOrderLine.getPrice() == null
-        || purchaseOrderLine.getInTaxPrice() == null) {
+        || purchaseOrderLine.getInTaxPrice() == null
+        || purchaseOrderLine.getTaxLine() == null) {
       return;
     }
 

@@ -18,6 +18,7 @@
 - Improve error message when trying to reserve too much quantity in stock.
 - Duration : add translation to compute fullName.
 - Partner : Fix add partner seq on card view.
+- Purchase Order Line : Fix NPE when clear the 'Tax' field.
 
 ## [5.0.5] - 2018-09-19
 ## Features
