@@ -139,7 +139,8 @@
 - Sale order,purchase order : Fix demo data.
 - Sale order,purchase order,invoice: Fix translation.
 - Project : Make TimesheetLine and InvoiceLine readonly.
-- Fix data backup heap size and crash issue. 
+- Fix data backup heap size and crash issue.
+- Studio: fix app builder and properties related issues.
 
 ## [5.0.6] - Unreleased
 ## Features
