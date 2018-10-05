@@ -112,6 +112,7 @@
 - Improve exception handling in axelor-studio module.
 - Improve organization of AppBuilder menu
 - Manuf Order : Add new tab - Note.
+- Account Move Report : Add reconcileGroup column in Account Move Lines.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
