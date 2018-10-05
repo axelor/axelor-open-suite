@@ -1,5 +1,4 @@
 # Changelog
-
 ## [Unreleased 5.1]
 ## Features
 - Production: billOfMaterial set the BOM as default on product (button and viewer)
@@ -145,13 +144,22 @@
 - Fix data backup heap size and crash issue.
 - Studio: fix app builder and properties related issues.
 
-## [5.0.6] - Unreleased
+## [Unreleased 5.0.7]
+## Features
+
+## Improvements
+
+## Bug Fixes
+
+
+## [5.0.6] - 2018-10-06
 ## Features
 - Stock move : add hilite on stock move grid.
 - Sale : add multiple sale order printing.
 
 ## Improvements
 - Translate file name of manuf order printing.
+- Translate event types.
 - Stock Location Report : Modify Sorting field.
 
 ## Bug Fixes
@@ -163,6 +171,7 @@
 - Stock move: Fix sort the record on stock move and stock move line grid view.
 - Improve error message when trying to reserve too much quantity in stock.
 - Duration : add translation to compute fullName.
+- User : restrict active team selection to only teams that the user is already in.
 - Partner : Fix add partner seq on card view.
 - Purchase Order Line : Fix NPE when clear the 'Tax' field.
 
@@ -1030,7 +1039,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 
 
 [Unreleased 5.1]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...dev
+[Unreleased 5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...dev
+[5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
