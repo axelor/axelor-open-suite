@@ -366,11 +366,15 @@ public class DataBackupCreateService {
         out.putNextEntry(e);
         File file = new File(dirPath, fileName);
         BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file));
-        byte[] data = new byte[BUFFER_SIZE];
-        int off = 0;
+        byte[] data;
         while (bin.available() > 0) {
-          bin.read(data, off, BUFFER_SIZE);
-          out.write(data, off, data.length);
+          if (bin.available() < BUFFER_SIZE) {
+            data = new byte[bin.available()];
+          } else {
+            data = new byte[BUFFER_SIZE];
+          }
+          bin.read(data, 0, data.length);
+          out.write(data, 0, data.length);
         }
         bin.close();
         out.closeEntry();
