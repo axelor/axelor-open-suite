@@ -149,6 +149,7 @@
 ## Features
 
 ## Improvements
+- Show full name for products in Mrp report. 
 
 ## Bug Fixes
 
