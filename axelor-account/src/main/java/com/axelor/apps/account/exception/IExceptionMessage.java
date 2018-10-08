@@ -403,8 +403,6 @@ public interface IExceptionMessage {
       "%s : You must configure a payment mode after reject for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_32 = /*$$(*/
       "%s : You must configure a shift to irrecoverable's reason for the company %s" /*)*/;
-  static final String ACCOUNT_CONFIG_33 = /*$$(*/
-      "%s : You must configure a exported file path (if -> AGRESSO) for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_34 = /*$$(*/
       "%s : You must configure a reject import letter template for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_35 = /*$$(*/

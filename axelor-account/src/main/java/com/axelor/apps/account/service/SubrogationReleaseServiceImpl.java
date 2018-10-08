@@ -43,6 +43,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.persist.Transactional;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -134,8 +135,12 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     String filePath =
-        accountConfigService.getExportPath(
-            accountConfigService.getAccountConfig(subrogationRelease.getCompany()));
+        accountConfigService.getAccountConfig(subrogationRelease.getCompany()).getExportPath();
+    if (filePath == null) {
+      filePath = com.google.common.io.Files.createTempDir().getAbsolutePath();
+    } else {
+      new File(filePath).mkdirs();
+    }
     String fileName =
         String.format(
             "%s %s.csv", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
