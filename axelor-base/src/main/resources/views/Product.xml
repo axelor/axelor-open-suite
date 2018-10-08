@@ -165,8 +165,13 @@
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
                         <field name="inventoryTypeSelect" colSpan="6"/>
 	      			</panel>
+	      			<panel colSpan="12" if-module="axelor-production" if="__config__.app.isApp('production')">
+						<field name="productStandard"/>
+      					<field name="productApproval" form-view="product-approval-form" grid-view="product-approval-grid" onChange="action-product-record-set-control-on-receipt"/>
+      					<field name="productApproval.controlOnReceipt" hidden="true"/>	      			
+	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-						<field name="controlOnReceipt"/>
+						<field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
 						<field name="avgPrice"/>
 				        <spacer/>
@@ -374,6 +379,10 @@
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
     	<field name="inAti" expr="eval:__config__.app.getApp('base').getProductInAtiSelect() == 2 || __config__.app.getApp('base').getProductInAtiSelect() == 4"/>
+    </action-record>
+    
+    <action-record name="action-product-record-set-control-on-receipt" model="com.axelor.apps.base.db.Product">
+    	<field name="controlOnReceipt" expr="eval: productApproval?.controlOnReceipt"/>
     </action-record>
     
     <action-attrs name="action-product-attrs-in-ati">
