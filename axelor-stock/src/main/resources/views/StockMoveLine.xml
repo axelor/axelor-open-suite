@@ -164,7 +164,7 @@
         </field>
 	</grid>
     
-    <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move lines" orderBy="-stockMove.estimatedDate"
+    <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move lines" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
     	canNew="false" canDelete="false">
     	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
@@ -184,7 +184,7 @@
         </field>
     </grid>
     
-    <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine"
+    <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
     	canNew="false" canDelete="false">
     	<field name="stockMove.stockMoveSeq"/>
     	<field name="stockMove.realDate"/>
@@ -206,7 +206,7 @@
         </field>
     </grid>
 
-	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine"
+	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
 		canNew="false" canDelete="false">
 		<field name="stockMove.stockMoveSeq" />
 		<field name="stockMove.estimatedDate" />
