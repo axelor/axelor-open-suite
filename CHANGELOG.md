@@ -6,6 +6,7 @@
 - Show full name for products in Mrp report. 
 
 ## Bug Fixes
+- Logistical Form : Fix display logo on report.
 
 
 ## [5.0.6] - 2018-10-06
