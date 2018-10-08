@@ -8,6 +8,7 @@
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
 - Modify accounting export & path in demo-data & export to dms file if path not specified. 
+- Accounting Export : Fix filter on move lines when click on 'See Move Lines' from 'Exported moves'.
 
 
 ## [5.0.6] - 2018-10-06
