@@ -7,6 +7,7 @@
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
+- Modify accounting export & path in demo-data & export to dms file if path not specified. 
 
 
 ## [5.0.6] - 2018-10-06
@@ -31,6 +32,7 @@
 - User : restrict active team selection to only teams that the user is already in.
 - Partner : Fix add partner seq on card view.
 - Purchase Order Line : Fix NPE when clear the 'Tax' field.
+
 
 ## [5.0.5] - 2018-09-19
 ## Features

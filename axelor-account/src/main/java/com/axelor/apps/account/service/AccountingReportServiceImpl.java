@@ -111,6 +111,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   }
 
   public String buildQuery(AccountingReport accountingReport) throws AxelorException {
+    query = "";
+    paramNumber = 1;
+    params = new ArrayList<Object>();
 
     if (accountingReport.getCompany() != null) {
       this.addParams("self.move.company = ?%d", accountingReport.getCompany());
