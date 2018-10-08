@@ -41,6 +41,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.concurrent.ThreadSafe;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -66,12 +70,17 @@ public class SequenceService {
 
   private AppBaseService appBaseService;
 
-  @Inject private SequenceRepository sequenceRepo;
+  private SequenceRepository sequenceRepo;
+
+  private static ConcurrentMap<Long, Lock> lockMap = new ConcurrentHashMap<>();
 
   @Inject
   public SequenceService(
-      SequenceVersionRepository sequenceVersionRepository, AppBaseService appBaseService) {
+      SequenceRepository sequenceRepo,
+      SequenceVersionRepository sequenceVersionRepository,
+      AppBaseService appBaseService) {
 
+    this.sequenceRepo = sequenceRepo;
     this.sequenceVersionRepository = sequenceVersionRepository;
     this.appBaseService = appBaseService;
   }
@@ -186,19 +195,28 @@ public class SequenceService {
    * @param sequence
    * @return
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
+    Lock lock = lockMap.computeIfAbsent(sequence.getId(), key -> new ReentrantLock(true));
+    lock.lock();
 
+    try {
+      return getSequenceNumberInTransaction(sequence, refDate);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected String getSequenceNumberInTransaction(Sequence sequence, LocalDate refDate) {
     SequenceVersion sequenceVersion = getVersion(sequence, refDate);
-
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        padLeft =
-            StringUtils.leftPad(
-                sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
+    String seqPrefix = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffix = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String padLeft =
+        StringUtils.leftPad(
+            sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
 
     String nextSeq =
-        (seqPrefixe + padLeft + seqSuffixe)
+        (seqPrefix + padLeft + seqSuffix)
             .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
             .replaceAll(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
             .replaceAll(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
@@ -210,7 +228,6 @@ public class SequenceService {
     log.debug("nextSeq : : : : {}", nextSeq);
 
     sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
-    sequenceVersionRepository.save(sequenceVersion);
     return nextSeq;
   }
 
@@ -232,6 +249,7 @@ public class SequenceService {
     SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
     if (sequenceVersion == null) {
       sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L);
+      sequenceVersion = sequenceVersionRepository.save(sequenceVersion);
     }
 
     return sequenceVersion;
@@ -248,6 +266,7 @@ public class SequenceService {
               refDate.withDayOfMonth(1),
               refDate.withDayOfMonth(refDate.lengthOfMonth()),
               1L);
+      sequenceVersion = sequenceVersionRepository.save(sequenceVersion);
     }
 
     return sequenceVersion;
@@ -264,6 +283,7 @@ public class SequenceService {
               refDate.withDayOfMonth(1),
               refDate.withDayOfMonth(refDate.lengthOfMonth()),
               1L);
+      sequenceVersion = sequenceVersionRepository.save(sequenceVersion);
     }
 
     return sequenceVersion;
