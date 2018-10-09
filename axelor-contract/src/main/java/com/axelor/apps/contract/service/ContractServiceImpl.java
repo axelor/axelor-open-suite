@@ -83,6 +83,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   protected ContractLineRepository contractLineRepo;
   protected ConsumptionLineRepository consumptionLineRepo;
+  protected ContractRepository contractRepository;
 
   @Inject
   public ContractServiceImpl(
@@ -91,13 +92,15 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractLineService contractLineService,
       DurationService durationService,
       ContractLineRepository contractLineRepo,
-      ConsumptionLineRepository consumptionLineRepo) {
+      ConsumptionLineRepository consumptionLineRepo,
+      ContractRepository contractRepository) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
     this.durationService = durationService;
     this.contractLineRepo = contractLineRepo;
     this.consumptionLineRepo = consumptionLineRepo;
+    this.contractRepository = contractRepository;
   }
 
   @Override
@@ -588,10 +591,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   // TODO: Move to ContractTemplateService
-  @Transactional
-  public Contract createContractFromTemplate(ContractTemplate template) {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public Contract createContractFromTemplate(ContractTemplate template, Contract baseContract)
+      throws AxelorException {
 
-    Contract contract = new Contract();
+    Contract contract;
+    if (baseContract == null) {
+      contract = new Contract();
+    } else {
+      contract = contractRepository.copy(baseContract, false);
+    }
 
     if (template.getAdditionalBenefitContractLineList() != null
         && !template.getAdditionalBenefitContractLineList().isEmpty()) {
@@ -599,6 +608,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       for (ContractLine line : template.getAdditionalBenefitContractLineList()) {
 
         ContractLine newLine = contractLineRepo.copy(line, false);
+        contractLineService.compute(newLine, contract, newLine.getProduct());
+        contractLineService.computeTotal(newLine);
         contractLineRepo.save(newLine);
         contract.addAdditionalBenefitContractLineListItem(newLine);
       }
@@ -618,6 +629,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       for (ContractLine line : template.getContractLineList()) {
 
         ContractLine newLine = contractLineRepo.copy(line, false);
+        contractLineService.compute(newLine, contract, newLine.getProduct());
+        contractLineService.computeTotal(newLine);
         contractLineRepo.save(newLine);
         version.addContractLineListItem(newLine);
       }
