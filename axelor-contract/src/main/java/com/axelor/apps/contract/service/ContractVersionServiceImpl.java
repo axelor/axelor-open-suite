@@ -41,13 +41,21 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
-  public void waiting(ContractVersion version) {
+  public void waiting(ContractVersion version) throws AxelorException {
     waiting(version, appBaseService.getTodayDate());
   }
 
   @Override
-  @Transactional
-  public void waiting(ContractVersion version, LocalDate date) {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void waiting(ContractVersion version, LocalDate date) throws AxelorException {
+    if (version.getContract().getIsInvoicingManagement()
+        && version.getIsPeriodicInvoicing()
+        && (version.getContract().getFirstPeriodEndDate() == null
+            || version.getInvoicingDuration() == null)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get("Please fill the first period end date and the invoice frequency."));
+    }
     version.setStatusSelect(WAITING_VERSION);
   }
 
