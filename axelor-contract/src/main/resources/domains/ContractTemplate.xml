@@ -42,6 +42,7 @@
 
 		<one-to-many name="additionalBenefitContractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
 		<one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content"/>
+		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
 
 	</entity>
 
