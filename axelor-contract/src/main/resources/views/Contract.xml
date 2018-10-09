@@ -84,7 +84,7 @@
                     <button if="__config__.app.getApp('contract').isAmendmentManagement" name="showNextVersionBtn" title="Show next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-view-contract-show-version,close"/>
                     <button if="__config__.app.getApp('contract').isAmendmentManagement" name="deleteNextVersionBtn" title="Delete next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-contract-method-delete-next-version"/>
                     <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; currentContractVersion.statusSelect == 1" onClick="save,action-contract-method-waiting"/>
-                    <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; currentContractVersion.statusSelect == 2" onClick="save,action-contract-method-ongoing"/>
+                    <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; currentContractVersion.statusSelect == 2" onClick="save,action-contract-validate-on-going,action-contract-method-ongoing"/>
                     <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn" title="Renew" hidden="true" showIf="id &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-contract-method-renew"/>
                 </panel>
                 <panel title="Notes" stacked="true">
@@ -175,7 +175,7 @@
                                 </panel>
                                 <panel colSpan="6">
                                     <field name="automaticInvoicing" readonlyIf="statusSelect > 2" colSpan="6" widget="boolean-switch"/>
-                                    <field name="invoicingMoment" hidden="true" showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
+                                    <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
                                 </panel>
                             </editor>
                         </field>
@@ -364,5 +364,11 @@
         <call class="com.axelor.apps.contract.web.ContractController"
               method="isValid"/>
     </action-method>
+
+    <action-validate name="action-contract-validate-on-going">
+        <alert message="Attention the contract will have as starting date the provisional activation
+        date ${currentContractVersion.supposedActivationDate}, Are you sure?"
+          if="currentContractVersion.supposedActivationDate &lt; __date__"/>
+    </action-validate>
 
 </object-views>

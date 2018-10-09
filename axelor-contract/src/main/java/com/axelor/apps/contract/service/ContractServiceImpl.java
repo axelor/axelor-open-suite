@@ -124,6 +124,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
+    if (currentVersion.getSupposedActivationDate() != null) {
+      date = currentVersion.getSupposedActivationDate();
+    }
+
     Invoice invoice = null;
 
     if (currentVersion.getIsWithEngagement()
