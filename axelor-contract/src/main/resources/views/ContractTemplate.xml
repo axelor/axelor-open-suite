@@ -48,7 +48,7 @@
                                 </panel>
                                 <panel colSpan="6">
                                     <field name="automaticInvoicing" readonlyIf="statusSelect > 2" colSpan="6" widget="boolean-switch"/>
-                                    <field name="invoicingMoment" hidden="true" showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
+                                    <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
                                 </panel>
                             </editor>
                         </field>
