@@ -23,8 +23,13 @@
         </panel>
         <panel-tabs>
             <panel title="Content">
-                <field name="contractLineList" hidden="true" showIf="isInvoicingManagement" colSpan="12" form-view="contract-line-form" grid-view="contract-line-grid"/>
-                <field name="additionalBenefitContractLineList" showIf="isInvoicingManagement &amp;&amp; isAdditionaBenefitManagement" readonlyIf="!id" colSpan="12" form-view="additional-contract-line-form" grid-view="additional-contract-line-grid"/>
+                <field name="contractLineList" hidden="true" showIf="isInvoicingManagement"
+                  colSpan="12" form-view="contract-line-form-for-template"
+                  grid-view="contract-line-grid-for-template"/>
+                <field name="additionalBenefitContractLineList"
+                  showIf="isInvoicingManagement &amp;&amp; isAdditionaBenefitManagement"
+                  readonlyIf="!id" colSpan="12" form-view="additional-contract-line-form-for-template"
+                  grid-view="additional-contract-line-grid-for-template"/>
                 <field name="description" colSpan="12" widget="html"/>
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
@@ -89,5 +94,9 @@
             </panel>
         </panel-tabs>
     </form>
+
+    <action-method name="action-contract-template-method-change-product">
+        <call class="com.axelor.apps.contract.web.ContractTemplateController" method="changeProduct"/>
+    </action-method>
 
 </object-views>

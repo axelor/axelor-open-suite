@@ -131,8 +131,9 @@ public interface ContractService {
    *
    * @param template
    */
-  @Transactional
-  Contract createContractFromTemplate(ContractTemplate template);
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  Contract createContractFromTemplate(ContractTemplate template, Contract baseContract)
+      throws AxelorException;
 
   Contract increaseInvoiceDates(Contract contract);
 
