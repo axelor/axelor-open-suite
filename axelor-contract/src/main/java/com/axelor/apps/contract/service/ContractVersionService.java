@@ -31,8 +31,8 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be waiting.
    */
-  @Transactional
-  void waiting(ContractVersion version);
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  void waiting(ContractVersion version) throws AxelorException;
 
   /**
    * Waiting version at the specific date.
@@ -40,8 +40,8 @@ public interface ContractVersionService {
    * @param version of the contract will be waiting.
    * @param date of waiting.
    */
-  @Transactional
-  void waiting(ContractVersion version, LocalDate date);
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  void waiting(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**
    * Ongoing version at the today date.
