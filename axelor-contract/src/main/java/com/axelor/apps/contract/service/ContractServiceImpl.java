@@ -617,6 +617,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
 
     contract.setCompany(template.getCompany());
+    contract.setCurrency(template.getCurrency());
     contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());
     contract.setIsConsumptionManagement(template.getIsConsumptionManagement());
     contract.setIsInvoicingManagement(template.getIsInvoicingManagement());

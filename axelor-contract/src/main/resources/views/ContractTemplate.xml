@@ -14,6 +14,7 @@
                 <field name="targetTypeSelect" readonlyIf="id" onChange="action-contract-attrs-domains-template"/>
                 <field name="company" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="12" css="highlight"/>
+                <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency"/>
             </panel>
             <panel colSpan="3" stacked="true">
                 <panel title="Notes" stacked="true">
