@@ -286,7 +286,10 @@
             <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
             <field name="description" widget="html"/>
             <field name="metaFile" widget="binary-link"/>
-            <field name="contractLineList" showTitle="false" colSpan="12" form-view="contract-line-form" grid-view="contract-line-grid"/>
+            <field name="contractLineList" showTitle="false" hidden="true"
+              showIf="contractHistory.isInvoicingManagement" colSpan="12"
+              form-view="contract-line-form" grid-view="contract-line-grid"/>
+            <field name="contractHistory.isInvoicingManagement" hidden="true"/>
         </panel>
     </form>
 
