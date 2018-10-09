@@ -146,6 +146,7 @@
 - Studio: fix app builder and properties related issues.
 - Fix data restore issue & Modify error log.
 - PRODUCT : Fix pack line default quantity and forbid to select the parent product.
+- Business Project : Fix discount compute when invoicing timesheet lines.
 
 ## [Unreleased 5.0.7]
 ## Features
