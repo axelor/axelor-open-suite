@@ -143,10 +143,13 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       contract.setInvoicePeriodStartDate(currentVersion.getActivationDate());
       contract.setInvoicePeriodEndDate(contract.getFirstPeriodEndDate());
     }
-    if (contract.getCurrentContractVersion().getAutomaticInvoicing()
-        && contract.getCurrentContractVersion().getInvoicingMomentSelect()
-            == ContractVersionRepository.BEGIN_INVOICING_MOMENT) {
-      invoice = invoicingContract(contract);
+    if (contract.getCurrentContractVersion().getAutomaticInvoicing()) {
+      if (contract.getCurrentContractVersion().getInvoicingMomentSelect()
+          == ContractVersionRepository.BEGIN_INVOICING_MOMENT) {
+        invoice = invoicingContract(contract);
+      } else {
+        fillInvoicingDateByInvoicingMoment(contract);
+      }
     }
 
     return invoice;
@@ -164,6 +167,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
               .minusDays(1));
     }
 
+    fillInvoicingDateByInvoicingMoment(contract);
+
+    return contract;
+  }
+
+  @Transactional
+  private void fillInvoicingDateByInvoicingMoment(Contract contract) {
+    ContractVersion version = contract.getCurrentContractVersion();
     if (version.getAutomaticInvoicing()) {
       switch (version.getInvoicingMomentSelect()) {
         case ContractVersionRepository.END_INVOICING_MOMENT:
@@ -176,7 +187,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           contract.setInvoicingDate(appBaseService.getTodayDate());
       }
     }
-    return contract;
   }
 
   @Override
