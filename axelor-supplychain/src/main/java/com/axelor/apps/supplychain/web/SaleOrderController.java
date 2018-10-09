@@ -276,12 +276,12 @@ public class SaleOrderController {
     SaleOrderLine saleOrderLine = saleOrderLineRepo.find(soLineId);
 
     if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
-      BigDecimal qtyPercent = BigDecimal.ZERO;
-      if (saleOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
-        qtyPercent = qtyToInvoiceItem.divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_EVEN);
-      }
       for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
-        BigDecimal qty = subLine.getQty().multiply(qtyPercent);
+        BigDecimal qty = BigDecimal.ZERO;
+        if (saleOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+        	qty = qtyToInvoiceItem.multiply(subLine.getQty())
+        			.divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_EVEN);
+        }
         qty = qty.setScale(2, RoundingMode.HALF_EVEN);
         qtyToInvoiceMap.put(subLine.getId(), qty);
       }
