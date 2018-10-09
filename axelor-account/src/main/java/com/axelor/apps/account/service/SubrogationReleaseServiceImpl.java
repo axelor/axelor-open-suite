@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -25,7 +26,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.report.IReport;
@@ -43,6 +43,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.persist.Transactional;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -134,8 +135,12 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     String filePath =
-        accountConfigService.getExportPath(
-            accountConfigService.getAccountConfig(subrogationRelease.getCompany()));
+        accountConfigService.getAccountConfig(subrogationRelease.getCompany()).getExportPath();
+    if (filePath == null) {
+      filePath = com.google.common.io.Files.createTempDir().getAbsolutePath();
+    } else {
+      new File(filePath).mkdirs();
+    }
     String fileName =
         String.format(
             "%s %s.csv", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
@@ -155,13 +160,15 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   public void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease)
       throws AxelorException {
     MoveService moveService = Beans.get(MoveService.class);
-    MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
+    MoveRepository moveRepository = Beans.get(MoveRepository.class);
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     Company company = subrogationRelease.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
+    Account factorCreditAccount = accountConfigService.getFactorCreditAccount(accountConfig);
+    Account factorDebitAccount = accountConfigService.getFactorDebitAccount(accountConfig);
 
     for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
       LocalDate date = appBaseService.getTodayDate();
@@ -185,7 +192,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                 .createMoveLine(
                     move,
                     invoice.getPartner(),
-                    accountConfig.getFactorDebitAccount(),
+                    factorDebitAccount,
                     invoice.getCompanyInTaxTotalRemaining(),
                     false,
                     date,
@@ -199,7 +206,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                 .createMoveLine(
                     move,
                     invoice.getPartner(),
-                    accountConfig.getFactorCreditAccount(),
+                    factorCreditAccount,
                     invoice.getCompanyInTaxTotalRemaining(),
                     true,
                     date,
@@ -214,7 +221,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                 .createMoveLine(
                     move,
                     invoice.getPartner(),
-                    accountConfig.getFactorCreditAccount(),
+                    factorCreditAccount,
                     invoice.getCompanyInTaxTotalRemaining(),
                     false,
                     date,
@@ -228,7 +235,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                 .createMoveLine(
                     move,
                     invoice.getPartner(),
-                    accountConfig.getFactorDebitAccount(),
+                    factorDebitAccount,
                     invoice.getCompanyInTaxTotalRemaining(),
                     true,
                     date,
@@ -238,8 +245,9 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                     null);
       }
 
-      moveLineRepo.save(creditMoveLine);
-      moveLineRepo.save(debitMoveLine);
+      move.addMoveLineListItem(creditMoveLine);
+      move.addMoveLineListItem(debitMoveLine);
+      move = moveRepository.save(move);
       moveService.getMoveValidateService().validateMove(move);
     }
 

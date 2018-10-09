@@ -151,10 +151,15 @@
 ## Features
 
 ## Improvements
-- Show full name for products in Mrp report. 
+- Show full name for products in Mrp report.
+- Sale and Purchase order form: Remove edit from stockLocation field.
 
 ## Bug Fixes
-
+- Logistical Form : Fix display logo on report.
+- Modify accounting export & path in demo-data & export to dms file if path not specified. 
+- Accounting Export : Fix filter on move lines when click on 'See Move Lines' from 'Exported moves'.
+- Fix manual invoice selection on subrogation release.
+- Subrogation release: Fix the process on button 'Enter release in the accounts'. 
 
 ## [5.0.6] - 2018-10-06
 ## Features
@@ -178,6 +183,7 @@
 - User : restrict active team selection to only teams that the user is already in.
 - Partner : Fix add partner seq on card view.
 - Purchase Order Line : Fix NPE when clear the 'Tax' field.
+
 
 ## [5.0.5] - 2018-09-19
 ## Features
