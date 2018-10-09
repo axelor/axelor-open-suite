@@ -3,7 +3,8 @@
 ## Features
 
 ## Improvements
-- Show full name for products in Mrp report. 
+- Show full name for products in Mrp report.
+- Sale and Purchase order form: Remove edit from stockLocation field.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
