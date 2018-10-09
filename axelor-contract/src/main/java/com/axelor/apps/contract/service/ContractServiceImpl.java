@@ -633,6 +633,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     version.setIsVersionProratedInvoice(template.getIsVersionProratedInvoice());
     version.setIsWithEngagement(template.getIsWithEngagement());
     version.setIsWithPriorNotice(template.getIsWithPriorNotice());
+    version.setIsAutoEnableVersionOnRenew(template.getIsAutoEnableVersionOnRenew());
 
     version.setAutomaticInvoicing(template.getAutomaticInvoicing());
     version.setEngagementDuration(template.getEngagementDuration());
