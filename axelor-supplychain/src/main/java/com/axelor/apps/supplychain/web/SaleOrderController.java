@@ -279,8 +279,10 @@ public class SaleOrderController {
       for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
         BigDecimal qty = BigDecimal.ZERO;
         if (saleOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
-        	qty = qtyToInvoiceItem.multiply(subLine.getQty())
-        			.divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_EVEN);
+          qty =
+              qtyToInvoiceItem
+                  .multiply(subLine.getQty())
+                  .divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_EVEN);
         }
         qty = qty.setScale(2, RoundingMode.HALF_EVEN);
         qtyToInvoiceMap.put(subLine.getId(), qty);
