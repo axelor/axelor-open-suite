@@ -333,12 +333,6 @@ public interface IExceptionMessage {
   static final String COMPANY_CURRENCY = /*$$(*/
       "%s : Please, configure a currency for the company %s" /*)*/;
 
-  /** Account config service */
-  static final String ACCOUNT_CONFIG_39 = /*$$(*/
-      "%s : You must configure a file name for the export of move file for the company %s" /*)*/;
-
-  static final String ACCOUNT_CONFIG_40 = /*$$(*/
-      "%s : You must configure an employee account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_1 = /*$$(*/
       "%s : You must configure account's informations for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_2 = /*$$(*/
@@ -413,6 +407,14 @@ public interface IExceptionMessage {
       "%s : You must configure a debt recovery tab for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_38 = /*$$(*/
       "%s : You must configure an advance payment account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_39 = /*$$(*/
+      "%s : You must configure a file name for the export of move file for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_40 = /*$$(*/
+      "%s : You must configure an employee account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_41 = /*$$(*/
+      "%s : You must configure a factor credit account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_42 = /*$$(*/
+      "%s : You must configure a factor debit account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;

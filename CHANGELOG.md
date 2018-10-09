@@ -11,6 +11,7 @@
 - Modify accounting export & path in demo-data & export to dms file if path not specified. 
 - Accounting Export : Fix filter on move lines when click on 'See Move Lines' from 'Exported moves'.
 - Fix manual invoice selection on subrogation release.
+- Subrogation release: Fix the process on button 'Enter release in the accounts'. 
 
 ## [5.0.6] - 2018-10-06
 ## Features
