@@ -88,6 +88,10 @@
                 </field>
             </panel>
         </panel-tabs>
+        <panel-mail>
+            <mail-messages limit="4"/>
+            <mail-followers/>
+        </panel-mail>
     </form>
 
 </object-views>
