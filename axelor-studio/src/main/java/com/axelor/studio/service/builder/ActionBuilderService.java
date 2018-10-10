@@ -17,7 +17,6 @@
  */
 package com.axelor.studio.service.builder;
 
-import com.axelor.common.ObjectUtils;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.studio.db.ActionBuilder;
@@ -49,19 +48,24 @@ public class ActionBuilderService {
       return null;
     }
 
-    Integer typeSelect = builder.getTypeSelect();
     log.debug("Processing action: {}, type: {}", builder.getName(), builder.getTypeSelect());
 
     if (Arrays.asList(
                 ActionBuilderRepository.TYPE_SELECT_CREATE,
                 ActionBuilderRepository.TYPE_SELECT_UPDATE)
             .contains(builder.getTypeSelect())
-        && ObjectUtils.isEmpty(builder.getLines())) {
+        && (builder.getLines() == null || builder.getLines().isEmpty())) {
       return null;
     }
 
     MetaAction metaAction = null;
     switch (builder.getTypeSelect()) {
+      case ActionBuilderRepository.TYPE_SELECT_CREATE:
+        metaAction = actionScriptBuilderService.build(builder);
+        break;
+      case ActionBuilderRepository.TYPE_SELECT_UPDATE:
+        metaAction = actionScriptBuilderService.build(builder);
+        break;
       case ActionBuilderRepository.TYPE_SELECT_SCRIPT:
         metaAction = actionScriptBuilderService.build(builder);
         break;
