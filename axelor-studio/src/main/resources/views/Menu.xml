@@ -80,11 +80,11 @@
         <domain>self.menuAction = false</domain>
     </action-view>
 
-   <menuitem name="app-builder-models-views-module-builders" title="Modules" parent="app-builder-models-views" order="8" 	action="app.builder.models.views.model.module.builders"/>
+    <menuitem name="app-builder-module-builders" title="Module builders" parent="app-builder-config" order="50" action="action.module.builders.view"/>
   
-  <action-view name="app.builder.models.views.model.module.builders" title="Module builders" model="com.axelor.studio.db.ModuleBuilder">
-  	<view type="grid" name="module-builder-grid"/>
-    <view type="form" name="module-builder-form"/>
-  </action-view>
+  	<action-view name="action.module.builders.view" title="Module builders" model="com.axelor.studio.db.ModuleBuilder">
+  		<view type="grid" name="module-builder-grid"/>
+    	<view type="form" name="module-builder-form"/>
+  	</action-view>
 
 </object-views>
