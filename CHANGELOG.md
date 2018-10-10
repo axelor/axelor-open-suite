@@ -148,6 +148,7 @@
 - PRODUCT : Fix pack line default quantity and forbid to select the parent product.
 - Business Project : Fix discount compute when invoicing timesheet lines.
 - Stock Move : Fix display email fields title.
+- PROJECT : Fix translations.
 
 ## [Unreleased 5.0.7]
 ## Features
