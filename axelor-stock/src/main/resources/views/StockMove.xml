@@ -240,11 +240,11 @@
             <panel-dashlet action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms"/>
 
             <panel title="Automatic mail" showIf="typeSelect == 2">
-              <panel>
+              <panel colSpan="12">
                 <field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
                 <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
               </panel>
-              <panel>
+              <panel colSpan="12">
                 <field name="realStockMoveAutomaticMail"/>
                 <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
               </panel>
