@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service.module;
 
 import com.axelor.app.AppSettings;
@@ -5,11 +22,9 @@ import com.axelor.common.FileUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.ModuleBuilder;
-import com.axelor.studio.db.repo.ModuleBuilderRepository;
 import com.axelor.studio.exception.IExceptionMessage;
 import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
@@ -27,23 +42,25 @@ import org.apache.commons.io.IOUtils;
 
 public class ModuleImportService {
 
-  private static final String MODULE_PATTERN = "axelor(-[a-z]+)+";
+  private static final String MODULE_PATTERN = "axelor(-[a-z]+)+$";
 
   private static final List<String> moduleStructure =
       Arrays.asList(
           new String[] {"build.gradle", "src/main/java", "src/test/java", "src/main/resources"});
 
   @Transactional
-  public void importModule(MetaFile metaFile) throws ZipException, IOException, AxelorException {
+  public void importModule(ModuleBuilder moduleBuilder)
+      throws ZipException, IOException, AxelorException {
 
-    if (metaFile == null) {
+    if (moduleBuilder.getMetaFile() == null) {
       return;
     }
 
+    MetaFile metaFile = moduleBuilder.getMetaFile();
     File file = MetaFiles.getPath(metaFile).toFile();
     validateFile(file);
 
-    String moduleName = metaFile.getFileName().replace(".zip", "");
+    String moduleName = moduleBuilder.getName();
     if (!moduleName.matches(MODULE_PATTERN)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -71,12 +88,6 @@ public class ModuleImportService {
     }
 
     zipInputStream.close();
-
-    ModuleBuilderRepository moduleBuilderRepo = Beans.get(ModuleBuilderRepository.class);
-    if (moduleBuilderRepo.findByName(moduleName) == null) {
-      ModuleBuilder moduleBuilder = new ModuleBuilder(moduleName);
-      moduleBuilderRepo.save(moduleBuilder);
-    }
   }
 
   private void validateFile(File file) throws AxelorException, ZipException, IOException {

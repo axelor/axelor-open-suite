@@ -52,7 +52,7 @@ public interface IExceptionMessage {
   /** Invalid zip entry * */
   static final String INVALID_ZIP_ENTRY = /*$$(*/ "Invalid zip entry: %s" /*)*/;
 
-  /** Source direcotry not found * */
+  /** Source directory not found * */
   static final String NO_SOURCE_DIR = /*$$(*/ "Source directory not configured" /*)*/;
 
   /** Module imported successfully * */
@@ -60,8 +60,7 @@ public interface IExceptionMessage {
       "Module imported successfully, please restart server to install it" /*)*/;
 
   /** No build directory found * */
-  static final String NO_BUILD_DIR = /*$$(*/
-      "Error in application build. No build directory found" /*)*/;
+  static final String NO_LOG_FILE = /*$$(*/ "Error in server restart. No log file found" /*)*/;
 
   /** Set environment variables to build app and restart server */
   static final String NO_ENVIROMENT_VARIABLE = /*$$(*/ "Please set %s environment variable" /*)*/;

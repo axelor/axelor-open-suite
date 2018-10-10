@@ -1,5 +1,23 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.studio.service.module;
 
+import com.axelor.app.AppSettings;
 import com.axelor.common.FileUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -82,8 +100,18 @@ public class ModuleInstallService {
     return logText;
   }
 
-  public void restartServer(boolean reset, File logFile) throws AxelorException {
+  public void restartServer(boolean reset) throws AxelorException {
 
+    String logFilePath = AppSettings.get().get("studio.server.restart.log.file");
+    File logFile = null;
+    if (logFilePath != null) {
+      logFile = new File(logFilePath);
+    }
+
+    if (logFile == null || !logFile.exists()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.NO_LOG_FILE));
+    }
     setServerEnv();
 
     String warPath = getWarPath();
@@ -113,7 +141,7 @@ public class ModuleInstallService {
     if (!warDir.exists()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.NO_BUILD_DIR));
+          I18n.get(IExceptionMessage.NO_SOURCE_DIR));
     }
 
     for (File file : warDir.listFiles()) {
@@ -123,7 +151,8 @@ public class ModuleInstallService {
     }
 
     throw new AxelorException(
-        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.NO_BUILD_DIR));
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(IExceptionMessage.NO_SOURCE_DIR));
   }
 
   private String getRestartScriptPath() throws IOException, FileNotFoundException {

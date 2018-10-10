@@ -7,6 +7,7 @@
   
 	<entity name="ModuleBuilder" cachable="true">
 	    <string name="name" title="Name" required="true"/>
+	    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File" />
 	</entity>
 
 </domain-models>

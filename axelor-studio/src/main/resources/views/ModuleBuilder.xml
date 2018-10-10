@@ -5,23 +5,20 @@
 	
 	<grid name="module-builder-grid" title="Module builder" model="com.axelor.studio.db.ModuleBuilder">
 		<toolbar>
-			<button name="importModule" title="Import module" onClick="action-module-builder-view-module-builder-wizard"/>
 			<button name="restartServer" title="Restart server" onClick="action-module-builder-validate-restart-server,action-module-builder-method-restart-server"/>
 		</toolbar>
       <field name="name" />
   	</grid>
   	
   	<form name="module-builder-form" title="Module builder" model="com.axelor.studio.db.ModuleBuilder">
+  		<toolbar>
+			<button name="restartServer" title="Restart server" onClick="action-module-builder-validate-restart-server,action-module-builder-method-restart-server"/>
+		</toolbar>
   		<panel>
-      		<field name="name" pattern="axelor(-[a-z]+)+" />
-      		<button name="exportModule" title="Export" onClick="action-module-builder-method-export-module"/>
-      	</panel>
-  	</form>
-  	
-  	<form name="module-builder-wizard-form" title="Import module" model="com.axelor.studio.db.ModuleBuilder">
-  		<panel>
-      		<field name="metaFile" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link" title="File"/>
-      		<button showIf="metaFile != null" name="importModule" title="Import module" onClick="action-module-builder-method-import-module"/>
+      		<field name="name" pattern="axelor(-[a-z]+)+$" />
+      		<field name="metaFile" widget="binary-link" onChange="action-module-builder-record-meta-file-change"/>
+      		<button showIf="metaFile != null" name="importModule" title="Import module" onClick="save,action-module-builder-method-import-module"/>
+      		<button name="exportModule" title="Export module" onClick="save,action-module-builder-method-export-module,save"/>
       	</panel>
   	</form>
   	
@@ -37,16 +34,12 @@
   		<call class="com.axelor.studio.web.ModuleBuilderController" method="restartServer"/>
   	</action-method>
   	
-  	<action-view name="action-module-builder-view-module-builder-wizard" model="com.axelor.studio.db.ModuleBuilder" title="Import module">
-  		<view type="form" name="module-builder-wizard-form"/>
-  		<view-param name="show-toolbar" value="false"/>
-  		<view-param name="popup" value="true"/>
-  		<view-param name="popup-save" value="false"/>
-  		<view-param name="show-confirm" value="false"/>
-  	</action-view>
-  	
   	<action-validate name="action-module-builder-validate-restart-server">
   		<alert message="Are you sure wants to restart the server?"/>
   	</action-validate>
+	
+	<action-record name="action-module-builder-record-meta-file-change" model="com.axelor.studio.db.ModuleBuilder">
+		<field name="name" expr="eval: metaFile.fileName.replace('.zip','')" if="metaFile != null"/>
+	</action-record>
 	
 </object-views>
