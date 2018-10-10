@@ -13,6 +13,7 @@
 - Fix manual invoice selection on subrogation release.
 - Subrogation release: Fix the process on button 'Enter release in the accounts'. 
 - Logistical Form : Fix the exception managed per TraceBack method when sequence is not defined.
+- Subrogation Release : Fix throw exception and trace it when sequence is not defined.
 
 ## [5.0.6] - 2018-10-06
 ## Features
