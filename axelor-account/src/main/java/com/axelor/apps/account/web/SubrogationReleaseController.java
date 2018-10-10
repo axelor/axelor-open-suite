@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -31,7 +30,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.util.List;
 
 @Singleton
@@ -69,7 +67,7 @@ public class SubrogationReleaseController {
     }
   }
 
-  public void printToPDF(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void printToPDF(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
       String name =
@@ -84,8 +82,7 @@ public class SubrogationReleaseController {
     }
   }
 
-  public void exportToCSV(ActionRequest request, ActionResponse response)
-      throws AxelorException, IOException {
+  public void exportToCSV(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
       subrogationReleaseService.exportToCSV(subrogationRelease);
@@ -96,8 +93,7 @@ public class SubrogationReleaseController {
     }
   }
 
-  public void enterReleaseInTheAccounts(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void enterReleaseInTheAccounts(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
       subrogationRelease =
