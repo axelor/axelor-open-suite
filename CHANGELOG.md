@@ -82,6 +82,7 @@
 - Stock move : enable the changing tracking on stock move form.
 - Purchase Order Line : add dummy boolean field 'Filter on supplier' to filter the product on supplier catelog.
 - PRODUCT : add 'Standard' and 'Approval' fields and 'ProductApproval' object in production module.
+- Partner : Add simpleFullName field.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

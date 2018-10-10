@@ -75,6 +75,7 @@ public class PartnerService {
     partner.setName(name);
     partner.setFirstName(firstName);
     partner.setFullName(this.computeFullName(partner));
+    partner.setSimpleFullName(this.computeSimpleFullName(partner));
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_COMPANY);
     partner.setIsProspect(true);
     partner.setFixedPhone(fixedPhone);
@@ -88,6 +89,7 @@ public class PartnerService {
     contact.setFirstName(firstName);
     contact.setMainPartner(partner);
     contact.setFullName(this.computeFullName(partner));
+    contact.setSimpleFullName(this.computeSimpleFullName(partner));
     partner.addContactPartnerSetItem(contact);
 
     if (deliveryAddress == mainInvoicingAddress) {
@@ -101,26 +103,28 @@ public class PartnerService {
   }
 
   public void setPartnerFullName(Partner partner) {
-
     partner.setFullName(this.computeFullName(partner));
+    partner.setSimpleFullName(this.computeSimpleFullName(partner));
   }
 
   public String computeFullName(Partner partner) {
-    String fullName = "";
+    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
+      return partner.getPartnerSeq() + " - " + this.computeSimpleFullName(partner);
+    }
+    return this.computeSimpleFullName(partner);
+  }
+
+  public String computeSimpleFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getName())
         && !Strings.isNullOrEmpty(partner.getFirstName())) {
-      fullName = partner.getName() + " " + partner.getFirstName();
+      return partner.getName() + " " + partner.getFirstName();
     } else if (!Strings.isNullOrEmpty(partner.getName())) {
-      fullName = partner.getName();
+      return partner.getName();
     } else if (!Strings.isNullOrEmpty(partner.getFirstName())) {
-      fullName = partner.getFirstName();
+      return partner.getFirstName();
     } else {
-      fullName = "" + partner.getId();
+      return "" + partner.getId();
     }
-    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
-      return partner.getPartnerSeq() + " - " + fullName;
-    }
-    return fullName;
   }
 
   public Map<String, String> getSocialNetworkUrl(
