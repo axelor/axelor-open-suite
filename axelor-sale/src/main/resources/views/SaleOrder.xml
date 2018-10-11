@@ -372,10 +372,20 @@
 	    <field name="externalReference" hideIf="company == null"/>
 	  </panel>
 	  <panel title="Margin" readonly="true" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
+	  	<field name="accountedRevenue">
+	  		<hilite if="(accountedRevenue &gt; 0 || companyExTaxTotal &gt; 0) &amp;&amp; accountedRevenue != companyExTaxTotal" color="warning"/>
+	  	</field>
 	    <field name="totalCostPrice"/>
-	    <field name="totalGrossMargin"/>
-	    <field name="marginRate"/>
-	    <field name="company.currency" title="Company Currency" readonly="true"/>
+	    <field name="totalGrossMargin">
+	    	<hilite if="totalGrossMargin &lt; 0" color="danger"/>
+	    </field>
+	    <field name="marginRate">
+	    	<hilite if="marginRate &lt; 0" color="danger"/>
+	    </field>
+	    <field name="markup">
+	    	<hilite if="markup &lt; 0" color="danger"/>
+	    </field>
+	    <field name="company.currency" title="Company currency" readonly="true"/>
 	  </panel>
 	  <panel name="dates" title="Dates" hideIf="clientPartner == null" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
