@@ -14,6 +14,7 @@
 - Subrogation release: Fix the process on button 'Enter release in the accounts'. 
 - Logistical Form : Fix the exception managed per TraceBack method when sequence is not defined.
 - Fix accounting notification process.
+- Subrogation Release : Fix the status reset and clear invoice set when copy.
 
 ## [5.0.6] - 2018-10-06
 ## Features

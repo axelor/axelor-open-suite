@@ -46,6 +46,8 @@ import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
+import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountingReportService;
@@ -199,5 +201,7 @@ public class AccountModule extends AxelorModule {
     PartnerAddressRepository.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
 
     bind(UmrNumberService.class).to(UmrNumberServiceImpl.class);
+
+    bind(SubrogationReleaseRepository.class).to(SubrogationReleaseManagementRepository.class);
   }
 }
