@@ -562,15 +562,15 @@ public class TimesheetServiceImpl implements TimesheetService {
       throws AxelorException {
 
     int discountMethodTypeSelect = PriceListLineRepository.TYPE_DISCOUNT;
-    int discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_FIXED;
+    int discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_NONE;
     if (product == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
     }
     BigDecimal price = product.getSalePrice();
-    BigDecimal discountAmount = product.getCostPrice();
-    BigDecimal priceDiscounted = BigDecimal.ZERO;
+    BigDecimal discountAmount = BigDecimal.ZERO;
+    BigDecimal priceDiscounted = price;
 
     BigDecimal qtyConverted =
         Beans.get(UnitConversionService.class)
