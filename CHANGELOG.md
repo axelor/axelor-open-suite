@@ -153,6 +153,7 @@
 - Business Project : Fix discount compute when invoicing timesheet lines.
 - Stock Move : Fix display email fields title.
 - PROJECT : Fix translations.
+- Sale Order, Sale Order Line : Fix margins with normal case and pack line case.
 
 ## [Unreleased 5.0.7]
 ## Features

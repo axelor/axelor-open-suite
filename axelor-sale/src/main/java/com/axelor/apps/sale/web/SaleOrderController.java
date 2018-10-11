@@ -99,9 +99,11 @@ public class SaleOrderController {
     try {
       Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
 
+      response.setValue("accountedRevenue", saleOrder.getAccountedRevenue());
       response.setValue("totalCostPrice", saleOrder.getTotalCostPrice());
       response.setValue("totalGrossMargin", saleOrder.getTotalGrossMargin());
       response.setValue("marginRate", saleOrder.getMarginRate());
+      response.setValue("markup", saleOrder.getMarkup());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
