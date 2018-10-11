@@ -18,13 +18,15 @@
 
 package com.axelor.apps.base.service.app;
 
+import com.axelor.apps.base.db.App;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVInput;
-import com.axelor.db.JPA;
+import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.service.TraceBackService;
@@ -51,14 +53,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import org.eclipse.persistence.config.HintValues;
-import org.eclipse.persistence.config.QueryHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,10 +87,11 @@ public class DataBackupCreateService {
           "createdOn",
           "archived",
           "version",
-          "attr");
+          "attrs");
 
   private static Map<Object, Object> AutoImportModelMap =
       ImmutableMap.builder()
+          .put("com.axelor.apps.base.db.App", "self.code = :code")
           .put("com.axelor.auth.db.Role", "self.name = :name")
           .put("com.axelor.auth.db.User", "self.code = :code")
           .put("com.axelor.auth.db.Permission", "self.name = :name")
@@ -114,45 +116,47 @@ public class DataBackupCreateService {
     LinkedList<CSVInput> simpleCsvs = new LinkedList<>();
     LinkedList<CSVInput> refernceCsvs = new LinkedList<>();
     LinkedList<CSVInput> notNullReferenceCsvs = new LinkedList<>();
+    Map<String, List<String>> subClassesMap = getSubClassesMap();
 
     for (MetaModel metaModel : metaModelList) {
       try {
-        if (Class.forName(metaModel.getFullName())
-            .getSuperclass()
-            .isAssignableFrom(AuditableModel.class)) {
-          long totalRecord = getMetaModelDataCount(metaModel);
-          if (totalRecord > 0) {
-            LOG.debug("Exporting Model : " + metaModel.getFullName());
+        List<String> subClasses = subClassesMap.get(metaModel.getFullName());
+        long totalRecord = getMetaModelDataCount(metaModel, subClasses);
+        if (totalRecord > 0) {
+          LOG.debug("Exporting Model : " + metaModel.getFullName());
 
-            notNullReferenceFlag = false;
-            referenceFlag = false;
+          notNullReferenceFlag = false;
+          referenceFlag = false;
 
-            CSVWriter csvWriter =
-                new CSVWriter(
-                    new FileWriter(new File(tempDirectoryPath, metaModel.getName() + ".csv")),
-                    SEPARATOR,
-                    QUOTE_CHAR);
-            CSVInput csvInput = writeCSVData(metaModel, csvWriter, fetchLimit, totalRecord);
-            csvWriter.close();
+          CSVWriter csvWriter =
+              new CSVWriter(
+                  new FileWriter(new File(tempDirectoryPath, metaModel.getName() + ".csv")),
+                  SEPARATOR,
+                  QUOTE_CHAR);
+          CSVInput csvInput =
+              writeCSVData(metaModel, csvWriter, fetchLimit, totalRecord, subClasses);
+          csvWriter.close();
 
-            if (notNullReferenceFlag) {
-              notNullReferenceCsvs.add(csvInput);
-            } else if (referenceFlag) {
-              refernceCsvs.add(csvInput);
+          if (notNullReferenceFlag) {
+            notNullReferenceCsvs.add(csvInput);
+          } else if (referenceFlag) {
+            refernceCsvs.add(csvInput);
 
-              CSVInput temcsv = new CSVInput();
-              temcsv.setFileName(csvInput.getFileName());
-              temcsv.setTypeName(csvInput.getTypeName());
-              if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
-                temcsv.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
-              }
-              simpleCsvs.add(temcsv);
-            } else {
-              simpleCsvs.add(csvInput);
+            CSVInput temcsv = new CSVInput();
+            temcsv.setFileName(csvInput.getFileName());
+            temcsv.setTypeName(csvInput.getTypeName());
+            if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
+              temcsv.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
             }
-
-            fileNameList.add(metaModel.getName() + ".csv");
+            if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
+              temcsv.setSearch("self.code = :code");
+            }
+            simpleCsvs.add(temcsv);
+          } else {
+            simpleCsvs.add(csvInput);
           }
+
+          fileNameList.add(metaModel.getName() + ".csv");
         }
       } catch (Exception e) {
         TraceBackService.trace(e, DataBackupService.class.getName());
@@ -175,31 +179,73 @@ public class DataBackupCreateService {
   /* Get All MetaModels */
   private List<MetaModel> getMetaModels() {
     String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName NOT LIKE 'BASE_APP%'";
+        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup'";
     List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).fetch();
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
     return metaModels;
   }
 
-  /* Get All Data of Specific MetaModel */
-  private List<Model> getMetaModelDataList(MetaModel metaModel, int start, Integer fetchLimit) {
-    return JPA.em()
-        .createQuery("FROM " + metaModel.getName(), Model.class)
-        .setHint(QueryHints.MAINTAIN_CACHE, HintValues.FALSE)
-        .setFirstResult(start)
-        .setMaxResults(fetchLimit)
-        .getResultList();
+  private Map<String, List<String>> getSubClassesMap() {
+    List<MetaModel> metaModels = getMetaModels();
+    List<String> subClasses;
+    Map<String, List<String>> subClassMap = new HashMap<String, List<String>>();
+    for (MetaModel metaModel : metaModels) {
+      try {
+        subClasses = new ArrayList<>();
+        @SuppressWarnings("unchecked")
+        Class<AuditableModel> superClass =
+            (Class<AuditableModel>) Class.forName(metaModel.getFullName()).getSuperclass();
+        if (superClass != AuditableModel.class) {
+          if (!subClassMap.isEmpty() && subClassMap.containsKey(superClass.getName())) {
+            subClasses = subClassMap.get(superClass.getName());
+          }
+          subClasses.add(metaModel.getName());
+          subClassMap.put(superClass.getName(), subClasses);
+        }
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+    return subClassMap;
   }
 
-  private long getMetaModelDataCount(MetaModel metaModel)
+  /* Get All Data of Specific MetaModel */
+  private List<Model> getMetaModelDataList(
+      MetaModel metaModel, int start, Integer fetchLimit, List<String> subClasses)
+      throws ClassNotFoundException {
+    return getQuery(metaModel, subClasses).fetch(fetchLimit, start);
+  }
+
+  private long getMetaModelDataCount(MetaModel metaModel, List<String> subClasses)
       throws InterruptedException, ClassNotFoundException {
-    return (long)
-        JPA.em().createQuery("SELECT count(*) FROM " + metaModel.getName()).getSingleResult();
+    return getQuery(metaModel, subClasses).count();
+  }
+
+  private Query<Model> getQuery(MetaModel metaModel, List<String> subClasses)
+      throws ClassNotFoundException {
+    String whereStr = "";
+    if (subClasses != null && subClasses.size() > 0) {
+      for (String subClassName : subClasses) {
+        whereStr += whereStr.length() > 0 ? " AND " : "";
+        whereStr += "id NOT IN (select id from " + subClassName + ")";
+      }
+    }
+    @SuppressWarnings("unchecked")
+    Class<Model> klass = (Class<Model>) Class.forName(metaModel.getFullName());
+    Query<Model> query = JpaRepository.of(klass).all();
+    if (StringUtils.notEmpty(whereStr)) {
+      query.filter(whereStr);
+    }
+    return query;
   }
 
   private CSVInput writeCSVData(
-      MetaModel metaModel, CSVWriter csvWriter, Integer fetchLimit, long totalRecord) {
+      MetaModel metaModel,
+      CSVWriter csvWriter,
+      Integer fetchLimit,
+      long totalRecord,
+      List<String> subClasses) {
     CSVInput csvInput = new CSVInput();
     boolean headerFlag = true;
     List<String> dataArr = null;
@@ -216,7 +262,7 @@ public class DataBackupCreateService {
 
       for (int i = 0; i < totalRecord; i = i + fetchLimit) {
 
-        dataList = getMetaModelDataList(metaModel, i, fetchLimit);
+        dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
 
         if (dataList != null && dataList.size() > 0) {
           for (Object dataObject : dataList) {
@@ -244,6 +290,8 @@ public class DataBackupCreateService {
       }
       if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
         csvInput.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
+      } else if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
+        csvInput.setSearch("self.code = :code");
       }
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
