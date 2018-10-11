@@ -711,4 +711,10 @@ public interface IExceptionMessage {
   String INVOICES_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on following invoices: %s" /*)*/;
   String INVOICE_PRINTING_IO_ERROR = /*$$(*/ "Error on uploading printed invoice:" /*)*/;
+
+  /*
+   * Subrogation Release
+   */
+  static final String SUBROGATION_RELEASE_MISSING_SEQUENCE = /*$$(*/
+      "Missing subrogation release sequence for company %s" /*)*/;
 }
