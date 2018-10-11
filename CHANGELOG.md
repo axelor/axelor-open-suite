@@ -116,6 +116,7 @@
 - Manuf Order : Add new tab - Note.
 - Account Move Report : Add reconcileGroup column in Account Move Lines.
 - Update stock when modifying quantities in manufacturing order using wizard.
+- Add App related data in Data Back & restore functionality.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
