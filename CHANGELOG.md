@@ -83,6 +83,7 @@
 - Purchase Order Line : add dummy boolean field 'Filter on supplier' to filter the product on supplier catelog.
 - PRODUCT : add 'Standard' and 'Approval' fields and 'ProductApproval' object in production module.
 - Partner : Add simpleFullName field.
+- PRODUCT : add new button 'Reserved qty' to know the reserved quantity on product form.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
