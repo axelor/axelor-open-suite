@@ -126,8 +126,9 @@
 			</panel>
 			<panel name="margin" title="Margin">
 				<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
-				<field name="subTotalGrossMargin"/>
-				<field name="subMarginRate"/>
+				<field name="subTotalGrossMargin" readonly="true"/>
+				<field name="subMarginRate" readonly="true"/>
+				<field name="subTotalMarkup" readonly="true"/>
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery">
@@ -210,8 +211,9 @@
 			</panel>
 			<panel name="margin" title="Margin">
 				<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
-				<field name="subTotalGrossMargin"/>
-				<field name="subMarginRate"/>
+				<field name="subTotalGrossMargin" readonly="true"/>
+				<field name="subMarginRate" readonly="true"/>
+				<field name="subTotalMarkup" readonly="true"/>
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
 			<panel name="projectPanel"  if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
