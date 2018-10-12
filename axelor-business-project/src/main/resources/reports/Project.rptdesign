@@ -510,13 +510,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <xml-property name="queryText"><![CDATA[select 
  SO.sale_order_seq as so_seq,
  SO.order_date as so_date,
- SUM(SOL.company_ex_tax_total - SOL.amount_invoiced) as sol_sales,
- SUM(((SOL.company_ex_tax_total - SOL.amount_invoiced)/SOL.company_ex_tax_total) * SOL.sub_total_cost_price) as sol_costs,
+ SUM(SOL.company_ex_tax_total - (SOL.company_ex_tax_total * (SOL.amount_invoiced / NULLIF(SOL.ex_tax_total, 0)))) as sol_sales,
+ SUM(COALESCE(((SOL.company_ex_tax_total - SOL.amount_invoiced) / NULLIF(SOL.company_ex_tax_total, 0)) * SOL.sub_total_cost_price, 0)) as sol_costs,
  SUM(SOL.sub_total_gross_margin) as sol_expected_margin
 from sale_sale_order_line SOL
 left join sale_sale_order SO on (SO.id = SOL.sale_order)
 left join project_project project on (project.id = SOL.project)
-where SO.status_select = 3 and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (SO.status_select = 3 or SO.status_select = 4) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by so_seq, so_date
 order by so_seq]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -731,7 +733,10 @@ from hr_expense_line expl
 left join hr_expense ex on (ex.id = expl.expense)
 left join base_product prod on (prod.id = expl.expense_product)
 left join project_project project on (project.id = expl.project)
-where (expl.to_invoice = true and expl.invoiced = false ) and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (expl.to_invoice = true and expl.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (ex.status_select = 3 or ex.status_select = 4)
 group by exp_seq, expl_product
 order by exp_seq]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -941,13 +946,22 @@ order by exp_seq]]></xml-property>
             <xml-property name="queryText"><![CDATA[select 
  PO.purchase_order_seq as po_seq,
  PO.order_date as po_date,
- SUM(POL.company_ex_tax_total * prod.manag_price_coef) as pol_revenue
+ case
+   when partner.charge_back_purchase_select = 3 then
+     SUM((POL.company_ex_tax_total * partner.charge_back_purchase)/100)
+   else
+     SUM((POL.company_ex_tax_total * 100)/100)
+ end as pol_revenue
 from purchase_purchase_order_line POL
 left join purchase_purchase_order PO on (PO.id = POL.purchase_order)
 left join base_product prod on (prod.id = POL.product)
 left join project_project project on (project.id = POL.project)
-where (POL.to_invoice = true and POL.invoiced = false ) and (project.id = ? or project.parent_project = ?)
-group by po_seq, po_date 
+left join project_project parent_project on (parent_project.id = project.parent_project)
+left join base_partner partner on (partner.id = project.client_partner)
+where (POL.to_invoice = true and POL.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (PO.status_select = 3 or PO.status_select = 4)
+group by po_seq, po_date, partner.charge_back_purchase_select
 order by po_seq]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1174,75 +1188,14 @@ order by po_seq]]></xml-property>
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and invoice.status_select = 3
 and invoice.operation_type_select in (?,?)
 group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>3</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>4</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -1444,7 +1397,8 @@ group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
 		end as me_amount_cost
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = ?
 group by me_title,me_date,me.currency,project.currency,me.turnover,me.cost;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1634,9 +1588,10 @@ from hr_expense_line expl
 left join hr_expense expense on (expense.id = expl.expense)
 left join auth_user authuser on (authuser.id = expense.user_id)
 left join hr_employee emp on (emp.id = authuser.employee)
-left join project_project task on (task.id = expl.project)
-where (task.parent_project = ? or task.id = ?)
-and expense.status_select = 3
+left join project_project project on (project.id = expl.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (expense.status_select = 3 or expense.status_select = 4)
 group by emp.id,emp.name,exp_validation_date]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Timesheet" id="4784">
@@ -1770,11 +1725,14 @@ from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
-left join project_project task on (task.id = tml.project)
-where tm.status_select = 3 and (task.id = ? or task.parent_project = ?)
+left join project_project project on (project.id = tml.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where tm.status_select = 3 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by emp.id,emp.name,tm_validation_date,emp.hourly_rate]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ProjectPlanningTime" id="5634">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">ppt_activity</property>
@@ -1861,15 +1819,25 @@ group by emp.id,emp.name,tm_validation_date,emp.hourly_rate]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select prod.full_name as ppt_activity,
-		sum(planned_hours) as total_hours,
-		sum((planned_hours / (select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base))) * prod.sale_price) as revenue
+	sum(planned_hours) as total_hours,
+	case
+		when prod.unit = (select unit_hours from base_app_base) then
+			sum((planned_hours / planned_hours) * prod.sale_price)
+		else	
+			sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+	end as revenue
 from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
 left join project_project project on (project.id = ppt.project)
-where ppt.generate_turnover = true 
-and ppt.date_val < (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
-and (project.id = ? or project.parent_project = ?)
-group by ppt_activity]]></xml-property>
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (ppt.is_include_in_turnover_forecast = true and 
+case 
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	else 1 = 1
+end )
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by ppt_activity, prod.unit]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AnalyticMoveLine" id="4833">
             <list-property name="columnHints">
@@ -1962,9 +1930,10 @@ group by ppt_activity]]></xml-property>
 	   sum(aml.amount) as amount
 from account_analytic_move_line aml
 left join project_project project on (project.id = aml.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
 left join account_analytic_axis axis on (axis.id = aml.analytic_axis)
 left join account_analytic_account account on (account.id = aml.analytic_account)
-where project.id = ? or project.parent_project = ?
+where project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true )
 group by axis.name,account.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ChartRemaining" id="4942">
@@ -2169,6 +2138,26 @@ group by axis.name,account.name]]></xml-property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
+                <structure>
+                    <property name="name">param_19</property>
+                    <property name="paramName">ProjectId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">19</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_20</property>
+                    <property name="paramName">ProjectId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">20</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -2215,42 +2204,95 @@ group by axis.name,account.name]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select month, sum(costs) as costs, sum(turnover) as turnover
-from (select to_char(SO.order_date,'YYYY-MM') as month, 0 as costs, sum(SOL.company_ex_tax_total - SOL.amount_invoiced) as turnover
+from (select to_char(SO.order_date,'YYYY-MM') as month, 0 as costs, sum(SOL.company_ex_tax_total - (SOL.company_ex_tax_total * (SOL.amount_invoiced / NULLIF(SOL.ex_tax_total, 0)))) as turnover
 from sale_sale_order_line SOL
 left join sale_sale_order SO on (SO.id = SOL.sale_order)
 left join project_project project on (project.id = SOL.project)
-where SO.status_select = 3 and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (SO.status_select = 3 or SO.status_select = 4) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
-select to_char(PO.order_date,'YYYY-MM') as month, 0 as costs, sum(POL.company_ex_tax_total * prod.manag_price_coef) as turnover
+select to_char(task.task_end_date,'YYYY-MM') as month, 0 as costs, 
+case
+	when task.currency != project.currency then 
+		sum(task.ex_tax_total * (select exchange_rate from base_currency_conversion_line where start_currency = task.currency and end_currency = project.currency order by id desc LIMIT 1)) 
+	else
+		task.ex_tax_total
+end as turnover
+from team_task as task
+left join project_project as project on (project.id = task.project)
+left join project_project as parent_project on (parent_project.id = project.parent_project)
+where (task.to_invoice = true and task.invoiced = false )
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by month, task.currency, project.currency, task.ex_tax_total
+union
+select to_char(PO.order_date,'YYYY-MM') as month, 0 as costs, 
+case
+   	when partner.charge_back_purchase_select = 3 then
+     	SUM((POL.company_ex_tax_total * partner.charge_back_purchase)/100)
+   	else
+     	SUM((POL.company_ex_tax_total * 100)/100)
+end as turnover
 from purchase_purchase_order_line POL
 left join purchase_purchase_order PO on (PO.id = POL.purchase_order)
 left join base_product prod on (prod.id = POL.product)
 left join project_project project on (project.id = POL.project)
-where (POL.to_invoice = true and POL.invoiced = false ) and (project.id = ? or project.parent_project = ?)
-group by month
+left join project_project parent_project on (parent_project.id = project.parent_project)
+left join base_partner partner on (partner.id = project.client_partner)
+and (PO.status_select = 3 or PO.status_select = 4)
+where (POL.to_invoice = true and POL.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by month,partner.charge_back_purchase_select
 union
-select to_char(ppt.date_val, 'YYYY-MM') as month, 0 as costs, sum((planned_hours / (select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base))) * prod.sale_price) as turnover
+select to_char(ppt.date_val, 'YYYY-MM') as month, 0 as costs, 
+case
+	when prod.unit = (select unit_hours from base_app_base) then
+		sum((planned_hours / planned_hours) * prod.sale_price)
+	else	
+		sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+end as turnover
 from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
 left join project_project project on (project.id = ppt.project)
-where ppt.generate_turnover = true 
-and ppt.date_val < (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
-and (project.id = ? or project.parent_project = ?)
-group by month
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (ppt.is_include_in_turnover_forecast = true and 
+case 
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	else 1 = 1
+end )
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by month,prod.unit
 union
-select to_char(tml.date_val, 'YYYY-MM') as month, 0 as costs, sum((hours_duration / (select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base))) * prod.sale_price) as turnover
+select to_char(tml.date_val, 'YYYY-MM') as month, 0 as costs, 
+case
+	when prod.unit = (select unit_hours from base_app_base) then
+		sum(hours_duration * prod.sale_price)
+	else	
+		case
+			when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit) > 0 then
+				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
+			else
+				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))		
+		end
+end as turnover
 from hr_timesheet_line as tml
 left join base_product prod on (prod.id = tml.product)
 left join project_project project on (project.id = tml.project)
-where (tml.to_invoice = true and tml.invoiced = false ) and (project.id = ? or project.parent_project = ?)
-group by month
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (tml.to_invoice = true and tml.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by month,prod.unit
 union
 select to_char(expl.expense_date,'YYYY-MM') as month, 0 as costs, sum(expl.untaxed_amount) as turnover
 from hr_expense_line expl
 left join hr_expense ex on (ex.id = expl.expense)
 left join project_project project on (project.id = expl.project)
-where (expl.to_invoice = true and expl.invoiced = false) and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (expl.to_invoice = true and expl.invoiced = false) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (ex.status_select = 3 or ex.status_select = 4)
 group by month
 union
 select to_char(me.date_val, 'YYYY-MM') as month,0 as costs, 
@@ -2262,7 +2304,8 @@ case
 end as turnover
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = 1
 group by month,me.currency,project.currency
 union
@@ -2272,7 +2315,9 @@ from purchase_purchase_order_line POL
 left join purchase_purchase_order PO on (PO.id = POL.purchase_order)
 left join base_product prod on (prod.id = POL.product)
 left join project_project project on (project.id = POL.project)
-where PO.status_select = 3 and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (PO.status_select = 3 or PO.status_select = 4) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
 select to_char(ppt.date_val, 'YYYY-MM') as month, sum(planned_hours) * emp.hourly_rate as costs
@@ -2280,8 +2325,14 @@ from project_project_planning_time as ppt
 left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = ppt.project)
-where ppt.date_val < (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
-and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where 
+case 
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	else 1 = 1
+end
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month, emp.hourly_rate
 union
 select to_char(me.date_val,'YYYY-MM') as month, 
@@ -2293,75 +2344,14 @@ case
 end as cost
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = 1
 group by month,me.currency,project.currency) CostData group by month)) ChartData group by month order by month
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>15</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>16</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>17</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>18</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -2653,7 +2643,8 @@ from (select to_char(invoice.invoice_date,'YYYY-MM') as month,0 as costs, sum(in
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
-where (project.id =  ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and invoice.status_select = 3 
 and invoice.operation_type_select in (3,4)
 group by month
@@ -2667,7 +2658,8 @@ case
 end as turnover
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = 2
 group by month,me.currency,project.currency
 union
@@ -2676,7 +2668,8 @@ from (select to_char(invoice.invoice_date,'YYYY-MM') as month,sum(invl.company_e
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
-where (project.id =  ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and invoice.status_select = 3 
 and invoice.operation_type_select in (1,2)
 group by month
@@ -2686,16 +2679,19 @@ from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
-left join project_project task on (task.id = tml.project)
-where tm.status_select = 3 and (task.id = ? or task.parent_project = ?)
+left join project_project project on (project.id = tml.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where tm.status_select = 3 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
 select to_char(expense.validation_date,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
 from hr_expense_line expl
-left join project_project task on (task.id = expl.project)
+left join project_project project on (project.id = expl.project)
+left join project_project parent_project on (parent_project.id = project.parent_project)
 left join hr_expense expense on (expense.id = expl.expense)
-where (task.parent_project = ? or task.id = ?)
-and expense.status_select = 3
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+and (expense.status_select = 3 or expense.status_select = 4)
 group by month
 union
 select to_char(me.date_val,'YYYY-MM') as month, 
@@ -2707,14 +2703,16 @@ case
 end as cost
 from businessproject_manual_element as me
 left join project_project project on (project.id = me.project)
-where (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and me.type_select = 2
 group by month,me.currency,project.currency
 union
 select to_char(date_val,'YYYY-MM') as month,-1*sum(aml.amount) as cost
 from account_analytic_move_line aml
 left join project_project project on (project.id = aml.project)
-where project.id =  ? or project.parent_project = ?
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true )
 group by month) CostData group by month)) ChartData group by month order by month]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2878,49 +2876,25 @@ group by month) CostData group by month)) ChartData group by month order by mont
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select prod.full_name as tml_activity,
-		sum(hours_duration) as total_hours,
-		sum((hours_duration / (select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base))) * prod.sale_price) as revenue
+	sum(hours_duration) as total_hours,
+	case
+		when prod.unit = (select unit_hours from base_app_base) then
+			sum(hours_duration * prod.sale_price)
+		else
+			case
+				when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit) > 0 then
+					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
+				else
+					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))		
+			end
+	end as revenue
 from hr_timesheet_line as tml
 left join base_product prod on (prod.id = tml.product)
 left join project_project project on (project.id = tml.project)
-where (tml.to_invoice = true and tml.invoiced = false ) and (project.id = ? or project.parent_project = ?)
-group by tml_activity]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (tml.to_invoice = true and tml.invoiced = false ) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by tml_activity, prod.unit]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="PurchaseOrderLineCost" id="5739">
             <list-property name="columnHints">
@@ -3016,7 +2990,9 @@ from purchase_purchase_order_line POL
 left join purchase_purchase_order PO on (PO.id = POL.purchase_order)
 left join base_product prod on (prod.id = POL.product)
 left join project_project project on (project.id = POL.project)
-where PO.status_select = 3 and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where (PO.status_select = 3 or PO.status_select = 4) 
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by po_seq, po_date 
 order by po_seq]]></xml-property>
         </oda-data-set>
@@ -3113,45 +3089,136 @@ from project_project_planning_time as ppt
 left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = ppt.project)
-where ppt.date_val < (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) 
-and (project.id = ? or project.parent_project = ?)
+left join project_project parent_project on (parent_project.id = project.parent_project)
+where
+case 
+	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
+		ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1)
+	else 1 = 1
+end
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by emp.name,emp.hourly_rate]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TaskInvoicing" id="5990">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">task_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">task_name</text-property>
+                    <text-property name="heading">task_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">task_end_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">task_end_date</text-property>
+                    <text-property name="heading">task_end_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">task_progress</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">task_progress</text-property>
+                    <text-property name="heading">task_progress</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">task_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">task_amount</text-property>
+                    <text-property name="heading">task_amount</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">ProjectId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">ProjectId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">task_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">task_end_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">task_progress</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">task_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">task_name</property>
+                    <property name="nativeName">task_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">task_end_date</property>
+                    <property name="nativeName">task_end_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">task_progress</property>
+                    <property name="nativeName">task_progress</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">task_amount</property>
+                    <property name="nativeName">task_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select task.name as task_name, 
+	task.task_end_date as task_end_date, 
+	task.progress_select as task_progress,
+	case
+		when task.currency != project.currency then 
+			SUM(task.ex_tax_total * (select exchange_rate from base_currency_conversion_line where start_currency = task.currency and end_currency = project.currency order by id desc LIMIT 1)) 
+		else
+			task.ex_tax_total
+	end as task_amount
+from team_task as task
+left join project_project as project on (project.id = task.project)
+left join project_project as parent_project on (parent_project.id = project.parent_project)
+where (task.to_invoice = true and task.invoiced = false )
+and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
+group by task_name, task_end_date, task_progress, task.currency, project.currency, task.ex_tax_total
+order by task_end_date]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -4189,7 +4256,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalManualElementTurnover"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -4568,7 +4635,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Project.manualElement'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -4601,6 +4668,12 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <detail>
                             <row id="5828">
                                 <property name="height">0.34375in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["me_amount_turnover"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="5829">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -7381,7 +7454,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalManualElementCost"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -7760,7 +7833,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Project.manualElement'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -7793,6 +7866,12 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <detail>
                             <row id="5863">
                                 <property name="height">0.34375in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["me_amount_cost"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="5864">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -8949,6 +9028,42 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                 <cell id="5506">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
+                    <text id="5953">
+                        <property name="fontSize">100%</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Project.turnoverAndCostPerMonth'</value>
+                                </simple-property-list>
+                            </structure>
+                            <structure>
+                                <property name="paramName">param_2</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">params["Locale"].value</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<H2><VALUE-OF>row["translation"]</VALUE-OF></H2>]]></text-property>
+                    </text>
                     <extended-item extensionName="Chart" id="4950">
                         <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:data="http://www.birt.eclipse.org/ChartModelData" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
   <Version>2.6.1</Version>
@@ -8983,7 +9098,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
         </Color>
         <Visible>false</Visible>
       </Outline>
-      <Visible>true</Visible>
+      <Visible>false</Visible>
       <Label>
         <Caption>
           <Value>Turnover and Costs per month</Value>
@@ -11086,7 +11201,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalSales"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="boundDataColumns">
@@ -11578,6 +11693,12 @@ group by emp.name,emp.hourly_rate]]></xml-property>
                         <detail>
                             <row id="4569">
                                 <property name="height">0.2708333333333333in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["sol_sales"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="4570">
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -12050,6 +12171,906 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalSale
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row["TotalExpectedMargin"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </footer>
+                    </table>
+                </cell>
+            </row>
+            <row id="5954">
+                <cell id="5955">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
+                    <table id="5958">
+                        <property name="height">0in</property>
+                        <property name="width">7.489583333333333in</property>
+                        <property name="dataSet">TaskInvoicing</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">task_name</property>
+                                <text-property name="displayName">task_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["task_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">task_end_date</property>
+                                <text-property name="displayName">task_end_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["task_end_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">task_progress</property>
+                                <text-property name="displayName">task_progress</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["task_progress"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">task_amount</property>
+                                <text-property name="displayName">task_amount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["task_amount"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">TotalExpectedRevenue</property>
+                                <text-property name="displayName">TotalExpectedRevenue</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["task_amount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                        </list-property>
+                        <column id="5981">
+                            <property name="width">0.7604166666666666in</property>
+                        </column>
+                        <column id="5982">
+                            <property name="width">0.09375in</property>
+                        </column>
+                        <column id="5988">
+                            <property name="width">0.09375in</property>
+                        </column>
+                        <column id="5983">
+                            <property name="width">1.1666666666666667in</property>
+                        </column>
+                        <header>
+                            <row id="5959">
+                                <property name="height">0.3125in</property>
+                                <cell id="5960">
+                                    <property name="colSpan">4</property>
+                                    <property name="rowSpan">1</property>
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <text id="5961">
+                                        <property name="fontSize">100%</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer.__rownum == -1</expression>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Project.tasks'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                            <structure>
+                                                <property name="paramName">param_2</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">params["Locale"].value</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                            <row id="5962">
+                                <property name="height">0.3125in</property>
+                                <cell id="5963">
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">black</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderTopColor">black</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <text id="5964">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Project.taskName'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                            <structure>
+                                                <property name="paramName">param_2</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">params["Locale"].value</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5965">
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">black</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">black</property>
+                                    <property name="borderRightStyle">none</property>
+                                    <property name="borderRightWidth">medium</property>
+                                    <property name="borderTopColor">black</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <text id="5966">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Project.endDate'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                            <structure>
+                                                <property name="paramName">param_2</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">params["Locale"].value</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5985">
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">black</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">black</property>
+                                    <property name="borderRightStyle">none</property>
+                                    <property name="borderRightWidth">medium</property>
+                                    <property name="borderTopColor">black</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <text id="5989">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Project.progress'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                            <structure>
+                                                <property name="paramName">param_2</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">params["Locale"].value</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5967">
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">black</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">black</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <text id="5968">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Project.expectedRevenue'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                            <structure>
+                                                <property name="paramName">param_2</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">params["Locale"].value</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </header>
+                        <detail>
+                            <row id="5969">
+                                <property name="height">0.2916666666666667in</property>
+                                <cell id="5970">
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">black</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <data id="5991">
+                                        <property name="textAlign">left</property>
+                                        <property name="resultSetColumn">task_name</property>
+                                    </data>
+                                </cell>
+                                <cell id="5972">
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">black</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <property name="borderTopWidth">medium</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <data id="5992">
+                                        <property name="resultSetColumn">task_end_date</property>
+                                    </data>
+                                </cell>
+                                <cell id="5986">
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">black</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <property name="borderTopWidth">medium</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <text id="5994">
+                                        <property name="fontWeight">normal</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["task_progress"]</VALUE-OF> %]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5974">
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">black</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderLeftWidth">medium</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">black</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <property name="borderTopWidth">medium</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <text id="5975">
+                                        <property name="fontWeight">normal</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row["task_amount"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </detail>
+                        <footer>
+                            <row id="5976">
+                                <cell id="5977">
+                                    <property name="colSpan">3</property>
+                                    <property name="rowSpan">1</property>
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">black</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">black</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <property name="borderTopWidth">medium</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <text id="5978">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Project.total'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                            <structure>
+                                                <property name="paramName">param_2</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">params["Locale"].value</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <method name="onCreate"><![CDATA[vars["TotalCost"] = vars["TotalCost"]+row._outer["TotalSalesInvoice"]]]></method>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5979">
+                                    <property name="backgroundAttachment">scroll</property>
+                                    <property name="backgroundImageType">url</property>
+                                    <property name="backgroundPositionX">0%</property>
+                                    <property name="backgroundPositionY">0%</property>
+                                    <property name="backgroundRepeat">repeat</property>
+                                    <property name="backgroundSizeHeight">auto</property>
+                                    <property name="backgroundSizeWidth">auto</property>
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">normal</property>
+                                    <property name="fontVariant">normal</property>
+                                    <property name="color">black</property>
+                                    <property name="textLineThrough">none</property>
+                                    <property name="textOverline">none</property>
+                                    <property name="textUnderline">none</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">black</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">black</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <property name="borderTopWidth">medium</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="marginBottom">0pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="textIndent">0em</property>
+                                    <property name="letterSpacing">normal</property>
+                                    <property name="lineHeight">normal</property>
+                                    <property name="orphans">2</property>
+                                    <property name="textTransform">none</property>
+                                    <property name="whiteSpace">normal</property>
+                                    <property name="widows">2</property>
+                                    <property name="wordSpacing">normal</property>
+                                    <property name="display">block</property>
+                                    <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakInside">auto</property>
+                                    <property name="showIfBlank">false</property>
+                                    <property name="canShrink">false</property>
+                                    <property name="overflow">hidden</property>
+                                    <text id="5980">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">right</property>
+                                        <method name="onCreate"><![CDATA[vars["TotalTurnover"] = vars["TotalTurnover"] + row["TotalExpectedRevenue"]
+vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpectedRevenue"]]]></method>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row["TotalExpectedRevenue"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -14977,7 +15998,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalManualElementTurnover"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -15356,7 +16377,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Project.manualElement'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -15389,6 +16410,12 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         <detail>
                             <row id="5896">
                                 <property name="height">0.34375in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["me_amount_turnover"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="5897">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -17297,7 +18324,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row.__rownum == -1</expression>
+                                <expression name="valueExpr" type="javascript">row.__rownum == -1 || row["TotalManualElementCost"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -17676,7 +18703,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Project.manualElement'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                             <structure>
@@ -17709,6 +18736,12 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                         <detail>
                             <row id="5927">
                                 <property name="height">0.34375in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["me_amount_cost"] == 0</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="5928">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -18043,6 +19076,42 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
                 <cell id="5512">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
+                    <text id="5947">
+                        <property name="fontSize">100%</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Project.turnoverAndCostPerMonth'</value>
+                                </simple-property-list>
+                            </structure>
+                            <structure>
+                                <property name="paramName">param_2</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">params["Locale"].value</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<H2><VALUE-OF>row["translation"]</VALUE-OF></H2>]]></text-property>
+                    </text>
                     <extended-item extensionName="Chart" id="5524">
                         <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:data="http://www.birt.eclipse.org/ChartModelData" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
   <Version>2.6.1</Version>
@@ -18078,7 +19147,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
         </Color>
         <Visible>false</Visible>
       </Outline>
-      <Visible>true</Visible>
+      <Visible>false</Visible>
       <Label>
         <Caption>
           <Value>Turnover and Costs per month</Value>
@@ -20047,7 +21116,6 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
                 <cell id="5574"/>
             </row>
             <row id="5575">
-                <property name="height">0.5104166666666666in</property>
                 <cell id="5576">
                     <text id="5587">
                         <property name="fontWeight">bold</property>

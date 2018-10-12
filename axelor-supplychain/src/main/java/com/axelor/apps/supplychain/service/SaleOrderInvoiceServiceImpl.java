@@ -273,6 +273,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                 .multiply(saleOrderLineTax.getExTaxBase())
                 .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_EVEN);
         TaxLine taxLine = saleOrderLineTax.getTaxLine();
+        BigDecimal lineAmountToInvoiceInclTax =
+            (taxLine != null)
+                ? lineAmountToInvoice.add(lineAmountToInvoice.multiply(taxLine.getValue()))
+                : lineAmountToInvoice;
 
         InvoiceLineGenerator invoiceLineGenerator =
             new InvoiceLineGenerator(
@@ -280,7 +284,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                 invoicingProduct,
                 invoicingProduct.getName(),
                 lineAmountToInvoice,
-                lineAmountToInvoice,
+                lineAmountToInvoiceInclTax,
+                invoice.getInAti() ? lineAmountToInvoiceInclTax : lineAmountToInvoice,
                 invoicingProduct.getDescription(),
                 BigDecimal.ONE,
                 invoicingProduct.getUnit(),
@@ -545,6 +550,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     Product product = saleOrderLine.getProduct();
 
+    Integer packPriceSelect = saleOrderLine.getPackPriceSelect();
+    if (saleOrderLine.getIsSubLine() && saleOrderLine.getParentLine() != null) {
+      packPriceSelect = saleOrderLine.getParentLine().getPackPriceSelect();
+    }
+
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGeneratorSupplyChain(
             invoice,
@@ -559,7 +569,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             null,
             null,
             saleOrderLine.getIsSubLine(),
-            saleOrderLine.getPackPriceSelect()) {
+            packPriceSelect) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

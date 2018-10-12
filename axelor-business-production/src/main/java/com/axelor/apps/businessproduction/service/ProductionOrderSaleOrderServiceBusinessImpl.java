@@ -129,7 +129,8 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
               billOfMaterial,
               qty,
               saleOrderLine.getSaleOrder().getProject(),
-              LocalDateTime.now()));
+              LocalDateTime.now(),
+              saleOrderLine.getSaleOrder()));
     }
 
     return null;

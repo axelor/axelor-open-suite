@@ -4,7 +4,7 @@
 
     <module name="base" package="com.axelor.apps.base.db"/>
 
-    <entity name="AppBankPayment" lang="java" cachable="true" extends="App">
+    <entity name="AppBankPayment" lang="java" extends="App">
         <boolean name="manageDirectDebitPayment" title="Manage direct debit payment" default="false" />
         <boolean name="manageCreditTransferPayment" title="Manage credit transfer payment" default="true"/>
         <boolean name="manageBankToBankTransferPayment" title="Manage bank to bank transfer payment" default="true"/>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+
+  <grid name="raw-material-requirement-report-grid" title="Raw material requirement"
+    model="com.axelor.apps.production.db.RawMaterialRequirement">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="company"/>
+    <field name="duration"/>
+  </grid>
+
+  <form name="raw-material-requirement-form" title="Raw material requirement"
+    model="com.axelor.apps.production.db.RawMaterialRequirement"
+    onNew="action-raw-material-requirement-record-default">
+    <panel>
+      <field name="code" readonly="true"/>
+      <field name="name"/>
+      <field name="company" required="true"/>
+      <field name="duration"/>
+      <field name="showAllRequirements"/>
+      <field name="stockLocationSet" colSpan="12"
+        domain="self.company = :company AND self.typeSelect = 1"/>
+    </panel>
+    <panel sidebar="true">
+      <button name="export" title="Print" icon="fa-print"
+        onClick="save,action-product-need-report-method-print"/>
+    </panel>
+  </form>
+
+  <action-record name="action-raw-material-requirement-record-default" model="com.axelor.apps.production.db.RawMaterialRequirement">
+    <field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-method name="action-product-need-report-method-print">
+    <call class="com.axelor.apps.production.web.RawMaterialRequirementController" method="print"/>
+  </action-method>
+
+</object-views>

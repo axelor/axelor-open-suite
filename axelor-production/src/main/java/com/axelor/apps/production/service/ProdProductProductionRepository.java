@@ -21,8 +21,8 @@ import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.db.JPA;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class ProdProductProductionRepository extends ProdProductRepository {
 
@@ -30,13 +30,20 @@ public class ProdProductProductionRepository extends ProdProductRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     Object productFromView = json.get("product");
     Object qtyFromView = json.get("qty");
-    Object toProduceManufOrderIdFromView = json.get("toConsumeManufOrder");
+    Object toProduceManufOrderIdFromView;
+    if (context == null || context.isEmpty()) {
+      toProduceManufOrderIdFromView =
+          json.get("toConsumeManufOrder") == null
+              ? null
+              : ((HashMap<String, Object>) json.get("toConsumeManufOrder")).get("id");
+    } else {
+      toProduceManufOrderIdFromView = context.get("id");
+    }
     if (productFromView == null || qtyFromView == null || toProduceManufOrderIdFromView == null) {
       return super.populate(json, context);
     } else {
       Long productId = (Long) ((HashMap<String, Object>) productFromView).get("id");
-      Long toProduceManufOrderId =
-          (Long) ((HashMap<String, Object>) toProduceManufOrderIdFromView).get("id");
+      Long toProduceManufOrderId = (Long) toProduceManufOrderIdFromView;
       json.put(
           "$missingQty",
           computeMissingQty(productId, (BigDecimal) qtyFromView, toProduceManufOrderId));
@@ -49,21 +56,25 @@ public class ProdProductProductionRepository extends ProdProductRepository {
     if (productId == null || qty == null || toProduceManufOrderId == null) {
       return BigDecimal.ZERO;
     }
-    BigDecimal availableQty =
-        Optional.ofNullable(
-                JPA.em()
-                    .createQuery(
-                        "SELECT locationLine.currentQty "
-                            + "FROM ManufOrder manufOrder "
-                            + "LEFT JOIN StockLocationLine locationLine "
-                            + "ON locationLine.stockLocation.id = manufOrder.prodProcess.stockLocation.id "
-                            + "WHERE locationLine.product.id = :productId "
-                            + "AND manufOrder.id = :manufOrderId",
-                        BigDecimal.class)
-                    .setParameter("productId", productId)
-                    .setParameter("manufOrderId", toProduceManufOrderId)
-                    .getSingleResult())
-            .orElse(BigDecimal.ZERO);
+    List<BigDecimal> queryResult =
+        JPA.em()
+            .createQuery(
+                "SELECT locationLine.currentQty "
+                    + "FROM ManufOrder manufOrder "
+                    + "LEFT JOIN StockLocationLine locationLine "
+                    + "ON locationLine.stockLocation.id = manufOrder.prodProcess.stockLocation.id "
+                    + "WHERE locationLine.product.id = :productId "
+                    + "AND manufOrder.id = :manufOrderId",
+                BigDecimal.class)
+            .setParameter("productId", productId)
+            .setParameter("manufOrderId", toProduceManufOrderId)
+            .getResultList();
+    BigDecimal availableQty;
+    if (queryResult.isEmpty()) {
+      availableQty = BigDecimal.ZERO;
+    } else {
+      availableQty = queryResult.get(0);
+    }
     return BigDecimal.ZERO.max(qty.subtract(availableQty));
   }
 }

@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppProduction" lang="java" cachable="true" extends="App">
+	<entity name="AppProduction" lang="java" extends="App">
 		<boolean name="prodOrderMgtOnSO" title="Production order management from sale order" default="false"/>
 		<boolean name="productionOrderGenerationAuto" title="Generate production orders automatically" default="false"/>
     	
@@ -24,6 +24,7 @@
 		<integer name="nbDecimalDigitForBomQty" title="Nb of digits for BOM quantities" max="10" default="2"/>
 		
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
+		<boolean name="printPlannedDateOnManufOrder" title="Print planned date on manuf order ?" default="true"/>
 	</entity>
 
 </domain-models>

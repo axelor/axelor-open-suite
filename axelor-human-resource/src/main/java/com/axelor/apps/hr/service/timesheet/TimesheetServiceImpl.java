@@ -531,6 +531,9 @@ public class TimesheetServiceImpl implements TimesheetService {
       LocalDate startDate = (LocalDate) timesheetInformations[2];
       LocalDate endDate = (LocalDate) timesheetInformations[3];
       BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
+      PriceList priceList =
+          Beans.get(PartnerPriceListService.class)
+              .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 
       if (consolidate) {
         strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
@@ -540,7 +543,7 @@ public class TimesheetServiceImpl implements TimesheetService {
 
       invoiceLineList.addAll(
           this.createInvoiceLine(
-              invoice, product, user, strDate, hoursDuration, priority * 100 + count));
+              invoice, product, user, strDate, hoursDuration, priority * 100 + count, priceList));
       count++;
     }
 
@@ -554,17 +557,20 @@ public class TimesheetServiceImpl implements TimesheetService {
       User user,
       String date,
       BigDecimal hoursDuration,
-      int priority)
+      int priority,
+      PriceList priceList)
       throws AxelorException {
 
-    int discountTypeSelect = 1;
+    int discountMethodTypeSelect = PriceListLineRepository.TYPE_DISCOUNT;
+    int discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_NONE;
     if (product == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
     }
     BigDecimal price = product.getSalePrice();
-    BigDecimal discountAmount = product.getCostPrice();
+    BigDecimal discountAmount = BigDecimal.ZERO;
+    BigDecimal priceDiscounted = price;
 
     BigDecimal qtyConverted =
         Beans.get(UnitConversionService.class)
@@ -573,37 +579,30 @@ public class TimesheetServiceImpl implements TimesheetService {
                 product.getUnit(),
                 hoursDuration);
 
-    PriceList priceList =
-        Beans.get(PartnerPriceListService.class)
-            .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
     if (priceList != null) {
       PriceListLine priceListLine =
           priceListService.getPriceListLine(product, qtyConverted, priceList);
       if (priceListLine != null) {
-        discountTypeSelect = priceListLine.getTypeSelect();
+        discountMethodTypeSelect = priceListLine.getTypeSelect();
       }
+
+      Map<String, Object> discounts =
+          priceListService.getDiscounts(priceList, priceListLine, price);
+      if (discounts != null) {
+        discountAmount = (BigDecimal) discounts.get("discountAmount");
+        discountTypeSelect = (int) discounts.get("discountTypeSelect");
+        priceDiscounted =
+            priceListService.computeDiscount(price, discountTypeSelect, discountAmount);
+      }
+
       if ((appHumanResourceService.getAppBase().getComputeMethodDiscountSelect()
                   == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY
-              && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE)
+              && discountMethodTypeSelect == PriceListLineRepository.TYPE_REPLACE)
           || appHumanResourceService.getAppBase().getComputeMethodDiscountSelect()
               == AppBaseRepository.INCLUDE_DISCOUNT) {
-        Map<String, Object> discounts =
-            priceListService.getDiscounts(priceList, priceListLine, price);
-        if (discounts != null) {
-          discountAmount = (BigDecimal) discounts.get("discountAmount");
-          price =
-              priceListService.computeDiscount(
-                  price, (int) discounts.get("discountTypeSelect"), discountAmount);
-        }
-      } else {
-        Map<String, Object> discounts =
-            priceListService.getDiscounts(priceList, priceListLine, price);
-        if (discounts != null) {
-          discountAmount = (BigDecimal) discounts.get("discountAmount");
-          if (discounts.get("price") != null) {
-            price = (BigDecimal) discounts.get("price");
-          }
-        }
+
+        discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_NONE;
+        price = priceDiscounted;
       }
     }
 
@@ -617,6 +616,7 @@ public class TimesheetServiceImpl implements TimesheetService {
             productName,
             price,
             price,
+            priceDiscounted,
             description,
             qtyConverted,
             product.getUnit(),

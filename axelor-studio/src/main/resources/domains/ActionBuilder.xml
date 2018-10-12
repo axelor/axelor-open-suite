@@ -36,6 +36,15 @@
      
      <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" />
      
+    <extra-code><![CDATA[
+        public static final int TYPE_SELECT_CREATE = 0;
+        public static final int TYPE_SELECT_UPDATE = 1;
+        public static final int TYPE_SELECT_SCRIPT = 2;
+        public static final int TYPE_SELECT_VIEW= 3;
+        public static final int TYPE_SELECT_EMAIL = 4;
+        public static final int TYPE_SELECT_REPORT = 5;
+    ]]></extra-code>
+     
   </entity>
   
 </domain-models>

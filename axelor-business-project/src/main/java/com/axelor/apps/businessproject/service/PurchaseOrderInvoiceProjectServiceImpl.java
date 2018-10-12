@@ -110,6 +110,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               product.getName(),
               price,
               price,
+              price,
               purchaseOrderLine.getDescription(),
               purchaseOrderLine.getQty(),
               purchaseOrderLine.getUnit(),
@@ -126,6 +127,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
             public List<InvoiceLine> creates() throws AxelorException {
 
               InvoiceLine invoiceLine = this.createInvoiceLine();
+              invoiceLine.setProject(purchaseOrderLine.getProject());
 
               List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
               invoiceLines.add(invoiceLine);
@@ -156,6 +158,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               product.getName(),
               price,
               price,
+              price,
               purchaseOrderLine.getDescription(),
               purchaseOrderLine.getQty(),
               purchaseOrderLine.getUnit(),
@@ -172,6 +175,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
             public List<InvoiceLine> creates() throws AxelorException {
 
               InvoiceLine invoiceLine = this.createInvoiceLine();
+              invoiceLine.setProject(purchaseOrderLine.getProject());
 
               List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
               invoiceLines.add(invoiceLine);
@@ -200,6 +204,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
             public List<InvoiceLine> creates() throws AxelorException {
 
               InvoiceLine invoiceLine = this.createInvoiceLine();
+              invoiceLine.setProject(purchaseOrderLine.getProject());
 
               List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
               invoiceLines.add(invoiceLine);

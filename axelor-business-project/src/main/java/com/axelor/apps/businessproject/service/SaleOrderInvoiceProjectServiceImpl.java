@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -31,7 +30,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
@@ -39,9 +37,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl {
 
@@ -91,49 +87,5 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       }
     }
     return invoiceMerged;
-  }
-
-  @Override
-  public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
-    Map<String, Integer> contextValues = super.getInvoicingWizardOperationDomain(saleOrder);
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-    boolean canInvoiceTimesheet = appBusinessProject.getEnableToInvoiceTimesheet();
-    boolean canInvoiceExpense = appBusinessProject.getEnableToInvoiceExpense();
-
-    contextValues.put("invoiceTs", canInvoiceTimesheet ? SaleOrderRepository.INVOICE_TIMESHEET : 0);
-    contextValues.put(
-        "invoiceExpense", canInvoiceExpense ? SaleOrderRepository.INVOICE_EXPENSE : 0);
-
-    return contextValues;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice generateInvoice(
-      SaleOrder saleOrder,
-      int operationSelect,
-      BigDecimal amount,
-      boolean isPercent,
-      Map<Long, BigDecimal> qtyToInvoiceMap)
-      throws AxelorException {
-
-    Invoice invoice =
-        super.generateInvoice(saleOrder, operationSelect, amount, isPercent, qtyToInvoiceMap);
-    invoice.setProject(saleOrder.getProject());
-    if (operationSelect == SaleOrderRepository.INVOICE_ALL
-        || operationSelect == SaleOrderRepository.INVOICE_PART) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
-        if (saleOrderLine != null) {
-          invoiceLine.setProject(saleOrderLine.getProject());
-        }
-      }
-    } else {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        invoiceLine.setProject(saleOrder.getProject());
-      }
-    }
-
-    return invoice;
   }
 }

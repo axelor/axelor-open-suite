@@ -30,7 +30,8 @@
   	<decimal name="oldQty" hidden="true"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>
   	<string name="productName" title="Displayed Product name" required="true" translatable="true"/>
-  	<decimal name="price" title="Unit price" precision="20" scale="10"/>
+  	<decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
+  	<decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
   	<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
   	
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
@@ -49,8 +50,9 @@
   	
 <!-- 	Margins -->
 	<decimal name="subTotalCostPrice" title="SubTotal cost price"/>
-	<decimal name="subTotalGrossMargin" title="SubTotal gross margin"/>
+	<decimal name="subTotalGrossMargin" title="Sub Total gross profit"/>
 	<decimal name="subMarginRate" title="Sub margin rate"/>
+	<decimal name="subTotalMarkup" title="Sub Total markup"/>
   	
 <!--   	Devis-commande fournisseur -->
 	<date name="deliveryDate" title="Delivery date"/>
@@ -65,7 +67,7 @@
 	<integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
 	<many-to-one name="parentLine" ref="com.axelor.apps.sale.db.SaleOrderLine" />
   	<one-to-many name="subLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="parentLine" title="Pack lines"/>
-  	<decimal name="totalPack" title="Total pack"/>
+  	<decimal name="totalPack" title="Total for pack lines"/>
 	<integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
 	
 	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>

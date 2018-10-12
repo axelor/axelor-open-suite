@@ -122,6 +122,7 @@
 
     <!-- action-record shared among customer/supplier/employee account -->
     <action-record name="action-account-record-new-from-partner" model="com.axelor.apps.account.db.Account">
+        <field name="name" expr="eval:__parent__.partner.fullName"/>
         <field name="company" expr="eval: __parent__.company"/>
         <field name="useForPartnerBalance" expr="eval: true"/>
         <field name="reconcileOk" expr="eval: true"/>

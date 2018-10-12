@@ -28,8 +28,10 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface StockMoveLineService {
@@ -211,9 +213,24 @@ public interface StockMoveLineService {
   /**
    * Set product information.
    *
+   * @param stockMove
    * @param stockMoveLine
    * @param company
    * @throws AxelorException
    */
-  public void setProductInfo(StockMoveLine stockMoveLine, Company company) throws AxelorException;
+  public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
+      throws AxelorException;
+
+  @Transactional
+  public void splitStockMoveLineByTrackingNumber(
+      StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers);
+
+  /**
+   * set the available quantity of product in a given location.
+   *
+   * @param stockMoveLine
+   * @param stockLocation
+   * @return
+   */
+  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
 }

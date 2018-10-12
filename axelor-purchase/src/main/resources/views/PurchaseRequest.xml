@@ -52,41 +52,72 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="purchase-request-form" title="Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest" onNew="action-purchase-request-record-default" width="large">
-		<toolbar>
-		  <button name="request" title="Request" showIf="statusSelect == 1" onClick="action-purchase-request-set-status-requested,save"/>
-	      <button name="accept" title="Accept" showIf="statusSelect == 2" onClick="action-purchase-request-set-status-accepted,save"/>
-	      <button name="purchase" title="Purchase" showIf="statusSelect == 3" onClick="action-purchase-request-set-status-purchased,save"/>
-	      <button name="deliverPartially" title="Deliver Partially" showIf="statusSelect == 4" onClick="action-purchase-request-set-status-delivered-partially,save"/>
-	      <button name="delivered" title="Deliver" showIf="statusSelect == 5 || statusSelect == 4" onClick="action-purchase-request-set-status-delivered,save"/>
-	      <button name="refuse" title="Refuse" showIf="statusSelect == 6"  onClick="action-purchase-request-set-status-refused,save"/>
-	      <button name="cancel" title="Cancel" showIf="statusSelect != 3 &amp;&amp; statusSelect != 8"  onClick="action-purchase-request-set-status-cancel,save"/>
-	    </toolbar>
-	    <panel title="Status">
-      		<field name="statusSelect" readonly="true" colSpan="12" widget="nav-select" showTitle="false"/>
-      	</panel>
-		<panel name="main" >
-		  <field name="company" form-view="company-form"  grid-view="company-grid"/>
-		  <spacer/>
-		  <field name="newProduct"/>
-		  <field name="product" form-view="product-form" grid-view="product-grid" hideIf="newProduct" onChange="action-purchase-request-product-on-change"/>
-		  <field name="unit" />
-		  <field name="quantity" />
-		  <field name="supplier" search="self.isSupplier = true" />
-		  <field name="price" />
-		  <field name="description" colSpan="12"/>
-		  <field name="deliveryAddress" onSelect="action-purchase-request-set-delivery-address-domain"/>
-		  <field name="deliveredQty" readonly="true" />
-		  <field name="purchaseOrder" hideIf="purchaseOrder == null"/>
+	<form name="purchase-request-form" title="Purchase request"
+		model="com.axelor.apps.purchase.db.PurchaseRequest" onNew="action-purchase-request-record-default"
+		width="large">
+		<panel colSpan="12">
+			<field name="statusSelect" readonly="true" colSpan="12" widget="nav-select"
+				showTitle="false" />
+		</panel>
+		<panel name="main" readonlyIf="![1,2].includes(statusSelect)">
+			<field name="company" form-view="company-form" grid-view="company-grid" />
+			<field name="newProduct" widget="boolean-switch" colSpan="2"
+				colOffset="4" hideIf="statusSelect &gt; 2 &amp;&amp; !newProduct" />
+			<field name="product" colSpan="3" form-view="product-form"
+				grid-view="product-grid" hideIf="newProduct" requiredIf="!newProduct"
+				onChange="action-purchase-request-product-on-change" />
+			<field name="unit" colSpan="3" />
+			<field name="quantity" colSpan="3" />
+			<field name="price" colSpan="3" />
+			<field name="$product" hidden="true" />
+		</panel>
+		<panel-tabs>
+			<panel name="description" title="Description">
+				<field name="description" colSpan="12" widget="html"
+					showTitle="false" />
+			</panel>
+		</panel-tabs>
+
+		<panel sidebar="true">
+			<button name="request" title="Request" icon="fa-bullhorn"
+				showIf="statusSelect == 1" onClick="save,action-purchase-request-set-status-requested,save" />
+			<button name="accept" title="Accept" icon="fa-check" showIf="statusSelect == 2"
+				onClick="save,action-purchase-request-set-status-accepted,save" />
+			<button name="purchase" title="Purchase" icon="fa-shopping-cart"
+				showIf="statusSelect == 3" onClick="save,action-purchase-request-set-status-purchased,save" />
+			<button name="deliverPartially" title="Deliver Partially"
+				icon="fa-truck" showIf="statusSelect == 4"
+				onClick="save,action-purchase-request-set-status-delivered-partially,save" />
+			<button name="delivered" title="Deliver"
+				showIf="statusSelect == 5 || statusSelect == 4" icon="fa-truck"
+				onClick="save,action-purchase-request-set-status-delivered,save" />
+			<button name="refuse" title="Refuse" icon="fa-times" css="btn-danger"
+				showIf="statusSelect == 2" onClick="save,action-purchase-request-set-status-refused,save" />
+			<button name="cancel" title="Cancel" icon="fa-times-circle"
+				css="btn-danger" showIf="statusSelect == 2 || statusSelect == 7  || statusSelect == 3"
+				onClick="save,action-purchase-request-set-status-cancel,save" />
+			<button name="draft" title="Draft" icon="fa-edit" showIf="statusSelect == 8"
+				onClick="save,action-purchase-request-set-status-draft, save" />
+		</panel>
+		<panel sidebar="true" name="caracteristics" title="Caracteristics"
+			canCollapse="true">
+			<field name="deliveryAddress"
+				onSelect="action-purchase-request-set-delivery-address-domain" />
+			<field name="supplier" search="self.isSupplier = true" colSpan="6" />
+		</panel>
+		<panel sidebar="true" name="follow-up" title="Follow-up"
+			canCollapse="true">
+			<field name="deliveredQty" readonly="true" colSpan="6" />
+			<field name="purchaseOrder" showIf="purchaseOrder" colSpan="6" />
 		</panel>
 		<panel>
 			<field name="attrs" colSpan="12" />
 		</panel>
 		<panel-mail>
-		  <mail-messages limit="4" />
-		  <mail-followers />
-	  	</panel-mail>
-    </form>
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
+	</form>
     
     <form name="purchase-request-wizard-generate-po-form"  title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest" >
     	<panel>
@@ -148,6 +179,10 @@
   	
   	<action-record name="action-purchase-request-set-status-cancel" model="com.axelor.apps.purchase.db.PurchaseRequest">
     	<field name="statusSelect" expr="eval:8"/>
+  	</action-record>
+
+  	<action-record name="action-purchase-request-set-status-draft" model="com.axelor.apps.purchase.db.PurchaseRequest">
+		<field name="statusSelect" expr="eval:1"/>
   	</action-record>
   	<!-- update status end -->
 	

@@ -227,11 +227,15 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                   null,
                   StockMoveRepository.TYPE_INCOMING);
 
-      stockMove.setPurchaseOrder(purchaseOrder);
+      stockMove.setOriginId(purchaseOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
+      stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
       stockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
       stockMove.setTradingName(purchaseOrder.getTradingName());
 
-      qualityStockMove.setPurchaseOrder(purchaseOrder);
+      qualityStockMove.setOriginId(purchaseOrder.getId());
+      qualityStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
+      qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
       qualityStockMove.setEstimatedDate(purchaseOrder.getDeliveryDate());
       qualityStockMove.setTradingName(purchaseOrder.getTradingName());
 
@@ -251,18 +255,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
           Unit unit = purchaseOrderLine.getProduct().getUnit();
           BigDecimal qty = purchaseOrderLine.getQty();
-          BigDecimal priceDiscounted;
-          if (!purchaseOrderLine.getPurchaseOrder().getInAti()) {
-            priceDiscounted = purchaseOrderLine.getPriceDiscounted();
-          } else {
-            priceDiscounted =
-                purchaseOrderLine
-                    .getPriceDiscounted()
-                    .divide(
-                        purchaseOrderLine.getTaxLine().getValue().add(BigDecimal.ONE),
-                        2,
-                        BigDecimal.ROUND_HALF_UP);
-          }
+          BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
 
           if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
             qty =
@@ -370,7 +363,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "self.purchaseOrder.id = ? AND self.statusSelect <> ?",
+                "self.originTypeSelect LIKE ? AND self.originId = ? AND self.statusSelect <> ?",
+                StockMoveRepository.ORIGIN_PURCHASE_ORDER,
                 purchaseOrderId,
                 StockMoveRepository.STATUS_CANCELED)
             .count();

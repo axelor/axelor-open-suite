@@ -87,7 +87,7 @@
                             <field name="paymentMode" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
                             <field name="paymentCondition" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                             <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"/>
-                            <field name="invoicingMoment" showIf="automaticInvoicing" colSpan="3"/>
+                            <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
                         </panel>
                         <panel colSpan="12">
                             <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
@@ -119,6 +119,10 @@
             <field name="nextContract"/>
             <field name="$_xIsNext" type="Boolean"/>
         </panel>
+        <panel-mail>
+            <mail-messages limit="4"/>
+            <mail-followers/>
+        </panel-mail>
     </form>
 
     <action-attrs name="action-contract-version-attrs-load">

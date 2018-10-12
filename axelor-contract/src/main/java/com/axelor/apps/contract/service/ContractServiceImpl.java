@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -82,6 +83,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   protected ContractLineRepository contractLineRepo;
   protected ConsumptionLineRepository consumptionLineRepo;
+  protected ContractRepository contractRepository;
 
   @Inject
   public ContractServiceImpl(
@@ -90,13 +92,15 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractLineService contractLineService,
       DurationService durationService,
       ContractLineRepository contractLineRepo,
-      ConsumptionLineRepository consumptionLineRepo) {
+      ConsumptionLineRepository consumptionLineRepo,
+      ContractRepository contractRepository) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
     this.durationService = durationService;
     this.contractLineRepo = contractLineRepo;
     this.consumptionLineRepo = consumptionLineRepo;
+    this.contractRepository = contractRepository;
   }
 
   @Override
@@ -109,7 +113,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  public void waitingCurrentVersion(Contract contract, LocalDate date) {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void waitingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
     ContractVersion currentVersion = contract.getCurrentContractVersion();
     versionService.waiting(currentVersion, date);
   }
@@ -118,6 +123,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
     ContractVersion currentVersion = contract.getCurrentContractVersion();
+
+    if (currentVersion.getSupposedActivationDate() != null) {
+      date = currentVersion.getSupposedActivationDate();
+    }
 
     Invoice invoice = null;
 
@@ -138,10 +147,13 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       contract.setInvoicePeriodStartDate(currentVersion.getActivationDate());
       contract.setInvoicePeriodEndDate(contract.getFirstPeriodEndDate());
     }
-    if (contract.getCurrentContractVersion().getAutomaticInvoicing()
-        && contract.getCurrentContractVersion().getInvoicingMomentSelect()
-            == ContractVersionRepository.BEGIN_INVOICING_MOMENT) {
-      invoice = invoicingContract(contract);
+    if (contract.getCurrentContractVersion().getAutomaticInvoicing()) {
+      if (contract.getCurrentContractVersion().getInvoicingMomentSelect()
+          == ContractVersionRepository.BEGIN_INVOICING_MOMENT) {
+        invoice = invoicingContract(contract);
+      } else {
+        fillInvoicingDateByInvoicingMoment(contract);
+      }
     }
 
     return invoice;
@@ -159,6 +171,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
               .minusDays(1));
     }
 
+    fillInvoicingDateByInvoicingMoment(contract);
+
+    return contract;
+  }
+
+  @Transactional
+  private void fillInvoicingDateByInvoicingMoment(Contract contract) {
+    ContractVersion version = contract.getCurrentContractVersion();
     if (version.getAutomaticInvoicing()) {
       switch (version.getInvoicingMomentSelect()) {
         case ContractVersionRepository.END_INVOICING_MOMENT:
@@ -171,7 +191,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           contract.setInvoicingDate(appBaseService.getTodayDate());
       }
     }
-    return contract;
   }
 
   @Override
@@ -224,8 +243,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional
-  public void waitingNextVersion(Contract contract, LocalDate date) {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void waitingNextVersion(Contract contract, LocalDate date) throws AxelorException {
     ContractVersion version = contract.getNextVersion();
     versionService.waiting(version, date);
 
@@ -322,25 +341,22 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       throws AxelorException {
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
-    if (isManual) {
-      contract.setTerminationDemandDate(appBaseService.getTodayDate());
-      contract.setTerminatedManually(true);
-      contract.setTerminatedDate(date);
-      contract.setTerminatedByUser(AuthUtils.getUser());
-    } else {
-      if (currentVersion.getIsTacitRenewal() && !currentVersion.getDoNotRenew()) {
-        renewContract(contract, date);
-        return;
-      }
+    if (currentVersion.getIsTacitRenewal() && !currentVersion.getDoNotRenew()) {
+      renewContract(contract, date);
+      return;
     }
 
-    if (contract.getTerminatedDate().isBefore(appBaseService.getTodayDate())
-        || contract.getTerminatedDate().equals(appBaseService.getTodayDate())) {
+    contract.setTerminatedManually(isManual);
+    contract.setTerminatedDate(date);
+    if (isManual) {
+      contract.setTerminationDemandDate(appBaseService.getTodayDate());
+      contract.setTerminatedByUser(AuthUtils.getUser());
+    }
+    contract.setEndDate(date);
+    if (date.isBefore(appBaseService.getTodayDate())
+        || date.equals(appBaseService.getTodayDate())) {
       versionService.terminate(currentVersion, date);
-      contract.setEndDate(date);
       contract.setStatusSelect(CLOSED_CONTRACT);
-    } else {
-      contract.setEndDate(date);
     }
 
     save(contract);
@@ -473,6 +489,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     return mergedLines;
   }
 
+  InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+
   public InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
@@ -480,6 +498,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getProduct(),
             line.getProductName(),
             line.getPrice(),
+            invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice()),
             null,
             line.getDescription(),
             line.getQty(),
@@ -587,10 +606,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   // TODO: Move to ContractTemplateService
-  @Transactional
-  public Contract createContractFromTemplate(ContractTemplate template) {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public Contract createContractFromTemplate(ContractTemplate template, Contract baseContract)
+      throws AxelorException {
 
-    Contract contract = new Contract();
+    Contract contract;
+    if (baseContract == null) {
+      contract = new Contract();
+    } else {
+      contract = contractRepository.copy(baseContract, false);
+    }
 
     if (template.getAdditionalBenefitContractLineList() != null
         && !template.getAdditionalBenefitContractLineList().isEmpty()) {
@@ -598,12 +623,15 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       for (ContractLine line : template.getAdditionalBenefitContractLineList()) {
 
         ContractLine newLine = contractLineRepo.copy(line, false);
+        contractLineService.compute(newLine, contract, newLine.getProduct());
+        contractLineService.computeTotal(newLine);
         contractLineRepo.save(newLine);
         contract.addAdditionalBenefitContractLineListItem(newLine);
       }
     }
 
     contract.setCompany(template.getCompany());
+    contract.setCurrency(template.getCurrency());
     contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());
     contract.setIsConsumptionManagement(template.getIsConsumptionManagement());
     contract.setIsInvoicingManagement(template.getIsInvoicingManagement());
@@ -617,6 +645,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       for (ContractLine line : template.getContractLineList()) {
 
         ContractLine newLine = contractLineRepo.copy(line, false);
+        contractLineService.compute(newLine, contract, newLine.getProduct());
+        contractLineService.computeTotal(newLine);
         contractLineRepo.save(newLine);
         version.addContractLineListItem(newLine);
       }
@@ -632,6 +662,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     version.setIsVersionProratedInvoice(template.getIsVersionProratedInvoice());
     version.setIsWithEngagement(template.getIsWithEngagement());
     version.setIsWithPriorNotice(template.getIsWithPriorNotice());
+    version.setIsAutoEnableVersionOnRenew(template.getIsAutoEnableVersionOnRenew());
 
     version.setAutomaticInvoicing(template.getAutomaticInvoicing());
     version.setEngagementDuration(template.getEngagementDuration());

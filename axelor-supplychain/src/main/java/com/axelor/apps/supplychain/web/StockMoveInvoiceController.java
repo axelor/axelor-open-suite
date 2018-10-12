@@ -21,6 +21,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -45,21 +47,25 @@ import java.util.Map;
 public class StockMoveInvoiceController {
 
   @Inject private StockMoveInvoiceService stockMoveInvoiceService;
+  @Inject private SaleOrderRepository saleRepo;
+  @Inject private PurchaseOrderRepository purchaseRepo;
 
   public void generateInvoice(ActionRequest request, ActionResponse response) {
 
     StockMove stockMove = request.getContext().asType(StockMove.class);
     Invoice invoice = null;
+    Long origin = stockMove.getOriginId();
     try {
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
 
-      if (stockMove.getSaleOrder() != null) {
+      if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
         invoice =
-            stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
-      } else if (stockMove.getPurchaseOrder() != null) {
+            stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, saleRepo.find(origin));
+      } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(
+          stockMove.getOriginTypeSelect())) {
         invoice =
             stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                stockMove, stockMove.getPurchaseOrder());
+                stockMove, purchaseRepo.find(origin));
       } else {
         invoice = stockMoveInvoiceService.createInvoiceFromStockMove(stockMove);
       }
@@ -242,10 +248,10 @@ public class StockMoveInvoiceController {
       for (Map map : stockMoveMap) {
         try {
           stockMove = JPA.em().find(StockMove.class, new Long((Integer) map.get("id")));
-          if (stockMove.getSaleOrder() != null) {
+          if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
             invoice =
                 stockMoveInvoiceService.createInvoiceFromSaleOrder(
-                    stockMove, stockMove.getSaleOrder());
+                    stockMove, saleRepo.find(stockMove.getOriginId()));
             invoiceIdList.add(invoice.getId());
           }
         } catch (AxelorException ae) {
@@ -269,10 +275,10 @@ public class StockMoveInvoiceController {
       for (Map map : stockMoveMap) {
         try {
           stockMove = JPA.em().find(StockMove.class, new Long((Integer) map.get("id")));
-          if (stockMove.getPurchaseOrder() != null) {
+          if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
             invoice =
                 stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                    stockMove, stockMove.getPurchaseOrder());
+                    stockMove, purchaseRepo.find(stockMove.getOriginId()));
             invoiceIdList.add(invoice.getId());
           }
         } catch (AxelorException ae) {

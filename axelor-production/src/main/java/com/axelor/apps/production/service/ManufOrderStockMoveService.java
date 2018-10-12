@@ -75,6 +75,9 @@ public class ManufOrderStockMoveService {
     if (manufOrder.getToConsumeProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToConsumeStockMove(manufOrder, company);
+      stockMove.setOriginId(manufOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+      stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
       for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
 
@@ -178,6 +181,9 @@ public class ManufOrderStockMoveService {
     if (manufOrder.getToProduceProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToProduceStockMove(manufOrder, company);
+      stockMove.setOriginId(manufOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+      stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
       for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 
@@ -501,18 +507,23 @@ public class ManufOrderStockMoveService {
    */
   public void createNewConsumedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
       throws AxelorException {
+    // find planned stock move
+    Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getInStockMoveList());
+    if (!stockMoveOpt.isPresent()) {
+      return;
+    }
+
+    StockMove stockMove = stockMoveOpt.get();
+
+    stockMoveService.cancel(stockMove);
+
     // clear all lists from planned lines
     manufOrder
         .getConsumedStockMoveLineList()
         .removeIf(
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
-                    == StockMoveRepository.STATUS_PLANNED);
-    Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getInStockMoveList());
-    if (!stockMoveOpt.isPresent()) {
-      return;
-    }
-    StockMove stockMove = stockMoveOpt.get();
+                    == StockMoveRepository.STATUS_CANCELED);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -528,6 +539,7 @@ public class ManufOrderStockMoveService {
               stockMoveLine1 -> !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addConsumedStockMoveLineListItem);
     }
+    stockMoveService.plan(stockMove);
   }
 
   /**
@@ -538,18 +550,21 @@ public class ManufOrderStockMoveService {
    */
   public void createNewProducedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
       throws AxelorException {
+    Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getOutStockMoveList());
+    if (!stockMoveOpt.isPresent()) {
+      return;
+    }
+    StockMove stockMove = stockMoveOpt.get();
+
+    stockMoveService.cancel(stockMove);
+
     // clear all lists
     manufOrder
         .getProducedStockMoveLineList()
         .removeIf(
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
-                    == StockMoveRepository.STATUS_PLANNED);
-    Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getOutStockMoveList());
-    if (!stockMoveOpt.isPresent()) {
-      return;
-    }
-    StockMove stockMove = stockMoveOpt.get();
+                    == StockMoveRepository.STATUS_CANCELED);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -570,6 +585,7 @@ public class ManufOrderStockMoveService {
               stockMoveLine1 -> !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addProducedStockMoveLineListItem);
     }
+    stockMoveService.plan(stockMove);
   }
 
   /**

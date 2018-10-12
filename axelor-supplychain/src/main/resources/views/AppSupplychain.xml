@@ -22,9 +22,9 @@
 			<field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
 			<field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
 			<field name="allowSusbcriptionSaleOrder" widget="boolean-switch" colSpan="4"/>
-			<field name="allowTimetableInvoicing" widget="boolean-switch" colSpan="4"/>
+			<field name="allowTimetableInvoicing" widget="boolean-switch" colSpan="4" readonlyIf="manageInvoicedAmountByLine"/>
 			<field name="checkSaleStocks" widget="boolean-switch" colSpan="4"/>
-			<field name="manageInvoicedAmountByLine" widget="boolean-switch" colSpan="4"/>
+			<field name="manageInvoicedAmountByLine" widget="boolean-switch" colSpan="4" onChange="action-app-supply-chain-record-allow-timetable-invoicing"/>
             <field name="allowCompleteManuallySaleOrder" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel title="Purchase order">
@@ -52,5 +52,9 @@
 		<view type="grid" name="supply-chain-config-grid"/>
 		<view type="form" name="supply-chain-config-form"/>
 	</action-view>
+	
+	<action-record name="action-app-supply-chain-record-allow-timetable-invoicing" model="com.axelor.apps.base.db.AppSupplychain">
+		<field name="allowTimetableInvoicing" expr="eval: false" if="manageInvoicedAmountByLine"/>
+	</action-record>
 	
 </object-views>

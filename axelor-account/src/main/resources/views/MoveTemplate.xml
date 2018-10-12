@@ -18,7 +18,7 @@
 		    <field name="moveTemplateType" readonlyIf="isValid" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
 		    <field name="journal" readonlyIf="isValid" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form"/>
 	 	</panel>
- 	 	<panel-related field="moveTemplateLineList" readonlyIf="isValid" colSpan="12" form-view="move-template-line-move-template-form" grid-view="move-template-line-move-template-grid"/>
+    <panel-related field="moveTemplateLineList" colSpan="12" form-view="move-template-line-move-template-form" grid-view="move-template-line-move-template-grid" action="action-move-template-record-is-not-valid,action-move-template-method-set-is-valid"/>
      	<panel sidebar="true" name="actions" title="Actions">
     		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid" colSpan="12"/>
     		<button name="checkValidity" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity" colSpan="12"/>
@@ -57,7 +57,6 @@
 	</form>
     
     <action-validate name="action-move-template-wizard-check-value">
-    	<error if="date != null &amp;&amp; LocalDate.parse(date).isAfter(__date__)"  message="Date can't be ahead of today" action="action-move-template-wizard-reset-value" />
     	<error if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0" message="The Move Balance must be positive" action="action-move-template-wizard-reset-value" />
     </action-validate>
     
@@ -75,6 +74,10 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
+    <action-record name="action-move-template-record-is-not-valid" model="com.axelor.apps.account.db.MoveTemplate">
+      <field name="isValid" expr="false"/>
+    </action-record>
+
     <action-method name="action-move-template-method-check-validity">
     	<call method="checkValidity" class="com.axelor.apps.account.web.MoveTemplateController" />
     </action-method>
