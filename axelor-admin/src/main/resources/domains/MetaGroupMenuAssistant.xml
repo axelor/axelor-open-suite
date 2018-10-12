@@ -8,6 +8,7 @@
 
   <entity name="MetaGroupMenuAssistant" table="META_GROUP_MENU_ASSISTANT">
     <many-to-many name="groupSet" ref="com.axelor.auth.db.Group" title="Groups"/>
+    <many-to-many name="roleSet" ref="com.axelor.auth.db.Role" title="Roles"/>
     <many-to-many name="menuSet" ref="MetaMenu" title="Menus"/>
     <many-to-one name="metaFile" ref="MetaFile" title="File" />
     <datetime name="importDate" title="Import date"/>

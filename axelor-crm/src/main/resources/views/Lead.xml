@@ -33,7 +33,7 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-        <button name="grabLead" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
+        <button name="grabLead" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
@@ -45,7 +45,7 @@
 
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-			  <item title="Print" action="action-crm-lead-method-print"/>
+			  <item title="Print" action="save,action-crm-lead-method-print"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 			  <item title="Schedule Event" action="save,action-lead-view-schedule-event"/>
@@ -129,7 +129,7 @@
 					</field>
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
 					<field name="fax" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fax" pattern="^\+?([\s()-.]*\d){7,}$"/>
-					<field name="webSite" colSpan="3"/>
+					<field name="webSite" colSpan="3" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				</panel>
 
 				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">

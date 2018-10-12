@@ -10,8 +10,13 @@
             <field name="operationSelect" title="Operation choice"
 				   type="selection"
 				   selection="supplychain.sale.order.invoicing.wizard.select"
-                   selection-in="[invoiceAll, invoiceFraction, invoiceLines, invoiceAdvPayment, invoiceTs, invoiceExpense]"
-				   required="true"/>
+                   selection-in="[invoiceAll, invoiceFraction, invoiceLines, invoiceAdvPayment]"
+				   required="true" if="!__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
+			<field name="operationSelect" title="Operation choice"
+				   type="selection"
+				   selection="supplychain.sale.order.invoicing.wizard.select"
+                   selection-in="[invoiceAll, invoiceLines, invoiceAdvPayment]"
+				   required="true" if="__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
 
 		</panel>
         <panel showIf="[2,3,4].includes($number(operationSelect))">
@@ -20,9 +25,6 @@
 			<field name="amountToInvoice" title="Amount to invoice" type="decimal"
 				   showIf="[2,4].includes($number(operationSelect))"/>
 		</panel>
-        <panel if-module="axelor-business-project" if="__config__.app.isApp('business-project')" showIf="operationSelect &gt; 4">
-			<field name="deadline" title="Deadline" type="date" colSpan="6"/>
-		</panel>
 		<panel-related field="saleOrderLineList" hideIf="operationSelect != 3" canNew="false"
 					   grid-view="invoicing-wizard-sale-order-line-grid"
 					   editable="true"/>
@@ -30,10 +32,6 @@
 		<panel showIf="operationSelect &lt; 5">
 			<button name="createInvoice" title="Generate the invoice"
 					onClick="action-method-sale-order-invoicing-wizard-generate"/>
-		</panel>
-
-        <panel if-module="axelor-business-project" if="__config__.app.isApp('business-project')" showIf="operationSelect &gt; 4" >
-			<button name="createInvoicingProject" title="Generate the invoicing project" colSpan="6" onClick="action-business-project-sale-order-condition-invoicing,action-business-project-sale-order-method-generate-invoicing-project" />
 		</panel>
         <panel hidden="true">
 			<field name="amountInvoiced" hidden="true"/>
@@ -50,9 +48,10 @@
 		<field name="exTaxTotal" readonly="true" aggregate="sum"/>
 		<field name="amountInvoiced" readonly="true"/>
         <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
-			   readonlyIf="invoiceAll" min="0"/>
+			   readonlyIf="invoiceAll || isSubline" min="0"/>
         <field name="invoiceAll" title="Invoice all" type="boolean"
 			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+		<field name="isSubline" hidden="true" />
 	</grid>
 
 	<action-group name="action-group-sale-order-invoicing-wizard-onload">
@@ -77,7 +76,7 @@
 		<attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
 				   expr="eval: exTaxTotal - amountInvoiced"/>
 	</action-attrs>
-
+	
 	<action-method name="action-method-sale-order-invoicing-wizard-operation-select-domain">
         <call class="com.axelor.apps.supplychain.web.SaleOrderController"
 			  method="changeWizardOperationDomain"/>

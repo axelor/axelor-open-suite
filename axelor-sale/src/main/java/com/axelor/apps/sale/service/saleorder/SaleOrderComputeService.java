@@ -18,8 +18,10 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface SaleOrderComputeService {
 
@@ -63,4 +65,6 @@ public interface SaleOrderComputeService {
    * @return total price from the sale order lines
    */
   public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder);
+
+  public List<SaleOrderLine> removeSubLines(List<SaleOrderLine> lines);
 }

@@ -121,7 +121,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
                         }
                       }));
 
-      query.add("self.planning.id IN (" + planningIds + ")");
+      query.add("self.weeklyPlanning.id IN (" + planningIds + ")");
     }
 
     List<Employee> employeeList = Lists.newArrayList();

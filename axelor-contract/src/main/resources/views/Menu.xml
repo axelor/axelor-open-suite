@@ -9,7 +9,7 @@
 	<action-view name="contracts.root.customer.all" title="Customer contracts" model="com.axelor.apps.contract.db.Contract">
 		<view type="grid" name="contract-grid"/>
 		<view type="form" name="contract-form"/>
-		<domain>self.targetType = 1 AND self.statusSelect != 3</domain>
+		<domain>self.targetTypeSelect = 1 AND self.statusSelect != 3</domain>
 		<context name="_xTargetType" expr="eval: 1"/>
 	</action-view>
 
@@ -18,7 +18,7 @@
 	<action-view name="contracts.root.supplier.all" title="Supplier contracts" model="com.axelor.apps.contract.db.Contract">
 		<view type="grid" name="contract-grid"/>
 		<view type="form" name="contract-form"/>
-		<domain>self.targetType = 2 AND self.statusSelect != 3</domain>
+		<domain>self.targetTypeSelect = 2 AND self.statusSelect != 3</domain>
 		<context name="_xTargetType" expr="eval: 2"/>
 	</action-view>
 
@@ -45,5 +45,14 @@
 		<view type="grid" name="duration-grid"/>
 		<view type="form" name="duration-form"/>
 	</action-view>
-	
+
+	<menuitem name="admin-root-batch-contract" parent="admin-root-batch"
+			  title="Contract batches" action="admin.root.batch.contract" />
+
+	<action-view name="admin.root.batch.contract" title="Contract batches"
+				 model="com.axelor.apps.contract.db.ContractBatch" >
+		<view type="grid" name="contract-batch-grid"/>
+		<view type="form" name="contract-batch-form"/>
+	</action-view>
+
 </object-views>

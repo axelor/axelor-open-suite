@@ -17,17 +17,32 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface TeamTaskBusinessService extends TeamTaskService {
+
   TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo);
 
   TeamTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty);
+
+  TeamTask updateDiscount(TeamTask teamTask);
+
+  TeamTask compute(TeamTask teamTask);
+
+  List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TeamTask> teamTaskList, int priority)
+      throws AxelorException;
+
+  public List<InvoiceLine> createInvoiceLine(Invoice invoice, TeamTask teamTask, int priority)
+      throws AxelorException;
 }

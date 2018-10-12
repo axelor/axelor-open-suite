@@ -11,11 +11,12 @@
 
     <many-to-one name="receiptDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
     <many-to-one name="pickupDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Pickup default stock location"/>
+    <many-to-one name="qualityControlDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Quality control default stock location"/>
 
    	<many-to-one name="customerVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"/>
     <many-to-one name="supplierVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
     <many-to-one name="inventoryVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"/>
-    
+
 	<many-to-one name="customsMassUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of mass"/>
 
     <boolean name="realizeStockMovesUponParcelPalletCollection" title="Realize stock moves upon parcel/pallet collection" />

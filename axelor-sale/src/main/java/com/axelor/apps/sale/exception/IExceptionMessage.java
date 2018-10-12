@@ -47,12 +47,14 @@ public interface IExceptionMessage {
   public static final String SALE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/
       "The company is required and must be the same for all sale orders" /*)*/;
 
-  /** Configurator creator */
-  String CONFIGURATOR_CREATOR_UNVALID_METAFIELD = /*$$(*/
-      "The metafield type provided is not valid. You must choose a Product or a SaleOrderLine." /*)*/;
+  static final String SALE_ORDER_PRINT = /*$$(*/ "Please select the sale order(s) to print." /*)*/;
+  static final String SALE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/
+      "Please fill printing settings on sale order %s." /*)*/;
 
+  /** Configurator creator */
   String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/
       "This script has errors, please see server logs for more details." /*)*/;
+
   String CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR = /*$$(*/
       "This script returned value is of type %s, it should return a value of type %s instead." /*)*/;
   String CONFIGURATOR_CREATOR_SCRIPT_WORKING = /*$$(*/ "The syntax of the script is correct." /*)*/;

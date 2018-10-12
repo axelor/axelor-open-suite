@@ -12,29 +12,17 @@
     <many-to-many name="saleOrderLineSet" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines" />
     <many-to-many name="purchaseOrderLineSet" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines" />
     <many-to-many name="expenseLineSet" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense Lines" />
-    <many-to-many name="elementsToInvoiceSet" ref="com.axelor.apps.businessproject.db.ElementsToInvoice" title="Elements To Invoice" />
     <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project" title="Project" />
+    <many-to-many name="teamTaskSet" ref="com.axelor.team.db.TeamTask" title="Tasks" />
 	<integer name="logTimesSetPrioritySelect" selection="invoicing.project.priority.select" title="Log Times Priority" default="3"/>
 	<integer name="saleOrderLineSetPrioritySelect" selection="invoicing.project.priority.select" title="Sale order lines Priority" default="1"/>
 	<integer name="purchaseOrderLineSetPrioritySelect" selection="invoicing.project.priority.select" title="Purchase order lines Priority" default="2"/>
 	<integer name="expenseLineSetPrioritySelect" selection="invoicing.project.priority.select" title="Expense Lines Priority" default="4"/>
-	<integer name="elementsToInvoiceSetPrioritySelect" selection="invoicing.project.priority.select" title="Elements To Invoice Priority" default="6"/>
 	<integer name="projectSetPrioritySelect" selection="invoicing.project.priority.select" title="Project Priority" default="5"/>
+	<integer name="teamTaskSetPrioritySelect" selection="invoicing.project.priority.select" title="Task Priority" default="6"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice generated" />
     <date name="deadlineDate" title="Deadline"/>
-    <integer name="statusSelect" title="Status" selection="invoicing.project.status.select" />
     <string name="comments" title="Comments" large="true" />
-    
-  <extra-code>
-            <![CDATA[
-            	public static final Integer STATUS_DRAFT = 0;
-                public static final Integer STATUS_WAITING_APPROVAL = 1;
-                public static final Integer STATUS_DELIVERED_WITHOUT_RESERVES = 2;
-                public static final Integer STATUS_DELIVERED_WITH_RESERVES = 3;
-                public static final Integer STATUS_INVOICED = 4;
-                public static final Integer STATUS_CANCELED = 5;
-            ]]>
-        </extra-code>
     
   </entity>
   

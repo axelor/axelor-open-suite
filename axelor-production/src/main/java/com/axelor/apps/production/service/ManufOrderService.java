@@ -48,6 +48,19 @@ public interface ManufOrderService {
 
   public void createToConsumeProdProductList(ManufOrder manufOrder);
 
+  /**
+   * Compute the quantity on generated prod product line. If the quantity of the bill of material is
+   * equal to the quantity of manuf order then the prod product line will have the same quantity as
+   * configured line.
+   *
+   * @param bomQty quantity of the bill of material.
+   * @param manufOrderQty quantity configured of the manuf order.
+   * @param lineQty quantity of the line.
+   * @return the quantity for the prod product line.
+   */
+  BigDecimal computeToConsumeProdProductLineQuantity(
+      BigDecimal bomQty, BigDecimal manufOrderQty, BigDecimal lineQty);
+
   public void createToProduceProdProductList(ManufOrder manufOrder);
 
   public ManufOrder createManufOrder(
@@ -63,7 +76,7 @@ public interface ManufOrderService {
   @Transactional
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 
-  public String getManufOrderSeq() throws AxelorException;
+  public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException;
 
   public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
 
@@ -79,12 +92,12 @@ public interface ManufOrderService {
 
   /**
    * Update planned qty in {@link ManufOrder#toConsumeProdProductList} and {@link
-   * ManufOrder#toProduceProdProductList}
+   * ManufOrder#toProduceProdProductList} then update quantity in stock move lines to match the new
+   * planned qty.
    *
    * @param manufOrder
-   * @return
    */
-  void updatePlannedQty(ManufOrder manufOrder);
+  void updatePlannedQty(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Update real qty in {@link ManufOrder#consumedStockMoveLineList} and {@link
@@ -92,7 +105,6 @@ public interface ManufOrderService {
    *
    * @param manufOrder
    * @param qtyToUpdate
-   * @return
    */
   void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException;
 

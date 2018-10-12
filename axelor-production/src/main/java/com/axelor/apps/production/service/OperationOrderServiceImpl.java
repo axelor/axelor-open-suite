@@ -53,11 +53,10 @@ import org.slf4j.LoggerFactory;
 
 public class OperationOrderServiceImpl implements OperationOrderService {
 
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private static final DateTimeFormatter DATE_TIME_FORMAT =
       DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
@@ -141,17 +140,20 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   public void createToConsumeProdProductList(OperationOrder operationOrder) {
 
     BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
+    BigDecimal bomQty = operationOrder.getManufOrder().getBillOfMaterial().getQty();
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
     if (prodProcessLine.getToConsumeProdProductList() != null) {
 
       for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
 
+        BigDecimal qty =
+            Beans.get(ManufOrderService.class)
+                .computeToConsumeProdProductLineQuantity(
+                    bomQty, manufOrderQty, prodProduct.getQty());
+
         operationOrder.addToConsumeProdProductListItem(
-            new ProdProduct(
-                prodProduct.getProduct(),
-                prodProduct.getQty().multiply(manufOrderQty),
-                prodProduct.getUnit()));
+            new ProdProduct(prodProduct.getProduct(), qty, prodProduct.getUnit()));
       }
     }
   }

@@ -85,6 +85,7 @@ public interface ITranslation {
   public static final String STOCK_MOVE_RACK_NUMBER = /*$$(*/ "StockMove.rackNbr"; /*)*/
   public static final String STOCK_MOVE_COMMENTS = /*$$(*/ "StockMove.comments"; /*)*/
   public static final String STOCK_MOVE_BARCODE = /*$$(*/ "StockMove.barcode"; /*)*/
+  public static final String STOCK_MOVE_PRODUCTION_NOTE = /*$$(*/ "StockMove.productionNote"; /*)*/
 
   // Certificate of conformity
   public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/
@@ -112,4 +113,10 @@ public interface ITranslation {
   public static final String CONFORMITY_CERTIFICATE_QTY = /*$$(*/ "ConformityCertificate.qty"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_SEQUENCE = /*$$(*/
       "ConformityCertificate.sequence"; /*)*/
+
+  public static final String DECLARATION_OF_EXCHANGES_INTRODUCTION = /*$$(*/ "Introduction"; /*)*/
+  public static final String DECLARATION_OF_EXCHANGES_EXPEDITION = /*$$(*/ "Expedition"; /*)*/
+  public static final String
+      DECLARATION_OF_EXCHANGES_OF_GOODS_BETWEEN_MEMBER_STATES_OF_THE_EUROPEAN_COMMUNITY = /*$$(*/
+          "DECLARATION OF EXCHANGES OF GOODS BETWEEN MEMBER STATES OF THE EUROPEAN COMMUNITY"; /*)*/
 }

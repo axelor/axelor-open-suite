@@ -27,6 +27,7 @@ import com.axelor.studio.service.builder.MenuBuilderService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class MenuBuilderController {
 
@@ -53,7 +54,7 @@ public class MenuBuilderController {
 
   private Map<String, Object> getMenu(MetaMenu menu) {
 
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     values.put("name", menu.getName());
     values.put("title", menu.getTitle());
     values.put("icon", menu.getIcon());
@@ -75,11 +76,13 @@ public class MenuBuilderController {
     values.put("hidden", menu.getHidden());
 
     if (menu.getAction() != null && menu.getAction().getType().contentEquals("action-view")) {
-      ActionBuilder actionBuilder = menuBuilderService.createActionBuilder(menu.getAction());
-      if (actionBuilder != null) {
-        values.put("actionBuilder", actionBuilder);
-        values.put("showAction", true);
-      }
+      Optional<ActionBuilder> actionBuilderOpt =
+          menuBuilderService.createActionBuilder(menu.getAction());
+      actionBuilderOpt.ifPresent(
+          actionBuilder -> {
+            values.put("actionBuilder", actionBuilder);
+            values.put("showAction", true);
+          });
     }
 
     return values;
@@ -87,7 +90,7 @@ public class MenuBuilderController {
 
   private Map<String, Object> getEmptyMenu() {
 
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     values.put("name", null);
     values.put("title", null);
     values.put("icon", null);

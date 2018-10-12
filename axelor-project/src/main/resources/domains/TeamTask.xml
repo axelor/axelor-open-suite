@@ -22,7 +22,7 @@
 		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 		<decimal name="quantity" title="Quantity"/>
-		<decimal name="salePrice" title="Sale Price" />
+		<decimal name="unitPrice" title="Unit price" />
 		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false"/>
 
 		<!-- Gantt view fields -->

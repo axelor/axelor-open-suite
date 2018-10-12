@@ -4,92 +4,104 @@
     
     <grid name="contract-template-grid" title="Contract templates" model="com.axelor.apps.contract.db.ContractTemplate">
        <field name="name"/>
-       <field name="targetType"/>
+       <field name="targetTypeSelect"/>
        <field name="company"/>
     </grid>
 
-    <form name="contract-template-form" title="Contract template" model="com.axelor.apps.contract.db.ContractTemplate"
-        onNew="action-record-contract-default-record" readonlyIf="statusSelect == 3">
-        
+    <form name="contract-template-form" title="Contract template" model="com.axelor.apps.contract.db.ContractTemplate" width="large" onNew="action-record-contract-default-record" readonlyIf="statusSelect == 3">
         <panel>
-        	<field name="name" css="highlight" colSpan="6"/>
-            <field name="targetType"/>
-            <field name="company"/>
-        </panel>
-        <panel sidebar="true" title="Notes">
-            <field name="note" showTitle="false"/>
+            <panel colSpan="9">
+                <field name="targetTypeSelect" readonlyIf="id" onChange="action-contract-attrs-domains-template"/>
+                <field name="company" readonlyIf="statusSelect >= 2" canEdit="false"/>
+                <field name="name" colSpan="12" css="highlight"/>
+                <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency"/>
+            </panel>
+            <panel colSpan="3" stacked="true">
+                <panel title="Notes" stacked="true">
+                    <field name="note" showTitle="false"/>
+                </panel>
+            </panel>
         </panel>
         <panel-tabs>
-        <panel title="Content">
-     		<panel name="contractLineListPanel" colSpan="12" showIf="isInvoicingManagement">
-                    <field name="contractLineList" colSpan="12" showTitle="false"/>
+            <panel title="Content">
+                <field name="contractLineList" hidden="true" showIf="isInvoicingManagement"
+                  colSpan="12" form-view="contract-line-form-for-template"
+                  grid-view="contract-line-grid-for-template"/>
+                <field name="additionalBenefitContractLineList"
+                  showIf="isInvoicingManagement &amp;&amp; isAdditionaBenefitManagement"
+                  readonlyIf="!id" colSpan="12" form-view="additional-contract-line-form-for-template"
+                  grid-view="additional-contract-line-grid-for-template"/>
+                <field name="description" colSpan="12" widget="html"/>
             </panel>
-            <field name="additionalBenefitList" colSpan="12" showIf="isAdditionaBenefitManagement" />
-            <field name="description" colSpan="12" widget="html" />
-        </panel>
-            
-            <panel title="Config." if="__config__.app.getApp('contract').getIsConfigContract() || isModel">
-               <panel title="Invoicing" if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="12">
-               		<field name="isInvoicingManagement" readonlyIf="statusSelect &gt; 1" />
-               
-               		<panel hideIf="!isInvoicingManagement" colSpan="12">
-               		
-               			<field name="isConsumptionManagement" colSpan="6" />
-               			<field name="isAdditionaBenefitManagement" colSpan="6"/>
-               			<panel colSpan="6" name="isConsumptionBeforeEndDatePanel">
-               			<field name="currentVersion" x-show-icons="false" colSpan="12" showTitle="false" >
-	               			<editor x-show-titles="true" x-viewer="true" x-show-on-new="true">
-	                    		<field name="isConsumptionBeforeEndDate" colSpan="12" />
-		                    </editor>
-	                    </field>
-	                    </panel>
-               			
-               		</panel>
-               		
-               		<panel name="invoicingSubPanel" colSpan="12">
-               			<field name="currentVersion" x-show-icons="false" showTitle="false" colSpan="12" readonlyIf="currentVersion.statusSelect &gt; 2">
-                    	<editor x-show-titles="true" x-viewer="true" x-show-on-new="true">
-	                        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" canEdit="false"/>
-	                        <field name="paymentCondition" canEdit="false" widget="SuggestBox" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-	                        <field name="invoicingMoment"/>
-	                        <field name="automaticInvoicing" readonlyIf="statusSelect &gt; 2"/>
-	                        <field name="isPeriodicInvoicing" readonlyIf="statusSelect &gt; 2"/>
-	                        <panel showIf="isPeriodicInvoicing" title="Periodic invoicing" colSpan="12" >
-	                            <field name="invoicingFrequency"/>
-	                            <field name="isTimeProratedInvoice" />
-	                            <field name="isVersionProratedInvoice" showIf="isTimeProratedInvoice"/>
-	                        </panel>
-	                    </editor>
-	                	</field>
-	               	</panel>
-               </panel>
-	       		<panel title="Renewal" if="__config__.app.getApp('contract').getIsRenewalManagement()" colSpan="12">
-	       		<field name="currentVersion" x-show-icons="false" showTitle="false" colSpan="12" readonlyIf="currentVersion.statusSelect &gt; 2">
-                    <editor x-show-titles="true" x-viewer="true" x-show-on-new="true">
-		       			<field name="isTacitRenewal" />
-		                <field name="renewalDuration" />
-	                </editor>
-                </field>
-	       		</panel>
-               
-               <field name="currentVersion" x-show-icons="false" showTitle="false" colSpan="12" readonlyIf="currentVersion.statusSelect &gt; 2">
-                    <editor x-show-titles="true" x-viewer="true" x-show-on-new="true">
-                    <panel colSpan="12" title="Termination">
-	                    <field name="isWithEngagement" colSpan="3" />
-	                    <field name="engagementStartFromVersion" showIf="isWithEngagement" requiredIf="isWithEngagement" colSpan="3" />
-	                    <field name="engagementDuration" showIf="isWithEngagement" requiredIf="isWithEngagement" canNew="true" />
-	                    <spacer/>
-	                    <field name="isWithPriorNotice" />
-	                    <field name="priorNoticeDuration" showIf="isWithPriorNotice" requiredIf="isWithPriorNotice" canNew="true" />
-	                    
-	                    <spacer/>
+            <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
+                <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" readonlyIf="statusSelect > 1" colSpan="12">
+                    <field name="isInvoicingManagement" colSpan="6" widget="boolean-switch" onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"/>
+                    <panel hidden="true" showIf="isInvoicingManagement" colSpan="6">
+                        <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement" name="isAdditionaBenefitManagement" colSpan="6" widget="boolean-switch"/>
+                        <field if="__config__.app.getApp('contract').isConsumptionManagement" name="isConsumptionManagement" colSpan="6" widget="boolean-switch"/>
                     </panel>
+                    <field if="__config__.app.getApp('contract').isConsumptionManagement" name="currentContractVersion" showTitle="false" hidden="true" showIf="isConsumptionManagement" colSpan="6" x-show-icons="false">
+                        <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                            <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"/>
+                        </editor>
+                    </field>
+                    <panel name="invoicingSubPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
+                        <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                                <panel colSpan="6">
+                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                                    <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                                </panel>
+                                <panel colSpan="6">
+                                    <field name="automaticInvoicing" readonlyIf="statusSelect > 2" colSpan="6" widget="boolean-switch"/>
+                                    <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
+                                </panel>
+                            </editor>
+                        </field>
+                        <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                                <field name="isPeriodicInvoicing" readonlyIf="statusSelect > 2" colSpan="3" widget="boolean-switch"/>
+                                <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
+                                    <field name="invoicingDuration" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
+                                    <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
+                                    <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
+                                </panel>
+                            </editor>
+                        </field>
+                    </panel>
+                </panel>
+                <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal" colSpan="12">
+                    <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                        <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                            <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
+                            <field name="renewalDuration" hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
+                            <field name="isAutoEnableVersionOnRenew" hidden="true" showIf="isTacitRenewal" colSpan="6" widget="boolean-switch"/>
+                        </editor>
+                    </field>
+                </panel>
+                <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                    <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                        <panel title="Engagement">
+                            <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
+                            <field name="engagementDuration" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
+                            <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement"/>
+                        </panel>
+                        <panel title="Prior notice">
+                            <field name="isWithPriorNotice" widget="boolean-switch"/>
+                            <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
+                        </panel>
                     </editor>
                 </field>
-            
             </panel>
         </panel-tabs>
+        <panel-mail>
+            <mail-messages limit="4"/>
+            <mail-followers/>
+        </panel-mail>
     </form>
-    
+
+    <action-method name="action-contract-template-method-change-product">
+        <call class="com.axelor.apps.contract.web.ContractTemplateController" method="changeProduct"/>
+    </action-method>
 
 </object-views>

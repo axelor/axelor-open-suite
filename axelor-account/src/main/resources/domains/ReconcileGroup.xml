@@ -13,9 +13,6 @@
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="account.reconcile.group.status.select"/>
 
-    <unique-constraint columns="code,company"/>
-    <finder-method name="findByCodeAndCompany" using="code,company"/>
-
     <extra-code><![CDATA[
       // STATUS SELECT
       public static final int STATUS_TEMPORARY = 1;

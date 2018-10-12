@@ -2,7 +2,24 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
+
+  <grid name="prod-product-consume-manuf-order-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
+    <hilite if="$missingQty &gt; 0" color="danger"/>
+    <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
+    <field name="qty" aggregate="sum" required="true"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
+    <field name="$missingQty" title="Missing quantity"/>
+    <field name="toConsumeManufOrder" hidden="true"/>
+  </grid>
+
+  <grid name="prod-product-diff-manuf-order-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
+    <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
+    <field name="plannedQty"/>
+    <field name="realQty"/>
+    <field name="qty" title="Diff" aggregate="sum" required="true"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
+  </grid>
+
     <grid name="prod-product-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
     	<field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
     	<field name="qty" aggregate="sum" required="true"/>
@@ -21,14 +38,23 @@
     </grid>
     
     <form name="prod-product-form" title="Product" model="com.axelor.apps.production.db.ProdProduct"
-    onNew="action-product-record-default">
+    onNew="action-product-record-default" onLoad="action-prod-product-attrs-on-load">
     	<panel name="main">
 	    	<field name="product" canEdit="false" domain="self.productTypeSelect = 'storable'" onChange="action-product-record-product-information" form-view="product-form" grid-view="product-grid" required="true"/>
 	    	<field name="qty" required="true"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
         </panel>
+      <panel-dashlet name="showStockPanel" action="action-prod-product-view-product-qty-stock-location-line"/>
     </form>
-    
+
+    <action-view name="action-prod-product-view-product-qty-stock-location-line"
+      title="Available stock" model="com.axelor.apps.stock.db.StockLocationLine">
+      <view type="grid" name="stock-location-line-product-grid"/>
+      <view type="form" name="stock-location-line-form"/>
+      <domain>self.product = :product and self.stockLocation.typeSelect = 1 and (:manufOrderCompanyId IS NULL OR self.stockLocation.company.id = :manufOrderCompanyId)</domain>
+      <context name="manufOrderCompanyId" expr="eval: __parent__?.company.id ?: companyIdFromParent"/>
+    </action-view>
+
     <action-record name="action-product-record-default" model="com.axelor.apps.production.db.ProdProduct">
     	<field name="qty" expr="eval: 1"/>
     </action-record>
@@ -36,5 +62,9 @@
     <action-record name="action-product-record-product-information" model="com.axelor.apps.production.db.ProdProduct">
     	<field name="unit" expr="eval: product?.unit"/>
     </action-record>
+
+  <action-attrs name="action-prod-product-attrs-on-load" model="com.axelor.apps.production.db.ProdProduct">
+    <attribute name="hidden" for="showStockPanel" expr="!companyIdFromParent &amp;&amp; (!__parent__ || __parent__._model != 'com.axelor.apps.production.db.ManufOrder')"/>
+  </action-attrs>
     
 </object-views>

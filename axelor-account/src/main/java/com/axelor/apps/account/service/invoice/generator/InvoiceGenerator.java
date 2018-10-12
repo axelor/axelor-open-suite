@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -239,6 +240,7 @@ public abstract class InvoiceGenerator {
     }
 
     invoice.setAddress(mainInvoicingAddress);
+    invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
 
     invoice.setContactPartner(contactPartner);
 

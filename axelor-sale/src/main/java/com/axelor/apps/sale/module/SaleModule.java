@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.AddressServiceSaleImpl;
 import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleService;
@@ -56,11 +57,14 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
 
 public class SaleModule extends AxelorModule {
 
   @Override
   protected void configure() {
+    bind(AddressServiceSaleImpl.class);
     bind(PartnerService.class).to(PartnerSaleService.class);
     bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
     bind(SaleOrderLineService.class).to(SaleOrderLineServiceImpl.class);
@@ -80,5 +84,6 @@ public class SaleModule extends AxelorModule {
     bind(ConfiguratorCreatorService.class).to(ConfiguratorCreatorServiceImpl.class);
     bind(ConfiguratorService.class).to(ConfiguratorServiceImpl.class);
     bind(ConfiguratorFormulaService.class).to(ConfiguratorFormulaServiceImpl.class);
+    bind(SaleOrderPrintService.class).to(SaleOrderPrintServiceImpl.class);
   }
 }

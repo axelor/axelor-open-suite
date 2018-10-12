@@ -11,6 +11,7 @@
     	<field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="warrantyExpirationDate"/>
         <field name="perishableExpirationDate"/>
+        <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
     </grid>
     
     <form name="tracking-number-form" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber"
@@ -25,13 +26,13 @@
     </form>
 
 	<form name="tracking-number-stock-move-line-form" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber"
-		  onLoad="action-tracking-number-attrs-hide-fields" onNew="action-tracking-number-attrs-product-stock-move-line" >
+		  onLoad="action-tracking-number-attrs-hide-fields" onNew="action-tracking-number-attrs-product-stock-move-line,action-tracking-number-group-from-stock-move-line" >
 		<panel name="main">
 			<field name="trackingNumberSeq"/>
-			<field name="product" onChange="action-tracking-number-attrs-hide-fields" form-view="product-form" grid-view="product-grid"/>
-			<field name="warrantyExpirationDate"/>
-			<field name="perishableExpirationDate"/>
-			<field name="counter"/>
+			<field name="product" onChange="action-tracking-number-attrs-hide-fields" form-view="product-form" grid-view="product-grid"  readonlyIf="$popup() || id != null"/>
+			<field name="warrantyExpirationDate" readonly="false"/>
+			<field name="perishableExpirationDate" readonly="false"/>
+			<field name="counter" hidden="true"/>
 		</panel>
 	</form>
 
@@ -74,15 +75,24 @@
 			</where>
 		</select>
 	</search>
-
-	<action-attrs name="action-tracking-number-attrs-product-stock-move-line">
-		<attribute for="product" name="value" expr="eval: __parent__.product" if="product == null"/>
+	
+	<action-group name="action-tracking-number-group-from-stock-move-line">
+	  <action name="action-tracking-number-record-from-stock-move-line"/>
+	  <action name="action-tracking-number-attrs-from-stock-move-line"/>
+	</action-group>
+	
+	<action-record name="action-tracking-number-record-from-stock-move-line" model="com.axelor.apps.stock.db.TrackingNumber">
+	  <field if="eval: __parent__?.stockMove == null || __parent__?.stockMove?.statusSelect == 1" name="counter" expr="eval: __parent__?.qty"/>
+	  <field if="eval: __parent__?.stockMove?.statusSelect == 2" name="counter" expr="eval: __parent__?.realQty"/>
+	</action-record>
+	
+	<action-attrs name="action-tracking-number-attrs-from-stock-move-line">
+	  <attribute name="hidden" expr="eval: !__parent__?.product?.hasWarranty" for="warrantyExpirationDate"/>
+	  <attribute name="hidden" expr="eval: !__parent__?.product?.isPerishable" for="perishableExpirationDate"/>
 	</action-attrs>
-    
-    <action-attrs name="action-tracking-number-attrs-hide-fields">
-    	<attribute name="hidden" for="warrantyExpirationDate" expr="eval: !product?.hasWarranty"/>
-    	<attribute name="hidden" for="perishableExpirationDate" expr="eval: !product?.isPerishable"/>
-    </action-attrs>
-    
-    
+	
+	<action-attrs name="action-tracking-number-attrs-product-stock-move-line">
+	  <attribute for="product" name="value" expr="eval: __parent__.product" if="product == null"/>
+	</action-attrs>
+	
 </object-views>

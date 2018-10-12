@@ -18,13 +18,16 @@
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
 	      <panel colSpan="6" itemSpan="12">
 		      <field name="model"  widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
-		      		requiredIf="typeSelect &lt; 2 &amp;&amp; isJson" 
+		      		requiredIf="(typeSelect &lt; 2 || typeSelect == 4) &amp;&amp; isJson" 
 		      		hideIf="typeSelect == 2 || !isJson"
-		      		onChange="action-action-builder-method-set-views" />
+		      		onChange="action-action-builder-method-set-views,action-action-builder-attrs-model-change" />
 		      <field name="model" hideIf="typeSelect == 2 || isJson"
-		      		requiredIf="typeSelect &lt; 2 &amp;&amp; !isJson" 
+		      		requiredIf="(typeSelect &lt; 2 || typeSelect == 4) &amp;&amp; !isJson" 
 		      		widget="ref-text" x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"
-		      		onChange="action-action-builder-method-set-views" />
+		      		onChange="action-action-builder-method-set-views,action-action-builder-attrs-model-change" />
+	      </panel>
+	      <panel colSpan="6" showIf="typeSelect == 4">
+	      	<field name="emailSendOptionSelect" requiredIf="typeSelect == 4"/>
 	      </panel>
 	      <panel colSpan="6" itemSpan="12">
 		      <field name="targetModel" requiredIf="typeSelect == 0 &amp;&amp; isJson" showIf="typeSelect == 0 &amp;&amp; isJson" widget="ref-text" 
@@ -60,8 +63,9 @@
 	      	<field name="transactional" />
 	      	<field name="scriptText" colSpan="12" />
 	      </panel>
-	      <panel showIf="typeSelect == 4 || typeSelect == 5" colSpan="12">
-	      	<field name="scriptText" widget="html" title="Template" colSpan="12"/>
+	      <panel colSpan="12">
+	      	<field name="scriptText" widget="html" title="Template" colSpan="12" showIf="typeSelect == 5"/>
+	      	<field name="emailTemplate" onSelect="action-action-builder-attrs-template-domain" requiredIf="typeSelect == 4" grid-view="template-grid" form-view="template-form" showIf="typeSelect == 4"/>
 	      </panel>
 	  </panel>
   </form>
@@ -71,10 +75,18 @@
   	<field name="targetModel" expr="eval:null"/>
   </action-record>
   
+  <action-record name="action-action-builder-attrs-model-change" model="com.axelor.studio.db.ActionBuilder">
+  	<field name="emailTemplate" expr="eval:null"/>
+  </action-record>
+  
   <action-attrs name="action-action-builder-view-name-domain">
     <attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' &quot;" if="viewType == 'dashboard'"/>
   	<attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' and self.model = 'com.axelor.meta.db.MetaJsonRecord' and self.name = 'custom-model-${_parent.model}-${viewType}' &quot;" if="_parent.isJson &amp;&amp; viewType != 'dashboard'"/>
   	<attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' and self.model = '${_parent.model}'&quot;" if="!_parent.isJson &amp;&amp; viewType != 'dashboard'"/>
+  </action-attrs>
+  
+  <action-attrs name="action-action-builder-attrs-template-domain">
+  	<attribute name="domain" for="emailTemplate" expr="eval:(model != null) ? &quot; self.metaModel.fullName = '${model}' &quot; : null"/>
   </action-attrs>
   
   <action-method name="action-action-builder-method-set-views">

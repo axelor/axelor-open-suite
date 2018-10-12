@@ -7,7 +7,7 @@
        <field name="plateNo" />
        <field name="vehicleModel" />
        <field name="name" />
-       <field name="driverContact" />
+       <field name="driverPartner" />
        <field name="chasisNo" />
        <field name="acquisitionDate" />
        <field name="vehicleState" />
@@ -26,11 +26,11 @@
 	     		<field name="name" readonly="true"/>
 	    		<field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
 	    		<field name="vehicleTagSet" widget="TagSelect"  /> 
-	    		<field name="vehicleState" /> 
+	    		<field name="vehicleState" widget="html"/> 
 	       </panel>
 	       <panel colSpan="12" title="General Properties" >
 	       		<panel itemSpan="12">
-		       		<field name="driverContact" />
+		       		<field name="driverPartner" domain="self.isEmployee = true" />
 		       		<field name="location" />
 		       		<field name="chasisNo" />
 		       		<field name="company" />
@@ -95,8 +95,9 @@
 		<field name="image" />
 		<field name="name" />
 		<field name="plateNo" />
-		<field name="driverContact" />
+		<field name="driverPartner" />
 		<field name="vehicleState" />
+		<field name="company"/>
 		<template><![CDATA[
 		    <div class="span12"><strong>{{name}}</strong></div>
 			<div>
@@ -105,8 +106,8 @@
 			  </div>
 			  <div class="span8">
 			    <span>{{plateNo}}<br/>
-			    {{driverContact.name}}<br/>
-			    {{vehicleState.name}}</span>
+			    {{company.name}}<br/>
+			    {{driverPartner.fullName}}<br/></span>
 			  </div>
 			</div>
 		]]>

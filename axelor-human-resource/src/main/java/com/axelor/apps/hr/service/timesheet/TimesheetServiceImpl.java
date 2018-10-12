@@ -51,6 +51,8 @@ import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -95,6 +97,8 @@ public class TimesheetServiceImpl implements TimesheetService {
 
   protected TimesheetLineService timesheetLineService;
 
+  protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
+
   @Inject
   public TimesheetServiceImpl(
       PriceListService priceListService,
@@ -104,7 +108,8 @@ public class TimesheetServiceImpl implements TimesheetService {
       ProjectRepository projectRepo,
       UserRepository userRepo,
       UserHrService userHrService,
-      TimesheetLineService timesheetLineService) {
+      TimesheetLineService timesheetLineService,
+      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -113,25 +118,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     this.userRepo = userRepo;
     this.userHrService = userHrService;
     this.timesheetLineService = timesheetLineService;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void getTimeFromTask(Timesheet timesheet) throws AxelorException {
-
-    List<TimesheetLine> timesheetLineList =
-        TimesheetLineRepository.of(TimesheetLine.class)
-            .all()
-            .filter(
-                "self.user = ?1 AND self.timesheet = null AND self.project != null",
-                timesheet.getUser())
-            .fetch();
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      timesheetLine.setDuration(
-          Beans.get(TimesheetLineService.class)
-              .computeHoursDuration(timesheet, timesheetLine.getHoursDuration(), false));
-      timesheet.addTimesheetLineListItem(timesheetLine);
-    }
+    this.projectPlanningTimeRepository = projectPlanningTimeRepository;
   }
 
   @Override
@@ -544,6 +531,9 @@ public class TimesheetServiceImpl implements TimesheetService {
       LocalDate startDate = (LocalDate) timesheetInformations[2];
       LocalDate endDate = (LocalDate) timesheetInformations[3];
       BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
+      PriceList priceList =
+          Beans.get(PartnerPriceListService.class)
+              .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 
       if (consolidate) {
         strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
@@ -553,7 +543,7 @@ public class TimesheetServiceImpl implements TimesheetService {
 
       invoiceLineList.addAll(
           this.createInvoiceLine(
-              invoice, product, user, strDate, hoursDuration, priority * 100 + count));
+              invoice, product, user, strDate, hoursDuration, priority * 100 + count, priceList));
       count++;
     }
 
@@ -567,17 +557,20 @@ public class TimesheetServiceImpl implements TimesheetService {
       User user,
       String date,
       BigDecimal hoursDuration,
-      int priority)
+      int priority,
+      PriceList priceList)
       throws AxelorException {
 
-    int discountTypeSelect = 1;
+    int discountMethodTypeSelect = PriceListLineRepository.TYPE_DISCOUNT;
+    int discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_NONE;
     if (product == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
     }
     BigDecimal price = product.getSalePrice();
-    BigDecimal discountAmount = product.getCostPrice();
+    BigDecimal discountAmount = BigDecimal.ZERO;
+    BigDecimal priceDiscounted = price;
 
     BigDecimal qtyConverted =
         Beans.get(UnitConversionService.class)
@@ -586,37 +579,30 @@ public class TimesheetServiceImpl implements TimesheetService {
                 product.getUnit(),
                 hoursDuration);
 
-    PriceList priceList =
-        Beans.get(PartnerPriceListService.class)
-            .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
     if (priceList != null) {
       PriceListLine priceListLine =
           priceListService.getPriceListLine(product, qtyConverted, priceList);
       if (priceListLine != null) {
-        discountTypeSelect = priceListLine.getTypeSelect();
+        discountMethodTypeSelect = priceListLine.getTypeSelect();
       }
+
+      Map<String, Object> discounts =
+          priceListService.getDiscounts(priceList, priceListLine, price);
+      if (discounts != null) {
+        discountAmount = (BigDecimal) discounts.get("discountAmount");
+        discountTypeSelect = (int) discounts.get("discountTypeSelect");
+        priceDiscounted =
+            priceListService.computeDiscount(price, discountTypeSelect, discountAmount);
+      }
+
       if ((appHumanResourceService.getAppBase().getComputeMethodDiscountSelect()
                   == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY
-              && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE)
+              && discountMethodTypeSelect == PriceListLineRepository.TYPE_REPLACE)
           || appHumanResourceService.getAppBase().getComputeMethodDiscountSelect()
               == AppBaseRepository.INCLUDE_DISCOUNT) {
-        Map<String, Object> discounts =
-            priceListService.getDiscounts(priceList, priceListLine, price);
-        if (discounts != null) {
-          discountAmount = (BigDecimal) discounts.get("discountAmount");
-          price =
-              priceListService.computeDiscount(
-                  price, (int) discounts.get("discountTypeSelect"), discountAmount);
-        }
-      } else {
-        Map<String, Object> discounts =
-            priceListService.getDiscounts(priceList, priceListLine, price);
-        if (discounts != null) {
-          discountAmount = (BigDecimal) discounts.get("discountAmount");
-          if (discounts.get("price") != null) {
-            price = (BigDecimal) discounts.get("price");
-          }
-        }
+
+        discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_NONE;
+        price = priceDiscounted;
       }
     }
 
@@ -630,6 +616,7 @@ public class TimesheetServiceImpl implements TimesheetService {
             productName,
             price,
             price,
+            priceDiscounted,
             description,
             qtyConverted,
             product.getUnit(),
@@ -639,7 +626,9 @@ public class TimesheetServiceImpl implements TimesheetService {
             discountTypeSelect,
             price.multiply(qtyConverted),
             null,
-            false) {
+            false,
+            false,
+            0) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -889,5 +878,72 @@ public class TimesheetServiceImpl implements TimesheetService {
                 .computeHoursDuration(timesheet, timesheetLine.getHoursDuration(), false));
       }
     }
+  }
+
+  @Transactional
+  @Override
+  public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
+      throws AxelorException {
+    User user = timesheet.getUser();
+    List<ProjectPlanningTime> planningList = getProjectPlanningTimeList(timesheet);
+    for (ProjectPlanningTime projectPlanningTime : planningList) {
+      TimesheetLine timesheetLine = new TimesheetLine();
+      if (realHours) {
+        timesheetLine.setHoursDuration(projectPlanningTime.getRealHours());
+        timesheetLine.setDuration(
+            timesheetLineService.computeHoursDuration(
+                timesheet, projectPlanningTime.getRealHours(), false));
+      } else {
+        timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+        timesheetLine.setDuration(
+            timesheetLineService.computeHoursDuration(
+                timesheet, projectPlanningTime.getPlannedHours(), false));
+      }
+
+      timesheetLine.setTimesheet(timesheet);
+      timesheetLine.setUser(user);
+      timesheetLine.setProduct(projectPlanningTime.getProduct());
+      timesheetLine.setProject(projectPlanningTime.getProject());
+      timesheetLine.setDate(projectPlanningTime.getDate());
+      timesheetLine.setProjectPlanningTime(projectPlanningTime);
+      timesheet.addTimesheetLineListItem(timesheetLine);
+    }
+  }
+
+  private List<ProjectPlanningTime> getProjectPlanningTimeList(Timesheet timesheet) {
+    List<ProjectPlanningTime> planningList;
+    if (timesheet.getToDate() == null) {
+      planningList =
+          projectPlanningTimeRepository
+              .all()
+              .filter(
+                  "self.user.id = ?1 "
+                      + "AND self.date >= ?2 "
+                      + "AND self.id NOT IN "
+                      + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
+                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "AND timesheetLine.timesheet = ?3)",
+                  timesheet.getUser().getId(),
+                  timesheet.getFromDate(),
+                  timesheet)
+              .fetch();
+    } else {
+      planningList =
+          projectPlanningTimeRepository
+              .all()
+              .filter(
+                  "self.user.id = ?1 "
+                      + "AND self.date ?2 BETWEEN ?3 "
+                      + "AND self.id NOT IN "
+                      + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
+                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "AND timesheetLine.timesheet = ?4)",
+                  timesheet.getUser().getId(),
+                  timesheet.getFromDate(),
+                  timesheet.getToDate(),
+                  timesheet)
+              .fetch();
+    }
+    return planningList;
   }
 }

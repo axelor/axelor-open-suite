@@ -22,7 +22,7 @@
 		<many-to-one name="kilometricExpense" ref="com.axelor.apps.hr.db.Expense" title="Kilometric Allowance" />
 		<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="expenseLine"/>
 		<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
-	  	<binary name="justification" image="true" title="Justification"/>
+        <many-to-one name="justificationMetaFile" ref="com.axelor.meta.db.MetaFile" title="Justification" />
 	  
 		<!-- integration of KilometricAllowance -->
   		<many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="K.A.P."/>
@@ -30,6 +30,24 @@
         <decimal name="distance" title="Distance travelled" min="0"/>
         <string name="fromCity" title="Starting city" />
         <string name="toCity" title="Arriving city" />
+        
+        <string name="fullName" namecolumn="true">
+			<![CDATA[
+	  		String fullName = "";
+	  		
+	  		if(expense != null && expense.getFullName() != null)  {
+				fullName += expense.getFullName();
+			}
+			if (!fullName.isEmpty()) {
+				fullName += "-" + id;
+			}
+			else {
+				fullName = id.toString();
+			}
+			
+	  		return fullName;
+	  	]]>
+	  	</string>
 
 		<extra-code>
 		<![CDATA[

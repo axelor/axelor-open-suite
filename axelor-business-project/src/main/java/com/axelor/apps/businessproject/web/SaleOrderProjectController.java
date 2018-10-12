@@ -18,16 +18,14 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
-import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -35,17 +33,18 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 @Singleton
 public class SaleOrderProjectController {
 
   private static final String CONTEXT_SHOW_RECORD = "_showRecord";
+
+  @Inject private SaleOrderRepository saleOrderRepo;
 
   public void generateProject(ActionRequest request, ActionResponse response) {
     try {
@@ -91,33 +90,14 @@ public class SaleOrderProjectController {
     }
   }
 
-  public void generateInvoicingProject(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder =
-        Beans.get(SaleOrderRepository.class)
-            .find(request.getContext().asType(SaleOrder.class).getId());
-    LocalDate deadline = null;
-    if (request.getContext().get("deadline") != null) {
-      deadline =
-          LocalDate.parse(
-              request.getContext().get("deadline").toString(), DateTimeFormatter.ISO_DATE);
+  public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = saleOrderRepo.find(saleOrder.getId());
+
+    for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
+      orderLine.setProject(saleOrder.getProject());
     }
-    InvoicingProject invoicingProject =
-        Beans.get(InvoicingProjectService.class)
-            .createInvoicingProject(
-                saleOrder,
-                deadline,
-                Integer.valueOf(request.getContext().get("operationSelect").toString()));
-    if (invoicingProject != null) {
-      response.setCanClose(true);
-      response.setFlash(I18n.get(IExceptionMessage.INVOICING_PROJECT_GENERATION));
-      response.setView(
-          ActionView.define(I18n.get("Invoicing project generated"))
-              .model(InvoicingProject.class.getName())
-              .add("form", "invoicing-project-form")
-              .add("grid", "invoicing-project-grid")
-              .context(CONTEXT_SHOW_RECORD, String.valueOf(invoicingProject.getId()))
-              .map());
-    }
+    response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }
 
   private LocalDateTime getElementStartDate(Context context) {

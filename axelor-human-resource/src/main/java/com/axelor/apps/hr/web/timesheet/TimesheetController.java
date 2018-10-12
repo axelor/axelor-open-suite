@@ -77,17 +77,6 @@ public class TimesheetController {
   @Inject private Provider<ProjectRepository> projectRepoProvider;
   @Inject private Provider<UserHrService> userHrservice;
 
-  public void getTimeFromTask(ActionRequest request, ActionResponse response) {
-    try {
-      Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
-      timesheetServiceProvider.get().getTimeFromTask(timesheet);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   @SuppressWarnings("unchecked")
   public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
@@ -561,6 +550,28 @@ public class TimesheetController {
       response.setValue("timeLoggingPreferenceSelect", timesheet.getTimeLoggingPreferenceSelect());
       response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
     } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateLinesFromRealisePlanning(ActionRequest request, ActionResponse response) {
+    try {
+      Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+      timesheetServiceProvider.get().generateLinesFromProjectPlanning(timesheet, true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateLinesFromExpectedPlanning(ActionRequest request, ActionResponse response) {
+    try {
+      Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
+      timesheetServiceProvider.get().generateLinesFromProjectPlanning(timesheet, false);
+      response.setReload(true);
+    } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
   }

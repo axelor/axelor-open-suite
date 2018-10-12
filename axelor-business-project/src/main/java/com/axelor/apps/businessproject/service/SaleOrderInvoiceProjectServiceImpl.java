@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -32,13 +31,13 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
-import java.util.Map;
 
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl {
 
@@ -50,8 +49,9 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceService invoiceService,
-      AppBusinessProjectService appBusinessProjectService) {
-    super(appSupplychainService, saleOrderRepo, invoiceRepo, invoiceService);
+      AppBusinessProjectService appBusinessProjectService,
+      SaleOrderLineService saleOrderLineService) {
+    super(appSupplychainService, saleOrderRepo, invoiceRepo, invoiceService, saleOrderLineService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
@@ -87,19 +87,5 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       }
     }
     return invoiceMerged;
-  }
-
-  @Override
-  public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
-    Map<String, Integer> contextValues = super.getInvoicingWizardOperationDomain(saleOrder);
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-    boolean canInvoiceTimesheet = appBusinessProject.getEnableToInvoiceTimesheet();
-    boolean canInvoiceExpense = appBusinessProject.getEnableToInvoiceExpense();
-
-    contextValues.put("invoiceTs", canInvoiceTimesheet ? SaleOrderRepository.INVOICE_TIMESHEET : 0);
-    contextValues.put(
-        "invoiceExpense", canInvoiceExpense ? SaleOrderRepository.INVOICE_EXPENSE : 0);
-
-    return contextValues;
   }
 }

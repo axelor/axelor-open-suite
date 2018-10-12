@@ -1,5 +1,4 @@
 # Changelog
-
 ## [Unreleased 5.1]
 ## Features
 - Production: billOfMaterial set the BOM as default on product (button and viewer)
@@ -26,7 +25,68 @@
 - Machine type added for the machine.
 - Selection added for priority of manufacturing order.
 - Payment schedule line: management of direct debit rejection.
- 
+- New stock location configuration for quality control.
+- Create multiple supplier stock move when purchasing products requiring a quality check and normal products.
+- Selection added for priority of manufacturing order.
+- Add currency in Accounting reports and filter all results with it.
+- New field `launchQty` on production process.
+- Fill `qty` from `launchQty` in manuf order on filling prod process.
+- Declaration of exchanges of services and declaration of services
+- Project : project assignment on Sale order, Purchase order and Invoices.
+- PROJECT : Change project planning to project planning time with some extra fields.
+- PROJECT : Change business project reporting.
+- Project view enhancements
+- TIMELINE : Generate lines from Project Planning 
+- Pack Price Select and Qty update from packLine to subLine.
+- Implement PackLine and SubLine for InvoiceLine and StockMoveLine.
+- TIMELINE : Generate lines from Project Planning
+- Account Moves: ability to set currency, currency rate and currency amount for manual moves.
+- PROJECT : Add new o2m 'manualElementList' and display it on financial report.
+- PROJECT : Add translation of financial report.
+- Manuf Order: show in toConsumeProdProductList if there is product missing in stock.
+- Manuf Order: show in diff O2M the planned and real quantities.
+- Business Project : Fill default values from Project while generating the sale Quotation.
+- Business Project : Enhancement of task and project view.
+- Project : Change invoicing project view.
+- Stock Move : Add Wizard for tracking number
+- Production: new report showing raw material requirements.
+- Business Project : add new m2m 'teamTaskSet' in invoicing project.
+- Add translation of project view.
+- New boolean for manuf order printing to choose whether planned date needs to be showed.
+- Project Business Generator: when generating phases by lines, product's task templates are added to each phase.
+- Project: Move tasks menu entry to root menu and move tasks historical menu entry in historical submenu.
+- Product : Remove 'isPack' field and update productTypeSelect selection to add it.
+- STOCK MOVE : add column availability qty of product on grid view displayed in popup when click on select button on m2o product.
+- Project : add 'Task invoicing' table in financial report.
+- SALE ORDER : add column availability qty of product on grid view displayed in popup when click on select button on m2o product.
+- SaleOrder : modify the invoice generation from Sale Order.
+- Manuf Order : Apply domain on clientPartner and saleOrder & Assign them while generating manufOrder from saleOrder.
+- PROJECT : add translations on project view.
+- STOCK MOVE : add column availability qty of selected product on grid view displayed in popup when click on select button on m2o tracking number.
+- New field workshop on production process, bill of material and manufacturing order.
+- Manufacturing order sequence is now configured in company config, and can be configured by workshop.
+- Studio: Add description field in workflow
+- Group menu assistant: Add support for roles management.
+- Stock Move : add three transient fields 'availableQty','availableQtyForProduct' and 'availableStatus' to know the availability of the product on stock move line.
+- Studio: Modified custom editor with new design
+- Product : add unique constraint on product code.
+- Business Project : Link project or phase and price list to invoice and invoice line generated from invoicing project.
+- Stock move : display availability status and missing qty on stock move line grid.
+- Timesheet : add menu 'All timesheets'.
+- Partner : Modify fullName value calculation to add partnerSeq and update reports accordingly.
+- Sale order line : add 'Partially invoiced' tag and invoiced tag depends on 'amountInvoiced' and 'exTaxTotal'.
+- Stock Location Line : display stock avgPrice with as much decimal digit as specified in config.  
+- Stock : Move the stock Location menu to root menu from configration menu.
+- Add a button on studio process tracking to display related workflow dashboard.
+- Stock Location Line : Add Button to display detailed stock location lines with tracking number.
+- Stock move : enable the changing tracking on stock move form.
+- Purchase Order Line : add dummy boolean field 'Filter on supplier' to filter the product on supplier catelog.
+- PRODUCT : add 'Standard' and 'Approval' fields and 'ProductApproval' object in production module.
+- Partner : Add simpleFullName field.
+- PRODUCT : add new button 'Reserved qty' to know the reserved quantity on product form.
+- Sale Order : add new large string field 'Production note' and display it on picking stock move report.
+- BillOfMaterial : Add new large field 'Note'.
+
 ## Improvements
 - Move project resource menu entry to project configuration menu.
 - Refactor TargetList and Campaign views to follow guidelines.
@@ -42,6 +102,32 @@
 - Rework Ticket UI.
 - Tax configuration: display only necessary fields for tax account management.
 - Refactor purchase order view.
+- Rework project view
+- Set project on invoice and invoice line when generating it from sale order and stock move.
+- Set project on purchase order and purchase order lines when generating it from a sale order.
+- Improve account management views.
+- Rework ManufOrder printing.
+- Add new Origin field in stock moves and remove fields sale order and purchase order.
+- Added nameColumn for ExpenseLine and ProjectPlanningTime.
+- Change unique constraints in analytic account move line.
+- ManufOrder: Change quantity also in stock move on updating planned quantity.
+- Project: Reorganization of Resource Booking form view.
+- Tweaks on manuf order report.
+- Rework Lunch voucher management view.
+- Improve Expense form view.
+- Rework CRM events view.
+- Rework Purchase request view.
+- Rework Target and Target configuration views in CRM.
+- Improve CRM menu entries.
+- Use editor for prod process line descriptions.
+- On creating stock move line, get the price from orders instead of computing it.
+- Improve exception handling in axelor-studio module.
+- Improve organization of AppBuilder menu
+- Manuf Order : Add new tab - Note.
+- Account Move Report : Add reconcileGroup column in Account Move Lines.
+- Update stock when modifying quantities in manufacturing order using wizard.
+- Add App related data in Data Back & restore functionality.
+- Data Backup : export the record sorted by Model fullName.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -51,20 +137,154 @@
 - Project: Fix multiple bugs and improve views.
 - Bill of material: remove duplicate toolbar button of 'Generate new version'.
 - Event: Fix fill the "Guest" using email address when fill the partner or contact or lead.
+- Studio: Fix email action.
+- Project : Fix supplier orders and it's lines & invoices and it's lines link to the any project.
+- Fix invoiced amount W.T update on sale and purchase order.
+- Fix social network icons for employee
+- Added new filter for invoice project (for SaleOrderLine, PurchaseOrderLine, and ExpenseLine o2m)
+- Project: Fix financial report view.
+- Fix stock move generation with pack lines from sale order
+- Pack feature: Display only  pack line for partially invoicing and fix quantity for partially invoicing lines on pack lines.
+- MRP: Fix concurrent modification exception.
+- Business Project : Fix Financial report.
+- Pack feature: Fix invoice subline generation and sequence. 
+- Pack feature: Fix type selection, pack type can be only selected based on product on Invoice and SaleOrder. Fixed invoice ventilation based on PackPriceSelect criteria. 
+- Project : Link project from purchase line while invoicing from stock move
+- PROJECT : Fix team assignment on task creation.
+- Sale order,purchase order : Fix demo data.
+- Sale order,purchase order,invoice: Fix translation.
+- Project : Make TimesheetLine and InvoiceLine readonly.
+- Fix data backup heap size and crash issue.
+- Studio: fix app builder and properties related issues.
+- Fix data restore issue & Modify error log.
+- PRODUCT : Fix pack line default quantity and forbid to select the parent product.
+- Business Project : Fix discount compute when invoicing timesheet lines.
+- Stock Move : Fix display email fields title.
+- PROJECT : Fix translations.
+- Sale Order, Sale Order Line : Fix margins with normal case and pack line case.
 
-## [Unreleased 5.0.5]
+## [Unreleased 5.0.7]
+## Features
+
 ## Improvements
+- Show full name for products in Mrp report.
+- Sale and Purchase order form: Remove edit from stockLocation field.
+
+## Bug Fixes
+- Logistical Form : Fix display logo on report.
+- Modify accounting export & path in demo-data & export to dms file if path not specified. 
+- Accounting Export : Fix filter on move lines when click on 'See Move Lines' from 'Exported moves'.
+- Fix manual invoice selection on subrogation release.
+- Subrogation release: Fix the process on button 'Enter release in the accounts'. 
+- Logistical Form : Fix the exception managed per TraceBack method when sequence is not defined.
+- Fix accounting notification process.
+
+## [5.0.6] - 2018-10-06
+## Features
+- Stock move : add hilite on stock move grid.
+- Sale : add multiple sale order printing.
+
+## Improvements
+- Translate file name of manuf order printing.
+- Translate event types.
+- Stock Location Report : Modify Sorting field.
+
+## Bug Fixes
+- Removed 'cachable' from all extended apps.
+- Vehicle : modify vehicleState from reference field to string and remove vehicleState model 
+- Account : Modify Account Move Report
+- Supplychain batch : Fix invoice all orders.
+- StockLocation report: show right cost price when using average price.
+- Stock move: Fix sort the record on stock move and stock move line grid view.
+- Improve error message when trying to reserve too much quantity in stock.
+- Duration : add translation to compute fullName.
+- User : restrict active team selection to only teams that the user is already in.
+- Partner : Fix add partner seq on card view.
+- Purchase Order Line : Fix NPE when clear the 'Tax' field.
+
+
+## [5.0.5] - 2018-09-19
+## Features
+- Add Data Backup and Restore
+- Add unitary tests for password
+- Module for mobile app added
+- Vehicle Fuel Log : add columns vehicle name, plate no, purchasePartner in grid view
+- Manufacturing orders can now be "permanent", quantity is set to 0. Regular orders cannot have quantity to 0 anymore.
+
+## Improvements
+- Fleet app: added FR demo data
+- HR menu: added `order` for top menuitems
 - Marketing app: added FR demo data
+- Reworked ati sale orders/purchase orders/invoices.
 - Advanced export : code refactor and optimize the performance.
 - BPM workflow dashboard: Updated chart titles and fixed issue with per day status chart. 
 - Configure BoM form: show sub bom list.
 - Configurator: improve UI for indicators.
+- Split formula list into formulas for product and formulas for sale order line in configurator creator.
+- Add a column name to configurators, equal to the creator's name.
+- General legder report: hide the balance when it is equal to 0.
+- UserController: Improve exception handling.
+- Update translations.
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Improve account management views.
+- Add supplier invoice number in supplier invoices grid.
+- Add column description in move line grid views.
+- Make the boolean IsValid set to false when a line is changed in MoveTemplate.
+- Can now select an ahead date in the Move From Template view wizard.
+- Add a "Generate the pdf printing during sale order finalization" to configuration of Sale app.
+- Allow manual creation of tracking number on stock move lines.
+- Direct debit batch: filter out payment schedule lines with inactive partner bank details.
+- Solved an issue linked to having a manufacturing order with a planned quantity of 0.
+- Fix mass invoicing of stock moves sometimes opening up unrelated forms when trying to open a single stock move for more details.
+- Improve exception handling in supplychain demo.
+- Account: use partner name as default account name when creating from partner's account configuration screen
+- Added labels to several buttons, especially in the opportunity views.
 
 ## Bug Fixes
 - Fix on prod process report.
 - Fix json field creator's issue of model change not reflected on fields. 
 - Configurator export: add contextField to metaJsonField.
-
+- Configurator creator: fill default attributes for both product and sale order line.
+- Computation of value of a given stock location is now the same in the form and in the printing.
+- BPM: Provide translations for some fields.
+- Fix chart builder operator display issue.
+- Portal: Fix ticket view on client portal.
+- Fix wrong quantity on manuf order when generating prod product lines where bill of material quantity is different from 1.
+- Fix new bug when checking type on configurator.
+- BPM: Provide translation for Workflow dashboard.
+- Ticket: fix NPE on click of 'Assign to me' button of ticket grid toolbar.
+- Budget form: add missing tranlation.
+- Invoice: reload the view after regenerating the printing.
+- DuplicateObject : Perform Refactoring and optimisation of DuplicateObject controller and service.
+- BPM: keep model read only if custom field is created from custom field creator.
+- Fix % based discounts which didn't worked with decimal values on Sale, Purchase and Invoice.
+- Fix the companyBankDetails field filling when SaleOrder is created from the Customer view.
+- Fix groovy error due to a null list in action-budget-validate-exceed-line-amount.
+- Event synchronization: fix some new events being archived.
+- Password : Fix regex.
+- Fix : error when computing the duration of a leave request without a company.
+- Invoice : filter account depending on Invoice Company and Type & Account Type
+- Fix stock move split by unit. 
+- Tracking number configuration: Fix 'Tracking number order' selection and it's static variables.
+- Tracking number configuration: display 'name' field on grid.
+- Fixed a bug in the payroll preparation generation batch linked to using the old name of a renamed field.
+- Fix generating an invoice from a stock move sometimes using wrong units, quantities and unit prices when product stock units were different than sale/purchase units.
+- Removed editable from some reference fields in stock form views. 
+- Now displays purchase orders in the Activity panel of a partner form for suppliers and carriers.
+- Vehicle : rename driverContact to driverPartner & filter it.
+- Vehicle : Card View - display vehicle company and driver
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine. 
+- Fix translation typo.
+- Add xml escape in configurator export.
+- StockRule : Sort Grid View according to Stock location, Product code, useCaseSelect ASC 
+- Warning message on missing weight unit is now shown only on delivery stock move.
+- Fixed unit conversion issues when calculating the cost price of a bill of material.
+- Add missing translations.
+- Tracking Number Form view : automatically fill fields from stockMoveLine while creating new record from stockMoveLine.
+- Fixed wrong calculation of necessary scale for decimal result when inverting a unit convertion coefficient.
+- Stock move lines can no longer be created from nothing (i.e not from a stock move or such) as it has no functionnal use and ensues anomalies.
+- Data model fix: add missing mappedBy in operation order `inStockMoveLineList`.
+- Manuf Order: fetch sequence using company.
 
 ## [5.0.4] - 2018-07-26
 ## Features
@@ -133,7 +353,6 @@
 - Fix total amount reseting on save in bank orders.
 - Configurator: fix using M2O in formula.
 - Tracking number search: Fix stock location binding.
-
 
 ## [5.0.3] - 2018-07-06
 ## Improvements
@@ -848,7 +1067,9 @@ Fully responsive mobile ready views, gradle based build system and much more.
 
 
 [Unreleased 5.1]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...dev
+[Unreleased 5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...dev
+[5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
+[5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.1...v5.0.2

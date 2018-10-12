@@ -7,7 +7,7 @@
         <toolbar>
             <button name="validateMove" title="Validate" if="__repo__(AccountConfig).findByCompany(__user__.getActiveCompany()).getAccountingDaybook()" prompt="The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
             <button name="deleteMoves" title="Delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
-        	<button name="moveLines" title="See Move Lines" onClick="account.root.move.move.line" />
+        	<button name="moveLines" title="See Move Lines" onClick="action-move-method-show-move-lines" />
         </toolbar>
         
         <hilite color="info" if="statusSelect == 1"/>
@@ -88,7 +88,7 @@
             </panel>
 
             <panel name="Currency" title="Currencies">
-                <field name="currency" readonly="true"/>
+                <field name="currency" readonlyIf="moveLineList != null &amp;&amp; moveLineList.length != 0" onChange="action-move-record-set-currency-code"/>
                 <field name="companyCurrency" readonly="true"/>
                 <field name="currencyCode" hidden="true"/>
             </panel>
@@ -138,6 +138,10 @@
 		<field name="currencyCode" expr="eval: company?.currency.code" />
     </action-record>
 
+    <action-record name="action-move-record-set-currency-code" model="com.axelor.apps.account.db.Move">
+    	<field name="currencyCode" expr="eval: currency.code"/>
+    </action-record>
+
     <action-record name="action-move-record-journal" model="com.axelor.apps.account.db.Move">
     	<field name="journal" expr="eval: company?.accountConfig?.manualMiscOpeJournal"/>
     </action-record>
@@ -160,7 +164,7 @@
 		<attribute name="hidden" for="moveLineList.counter" expr="eval: statusSelect == null || statusSelect == 1"/>
 		<attribute name="hidden" for="moveLineList.amountRemaining" expr="eval: statusSelect == null || statusSelect == 1"/>
 	</action-attrs>
-	
+
 	<!-- ACTION METHOD -->
 	<action-method name="action-move-method-validate">
 		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
@@ -190,17 +194,14 @@
 	    <call class="com.axelor.apps.account.web.MoveController" method="deleteMove"/>
 	</action-method>
 	
-	<action-view name="account.root.move.move.line" title="Move Lines"
-		model="com.axelor.apps.account.db.MoveLine" >
-		<view type="grid" name="move-line-grid" />
-		<view type="form" name="move-line-form" />
-		<view-param name="search-filters" value="move-line-filters"/>
-	</action-view>
+	<action-method name="action-move-method-show-move-lines">
+		<call class="com.axelor.apps.account.web.MoveController" method="showMoveLines"/>
+	</action-method>
 
 	<action-method name="action-account-move-method-print-move">
 		<call class="com.axelor.apps.account.web.MoveController" method="printMove"/>
 	</action-method>
-	
+
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>

@@ -1,4 +1,4 @@
-<%
+<?xml version="1.0" encoding="utf-8"?><%
 	configuratorCreatorRepository = 'com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository'
 	def cc = { com.axelor.inject.Beans.get(configuratorCreatorRepository as Class).find(it) }
 	
@@ -140,32 +140,53 @@
 		return attribute
 	} 	
 	
-	def configuratorFormulaMethod = {
-		configuratorFormula = ""
-		cc(it).configuratorFormulaList?.each( { cf ->
-			configuratorFormula += """
-			<configuratorFormula>
+	def configuratorProductFormulaMethod = {
+		configuratorProductFormula = ""
+		cc(it).configuratorProductFormulaList?.each( { cf ->
+			configuratorProductFormula += """
+			<configuratorProductFormula>
 				"""
-			if (cf.productMetaField?.id != null) {
-				configuratorFormula += "<productMetaField>${cf.productMetaField?.id}</productMetaField>"
+			if (cf.metaField?.id != null) {
+				configuratorProductFormula += "<metaField>${cf.metaField?.id}</metaField>"
 			}
-			if (cf.saleOrderLineMetaField?.id != null) {
-				configuratorFormula += "<saleOrderLineMetaField>${cf.saleOrderLineMetaField?.id}</saleOrderLineMetaField>"
-			}
-			configuratorFormula += 	"""
+			configuratorProductFormula += 	"""
 				<formula>"""
 				if (cf.formula != null) {
-					configuratorFormula += "${cf.formula}"
+					configuratorProductFormula += "${cf.formula}"
 				}
-				configuratorFormula += """</formula>
+				configuratorProductFormula += """</formula>
 				<showOnConfigurator>${cf.showOnConfigurator}</showOnConfigurator>
-				<configuratorCreatorImportId>${cf.creator?.id}</configuratorCreatorImportId>
-			</configuratorFormula>
+				<configuratorCreatorImportId>${cf.productCreator?.id}</configuratorCreatorImportId>
+			</configuratorProductFormula>
 		"""
 		})
-		return configuratorFormula
+		return configuratorProductFormula
 	}
-	
+
+	def configuratorSOLineFormulaMethod = {
+		configuratorSOLineFormula = ""
+		cc(it).configuratorSOLineFormulaList?.each( { cf ->
+			configuratorSOLineFormula += """
+			<configuratorSOLineFormula>
+				"""
+			if (cf.metaField?.id != null) {
+				configuratorSOLineFormula += "<metaField>${cf.metaField?.id}</metaField>"
+			}
+			configuratorSOLineFormula += 	"""
+				<formula>"""
+				if (cf.formula != null) {
+					configuratorSOLineFormula += "${cf.formula}"
+				}
+				configuratorSOLineFormula += """</formula>
+				<showOnConfigurator>${cf.showOnConfigurator}</showOnConfigurator>
+				<updateFromSelect>${cf.updateFromSelect}</updateFromSelect>
+				<configuratorCreatorImportId>${cf.soLineCreator?.id}</configuratorCreatorImportId>
+			</configuratorSOLineFormula>
+		"""
+		})
+		return configuratorSOLineFormula
+	}
+
 	def authorizedUserMethod = {
 		authorizedUser = ""
 		cc(it).authorizedUserSet?.each( { au ->
@@ -351,7 +372,7 @@
 	} 
 
 
-%><?xml version="1.0" encoding="utf-8"?>
+%>
 
 <configurator-export>
 
@@ -366,8 +387,10 @@ out << configBomMethod(it) })%>
 		<name><% out << cc(it).name %></name>
 		<attributes><% out << attributeMethod(it) %></attributes>
 		
-		<configuratorFormulaList><% out << configuratorFormulaMethod(it) %></configuratorFormulaList>
-		
+		<configuratorProductFormulaList><% out << configuratorProductFormulaMethod(it) %></configuratorProductFormulaList>
+
+		<configuratorSOLineFormulaList><% out << configuratorSOLineFormulaMethod(it) %></configuratorSOLineFormulaList>
+
 		<authorizedUserSet><% out << authorizedUserMethod(it) %>
 		</authorizedUserSet>
 		

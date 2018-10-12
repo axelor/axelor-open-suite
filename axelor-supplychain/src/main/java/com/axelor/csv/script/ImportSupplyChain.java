@@ -20,6 +20,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.script.ImportPurchaseOrder;
@@ -39,7 +40,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -81,15 +82,14 @@ public class ImportSupplyChain {
   }
 
   @Transactional
-  public Object importPurchaseOrderFromSupplyChain(Object bean, Map<String, Object> values)
-      throws Exception {
+  public Object importPurchaseOrderFromSupplyChain(Object bean, Map<String, Object> values) {
 
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-
-    PurchaseOrder purchaseOrder = (PurchaseOrder) bean;
-    int status = purchaseOrder.getStatusSelect();
-    purchaseOrder = (PurchaseOrder) importPurchaseOrder.importPurchaseOrder(bean, values);
     try {
+      StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+
+      PurchaseOrder purchaseOrder = (PurchaseOrder) bean;
+      int status = purchaseOrder.getStatusSelect();
+      purchaseOrder = (PurchaseOrder) importPurchaseOrder.importPurchaseOrder(bean, values);
       for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = line.getProduct();
         if (product.getMassUnit() == null) {
@@ -98,14 +98,14 @@ public class ImportSupplyChain {
         }
       }
 
-      if (status == 3 || status == 4) {
+      if (status == IPurchaseOrder.STATUS_VALIDATED || status == IPurchaseOrder.STATUS_FINISHED) {
         purchaseOrderServiceSupplychainImpl.validatePurchaseOrder(purchaseOrder);
       }
 
-      if (status == 4) {
+      if (status == IPurchaseOrder.STATUS_FINISHED) {
         purchaseOrderServiceSupplychainImpl.createStocksMove(purchaseOrder);
         StockMove stockMove =
-            stockMoveRepo.all().filter("purchaseOrder.id = ?1", purchaseOrder.getId()).fetchOne();
+            stockMoveRepo.all().filter("self.originId = ?1", purchaseOrder.getId()).fetchOne();
         if (stockMove != null) {
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
@@ -128,21 +128,20 @@ public class ImportSupplyChain {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
 
-    return purchaseOrder;
+    return null;
   }
 
   @Transactional
-  public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values)
-      throws AxelorException {
-    SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-
-    SaleOrder saleOrder = (SaleOrder) importSaleOrder.importSaleOrder(bean, values);
-
+  public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values) {
     try {
+      SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
+      StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+
+      SaleOrder saleOrder = (SaleOrder) importSaleOrder.importSaleOrder(bean, values);
+
       for (SaleOrderLine line : saleOrder.getSaleOrderLineList()) {
         Product product = line.getProduct();
         if (product.getMassUnit() == null) {
@@ -167,7 +166,8 @@ public class ImportSupplyChain {
           invoice.setInvoiceDate(LocalDate.now());
         }
         invoiceService.validateAndVentilate(invoice);
-        StockMove stockMove = stockMoveRepo.all().filter("saleOrder = ?1", saleOrder).fetchOne();
+        StockMove stockMove =
+            stockMoveRepo.all().filter("self.originId = ?1", saleOrder.getId()).fetchOne();
         if (stockMove != null
             && stockMove.getStockMoveLineList() != null
             && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -178,8 +178,8 @@ public class ImportSupplyChain {
       }
       saleOrderRepo.save(saleOrder);
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
-    return saleOrder;
+    return null;
   }
 }

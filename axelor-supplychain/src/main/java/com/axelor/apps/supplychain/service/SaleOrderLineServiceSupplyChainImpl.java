@@ -24,9 +24,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -39,48 +37,25 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
-
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject protected AppAccountService appAccountService;
 
   @Inject protected AnalyticMoveLineService analyticMoveLineService;
 
   @Override
-  public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public void computeProductInformation(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException {
-    super.computeProductInformation(saleOrderLine, saleOrder);
+    super.computeProductInformation(saleOrderLine, saleOrder, packPriceSelect);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
-  }
-
-  @Override
-  public BigDecimal computeAmount(SaleOrderLine saleOrderLine) {
-
-    BigDecimal price = this.computeDiscount(saleOrderLine);
-
-    BigDecimal amount =
-        saleOrderLine
-            .getQty()
-            .multiply(price)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-
-    LOG.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
-        new Object[] {saleOrderLine.getQty(), price, amount});
-
-    return amount;
   }
 
   public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine)
@@ -211,13 +186,5 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     } else {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
     }
-  }
-
-  @Override
-  public SaleOrderLine createPackLine(PackLine packLine, SaleOrder saleOrder)
-      throws AxelorException {
-    SaleOrderLine subLine = super.createPackLine(packLine, saleOrder);
-    subLine.setSaleSupplySelect(subLine.getProduct().getSaleSupplySelect());
-    return subLine;
   }
 }

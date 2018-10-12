@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -140,21 +141,54 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public BigDecimal getUnitPrice(
+  public BigDecimal getExTaxUnitPrice(
       Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
       throws AxelorException {
 
+    return this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase, false);
+  }
+
+  @Override
+  public BigDecimal getInTaxUnitPrice(
+      Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
+      throws AxelorException {
+
+    return this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase, true);
+  }
+
+  /**
+   * A function used to get the unit price of an invoice line, either in ati or wt
+   *
+   * @param invoice the invoice containing the invoice line
+   * @param invoiceLine
+   * @param taxLine the tax line applied to the unit price
+   * @param isPurchase
+   * @param resultInAti whether or not you want the result unit price in ati
+   * @return the unit price of the invoice line
+   * @throws AxelorException
+   */
+  private BigDecimal getUnitPrice(
+      Invoice invoice,
+      InvoiceLine invoiceLine,
+      TaxLine taxLine,
+      boolean isPurchase,
+      boolean resultInAti)
+      throws AxelorException {
     Product product = invoiceLine.getProduct();
 
     BigDecimal price = null;
     Currency productCurrency;
 
     if (isPurchase) {
-      price = this.convertUnitPrice(product, taxLine, product.getPurchasePrice(), invoice);
+      price = product.getPurchasePrice();
       productCurrency = product.getPurchaseCurrency();
     } else {
-      price = this.convertUnitPrice(product, taxLine, product.getSalePrice(), invoice);
+      price = product.getSalePrice();
       productCurrency = product.getSaleCurrency();
+    }
+
+    if (product.getInAti() != resultInAti) {
+      price = this.convertUnitPrice(product.getInAti(), taxLine, price);
     }
 
     return currencyService
@@ -197,31 +231,24 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice) {
-    BigDecimal unitPrice = invoiceLine.getPrice();
+  public BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti) {
+
+    BigDecimal unitPrice = inAti ? invoiceLine.getInTaxPrice() : invoiceLine.getPrice();
 
     return priceListService.computeDiscount(
         unitPrice, invoiceLine.getDiscountTypeSelect(), invoiceLine.getDiscountAmount());
   }
 
   @Override
-  public BigDecimal computeDiscount(
-      int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice, Invoice invoice) {
-
-    return priceListService.computeDiscount(unitPrice, discountTypeSelect, discountAmount);
-  }
-
-  @Override
-  public BigDecimal convertUnitPrice(
-      Product product, TaxLine taxLine, BigDecimal price, Invoice invoice) {
+  public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price) {
 
     if (taxLine == null) {
       return price;
     }
 
-    if (product.getInAti() && !invoice.getInAti()) {
+    if (priceIsAti) {
       price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-    } else if (!product.getInAti() && invoice.getInAti()) {
+    } else {
       price = price.add(price.multiply(taxLine.getValue()));
     }
     return price;
@@ -257,15 +284,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public boolean unitPriceShouldBeUpdate(Invoice invoice, Product product) {
-
-    if (product != null && product.getInAti() != invoice.getInAti()) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
   public Map<String, Object> resetProductInformation() {
     Map<String, Object> productInformation = new HashMap<>();
     productInformation.put("taxLine", null);
@@ -277,10 +295,15 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("discountAmount", null);
     productInformation.put("discountTypeSelect", null);
     productInformation.put("price", null);
+    productInformation.put("inTaxPrice", null);
     productInformation.put("exTaxTotal", null);
     productInformation.put("inTaxTotal", null);
     productInformation.put("companyInTaxTotal", null);
     productInformation.put("companyExTaxTotal", null);
+    productInformation.put("subLineList", null);
+    productInformation.put("totalPack", null);
+    productInformation.put("packPriceSelect", 0);
+    productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
     if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
       productInformation.put("description", null);
     }
@@ -290,20 +313,33 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-    Map<String, Object> productInformation = new HashMap<>();
-
-    Product product = invoiceLine.getProduct();
-
-    TaxLine taxLine;
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
+    productInformation.put("productName", invoiceLine.getProduct().getName());
+    productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
 
+    if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
+      productInformation.put("description", invoiceLine.getProduct().getDescription());
+    }
+
+    return productInformation;
+  }
+
+  @Override
+  public Map<String, Object> fillPriceAndAccount(
+      Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
+
+    Map<String, Object> productInformation = new HashMap<>();
+
+    boolean isAccountRequired = isAccountRequired(invoiceLine);
+    Product product = invoiceLine.getProduct();
+    TaxLine taxLine = null;
     try {
-      taxLine = getTaxLine(invoice, invoiceLine, isPurchase);
+      taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
       productInformation.put("taxLine", taxLine);
       productInformation.put("taxRate", taxLine.getValue());
       productInformation.put("taxCode", taxLine.getTax().getCode());
-
       Tax tax =
           accountManagementAccountService.getProductTax(
               accountManagementAccountService.getAccountManagement(product, invoice.getCompany()),
@@ -312,48 +348,58 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           Beans.get(FiscalPositionService.class)
               .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
       productInformation.put("taxEquiv", taxEquiv);
+    } catch (AxelorException e) {
+      productInformation.put("taxLine", null);
+      productInformation.put("taxRate", null);
+      productInformation.put("taxCode", null);
+      productInformation.put("taxEquiv", null);
+    }
 
+    if (isAccountRequired) {
+      BigDecimal price = this.getExTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
+      BigDecimal inTaxPrice = this.getInTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
+      Map<String, Object> discounts;
+      if (product.getInAti()) {
+        discounts = this.getDiscount(invoice, invoiceLine, inTaxPrice);
+      } else {
+        discounts = this.getDiscount(invoice, invoiceLine, price);
+      }
+
+      if (discounts != null) {
+        productInformation.put("discountAmount", discounts.get("discountAmount"));
+        productInformation.put("discountTypeSelect", discounts.get("discountTypeSelect"));
+        if (discounts.get("price") != null) {
+          if (product.getInAti()) {
+            inTaxPrice = (BigDecimal) discounts.get("price");
+            price = this.convertUnitPrice(true, taxLine, inTaxPrice);
+          } else {
+            price = (BigDecimal) discounts.get("price");
+            inTaxPrice = this.convertUnitPrice(false, taxLine, price);
+          }
+        }
+      }
+      productInformation.put("price", price);
+      productInformation.put("inTaxPrice", inTaxPrice);
+    }
+
+    try {
       // getting correct account for the product
       AccountManagement accountManagement =
           accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
       Account account =
           accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
       productInformation.put("account", account);
-    } catch (AxelorException e) {
-      taxLine = null;
-      productInformation.put("taxLine", null);
-      productInformation.put("taxRate", null);
-      productInformation.put("taxCode", null);
-      productInformation.put("taxEquiv", null);
-      productInformation.put("account", null);
-    }
-
-    BigDecimal price = this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
-
-    productInformation.put("productName", invoiceLine.getProduct().getName());
-    productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
-
-    if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
-      productInformation.put("description", invoiceLine.getProduct().getDescription());
-    }
-
-    // getting correct account for the product
-    AccountManagement accountManagement =
-        accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
-    Account account =
-        accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
-    productInformation.put("account", account);
-
-    Map<String, Object> discounts = this.getDiscount(invoice, invoiceLine, price);
-
-    if (discounts != null) {
-      productInformation.put("discountAmount", discounts.get("discountAmount"));
-      productInformation.put("discountTypeSelect", discounts.get("discountTypeSelect"));
-      if (discounts.get("price") != null) {
-        price = (BigDecimal) discounts.get("price");
+    } catch (Exception e) {
+      if (isAccountRequired) {
+        throw e;
       }
     }
-    productInformation.put("price", price);
+
     return productInformation;
+  }
+
+  @Override
+  public boolean isAccountRequired(InvoiceLine invoiceLine) {
+    return true;
   }
 }

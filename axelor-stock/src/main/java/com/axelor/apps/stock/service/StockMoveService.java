@@ -261,4 +261,22 @@ public interface StockMoveService {
    * @return
    */
   boolean checkMassesRequired(StockMove stockMove);
+
+  /**
+   * Get partner address.
+   *
+   * @param stockMove
+   * @return
+   * @throws AxelorException
+   */
+  Address getPartnerAddress(StockMove stockMove) throws AxelorException;
+
+  /**
+   * Get company address.
+   *
+   * @param stockMove
+   * @return
+   * @throws AxelorException
+   */
+  Address getCompanyAddress(StockMove stockMove) throws AxelorException;
 }

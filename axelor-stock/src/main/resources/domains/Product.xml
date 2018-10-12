@@ -6,7 +6,7 @@
   <entity name="Product" lang="java">
       <decimal name="avgPrice" readonly="true" precision="20" scale="10" title="Average Price"/>
       <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.stock.db.TrackingNumberConfiguration" title="Tracking Nbr. Config."/>
-	  <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature" title="Customs Code"/>
+	  <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature" title="Customs code"/>
       <boolean name="controlOnReceipt" title="Control on Receipt"/>
 
     <track on="UPDATE">

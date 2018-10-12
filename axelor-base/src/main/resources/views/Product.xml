@@ -35,19 +35,20 @@
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   		</toolbar>
   		<panel name="main" >
-   			<panel colSpan="6">
+   			<panel colSpan="5">
     			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
         			<editor x-show-titles="false">
-          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
-          				<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name"/>
+          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="4" css="label-bold bold large" placeholder="Code" />
+          				<field name="name" showTitle="false" colSpan="8" css="label-bold bold large" placeholder="Name"/>
         			</editor>
       			</field>
     		</panel>
-    		<panel colSpan="6">
-       			<button name="$totalVariants" title="Total variants" showIf="isModel" colSpan="4" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
-      			<panel showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id" colSpan="8" if-module="axelor-stock" if="__config__.app.isApp('stock')">
-       	 			<button name="$realQty" title="Real qty" colSpan="6" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
-       	 			<button name="$futureQty" title="Future qty" colSpan="6" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
+    		<panel colSpan="7">
+       			<button name="$totalVariants" title="Total variants" showIf="isModel" colSpan="3" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
+      			<panel showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id" colSpan="9" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+       	 			<button name="$realQty" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
+       	 			<button name="$futureQty" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
+       	 			<button name="$reservedQty" title="Reserved qty" colSpan="4" icon="fa-cubes" onClick="action-stock-move-line-product-reserved-planned" widget="info-button" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     	  			<field name="isModel" hidden="true"/>
 			</panel>
       		</panel>
@@ -66,14 +67,15 @@
     		<panel colSpan="10">
       
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
-			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange"/>
+			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable','pack']" if="__config__.app.getApp('sale')?.getProductPackMgt()"/>
+			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable']" if="!(__config__.app.getApp('sale')?.getProductPackMgt())"/>
 			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"/>
-                    <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect == 'service'"/>
+                    <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect == 'service' || productTypeSelect =='pack'"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
                         requiredIf="productTypeSelect == 'storable'"
                         onChange="action-product-record-tick-checkbox-purchasable"/>
-			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			        <field name="standardDelay" colSpan="12" hideIf="productTypeSelect =='pack'" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" canEdit="false"  colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -81,7 +83,6 @@
 		      	</panel>
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
-			        <field name="isPack" if="__config__.app.getApp('sale')?.getProductPackMgt()" hideIf="isShippingCostsProduct"/>
 			        <field name="expense" hidden="true"/>
       			</panel>
       			<panel name="Barcode" readonlyIf="barCode != null" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" title="Barcode" colSpan="12">
@@ -91,6 +92,10 @@
     		</panel>
   		</panel>
   		<panel-tabs title="Product specific attributes">
+  			<panel title="Pack Lines" showIf="productTypeSelect=='pack'" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()">
+  				<field name="packPriceSelect"/>
+  				<panel-related field="packLines" colSpan="12"/>
+  			</panel>
     		<panel name="sale" title="Sale" showTitle="false">
 				<panel title="Sales" colSpan="6">
 					<field name="sellable" colSpan="12"/>
@@ -153,16 +158,21 @@
             <panel name="accounting" title="Accounting">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
                 <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
-                <panel-related field="accountManagementList" form-view="account-management-product-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
+                <panel-related field="accountManagementList" form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
-	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
+	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable' || productTypeSelect == 'pack'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
                         <field name="inventoryTypeSelect" colSpan="6"/>
 	      			</panel>
+	      			<panel colSpan="12" if-module="axelor-production" if="__config__.app.isApp('production')">
+						<field name="productStandard"/>
+      					<field name="productApproval" form-view="product-approval-form" grid-view="product-approval-grid" onChange="action-product-record-set-control-on-receipt"/>
+      					<field name="productApproval.controlOnReceipt" hidden="true"/>	      			
+	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-						<field name="controlOnReceipt"/>
+						<field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
 						<field name="avgPrice"/>
 				        <spacer/>
@@ -180,7 +190,7 @@
                     <panel-include view="product-production-form"/>
                     <panel-dashlet colSpan="12" action="action-product-view-production-process" showIf="id"/>
                 </panel>
-	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service'" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service' &amp;&amp; productTypeSelect != 'pack'" if-module="axelor-stock" if="__config__.app.isApp('stock')">
 	      			<panel colSpan="12">
 				        <field name="hasWarranty"/>
 				        <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
@@ -256,7 +266,6 @@
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
   			</panel>
-  			<panel-related field="packLines" showIf="isPack" if="__config__.app.getApp('sale')?.getProductPackMgt()" />
   		</panel-tabs>
   		<panel>
   			<field name="attrs" colSpan="12" />
@@ -371,6 +380,10 @@
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
     	<field name="inAti" expr="eval:__config__.app.getApp('base').getProductInAtiSelect() == 2 || __config__.app.getApp('base').getProductInAtiSelect() == 4"/>
+    </action-record>
+    
+    <action-record name="action-product-record-set-control-on-receipt" model="com.axelor.apps.base.db.Product">
+    	<field name="controlOnReceipt" expr="eval: productApproval?.controlOnReceipt"/>
     </action-record>
     
     <action-attrs name="action-product-attrs-in-ati">

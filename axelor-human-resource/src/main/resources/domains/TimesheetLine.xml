@@ -19,6 +19,9 @@
       <boolean name="invoiced" title="Invoiced" readonly="true"/>
 	  <string name="fullName" namecolumn="true"></string>
 	  <boolean name="enableEditor" title="Enable editor" nullable="true" />
+	  
+	  <many-to-one name="projectPlanningTime" ref="com.axelor.apps.project.db.ProjectPlanningTime" />
+	  
 	  <unique-constraint columns="timesheet,project,product,date,enableEditor"/>
   </entity>
   

@@ -32,7 +32,11 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.TrackingNumberManagementRepository;
+import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
+import com.axelor.apps.stock.service.DeclarationOfExchangesService;
+import com.axelor.apps.stock.service.DeclarationOfExchangesServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormLineService;
 import com.axelor.apps.stock.service.LogisticalFormLineServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormService;
@@ -58,8 +62,8 @@ public class StockModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(StockRulesService.class).to(StockRulesServiceImpl.class);
     bind(AddressServiceStockImpl.class);
+    bind(StockRulesService.class).to(StockRulesServiceImpl.class);
     bind(InventoryRepository.class).to(InventoryManagementRepository.class);
     bind(StockMoveRepository.class).to(StockMoveManagementRepository.class);
     bind(StockLocationLineService.class).to(StockLocationLineServiceImpl.class);
@@ -75,6 +79,8 @@ public class StockModule extends AxelorModule {
     bind(PartnerStockSettingsService.class).to(PartnerStockSettingsServiceImpl.class);
     bind(AppStockService.class).to(AppStockServiceImpl.class);
     bind(StockMoveLineRepository.class).to(StockMoveLineStockRepository.class);
+    bind(DeclarationOfExchangesService.class).to(DeclarationOfExchangesServiceImpl.class);
     PartnerAddressRepository.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
+    bind(TrackingNumberRepository.class).to(TrackingNumberManagementRepository.class);
   }
 }

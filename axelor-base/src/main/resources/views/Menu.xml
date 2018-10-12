@@ -26,13 +26,13 @@
 
     <menuitem id="calendar.root.menu" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnableCalendars()" name="menu-calendar" order="-110" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
 
-    <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events" parent="menu-calendar" action="calendar.root.menu.my.calendar"/>
+    <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events" parent="menu-calendar" action="calendar.root.menu.my.calendar" order="1"/>
 
 	<action-method name="calendar.root.menu.my.calendar">
 		<call class="com.axelor.apps.base.web.ICalendarController" method="showMyEvents"/>
 	</action-method>
 
-    <menuitem id="calendar.root.menu.configuration" name="menu-calendar-configuration" title="Configuration" parent="menu-calendar" icon="fa-cog"/>
+    <menuitem id="calendar.root.menu.configuration" name="menu-calendar-configuration" title="Configuration" parent="menu-calendar" icon="fa-cog" order="3"/>
 
     <menuitem id="calendar.root.menu.configuration.calendars" name="menu-calendar-configuration-calendars" title="My calendars" parent="menu-calendar-configuration" action="calendar.root.menu.my.calendars"/>
 
@@ -431,6 +431,16 @@
 		<view type="grid" name="canton-grid"/>
 		<view type="form" name="canton-form"/>
 	</action-view>
+
+    <menuitem name="admin-root-organisation-economic-area"
+      parent="admin-root-organisation-territory" title="Economic areas"
+      action="admin.root.organisation.economic.area" />
+  
+    <action-view name="admin.root.organisation.economic.area"
+      title="Economic areas" model="com.axelor.apps.base.db.EconomicArea">
+      <view type="grid" name="economic-area-grid"/>
+      <view type="form" name="economic-area-form"/>
+    </action-view>
 
 	<menuitem name="admin-root-user" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Users/Companies" order="25" />
