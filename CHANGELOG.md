@@ -112,6 +112,7 @@
 - ManufOrder: Change quantity also in stock move on updating planned quantity.
 - Project: Reorganization of Resource Booking form view.
 - Tweaks on manuf order report.
+- Improve Expense form view.
 - Rework CRM events view.
 - Rework Purchase request view.
 - Rework Target and Target configuration views in CRM.
