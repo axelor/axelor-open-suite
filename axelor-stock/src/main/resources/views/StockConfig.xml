@@ -19,8 +19,8 @@
 	  </panel>
 	  <panel name="stockMoveInformations" title="Stock move informations">
 		  <panel colSpan="12">
-			  <field name="receiptDefaultStockLocation" domain="self.usableOnSaleOrder = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
-			  <field name="pickupDefaultStockLocation" domain="self.usableOnPurchaseOrder = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+			  <field name="receiptDefaultStockLocation" domain="self.usableOnPurchaseOrder = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
+			  <field name="pickupDefaultStockLocation" domain="self.usableOnSaleOrder = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			  <field name="qualityControlDefaultStockLocation" domain="self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			  <field name="wasteStockLocation" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			  <field name="componentDefaultStockLocation" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
