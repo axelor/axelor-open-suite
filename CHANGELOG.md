@@ -113,6 +113,7 @@
 - Project: Reorganization of Resource Booking form view.
 - Tweaks on manuf order report.
 - Rework CRM events view.
+- Rework Target and Target configuration views in CRM.
 - Improve CRM menu entries.
 - Use editor for prod process line descriptions.
 - On creating stock move line, get the price from orders instead of computing it.
