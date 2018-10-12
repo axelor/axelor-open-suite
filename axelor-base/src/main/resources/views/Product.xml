@@ -157,7 +157,7 @@
 	    	</panel>
             <panel name="accounting" title="Accounting">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
-                <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
+							<field name="usedInDEB" title="Used in DES" showIf="productTypeSelect =='service'"/>
                 <panel-related field="accountManagementList" form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
 	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable' || productTypeSelect == 'pack'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
@@ -255,7 +255,7 @@
 	  			<panel name="mass" title="Mass" colSpan="6">
 	  				<field name="massUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
 	  				<field name="grossMass"/>
-	  				<field name="netMass"/>
+	  				<field name="netMass" requiredIf="usedInDEB"/>
 	  			</panel>
 			      <panel name="articleDimension" title="Article dimension" colSpan="6">
 			        <field name="lengthUnit" canEdit="false" domain="self.unitTypeSelect = 2" />
@@ -265,6 +265,11 @@
 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
+							<panel if-module="axelor-stock" if="__config__.app.isApp('stock')">
+								<field name="usedInDEB" title="Used in DEB"/>
+								<field name="customsCodeNomenclature" requiredIf="usedInDEB &amp;&amp; productTypeSelect !='service'"
+									showIf="usedInDEB &amp;&amp; productTypeSelect !='service'" canEdit="false"/>
+							</panel>
   			</panel>
   		</panel-tabs>
   		<panel>

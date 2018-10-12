@@ -1287,6 +1287,7 @@ on ToStockLocationCity.department = ToStockLocationDepartment.id
 where
 StockMove.real_date between Period.from_date and Period.to_date
 and Product.product_type_select = DeclarationOfExchanges.product_type_select
+and Product.used_indeb = true
 and StockMove.type_select = DeclarationOfExchanges.stock_move_type_select
 and DeclarationOfExchanges.country
 in (coalesce(FromCountry.id, FromStockLocationCountry.id),
