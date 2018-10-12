@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -352,7 +352,7 @@ from public.account_accounting_report as AccountingReport
 left outer join public.account_analytic_move_line as AnalyticMoveLine on (AccountingReport.id = ?) 
 
 left outer join public.account_move_line as MoveLine on (AnalyticMoveLine.move_line = MoveLine.id)
-left outer join public.account_move as Move on (MoveLine.id = Move.id)
+left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_analytic_account as AnalyticAccount on (AnalyticMoveLine.analytic_account  = AnalyticAccount.id )
 left outer join public.account_analytic_axis as AnalyticAxis on (AnalyticMoveLine.analytic_axis = AnalyticAxis.id ) 
 left outer join public.account_analytic_journal as AnalyticJournal on (AnalyticMoveLine.analytic_journal = AnalyticJournal.id ) 

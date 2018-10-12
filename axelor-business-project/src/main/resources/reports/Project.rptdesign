@@ -2270,7 +2270,12 @@ case
 	when prod.unit = (select unit_hours from base_app_base) then
 		sum(hours_duration * prod.sale_price)
 	else	
-		sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+		case
+			when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit) > 0 then
+				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
+			else
+				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))		
+		end
 end as turnover
 from hr_timesheet_line as tml
 left join base_product prod on (prod.id = tml.product)
@@ -2875,8 +2880,13 @@ group by month) CostData group by month)) ChartData group by month order by mont
 	case
 		when prod.unit = (select unit_hours from base_app_base) then
 			sum(hours_duration * prod.sale_price)
-		else	
-			sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+		else
+			case
+				when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit) > 0 then
+					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
+				else
+					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))		
+			end
 	end as revenue
 from hr_timesheet_line as tml
 left join base_product prod on (prod.id = tml.product)

@@ -226,6 +226,14 @@
 	<view type="grid" name="configurator-prod-process-line-grid" />
 	<view type="form" name="configurator-prod-process-line-form" />
 	</action-view>
+	
+	<menuitem title="Product approvals" name="manufacturing-conf-product-approvals" parent="manufacturing-conf" 
+				action="manufacturing.conf.product.approvals"/>
+				
+	<action-view name="manufacturing.conf.product.approvals" title="Product approvals" model="com.axelor.apps.production.db.ProductApproval">
+		<view type="grid" name="product-approval-grid"/>
+		<view type="form" name="product-approval-form"/>
+	</action-view>
 
 	<!-- TOP MENU -->
 	

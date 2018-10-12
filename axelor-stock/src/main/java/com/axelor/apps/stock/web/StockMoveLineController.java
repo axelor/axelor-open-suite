@@ -163,18 +163,24 @@ public class StockMoveLineController {
       stockMoveLine = stockMoveLineContext;
     }
 
+    StockLocation stockLocation = null;
     if (context.get("_parent") != null
         && ((Map) context.get("_parent")).get("fromStockLocation") != null) {
 
       Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
 
-      StockLocation stockLocation =
+      stockLocation =
           stockLocationRepo.find(
               Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
 
+    } else if (stockMoveLine.getStockMove() != null) {
+      stockLocation = stockMoveLine.getStockMove().getFromStockLocation();
+    }
+
+    if (stockLocation != null) {
       stockMoveLineService.updateAvailableQty(stockMoveLine, stockLocation);
-      response.setValue("availableQty", stockMoveLine.getAvailableQty());
-      response.setValue("availableQtyForProduct", stockMoveLine.getAvailableQtyForProduct());
+      response.setValue("$availableQty", stockMoveLine.getAvailableQty());
+      response.setValue("$availableQtyForProduct", stockMoveLine.getAvailableQtyForProduct());
     }
   }
 }
