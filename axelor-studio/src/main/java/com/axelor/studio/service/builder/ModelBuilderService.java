@@ -36,17 +36,25 @@ public class ModelBuilderService {
 
   public String build(MetaJsonModel model, String module) throws AxelorException {
 
-    if (model == null || model.getFields().isEmpty() || module == null) {
+    if (model == null || module == null) {
       return null;
     }
+    
+    String fieldsTxt = createFields(model.getFields(), module);
+    if (fieldsTxt.isEmpty()) {
+    	return null;
+    }
+    
     String packageName = getPackageName(module);
     //    String modelName = Inflector.getInstance().classify(model.getName());
     String modelName = model.getName();
+    
+    
 
     StringBuilder builder = new StringBuilder();
     builder.append("\t<module name=\"" + module + "\" package=\"" + packageName + "\"/>\n\n");
     builder.append("\t<entity name=\"" + modelName + "\">\n");
-    builder.append(createFields(model.getFields(), module));
+    builder.append(fieldsTxt);
     builder.append("\t</entity>\n");
 
     return prepareXML(builder.toString());
@@ -70,8 +78,13 @@ public class ModelBuilderService {
   public String build(MetaModel model, List<MetaJsonField> fields, String module)
       throws AxelorException {
 
-    if (model == null || module == null || fields.isEmpty()) {
+    if (model == null || module == null) {
       return null;
+    }
+    
+    String fieldsTxt = createFields(fields, module);
+    if (fieldsTxt.isEmpty()) {
+    	return null;
     }
 
     String packageName = model.getPackageName();
@@ -80,7 +93,7 @@ public class ModelBuilderService {
     StringBuilder builder = new StringBuilder();
     builder.append("\t<module name=\"" + module + "\" package=\"" + packageName + "\"/>\n\n");
     builder.append("\t<entity name=\"" + modelName + "\">\n");
-    builder.append(createFields(fields, module));
+    builder.append(fieldsTxt);
     builder.append("\t</entity>\n");
 
     return prepareXML(builder.toString());

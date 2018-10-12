@@ -112,7 +112,7 @@ public class ModuleExportService {
   @Inject private MetaFileRepository metaFileRepo;
 
   @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
-
+  
   @Transactional
   public MetaFile export(String module, MetaFile metaFile)
       throws AxelorException, ZipException, IOException, JAXBException {
