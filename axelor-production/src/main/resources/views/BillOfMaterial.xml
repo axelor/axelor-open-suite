@@ -94,6 +94,10 @@
 				<field name="versionNumber" colSpan="3" />
 				<field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" readonly="true"/>
 			</panel>
+			
+			<panel title="Note">
+				<field name="note" showTitle="false" colSpan="12"/>
+			</panel>
 		</panel-tabs>
 	</form>
     

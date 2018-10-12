@@ -85,7 +85,7 @@
 - Partner : Add simpleFullName field.
 - PRODUCT : add new button 'Reserved qty' to know the reserved quantity on product form.
 - Sale Order : add new large string field 'Production note' and display it on picking stock move report.
-- MRP : Display createdBy user and stockLocation.company in form and grid view.
+- BillOfMaterial : Add new large field 'Note'.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
