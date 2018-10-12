@@ -182,6 +182,9 @@
                 <field name="costPrice" readonly="true"/>
                 <field name="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
 			</panel>
+			<panel name="note" title="Note">
+				<field name="note" colSpan="12" showTitle="false"/>
+			</panel> 
 		</panel-tabs>
 	</form>
 	

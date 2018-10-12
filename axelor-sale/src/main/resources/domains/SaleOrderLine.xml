@@ -50,8 +50,9 @@
   	
 <!-- 	Margins -->
 	<decimal name="subTotalCostPrice" title="SubTotal cost price"/>
-	<decimal name="subTotalGrossMargin" title="SubTotal gross margin"/>
+	<decimal name="subTotalGrossMargin" title="Sub Total gross profit"/>
 	<decimal name="subMarginRate" title="Sub margin rate"/>
+	<decimal name="subTotalMarkup" title="Sub Total markup"/>
   	
 <!--   	Devis-commande fournisseur -->
 	<date name="deliveryDate" title="Delivery date"/>

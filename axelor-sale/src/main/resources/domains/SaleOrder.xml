@@ -52,9 +52,11 @@
     <integer name="statusSelect" title="Status" selection="sale.order.status.select" readonly="true"/>
     
 <!-- 	Margins -->
+	<decimal name="accountedRevenue" title="Accounted Revenue"/>
 	<decimal name="totalCostPrice" title="Total cost price"/>
-	<decimal name="totalGrossMargin" title="Total gross margin"/>
-	<decimal name="marginRate" title="Margin rate"/>
+	<decimal name="totalGrossMargin" title="Gross Profit"/>
+	<decimal name="marginRate" title="Margin (%)"/>
+	<decimal name="markup" title="Markup (%)"/>
   	
 <!--   	Onglet Autres informations -->
 	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>

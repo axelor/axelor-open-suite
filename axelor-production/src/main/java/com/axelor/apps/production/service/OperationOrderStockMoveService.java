@@ -263,19 +263,25 @@ public class OperationOrderStockMoveService {
       OperationOrder operationOrder, BigDecimal qtyToUpdate) throws AxelorException {
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
+
+    // find planned stock move
+    Optional<StockMove> stockMoveOpt =
+        manufOrderStockMoveService.getPlannedStockMove(operationOrder.getInStockMoveList());
+    if (!stockMoveOpt.isPresent()) {
+      return;
+    }
+
+    StockMove stockMove = stockMoveOpt.get();
+
+    stockMoveService.cancel(stockMove);
+
     // clear all lists from planned lines
     operationOrder
         .getConsumedStockMoveLineList()
         .removeIf(
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
-                    == StockMoveRepository.STATUS_PLANNED);
-    Optional<StockMove> stockMoveOpt =
-        manufOrderStockMoveService.getPlannedStockMove(operationOrder.getInStockMoveList());
-    if (!stockMoveOpt.isPresent()) {
-      return;
-    }
-    StockMove stockMove = stockMoveOpt.get();
+                    == StockMoveRepository.STATUS_CANCELED);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -294,5 +300,6 @@ public class OperationOrderStockMoveService {
                   !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(operationOrder::addConsumedStockMoveLineListItem);
     }
+    stockMoveService.plan(stockMove);
   }
 }

@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppProject" lang="java" cachable="true" extends="App">
+	<entity name="AppProject" lang="java" extends="App">
 		<string name="projectLabel" title="Project Label"/>
 		<boolean name="resourceManagement" title="Resource management" />
 	</entity>

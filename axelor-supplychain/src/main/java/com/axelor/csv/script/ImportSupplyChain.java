@@ -105,7 +105,7 @@ public class ImportSupplyChain {
       if (status == IPurchaseOrder.STATUS_FINISHED) {
         purchaseOrderServiceSupplychainImpl.createStocksMove(purchaseOrder);
         StockMove stockMove =
-            stockMoveRepo.all().filter("purchaseOrder.id = ?1", purchaseOrder.getId()).fetchOne();
+            stockMoveRepo.all().filter("self.originId = ?1", purchaseOrder.getId()).fetchOne();
         if (stockMove != null) {
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
@@ -166,7 +166,8 @@ public class ImportSupplyChain {
           invoice.setInvoiceDate(LocalDate.now());
         }
         invoiceService.validateAndVentilate(invoice);
-        StockMove stockMove = stockMoveRepo.all().filter("saleOrder = ?1", saleOrder).fetchOne();
+        StockMove stockMove =
+            stockMoveRepo.all().filter("self.originId = ?1", saleOrder.getId()).fetchOne();
         if (stockMove != null
             && stockMove.getStockMoveLineList() != null
             && !stockMove.getStockMoveLineList().isEmpty()) {

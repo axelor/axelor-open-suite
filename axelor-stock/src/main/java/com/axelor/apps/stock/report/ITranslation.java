@@ -85,6 +85,7 @@ public interface ITranslation {
   public static final String STOCK_MOVE_RACK_NUMBER = /*$$(*/ "StockMove.rackNbr"; /*)*/
   public static final String STOCK_MOVE_COMMENTS = /*$$(*/ "StockMove.comments"; /*)*/
   public static final String STOCK_MOVE_BARCODE = /*$$(*/ "StockMove.barcode"; /*)*/
+  public static final String STOCK_MOVE_PRODUCTION_NOTE = /*$$(*/ "StockMove.productionNote"; /*)*/
 
   // Certificate of conformity
   public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/

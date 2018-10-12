@@ -47,43 +47,87 @@
 		<panel>
 			<panel colSpan="9">
 				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-				<field name="expenseSeq"/>
-				<panel itemSpan="12" colSpan="6">
-					<field name="move" readonly="true" showTitle="false" showIf="move">
-						<viewer>
-							<![CDATA[
-			 			<h3>
-			             <span class="label label-important" x-translate>Ventilated</span>
-			           </h3>
+				<field name="expenseSeq" showTitle="false" colSpan="8">
+				<viewer depends="expenseSeq">
+					<![CDATA[
+						<h3>
+							<span x-translate>Expense</span>
+							{{record.expenseSeq}}
+						</h3>
 					]]>
-						</viewer>
-					</field>
+				</viewer>
+				</field>
+				<field name="move" readonly="true" showTitle="false" showIf="move" colSpan="4">
+					<viewer>
+						<![CDATA[
+							<h3>
+								<span class="label label-important" x-translate>Ventilated</span>
+							</h3>
+						]]>
+					</viewer>
+				</field>
+				<panel colSpan="12">
+					<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
+					<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
+					<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+					<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
+					<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" canView="false"/>
+					<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
+					<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" readonlyIf="statusSelect != 1"/>
+					<field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
+					<field name="personalExpenseAmount" hidden="true" />
+					<field name="advanceAmount" hidden="true" />
 				</panel>
 			</panel>
-			<panel name="actions" itemSpan="12" colSpan="3">
-				<button name="sendExpenses" title="Send Expenses" onClick="action-expense-group-send" hidden="true" hideIf="statusSelect &gt; 1"/>
-				<button name="ventilate" title="Ventilate" onClick="save,action-expense-method-ventilate" hidden="true"/>
-				<button name="validateButton" onClick="action-expense-group-validate" title="Validate" hidden="true"/>
-				<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse" hidden="true"/>
-				<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field" hidden="true" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-				<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field" title="Return to draft status" showIf="statusSelect &gt; 4 "/>
-				<button name="addPaymentButton" title="Register payment" onClick="save,action-expense-add-payment-form" showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
-				<button name="cancelPaymentButton" title="Cancel payment"
-						showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
-						onClick="save,action-expense-method-cancel-payment"/>
+			<panel name="side" itemSpan="12" colSpan="3">
+				<panel name="actions" itemSpan="12">
+					<button name="sendExpenses" title="Send Expenses" onClick="action-expense-group-send" hidden="true" hideIf="statusSelect &gt; 1"/>
+					<button name="ventilate" title="Ventilate" onClick="save,action-expense-method-ventilate" hidden="true"/>
+					<button name="validateButton" onClick="action-expense-group-validate" title="Validate" hidden="true"/>
+					<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse" hidden="true"/>
+					<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field" hidden="true" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+					<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field" title="Return to draft status" showIf="statusSelect &gt; 4 "/>
+					<button name="addPaymentButton" title="Register payment" onClick="save,action-expense-add-payment-form" showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
+					<button name="cancelPaymentButton" title="Cancel payment"
+							showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
+							onClick="save,action-expense-method-cancel-payment"/>
+				</panel>
+				<panel readonly="true" >
+		            <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+		                <viewer depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect">
+		                    <![CDATA[
+		                    <dl class="dl-horizontal">
+		                        <dt x-translate>Total W.T.</dt>
+		                        <dd>{{record.exTaxTotal}}</dd>
+		                        <dt x-translate>Total tax</dt>
+		                        <dd>{{record.taxTotal}}</dd>
+		                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
+		                        <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
+		                        <dt ng-show="record.personalExpenseAmount != 0" x-translate>Personal expense</dt>
+		                        <dd ng-show="record.personalExpenseAmount != 0"> -{{record.personalExpenseAmount | number:2}}</dd>
+		                        <dt ng-show="record.withdrawnCash != 0" x-translate>Withdrawn cash</dt>
+		                        <dd ng-show="record.withdrawnCash != 0">-{{record.withdrawnCash | number:2}}</dd>
+		                        <dt ng-show="record.advanceAmount != 0" x-translate>Advance</dt>
+		                        <dd ng-show="record.advanceAmount != 0">-{{record.advanceAmount | number:2}}</dd>
+		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
+		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{record.paymentAmount  | number:2}}</dd>
+		                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
+		                        <dd class="order-subtotal-total">{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}</dd>
+		                    </dl>
+		                    ]]>
+		                </viewer>
+		            </field>
+		        </panel>
 			</panel>
 	    </panel>
-		<panel>
-			<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
-			<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-			<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
-			<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" canView="false"/>
-			<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
-			<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" readonlyIf="statusSelect != 1"/>
-			<field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
-			<field name="personalExpenseAmount" hidden="true" />
-			<field name="advanceAmount" hidden="true" />
+
+		<panel name="followup" title="Follow-up" showIf="sentDate" colSpan="12" canCollapse="true">
+			<field name="sentDate" colSpan="4"/>
+			<field name="validatedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
+			<field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
+			<field name="refusedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
+			<field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
+			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12" readonly="true"/>
 		</panel>
 		<panel-tabs>
 			<panel-related field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12"
@@ -104,62 +148,9 @@
 				</panel>
 			</panel>
 		</panel-tabs>
-		<panel showIf="statusSelect == 3 || statusSelect == 4">
-			<panel title="Account information" showIf="move">
-				<field name="moveDate" hidden="true" readonly="true" showIf="moveDate" colSpan="4"/>
-				<field name="move" showIf="move" readonlyIf="move" colSpan="6" form-view="move-form" grid-view="move-grid"/>
-			</panel>
-			<panel colSpan="12" title="Payment information">
-				<field name="paymentStatusSelect" colSpan="4"/>
-				<field name="paymentMode" hidden="true" showIf="paymentMode" readonlyIf="$contains([1, 3], paymentStatusSelect)" colSpan="4"/>
-				<field name="paymentDate" showIf="paymentDate" colSpan="4"/>
-				<field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
-			</panel>
-		</panel>
-		<panel showIf="sentDate">
-			<field name="sentDate" hidden="true" colSpan="4" showIf="sentDate"/>
-			<field name="validatedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
-			<field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
-			<field name="refusedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
-			<field name="refusalDate" hidden="true" showIf="refusalDate"/>
-			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12" readonly="true"/>
-			<field name="moveDate" hidden="true" colSpan="4" showIf="statusSelect == 3 || statusSelect == 4" readonlyIf="ventilated"/>
-			<field name="move" showIf="ventilated" form-view="move-form" grid-view="move-grid"  readonlyIf="ventilated"/>
-			<field name="paymentStatusSelect" colSpan="4"/>
-			<field name="paymentDate" hidden="true" colSpan="4" showIf="statusSelect == 3 || statusSelect == 4"/>
-			<field name="paymentMode" hidden="true" colSpan="4" showIf="paymentMode" readonlyIf="$contains([1, 3], paymentStatusSelect)"/>
-			<field name="bankOrder" showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; paymentMode &amp;&amp; paymentMode.generateBankOrder" colSpan="4"/>
-		    <field name="ventilated" hidden="true" title="Expense Ventilated" readonly="true" colSpan="4" showIf="ventilated"/>
-		</panel>
 		<panel>
 			<field name="attrs" colSpan="12" />
 		</panel>
-		<panel readonly="true"  colSpan="4">
-            <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-                <viewer depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect">
-                    <![CDATA[
-                    <dl class="dl-horizontal">
-                        <dt x-translate>Total W.T.</dt>
-                        <dd>{{record.exTaxTotal}}</dd>
-                        <dt x-translate>Total tax</dt>
-                        <dd>{{record.taxTotal}}</dd>
-                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
-                        <dt ng-show="record.personalExpenseAmount != 0" x-translate>Personal expense</dt>
-                        <dd ng-show="record.personalExpenseAmount != 0"> -{{record.personalExpenseAmount | number:2}}</dd>
-                        <dt ng-show="record.withdrawnCash != 0" x-translate>Withdrawn cash</dt>
-                        <dd ng-show="record.withdrawnCash != 0">-{{record.withdrawnCash | number:2}}</dd>
-                        <dt ng-show="record.advanceAmount != 0" x-translate>Advance</dt>
-                        <dd ng-show="record.advanceAmount != 0">-{{record.advanceAmount | number:2}}</dd>
-                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
-                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{record.paymentAmount  | number:2}}</dd>
-                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
-                        <dd class="order-subtotal-total">{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}</dd>
-                    </dl>
-                    ]]>
-                </viewer>
-            </field>
-        </panel>
       <panel-mail>
 		  <mail-messages limit="4" />
 		  <mail-followers />
