@@ -70,6 +70,7 @@ public class PartnerBaseRepository extends PartnerRepository {
         }
       }
       partner.setFullName(partnerService.computeFullName(partner));
+      partner.setSimpleFullName(partnerService.computeSimpleFullName(partner));
       return super.save(partner);
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());

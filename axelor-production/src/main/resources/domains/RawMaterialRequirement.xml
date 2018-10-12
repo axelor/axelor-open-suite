@@ -6,6 +6,8 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="RawMaterialRequirement" lang="java">
+    <string name="code" title="Code" namecolumn="true"/>
+    <string name="name" title="Name"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <integer name="duration" min="0" title="Duration (days)"/>
     <many-to-many name="stockLocationSet" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock locations"/>

@@ -76,7 +76,7 @@ public class WkfTrackingService {
   private String oldStatus;
 
   /**
-   * Root method to access the service. It create WkfTracking record. WkfTracking is linked with
+   * Root method to access the service. It creates WkfTracking record. WkfTracking is linked with
    * record of model and workflow of model.
    *
    * @param model Model having workflow.
@@ -84,8 +84,7 @@ public class WkfTrackingService {
    * @param status Current wkfStatus of record.
    * @throws ClassNotFoundException
    */
-  @SuppressWarnings("unchecked")
-  public void track(Object object) throws ClassNotFoundException {
+  public void track(Object object) {
 
     if (object != null) {
 
@@ -124,7 +123,7 @@ public class WkfTrackingService {
 
       Option item = MetaStore.getSelectionItem(wkfField.getSelection(), status.toString());
 
-      log.debug("Fetching option {} from selection {}", status.toString(), wkfField.getSelection());
+      log.debug("Fetching option {} from selection {}", status, wkfField.getSelection());
       if (item == null) {
         return;
       }
@@ -252,7 +251,9 @@ public class WkfTrackingService {
     WkfTrackingTotal trackingTotal =
         trackingTotalRepo
             .all()
-            .filter("self.wkfTracking = ?1 and self.status = ?2", wkfTracking, status)
+            .filter("self.wkfTracking = :wkfTracking and self.status = :status")
+            .bind("wkfTracking", wkfTracking)
+            .bind("status", status)
             .fetchOne();
 
     if (trackingTotal == null) {

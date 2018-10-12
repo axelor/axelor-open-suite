@@ -277,9 +277,8 @@
 		<field name="assignedTo" expr="eval: project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
 		<field name="parentTask" expr="eval: null"/>
 		<field name="membersUserSet" expr="eval: null"/>
-		<field name="team" expr="eval: project?.team" if="project?.synchronize"/>
-        <field name="team" expr="eval: project?.parentProject?.team"
-            if="project?.team == null &amp;&amp; project?.synchronize"/>
+		<field name="team" expr="eval: project?.team" if="project?.synchronize &amp;&amp; project.team != null"/>
+        <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team" if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">

@@ -330,6 +330,7 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  		<context name="$isReadOnly" expr="true"/>
     </action-view>
     
 	<action-view name="action-project-dashlet-supplier-invoices" title="Supplier invoices"  model="com.axelor.apps.account.db.Invoice">
@@ -350,6 +351,7 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  		<context name="$isReadOnly" expr="true"/>
     </action-view>
     
 	<action-view name="action-project-dashlet-advance-payment-invoices" title="Advance payment invoices"  model="com.axelor.apps.account.db.Invoice">
