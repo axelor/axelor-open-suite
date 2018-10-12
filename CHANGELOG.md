@@ -2,6 +2,7 @@
 ## [Unreleased 5.0.7]
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
+- PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
 
 ## Improvements
 - Show full name for products in Mrp report.
