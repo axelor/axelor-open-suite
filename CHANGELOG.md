@@ -101,6 +101,7 @@
 - Production processes: display status in grid view.
 - Rework Ticket UI.
 - Tax configuration: display only necessary fields for tax account management.
+- Refactor purchase order view.
 - Rework project view
 - Set project on invoice and invoice line when generating it from sale order and stock move.
 - Set project on purchase order and purchase order lines when generating it from a sale order.
