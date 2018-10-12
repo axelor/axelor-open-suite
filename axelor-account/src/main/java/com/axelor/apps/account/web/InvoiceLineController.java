@@ -157,7 +157,8 @@ public class InvoiceLineController {
       try {
         productInformation = invoiceLineService.fillProductInformation(invoice, invoiceLine);
 
-        if (productInformation.get("taxLine") == null) {
+        if (productInformation.get("taxLine") == null
+            && invoiceLineService.isAccountRequired(invoiceLine)) {
           String msg;
 
           if (invoice.getCompany() != null) {

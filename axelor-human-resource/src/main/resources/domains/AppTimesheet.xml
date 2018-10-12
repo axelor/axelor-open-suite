@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppTimesheet" lang="java" cachable="true" extends="App">
+	<entity name="AppTimesheet" lang="java" extends="App">
 		
 		<integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times" selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
 		<boolean name="consolidateTSLine" title="Consolidate timesheet line on invoice"/>

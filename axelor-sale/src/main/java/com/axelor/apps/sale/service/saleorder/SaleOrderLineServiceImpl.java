@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -75,7 +76,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     saleOrderLine.setPackPriceSelect(null);
 
     if (appSaleService.getAppSale().getProductPackMgt()
-        && saleOrderLine.getProduct().getIsPack()
+        && saleOrderLine
+            .getProduct()
+            .getProductTypeSelect()
+            .equals(ProductRepository.PRODUCT_TYPE_PACK)
         && !saleOrderLine.getIsSubLine()) {
       saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_PACK);
       saleOrderLine.setPackPriceSelect(packPriceSelect);
@@ -119,14 +123,31 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       throws AxelorException {
     List<SaleOrderLine> subLines = new ArrayList<SaleOrderLine>();
 
+    Integer sequence = saleOrderLine.getSequence();
+    if (sequence == null) {
+      sequence = 0;
+    }
+    if (saleOrder.getSaleOrderLineList() != null && sequence == 0) {
+      for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
+        if (orderLine.getSequence() > sequence) {
+          sequence = orderLine.getSequence();
+        }
+      }
+    }
+
+    if (saleOrderLine.getSequence() == null) {
+      saleOrderLine.setSequence(++sequence);
+    }
+
     for (PackLine packLine : saleOrderLine.getProduct().getPackLines()) {
       SaleOrderLine subLine = new SaleOrderLine();
       Product subProduct = packLine.getProduct();
       subLine.setProduct(subProduct);
-      subLine.setQty(new BigDecimal(packLine.getQuantity()));
+      subLine.setQty(new BigDecimal(packLine.getQuantity()).multiply(saleOrderLine.getQty()));
       subLine.setIsSubLine(true);
       computeProductInformation(subLine, saleOrder, saleOrderLine.getPackPriceSelect());
       computeValues(saleOrder, subLine);
+      subLine.setSequence(++sequence);
       subLines.add(subLine);
     }
 
@@ -262,6 +283,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal companyInTaxTotal;
     BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine, saleOrder.getInAti());
     BigDecimal taxRate = BigDecimal.ZERO;
+    BigDecimal subTotalCostPrice = BigDecimal.ZERO;
 
     if (saleOrderLine.getTaxLine() != null) {
       taxRate = saleOrderLine.getTaxLine().getValue();
@@ -280,16 +302,23 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
           companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
 
+    if (saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) != 0) {
+      subTotalCostPrice =
+          saleOrderLine.getProduct().getCostPrice().multiply(saleOrderLine.getQty());
+    }
+
     saleOrderLine.setInTaxTotal(inTaxTotal);
     saleOrderLine.setExTaxTotal(exTaxTotal);
     saleOrderLine.setPriceDiscounted(priceDiscounted);
     saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
     saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
+    saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
     map.put("inTaxTotal", inTaxTotal);
     map.put("exTaxTotal", exTaxTotal);
     map.put("priceDiscounted", priceDiscounted);
     map.put("companyExTaxTotal", companyExTaxTotal);
     map.put("companyInTaxTotal", companyInTaxTotal);
+    map.put("subTotalCostPrice", subTotalCostPrice);
 
     map.putAll(this.computeSubMargin(saleOrder, saleOrderLine));
 
@@ -516,8 +545,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     HashMap<String, BigDecimal> map = new HashMap<>();
 
     BigDecimal subTotalCostPrice = BigDecimal.ZERO;
-    BigDecimal subTotalGrossMargin = BigDecimal.ZERO;
+    BigDecimal subTotalGrossProfit = BigDecimal.ZERO;
     BigDecimal subMarginRate = BigDecimal.ZERO;
+    BigDecimal subTotalMarkup = BigDecimal.ZERO;
     BigDecimal totalWT = BigDecimal.ZERO;
 
     if (saleOrderLine.getProduct() != null
@@ -532,25 +562,25 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               null);
 
       logger.debug("Total WT in company currency: {}", totalWT);
-      subTotalCostPrice =
-          saleOrderLine.getProduct().getCostPrice().multiply(saleOrderLine.getQty());
+      subTotalCostPrice = saleOrderLine.getSubTotalCostPrice();
       logger.debug("Subtotal cost price: {}", subTotalCostPrice);
-      subTotalGrossMargin = totalWT.subtract(subTotalCostPrice);
-      logger.debug("Subtotal gross margin: {}", subTotalGrossMargin);
+      subTotalGrossProfit = totalWT.subtract(subTotalCostPrice);
+      logger.debug("Subtotal gross margin: {}", subTotalGrossProfit);
       subMarginRate =
-          subTotalGrossMargin
-              .divide(subTotalCostPrice, RoundingMode.HALF_EVEN)
-              .multiply(new BigDecimal(100));
+          subTotalGrossProfit.divide(totalWT, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
       logger.debug("Subtotal gross margin rate: {}", subMarginRate);
+      subTotalMarkup =
+          subTotalCostPrice.divide(totalWT, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
+      logger.debug("Subtotal markup: {}", subTotalMarkup);
     }
 
-    saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
-    saleOrderLine.setSubTotalGrossMargin(subTotalGrossMargin);
+    saleOrderLine.setSubTotalGrossMargin(subTotalGrossProfit);
     saleOrderLine.setSubMarginRate(subMarginRate);
+    saleOrderLine.setSubTotalMarkup(subTotalMarkup);
 
-    map.put("subTotalCostPrice", subTotalCostPrice);
-    map.put("subTotalGrossMargin", subTotalGrossMargin);
+    map.put("subTotalGrossMargin", subTotalGrossProfit);
     map.put("subMarginRate", subMarginRate);
+    map.put("subTotalMarkup", subTotalMarkup);
     return map;
   }
 

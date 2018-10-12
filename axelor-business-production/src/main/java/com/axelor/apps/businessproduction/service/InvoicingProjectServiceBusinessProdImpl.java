@@ -52,33 +52,30 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
   @Override
   public void fillLines(InvoicingProject invoicingProject, Project project) {
     super.fillLines(invoicingProject, project);
-    if (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE
-        || project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED) {
-      if (invoicingProject.getManufOrderSet() == null) {
-        invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
-      }
+    if (invoicingProject.getManufOrderSet() == null) {
+      invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
+    }
 
-      if (invoicingProject.getDeadlineDate() != null) {
-        LocalDateTime deadlineDateToDateTime = invoicingProject.getDeadlineDate().atStartOfDay();
-        invoicingProject
-            .getManufOrderSet()
-            .addAll(
-                Beans.get(ManufOrderRepository.class)
-                    .all()
-                    .filter(
-                        "self.productionOrder.project = ?1 AND (self.realStartDateT < ?2)",
-                        project,
-                        deadlineDateToDateTime)
-                    .fetch());
-      } else {
-        invoicingProject
-            .getManufOrderSet()
-            .addAll(
-                Beans.get(ManufOrderRepository.class)
-                    .all()
-                    .filter("self.productionOrder.project = ?1", project)
-                    .fetch());
-      }
+    if (invoicingProject.getDeadlineDate() != null) {
+      LocalDateTime deadlineDateToDateTime = invoicingProject.getDeadlineDate().atStartOfDay();
+      invoicingProject
+          .getManufOrderSet()
+          .addAll(
+              Beans.get(ManufOrderRepository.class)
+                  .all()
+                  .filter(
+                      "self.productionOrder.project = ?1 AND (self.realStartDateT < ?2)",
+                      project,
+                      deadlineDateToDateTime)
+                  .fetch());
+    } else {
+      invoicingProject
+          .getManufOrderSet()
+          .addAll(
+              Beans.get(ManufOrderRepository.class)
+                  .all()
+                  .filter("self.productionOrder.project = ?1", project)
+                  .fetch());
     }
   }
 

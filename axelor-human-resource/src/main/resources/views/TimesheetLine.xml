@@ -116,9 +116,9 @@
 		<panel-include view="timesheet-line-timesheet-form"/>
 	</form>
 
-	<form name="timesheet-line-timesheet-project-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" 
+	<form name="timesheet-line-timesheet-project-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine"
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
-	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project" width="large">
+	onLoad="action-timesheet-line-group-onload" width="large">
 		<panel name="overview" title="Overview">
 			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="date" />
@@ -138,6 +138,17 @@
 		<action name="action-timesheet-line-record-to-invoice"/>
 <!-- 		<action name="action-hr-timesheet-line-record-empty-product"/> -->
 	</action-group>
+	
+	<action-group name="action-timesheet-line-group-onload">
+		<action name="action-timesheet-line-attrs-set-duration-label"/>
+		<action name="action-timesheet-line-attrs-set-visible-duration-title"/>
+		<action name="action-timesheet-line-attrs-title-project"/>
+		<action name="action-timesheet-line-atts-overview-readonly"/>
+	</action-group>
+	
+	<action-attrs name="action-timesheet-line-atts-overview-readonly">
+		<attribute name="readonly" for="overview" expr="_projectIds != null"/>
+	</action-attrs>
 	
 	<action-attrs name="action-hr-timesheet-line-attrs-domain-product">
 		<attribute name="domain" for="product" expr="eval:project == null || project?.productSet.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet)&quot;"/>
@@ -218,6 +229,7 @@
 	<action-view name="action-project-dashlet-validated-timeshet-lines" model="com.axelor.apps.hr.db.TimesheetLine" title="Validated Timesheet lines">
 		<view type="grid" name="timesheet-line-project-grid"/>
 		<view type="form" name="timesheet-line-timesheet-project-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.timesheet.statusSelect = 3 and self.project.id in (:_projectIds)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -227,6 +239,7 @@
 	<action-view name="action-project-dashlet-project-waiting-timeshet-lines" model="com.axelor.apps.hr.db.TimesheetLine" title="Waiting Timesheet lines">
 		<view type="grid" name="timesheet-line-project-grid"/>
 		<view type="form" name="timesheet-line-timesheet-project-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.timesheet.statusSelect &lt; 3 and self.project.id in (:_projectIds)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>

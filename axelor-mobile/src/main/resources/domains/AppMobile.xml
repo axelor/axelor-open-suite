@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppMobile" lang="java" cachable="true" extends="App">
+	<entity name="AppMobile" lang="java" extends="App">
 		<boolean name="isSaleAppEnable" default="true" title="Sale"/>
 		<boolean name="isCrmAppEnable" default="true" title="CRM"/>
 		<boolean name="isTimesheetAppEnable" default="true" title="Timesheet"/>

@@ -550,6 +550,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     Product product = saleOrderLine.getProduct();
 
+    Integer packPriceSelect = saleOrderLine.getPackPriceSelect();
+    if (saleOrderLine.getIsSubLine() && saleOrderLine.getParentLine() != null) {
+      packPriceSelect = saleOrderLine.getParentLine().getPackPriceSelect();
+    }
+
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGeneratorSupplyChain(
             invoice,
@@ -564,7 +569,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             null,
             null,
             saleOrderLine.getIsSubLine(),
-            saleOrderLine.getPackPriceSelect()) {
+            packPriceSelect) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

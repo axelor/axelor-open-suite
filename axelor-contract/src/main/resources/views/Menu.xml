@@ -45,5 +45,14 @@
 		<view type="grid" name="duration-grid"/>
 		<view type="form" name="duration-form"/>
 	</action-view>
-	
+
+	<menuitem name="admin-root-batch-contract" parent="admin-root-batch"
+			  title="Contract batches" action="admin.root.batch.contract" />
+
+	<action-view name="admin.root.batch.contract" title="Contract batches"
+				 model="com.axelor.apps.contract.db.ContractBatch" >
+		<view type="grid" name="contract-batch-grid"/>
+		<view type="form" name="contract-batch-form"/>
+	</action-view>
+
 </object-views>

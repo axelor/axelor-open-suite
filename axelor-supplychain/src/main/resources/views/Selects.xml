@@ -67,8 +67,6 @@
 		<option value="2">Invoice a fraction</option>
 		<option value="3">Invoice selected lines</option>
 		<option value="4">Invoice an advance payment</option>
-		<option value="5">Invoice timesheets</option>
-		<option value="6">Invoice expenses</option>
 	</selection>
 
 	<selection name="supplychain.sale.order.type.select">

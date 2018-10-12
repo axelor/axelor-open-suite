@@ -25,40 +25,18 @@
 			onChange="action-group-account-account-management-onchange-common" />
 		<field name="purchaseAccount" if-module="axelor-account"
 			form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')"
-			domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation')"
-			onChange="action-group-account-account-management-onchange-common" />
+			domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation')"/>
 		<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" />
 		<field name="purchFixedAssetsAccount"
-	 		onChange="action-group-account-account-management-onchange-common"
 			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" />
 		<field name="saleAccount" if-module="axelor-account" form-view="account-form"
 			grid-view="account-grid" if="__config__.app.isApp('account')"
-			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
-			onChange="action-group-account-account-management-onchange-common" />
+			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" />
 		<field name="saleTax" form-view="tax-form" grid-view="tax-grid" />
 		<field name="analyticDistributionTemplate" if-module="axelor-account"
 			if="__config__.app.isApp('account')" />
 	</grid>
 
-	<grid name="account-management-tax-grid" title="Account management list"
-		model="com.axelor.apps.account.db.AccountManagement" editable="true"
-		onNew="action-account-management-record-default, action-account-management-attrs-type">
-		<field name="typeSelect" hidden="true"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"
-			onChange="action-group-account-account-management-onchange-common" />
-		<field name="purchaseAccount" if-module="axelor-account"
-			form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')"
-			domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt')"
-			onChange="action-group-account-account-management-onchange-common" />
-		<field name="purchFixedAssetsAccount" if-module="axelor-account"
-			form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')"
-			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
-			onChange="action-group-account-account-management-onchange-common" />
-		<field name="saleAccount" if-module="axelor-account" form-view="account-form"
-			grid-view="account-grid" if="__config__.app.isApp('account')"
-			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
-			onChange="action-group-account-account-management-onchange-common" />
-	</grid>
 
 	<form name="account-management-form" title="Account management"
 		model="com.axelor.apps.account.db.AccountManagement"
@@ -74,41 +52,62 @@
 					grid-view="product-grid" showIf="typeSelect == 1" />
 			</panel>
 
+			<!-- PRODUCT -->
 			<panel name="purchaseConfig" title="Purchases" colSpan="12"
-				showIf="typeSelect == 1 || typeSelect == 2">
+				showIf="typeSelect == 1">
 				<field name="purchaseAccount"
-					onChange="action-group-account-account-management-onchange-common"
 					domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt')"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
 					if="__config__.app.isApp('account')" />
-				<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid"
-					hideIf="typeSelect != 1" />
+				<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid"/>
 			</panel>
 
 			<panel name="fixedAssetsConfig" title="Purchase of fixed assets"
-				colSpan="12" showIf="typeSelect == 1 || typeSelect == 2">
+				colSpan="12" showIf="typeSelect == 1">
 				<field name="purchFixedAssetsAccount"
-					onChange="action-group-account-account-management-onchange-common"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
 					if="__config__.app.isApp('account')" />
 			</panel>
 
 			<panel name="saleConfig" title="Sale" colSpan="12"
-				showIf="typeSelect == 1 || typeSelect == 2">
+				showIf="typeSelect == 1">
 				<field name="saleAccount"
-					onChange="action-group-account-account-management-onchange-common"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
 					if="__config__.app.isApp('account')" />
-				<field name="saleTax" form-view="tax-form" grid-view="tax-grid"
-					hideIf="typeSelect != 1" />
+				<field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
 			</panel>
 
+			<!-- TAX -->
+			<panel name="purchaseConfig" title="Purchases" colSpan="12"
+				showIf="typeSelect == 2">
+				<field name="purchaseAccount"
+					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+					if="__config__.app.isApp('account')" />
+			</panel>
+
+			<panel name="fixedAssetsConfig" title="Purchase of fixed assets"
+				colSpan="12" showIf="typeSelect == 2">
+				<field name="purchFixedAssetsAccount"
+					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+					if="__config__.app.isApp('account')" />
+			</panel>
+
+			<panel name="saleConfig" title="Sale" colSpan="12"
+				showIf="typeSelect == 2">
+				<field name="saleAccount"
+					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+					if="__config__.app.isApp('account')" />
+			</panel>
+
+			<!-- PAYMENT -->
 			<panel name="paymentConfig" title="Payment" colSpan="12"
 				showIf="typeSelect == 3">
 				<field name="cashAccount"
-					onChange="action-group-account-account-management-onchange-common"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
 					if="__config__.app.isApp('account')" />

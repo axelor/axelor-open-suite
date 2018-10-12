@@ -131,8 +131,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     }
 
     BigDecimal costPrice =
-        unitConversionService.convert(
-            product.getUnit(), unit, product.getCostPrice().multiply(consumptionQty));
+        unitConversionService
+            .convert(unit, product.getUnit(), product.getCostPrice())
+            .multiply(consumptionQty);
 
     return this.createCostSheetLine(
         product.getName(),
@@ -157,8 +158,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       throws AxelorException {
 
     BigDecimal costPrice =
-        unitConversionService.convert(
-            product.getUnit(), unit, product.getCostPrice().multiply(consumptionQty));
+        unitConversionService
+            .convert(unit, product.getUnit(), product.getCostPrice())
+            .multiply(consumptionQty);
 
     return this.createCostSheetLine(
         product.getName(),
@@ -192,8 +194,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                 BigDecimal.ROUND_HALF_EVEN);
 
     BigDecimal costPrice =
-        unitConversionService.convert(
-            product.getUnit(), unit, product.getCostPrice().multiply(qty));
+        unitConversionService
+            .convert(unit, product.getUnit(), product.getCostPrice())
+            .multiply(qty);
 
     return this.createCostSheetLine(
         product.getName(),
