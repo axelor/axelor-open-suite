@@ -165,6 +165,7 @@
 - Stock Move : Fix display email fields title.
 - PROJECT : Fix translations.
 - Sale Order, Sale Order Line : Fix margins with normal case and pack line case.
+- Sale Order Line : Fix pack type translations.
 
 ## [Unreleased 5.0.7]
 ## Features
