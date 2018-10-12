@@ -17,6 +17,21 @@
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>
 	
+	<grid name="all-timesheet-grid" title="All timesheets" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
+		<toolbar>
+			<button name="seeTSLines" title="See timesheet lines" onClick="action-timesheet-view-see-all-timesheet-lines" />
+		</toolbar>
+		<hilite color="danger" if="statusSelect == 4"/>
+		<hilite color="success" if="statusSelect == 3"/>
+		<hilite color="warning" if="statusSelect == 2"/>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="sentDate"/>
+		<field name="statusSelect"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+	</grid>
+	
 	<grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="-fromDate">
 		<toolbar>
 			<button name="seeTSLines" title="See timesheet lines" onClick="action-timesheet-see-timesheet-lines" />
@@ -424,6 +439,12 @@
 		<context name="user_id" expr="eval: user_id"/>
 		<context name="company_id" expr="eval: company_id"/>
 	</action-view>
+	
+	<action-view name="action-timesheet-view-see-all-timesheet-lines" title="See timesheet lines"
+		model="com.axelor.apps.hr.db.TimesheetLine">
+		<view type="grid" name="timesheet-line-grid"/>
+		<view type="form" name="timesheet-line-form"/>
+	</action-view>
 
 	<action-method name="action-timesheet-method-timesheet-line-validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheetLine"/>
@@ -432,8 +453,6 @@
 	<action-method name="action-timesheet-method-timesheet-line-historic">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheetLine"/>
 	</action-method>
-
-
 
 	<action-attrs name="action-hr-attrs-set-user-domain">
 		<attribute for="user" name="domain" if="company &amp;&amp; __user__?.employee?.hrManager" expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it?.employee.id ?: 0}+[0]).join(',')}) &quot;"/>

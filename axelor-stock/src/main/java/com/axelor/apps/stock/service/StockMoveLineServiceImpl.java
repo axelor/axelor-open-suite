@@ -884,7 +884,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       if (draft) {
         newStockMoveLine.setQty(counter);
       } else {
-        newStockMoveLine.setQty(counter);
+        newStockMoveLine.setRealQty(counter);
       }
       newStockMoveLine.setTrackingNumber(trackingNumber);
       newStockMoveLine.setStockMove(stockMoveLine.getStockMove());

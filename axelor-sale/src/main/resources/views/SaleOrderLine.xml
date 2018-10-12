@@ -66,11 +66,12 @@
  
 		<panel-tabs hideIf="typeSelect == 1">
 			<panel name="informations" title="Information">
-  				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-					<viewer><![CDATA[
+  				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly() &amp;&amp; exTaxTotal > 0" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+					<viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
                         <h4>
-                            <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
-                            <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                            <span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
+                            <span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
+                            <span class="label label-important" ng-show="record.amountInvoiced == 0" x-translate>Not invoiced</span>
                         </h4>
                     ]]>
 					</viewer>
@@ -125,8 +126,9 @@
 			</panel>
 			<panel name="margin" title="Margin">
 				<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
-				<field name="subTotalGrossMargin"/>
-				<field name="subMarginRate"/>
+				<field name="subTotalGrossMargin" readonly="true"/>
+				<field name="subMarginRate" readonly="true"/>
+				<field name="subTotalMarkup" readonly="true"/>
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery">
@@ -209,8 +211,9 @@
 			</panel>
 			<panel name="margin" title="Margin">
 				<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
-				<field name="subTotalGrossMargin"/>
-				<field name="subMarginRate"/>
+				<field name="subTotalGrossMargin" readonly="true"/>
+				<field name="subMarginRate" readonly="true"/>
+				<field name="subTotalMarkup" readonly="true"/>
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
 			<panel name="projectPanel"  if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">

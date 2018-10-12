@@ -423,18 +423,6 @@ public class AccountConfigService {
     return accountConfig.getIrrecoverableReasonPassage();
   }
 
-  public String getExportPath(AccountConfig accountConfig) throws AxelorException {
-
-    if (accountConfig.getExportPath() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_33),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          accountConfig.getCompany().getName());
-    }
-    return accountConfig.getExportPath();
-  }
-
   public Template getRejectPaymentScheduleTemplate(AccountConfig accountConfig)
       throws AxelorException {
 
@@ -571,5 +559,31 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return accountConfig.getExportFileName();
+  }
+
+  public Account getFactorCreditAccount(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getFactorCreditAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_41),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+
+    return accountConfig.getFactorCreditAccount();
+  }
+
+  public Account getFactorDebitAccount(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getFactorDebitAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_42),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+
+    return accountConfig.getFactorDebitAccount();
   }
 }

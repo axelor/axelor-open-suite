@@ -171,7 +171,6 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
     for (TeamTask teamTask : teamTaskList) {
       invoiceLineList.addAll(this.createInvoiceLine(invoice, teamTask, priority * 100 + count));
       count++;
-      teamTask.setInvoiced(true);
     }
     return invoiceLineList;
   }
@@ -205,6 +204,7 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
           public List<InvoiceLine> creates() throws AxelorException {
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
+            invoiceLine.setProject(teamTask.getProject());
 
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
             invoiceLines.add(invoiceLine);
