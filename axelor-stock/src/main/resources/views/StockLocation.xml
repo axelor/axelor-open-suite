@@ -52,6 +52,11 @@
 					]]>
 				</viewer>
 			</field>
+			<panel>
+				<field name="usableOnSaleOrder" colSpan="4" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
+				<field name="usableOnPurchaseOrder" colSpan="4" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+				<field name="usableOnProduction" colSpan="4" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			</panel>
 		</panel>    
 		<panel-tabs>
 			<panel name="locationContent" title="Location Content">
