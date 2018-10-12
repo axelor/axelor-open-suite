@@ -23,6 +23,13 @@
 		<domain>self.product.id = :id </domain>
 	</action-view>	
 	
+	<action-view name="action-product-view-show-used-bill-of-material" title="Where-used list" 
+		model="com.axelor.apps.production.db.BillOfMaterial">
+		<view type="grid" name="bill-of-material-grid"/>
+		<view type="form" name="bill-of-material-form"/>
+		<domain>self.billOfMaterialSet.product.id = :id</domain>
+	</action-view>
+	
 	<action-attrs name="action-product-attrs-bill-of-material-domain">
 		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) AND self.defineSubBillOfMaterial = true&quot;"/>
 	</action-attrs>
@@ -32,6 +39,7 @@
 	</action-attrs>
 	
     <action-record name="action-product-record-default-production" model="com.axelor.apps.base.db.Product" if-module="axelor-production">
+    	<field name="procurementMethodSelect" expr="produce" if="_fromProduction"/>
     	<field name="costSheetGroup" expr="eval: __config__.app.getApp('production')?.getProductCostSheetGroup()"  />
     </action-record>
     
