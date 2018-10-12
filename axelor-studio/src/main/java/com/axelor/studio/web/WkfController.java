@@ -18,6 +18,7 @@
 package com.axelor.studio.web;
 
 import com.axelor.common.Inflector;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
@@ -37,78 +38,94 @@ import com.axelor.studio.service.wkf.WkfDesignerService;
 import com.axelor.studio.service.wkf.WkfService;
 import com.axelor.studio.translation.ITranslation;
 import com.google.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class WkfController {
 
   @Inject private WkfRepository wkfRepo;
-
   @Inject private WkfDesignerService wkfDesignerService;
-
   @Inject private WkfService wkfService;
 
-  public void processXml(ActionRequest request, ActionResponse response) throws Exception {
-
-    Wkf workflow = request.getContext().asType(Wkf.class);
-    workflow = wkfRepo.find(workflow.getId());
-    wkfDesignerService.processXml(workflow);
+  public void processXml(ActionRequest request, ActionResponse response) {
+    try {
+      Wkf workflow = request.getContext().asType(Wkf.class);
+      workflow = wkfRepo.find(workflow.getId());
+      wkfDesignerService.processXml(workflow);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  public void processWkf(ActionRequest request, ActionResponse response) throws Exception {
-
-    Wkf workflow = request.getContext().asType(Wkf.class);
-    workflow = wkfRepo.find(workflow.getId());
-    wkfService.process(workflow);
-    response.setReload(true);
+  public void processWkf(ActionRequest request, ActionResponse response) {
+    try {
+      Wkf workflow = request.getContext().asType(Wkf.class);
+      workflow = wkfRepo.find(workflow.getId());
+      wkfService.process(workflow);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  public void onNodeEdit(ActionRequest request, ActionResponse response) throws Exception {
-    WkfNodeRepository repo = Beans.get(WkfNodeRepository.class);
-    WkfNode node = request.getContext().asType(WkfNode.class);
-    if (node.getWkf().getId() != null) {
-      WkfNode found =
-          repo.all()
-              .filter("self.wkf.id = ? and self.xmlId = ?", node.getWkf().getId(), node.getXmlId())
-              .fetchOne();
+  public void onNodeEdit(ActionRequest request, ActionResponse response) {
+    try {
+      WkfNodeRepository repo = Beans.get(WkfNodeRepository.class);
+      WkfNode node = request.getContext().asType(WkfNode.class);
+      if (node.getWkf().getId() != null) {
+        WkfNode found =
+            repo.all()
+                .filter(
+                    "self.wkf.id = ? and self.xmlId = ?", node.getWkf().getId(), node.getXmlId())
+                .fetchOne();
+        if (found != null) {
+          Map<String, Object> view =
+              ActionView.define(I18n.get(ITranslation.WKF_EDIT_NODE))
+                  .add("form", "wkf-node-form")
+                  .model(WkfNode.class.getName())
+                  .context("_showRecord", found.getId())
+                  .param("popup", "true")
+                  .param("show-toolbar", "false")
+                  .param("forceEdit", "true")
+                  .map();
+          response.setView(view);
+        } else {
+          response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+        }
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onTransitionEdit(ActionRequest request, ActionResponse response) {
+    try {
+      WkfTransitionRepository repo = Beans.get(WkfTransitionRepository.class);
+      WkfTransition transition = request.getContext().asType(WkfTransition.class);
+      WkfTransition found = repo.all().filter("self.xmlId = ?", transition.getXmlId()).fetchOne();
       if (found != null) {
+
         Map<String, Object> view =
-            ActionView.define(I18n.get(ITranslation.WKF_EDIT_NODE))
-                .add("form", "wkf-node-form")
-                .model(WkfNode.class.getName())
+            ActionView.define(I18n.get(ITranslation.WKF_EDIT_TRANSITION))
+                .add("form", "wkf-transition-form")
+                .model(WkfTransition.class.getName())
                 .context("_showRecord", found.getId())
                 .param("popup", "true")
                 .param("show-toolbar", "false")
                 .param("forceEdit", "true")
                 .map();
+
         response.setView(view);
       } else {
         response.setFlash(I18n.get(IExceptionMessage.WKF_1));
       }
-    } else {
-      response.setFlash(I18n.get(IExceptionMessage.WKF_1));
-    }
-  }
-
-  public void onTransitionEdit(ActionRequest request, ActionResponse response) throws Exception {
-    WkfTransitionRepository repo = Beans.get(WkfTransitionRepository.class);
-    WkfTransition transition = request.getContext().asType(WkfTransition.class);
-    WkfTransition found = repo.all().filter("self.xmlId = ?", transition.getXmlId()).fetchOne();
-    if (found != null) {
-
-      Map<String, Object> view =
-          ActionView.define(I18n.get(ITranslation.WKF_EDIT_TRANSITION))
-              .add("form", "wkf-transition-form")
-              .model(WkfTransition.class.getName())
-              .context("_showRecord", found.getId())
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("forceEdit", "true")
-              .map();
-
-      response.setView(view);
-    } else {
-      response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -120,34 +137,35 @@ public class WkfController {
 
     if (wkfField != null) {
 
-      String[] nodes = getDefaultNodes(wkfField);
-      if (nodes != null) {
-        String bpmnXml =
-            " <?xml version=\"1.0\" encoding=\"UTF-8\"?> "
-                + "<definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-                + "xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" "
-                + "xmlns:x=\"http://axelor.com\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" "
-                + "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" "
-                + "targetNamespace=\"http://bpmn.io/schema/bpmn\" id=\"Definitions_1\"> "
-                + "<process id=\"Process_1\" name=\""
-                + wkf.getName()
-                + "\" x:id=\""
-                + wkf.getId()
-                + "\" isExecutable=\"false\"> "
-                + nodes[0]
-                + "</process>"
-                + "<bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">"
-                + "<bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">"
-                + nodes[1]
-                + "</bpmndi:BPMNPlane>"
-                + "</bpmndi:BPMNDiagram>"
-                + "</definitions>";
-        response.setValue("$bpmnDefault", bpmnXml);
-      }
+      Optional<Pair<String, String>> nodesOpt = getDefaultNodes(wkfField);
+      nodesOpt.ifPresent(
+          nodes -> {
+            String bpmnXml =
+                " <?xml version=\"1.0\" encoding=\"UTF-8\"?> "
+                    + "<definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+                    + "xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" "
+                    + "xmlns:x=\"http://axelor.com\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" "
+                    + "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" "
+                    + "targetNamespace=\"http://bpmn.io/schema/bpmn\" id=\"Definitions_1\"> "
+                    + "<process id=\"Process_1\" name=\""
+                    + wkf.getName()
+                    + "\" x:id=\""
+                    + wkf.getId()
+                    + "\" isExecutable=\"false\"> "
+                    + nodes.getLeft()
+                    + "</process>"
+                    + "<bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">"
+                    + "<bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">"
+                    + nodes.getRight()
+                    + "</bpmndi:BPMNPlane>"
+                    + "</bpmndi:BPMNDiagram>"
+                    + "</definitions>";
+            response.setValue("$bpmnDefault", bpmnXml);
+          });
     }
   }
 
-  private String[] getDefaultNodes(MetaJsonField statusField) {
+  private Optional<Pair<String, String>> getDefaultNodes(MetaJsonField statusField) {
 
     //		String[] nodes = new String[] {
     //				"<startEvent id=\"StartEvent_1\" /><task id=\"Task_1\" /><endEvent id=\"EndEvent_1\"/>",
@@ -164,12 +182,12 @@ public class WkfController {
     //
     List<Option> select = getSelect(statusField);
 
-    if (select != null) {
+    if (!select.isEmpty()) {
       StringBuilder elements = new StringBuilder();
       StringBuilder designs = new StringBuilder();
       int count = 1;
       int x = 100;
-      int y = 100;
+      int y;
       for (Option option : select) {
         String element = null;
         int width = 100;
@@ -218,23 +236,23 @@ public class WkfController {
       }
 
       if (elements.length() > 0) {
-        return new String[] {elements.toString(), designs.toString()};
+        return Optional.of(Pair.of(elements.toString(), designs.toString()));
       }
     }
 
-    return null;
+    return Optional.empty();
   }
 
   private List<Option> getSelect(MetaJsonField wkfField) {
 
     if (wkfField == null) {
-      return null;
+      return Collections.emptyList();
     }
 
     if (wkfField.getSelection() != null) {
       return MetaStore.getSelectionList(wkfField.getSelection());
     }
 
-    return null;
+    return Collections.emptyList();
   }
 }

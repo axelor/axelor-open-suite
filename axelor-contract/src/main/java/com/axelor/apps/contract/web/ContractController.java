@@ -19,7 +19,6 @@ package com.axelor.apps.contract.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -189,30 +188,26 @@ public class ContractController {
 
   @Transactional
   public void copyFromTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      ContractTemplate template =
+          ModelTool.toBean(ContractTemplate.class, request.getContext().get("contractTemplate"));
+      template = Beans.get(ContractTemplateRepository.class).find(template.getId());
 
-    ContractTemplate template =
-        ModelTool.toBean(ContractTemplate.class, request.getContext().get("contractTemplate"));
-    template = Beans.get(ContractTemplateRepository.class).find(template.getId());
+      Contract origin = request.getContext().asType(Contract.class);
+      Contract copy = Beans.get(ContractService.class).createContractFromTemplate(template, origin);
 
-    Contract copy = Beans.get(ContractService.class).createContractFromTemplate(template);
-
-    // TODO: move in service
-    if (request.getContext().asType(Contract.class).getPartner() != null) {
-      copy.setPartner(
-          Beans.get(PartnerRepository.class)
-              .find(request.getContext().asType(Contract.class).getPartner().getId()));
-      Beans.get(ContractRepository.class).save(copy);
+      response.setCanClose(true);
+      response.setView(
+          ActionView.define(I18n.get("Contract"))
+              .model(Contract.class.getName())
+              .add("form", "contract-form")
+              .add("grid", "contract-grid")
+              .param("forceTitle", "true")
+              .context("_showRecord", copy.getId().toString())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-    response.setCanClose(true);
-
-    response.setView(
-        ActionView.define(I18n.get("Contract"))
-            .model(Contract.class.getName())
-            .add("form", "contract-form")
-            .add("grid", "contract-grid")
-            .param("forceTitle", "true")
-            .context("_showRecord", copy.getId().toString())
-            .map());
   }
 
   public void changeProduct(ActionRequest request, ActionResponse response) {

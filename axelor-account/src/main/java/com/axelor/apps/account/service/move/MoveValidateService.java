@@ -31,6 +31,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -221,10 +222,10 @@ public class MoveValidateService {
       moveLine.setAccountCode(moveLine.getAccount().getCode());
       moveLine.setAccountName(moveLine.getAccount().getName());
       if (move.getPartner() != null) {
-        moveLine.setPartnerFullName(move.getPartner().getFullName());
+        moveLine.setPartnerFullName(getPartnerFullName(move.getPartner()));
         moveLine.setPartnerSeq(move.getPartner().getPartnerSeq());
       } else if (moveLine.getPartner() != null) {
-        moveLine.setPartnerFullName(moveLine.getPartner().getFullName());
+        moveLine.setPartnerFullName(getPartnerFullName(moveLine.getPartner()));
         moveLine.setPartnerSeq(moveLine.getPartner().getPartnerSeq());
       }
     }
@@ -241,5 +242,18 @@ public class MoveValidateService {
       }
     }
     return error;
+  }
+
+  private String getPartnerFullName(Partner partner) {
+    if (!Strings.isNullOrEmpty(partner.getName())
+        && !Strings.isNullOrEmpty(partner.getFirstName())) {
+      return partner.getName() + " " + partner.getFirstName();
+    } else if (!Strings.isNullOrEmpty(partner.getName())) {
+      return partner.getName();
+    } else if (!Strings.isNullOrEmpty(partner.getFirstName())) {
+      return partner.getFirstName();
+    } else {
+      return "" + partner.getId();
+    }
   }
 }
