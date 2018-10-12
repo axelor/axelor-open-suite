@@ -112,6 +112,8 @@
 - Added nameColumn for ExpenseLine and ProjectPlanningTime.
 - Change unique constraints in analytic account move line.
 - ManufOrder: Change quantity also in stock move on updating planned quantity.
+- ManufOrder report: larger "name" column on to consume product table.
+- Project: Rename "Dashboard" menu entry to "My projects" and move it to "Reporting" menu entry.
 - Project: Reorganization of Resource Booking form view.
 - Tweaks on manuf order report.
 - Rework Lunch voucher management view.
