@@ -3,6 +3,7 @@
 echo "App Path: " $1
 echo "Reset app: " $2 
 echo "Catalina home: "$CATALINA_HOME
+echo "Catalina app: "$CATALINA_APP
 #echo "PGHOME: "$PGHOME
 
 #pid=$(ps x | grep "${CATALINA_HOME}" | grep -v grep | cut -d ' ' -f 1)
@@ -18,10 +19,17 @@ echo "Catalina home: "$CATALINA_HOME
 
 #echo "Process $pid has finished"
 
+echo "Removing old app directory"
 rm -fr $CATALINA_APP*
-mkdir $CATALINA_APP
+
+sleep 2
+
+echo "Creating new app directory"
+mkdir -v $CATALINA_APP
 
 cd $CATALINA_APP
+
+echo "Extracting app"
 jar -xf $1
 
 if [ -f ../../../etc/application.properties ]; then
@@ -39,5 +47,5 @@ fi
 #	fi 
 #fi
 
-echo "Starting tomcat server"
-$CATALINA_HOME/bin/startup.sh
+#echo "Starting tomcat server"
+#$CATALINA_HOME/bin/startup.sh

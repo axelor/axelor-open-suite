@@ -64,15 +64,52 @@
         <view type="grid" name="json-creator-grid" />
         <view type="form" name="json-creator-form" />
     </action-view>
+    
+    <menuitem name="app-builder-view-builder-root" title="View builders" parent="app-builder-config" order="44" />
+    
+    <menuitem name="app-builder-cards-builder" title="Cards builders" parent="app-builder-view-builder-root" action="action.cards.builder.view" order="5" />
 
-    <menuitem name="app-builder-menu-builders" title="Menu builders" parent="app-builder-config" action="action.menu.builders.view" order="44" />
+    <action-view name="action.cards.builder.view" title="Cards builders" model="com.axelor.studio.db.ViewBuilder">
+        <view type="grid" name="view-builder-grid" />
+        <view type="form" name="view-builder-cards-form" />
+        <view-param name="forceTitle" value="true"/>
+        <context name="_viewType" expr="cards"/>
+    </action-view>
+    
+    <menuitem name="app-builder-kanban-builder" title="Kanban builders" parent="app-builder-view-builder-root" action="action.kanban.builder.view" order="10" />
+
+    <action-view name="action.kanban.builder.view" title="Kanban builders" model="com.axelor.studio.db.ViewBuilder">
+        <view type="grid" name="view-builder-grid" />
+        <view type="form" name="view-builder-kanban-form" />
+        <view-param name="forceTitle" value="true"/>
+        <context name="_viewType" expr="kanban"/>
+    </action-view>
+    
+    <menuitem name="app-builder-calendar-builder" title="Calendar builders" parent="app-builder-view-builder-root" action="action.calendar.builder.view" order="15" />
+
+    <action-view name="action.calendar.builder.view" title="Calendar builders" model="com.axelor.studio.db.ViewBuilder">
+        <view type="grid" name="view-builder-grid" />
+        <view type="form" name="view-builder-calendar-form" />
+        <view-param name="forceTitle" value="true"/>
+        <context name="_viewType" expr="calendar"/>
+    </action-view>
+    
+    <menuitem name="app-builder-cards-builder" title="Cards builders" parent="app-builder-view-builder-root" action="action.card.builder.view" order="5" />
+
+    <action-view name="action.card.builder.view" title="Cards builders" model="com.axelor.studio.db.ViewBuilder">
+        <view type="grid" name="view-builder-grid" />
+        <view type="form" name="view-builder-cards-form" />
+    </action-view>
+    
+
+    <menuitem name="app-builder-menu-builders" title="Menu builders" parent="app-builder-config" action="action.menu.builders.view" order="46" />
 
     <action-view name="action.menu.builders.view" title="Menu builders" model="com.axelor.studio.db.MenuBuilder">
         <view type="grid" name="menu-builder-grid" />
         <view type="form" name="menu-builder-form" />
     </action-view>
 
-    <menuitem name="app-builder-actions-builders" title="Action builders" parent="app-builder-config" action="action.actions.builders.view" order="45" />
+    <menuitem name="app-builder-actions-builders" title="Action builders" parent="app-builder-config" action="action.actions.builders.view" order="48" />
 
     <action-view name="action.actions.builders.view" title="Action builders" model="com.axelor.studio.db.ActionBuilder">
         <view type="grid" name="action-builder-grid" />

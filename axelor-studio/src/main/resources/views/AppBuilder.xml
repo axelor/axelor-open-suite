@@ -20,6 +20,7 @@
 				<field name="name" colSpan="8" />
 				<field name="dependsOnSet" colSpan="12" widget="TagSelect" canNew="false" canEdit="false" />
 				<field name="sequence" />
+<!-- 				<field name="isReal" /> -->
 			</panel>
 			<field name="description" widget="html" colSpan="12"/>
 		</panel>
