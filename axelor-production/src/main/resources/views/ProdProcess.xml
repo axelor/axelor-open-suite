@@ -41,10 +41,10 @@
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
             <spacer/>
             <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-          <field name="workshopStockLocation" domain="self.company = :company and self.typeSelect = 1"/>
-	        <field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.company = :company"/>
+          <field name="workshopStockLocation" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1"/>
+	        <field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company"/>
 	        <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable'"/>
-	        <field name="producedProductStockLocation" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.company = :company"/>
+	        <field name="producedProductStockLocation" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company"/>
           <field name="launchQty"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
 	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>

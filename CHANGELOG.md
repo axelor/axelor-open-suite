@@ -45,6 +45,7 @@
 - PROJECT : Add translation of financial report.
 - Manuf Order: show in toConsumeProdProductList if there is product missing in stock.
 - Manuf Order: show in diff O2M the planned and real quantities.
+- Add some checkboxes to identify which stock location can be selected on sale order, purchase order, manuf order.
 - Business Project : Fill default values from Project while generating the sale Quotation.
 - Business Project : Enhancement of task and project view.
 - Project : Change invoicing project view.
@@ -85,6 +86,7 @@
 - Partner : Add simpleFullName field.
 - PRODUCT : add new button 'Reserved qty' to know the reserved quantity on product form.
 - Sale Order : add new large string field 'Production note' and display it on picking stock move report.
+- BillOfMaterial : Add new large field 'Note'.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -100,6 +102,7 @@
 - Production processes: display status in grid view.
 - Rework Ticket UI.
 - Tax configuration: display only necessary fields for tax account management.
+- Refactor purchase order view.
 - Rework project view
 - Set project on invoice and invoice line when generating it from sale order and stock move.
 - Set project on purchase order and purchase order lines when generating it from a sale order.
@@ -109,9 +112,16 @@
 - Added nameColumn for ExpenseLine and ProjectPlanningTime.
 - Change unique constraints in analytic account move line.
 - ManufOrder: Change quantity also in stock move on updating planned quantity.
+- ManufOrder report: larger "name" column on to consume product table.
+- Project: Rename "Dashboard" menu entry to "My projects" and move it to "Reporting" menu entry.
 - Project: Reorganization of Resource Booking form view.
 - Tweaks on manuf order report.
+- Rework Lunch voucher management view.
+- Improve Expense form view.
 - Rework CRM events view.
+- Rework Purchase request view.
+- Rework Target and Target configuration views in CRM.
+- Improve CRM menu entries.
 - Use editor for prod process line descriptions.
 - On creating stock move line, get the price from orders instead of computing it.
 - Improve exception handling in axelor-studio module.
@@ -120,6 +130,8 @@
 - Account Move Report : Add reconcileGroup column in Account Move Lines.
 - Update stock when modifying quantities in manufacturing order using wizard.
 - Add App related data in Data Back & restore functionality.
+- Data Backup : export the record sorted by Model fullName.
+- Improve opportunity view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
