@@ -106,7 +106,7 @@ public class MoveAccountService {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_2),
+          I18n.get(IExceptionMessage.MOVE_5),
           journal.getName());
     }
 

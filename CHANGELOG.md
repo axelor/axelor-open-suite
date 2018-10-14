@@ -18,6 +18,7 @@
 - Subrogation Release : Fix the status reset and clear invoice set when copy.
 - Subrogation Release : Fix throw exception and trace it when sequence is not defined.
 - Fix demo data for configurator.
+- MOVE : Fixed wrong message that is displayed when no sequence is defined for journal
 
 ## [5.0.6] - 2018-10-06
 ## Features
