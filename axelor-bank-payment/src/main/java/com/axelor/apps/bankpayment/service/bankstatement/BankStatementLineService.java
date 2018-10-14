@@ -22,14 +22,10 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class BankStatementLineService {
-
-  @Inject
-  public BankStatementLineService() {}
 
   public BankStatementLine createBankStatementLine(
       BankStatement bankStatement,
@@ -60,6 +56,10 @@ public class BankStatementLineService {
     bankStatementLine.setRejectInterbankCodeLine(rejectInterbankCodeLine);
     bankStatementLine.setOrigin(origin);
     bankStatementLine.setReference(reference);
+
+    // Used for Bank reconcile process
+    bankStatementLine.setAmountRemainToReconcile(
+        bankStatementLine.getDebit().add(bankStatementLine.getCredit()));
 
     return bankStatementLine;
   }
