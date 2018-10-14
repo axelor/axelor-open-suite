@@ -33,10 +33,10 @@ public interface PeriodService {
    * @return
    * @throws AxelorException
    */
-  public Period rightPeriod(LocalDate date, Company company) throws AxelorException;
-
-  public Period getPeriod(LocalDate date, Company company);
-
+  public Period rightPeriod(LocalDate date, Company company, int typeSelect) throws AxelorException;
+  
+  public Period getPeriod(LocalDate date, Company company, int typeSelect);
+  
   public Period getNextPeriod(Period period) throws AxelorException;
 
   public void testOpenPeriod(Period period) throws AxelorException;
