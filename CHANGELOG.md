@@ -87,6 +87,7 @@
 - PRODUCT : add new button 'Reserved qty' to know the reserved quantity on product form.
 - Sale Order : add new large string field 'Production note' and display it on picking stock move report.
 - BillOfMaterial : Add new large field 'Note'.
+- BANK RECONCILIATION : Fully rework the bank statement process.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

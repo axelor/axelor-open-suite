@@ -814,7 +814,7 @@
 "No duplicate finder field configured.",,,
 "No duplicate records found","Aucun enregistrement dupliqué trouvé",,
 "No help",,,
-"No period found or it has been closed for the company %s","Aucune période trouvée ou celle-ci clôturée pour la société: %s",,
+"No period found or it has been closed for the company %s for the date %s","Aucune période trouvée ou celle-ci clôturée pour la société: %s et la date: %s",,
 "No tax found for product %s","Aucune taxe trouvée pour le produit %s",,
 "None","Aucun",,
 "Not contains","Ne contient pas",,

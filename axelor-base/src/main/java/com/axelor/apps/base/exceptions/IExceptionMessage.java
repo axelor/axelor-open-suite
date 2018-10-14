@@ -74,7 +74,7 @@ public interface IExceptionMessage {
 
   /** Period service */
   public static final String PERIOD_1 = /*$$(*/
-      "No period found or it has been closed for the company %s" /*)*/;
+      "No period found or it has been closed for the company %s for the date %s" /*)*/;
 
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
   public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;
