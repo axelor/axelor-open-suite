@@ -21,6 +21,7 @@
 - MOVE : Fixed wrong message that is displayed when no sequence is defined for journal
 - PERIOD : Get the right period per type (civil, payroll, fiscal)
 - YEAR : sort per date DESC
+- MOVE : display missing description field in moveLines
 
 ## [5.0.6] - 2018-10-06
 ## Features
