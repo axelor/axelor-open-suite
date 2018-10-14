@@ -170,10 +170,12 @@
 
 ## [Unreleased 5.0.7]
 ## Features
+- MRP : Display createdBy user and stockLocation.company in form and grid view.
 
 ## Improvements
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
+- PERIOD : allow to reopen a period if the fiscal year is not closed
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -183,6 +185,14 @@
 - Subrogation release: Fix the process on button 'Enter release in the accounts'. 
 - Logistical Form : Fix the exception managed per TraceBack method when sequence is not defined.
 - Fix accounting notification process.
+- Subrogation Release : Fix the status reset and clear invoice set when copy.
+- Subrogation Release : Fix throw exception and trace it when sequence is not defined.
+- Fix demo data for configurator.
+- MOVE : Fixed wrong message that is displayed when no sequence is defined for journal
+- PERIOD : Get the right period per type (civil, payroll, fiscal)
+- YEAR : sort per date DESC
+- MOVE : display missing description field in moveLines
+- MOVE : remove the wrong domain on company field that allow to select only the user active company
 
 ## [5.0.6] - 2018-10-06
 ## Features
