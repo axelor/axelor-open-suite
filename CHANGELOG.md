@@ -23,6 +23,7 @@
 - PERIOD : Get the right period per type (civil, payroll, fiscal)
 - YEAR : sort per date DESC
 - MOVE : display missing description field in moveLines
+- MOVE : remove the wrong domain on company field that allow to select only the user active company
 
 ## [5.0.6] - 2018-10-06
 ## Features
