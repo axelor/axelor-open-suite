@@ -65,7 +65,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   protected static final String NEW_BALANCE_OPERATION_CODE = "07";
 
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("ddMMyy");
-  
+
   @Inject
   public BankStatementFileAFB120Service(BankStatementRepository bankStatementRepository) {
 

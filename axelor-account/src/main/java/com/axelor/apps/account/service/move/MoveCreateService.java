@@ -104,7 +104,7 @@ public class MoveCreateService {
    * @param partner
    * @param date
    * @param paymentMode
-   * @param technicalOriginSelect   
+   * @param technicalOriginSelect
    * @return
    * @throws AxelorException
    */
@@ -168,7 +168,7 @@ public class MoveCreateService {
     move.setIgnoreInAccountingOk(ignoreInAccountingOk);
 
     Period period = periodService.rightPeriod(date, company, YearRepository.TYPE_FISCAL);
-    
+
     move.setPeriod(period);
     move.setDate(date);
     move.setMoveLineList(new ArrayList<MoveLine>());

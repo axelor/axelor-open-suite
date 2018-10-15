@@ -34,9 +34,9 @@ public interface PeriodService {
    * @throws AxelorException
    */
   public Period rightPeriod(LocalDate date, Company company, int typeSelect) throws AxelorException;
-  
+
   public Period getPeriod(LocalDate date, Company company, int typeSelect);
-  
+
   public Period getNextPeriod(Period period) throws AxelorException;
 
   public void testOpenPeriod(Period period) throws AxelorException;

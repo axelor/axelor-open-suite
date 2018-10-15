@@ -78,7 +78,7 @@ public class MoveLineService {
 
   public static final boolean IS_CREDIT = false;
   public static final boolean IS_DEBIT = true;
-  
+
   @Inject
   public MoveLineService(
       AccountManagementAccountService accountManagementService,

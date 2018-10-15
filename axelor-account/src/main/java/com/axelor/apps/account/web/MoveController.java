@@ -82,7 +82,7 @@ public class MoveController {
         response.setValue(
             "period",
             Beans.get(PeriodService.class)
-            .rightPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+                .rightPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
       } else {
         response.setValue("period", null);
       }
