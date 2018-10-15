@@ -3,9 +3,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
-		<toolbar>
-			<button name="seeTSLines" title="See timesheet lines" onClick="action-timesheet-method-timesheet-line-historic" />
-		</toolbar>
+		<menubar>
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
+				<item action="action-timesheet-method-timesheet-line-historic" title="See timesheet lines"/>
+			</menu>
+		</menubar>
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
@@ -18,9 +20,11 @@
 	</grid>
 	
 	<grid name="all-timesheet-grid" title="All timesheets" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
-		<toolbar>
-			<button name="seeTSLines" title="See timesheet lines" onClick="action-timesheet-view-see-all-timesheet-lines" />
-		</toolbar>
+		<menubar>
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
+				<item action="action-timesheet-view-see-all-timesheet-lines" title="See timesheet lines"/>
+			</menu>
+		</menubar>
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
@@ -33,9 +37,11 @@
 	</grid>
 	
 	<grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="-fromDate">
-		<toolbar>
-			<button name="seeTSLines" title="See timesheet lines" onClick="action-timesheet-see-timesheet-lines" />
-		</toolbar>
+		<menubar>
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
+				<item action="action-timesheet-see-timesheet-lines" title="See timesheet lines"/>
+			</menu>
+		</menubar>
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
@@ -47,10 +53,12 @@
 	</grid>
 	
 	<grid name="timesheet-validate-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="user,-fromDate">
-		<toolbar>
-			<button name="showSubordinateTimesheetToValidate" title="Show timesheets to be validated by my subordinates" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"/>
-			<button name="seeTSLines" title="See timesheet lines" onClick="action-timesheet-method-timesheet-line-validate" />
-		</toolbar>
+		<menubar>
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
+				<item action="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets" title="Show timesheets to be validated by my subordinates"/>
+				<item action="action-timesheet-method-timesheet-line-validate" title="See timesheet lines"/>
+			</menu>
+		</menubar>
 		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
   		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/> 
 		<field name="company" form-view="company-form" grid-view="company-grid"/>

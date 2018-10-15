@@ -279,13 +279,20 @@
 	<!-- Timesheet app -->
 	<menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')" title="Timesheets" icon="fa-clock-o" icon-background="#84429f" order="15"/>
 
-	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet" order="0"/>
+	<menuitem title="Timesheets" name="all-timesheet" parent="timesheet-root" action="action.timesheet.view.all.timesheet" order="0"/>
+	
+	<action-view name="action.timesheet.view.all.timesheet" title="Timesheets" model="com.axelor.apps.hr.db.Timesheet">
+		<view type="grid" name="all-timesheet-grid"/>
+		<view type="form" name="timesheet-form"/>
+	</action-view>
+	
+	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet" order="1"/>
 
 	<action-method name="edit.timesheet">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheet"/>
 	</action-method>
 
-	<menuitem name="all-my-timesheet" parent="timesheet-root" title="All my Timesheets" action="action.timesheet.view.my.timesheet" order="1"/>
+	<menuitem name="all-my-timesheet" parent="timesheet-root" title="All my Timesheets" action="action.timesheet.view.my.timesheet" order="2"/>
 
 	<action-view name="action.timesheet.view.my.timesheet" model="com.axelor.apps.hr.db.Timesheet"
 		title="My Timesheets">
@@ -295,24 +302,17 @@
 		<context name="user_id" expr="eval:__user__" />
 	</action-view>
 
-	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" order="2"/>
+	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" order="3"/>
 
 	<action-method name="timesheet.validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
 	</action-method>
 
-	<menuitem name="historic-timesheet"  parent="timesheet-root" title="Historic team timesheets" action="timesheet.historic" order="3"/>
+	<menuitem name="historic-timesheet"  parent="timesheet-root" title="Historic team timesheets" action="timesheet.historic" order="4"/>
 
 	<action-method name="timesheet.historic">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="historicTimesheet"/>
 	</action-method>
-	
-	<menuitem title="All timesheets" name="all-timesheet" parent="timesheet-root" action="action.timesheet.view.all.timesheet" order="4"/>
-	
-	<action-view name="action.timesheet.view.all.timesheet" title="All timesheets" model="com.axelor.apps.hr.db.Timesheet">
-		<view type="grid" name="all-timesheet-grid"/>
-		<view type="form" name="timesheet-form"/>
-	</action-view>
 
 	<menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root" action="time.sheet.timer"
 		if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()" order="5"/>
