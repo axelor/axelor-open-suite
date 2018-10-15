@@ -7,7 +7,7 @@
     <entity name="FreightCarrierCustomerAccountNumber">
         <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" />
         <many-to-one name="stockConfig" ref="com.axelor.apps.stock.db.StockConfig" />
-        <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" title="Carrier" required="true" />
+        <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" title="Carrier" required="true" index="idx_stock_fccan_carrier_partner"/>
         <string name="customerAccountNumber" required="true" />
     </entity>
 
